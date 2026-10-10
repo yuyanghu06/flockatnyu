@@ -1,0 +1,42 @@
+{
+  "sourceRepository": "/Users/yuyang/Documents/YuyangSite/backend",
+  "exportedAt": "2026-10-09T23:01:50.496Z",
+  "cityTileCount": 484,
+  "cityBuildingCount": 17373,
+  "generatedModels": [
+    "models/buildings/lipton-hall.glb",
+    "models/buildings/courant-institute.glb",
+    "models/buildings/stern-school-of-business.glb",
+    "models/buildings/25-union-square-west.glb",
+    "models/buildings/235-park-avenue-south.glb",
+    "models/environment/hudson-river-waterfront.glb",
+    "models/environment/east-river-waterfront.glb",
+    "models/environment/washington-square-trees.glb",
+    "models/environment/union-square-and-gramercy-trees.glb",
+    "models/environment/manhattan-context-trees.glb",
+    "models/environment/park-grass.glb",
+    "models/environment/washington-square-fountain.glb",
+    "models/environment/gould-plaza.glb",
+    "models/environment/courant-garden.glb"
+  ],
+  "originalModels": [
+    "models/buildings/bobst-library.glb",
+    "models/buildings/washington-square-arch.glb"
+  ],
+  "excluded": [
+    "manhattan-roads.glb",
+    "FDR Drive geometry/data",
+    "pier access lanes",
+    "crosswalks",
+    "park paths",
+    "traffic",
+    "avatars",
+    "globe",
+    "site credentials"
+  ],
+  "notes": [
+    "Generated scenery is a static snapshot; fountain water animation is not exported.",
+    "Original copied tiles use EXT_meshopt_compression; enable a Meshopt decoder.",
+    "External asset attribution remains applicable; retain original GLB metadata."
+  ]
+}

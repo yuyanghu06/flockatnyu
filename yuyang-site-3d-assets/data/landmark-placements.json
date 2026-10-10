@@ -1,0 +1,62 @@
+{
+  "coordinateSystem": "Original Washington Square origin; Y up; map units in meters.",
+  "exportedModels": "Generated landmark, scenery and tile GLBs already preserve site coordinates. Load at identity.",
+  "bobstLibrary": {
+    "file": "models/buildings/bobst-library.glb",
+    "position": [
+      9.692,
+      2.688,
+      154.508
+    ],
+    "scale": [
+      2.0732745786935034,
+      1.8242393943722324,
+      1.7595571794731963
+    ],
+    "rotationY": 5.71116998038469
+  },
+  "washingtonSquareArch": {
+    "file": "models/buildings/washington-square-arch.glb",
+    "data": {
+      "sourceId": "248166269",
+      "height": 20.5,
+      "footprint": [
+        [
+          25.366,
+          -38.071
+        ],
+        [
+          9.254,
+          -48.357
+        ],
+        [
+          13.016,
+          -54.257
+        ],
+        [
+          29.128,
+          -43.983
+        ],
+        [
+          25.366,
+          -38.071
+        ]
+      ]
+    },
+    "normalization": "Center model in X/Z and align minimum Y to zero. Scale uniformly to data.height. Place at centroid of footprint excluding repeated last point, Y=0.68. Rotate Y=-atan2(first edge Z, first edge X). Set material color #f1ede4, roughness 0.86, double sided."
+  },
+  "siteTileSelection": {
+    "minimumCenterX": -1152,
+    "overviewCenter": [
+      220,
+      28,
+      -400
+    ],
+    "overviewRadius": 2600
+  },
+  "tileMaterial": {
+    "vertexColors": true,
+    "roughness": 1,
+    "doubleSided": true
+  }
+}

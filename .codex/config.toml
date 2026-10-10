@@ -1,0 +1,4 @@
+# Project-scoped development-agent settings. No MCP configuration belongs here.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3

@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+.next/
+dist/
+build/
+coverage/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+*.log
+yuyang-site-3d-assets.zip

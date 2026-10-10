@@ -1,0 +1,488 @@
+{
+  "coordinateSystem": "Washington Square origin; Y up; meters (matches yuyang-site-3d-assets).",
+  "buildings": {
+    "nyu-john-a-paulson-center": {
+      "name": "John A. Paulson Center",
+      "address": "181 Mercer Street, New York, NY",
+      "identityConfirmedBy": "User confirmation on 2026-10-09 that spoken 'Halcyon Center' means NYU's John A. Paulson Center.",
+      "file": "campus-assets/models/buildings/john-a-paulson-center.glb",
+      "placement": {
+        "position": [
+          -11.5632,
+          2.4857,
+          470.0666
+        ],
+        "rotationY": 0.00737722,
+        "scale": [
+          2.207593,
+          1.324196,
+          2.207593
+        ]
+      },
+      "footprintMap": [
+        [
+          -65.075,
+          506.936
+        ],
+        [
+          -61.87,
+          501.857
+        ],
+        [
+          -11.089,
+          421.419
+        ],
+        [
+          -4.756,
+          411.397
+        ],
+        [
+          39.503,
+          439.33
+        ],
+        [
+          26.87,
+          459.352
+        ],
+        [
+          -20.807,
+          534.88
+        ]
+      ],
+      "replaces": {
+        "description": "Pre-Paulson Coles Sports Center geometry still present in the exported CityGML tiles.",
+        "datasetFootprintIndex": 11179,
+        "tile": "tile--1_2.glb",
+        "footprint": [
+          [
+            19.553,
+            449.208
+          ],
+          [
+            14.318,
+            457.31
+          ],
+          [
+            11.092,
+            462.302
+          ],
+          [
+            10.343,
+            463.461
+          ],
+          [
+            9.656,
+            464.525
+          ],
+          [
+            -0.955,
+            480.947
+          ],
+          [
+            -1.904,
+            482.415
+          ],
+          [
+            -10.314,
+            495.431
+          ],
+          [
+            -14.595,
+            502.056
+          ],
+          [
+            -17.895,
+            507.162
+          ],
+          [
+            -23.308,
+            515.539
+          ],
+          [
+            -26.396,
+            520.318
+          ],
+          [
+            -32.228,
+            529.345
+          ],
+          [
+            -37.263,
+            526.092
+          ],
+          [
+            -57.954,
+            512.722
+          ],
+          [
+            -73.2,
+            502.87
+          ],
+          [
+            -63.194,
+            487.385
+          ],
+          [
+            -53.471,
+            472.336
+          ],
+          [
+            -11,
+            406.609
+          ],
+          [
+            29.972,
+            433.084
+          ],
+          [
+            27.731,
+            436.553
+          ]
+        ],
+        "datasetHeightRange": [
+          2.486,
+          14.76
+        ],
+        "runtimeRule": "Drop tile triangles whose plan centroid lies inside this footprint."
+      },
+      "source": {
+        "file": "/Users/yuyang/Downloads/scene.glb",
+        "sha256": "f94c7ff83cc8dce02ecd6f7ee33c134836daba880d7198d7e103626cdf56c89f",
+        "unchangedAfterExtraction": true,
+        "generator": "glTF-Transform v4.5.1",
+        "meshNode": 10,
+        "excluded": "49 neighboring building meshes and 100 Line2 street-outline meshes (no material, instanced line attributes).",
+        "connectedComponents": 1,
+        "triangles": 32,
+        "neighborVerticesInsideTargetFootprint": 0,
+        "sceneHeightUnits": 60.4,
+        "localOriginInScene": [
+          1.5901,
+          0,
+          8.7506
+        ]
+      },
+      "derivation": {
+        "method": "2D similarity (Umeyama) between Silver Towers roof centroids in the scene and their CityGML footprint centroids; vertical scale by least squares of scene vs CityGML heights over other uniquely matched buildings; base set to the replaced building's CityGML ground elevation.",
+        "towerPairs": [
+          {
+            "sceneMeshNode": 12,
+            "datasetFootprint": 11190
+          },
+          {
+            "sceneMeshNode": 13,
+            "datasetFootprint": 11189
+          },
+          {
+            "sceneMeshNode": 14,
+            "datasetFootprint": 11195
+          }
+        ],
+        "horizontalScale": 2.207593,
+        "planRotationDegrees": -0.42268,
+        "translation": [
+          -15.2158,
+          450.7752
+        ],
+        "towerResidualsM": [
+          0.388,
+          0.572,
+          0.383
+        ],
+        "verticalScale": 1.324196,
+        "verticalHeightPairs": {
+          "columns": [
+            "sceneMeshNode",
+            "datasetFootprint",
+            "sceneHeight",
+            "datasetHeightM"
+          ],
+          "rows": [
+            [
+              0,
+              12136,
+              31.2,
+              37.05
+            ],
+            [
+              1,
+              10914,
+              20.7,
+              24.34
+            ],
+            [
+              2,
+              11295,
+              20.9,
+              40.35
+            ],
+            [
+              3,
+              10868,
+              34,
+              56.59
+            ],
+            [
+              4,
+              11176,
+              23.5,
+              50.6
+            ],
+            [
+              5,
+              10990,
+              44.7,
+              59.41
+            ],
+            [
+              6,
+              11253,
+              29,
+              52.8
+            ],
+            [
+              7,
+              11178,
+              5.2,
+              40.35
+            ],
+            [
+              8,
+              11516,
+              22.1,
+              24.34
+            ],
+            [
+              9,
+              11553,
+              46,
+              60.39
+            ],
+            [
+              11,
+              11266,
+              18.6,
+              17.9
+            ],
+            [
+              12,
+              11190,
+              66,
+              88.81
+            ],
+            [
+              13,
+              11189,
+              66,
+              88.99
+            ],
+            [
+              14,
+              11195,
+              66,
+              91.87
+            ],
+            [
+              15,
+              11187,
+              29.5,
+              33.87
+            ],
+            [
+              16,
+              11484,
+              41.3,
+              44.25
+            ],
+            [
+              17,
+              10670,
+              29.5,
+              32.69
+            ],
+            [
+              18,
+              11512,
+              19.8,
+              23.77
+            ],
+            [
+              20,
+              10325,
+              29.6,
+              52.68
+            ],
+            [
+              21,
+              10920,
+              22.4,
+              47.83
+            ],
+            [
+              22,
+              12189,
+              25.1,
+              53.51
+            ],
+            [
+              23,
+              11474,
+              26.7,
+              38.04
+            ],
+            [
+              24,
+              11240,
+              5.1,
+              5.49
+            ],
+            [
+              25,
+              11489,
+              52.5,
+              56.61
+            ],
+            [
+              26,
+              11498,
+              45.7,
+              54.01
+            ],
+            [
+              27,
+              10988,
+              48,
+              54.11
+            ],
+            [
+              28,
+              12626,
+              26.3,
+              30.34
+            ],
+            [
+              29,
+              13777,
+              23.3,
+              31.86
+            ],
+            [
+              30,
+              13897,
+              28.8,
+              27.04
+            ],
+            [
+              31,
+              13772,
+              28.8,
+              30.91
+            ],
+            [
+              32,
+              13378,
+              29.5,
+              34.15
+            ],
+            [
+              33,
+              12633,
+              14.4,
+              31.48
+            ],
+            [
+              34,
+              13373,
+              15.2,
+              16.77
+            ],
+            [
+              35,
+              12665,
+              11,
+              27.02
+            ],
+            [
+              36,
+              12646,
+              23.1,
+              24.94
+            ],
+            [
+              37,
+              13403,
+              17.3,
+              28.71
+            ],
+            [
+              38,
+              13098,
+              29.5,
+              32.63
+            ],
+            [
+              39,
+              13091,
+              11.6,
+              17.2
+            ],
+            [
+              40,
+              13780,
+              25.1,
+              28.1
+            ],
+            [
+              41,
+              13095,
+              28.6,
+              42.09
+            ],
+            [
+              43,
+              13793,
+              23.3,
+              38.19
+            ],
+            [
+              44,
+              13097,
+              29.8,
+              34.14
+            ],
+            [
+              45,
+              13092,
+              54.4,
+              59.2
+            ],
+            [
+              47,
+              10803,
+              37.4,
+              54.98
+            ],
+            [
+              48,
+              10808,
+              37.4,
+              53.49
+            ],
+            [
+              49,
+              11177,
+              37.4,
+              53.69
+            ]
+          ]
+        },
+        "resultingHeightM": 79.98,
+        "referenceHeights": "CTBUH lists the Faculty Tower at 91 m (23 floors) and the Student Tower at 69 m (16 floors); the source scene encodes a single flat-roof prism, so the extracted massing cannot represent both towers.",
+        "groundY": 2.486
+      },
+      "footprintOverlapWithOtherDatasetBuildings": [],
+      "footprintOverlapWithReplacedBuildingM2": 4559,
+      "footprintAreaM2": 5915
+    }
+  }
+}

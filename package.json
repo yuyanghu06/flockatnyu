@@ -1,0 +1,23 @@
+{
+  "name": "nyu-club-campus-map",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local preview of the NYU Washington Square campus map.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "meshoptimizer": "^1.3.0",
+    "playwright-core": "^1.64.0",
+    "vite": "^8.3.4"
+  }
+}
