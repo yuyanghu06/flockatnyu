@@ -21,3 +21,19 @@ M5 tracks reauthorized Courant/Stern window details with unchanged colors in m5-
 M6 tracks attributed streets, sidewalks and mapped park paths/surfaces; the user's authorization supersedes the earlier road exclusion.
 
 M7 tracks the user-reported asphalt flicker during zoom and pan.
+
+M8: m8-gcasl tracks the dedicated Global Center model and outstanding visual acceptance.
+
+M9: m9-presentation tracks map-only styling, effects, atmosphere and camera constraints.
+
+M10: m10-park-vegetation tracks deterministic plantings over actual mapped park coverage.
+
+M9/M10 resumed after a blocked human-requested checkpoint. See rolling snapshot for current camera research and vegetation integration/verification.
+
+M11: m11-atmosphere-navigation tracks shared sky/fog blend, reverse focus exit, screenshot-guided default and neutral Union Square context restoration.
+
+M12 memory and frame workload tracking lives in m12-memory/.
+
+M13 loading screen tracking lives in m13-loading/.
+
+M14: m14-supabase-setup tracks preparation versus authenticated connection; not complete until scoped connectivity verified.

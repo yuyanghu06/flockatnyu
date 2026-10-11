@@ -1,0 +1,4082 @@
+{
+  "seed": 104729,
+  "trees": 72,
+  "shrubs": 117,
+  "sourceParkParts": 53,
+  "groundParkParts": 52,
+  "sourceSurfaceParts": 564,
+  "parksWithAdditions": 21,
+  "meshCount": 4,
+  "triangles": 17136,
+  "source": "OpenStreetMap eligible cover; deterministic illustrative planting, not surveyed tree inventory",
+  "coordinateSpace": "Washington Square meters; Y up; identity transform",
+  "attribution": "© OpenStreetMap contributors",
+  "attributionUrl": "https://www.openstreetmap.org/copyright",
+  "extent": {
+    "minX": -960,
+    "maxX": 960,
+    "minZ": -960,
+    "maxZ": 1152
+  },
+  "sourceHashes": {
+    "campus-assets/data/streets-parks.json": "1d798acc97f8d326df2e32c78cf66e59a7176b7313277c67768675291378f6c7",
+    "src/gould-plaza.js": "7141d496de0d87db32991e32887a934fe89db054661863133189da2b8843173a",
+    "yuyang-site-3d-assets/models/environment/washington-square-trees.glb": "a21462774aee209de3ed454e870efd0e3736837abe51fde04d9d0d362b40da1a",
+    "yuyang-site-3d-assets/models/environment/courant-garden.glb": "8fef0fea5cfb36bec59315a4d7c771bc0f85ff2ace05c18ca3bd4d658d8b75b5",
+    "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb": "e7b41396e8fb2a18f7de509e70971dfeb3f30cf3eaaf255f2dde8eb491aecfc3"
+  },
+  "existingExclusionCount": 246,
+  "existingExclusions": [
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -125.41796380555743,
+      "maxX": -124.28117865049725,
+      "minZ": -16.892156067300874,
+      "maxZ": -15.783872457225726
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 32.795959957996374,
+      "maxX": 33.89218854053878,
+      "minZ": -24.504063771600443,
+      "maxZ": -23.43531989724596
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 23.68171163006007,
+      "maxX": 25.29205851154149,
+      "minZ": 69.1155269695308,
+      "maxZ": 70.68549913827101
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 84.39892715796977,
+      "maxX": 86.00861983910055,
+      "minZ": 36.50523736712904,
+      "maxZ": 38.07457173766869
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -4.363275496570672,
+      "maxX": -2.792242558391486,
+      "minZ": 38.845629694161886,
+      "maxZ": 40.37727360112339
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -78.29267434525067,
+      "maxX": -76.76457663131183,
+      "minZ": -64.23434280238959,
+      "maxZ": -62.744557645173956
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 43.78370311501237,
+      "maxX": 45.041339609597,
+      "minZ": -13.26630089299988,
+      "maxZ": -12.040195935368956
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 24.675833474596256,
+      "maxX": 25.88241313795257,
+      "minZ": 53.20649154143523,
+      "maxZ": 54.38281976774552
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -97.74511003284579,
+      "maxX": -96.15340376109953,
+      "minZ": 3.270091020886781,
+      "maxZ": 4.821889938367207
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -28.48565902282374,
+      "maxX": -27.24422607849462,
+      "minZ": -61.95093237142248,
+      "maxZ": -60.74062470767183
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -83.65050842709219,
+      "maxX": -82.4612316852125,
+      "minZ": -17.911568070161465,
+      "maxZ": -16.75210894545195
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -75.07626901635749,
+      "maxX": -73.9055882834472,
+      "minZ": 31.039567608106353,
+      "maxZ": 32.18089696408882
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -126.90415977942949,
+      "maxX": -125.29055762779707,
+      "minZ": -59.497396869239935,
+      "maxZ": -57.924251046675465
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 49.30151864673121,
+      "maxX": 50.519503386960196,
+      "minZ": -36.72684083564623,
+      "maxZ": -35.5393934812286
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -49.63562208620823,
+      "maxX": -48.481290755588645,
+      "minZ": -6.780028176674207,
+      "maxZ": -5.6546383097963115
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -19.217847841917656,
+      "maxX": -18.046495419801094,
+      "minZ": 42.220834923508804,
+      "maxZ": 43.36281912806582
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -82.18253163715453,
+      "maxX": -80.75943918804079,
+      "minZ": -79.12380753920053,
+      "maxZ": -77.73639494856815
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -13.602046658107184,
+      "maxX": -12.411415408543206,
+      "minZ": -52.2296358871514,
+      "maxZ": -51.06885621505478
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -55.986602527559775,
+      "maxX": -54.373756664334756,
+      "minZ": -87.60166166924958,
+      "maxZ": -86.0292531733846
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -67.34238557732385,
+      "maxX": -65.74999113166052,
+      "minZ": -22.3831147844854,
+      "maxZ": -20.830644947025263
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -83.91391641758716,
+      "maxX": -82.30457418299878,
+      "minZ": -33.296148706364306,
+      "maxZ": -31.72715599595051
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 76.10953180100189,
+      "maxX": 77.66762884352936,
+      "minZ": 10.844812047435028,
+      "maxZ": 12.363844388289579
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 60.63148305779066,
+      "maxX": 62.20958902472887,
+      "minZ": 32.245964063429255,
+      "maxZ": 33.784503663752275
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 45.9600615607111,
+      "maxX": 47.47883461848812,
+      "minZ": 12.542535493150808,
+      "maxZ": 14.023229782538237
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -6.986464987614632,
+      "maxX": -5.885128487727165,
+      "minZ": -73.51691249452293,
+      "maxZ": -72.44318876883071
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -21.50662317804902,
+      "maxX": -19.88809117741973,
+      "minZ": -43.340231900467444,
+      "maxZ": -41.76227983037322
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -49.893453903099335,
+      "maxX": -48.729295425513946,
+      "minZ": 15.15387990443,
+      "maxZ": 16.28885053146078
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -56.6713113587891,
+      "maxX": -55.07615568222653,
+      "minZ": -59.61771090126001,
+      "maxZ": -58.06254906264587
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 58.20766468911097,
+      "maxX": 59.48159770102575,
+      "minZ": 8.63439308929405,
+      "maxZ": 9.876385977003864
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -108.82148472890893,
+      "maxX": -107.2716854371067,
+      "minZ": -26.432215669626856,
+      "maxZ": -24.9212730377981
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 62.226617361476386,
+      "maxX": 63.48235175473455,
+      "minZ": 53.953164931692314,
+      "maxZ": 55.177415477594295
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -78.39089954417958,
+      "maxX": -77.10501110035167,
+      "minZ": -8.556607931036183,
+      "maxZ": -7.302959358712883
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -119.81590870992096,
+      "maxX": -118.5715577207431,
+      "minZ": -84.46759290575778,
+      "maxZ": -83.2544403585523
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -54.30953445253837,
+      "maxX": -52.981328584571,
+      "minZ": -42.6860538901755,
+      "maxZ": -41.391148878686366
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -26.98068255016169,
+      "maxX": -25.36870175769964,
+      "minZ": 49.647967484713774,
+      "maxZ": 51.219532598921376
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -63.84811844693263,
+      "maxX": -62.49744734896581,
+      "minZ": 18.726523986355957,
+      "maxZ": 20.043330978262546
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -1.7296129479951432,
+      "maxX": -0.16136550754837486,
+      "minZ": 65.47710477597505,
+      "maxZ": 67.00603302336887
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -4.873247657648662,
+      "maxX": -3.513595070012471,
+      "minZ": -45.02272038536074,
+      "maxZ": -43.6971570882277
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -60.78008034796407,
+      "maxX": -59.365656346371864,
+      "minZ": -6.216144200819542,
+      "maxZ": -4.837182721877127
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 22.715458778060572,
+      "maxX": 24.33506688722263,
+      "minZ": -18.21531142804369,
+      "maxZ": -16.636310229673796
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 119.02557062916219,
+      "maxX": 120.23466801829875,
+      "minZ": 25.72371501797447,
+      "maxZ": 26.90249784549458
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -5.486482205374202,
+      "maxX": -3.969426569955388,
+      "minZ": 23.384961904650993,
+      "maxZ": 24.86398183099567
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -95.4436026796662,
+      "maxX": -94.11729514748224,
+      "minZ": -12.230445739568964,
+      "maxZ": -10.937391468675614
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -109.68553990200033,
+      "maxX": -108.4374154202653,
+      "minZ": -11.269412052565784,
+      "maxZ": -10.052580622032835
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -109.66537788886066,
+      "maxX": -108.23240348320965,
+      "minZ": -47.7628150656046,
+      "maxZ": -46.36576827943671
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -87.07275391210675,
+      "maxX": -85.67553710351825,
+      "minZ": -103.10434387081872,
+      "maxZ": -101.74215816511415
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 23.536170701544552,
+      "maxX": 24.883137007195682,
+      "minZ": 85.18987144747179,
+      "maxZ": 86.50306653383585
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -98.79311577871687,
+      "maxX": -97.19312079354876,
+      "minZ": -76.5301261363295,
+      "maxZ": -74.97024632054286
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 40.560168648477756,
+      "maxX": 42.14566478658084,
+      "minZ": 60.499762883296796,
+      "maxZ": 62.045507367973926
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -114.3387462682685,
+      "maxX": -112.85247687626276,
+      "minZ": 4.800876818031924,
+      "maxZ": 6.249882375488511
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -111.66509171805481,
+      "maxX": -110.17623213448425,
+      "minZ": -130.49966313960851,
+      "maxZ": -129.048132332024
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -134.73789230393754,
+      "maxX": -133.43242629957808,
+      "minZ": -67.91203864985305,
+      "maxZ": -66.63930336675965
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 29.524076441607253,
+      "maxX": 30.912485142865403,
+      "minZ": -4.8761046588053745,
+      "maxZ": -3.522506223040537
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -83.8119475018838,
+      "maxX": -82.41861280085058,
+      "minZ": 7.834780178632471,
+      "maxZ": 9.193181109213171
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -26.14437900741394,
+      "maxX": -24.88486827652161,
+      "minZ": -81.43841154170187,
+      "maxZ": -80.21047933872737
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 59.07134590413247,
+      "maxX": 60.36195792887534,
+      "minZ": -4.100335944769242,
+      "maxZ": -2.8420822214324772
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -34.80042872290424,
+      "maxX": -33.57629552025982,
+      "minZ": -3.487558487170361,
+      "maxZ": -2.294116824952482
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 64.7254034529924,
+      "maxX": 66.08958372962479,
+      "minZ": 71.00172635654599,
+      "maxZ": 72.33170382418757
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -95.9943548507805,
+      "maxX": -94.87866150664138,
+      "minZ": -65.80835928154924,
+      "maxZ": -64.72063866725792
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 93.10450301722662,
+      "maxX": 94.25871719761713,
+      "minZ": 13.32875817838378,
+      "maxZ": 14.45403383223011
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -64.38046954076421,
+      "maxX": -62.869675417731884,
+      "minZ": 6.5984002215392366,
+      "maxZ": 8.071315624508202
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -161.9391749338571,
+      "maxX": -160.38754625754916,
+      "minZ": -42.90847334117689,
+      "maxZ": -41.3957471912795
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -58.683135374560706,
+      "maxX": -57.27742065571273,
+      "minZ": -71.70863518098366,
+      "maxZ": -70.33816462513079
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -102.90839444347877,
+      "maxX": -101.55367220691186,
+      "minZ": -87.93045732673073,
+      "maxZ": -86.60970076661187
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -81.37112292485216,
+      "maxX": -80.25309887690565,
+      "minZ": -90.41672077458011,
+      "maxZ": -89.32672789202579
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -39.39796386116167,
+      "maxX": -38.103348394697704,
+      "minZ": -60.064957228775995,
+      "maxZ": -58.80280043824695
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -68.943722354866,
+      "maxX": -67.7617219810715,
+      "minZ": -83.95493401658659,
+      "maxZ": -82.8025688264291
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 4.578119360740537,
+      "maxX": 6.161056435768252,
+      "minZ": 18.87058379127413,
+      "maxZ": 20.413833373857443
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -11.716687361563736,
+      "maxX": -10.167887528572983,
+      "minZ": 49.496043467306805,
+      "maxZ": 51.00601169881483
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -94.13576792109139,
+      "maxX": -92.83031179082268,
+      "minZ": -27.99766641155567,
+      "maxZ": -26.72494075498922
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 42.18298090046282,
+      "maxX": 43.51083623820905,
+      "minZ": 89.65380305595357,
+      "maxZ": 90.94836632573612
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -141.42992529238185,
+      "maxX": -140.23001733457127,
+      "minZ": -52.13794840254489,
+      "maxZ": -50.96812460838227
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -159.10644463452402,
+      "maxX": -157.60736151781973,
+      "minZ": -55.82101462484718,
+      "maxZ": -54.359516609159414
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -43.65348163446904,
+      "maxX": -42.161970941214555,
+      "minZ": -79.51998451103438,
+      "maxZ": -78.06586906254554
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -121.34883891558775,
+      "maxX": -120.16045368695131,
+      "minZ": -111.51636357232424,
+      "maxZ": -110.35777360878494
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -33.27879268902579,
+      "maxX": -32.09285037738046,
+      "minZ": -90.20197946484403,
+      "maxZ": -89.04577116933582
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -35.06632254943388,
+      "maxX": -33.55464913025362,
+      "minZ": -37.99464838166972,
+      "maxZ": -36.52087572831812
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 14.372245748985986,
+      "maxX": 15.539997140418311,
+      "minZ": -4.506350799488999,
+      "maxZ": -3.3678773403608346
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 103.16831873992122,
+      "maxX": 104.5771951760944,
+      "minZ": -2.665258639290016,
+      "maxZ": -1.2917056368766566
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 6.131637737174444,
+      "maxX": 7.484034374336787,
+      "minZ": 50.23242527572887,
+      "maxZ": 51.550914544009686
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 32.68963655501414,
+      "maxX": 34.09828153580617,
+      "minZ": 10.756454849861115,
+      "maxZ": 12.129782199956395
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 77.4007637043512,
+      "maxX": 78.56307296557067,
+      "minZ": 0.5077644564669157,
+      "maxZ": 1.6409322307944336
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 18.892391736767664,
+      "maxX": 20.34476036284171,
+      "minZ": 35.11288989962014,
+      "maxZ": 36.52884465316373
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 73.83013602330757,
+      "maxX": 74.9895356075518,
+      "minZ": 63.4988608644441,
+      "maxZ": 64.62919191339047
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -130.9795958844747,
+      "maxX": -129.44603277763468,
+      "minZ": -46.91473226843715,
+      "maxZ": -45.41961874697603
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 41.122204828336415,
+      "maxX": 42.5261868952964,
+      "minZ": 72.71803059793993,
+      "maxZ": 74.08681194305595
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -92.69739686618887,
+      "maxX": -91.2503722988502,
+      "minZ": 15.521742740548177,
+      "maxZ": 16.932487421914686
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -66.37446306769081,
+      "maxX": -64.92973615105919,
+      "minZ": -55.02444061078356,
+      "maxZ": -53.615935973289
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -128.15884707621188,
+      "maxX": -121.5402953798428,
+      "minZ": -19.807194701280537,
+      "maxZ": -12.926569947156963
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 29.695369847052376,
+      "maxX": 36.99277865148278,
+      "minZ": -27.317621314785157,
+      "maxZ": -20.67743865225586
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 20.36292966659954,
+      "maxX": 28.61084047500202,
+      "minZ": 65.80993956806438,
+      "maxZ": 73.90929871318562
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 81.8277567575854,
+      "maxX": 88.57979023948491,
+      "minZ": 33.380925703615134,
+      "maxZ": 41.1171288007794
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -8.529439918257992,
+      "maxX": 1.373921863295834,
+      "minZ": 34.80961108555317,
+      "maxZ": 44.333501097064016
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -80.89664101515129,
+      "maxX": -74.16060996141121,
+      "minZ": -67.54036566819539,
+      "maxZ": -59.51614525709758
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 39.036834043135,
+      "maxX": 49.78820868147437,
+      "minZ": -18.003944165968107,
+      "maxZ": -7.366426698900057
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 21.581768658332237,
+      "maxX": 28.97647795421659,
+      "minZ": 49.79816423342521,
+      "maxZ": 57.7298661620826
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -100.78232035661759,
+      "maxX": -93.11619343732772,
+      "minZ": -0.6226581927455754,
+      "maxZ": 8.633798062435517
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -32.94294540991427,
+      "maxX": -22.786939691404086,
+      "minZ": -66.27199235498176,
+      "maxZ": -56.48261579931511
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -86.86862683964341,
+      "maxX": -79.24311327266128,
+      "minZ": -20.902197153477374,
+      "maxZ": -13.821881978602704
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -79.30221378340872,
+      "maxX": -69.67964351639597,
+      "minZ": 26.92608865596992,
+      "maxZ": 36.234918271520314
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -130.47681776827233,
+      "maxX": -121.71789963895424,
+      "minZ": -63.333669961211285,
+      "maxZ": -54.169931113007465
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 46.88803791877638,
+      "maxX": 52.93298411491503,
+      "minZ": -39.07541927479832,
+      "maxZ": -33.252675207623554
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -51.81270788461984,
+      "maxX": -46.304204957177035,
+      "minZ": -9.099910222681245,
+      "maxZ": -3.393383539525786
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -23.280980872263342,
+      "maxX": -13.983362389455408,
+      "minZ": 38.60049381399358,
+      "maxZ": 46.92366847848689
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -87.4638510144544,
+      "maxX": -75.4781198107409,
+      "minZ": -83.45099703399711,
+      "maxZ": -73.48148282440133
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -17.163726483449807,
+      "maxX": -8.849735583200584,
+      "minZ": -55.846990631440576,
+      "maxZ": -47.511972381254736
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -58.33581312111218,
+      "maxX": -52.02454607078235,
+      "minZ": -89.71224827084114,
+      "maxZ": -84.0005813190026
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -70.56194298463322,
+      "maxX": -62.530433724351155,
+      "minZ": -26.144639494714,
+      "maxZ": -17.14999627799108
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -88.31760824724842,
+      "maxX": -77.90088235333752,
+      "minZ": -36.98027351332286,
+      "maxZ": -28.124767990583393
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 70.86835990842309,
+      "maxX": 82.90880073610816,
+      "minZ": 6.57978069456567,
+      "maxZ": 16.549741629042728
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 56.63174844198198,
+      "maxX": 66.20932364053755,
+      "minZ": 28.90671691821126,
+      "maxZ": 37.04360046460124
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 43.60025514467037,
+      "maxX": 49.83864103452885,
+      "minZ": 10.173667144674141,
+      "maxZ": 16.31496124277703
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -9.256110453569278,
+      "maxX": -3.615483021772519,
+      "minZ": -75.8613187364648,
+      "maxZ": -70.15471825083989
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -25.142243842208984,
+      "maxX": -16.252470513259766,
+      "minZ": -46.61278479284363,
+      "maxZ": -38.57193047815247
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -52.64757570612835,
+      "maxX": -45.97517362248493,
+      "minZ": 11.55860518294304,
+      "maxZ": 19.824998866739577
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -59.95485954328569,
+      "maxX": -51.79260749772993,
+      "minZ": -62.706539565739945,
+      "maxZ": -55.05473667937724
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 55.74091648526226,
+      "maxX": 61.94834590487446,
+      "minZ": 5.521982171792672,
+      "maxZ": 12.924095175009086
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -112.03281310465329,
+      "maxX": -104.06035706136234,
+      "minZ": -28.929703125113917,
+      "maxZ": -22.50249826038413
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 59.40095200823069,
+      "maxX": 66.30801710798025,
+      "minZ": 51.51839637020751,
+      "maxZ": 57.54840660830811
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -81.54294183963714,
+      "maxX": -73.95296880489411,
+      "minZ": -11.066060196687602,
+      "maxZ": -4.858816016386129
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -124.30660798577856,
+      "maxX": -114.08085844488551,
+      "minZ": -89.08314981308138,
+      "maxZ": -78.70208273086394
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -59.24223299121155,
+      "maxX": -48.04863004589782,
+      "minZ": -47.7899074893445,
+      "maxZ": -36.35475346036253
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -31.61874304267718,
+      "maxX": -20.730641265184147,
+      "minZ": 45.409223219443334,
+      "maxZ": 55.376406053017604
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -67.4432005246577,
+      "maxX": -58.90236527124074,
+      "minZ": 14.821129391646934,
+      "maxZ": 23.88012640669291
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -5.1216958028233535,
+      "maxX": 3.2307173472798354,
+      "minZ": 62.571398652596486,
+      "maxZ": 69.8320895065832
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -9.323185658344073,
+      "maxX": 0.9363429306829403,
+      "minZ": -49.70039083536835,
+      "maxZ": -39.088541964924616
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -64.87770773917083,
+      "maxX": -55.26802895516511,
+      "minZ": -10.0349891814393,
+      "maxZ": -1.0901748505431215
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 20.561644027026546,
+      "maxX": 26.488881638256657,
+      "minZ": -20.68238277704674,
+      "maxZ": -14.251497075248182
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 114.65126152890736,
+      "maxX": 124.60897711855358,
+      "minZ": 21.19092265289538,
+      "maxZ": 31.373881424253057
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -7.2612415022492485,
+      "maxX": -2.1946672730803414,
+      "minZ": 21.51044246584624,
+      "maxZ": 26.66145160764009
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -99.36492977207507,
+      "maxX": -90.19596805507337,
+      "minZ": -17.01264016000141,
+      "maxZ": -6.2225588146079645
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -112.6581420359864,
+      "maxX": -105.46481328627922,
+      "minZ": -14.323435567803642,
+      "maxZ": -7.061948038153389
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -112.47673499126913,
+      "maxX": -105.42104638080119,
+      "minZ": -51.383235772178125,
+      "maxZ": -42.818126837685156
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -91.46485070069929,
+      "maxX": -81.28344031492571,
+      "minZ": -107.30770196364637,
+      "maxZ": -97.60976324631457
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 18.71262941033723,
+      "maxX": 29.706678298403006,
+      "minZ": 79.85210068976386,
+      "maxZ": 91.7724262877752
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -100.76805594665393,
+      "maxX": -95.2181806256117,
+      "minZ": -79.01384368194542,
+      "maxZ": -72.56779083953896
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 36.561436061253914,
+      "maxX": 46.14439737380468,
+      "minZ": 56.2351401180112,
+      "maxZ": 66.22960444985989
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -117.05047354410655,
+      "maxX": -110.1407496004247,
+      "minZ": 1.5951230179685183,
+      "maxZ": 9.3801501143557
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -115.38044251558767,
+      "maxX": -106.46088133695139,
+      "minZ": -134.1647418797764,
+      "maxZ": -125.45867120616111
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -138.55017204627728,
+      "maxX": -129.62014655723834,
+      "minZ": -72.15036873284674,
+      "maxZ": -62.46727653082513
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 25.29931443450431,
+      "maxX": 35.137247149968346,
+      "minZ": -8.381020199171928,
+      "maxZ": -0.08810650218305227
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -87.82818610434634,
+      "maxX": -78.40237419838803,
+      "minZ": 2.7769541397709645,
+      "maxZ": 14.180241142211457
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -31.120996464022824,
+      "maxX": -19.908250819912723,
+      "minZ": -86.0285291064751,
+      "maxZ": -75.68433100094677
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 53.59463639194246,
+      "maxX": 65.83866744106535,
+      "minZ": -8.23818512871901,
+      "maxZ": 1.2302181334797524
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -37.502749890481255,
+      "maxX": -30.873974352682808,
+      "minZ": -6.04520919210654,
+      "maxZ": 0.20136144048910865
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 60.48373642691769,
+      "maxX": 70.3312507556995,
+      "minZ": 66.16625227528829,
+      "maxZ": 77.09789262217265
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -100.43449400958815,
+      "maxX": -90.43852234783373,
+      "minZ": -69.92837234681895,
+      "maxZ": -60.65729049497793
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 89.94355242006506,
+      "maxX": 97.41966779477869,
+      "minZ": 10.630001500922504,
+      "maxZ": 17.09416918389195
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -68.77944378784525,
+      "maxX": -58.47070117065084,
+      "minZ": 2.6980948325691543,
+      "maxZ": 11.894889366954772
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -164.51329647259163,
+      "maxX": -157.81342471881462,
+      "minZ": -46.20673127967629,
+      "maxZ": -38.176294843370584
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -62.43250680342584,
+      "maxX": -53.5280492268476,
+      "minZ": -75.44515947630202,
+      "maxZ": -66.6730351037761
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -107.23793361461685,
+      "maxX": -97.22413303577378,
+      "minZ": -91.81625764604252,
+      "maxZ": -82.7927053666528
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -86.13717119228409,
+      "maxX": -75.48705060947373,
+      "minZ": -94.80577490839937,
+      "maxZ": -84.99445702519438
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -41.72042839771893,
+      "maxX": -35.78088385814044,
+      "minZ": -62.259307903660726,
+      "maxZ": -56.67420192299943
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -71.33855331747517,
+      "maxX": -65.36689101846233,
+      "minZ": -86.55672332474765,
+      "maxZ": -80.26081207564297
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 1.8488379164905098,
+      "maxX": 8.89033788001828,
+      "minZ": 16.29251762577948,
+      "maxZ": 22.91150382807794
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -16.07608643749751,
+      "maxX": -5.80848845263921,
+      "minZ": 45.24208417769438,
+      "maxZ": 55.18130907181734
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -98.32715486941419,
+      "maxX": -88.63892484249988,
+      "minZ": -32.61535552517029,
+      "maxZ": -22.173554386939088
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 38.89034571910051,
+      "maxX": 46.803471419571366,
+      "minZ": 85.96725677717274,
+      "maxZ": 94.56747222673351
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -146.70687515178764,
+      "maxX": -134.95306747516548,
+      "minZ": -56.70151671187449,
+      "maxZ": -46.465498363809104
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -163.77899015450856,
+      "maxX": -152.9348159978352,
+      "minZ": -60.77100253093141,
+      "maxZ": -49.4856655598889
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -47.59676862777053,
+      "maxX": -38.218683947913064,
+      "minZ": -83.28320277109611,
+      "maxZ": -74.37840306386482
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -125.73272110565523,
+      "maxX": -115.77657149688383,
+      "minZ": -115.49314288102369,
+      "maxZ": -106.441351137531
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -36.14940710355978,
+      "maxX": -29.22223596284647,
+      "minZ": -93.58173639578948,
+      "maxZ": -85.72624700264802
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -38.6162792873198,
+      "maxX": -30.0046923923677,
+      "minZ": -41.532532188104256,
+      "maxZ": -33.05976822693481
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 11.758425155155749,
+      "maxX": 18.15381773424855,
+      "minZ": -6.975431253068905,
+      "maxZ": -0.958105753309269
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 100.17067528633564,
+      "maxX": 107.57483862967999,
+      "minZ": -5.906806843337847,
+      "maxZ": 1.8782872129057182
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 2.0579746159079377,
+      "maxX": 11.557697495603293,
+      "minZ": 46.75666042567849,
+      "maxZ": 54.95799258945823
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 30.237629773124354,
+      "maxX": 36.55028831769596,
+      "minZ": 8.350623172096476,
+      "maxZ": 14.464070278831258
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 72.2727284090505,
+      "maxX": 83.69110826087137,
+      "minZ": -3.8301860986682073,
+      "maxZ": 5.919850319478144
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 15.61436759606707,
+      "maxX": 23.622784503542306,
+      "minZ": 31.46746051815137,
+      "maxZ": 40.10050975772754
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 69.22001683862777,
+      "maxX": 79.5996547922316,
+      "minZ": 59.02676440204806,
+      "maxZ": 69.04240368877225
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -134.16693216901598,
+      "maxX": -126.2586964930934,
+      "minZ": -49.88132611309129,
+      "maxZ": -42.53091296161574
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": 37.95093522736528,
+      "maxX": 45.697456496267534,
+      "minZ": 69.70494936877503,
+      "maxZ": 77.02858639782653
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -95.71271206384571,
+      "maxX": -88.23505710119335,
+      "minZ": 13.003202411161197,
+      "maxZ": 19.377534893526303
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "minX": -69.12358839781717,
+      "maxX": -62.18061082093283,
+      "minZ": -57.43104272486718,
+      "maxZ": -51.28271002171485
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 153.18434886250594,
+      "maxX": 178.81565113749406,
+      "minZ": 220.3498741723926,
+      "maxZ": 251.6501258276074
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 165.3331493073934,
+      "maxX": 166.6668506926066,
+      "minZ": 220.88373727379678,
+      "maxZ": 222.18400001859663
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 170.21381811760926,
+      "maxX": 171.78618188239074,
+      "minZ": 225.2734586684766,
+      "maxZ": 226.80640003547668
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 163.2840129449739,
+      "maxX": 164.7159870550261,
+      "minZ": 229.83832844540973,
+      "maxZ": 231.23440001544952
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 169.17170127139772,
+      "maxX": 170.82829872860228,
+      "minZ": 233.73453684871518,
+      "maxZ": 235.34959999599457
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 161.32612983302482,
+      "maxX": 162.67387016697518,
+      "minZ": 238.37725030383655,
+      "maxZ": 239.69120001201628
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 167.24189601508363,
+      "maxX": 168.75810398491637,
+      "minZ": 242.29940654831753,
+      "maxZ": 243.7776000617981
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 159.36824672107574,
+      "maxX": 160.63175327892426,
+      "minZ": 246.91617216226334,
+      "maxZ": 248.14800000858307
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 162.10500013947487,
+      "maxX": 169.89499986052513,
+      "minZ": 217.60500013947487,
+      "maxZ": 225.39499986052513
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 165.8569600586319,
+      "maxX": 176.1430399413681,
+      "minZ": 221.4080000872612,
+      "maxZ": 230.5919999127388
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 159.81800017547607,
+      "maxX": 168.18199982452393,
+      "minZ": 226.31800017547607,
+      "maxZ": 234.68199982452393
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 164.58144028869629,
+      "maxX": 175.41855971130371,
+      "minZ": 229.66200032758712,
+      "maxZ": 239.33799967241288
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 158.0640001795292,
+      "maxX": 165.9359998204708,
+      "minZ": 235.0640001795292,
+      "maxZ": 242.9359998204708
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 163.04064023109436,
+      "maxX": 172.95935976890564,
+      "minZ": 238.57199992704392,
+      "maxZ": 247.42800007295608
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "minX": 156.3100001835823,
+      "maxX": 163.6899998164177,
+      "minZ": 243.8100001835823,
+      "maxZ": 251.1899998164177
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -22.652952609252928,
+      "maxX": 1.4625526092529295,
+      "minZ": -12.84807260925293,
+      "maxZ": 11.26743260925293
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -19.726313052368162,
+      "maxX": -1.464086947631836,
+      "minZ": -9.921433052368164,
+      "maxZ": 8.340793052368165
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -22.36028808135986,
+      "maxX": 1.169888081359863,
+      "minZ": -12.555408081359863,
+      "maxZ": 10.974768081359864
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -12.117052254867554,
+      "maxX": -9.073347745132446,
+      "minZ": -2.3121722548675536,
+      "maxZ": 0.7315322548675539
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -13.521838841629028,
+      "maxX": -7.668561158370972,
+      "minZ": -3.7169588416290282,
+      "maxZ": 2.1363188416290284
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -9.827709911060333,
+      "maxX": -2.938123641204834,
+      "minZ": -1.020320004172325,
+      "maxZ": -0.5603199958276747
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.13259270567894,
+      "maxX": -5.0863084175109865,
+      "minZ": -0.34140076333999614,
+      "maxZ": 4.70593587463379
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.825200004172325,
+      "maxX": -10.365199995827675,
+      "minZ": -0.022829911060333052,
+      "maxZ": 6.8667563587951665
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -16.104091582489012,
+      "maxX": -11.05780729432106,
+      "minZ": -0.34140076333999614,
+      "maxZ": 4.70593587463379
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -18.252276358795164,
+      "maxX": -11.362690088939667,
+      "minZ": -1.020320004172325,
+      "maxZ": -0.5603199958276747
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -16.104091582489012,
+      "maxX": -11.05780729432106,
+      "minZ": -6.2865758746337885,
+      "maxZ": -1.2392392366600036
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.825200004172325,
+      "maxX": -10.365199995827675,
+      "minZ": -8.447396358795165,
+      "maxZ": -1.5578100889396667
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.13259270567894,
+      "maxX": -5.0863084175109865,
+      "minZ": -6.2865758746337885,
+      "maxZ": -1.2392392366600036
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -11.096211848449707,
+      "maxX": -10.094188151550293,
+      "minZ": -1.3171150296401977,
+      "maxZ": -0.26352497035980205
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "minX": -10.851985273551941,
+      "maxX": -10.33841472644806,
+      "minZ": -1.0127025603723525,
+      "maxZ": -0.5679374396276472
+    },
+    {
+      "source": "src/gould-plaza.js:createGouldPlaza",
+      "minX": 78.45346069335938,
+      "maxX": 148.7293701171875,
+      "minZ": 171.71893310546875,
+      "maxZ": 258.1990051269531
+    }
+  ],
+  "minimumCrownGap": 1.3359952619579079,
+  "parks": [
+    {
+      "id": "relation/20812866:2",
+      "name": "Hudson River Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "Outside loaded map extent"
+    },
+    {
+      "id": "relation/4099553:0",
+      "name": "Sara D. Roosevelt Park",
+      "trees": 4,
+      "shrubs": 12,
+      "eligibleArea": 2063.19,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "relation/7095444:0",
+      "name": "Union Square Park",
+      "trees": 14,
+      "shrubs": 22,
+      "eligibleArea": 7661.88,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "relation/7095444:1",
+      "name": "Union Square Park",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 751.7,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "relation/7141751:1",
+      "name": "The High Line",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "Elevated or roof park; ground planting omitted"
+    },
+    {
+      "id": "way/108153676",
+      "name": "Duarte Square",
+      "trees": 0,
+      "shrubs": 1,
+      "eligibleArea": 157.72,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/1083911850",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/111563947",
+      "name": "Peretz Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/1221100069",
+      "name": "Grand Canal Court",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/160903868",
+      "name": "McKinley Playground",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/171562481",
+      "name": "Father Demo Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/197064614",
+      "name": "James J Walker Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/22899302",
+      "name": "Washington Square Park",
+      "trees": 28,
+      "shrubs": 22,
+      "eligibleArea": 23240.58,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/22901074",
+      "name": "Gramercy Park",
+      "trees": 5,
+      "shrubs": 13,
+      "eligibleArea": 2331.55,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/22961817",
+      "name": "Jackson Square Park",
+      "trees": 1,
+      "shrubs": 2,
+      "eligibleArea": 312.12,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/22961821",
+      "name": "Corporal John A. Seravalli Playground",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/239977366",
+      "name": "Vesuvio Playground",
+      "trees": 1,
+      "shrubs": 0,
+      "eligibleArea": 35.04,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/239988106",
+      "name": "Spring Street Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 21.78,
+      "reason": "Eligible cover too narrow, occupied by existing geometry, or spacing constrained"
+    },
+    {
+      "id": "way/239988114",
+      "name": "Minetta Triangle",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/239988118",
+      "name": "Father Fagan Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/239988120",
+      "name": "Jefferson Market Garden",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 384.36,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/244977216",
+      "name": "William E. Passannante Ballfield",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/244978444",
+      "name": "Winston Churchill Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/249665058",
+      "name": "Playground of the Americas",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/270791455",
+      "name": "Freeman Plaza West",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 724.05,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/30657456",
+      "name": "Christopher Park",
+      "trees": 1,
+      "shrubs": 2,
+      "eligibleArea": 275.62,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/30657462",
+      "name": "Sheridan Square Garden",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/324750157",
+      "name": "First Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/329041506",
+      "name": "Freeman Plaza East",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 731.25,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/329041537",
+      "name": "Freeman Plaza North",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 491.94,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/36865288",
+      "name": "Desalvio Playground",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/440055119",
+      "name": "Minetta Green",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/440055120",
+      "name": "West Fourth Street Courts",
+      "trees": 1,
+      "shrubs": 1,
+      "eligibleArea": 117.48,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/44225581",
+      "name": "Petrosino Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/449139914",
+      "name": "Urban Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/453461400",
+      "name": "Elizabeth Street Garden",
+      "trees": 3,
+      "shrubs": 7,
+      "eligibleArea": 1192.76,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/462302471",
+      "name": "Manuel Plaza",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/471549306",
+      "name": "NYC AIDS Memorial Park at St. Vincent's Triangle",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 470.49,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/473565702",
+      "name": "Rapkin-Gayle Plaza",
+      "trees": 1,
+      "shrubs": 1,
+      "eligibleArea": 160.34,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/497484756",
+      "name": "Albert Capsouto Park",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 734.67,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/580123906",
+      "name": "Mulry Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/581666857",
+      "name": "Jane Street Garden",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/613509792",
+      "name": "Tribeca Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/672251427",
+      "name": "Abe Lebewohl Park",
+      "trees": 0,
+      "shrubs": 1,
+      "eligibleArea": 17.14,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/687661469",
+      "name": "First Street Green Cultural Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/86144190",
+      "name": "Abingdon Square",
+      "trees": 1,
+      "shrubs": 1,
+      "eligibleArea": 161.6,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/86144198",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/86256760",
+      "name": "Arthur Strickler Triangle",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/893841834",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/893841889",
+      "name": "Washington Commons",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/894035808",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/95833119",
+      "name": "Cooper Triangle",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 432.9,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/976724943",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    }
+  ],
+  "placements": [
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "tree",
+      "x": 444.69400246309067,
+      "z": 1127.2339653630984,
+      "y": 0.715,
+      "radius": 2.9663314325734973,
+      "height": 7.938066071481444,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "tree",
+      "x": 438.47844341517236,
+      "z": 1117.8460800078456,
+      "y": 0.715,
+      "radius": 2.5961112009827048,
+      "height": 6.190993963507935,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "tree",
+      "x": 455.4845424069038,
+      "z": 1094.0203564368069,
+      "y": 0.715,
+      "radius": 2.4833855126053095,
+      "height": 5.552968093077652,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "tree",
+      "x": 434.8131201565887,
+      "z": 1127.1785840746375,
+      "y": 0.715,
+      "radius": 2.0656477075535804,
+      "height": 7.132164080510847,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 442.8241034971776,
+      "z": 1084.6045247094294,
+      "y": 0.715,
+      "radius": 0.6934728129650466,
+      "height": 1.0646958155324682,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 445.8563980236614,
+      "z": 1114.9340771216082,
+      "y": 0.715,
+      "radius": 0.8082516465568915,
+      "height": 1.0478819912299513,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 424.28365552935867,
+      "z": 1124.6450633734498,
+      "y": 0.715,
+      "radius": 0.6622643740382046,
+      "height": 0.8776354723027907,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 439.1181191173028,
+      "z": 1133.663194182808,
+      "y": 0.715,
+      "radius": 0.8882974962936714,
+      "height": 1.138825798011385,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 434.5079613021889,
+      "z": 1104.2534267461413,
+      "y": 0.715,
+      "radius": 0.7220487623824738,
+      "height": 0.9336443923180923,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 465.77505663406896,
+      "z": 1116.1674641802479,
+      "y": 0.715,
+      "radius": 0.7628563086385839,
+      "height": 1.0610769909690134,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 427.4755205297393,
+      "z": 1127.9929581725394,
+      "y": 0.715,
+      "radius": 0.8977782596135512,
+      "height": 0.8632455717073753,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 456.165171626698,
+      "z": 1124.1901708270414,
+      "y": 0.715,
+      "radius": 0.7541547914152034,
+      "height": 0.8461823427234776,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 435.45692157864846,
+      "z": 1122.7346776053016,
+      "y": 0.715,
+      "radius": 0.6648743413039483,
+      "height": 0.8633714926196262,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 452.0046710607067,
+      "z": 1106.1515278083655,
+      "y": 0.715,
+      "radius": 0.697849292412866,
+      "height": 1.0678286045440473,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 457.654252932318,
+      "z": 1081.9257073599506,
+      "y": 0.715,
+      "radius": 0.8970268898643553,
+      "height": 1.029591597034596,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/4099553:0",
+      "kind": "shrub",
+      "x": 453.1015408167799,
+      "z": 1132.5628439760435,
+      "y": 0.715,
+      "radius": 0.7414857667055912,
+      "height": 0.7507685395888983,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 555.4322415140681,
+      "z": -536.0190236458592,
+      "y": 0.715,
+      "radius": 2.195183956064284,
+      "height": 6.569180374615826,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 578.4568565042875,
+      "z": -570.8035414078869,
+      "y": 0.715,
+      "radius": 2.475127352401614,
+      "height": 6.319827354280278,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 570.1090611687787,
+      "z": -542.6511506690085,
+      "y": 0.715,
+      "radius": 2.492345636477694,
+      "height": 7.358720593736507,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 638.4688773073367,
+      "z": -571.9930284914933,
+      "y": 0.715,
+      "radius": 2.4287682806607336,
+      "height": 7.374522797879763,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 570.5512783753536,
+      "z": -550.4716487516091,
+      "y": 0.715,
+      "radius": 2.7089989255182445,
+      "height": 6.257890815730207,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 601.4105254656803,
+      "z": -578.6327033460699,
+      "y": 0.715,
+      "radius": 2.0415451149456203,
+      "height": 7.309148945612833,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 499.1809075444601,
+      "z": -493.75771085966005,
+      "y": 0.715,
+      "radius": 2.3540301606990397,
+      "height": 6.560555667500012,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 580.7110453865882,
+      "z": -522.6693051277697,
+      "y": 0.715,
+      "radius": 2.355360552901402,
+      "height": 6.851960721076466,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 599.2763663173466,
+      "z": -563.5226671312563,
+      "y": 0.715,
+      "radius": 2.9231664596591145,
+      "height": 5.676207773620263,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 597.9111682663821,
+      "z": -589.3591291314252,
+      "y": 0.715,
+      "radius": 2.0445334741380066,
+      "height": 7.408369866432622,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 587.3775624825768,
+      "z": -590.8903709633053,
+      "y": 0.715,
+      "radius": 2.9992848781403154,
+      "height": 6.62195790396072,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 571.0354255901295,
+      "z": -567.7186941645443,
+      "y": 0.715,
+      "radius": 2.769044002285227,
+      "height": 6.657674759160727,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 583.884027201753,
+      "z": -552.1774638937302,
+      "y": 0.715,
+      "radius": 2.0654861414805055,
+      "height": 5.559457658207975,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "tree",
+      "x": 579.4216772620193,
+      "z": -511.05941742979365,
+      "y": 0.715,
+      "radius": 2.0772642081137747,
+      "height": 7.443981477525085,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 634.5143604468685,
+      "z": -580.5649500323832,
+      "y": 0.715,
+      "radius": 0.7815939369844273,
+      "height": 0.8447361638303845,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 584.178064572677,
+      "z": -558.9394297042638,
+      "y": 0.715,
+      "radius": 0.9475441774586215,
+      "height": 0.7976986402645707,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 579.534667123666,
+      "z": -548.2226589463055,
+      "y": 0.715,
+      "radius": 0.7101107322145254,
+      "height": 0.8749634963343851,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 573.1126993313935,
+      "z": -573.5657876681089,
+      "y": 0.715,
+      "radius": 0.6809888188145123,
+      "height": 1.0450524858781136,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 602.6034268562439,
+      "z": -574.35299135267,
+      "y": 0.715,
+      "radius": 0.8395468053058721,
+      "height": 0.7995970691437833,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 558.1782437144443,
+      "z": -507.23978994639964,
+      "y": 0.715,
+      "radius": 0.7964412437402644,
+      "height": 0.951996778754983,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 618.2333413337208,
+      "z": -529.1333967134357,
+      "y": 0.715,
+      "radius": 0.832683131378144,
+      "height": 0.753046510682907,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 501.09566571955753,
+      "z": -520.059456230741,
+      "y": 0.715,
+      "radius": 0.9773507659090683,
+      "height": 0.7565431278315372,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 565.2443850531988,
+      "z": -562.0733003961817,
+      "y": 0.715,
+      "radius": 0.9465240301913582,
+      "height": 0.7761275209719315,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 634.0385387271904,
+      "z": -599.3103092542664,
+      "y": 0.715,
+      "radius": 0.7727241927525028,
+      "height": 1.1109761082218028,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 634.0142390615958,
+      "z": -570.4719550685063,
+      "y": 0.715,
+      "radius": 0.9357444007880986,
+      "height": 0.943489519401919,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 612.5344970431812,
+      "z": -562.4704683894962,
+      "y": 0.715,
+      "radius": 0.7606919337180443,
+      "height": 0.8491377033991738,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 622.0690112105775,
+      "z": -581.8788799220995,
+      "y": 0.715,
+      "radius": 0.7165540446294472,
+      "height": 1.1166472852579319,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 583.7483060986623,
+      "z": -567.9439024390168,
+      "y": 0.715,
+      "radius": 0.7361607780796475,
+      "height": 0.7324602394481189,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 562.2306994232722,
+      "z": -583.6831500798353,
+      "y": 0.715,
+      "radius": 0.7293325280072167,
+      "height": 1.1184336797334253,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 568.2432971254959,
+      "z": -523.0419980972483,
+      "y": 0.715,
+      "radius": 0.715718244377058,
+      "height": 0.8271831889403983,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 567.8802449196912,
+      "z": -499.29523451863975,
+      "y": 0.715,
+      "radius": 0.8473563263542019,
+      "height": 0.900675213348586,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 611.2449815420248,
+      "z": -574.3657599944696,
+      "y": 0.715,
+      "radius": 0.696159224479925,
+      "height": 0.9189304209430702,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 594.7203836549688,
+      "z": -597.0331480877958,
+      "y": 0.715,
+      "radius": 0.7751014318782836,
+      "height": 0.7075421290937811,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 616.0263383841999,
+      "z": -538.6941794272661,
+      "y": 0.715,
+      "radius": 0.9564303424791433,
+      "height": 0.8472095190780237,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 632.0863988348525,
+      "z": -575.4407346353569,
+      "y": 0.715,
+      "radius": 0.7765920800273307,
+      "height": 0.9717809587484225,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:0",
+      "kind": "shrub",
+      "x": 591.7958530810122,
+      "z": -579.1225944760852,
+      "y": 0.715,
+      "radius": 0.7017371699330397,
+      "height": 1.0481916682911105,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "tree",
+      "x": 599.157713888126,
+      "z": -443.3393611386649,
+      "y": 0.715,
+      "radius": 2.550289075355977,
+      "height": 6.005220819613896,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "tree",
+      "x": 591.6457526787128,
+      "z": -447.64739299436684,
+      "y": 0.715,
+      "radius": 2.248957614414394,
+      "height": 5.986819621291943,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "shrub",
+      "x": 578.9649395954099,
+      "z": -449.7196909229632,
+      "y": 0.715,
+      "radius": 0.851901559077669,
+      "height": 0.8728996955440379,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "shrub",
+      "x": 602.5512213018085,
+      "z": -440.0462274534204,
+      "y": 0.715,
+      "radius": 0.7299981872783974,
+      "height": 0.857692906295415,
+      "variant": 0
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "shrub",
+      "x": 607.0460186081708,
+      "z": -455.2736804194907,
+      "y": 0.715,
+      "radius": 0.9114156425232067,
+      "height": 0.8538661024067551,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "shrub",
+      "x": 609.1495369467013,
+      "z": -433.78337270417416,
+      "y": 0.715,
+      "radius": 0.663444719358813,
+      "height": 1.0044745620107278,
+      "variant": 1
+    },
+    {
+      "parkId": "relation/7095444:1",
+      "kind": "shrub",
+      "x": 608.1179709692954,
+      "z": -429.9295917006524,
+      "y": 0.715,
+      "radius": 0.8142482339055277,
+      "height": 1.0093871903256513,
+      "variant": 0
+    },
+    {
+      "parkId": "way/108153676",
+      "kind": "shrub",
+      "x": -687.8076952716345,
+      "z": 906.2344838910459,
+      "y": 0.715,
+      "radius": 0.9168756699189544,
+      "height": 1.054723340307828,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": 35.88720200622919,
+      "z": 79.96327425463338,
+      "y": 0.715,
+      "radius": 2.0632446489762515,
+      "height": 7.107482254039496,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -30.50081248323201,
+      "z": -48.20000037153274,
+      "y": 0.715,
+      "radius": 2.5342681747861207,
+      "height": 7.4651809288188815,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -100.08671672047,
+      "z": -44.86997068757097,
+      "y": 0.715,
+      "radius": 2.266172195551917,
+      "height": 7.2003218294121325,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -47.86837825207854,
+      "z": -58.70745039791706,
+      "y": 0.715,
+      "radius": 2.605727894930169,
+      "height": 6.0164574208902195,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -75.13157722272095,
+      "z": -102.19280076719494,
+      "y": 0.715,
+      "radius": 2.0471830484457314,
+      "height": 6.1741019152104855,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -161.33434248531935,
+      "z": -22.688691143475225,
+      "y": 0.715,
+      "radius": 2.0423550023697317,
+      "height": 5.58672465570271,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -123.55476157052675,
+      "z": -51.10950080470553,
+      "y": 0.715,
+      "radius": 2.1784816335421056,
+      "height": 7.40293398743961,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -43.25981691504245,
+      "z": -52.56641020046568,
+      "y": 0.715,
+      "radius": 2.4649212658405304,
+      "height": 5.886765222065151,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -43.60493258932257,
+      "z": 24.17881299863896,
+      "y": 0.715,
+      "radius": 2.7864782649558038,
+      "height": 5.829820549231954,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": 115.8556247690669,
+      "z": 8.843012090592907,
+      "y": 0.715,
+      "radius": 2.5914814700372517,
+      "height": 6.131501754396595,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": 57.18849275199696,
+      "z": 78.47194070791687,
+      "y": 0.715,
+      "radius": 2.1936474789399654,
+      "height": 7.540970780653879,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -73.87821262610144,
+      "z": -21.1255307225792,
+      "y": 0.715,
+      "radius": 2.464613944524899,
+      "height": 7.479625950334594,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -108.36263955284258,
+      "z": -103.92690490530128,
+      "y": 0.715,
+      "radius": 2.557020674692467,
+      "height": 6.4629128413507715,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": 52.83394904637825,
+      "z": 113.88355256986202,
+      "y": 0.715,
+      "radius": 2.5477418289519846,
+      "height": 6.260885624331422,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -61.34510358536616,
+      "z": -92.84515727380546,
+      "y": 0.715,
+      "radius": 2.60752015421167,
+      "height": 6.764935988583602,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -112.5269614182331,
+      "z": -119.92815975878527,
+      "y": 0.715,
+      "radius": 2.3232443013694137,
+      "height": 6.538482377771288,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -54.57790078570834,
+      "z": 23.69083722840972,
+      "y": 0.715,
+      "radius": 2.0897793744225055,
+      "height": 7.33716275554616,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -53.330063901826506,
+      "z": 7.8063813422874375,
+      "y": 0.715,
+      "radius": 2.0734057526569813,
+      "height": 6.588883477495983,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -65.81476684356574,
+      "z": -97.33110980948456,
+      "y": 0.715,
+      "radius": 2.045468744356185,
+      "height": 6.296619837055914,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -69.49458090139436,
+      "z": -62.06266645122574,
+      "y": 0.715,
+      "radius": 2.3823296278715134,
+      "height": 5.598914624541067,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -146.3320969063346,
+      "z": -12.08277616196915,
+      "y": 0.715,
+      "radius": 2.757933131419122,
+      "height": 6.059446801198646,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -37.37785533087677,
+      "z": -49.694694237607976,
+      "y": 0.715,
+      "radius": 2.719324497738853,
+      "height": 5.899115310283378,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -13.008544881722202,
+      "z": -43.33588121117114,
+      "y": 0.715,
+      "radius": 2.427569434978068,
+      "height": 7.393144846544601,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -55.89012349190307,
+      "z": 31.302460505715374,
+      "y": 0.715,
+      "radius": 2.219253024319187,
+      "height": 5.80090776795987,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": 45.94775964275118,
+      "z": -21.56428020850194,
+      "y": 0.715,
+      "radius": 2.1832558289170265,
+      "height": 7.96815896301996,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -104.69776350277941,
+      "z": -74.12119034757976,
+      "y": 0.715,
+      "radius": 2.1249382197856903,
+      "height": 5.9728626436553895,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": 34.5683320740948,
+      "z": 71.69630876469404,
+      "y": 0.715,
+      "radius": 2.3869290973525494,
+      "height": 6.504999459837563,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "tree",
+      "x": -67.95356217562104,
+      "z": -89.80534527763862,
+      "y": 0.715,
+      "radius": 2.210055142408237,
+      "height": 5.854029511217959,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -31.671789010019268,
+      "z": -30.048404437523786,
+      "y": 0.715,
+      "radius": 0.7659238138119691,
+      "height": 0.8620643973699771,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 110.68574536705736,
+      "z": 35.11812446281641,
+      "y": 0.715,
+      "radius": 0.7257068650680594,
+      "height": 0.8994795091915875,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -103.53415592365083,
+      "z": -51.82279515012539,
+      "y": 0.715,
+      "radius": 0.8975328993517906,
+      "height": 0.7555290741845965,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -149.05481893045012,
+      "z": -71.76655251265525,
+      "y": 0.715,
+      "radius": 0.9677459402941168,
+      "height": 0.8437810241710394,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -77.26862972994684,
+      "z": -110.34219721924651,
+      "y": 0.715,
+      "radius": 0.959692446119152,
+      "height": 0.7310388041427358,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -46.951434028758655,
+      "z": -85.48299509035911,
+      "y": 0.715,
+      "radius": 0.6683695988729597,
+      "height": 1.1148463826510124,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -85.78605887147364,
+      "z": -7.631966833233804,
+      "y": 0.715,
+      "radius": 0.9531810369575396,
+      "height": 0.8464809109340421,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 39.69621541683446,
+      "z": 8.004779309209908,
+      "y": 0.715,
+      "radius": 0.7178298980579711,
+      "height": 0.9175971182063222,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 21.50645788155029,
+      "z": 43.09946587196413,
+      "y": 0.715,
+      "radius": 0.6671099876868539,
+      "height": 1.134118195658084,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -67.11496254828991,
+      "z": -4.97215658048421,
+      "y": 0.715,
+      "radius": 0.8861223734798841,
+      "height": 0.7732058009598404,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -126.3597796957707,
+      "z": -69.31725602013081,
+      "y": 0.715,
+      "radius": 0.8135129841626622,
+      "height": 0.8551039773854426,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 74.28888292339747,
+      "z": 101.45269794603905,
+      "y": 0.715,
+      "radius": 0.8212082039564848,
+      "height": 1.1141538088326342,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -94.01255729300784,
+      "z": -34.9079652349688,
+      "y": 0.715,
+      "radius": 0.6749508383334615,
+      "height": 0.8225136954337358,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -114.6645112005982,
+      "z": -5.269662643263786,
+      "y": 0.715,
+      "radius": 0.7279953538672999,
+      "height": 0.7189940873417071,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 92.13577261403552,
+      "z": 41.794566265523684,
+      "y": 0.715,
+      "radius": 0.7276038446347229,
+      "height": 0.706812182359863,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -122.69991411500376,
+      "z": -42.704696074546305,
+      "y": 0.715,
+      "radius": 0.8140708791208453,
+      "height": 0.9449418603559024,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -11.983244419883704,
+      "z": -60.35352623609266,
+      "y": 0.715,
+      "radius": 0.7723429279634729,
+      "height": 0.9265814800979569,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -25.65516033681692,
+      "z": -35.53174777256696,
+      "y": 0.715,
+      "radius": 0.7876034631859511,
+      "height": 1.1498725730692967,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 85.73977969383239,
+      "z": 6.377184908267594,
+      "y": 0.715,
+      "radius": 0.6979913008399308,
+      "height": 0.810036390600726,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": 58.4401311282534,
+      "z": 71.05008640644468,
+      "y": 0.715,
+      "radius": 0.729073005716782,
+      "height": 1.0878704545088111,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -11.2281405663758,
+      "z": -68.75731744336568,
+      "y": 0.715,
+      "radius": 0.8586205883533694,
+      "height": 0.7307820226531475,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22899302",
+      "kind": "shrub",
+      "x": -51.5404194156616,
+      "z": -95.26530901356506,
+      "y": 0.715,
+      "radius": 0.7514824054320343,
+      "height": 0.7059786944999359,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "tree",
+      "x": 923.1800748985261,
+      "z": -803.0391961422923,
+      "y": 0.715,
+      "radius": 2.5807035837788135,
+      "height": 5.762534000794403,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "tree",
+      "x": 932.1233538123779,
+      "z": -826.5606211579016,
+      "y": 0.715,
+      "radius": 2.1122532528825104,
+      "height": 6.533963443478569,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "tree",
+      "x": 924.8656050665304,
+      "z": -794.5197895295298,
+      "y": 0.715,
+      "radius": 2.8975015697069466,
+      "height": 6.455865940195508,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "tree",
+      "x": 948.1821204721928,
+      "z": -804.7034360105581,
+      "y": 0.715,
+      "radius": 2.264753754483536,
+      "height": 6.984804892679676,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "tree",
+      "x": 935.6589492256753,
+      "z": -814.1395636794008,
+      "y": 0.715,
+      "radius": 2.948135187383741,
+      "height": 7.565006113261916,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 904.378189377021,
+      "z": -807.3578524935506,
+      "y": 0.715,
+      "radius": 0.7912081011105329,
+      "height": 0.9757491218624637,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 925.1138927056454,
+      "z": -783.8223288816332,
+      "y": 0.715,
+      "radius": 0.8764563031028956,
+      "height": 1.1391330114216545,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 925.4381331461482,
+      "z": -828.1969873659161,
+      "y": 0.715,
+      "radius": 0.6860410316614435,
+      "height": 0.96246872425545,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 936.4220023741946,
+      "z": -828.9407085745793,
+      "y": 0.715,
+      "radius": 0.8930601051193662,
+      "height": 0.9291564479004591,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 948.4541870318353,
+      "z": -815.4737858178918,
+      "y": 0.715,
+      "radius": 0.8951945800334216,
+      "height": 0.9103729856316931,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 947.7953069321811,
+      "z": -800.2533294012273,
+      "y": 0.715,
+      "radius": 0.8661373207229189,
+      "height": 0.7373681441415101,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 925.1715804133564,
+      "z": -842.3469482710901,
+      "y": 0.715,
+      "radius": 0.8236091340659186,
+      "height": 1.0365114613901825,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 939.8958343896084,
+      "z": -775.1791360475213,
+      "y": 0.715,
+      "radius": 0.7216916917008348,
+      "height": 1.0946477739140392,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 928.6521201869473,
+      "z": -789.4559564704277,
+      "y": 0.715,
+      "radius": 0.7729598823469133,
+      "height": 0.9221345240250229,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 910.7071405486204,
+      "z": -817.7282280123799,
+      "y": 0.715,
+      "radius": 0.9591847397503444,
+      "height": 1.0297401575720868,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 954.7844054815359,
+      "z": -813.4133231396701,
+      "y": 0.715,
+      "radius": 0.9038424190715887,
+      "height": 0.7993231358705088,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 931.5547922905535,
+      "z": -820.9239169656504,
+      "y": 0.715,
+      "radius": 0.7097781509626657,
+      "height": 0.8990884665865451,
+      "variant": 0
+    },
+    {
+      "parkId": "way/22901074",
+      "kind": "shrub",
+      "x": 946.0014729970135,
+      "z": -812.9237333836923,
+      "y": 0.715,
+      "radius": 0.7926981212105602,
+      "height": 1.0315295206033626,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22961817",
+      "kind": "tree",
+      "x": -485.59792771563866,
+      "z": -895.4158499391866,
+      "y": 0.715,
+      "radius": 2.1442288395483047,
+      "height": 6.550722038489766,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22961817",
+      "kind": "shrub",
+      "x": -482.600388974322,
+      "z": -901.8815740180679,
+      "y": 0.715,
+      "radius": 0.665474448457826,
+      "height": 1.002558872802183,
+      "variant": 1
+    },
+    {
+      "parkId": "way/22961817",
+      "kind": "shrub",
+      "x": -461.6320020455737,
+      "z": -926.7228289778053,
+      "y": 0.715,
+      "radius": 0.7459526576683857,
+      "height": 0.8329943657619878,
+      "variant": 1
+    },
+    {
+      "parkId": "way/239977366",
+      "kind": "tree",
+      "x": -434.99411264333685,
+      "z": 611.9856152228131,
+      "y": 0.715,
+      "radius": 2.084977291058749,
+      "height": 7.352656764676794,
+      "variant": 0
+    },
+    {
+      "parkId": "way/239988120",
+      "kind": "tree",
+      "x": -167.88252237338898,
+      "z": -404.7056444824007,
+      "y": 0.715,
+      "radius": 2.040849321288988,
+      "height": 7.224726028623991,
+      "variant": 0
+    },
+    {
+      "parkId": "way/239988120",
+      "kind": "shrub",
+      "x": -163.03132232286595,
+      "z": -394.8651122463902,
+      "y": 0.715,
+      "radius": 0.9999552585766651,
+      "height": 1.0702110866550356,
+      "variant": 0
+    },
+    {
+      "parkId": "way/239988120",
+      "kind": "shrub",
+      "x": -173.8444603822273,
+      "z": -413.82971382950643,
+      "y": 0.715,
+      "radius": 0.8789813297335058,
+      "height": 0.777064587152563,
+      "variant": 1
+    },
+    {
+      "parkId": "way/239988120",
+      "kind": "shrub",
+      "x": -168.0673571645012,
+      "z": -399.0883717231187,
+      "y": 0.715,
+      "radius": 0.9520119593595154,
+      "height": 0.9900933363707736,
+      "variant": 0
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "tree",
+      "x": -856.5667425498226,
+      "z": 734.6342885586254,
+      "y": 0.715,
+      "radius": 2.293663863558322,
+      "height": 7.856964264763519,
+      "variant": 1
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "tree",
+      "x": -850.4843320683083,
+      "z": 728.2136288166461,
+      "y": 0.715,
+      "radius": 2.5507913834881037,
+      "height": 7.689209661446512,
+      "variant": 0
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "shrub",
+      "x": -845.114070111908,
+      "z": 719.2645533976851,
+      "y": 0.715,
+      "radius": 0.7324577296734788,
+      "height": 1.0221028645406478,
+      "variant": 0
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "shrub",
+      "x": -868.7624775602501,
+      "z": 705.0186601421442,
+      "y": 0.715,
+      "radius": 0.8571444963221438,
+      "height": 0.7405921152676456,
+      "variant": 0
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "shrub",
+      "x": -844.8138878247141,
+      "z": 726.4348804000865,
+      "y": 0.715,
+      "radius": 0.923147737479303,
+      "height": 0.7337929475936107,
+      "variant": 1
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "shrub",
+      "x": -861.5520980814695,
+      "z": 741.0969093092142,
+      "y": 0.715,
+      "radius": 0.9873087084386498,
+      "height": 0.9420955050736666,
+      "variant": 0
+    },
+    {
+      "parkId": "way/270791455",
+      "kind": "shrub",
+      "x": -837.4076916705528,
+      "z": 711.1854539429578,
+      "y": 0.715,
+      "radius": 0.8618426256114617,
+      "height": 0.7697392231901176,
+      "variant": 0
+    },
+    {
+      "parkId": "way/30657456",
+      "kind": "tree",
+      "x": -414.1251054478316,
+      "z": -310.8826643852589,
+      "y": 0.715,
+      "radius": 2.076194233028218,
+      "height": 7.712216548505239,
+      "variant": 1
+    },
+    {
+      "parkId": "way/30657456",
+      "kind": "shrub",
+      "x": -398.61236375349415,
+      "z": -314.1483863386405,
+      "y": 0.715,
+      "radius": 0.7324305393965915,
+      "height": 1.1147956024622545,
+      "variant": 1
+    },
+    {
+      "parkId": "way/30657456",
+      "kind": "shrub",
+      "x": -442.2961297378067,
+      "z": -306.3805648492926,
+      "y": 0.715,
+      "radius": 0.979285491083283,
+      "height": 0.9946972815087065,
+      "variant": 0
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "tree",
+      "x": -786.4394557519462,
+      "z": 740.9215381450952,
+      "y": 0.715,
+      "radius": 2.6710656986106187,
+      "height": 6.209522527176887,
+      "variant": 0
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "tree",
+      "x": -766.8030718651795,
+      "z": 743.296275758326,
+      "y": 0.715,
+      "radius": 2.4803180852904916,
+      "height": 5.676831753924489,
+      "variant": 1
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "shrub",
+      "x": -788.318222592759,
+      "z": 746.1884087662697,
+      "y": 0.715,
+      "radius": 0.9226215709350072,
+      "height": 1.1150680564343929,
+      "variant": 1
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "shrub",
+      "x": -782.3533176536672,
+      "z": 745.8722026238739,
+      "y": 0.715,
+      "radius": 0.733290215942543,
+      "height": 0.7682026635971851,
+      "variant": 1
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "shrub",
+      "x": -777.0235550546786,
+      "z": 740.6912695061267,
+      "y": 0.715,
+      "radius": 0.9719315164722502,
+      "height": 0.9232549321837723,
+      "variant": 0
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "shrub",
+      "x": -796.848919898293,
+      "z": 735.987958850652,
+      "y": 0.715,
+      "radius": 0.8845349690294825,
+      "height": 1.0596114879124798,
+      "variant": 0
+    },
+    {
+      "parkId": "way/329041506",
+      "kind": "shrub",
+      "x": -774.7580137632219,
+      "z": 754.7256257592738,
+      "y": 0.715,
+      "radius": 0.991636153368745,
+      "height": 1.1341794837149792,
+      "variant": 0
+    },
+    {
+      "parkId": "way/329041537",
+      "kind": "tree",
+      "x": -788.7761237695315,
+      "z": 716.1374402959914,
+      "y": 0.715,
+      "radius": 2.2589542961213738,
+      "height": 6.239970995346084,
+      "variant": 1
+    },
+    {
+      "parkId": "way/329041537",
+      "kind": "shrub",
+      "x": -772.6051777842026,
+      "z": 723.0642117162001,
+      "y": 0.715,
+      "radius": 0.7669283992028795,
+      "height": 0.9418087683385238,
+      "variant": 0
+    },
+    {
+      "parkId": "way/329041537",
+      "kind": "shrub",
+      "x": -777.4115994029833,
+      "z": 720.0102608966873,
+      "y": 0.715,
+      "radius": 0.9061408307519742,
+      "height": 0.977321048581507,
+      "variant": 1
+    },
+    {
+      "parkId": "way/329041537",
+      "kind": "shrub",
+      "x": -796.5716666189968,
+      "z": 715.591930455909,
+      "y": 0.715,
+      "radius": 0.8981339576654136,
+      "height": 0.7141743756714276,
+      "variant": 0
+    },
+    {
+      "parkId": "way/440055120",
+      "kind": "tree",
+      "x": -295.9789942348979,
+      "z": -72.79817498990451,
+      "y": 0.715,
+      "radius": 2.1130606369115412,
+      "height": 7.551331828697585,
+      "variant": 0
+    },
+    {
+      "parkId": "way/440055120",
+      "kind": "shrub",
+      "x": -289.2428994574663,
+      "z": -74.11066793627339,
+      "y": 0.715,
+      "radius": 0.9887330563040451,
+      "height": 1.0264558118069544,
+      "variant": 1
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "tree",
+      "x": 229.6529989479594,
+      "z": 958.0937020877095,
+      "y": 0.715,
+      "radius": 2.4517842445056885,
+      "height": 7.989329520612955,
+      "variant": 0
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "tree",
+      "x": 199.8989618853852,
+      "z": 966.2304499651434,
+      "y": 0.715,
+      "radius": 2.0552237790543586,
+      "height": 7.771842035697773,
+      "variant": 0
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "tree",
+      "x": 232.73408299258352,
+      "z": 947.3392545498214,
+      "y": 0.715,
+      "radius": 2.4129254310391843,
+      "height": 7.659049961483106,
+      "variant": 1
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 225.80898644964583,
+      "z": 977.4063976727273,
+      "y": 0.715,
+      "radius": 0.7683196419500746,
+      "height": 0.9220348456990904,
+      "variant": 0
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 237.42138087760657,
+      "z": 950.7458629239184,
+      "y": 0.715,
+      "radius": 0.6862112355534918,
+      "height": 0.7203511669184081,
+      "variant": 0
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 231.6896354501564,
+      "z": 952.0390944273023,
+      "y": 0.715,
+      "radius": 0.8232080046087503,
+      "height": 0.8329292776645161,
+      "variant": 0
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 233.7031848332379,
+      "z": 962.60707822657,
+      "y": 0.715,
+      "radius": 0.7649641580879688,
+      "height": 0.8547819205676205,
+      "variant": 1
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 241.33578061316348,
+      "z": 957.759619498387,
+      "y": 0.715,
+      "radius": 0.7506068030721508,
+      "height": 1.066473197261803,
+      "variant": 1
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 217.18814112819544,
+      "z": 976.7948209586549,
+      "y": 0.715,
+      "radius": 0.8044791118241846,
+      "height": 0.7381304728914984,
+      "variant": 1
+    },
+    {
+      "parkId": "way/453461400",
+      "kind": "shrub",
+      "x": 215.181965484906,
+      "z": 954.432951808341,
+      "y": 0.715,
+      "radius": 0.7383124534855596,
+      "height": 0.9490677697351202,
+      "variant": 1
+    },
+    {
+      "parkId": "way/471549306",
+      "kind": "tree",
+      "x": -319.9700178360792,
+      "z": -710.1673159483307,
+      "y": 0.715,
+      "radius": 2.9752235792111605,
+      "height": 7.08039984642528,
+      "variant": 1
+    },
+    {
+      "parkId": "way/471549306",
+      "kind": "shrub",
+      "x": -318.2903249236196,
+      "z": -699.5535067989351,
+      "y": 0.715,
+      "radius": 0.9230674295104109,
+      "height": 0.94024138324894,
+      "variant": 0
+    },
+    {
+      "parkId": "way/471549306",
+      "kind": "shrub",
+      "x": -314.7814045904758,
+      "z": -709.1772232322078,
+      "y": 0.715,
+      "radius": 0.7896567567135208,
+      "height": 1.0012477806420066,
+      "variant": 0
+    },
+    {
+      "parkId": "way/471549306",
+      "kind": "shrub",
+      "x": -324.9027150898096,
+      "z": -706.3717044953647,
+      "y": 0.715,
+      "radius": 0.9807771031861193,
+      "height": 0.8385364159126766,
+      "variant": 1
+    },
+    {
+      "parkId": "way/473565702",
+      "kind": "tree",
+      "x": -154.0141685176594,
+      "z": 1139.113555565405,
+      "y": 0.715,
+      "radius": 2.350399108370766,
+      "height": 7.415927544469014,
+      "variant": 0
+    },
+    {
+      "parkId": "way/473565702",
+      "kind": "shrub",
+      "x": -145.4196897049437,
+      "z": 1148.080849352648,
+      "y": 0.715,
+      "radius": 0.9051772094448097,
+      "height": 1.1483162276796066,
+      "variant": 1
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "tree",
+      "x": -737.1665867366148,
+      "z": 976.9517622923044,
+      "y": 0.715,
+      "radius": 2.2541552514303476,
+      "height": 5.539432282210328,
+      "variant": 0
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "tree",
+      "x": -737.0457484544737,
+      "z": 993.0653566891556,
+      "y": 0.715,
+      "radius": 2.1329253185540438,
+      "height": 6.918867114116438,
+      "variant": 1
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "shrub",
+      "x": -741.6166794087186,
+      "z": 975.7066090965604,
+      "y": 0.715,
+      "radius": 0.9461808942607604,
+      "height": 0.7410100822220556,
+      "variant": 0
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "shrub",
+      "x": -731.8516175357641,
+      "z": 980.3431710435458,
+      "y": 0.715,
+      "radius": 0.8356585112866014,
+      "height": 0.7511756626656279,
+      "variant": 0
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "shrub",
+      "x": -750.46300214594,
+      "z": 986.9734846157367,
+      "y": 0.715,
+      "radius": 0.6642901411396451,
+      "height": 0.7090397202759049,
+      "variant": 1
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "shrub",
+      "x": -713.5911896795286,
+      "z": 995.615348769292,
+      "y": 0.715,
+      "radius": 0.7517192059895024,
+      "height": 0.9717034411267378,
+      "variant": 0
+    },
+    {
+      "parkId": "way/497484756",
+      "kind": "shrub",
+      "x": -708.1786845135787,
+      "z": 997.659177686361,
+      "y": 0.715,
+      "radius": 0.6929288842948154,
+      "height": 0.8951810889295302,
+      "variant": 0
+    },
+    {
+      "parkId": "way/672251427",
+      "kind": "shrub",
+      "x": 876.273446550874,
+      "z": 93.15930962525378,
+      "y": 0.715,
+      "radius": 0.7682202786789276,
+      "height": 0.8875022059422917,
+      "variant": 1
+    },
+    {
+      "parkId": "way/86144190",
+      "kind": "tree",
+      "x": -678.8223131293643,
+      "z": -730.0877998955788,
+      "y": 0.715,
+      "radius": 2.922075511654839,
+      "height": 7.779753963812254,
+      "variant": 1
+    },
+    {
+      "parkId": "way/86144190",
+      "kind": "shrub",
+      "x": -685.0520429945956,
+      "z": -728.1696175977094,
+      "y": 0.715,
+      "radius": 0.9293544581974856,
+      "height": 1.0938471536966972,
+      "variant": 1
+    },
+    {
+      "parkId": "way/95833119",
+      "kind": "tree",
+      "x": 547.008930044665,
+      "z": 221.96903491447796,
+      "y": 0.715,
+      "radius": 2.9533271961845458,
+      "height": 6.976343868416734,
+      "variant": 1
+    },
+    {
+      "parkId": "way/95833119",
+      "kind": "shrub",
+      "x": 544.184445574522,
+      "z": 226.7406017003304,
+      "y": 0.715,
+      "radius": 0.7123617694247514,
+      "height": 0.8080122872372157,
+      "variant": 0
+    },
+    {
+      "parkId": "way/95833119",
+      "kind": "shrub",
+      "x": 541.6270027957079,
+      "z": 238.8842060890121,
+      "y": 0.715,
+      "radius": 0.982168719812762,
+      "height": 0.8503476674784906,
+      "variant": 0
+    },
+    {
+      "parkId": "way/95833119",
+      "kind": "shrub",
+      "x": 559.6726852117745,
+      "z": 230.39262723645243,
+      "y": 0.715,
+      "radius": 0.7189309285371565,
+      "height": 1.0527221387135797,
+      "variant": 1
+    }
+  ],
+  "checks": {
+    "deterministic": true,
+    "eligibleCoverAndMargin": true,
+    "existingGeometryClearance": true,
+    "minimumSpacing": true,
+    "finiteGeometry": true,
+    "extent": true,
+    "sourceHashesPreserved": true
+  },
+  "limitations": "Illustrative additions only in explicit mapped vegetation cover; unmapped planting not guessed. Existing source meshes use conservative world AABBs. Browser appearance not verified."
+}

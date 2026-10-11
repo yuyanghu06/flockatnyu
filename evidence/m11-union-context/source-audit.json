@@ -1,0 +1,143 @@
+{
+  "checks": [
+    {
+      "name": "25-union-square-west.glb source triangle count and known world placement",
+      "pass": true
+    },
+    {
+      "name": "25-union-square-west.glb X/Z bounds match recorded source parcel",
+      "pass": true
+    },
+    {
+      "name": "25-union-square-west.glb city tiles lack horizontal surfaces at the restored model elevation",
+      "pass": true
+    },
+    {
+      "name": "Carlyle parcel matches are only adjoining parcel boundary walls",
+      "pass": true
+    },
+    {
+      "name": "25-union-square-west.glb context material preserves every geometry attribute/index/transform",
+      "pass": true
+    },
+    {
+      "name": "235-park-avenue-south.glb source triangle count and known world placement",
+      "pass": true
+    },
+    {
+      "name": "235-park-avenue-south.glb X/Z bounds match recorded source parcel",
+      "pass": true
+    },
+    {
+      "name": "235-park-avenue-south.glb city tiles lack horizontal surfaces at the restored model elevation",
+      "pass": true
+    },
+    {
+      "name": "235-park-avenue-south.glb context material preserves every geometry attribute/index/transform",
+      "pass": true
+    },
+    {
+      "name": "Neighbor parcel 5507 remains represented",
+      "pass": true
+    },
+    {
+      "name": "Neighbor parcel 5886 remains represented",
+      "pass": true
+    },
+    {
+      "name": "Neighbor parcel 5897 remains represented",
+      "pass": true
+    },
+    {
+      "name": "Neighbor parcel 6270 remains represented",
+      "pass": true
+    },
+    {
+      "name": "Neighbor parcel 6362 remains represented",
+      "pass": true
+    },
+    {
+      "name": "All inspected tile buffers and transforms remain identical",
+      "pass": true
+    },
+    {
+      "name": "Every source file hash remains unchanged",
+      "pass": true
+    }
+  ],
+  "sourceHashes": {
+    "yuyang-site-3d-assets/data/building-runtime.json": "cbb33d17c901b882d75c2dc662181b66afbc39af0c47703c794a822820b508fe",
+    "yuyang-site-3d-assets/models/buildings/25-union-square-west.glb": "b9c33b392cb487b915b4ffdfd084fe640db3a640792540648ceffe6189e86b60",
+    "yuyang-site-3d-assets/models/buildings/235-park-avenue-south.glb": "9c862e4269b3fedadf5186ef63c1102a651a5f3a3811720e9a8d813016d5a023",
+    "yuyang-site-3d-assets/models/buildings/city-tiles/tile-2_-4.glb": "fd5cd185fb27731678d9d7d7d9e8ff77553b1fa654cd74c1494e7cf0e43ee076",
+    "yuyang-site-3d-assets/models/buildings/city-tiles/tile-2_-3.glb": "2196742fa84a9d8af835408995b7730190ddc17121c1c660f8d4088e7c4d1aa1",
+    "yuyang-site-3d-assets/models/buildings/city-tiles/tile-4_-4.glb": "eb8e26e6d502b5f3a794f78bfa4c77989e627b46c6ad75eee9c389e84c1d04f8",
+    "yuyang-site-3d-assets/models/buildings/city-tiles/tile-4_-5.glb": "b228ce63de092c935ea800a4a3b3e411f36ff75b4e0f17762c31aae7981a94c9"
+  },
+  "models": [
+    {
+      "file": "25-union-square-west.glb",
+      "footprintIndex": 5449,
+      "triangles": 3460,
+      "min": [
+        501.8089904785156,
+        5.559999942779541,
+        -623.0130004882812
+      ],
+      "max": [
+        532.2219848632812,
+        55.125,
+        -589.7579956054688
+      ],
+      "tileBoundaryTriangles": 8,
+      "tileHorizontalTriangles": 0,
+      "geometryHash": "113268029b68a62f8eda94b26df64090be2da6e18a540d38ced3beb4090720a0"
+    },
+    {
+      "file": "235-park-avenue-south.glb",
+      "footprintIndex": 5389,
+      "triangles": 5058,
+      "min": [
+        793.2639770507812,
+        3.569999933242798,
+        -779.9739990234375
+      ],
+      "max": [
+        839.7860107421875,
+        60.65999984741211,
+        -749.97998046875
+      ],
+      "tileBoundaryTriangles": 9,
+      "tileHorizontalTriangles": 1,
+      "geometryHash": "3d8ead31f86c53b49e5f18044e377e6d29e852e85fddcc8af15caa63cbded1f0"
+    }
+  ],
+  "tiles": [
+    {
+      "tile": "tile-2_-4.glb",
+      "neighborFootprintIndex": 5507,
+      "triangles": 96
+    },
+    {
+      "tile": "tile-2_-4.glb",
+      "neighborFootprintIndex": 5886,
+      "triangles": 115
+    },
+    {
+      "tile": "tile-2_-4.glb",
+      "neighborFootprintIndex": 5897,
+      "triangles": 64
+    },
+    {
+      "tile": "tile-2_-4.glb",
+      "neighborFootprintIndex": 6270,
+      "triangles": 92
+    },
+    {
+      "tile": "tile-2_-4.glb",
+      "neighborFootprintIndex": 6362,
+      "triangles": 153
+    }
+  ],
+  "browser": "Not attempted; source geometry audit only"
+}

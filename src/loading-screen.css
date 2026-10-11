@@ -1,0 +1,19 @@
+/* Monochrome styling is scoped to the entry screen; the map keeps its palette. */
+#loading-screen{display:grid;place-items:center;min-height:100dvh;padding:32px 24px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;text-align:center;isolation:isolate}
+#loading-screen .loading-content{width:min(100%,520px);margin:auto}
+#loading-screen .loading-gears{display:block;margin:0 auto 30px;overflow:visible}
+#loading-screen h1{color:#fff;font:700 clamp(29px,6vw,48px)/1.1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:-.065em;margin:0 0 24px}
+#loading-screen #loading-status{font:400 13px/1.6 ui-monospace,monospace;letter-spacing:.02em;color:#a6a6a6;margin:0;outline:none}
+#loading-screen .loading-action{display:flex;justify-content:center;min-height:48px;margin-top:28px}
+#loading-screen button{border:1px solid #fff;border-radius:999px;background:#fff;color:#000;min-height:48px;padding:12px 22px;font:600 13px/1.5 ui-monospace,monospace;cursor:pointer;touch-action:manipulation}
+#loading-screen button span{margin-left:24px}
+#loading-screen button:hover{background:#dcdcdc;color:#000;border-color:#dcdcdc}
+#loading-screen button:focus-visible{outline:2px solid #fff;outline-offset:5px}
+#loading-screen [hidden]{display:none!important}
+#loading-screen #loading-error,#loading-screen noscript{display:block;color:#aaa;font:400 12px/1.7 ui-monospace,monospace;margin:20px auto 0;max-width:420px;overflow-wrap:anywhere}
+#loading-screen .loading-gear-rotor{transform-origin:50px 50px;animation:loading-gear-turn 12s linear infinite;animation-play-state:paused}
+#loading-screen .loading-gear-reverse{animation-direction:reverse}
+#loading-screen[data-state="loading"] .loading-gear-rotor{animation-play-state:running}
+@keyframes loading-gear-turn{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#loading-screen .loading-gear-rotor{animation:none!important}}
+@media(max-height:420px){#loading-screen{padding:20px}#loading-screen .loading-gears{width:84px;height:63px;margin-bottom:16px}#loading-screen h1{margin-bottom:14px}#loading-screen .loading-action{margin-top:16px}}

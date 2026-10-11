@@ -1,0 +1,99 @@
+{
+  "checks": [
+    {
+      "name": "Sample polar limits and C distance; screenshot-directed initial target and azimuth",
+      "pass": true
+    },
+    {
+      "name": "Restore accepts exact bounds and rejects outside polar/distance/target",
+      "pass": true
+    },
+    {
+      "name": "Real OrbitControls update clamps both tilt bounds and maximum zoom distance",
+      "pass": true
+    },
+    {
+      "name": "Lazy hovered-only overlay shares source geometry without registration copies",
+      "pass": true
+    },
+    {
+      "name": "Whole-root hover lift follows reference 4.5m/rate9/delta .05 cap and overlay tracks it",
+      "pass": true
+    },
+    {
+      "name": "Hovered selected also floats with configured hue/pulse",
+      "pass": true
+    },
+    {
+      "name": "Leave immediately removes glow; selected without hover remains dark after updates",
+      "pass": true
+    },
+    {
+      "name": "Switching hover while another landmark is selected glows and lifts only current hover",
+      "pass": true
+    },
+    {
+      "name": "Original colors/emission/geometry stay untouched; deactivation restores baseline",
+      "pass": true
+    },
+    {
+      "name": "Reduced motion has no lift or pulse; dispose restores and removes all overlays",
+      "pass": true
+    },
+    {
+      "name": "Analytic sky and geometry share exact world-ray GLSL/colorspace; one nonpickable sky triangle",
+      "pass": true
+    },
+    {
+      "name": "Independent CPU rays give matching sky and full-fog colors across pitch/NDC; gradient continuous",
+      "pass": true
+    },
+    {
+      "name": "Atmosphere preserves existing shader hooks/cache keys and skips decoration materials",
+      "pass": true
+    },
+    {
+      "name": "Reference-aspect composition keeps park foreground, arch below fountain and campus facades arranged",
+      "pass": true
+    },
+    {
+      "name": "Static map-only UI, neutral context and complete-root effect integration",
+      "pass": true
+    },
+    {
+      "name": "Both restored Union Square context assets and Lipton use neutral context, without new selectable IDs",
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "No browser, network, server or build execution.",
+    "Shader string checks do not establish GPU compilation, visual appearance or draw-call performance."
+  ],
+  "composition": {
+    "fountain": [
+      0.6326627171769705,
+      0.8378012199148728
+    ],
+    "arch": [
+      0.5706999390368828,
+      0.9635810200767294
+    ],
+    "bobst": [
+      0.6064884249264547,
+      0.4101342543543218
+    ],
+    "silver": [
+      0.3567449674707819,
+      0.5731410459150186
+    ],
+    "kimmel": [
+      0.7014482890852922,
+      0.4982351557839446
+    ]
+  },
+  "camera": {
+    "minPolar": 0.006885420692679254,
+    "maxPolar": 0.8434529930137906,
+    "maxDistance": 434.2943200101229
+  }
+}

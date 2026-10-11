@@ -3,15 +3,22 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Local preview of the NYU Washington Square campus map.",
+  "description": "Tech NYU assistant with a campus map and permission-aware knowledge backend",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:api": "node --env-file-if-exists=.env --watch server/index.js",
+    "start": "node --env-file-if-exists=.env server/index.js",
+    "build:api": "node tools/check-api.mjs",
+    "test:assistant": "node --test tests/assistant.test.mjs tests/backend-provider.test.mjs tests/knowledge.test.mjs",
+    "worker:daily": "node --env-file-if-exists=.env server/worker.js"
   },
   "dependencies": {
     "clipper-lib": "^6.4.2",
-    "three": "^0.186.1"
+    "three": "^0.186.1",
+    "hono": "^4.13.13",
+    "@hono/node-server": "^2.1.4"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.5.1",
@@ -20,5 +27,8 @@
     "meshoptimizer": "^1.3.0",
     "playwright-core": "^1.64.0",
     "vite": "^8.3.4"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

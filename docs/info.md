@@ -20,3 +20,19 @@ M4 reference guides: kimmel-reference.md and silver-center-reference.md document
 M5: courant-stern-detailing.md records window enhancement and exact existing-color preservation contracts.
 
 M6: streets-parks-data.md records OSM snapshot/projection; streets-rendering.md and parks-rendering.md explain surface generation, layering and limits.
+
+Global Center references and fidelity limitations: global-center-reference.md.
+
+Map-only controls, camera mapping and appearance settings: map-presentation.md; glow provenance: hover-reference.md.
+
+Camera navigation research and input contracts: camera-navigation.md. Park planting eligibility, exclusions and bake audit: park-vegetation.md.
+
+M11: map-presentation.md describes analytic sky/fog and screenshot-guided reset; camera-navigation.md records saved-overview exit and wheel routing; union-square-context.md records source geometry restoration and pale materials.
+
+M12: map-performance.md documents resource ownership; map-performance-research.md records sources, zoom investigation and live verification limits.
+
+M13 loading-screen.md explains actual readiness, explicit entry, errors and verification limits.
+
+M14: supabase-mcp-setup.md records normal local setup attempt, Windows config-write denial and OAuth next steps; connection inventory is in AGENTS.md. backend-direction.md records assistant-first architecture decisions.
+
+- assistant-backend.md records the incomplete M15 source, setup boundaries, checks and open findings.

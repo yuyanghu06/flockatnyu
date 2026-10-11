@@ -50,3 +50,19 @@ M5: courant-stern.js adds merged window frames, mullions and sills to existing C
 M6: streets.js and parks.js generate offline street/park geometry. tools/build-streets-parks.mjs bakes the model; main.js loads the result, replacing old coarse grass.
 
 M7: main.js biases only the background ground plane behind street surfaces; streets.js removes asphalt beneath crossings instead of using near-coplanar overlays.
+
+M8: global-center.js replaces exactly88 GCASL source triangles with six merged meshes, preserving Kimmel and neighbors. main/config register nyu-global-center as the eleventh landmark.
+
+M9: atmosphere.js adds sky and edge haze; landmark-effects.js animates complete landmark roots. config.js contains exact camera samples and shared limits. Generic city materials are neutral; detailed model palettes remain intact.
+
+Final M9 effect follows yuyang-site commit964408f: merged additive surface overlays with hue/pulse, selected suppression and4.5mhover-only lift. This supersedes provisional sprite halos/emission. Decorations are separate nonpickable scene roots; underlying landmark materials remain unchanged.
+
+Current M9 supersedes idle/selected glow: only hovered roots show their overlay. camera-focus.js owns front focus, bounded scripted motion and focused tilt; map-interactions.js owns captured wheel routing while native pinch remains enabled. M10 park-vegetation.js is an offline generator; main.js loads its merged GLB at identity.
+
+M11: atmosphere.js replaces texture sky with one analytic triangle matching fog rays/output color; camera-focus.js stores pre-focus overview for reverse exit; map-interactions.js preserves wheel deltas. config.js default matches supplied park-foreground composition. assets/main restore neutral25UnionSquareWest and235ParkAvenueSouth models and neutralizeLipton, retaininggeometry.
+
+M12: map-resources.js compacts neutral context buffers exactly and freezes static local matrices; main.js caches picking and exposes bounded timing diagnostics.
+
+M13: bootstrap.js catches map startup failures; loading-state.js gates actual readiness; loading-screen.js/css own the scoped monochrome entry UI.
+
+- assistant.js / assistant.css / chat-client.js provide the M15 entry-gated assistant scaffold; backend acceptance is incomplete (see docs/assistant-backend.md).

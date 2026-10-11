@@ -11,3 +11,12 @@ __pycache__/
 !.env.example
 *.log
 yuyang-site-3d-assets.zip
+
+# Local MCP connections only; keep .codex agent configuration tracked.
+.mcp.json
+.mcp.local.json
+.mcp.*.local.json
+/.codex/mcp-servers.generated.toml
+/.claude/mcp.json
+/.cursor/mcp.json
+/.vscode/mcp.json

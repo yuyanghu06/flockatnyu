@@ -116,6 +116,8 @@ export const assets = {
   "bobst-library": new URL("../yuyang-site-3d-assets/models/buildings/bobst-library.glb", import.meta.url).href,
   "washington-square-arch": new URL("../yuyang-site-3d-assets/models/buildings/washington-square-arch.glb", import.meta.url).href,
   "lipton-hall": new URL("../yuyang-site-3d-assets/models/buildings/lipton-hall.glb", import.meta.url).href,
+  "25-union-square-west": new URL("../yuyang-site-3d-assets/models/buildings/25-union-square-west.glb", import.meta.url).href,
+  "235-park-avenue-south": new URL("../yuyang-site-3d-assets/models/buildings/235-park-avenue-south.glb", import.meta.url).href,
   "courant-institute": new URL("../yuyang-site-3d-assets/models/buildings/courant-institute.glb", import.meta.url).href,
   "stern-school-of-business": new URL("../yuyang-site-3d-assets/models/buildings/stern-school-of-business.glb", import.meta.url).href,
   "washington-square-trees": new URL("../yuyang-site-3d-assets/models/environment/washington-square-trees.glb", import.meta.url).href,

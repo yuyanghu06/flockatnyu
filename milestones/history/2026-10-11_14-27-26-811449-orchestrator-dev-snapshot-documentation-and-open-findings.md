@@ -1,0 +1,4 @@
+# dev-snapshot-documentation-and-open-findings
+
+- Local timestamp / acting role / milestone: 2026-10-11T14:27:26.8114499-04:00 / orchestrator / M15.
+User explicitly stopped backend/Supabase retries and authorized documenting, committing and pushing all intended current work to a dev branch. Updated snapshot, task list, M15 guide, backend setup/status and server/source/test/tool guides. Recorded 32 passed/1 skipped, unresolved request and retrieval limits, stale dependency lock, no live Hono/SQL/provider/browser acceptance, observed MCP registration versus unverified authentication/DB response and unapplied migration. Earlier Git add failed index.lock permission; new normal retry follows updated-permission report. Remote dev-branch lookup failed getaddrinfo thread start; local branch inventory has no dev branch. No implementation or deployment in this pass.

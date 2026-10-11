@@ -63,3 +63,88 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 ## M7
 - [x] Fix road surface depth conflict during camera motion.
 - [x] Verify zoom/pan sequences and camera/selection/performance.
+
+## M8
+- [x] Diagnose GCASL source geometry and Kimmel replacement ownership.
+- [x] Implement dedicated GCASL model and selection entry.
+- [x] Independent geometry/preservation checks (12/12).
+- [ ] Production build (existing street asset realpath EPERM).
+- [ ] Photo inspection and browser visual/interaction acceptance (access denied).
+
+## M9
+- [x] Confirm A/B tilt bounds and C zoom-only mapping.
+- [x] Implement map-only UI, neutral context, sky/edge haze and glow/lift.
+- [x] Independent presentation/camera/source-matched effect checks (11/11) and source review.
+- [ ] Browser visual/interaction acceptance and production build after access permits.
+
+## M9 interaction refinement (user steering)
+- [x] Glow only while hovered, including hovered selected landmarks.
+- [x] Front-facing focus and smooth/fine zoom source implementation.
+- [x] Independent camera15/15 and pointer/wheel7/7 checks; source review accepted.
+- [x] Research-based spring motion, smooth deselection and focused-only lower tilt.
+
+## M10
+- [x] Inspect actual parks versus other cover, define safe eligible planting masks.
+- [x] Bake and integrate72trees/117shrubs across21eligibleparts using four meshes.
+- [x] Independent8/8 exclusions/geometry/runtime-source checks and source review.
+- [ ] Browser visual acceptance after access permits.
+
+- [x] Correct initial bake's phantom tree exclusions; actual runtime geometry supplies246boxes.
+- [x] Runtime identity asset job and lightweight scene-extras statistics.
+- [ ] Production build after existing streets-parks.glb realpath permission is available.
+
+## M11 user refinement
+- [x] Share analytic fog/sky colors and remove quantized LUT; preserve edge concealment.
+- [x] Reverse focused outward scroll to saved pre-focus overview without repeated restart.
+- [x] Preserve ordinary wheel deltas and fixed settled levels; numerical traces pass.
+- [x] Approximate supplied park-foreground screenshot for initial/reset view at existing distance/tilt.
+- [x] Neutral Lipton/Union Square and restore omitted Carlyle/235Park geometry.
+- [x] Independent targeted checks, review and current documentation.
+- [ ] Visual/runtime acceptance when access permits.
+
+## M12 performance refinement
+- [x] Inspect full-scene baseline and primary-source performance research.
+- [x] Integrate shared hover geometry, reduced non-Bobst glow and selected hover lift.
+- [x] Integrate exact context compaction, shared materials, static local matrices and cached picking.
+- [x] Final offline resource comparison, input tests and independent review.
+- [ ] Browser frame/GPU/appearance verification when access permits.
+
+## M13 loading screen
+- [x] Inspect screenshot and implement lightweight monochrome screen only.
+- [x] Connect required jobs/nested resources/first scene readiness and explicit entry.
+- [x] Provide accessible enter, terminal failure/retry and stalled startup handling.
+- [x] Independent13/13 readiness/input/error/style checks and source review.
+- [ ] Browser visual/network/WebGL acceptance when access permits.
+
+## M14 Supabase connection setup only
+- [x] Research official project restriction/OAuth and inspect current configuration contract.
+- [x] Prepare local disabled .mcp.json without credentials; now ignored under the updated policy.
+- [x] Record assistant-first backend decisions and unresolved policy/provider choices.
+- [x] Receive project URL/ref: jssehnrmqhstcrtxulpa.
+- Superseded: shared-sync requirement explicitly canceled by user; normal local CLI setup authorized.
+- [x] Ignore MCP-only files and confirm none were tracked; preserve agent configs.
+- [x] Scoped CLI entry subsequently observed enabled after user setup; authentication remains unverified.
+- [ ] Launch scoped browser OAuth and verify a read-only project response.
+- No backend implementation, daily scheduler activation, Drive writes or deployment in this pass.
+
+## M15 assistant-first application
+- [x] Define frontend/backend/repository contracts and verify MCP registration availability.
+- [x] Add model adapter and protected Hono route source; runtime acceptance remains open.
+- [x] Add assistant panel/launcher source after entry with building context.
+- [x] Add scoped repository, unapplied local migration and no-op worker source.
+- [ ] Integrate environment examples, Railway/API/dev commands and documentation.
+- [ ] Independent protocol/access/error tests and review; fix material findings.
+- [ ] Live model/database/browser verification when credentials/access permit.
+
+## Requested Git snapshot
+- Superseded: inital-map-buildout destination replaced by the user request for a dev branch.
+- [ ] M15 follow-up: align chat history with server aggregate character and UTF-8 request budgets; bound retrieval query.
+- [ ] Install Hono dependencies and refresh package-lock.json when registry access works; run real Hono integration. Current lock does not include the new dependencies.
+
+
+## Current objective: dev snapshot
+- [x] Stop new backend implementation and Supabase retries; document actual state.
+- [ ] Create/use dev branch, commit current intended project work and push without force.
+- Backend acceptance remains incomplete; future fixes and runtime checks above are preserved.
+
+- Git publication blocked: restore normal repository metadata write access and network resolution, then create/use codex/dev, inspect staged changes, commit and push. No force-push or reset.

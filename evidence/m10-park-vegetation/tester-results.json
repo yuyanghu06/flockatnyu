@@ -1,0 +1,50 @@
+{
+  "checks": [
+    {
+      "name": "Saved layout deterministic and all 53 park parts audited with exact totals",
+      "pass": true
+    },
+    {
+      "name": "Independent disk containment in actual park, explicit cover and clipped eligible polygons",
+      "pass": true
+    },
+    {
+      "name": "Independent crown exclusion from paths, roads, sidewalks, curbs, buildings, water/fountains and hardscape",
+      "pass": true
+    },
+    {
+      "name": "All246 exclusions match source mesh bounds; source SHA256 hashes preserved",
+      "pass": true
+    },
+    {
+      "name": "Independent AABB/crown clearance and pairwise crown spacing",
+      "pass": true
+    },
+    {
+      "name": "Baked four meshes/17136triangles finite identity coordinates exactly reproduce generated geometry",
+      "pass": true
+    },
+    {
+      "name": "Synthetic park hole, fountain, path, roof and missing-cover cases respected",
+      "pass": true
+    },
+    {
+      "name": "Exclusion sources match loaded runtime assets and current procedural Gould; identity vegetation job registered",
+      "pass": true
+    }
+  ],
+  "counts": {
+    "parkParts": 53,
+    "trees": 72,
+    "shrubs": 117,
+    "partsWithAdditions": 21,
+    "exclusions": 246,
+    "meshes": 4,
+    "triangles": 17136,
+    "minimumCrownGap": 1.3359952619579079
+  },
+  "limitations": [
+    "Polygon boolean preparation reused existing street helpers; containment/distance assertions use independent winding/segment calculations.",
+    "2mm tolerance allows1mm clipping quantization. Browser appearance, actual landscaping and GPU performance unverified."
+  ]
+}

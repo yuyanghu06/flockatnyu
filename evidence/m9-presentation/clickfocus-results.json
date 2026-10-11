@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "name": "Immediate transition activation, smooth pan and zoom, all intermediate constraints and default front tilt",
+      "pass": true
+    },
+    {
+      "name": "Complete transformed bounds plus lift margin fit landscape and portrait without capped distance",
+      "pass": true
+    },
+    {
+      "name": "Rapid retarget begins from current pose; cancellation freezes transition and restores damping",
+      "pass": true
+    },
+    {
+      "name": "Invalid empty root and invalid delta preserve pose; invalid focus preserves existing transition",
+      "pass": true
+    },
+    {
+      "name": "Maximum distance and map target clamps, minimum-distance tiny target, original damping false restored",
+      "pass": true
+    },
+    {
+      "name": "All eleven configured front orientations finish at requested angle after spring settling",
+      "pass": true
+    },
+    {
+      "name": "Front focus rotates along shortest azimuth arc",
+      "pass": true
+    },
+    {
+      "name": "Ordinary zoom levels accumulate wheel bursts from destination, with smooth spring settling",
+      "pass": true
+    },
+    {
+      "name": "Fine zoom factor1.1 preserves pending front destination and target during focus",
+      "pass": true
+    },
+    {
+      "name": "Focused-only65degree view and78degree orbit cap; smooth zoom-out restores overview range",
+      "pass": true
+    },
+    {
+      "name": "Pinch-end reconciliation smoothly restores overview and cancel retains focused range",
+      "pass": true
+    },
+    {
+      "name": "Exact spring matches30/60/144Hz at equal elapsed time",
+      "pass": true
+    },
+    {
+      "name": "Repeated refocus and wheel retarget preserve momentum rather than restarting easing",
+      "pass": true
+    },
+    {
+      "name": "Invalid delta no-ops, extreme finite frame settles safely, reduced motion immediate",
+      "pass": true
+    },
+    {
+      "name": "Deselect leaveFocus transitions smoothly back to overview without pose jump",
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "Node numerical tests, no browser input or GPU validation.",
+    "Oversized targets cannot fit fully when configured maximum distance is reached."
+  ]
+}

@@ -102,6 +102,7 @@ export function validateCamera(value, limits = { minDistance: 15, maxDistance: 2
   if (!(Number.isFinite(value.near) && Number.isFinite(value.far) && value.near >= 0.01 && value.near <= 5 && value.far > value.near && value.far <= 20000)) throw new Error('Invalid camera clipping range.');
   if (!(Number.isFinite(value.zoom) && value.zoom >= 0.2 && value.zoom <= 5)) throw new Error('Camera zoom must be between 0.2 and 5.');
   const angle = Math.acos((value.position[1] - value.target[1]) / distance);
+  if (angle < (limits.minPolarAngle ?? 0) - epsilon || angle > (limits.maxPolarAngle ?? Math.PI / 2 - 0.02) + epsilon) throw new Error('Camera tilt is outside the configured viewing range.');
   if (angle > Math.PI / 2 - 0.02 + epsilon) throw new Error('Keep the camera slightly above the horizon.');
   return value;
 }

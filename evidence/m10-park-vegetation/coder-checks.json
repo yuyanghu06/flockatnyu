@@ -1,0 +1,452 @@
+{
+  "seed": 104729,
+  "trees": 72,
+  "shrubs": 117,
+  "sourceParkParts": 53,
+  "groundParkParts": 52,
+  "sourceSurfaceParts": 564,
+  "parksWithAdditions": 21,
+  "meshCount": 4,
+  "triangles": 17136,
+  "source": "OpenStreetMap eligible cover; deterministic illustrative planting, not surveyed tree inventory",
+  "coordinateSpace": "Washington Square meters; Y up; identity transform",
+  "bytes": 1237144,
+  "sha256": "f654f3e243031566da0be1a33a2d6021c7e36122a745e816ec07945d7c026f10",
+  "existingExclusionCount": 246,
+  "minimumCrownGap": 1.3359952619579079,
+  "checks": {
+    "deterministic": true,
+    "eligibleCoverAndMargin": true,
+    "existingGeometryClearance": true,
+    "minimumSpacing": true,
+    "finiteGeometry": true,
+    "extent": true,
+    "sourceHashesPreserved": true
+  },
+  "parks": [
+    {
+      "id": "relation/20812866:2",
+      "name": "Hudson River Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "Outside loaded map extent"
+    },
+    {
+      "id": "relation/4099553:0",
+      "name": "Sara D. Roosevelt Park",
+      "trees": 4,
+      "shrubs": 12,
+      "eligibleArea": 2063.19,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "relation/7095444:0",
+      "name": "Union Square Park",
+      "trees": 14,
+      "shrubs": 22,
+      "eligibleArea": 7661.88,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "relation/7095444:1",
+      "name": "Union Square Park",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 751.7,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "relation/7141751:1",
+      "name": "The High Line",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "Elevated or roof park; ground planting omitted"
+    },
+    {
+      "id": "way/108153676",
+      "name": "Duarte Square",
+      "trees": 0,
+      "shrubs": 1,
+      "eligibleArea": 157.72,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/1083911850",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/111563947",
+      "name": "Peretz Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/1221100069",
+      "name": "Grand Canal Court",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/160903868",
+      "name": "McKinley Playground",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/171562481",
+      "name": "Father Demo Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/197064614",
+      "name": "James J Walker Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/22899302",
+      "name": "Washington Square Park",
+      "trees": 28,
+      "shrubs": 22,
+      "eligibleArea": 23240.58,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/22901074",
+      "name": "Gramercy Park",
+      "trees": 5,
+      "shrubs": 13,
+      "eligibleArea": 2331.55,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/22961817",
+      "name": "Jackson Square Park",
+      "trees": 1,
+      "shrubs": 2,
+      "eligibleArea": 312.12,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/22961821",
+      "name": "Corporal John A. Seravalli Playground",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/239977366",
+      "name": "Vesuvio Playground",
+      "trees": 1,
+      "shrubs": 0,
+      "eligibleArea": 35.04,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/239988106",
+      "name": "Spring Street Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 21.78,
+      "reason": "Eligible cover too narrow, occupied by existing geometry, or spacing constrained"
+    },
+    {
+      "id": "way/239988114",
+      "name": "Minetta Triangle",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/239988118",
+      "name": "Father Fagan Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/239988120",
+      "name": "Jefferson Market Garden",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 384.36,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/244977216",
+      "name": "William E. Passannante Ballfield",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/244978444",
+      "name": "Winston Churchill Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/249665058",
+      "name": "Playground of the Americas",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/270791455",
+      "name": "Freeman Plaza West",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 724.05,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/30657456",
+      "name": "Christopher Park",
+      "trees": 1,
+      "shrubs": 2,
+      "eligibleArea": 275.62,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/30657462",
+      "name": "Sheridan Square Garden",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/324750157",
+      "name": "First Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/329041506",
+      "name": "Freeman Plaza East",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 731.25,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/329041537",
+      "name": "Freeman Plaza North",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 491.94,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/36865288",
+      "name": "Desalvio Playground",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/440055119",
+      "name": "Minetta Green",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/440055120",
+      "name": "West Fourth Street Courts",
+      "trees": 1,
+      "shrubs": 1,
+      "eligibleArea": 117.48,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/44225581",
+      "name": "Petrosino Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/449139914",
+      "name": "Urban Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/453461400",
+      "name": "Elizabeth Street Garden",
+      "trees": 3,
+      "shrubs": 7,
+      "eligibleArea": 1192.76,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/462302471",
+      "name": "Manuel Plaza",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/471549306",
+      "name": "NYC AIDS Memorial Park at St. Vincent's Triangle",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 470.49,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/473565702",
+      "name": "Rapkin-Gayle Plaza",
+      "trees": 1,
+      "shrubs": 1,
+      "eligibleArea": 160.34,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/497484756",
+      "name": "Albert Capsouto Park",
+      "trees": 2,
+      "shrubs": 5,
+      "eligibleArea": 734.67,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/580123906",
+      "name": "Mulry Square",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/581666857",
+      "name": "Jane Street Garden",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/613509792",
+      "name": "Tribeca Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/672251427",
+      "name": "Abe Lebewohl Park",
+      "trees": 0,
+      "shrubs": 1,
+      "eligibleArea": 17.14,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/687661469",
+      "name": "First Street Green Cultural Park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/86144190",
+      "name": "Abingdon Square",
+      "trees": 1,
+      "shrubs": 1,
+      "eligibleArea": 161.6,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/86144198",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/86256760",
+      "name": "Arthur Strickler Triangle",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/893841834",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/893841889",
+      "name": "Washington Commons",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/894035808",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    },
+    {
+      "id": "way/95833119",
+      "name": "Cooper Triangle",
+      "trees": 1,
+      "shrubs": 3,
+      "eligibleArea": 432.9,
+      "reason": "Added within eligible uncovered planting areas"
+    },
+    {
+      "id": "way/976724943",
+      "name": "Unnamed park",
+      "trees": 0,
+      "shrubs": 0,
+      "eligibleArea": 0,
+      "reason": "No explicit eligible vegetation cover after exclusions"
+    }
+  ]
+}

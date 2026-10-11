@@ -1,5 +1,9 @@
 # Project instructions
 
+## Current product direction override (2026-10-11)
+
+The Tech NYU assistant is primary; map and history are secondary. Planned backend: Hono on Railway, Supabase Postgres plus pgvector. Daily scheduled synchronization/summaries must retain original records, links and permissions; no weekly briefing. Initial integrations are Discord bot and Tech NYU Google Drive with designed read/write capability, not blanket authorization to modify Drive files. Luma/Miro are tentative/deferred; no Mural implementation. Model provider and member auth/access policy are unresolved. See docs/backend-direction.md. Current M15 authorization includes assistant frontend and Hono backend wiring, configurable LLM adapters, local Supabase migrations and permission-aware persistence. No live Discord/Drive/Luma/Miro connections, cloud schema changes, model calls without credentials, deployment or purchases. Follow the local MCP policy below.
+
 ## Purpose and scope
 
 Build a club information website centered on an interactive, detailed 3D map of
@@ -21,7 +25,8 @@ The club name, membership model, and exact campus coverage remain to be confirme
   Application source belongs in this root; do not create a nested application.
 - The completed preliminary work includes asset gathering and this project
   briefing. Current workflow status lives in `milestones/milestone.md`.
-  No integrations, database, scheduled jobs, or assistant are implemented.
+  M15 contains an incomplete assistant/backend scaffold and unapplied local SQL;
+  no live integrations, database verification, or active scheduled jobs are claimed.
 - The user authorized the managed agent workflow, actual agent configurations,
   and ongoing milestone logging. On 2026-10-10 the user explicitly resumed map
   implementation. Earlier cancellation/handoff notes are historical, not a current
@@ -188,51 +193,23 @@ These are open decisions, not blockers to independent exploratory work authorize
 by the user. Resolve routine reversible implementation choices with available
 context; ask for missing information when it materially changes the result.
 
-## Shared MCP configuration
+## Local MCP policy override (2026-10-11)
 
-The source of truth for user-installed global MCP servers is
-`/Users/yuyang/.config/shared-mcp/servers.json`, under `mcpServers`.
-When installing, editing, enabling, disabling, or deleting an MCP server:
+The user explicitly superseded the shared-sync policy: install MCP connections normally on this Windows computer, ignore connection configuration in Git, and document only a non-secret connection inventory here. The former shared servers.json/sync.py requirement and instruction to commit .mcp.json no longer apply. Use supported client configuration or CLI without altering unrelated settings. Genuine OS/tool permission denials still apply; do not bypass them.
 
-1. Update that shared JSON first.
-2. Run `python3 /Users/yuyang/.config/shared-mcp/sync.py` to generate Codex and
-   Claude Code settings.
-3. Run `python3 /Users/yuyang/.config/shared-mcp/sync.py --check` to verify both
-   clients match.
+Prefer project-local Codex configuration when it can remain untracked without hiding existing agent settings. This repository already tracks .codex/config.toml for agents and this session cannot write that protected directory. Use normal account-local Codex registration for this connection instead, always retaining the exact project-restricted endpoint. Account-local client registration is distinct from Supabase project data scope; do not describe it as repository-only registration.
 
-Do not independently edit MCP entries in `~/.codex/config.toml`,
-`~/.codex/mcp-servers.generated.toml`, or `~/.claude.json`, or use client-specific
-install commands without first recording and syncing the shared change.
-Use `enabled: false` to disable a server in both clients. Common fields are
-`command`, `args`, `env`, `cwd`, `url`, and `headers`; use `codex` and `claude`
-objects for client-specific options. Read `~/.config/shared-mcp/README.md` for the
-configuration contract. Preserve unrelated application settings. Keep credentials
-private and never print the shared configuration or secret values. Each client
-manages OAuth separately. Built-in and plugin-managed servers are separate; do
-not copy internal ChatGPT connectors into this file or silently change project
-settings.
+Ignore MCP-only connection files, never credentials or tokens in tracked docs. Keep .codex/config.toml and .codex/agents files tracked and free of MCP connection data. If an MCP-only file was tracked, remove only that file from the index with git rm --cached, preserving the local file; report permission failures accurately. OAuth credentials belong in the client's normal secure local storage, not the repo or chat. Do not install a global account-wide Supabase endpoint or substitute a plugin connector for this requested MCP.
 
-## Project-scoped MCP servers
+### Non-secret connection inventory
 
-Project-scoped servers belong in the project's authoritative `.mcp.json`, with
-the same `mcpServers` object and fields, including `enabled`, `codex`, and `claude`.
-Update the project file before applying changes to clients. Do not hand-edit
-`~/.claude.json` project MCP entries or other client-specific project settings
-without recording the change in `.mcp.json` first.
-
-A project entry overrides a global server of the same name only in that project.
-Duplicate a global server only when the configuration actually differs, such as
-its workspace, account, or token. Prefer a distinct name for a permanent difference.
-The project file is intended to be committed: use `${VAR}` placeholders and
-export real credentials in the shell; never store literal tokens in `.mcp.json`.
-
-Run the same shared `sync.py` command and `--check` after project changes. Sync
-validates discovered project files and records Claude Code approval through
-`enabledMcpjsonServers` and `disabledMcpjsonServers`; Claude Code reads `.mcp.json`
-natively. Discovery uses Claude Code's tracked project paths and `projectPaths`
-in the shared JSON, and requires an existing `.mcp.json`. Existing unmanaged
-`projects.<path>.mcpServers` entries are left untouched. Codex has no project-scoped
-MCP support under this configuration; these project servers reach Claude Code only.
+- **tech-nyu-supabase**: hosted HTTP Supabase developer MCP.
+- **Endpoint**: https://mcp.supabase.com/mcp?project_ref=jssehnrmqhstcrtxulpa&read_only=true&features=database,docs
+- **Data scope**: only the user's Tech NYU project jssehnrmqhstcrtxulpa; initial read-only database and docs tools.
+- **Intended client scope**: normal Codex account-local registration on this Windows host, not a committed project setting.
+- **Authentication**: browser OAuth required; no pasted PAT, password or service-role key.
+- **Actual state**: User reports completing local setup/auth. Current CLI lists the exact scoped server enabled, auth_status unknown. No Supabase callable tools are exposed to this running chat, so authenticated live connectivity is not verified; do not infer schema-write access. Ignored .mcp.json is only the earlier disabled local preparation, not a Codex installation.
+- **Product boundary**: developer setup only; no schema, data, scheduled job or deployment changes authorized by this connection setup.
 
 ## Current road scope override (2026-10-10)
 The user explicitly requested roads, sidewalks, pedestrian paths and all park geometry within the current loaded campus region. This supersedes the earlier exclusion for M6. Traffic and vehicle animation remain excluded. Preserve source exports; add attributed offline street/park geometry separately.

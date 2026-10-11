@@ -57,3 +57,17 @@ M4 acceptance: node tests/map-m4.mjs; evidence and report in evidence/m4-campus-
 M5: node tests/map-m5.mjs uses frozen before poses, verifies source geometry/material hashes and exact palette reuse, and captures final window details. Evidence: evidence/m5-window-details/.
 
 M6: tests/map-m6.mjs covers snapshot projection, baked surface bounds/fountain clearance, before/after street and park views, landmark/camera/mobile behavior. Evidence includes after-results.json (10/10) and after-final-results.json (3/3 final rebake checks).
+
+M8: global-center-geometry.mjs verifies exact replacement ownership, source preservation and static integration offline (12 checks).
+
+M9: map-presentation.mjs checks camera samples/actual OrbitControls, effects lifecycle, atmosphere shader hooks and static UI/context contracts without a browser.
+
+M9: camera-focus.mjs verifies spring motion, front framing, focused-only tilt and equal-time30/60/144Hz behavior; map-interactions.mjs tests wheel/click/drag and native pinch routing. M10: park-vegetation.mjs independently checks placement/exclusions, source hashes and baked geometry. These tests do not launch a browser.
+
+M11 updates camera-focus/map-interactions/map-presentation for reverse overview, wheel traces, analytic fog/sky and screenshot default. union-square-context.mjs audits the two omitted baked models and preserves adjacent city geometry.
+
+M12: map-memory.mjs verifies exact context attributes, safe ownership and hover transform propagation.
+
+M13 loading-screen.mjs tests readiness ordering, entry/failure behavior and loading integration.
+
+- M15 assistant/provider/knowledge fixture suites last reported 32 passed and 1 Hono dependency skip; real API/SQL/browser acceptance is pending.

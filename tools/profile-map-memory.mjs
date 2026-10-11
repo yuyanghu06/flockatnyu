@@ -1,0 +1,45 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import * as T from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
+import {assets,tiles} from '../src/assets.js';
+import {compactContextGeometry,freezeStaticSubtree} from '../src/map-resources.js';
+import {createLandmarkEffects} from '../src/landmark-effects.js';
+import {createMapAtmosphere} from '../src/atmosphere.js';
+import {removeReplacedBuilding} from '../src/geometry.js';
+import {createPaulsonModel} from '../src/paulson.js';
+import {createLeslieElabModel,leslieElabReplacement} from '../src/leslie-elab.js';
+import {createSilverCenterModel,silverCenterReplacement} from '../src/silver-center.js';
+import {createKimmelModel,removeKimmelGeometry,kimmelReplacement} from '../src/kimmel.js';
+import {createGlobalCenterModel,removeGlobalCenterGeometry,globalCenterReplacement} from '../src/global-center.js';
+import {createGouldPlaza} from '../src/gould-plaza.js';
+import {enhanceCourant,enhanceStern} from '../src/courant-stern.js';
+let c=fs.readFileSync('src/config.js','utf8');c=c.replace(/import (\w+) from '([^']+\.json)';/g,(_,n,p)=>`const ${n}=${fs.readFileSync(new URL(p,new URL('../src/config.js',import.meta.url)),'utf8')};`);
+const {buildings,palette,placements,paulson,mapExtent,atmosphere}=await import('data:text/javascript;base64,'+Buffer.from(c).toString('base64'));
+const phase=process.argv[2]??'optimized';if(!/^[a-z0-9-]+$/.test(phase))throw Error('Invalid phase');if(phase==='baseline')throw Error('Baseline already captured before implementation; do not overwrite historical evidence.');
+const scene=new T.Scene(),effects=createLandmarkEffects({scene}),sky=createMapAtmosphere(scene,palette,mapExtent,atmosphere),roots=new Map(),sourceHashes={},failures=[],loaded=[];
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const city=new T.MeshStandardMaterial({color:palette.context,vertexColors:false,roughness:1,side:T.DoubleSide});
+const ground=new T.Mesh(new T.PlaneGeometry(12000,12000),new T.MeshStandardMaterial({color:palette.ground,roughness:1,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:4}));ground.rotation.x=-Math.PI/2;ground.position.y=-.12;scene.add(ground);sky.apply(ground);
+await MeshoptDecoder.ready;const loader=new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+async function load(url){const path=fileURLToPath(url),b=fs.readFileSync(path);sourceHashes[path]=hash(b);return(await loader.parseAsync(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),'')).scene;}
+function register(id,root){root.userData.buildingId=id;compactContextGeometry(root,city);freezeStaticSubtree(root,{keepRootDynamic:true});root.traverse(m=>{if(m.isMesh)m.geometry.computeBoundingBox();});roots.set(id,root);effects.register(id,root);sky.apply(root);}
+function arch(model){const d=placements.washingtonSquareArch.data,b=new T.Box3().setFromObject(model),center=b.getCenter(new T.Vector3()),normal=new T.Group(),container=new T.Group();model.position.sub(new T.Vector3(center.x,b.min.y,center.z));normal.add(model);normal.scale.setScalar(d.height/(b.max.y-b.min.y));container.add(normal);const ring=d.footprint.slice(0,-1);container.position.set(ring.reduce((s,p)=>s+p[0],0)/ring.length,.68,ring.reduce((s,p)=>s+p[1],0)/ring.length);container.rotation.y=-Math.atan2(ring[1][1]-ring[0][1],ring[1][0]-ring[0][0]);model.traverse(m=>{if(m.isMesh)m.material=new T.MeshStandardMaterial({color:'#f1ede4',roughness:.86,side:T.DoubleSide});});return container;}
+const jobs=[...tiles.map(t=>({name:t.file,url:t.url,tile:true})),...Object.entries(assets).filter(([n])=>!['gould-plaza','park-grass'].includes(n)).map(([name,url])=>({name,url})),{name:'nyu-gould-plaza',create:createGouldPlaza},...['streets-parks','park-vegetation'].map(n=>({name:'mapped-'+n,url:new URL('../campus-assets/models/environment/'+n+'.glb',import.meta.url).href}))];
+for(const job of jobs){try{let model=job.create?job.create():job.name==='nyu-john-a-paulson-center'?createPaulsonModel(paulson):await load(job.url);model.name=job.name;
+ if(job.tile){model.traverse(m=>{if(m.isMesh)m.material=city;});for(const [id,rep,create,remove] of [['nyu-silver-center',silverCenterReplacement,createSilverCenterModel,null],['nyu-kimmel-center',kimmelReplacement,createKimmelModel,removeKimmelGeometry],['nyu-leslie-elab-building',leslieElabReplacement,createLeslieElabModel,null],['nyu-global-center',globalCenterReplacement,createGlobalCenterModel,removeGlobalCenterGeometry]])if(job.name===rep.tile){const r=create(model);remove?remove(model):removeReplacedBuilding(model,rep);register(id,r);scene.add(r);}if(job.name===paulson.replaces.tile)removeReplacedBuilding(model,paulson.replaces);
+ }else{if(['lipton-hall','25-union-square-west','235-park-avenue-south'].includes(job.name))model.traverse(m=>{if(m.isMesh)m.material=city;});if(job.name==='bobst-library'){const x=placements.bobstLibrary,r=new T.Group();r.add(model);r.position.fromArray(x.position);r.scale.fromArray(x.scale);r.rotation.y=x.rotationY;model=r;}if(job.name==='washington-square-arch')model=arch(model);if(job.name==='courant-institute')enhanceCourant(model);if(job.name==='stern-school-of-business')enhanceStern(model);if(buildings.some(b=>b.id===job.name))register(job.name,model);}
+ compactContextGeometry(model,city);freezeStaticSubtree(model,{keepRootDynamic:roots.has(job.name)});model.traverse(m=>{if(m.isMesh)m.geometry.computeBoundingBox();});sky.apply(model);scene.add(model);loaded.push(job.name);
+ }catch(e){failures.push({name:job.name,error:e.message});}}
+export function measure(root){const buffers=new Set(),arrays=new Set(),geometries=new Set(),materials=new Set(),textures=new Set();let meshes=0,referencedBytes=0,triangles=0;
+ root.traverse(o=>{if(!o.isMesh)return;meshes++;const g=o.geometry;triangles+=(g.index?.count??g.attributes.position.count)/3;geometries.add(g);for(const a of [...Object.values(g.attributes),g.index].filter(Boolean)){const array=a.isInterleavedBufferAttribute?a.data.array:a.array;referencedBytes+=array.byteLength;arrays.add(array);buffers.add(array.buffer);}for(const m of Array.isArray(o.material)?o.material:[o.material]){materials.add(m);for(const v of Object.values(m))if(v?.isTexture)textures.add(v);}});
+ return {meshes,geometries:geometries.size,materials:materials.size,textures:textures.size,triangles,attributeReferenceBytes:referencedBytes,distinctTypedArrayBytes:[...arrays].reduce((n,a)=>n+a.byteLength,0),distinctUnderlyingArrayBufferBytes:[...buffers].reduce((n,a)=>n+a.byteLength,0),distinctUnderlyingArrayBuffers:buffers.size};}
+const idle=measure(scene),hoverProfiles={};
+for(const [id,root]of roots){effects.setActive(id,id);effects.update(.05,0);const decorations=scene.children.filter(o=>o.name.startsWith('Landmark glow'));const overlay=measure({traverse:fn=>decorations.forEach(o=>o.traverse(fn))});const total=measure(scene);hoverProfiles[id]={overlayMeshes:overlay.meshes,overlayReferencedBytes:overlay.attributeReferenceBytes,incrementalDistinctBufferBytes:total.distinctUnderlyingArrayBufferBytes-idle.distinctUnderlyingArrayBufferBytes,incrementalMaterials:total.materials-idle.materials};effects.setActive(null,null);for(let i=0;i<50;i++)effects.update(.05,0);}
+const overlayRoots=scene.children.filter(o=>o.name.startsWith('Landmark glow')),overlayContainer={traverse:fn=>overlayRoots.forEach(o=>o.traverse(fn))};
+global.gc?.();const processSample=process.memoryUsage();
+const report={phase,coverage:{jobs:jobs.length,loaded:loaded.length,tiles:loaded.filter(n=>n.startsWith('tile-')).length,landmarks:roots.size,failures},scene:measure(scene),hoverProfiles,overlays:measure(overlayContainer),perLandmark:Object.fromEntries([...roots].map(([id,r])=>[id,measure(r)])),nodeProcess:processSample,nodeVersion:process.version,sourceHashes,sourceComparisonToBaseline:Object.entries(sourceHashes).every(([p,h])=>JSON.parse(fs.readFileSync('evidence/m12-memory/baseline.json')).sourceHashes[p]===h),notes:['Offline Node scene assembly matching optimized main load/replacement/placement/registration with context compaction, no per-mesh clones, frozen descendants and lazy shared overlays; no browser, network or renderer.','Distinct ArrayBuffer bytes count actual retained geometry storage, including GLB/interleaved backing-store slack. Attribute reference bytes can double count shared arrays.','Distinct typed-array bytes approximate attribute/index upload demand only; not measured GPU memory.','Node process memory includes decoder, transient build allocations and profiler overhead; not browser heap. No extra model clones are made solely for profiling.']};
+for(const [p,h]of Object.entries(sourceHashes))if(hash(fs.readFileSync(p))!==h)throw Error('Source changed '+p);
+fs.mkdirSync('evidence/m12-memory',{recursive:true});fs.writeFileSync(`evidence/m12-memory/${phase}.json`,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({...report,sourceHashes:undefined,perLandmark:undefined},null,2));

@@ -1,0 +1,4 @@
+# requested-buildout-snapshot
+
+- Local timestamp / acting role / milestone: 2026-10-11T14:25:28.7217536-04:00 / orchestrator / M15.
+User explicitly requested committing and pushing everything to inital-map-buildout. This is the current checked-out branch and already tracks origin/inital-map-buildout. Snapshot includes map refinements and incomplete M15 assistant/backend scaffold. Current targeted tests: 32 passed, 1 Hono integration skipped due unavailable dependency. Independent review identified chat history/server budget and long retrieval query mismatches; preserve these as open follow-up. Package lock remains stale because registry resolution failed. Live model/database/browser and migration execution remain unverified. No known credential-pattern matches or untracked files over 50MB found. Local environment and MCP connections remain ignored.

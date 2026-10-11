@@ -1,0 +1,9 @@
+# Independent pointer and wheel routing checks
+
+- **Scope / changed files:** Added `tests/map-interactions.mjs` and `interaction-results.json`. Tested real interaction module with injected event targets, clock, hit results and navigation recorder. No application edits.
+- **Executed:** `node tests/map-interactions.mjs`, exit 0; **7/7 checks pass**.
+- **Click behavior:** All eleven configured landmark IDs immediately select/focus. Blank click deselects without focus. Drag-away-return, five-pixel threshold movement, right button, secondary pointer and cancelled pointer sequences produce no click selection.
+- **Wheel behavior:** First inward event over a different landmark focuses once; subsequent events zoom finely without retargeting when the hit changes during that gesture. A fresh gesture can focus a new landmark. Outward wheel never initiates focus. Verified 80-pixel accumulation, 70 ms action spacing, fresh gesture after 140 ms, line/page delta normalization, preventDefault/stopImmediatePropagation and capture/nonpassive listener registration. Main statically enables native OrbitControls pinch zoom while the captured wheel prevents competing wheel handling. Controls end invokes camera reconciliation.
+- **Manual control / hover:** Controls start cancels navigation and clears hover. Camera change triggers stationary-pointer hit refresh after 80 ms; leaving prevents stale hover refresh. Disposal removes every registered listener.
+- **Verdict / limits:** Synthetic routing contract passes. No browser, network, server or build retry. Actual browser propagation, physical mouse/touch behavior, pointer capture, visual framing and GPU performance remain unverified. Separate camera spring suite passes 15/15 and hover-only suite passes 13/13; these remain numerical/static evidence.
+- **Handoff:** Parent owns shared guides/journal. Review live click, wheel, drag and touch behavior when browser access is available.
