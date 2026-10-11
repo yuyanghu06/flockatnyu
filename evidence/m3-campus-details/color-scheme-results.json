@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "theme": "graphite",
+      "pressed": "true",
+      "swatches": 5
+    },
+    {
+      "theme": "daylight",
+      "pressed": "true",
+      "swatches": 5
+    },
+    {
+      "theme": "dusk",
+      "pressed": "true",
+      "swatches": 5
+    },
+    {
+      "mobileWidth": 390,
+      "notesStatus": 200
+    }
+  ],
+  "errors": []
+}

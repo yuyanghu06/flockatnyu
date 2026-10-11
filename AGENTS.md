@@ -15,17 +15,17 @@ The club name, membership model, and exact campus coverage remain to be confirme
 
 ## Current state and authorization
 
-- The project root is `/Users/yuyang/techatnyu-internal-tooling/tech-visualized`.
-  All project files, configuration, documentation, milestones, and exported assets
-  were consolidated here at the user's request. The parent is only a container.
-- There is no Git repository or application implementation yet. Future application
-  source belongs in this project root; do not create a nested `tech-visualized/`.
+- The project root is the Git checkout containing this file. The original Mac
+  checkout was `/Users/yuyang/techatnyu-internal-tooling/tech-visualized`; the current
+  Windows checkout is `C:/Users/Yuyang Hu/Documents/techatnyu/techvisualized`.
+  Application source belongs in this root; do not create a nested application.
 - The completed preliminary work includes asset gathering and this project
   briefing. Current workflow status lives in `milestones/milestone.md`.
   No integrations, database, scheduled jobs, or assistant are implemented.
 - The user authorized the managed agent workflow, actual agent configurations,
-  and ongoing milestone logging. Map implementation was deferred to a new session.
-  Future application work should follow subsequent implementation requests.
+  and ongoing milestone logging. On 2026-10-10 the user explicitly resumed map
+  implementation. Earlier cancellation/handoff notes are historical, not a current
+  prohibition. Use the rolling milestone snapshot for actual implementation state.
 - Preserve existing files and user changes. Inspect the workspace before editing;
   report actual implementation and verification separately from proposed work.
 
@@ -233,3 +233,6 @@ natively. Discovery uses Claude Code's tracked project paths and `projectPaths`
 in the shared JSON, and requires an existing `.mcp.json`. Existing unmanaged
 `projects.<path>.mcpServers` entries are left untouched. Codex has no project-scoped
 MCP support under this configuration; these project servers reach Claude Code only.
+
+## Current road scope override (2026-10-10)
+The user explicitly requested roads, sidewalks, pedestrian paths and all park geometry within the current loaded campus region. This supersedes the earlier exclusion for M6. Traffic and vehicle animation remain excluded. Preserve source exports; add attributed offline street/park geometry separately.

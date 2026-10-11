@@ -1,0 +1,743 @@
+{
+  "browser": "154.0.8037.99",
+  "viewport": [
+    1440,
+    1000
+  ],
+  "checks": [
+    {
+      "name": "expanded production coverage and source placement",
+      "pass": true,
+      "detail": {
+        "loaded": 121,
+        "navigation": {
+          "mapExtent": {
+            "minX": -960,
+            "maxX": 960,
+            "minZ": -960,
+            "maxZ": 1152
+          },
+          "cameraLimits": {
+            "minDistance": 15,
+            "maxDistance": 700,
+            "minCameraHeight": 1,
+            "targetBounds": {
+              "minX": -430,
+              "maxX": 430,
+              "minY": 1,
+              "maxY": 150,
+              "minZ": -430,
+              "maxZ": 650
+            }
+          },
+          "loadedTileCount": 110
+        },
+        "paulson": {
+          "id": "nyu-john-a-paulson-center",
+          "bounds": {
+            "min": [
+              -65.42637634277344,
+              2.4856998920440674,
+              411.0456237792969
+            ],
+            "max": [
+              39.85437774658203,
+              93.48570251464844,
+              535.2313232421875
+            ]
+          },
+          "screen": {
+            "x": -2926.5906336450153,
+            "y": 1209.906575273458,
+            "visible": false
+          },
+          "meshes": 8,
+          "triangles": 54336,
+          "details": {
+            "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+            "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+            "architecture": {
+              "studentHeight": 69,
+              "facultyHeight": 91,
+              "podiumHeight": 25.48,
+              "reference": "docs/paulson-reference.md"
+            },
+            "buildingId": "nyu-john-a-paulson-center"
+          }
+        }
+      }
+    },
+    {
+      "name": "starting zoom, free orbit and reset",
+      "pass": true,
+      "detail": {
+        "distance": 240.9752133008355,
+        "initial": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            218.89015691721391,
+            141.77650826210711,
+            331.520781224766
+          ],
+          "target": [
+            82.74069512437818,
+            11.999999999999865,
+            180.88733413482007
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "orbited": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            41.88922141184301,
+            198.16375951119417,
+            328.34331117731034
+          ],
+          "target": [
+            82.74069512437818,
+            11.999999999999865,
+            180.88733413482007
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "bounded pan translates camera and target without angle snapping",
+      "pass": true,
+      "detail": [
+        {
+          "label": "south-east",
+          "before": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              630,
+              211.99999999999997,
+              850
+            ],
+            "target": [
+              429.99999999999994,
+              12,
+              650
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          },
+          "after": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              630,
+              211.99999999999997,
+              732.2975803409606
+            ],
+            "target": [
+              430,
+              11.999999999999998,
+              532.2975803409606
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "label": "south-west",
+          "before": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              -229.99999999999994,
+              211.99999999999997,
+              850
+            ],
+            "target": [
+              -429.99999999999994,
+              12,
+              650
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          },
+          "after": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              -230,
+              211.99999999999997,
+              850
+            ],
+            "target": [
+              -430,
+              11.999999999999996,
+              650
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "label": "north-east",
+          "before": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              630,
+              211.99999999999997,
+              -229.9999999999999
+            ],
+            "target": [
+              429.9999999999999,
+              11.999999999999996,
+              -429.9999999999999
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          },
+          "after": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              630,
+              211.99999999999997,
+              -229.99999999999997
+            ],
+            "target": [
+              430,
+              11.999999999999991,
+              -430
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "label": "north-west",
+          "before": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              -229.9999999999999,
+              211.99999999999997,
+              -229.99999999999986
+            ],
+            "target": [
+              -429.9999999999999,
+              11.999999999999996,
+              -429.9999999999999
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          },
+          "after": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              -230,
+              211.99999999999994,
+              -112.29641933805996
+            ],
+            "target": [
+              -430,
+              11.999999999999986,
+              -312.29641933806
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "in-bounds roundtrip exact and outside restore rejected",
+      "pass": true,
+      "detail": {
+        "restored": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            150,
+            150,
+            600
+          ],
+          "target": [
+            0,
+            30,
+            450
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "rejection": "Could not restore: Camera target is outside the loaded campus area. Use Reset view, or target X -430 to 430, Y 1 to 150, Z -430 to 650 meters."
+      }
+    },
+    {
+      "name": "all six selectable buildings and complete Paulson hit from multiple sides",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Paulson side hit north-west\n    at file:///C:/Users/Yuyang%20Hu/Documents/techatnyu/techvisualized/tests/map-refinement.mjs:58:9\n    at async check (file:///C:/Users/Yuyang%20Hu/Documents/techatnyu/techvisualized/tests/map-refinement.mjs:15:104)\n    at async file:///C:/Users/Yuyang%20Hu/Documents/techatnyu/techvisualized/tests/map-refinement.mjs:47:1"
+    },
+    {
+      "name": "default GPU rendering observations",
+      "pass": false,
+      "error": "page.click: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#clear')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"clear\" aria-label=\"Clear building selection\">×</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    15 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\Yuyang Hu\\Documents\\techatnyu\\techvisualized\\tests\\map-refinement.mjs:63:13\n    at check (C:\\Users\\Yuyang Hu\\Documents\\techatnyu\\techvisualized\\tests\\map-refinement.mjs:15:110)\n    at C:\\Users\\Yuyang Hu\\Documents\\techatnyu\\techvisualized\\tests\\map-refinement.mjs:62:7"
+    }
+  ],
+  "errors": [],
+  "missing": [],
+  "initial": {
+    "status": "ready",
+    "loaded": 121,
+    "failed": [],
+    "selected": null,
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 36.700000047683716,
+    "loadMilliseconds": 465,
+    "removedDistantGrassTriangles": 327,
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        218.89015691721391,
+        141.77650826210711,
+        331.520781224766
+      ],
+      "target": [
+        82.74069512437818,
+        11.999999999999865,
+        180.88733413482007
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 700,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -430,
+          "maxX": 430,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -430,
+          "maxZ": 650
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 396,
+      "triangles": 180426
+    },
+    "landmarks": [
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 560.2181329612299,
+          "y": 278.5431299299025,
+          "visible": true
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 1038.1059667373083,
+          "y": 158.70981128804473,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "lipton-hall",
+        "bounds": {
+          "min": [
+            -212.58099365234375,
+            -0.36399999260902405,
+            -108.59200286865234
+          ],
+          "max": [
+            -162.03399658203125,
+            59.82699966430664,
+            -57.926998138427734
+          ]
+        },
+        "screen": {
+          "x": 666.3238741887199,
+          "y": -3.9093969763427383,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 5628,
+        "details": {
+          "buildingId": "lipton-hall"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 749.8563283101993,
+          "y": 728.9512003282279,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 4748,
+        "details": {
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "screen": {
+          "x": 615.7631914851936,
+          "y": 444.81753317493065,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 13852,
+        "details": {
+          "buildingId": "stern-school-of-business"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": -2926.5906336450153,
+          "y": 1209.906575273458,
+          "visible": false
+        },
+        "meshes": 8,
+        "triangles": 54336,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      }
+    ]
+  },
+  "final": {
+    "status": "ready",
+    "loaded": 121,
+    "failed": [],
+    "selected": null,
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 36.700000047683716,
+    "loadMilliseconds": 465,
+    "removedDistantGrassTriangles": 327,
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        -222.78599929809573,
+        197.98570120334625,
+        263.13847351074213
+      ],
+      "target": [
+        -12.785999298095701,
+        47.985701203346245,
+        473.13847351074213
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 700,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -430,
+          "maxX": 430,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -430,
+          "maxZ": 650
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 103,
+      "triangles": 141633
+    },
+    "landmarks": [
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": -1259.065282514191,
+          "y": 1419.3198707187325,
+          "visible": false
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": -11107.302850143495,
+          "y": 6217.135774966857,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "lipton-hall",
+        "bounds": {
+          "min": [
+            -212.58099365234375,
+            -0.36399999260902405,
+            -108.59200286865234
+          ],
+          "max": [
+            -162.03399658203125,
+            59.82699966430664,
+            -57.926998138427734
+          ]
+        },
+        "screen": {
+          "x": 3567.0684546619295,
+          "y": -2128.5518493914838,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 5628,
+        "details": {
+          "buildingId": "lipton-hall"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": -479.09597091530907,
+          "y": 685.8701057518184,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 4748,
+        "details": {
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "screen": {
+          "x": -726.8189282107678,
+          "y": 930.2909085543542,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 13852,
+        "details": {
+          "buildingId": "stern-school-of-business"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": 720.0000000000007,
+          "y": 499.99999999999966,
+          "visible": true
+        },
+        "meshes": 8,
+        "triangles": 54336,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      }
+    ]
+  }
+}

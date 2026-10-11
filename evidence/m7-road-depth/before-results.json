@@ -1,0 +1,1692 @@
+{
+  "browser": "154.0.8037.99",
+  "checks": [
+    {
+      "name": "real micro-pan and wheel-zoom frame sequences",
+      "pass": true,
+      "detail": [
+        {
+          "label": "paulson-close",
+          "frames": [
+            {
+              "kind": "pan",
+              "index": 0,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-00.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  41,
+                  18,
+                  421
+                ],
+                "target": [
+                  20.999999999999996,
+                  1,
+                  403
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 1,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-01.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.978713130805886,
+                  18.000000000000004,
+                  421.00228572910345
+                ],
+                "target": [
+                  20.978713130805872,
+                  1,
+                  403.00228572910345
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 2,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-02.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.949152043258735,
+                  18.000000000000007,
+                  421.011952948353
+                ],
+                "target": [
+                  20.949152043258728,
+                  1,
+                  403.011952948353
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 3,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-03.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.927932181355956,
+                  17.999999999999996,
+                  421.0369442595728
+                ],
+                "target": [
+                  20.927932181355967,
+                  1,
+                  403.0369442595728
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 4,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-04.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.92238432410738,
+                  17.999999999999996,
+                  421.0690828782463
+                ],
+                "target": [
+                  20.922384324107377,
+                  1,
+                  403.0690828782463
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 5,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-05.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.92107754701143,
+                  17.999999999999996,
+                  421.1072561474429
+                ],
+                "target": [
+                  20.921077547011446,
+                  1,
+                  403.1072561474429
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 6,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-06.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.9135096365936,
+                  17.999999999999996,
+                  421.14115464415755
+                ],
+                "target": [
+                  20.91350963659362,
+                  1,
+                  403.14115464415755
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 7,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-07.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.889629814611595,
+                  18.000000000000007,
+                  421.16428972547686
+                ],
+                "target": [
+                  20.889629814611567,
+                  1,
+                  403.16428972547686
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 8,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-08.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.85383868291609,
+                  18,
+                  421.1732492597778
+                ],
+                "target": [
+                  20.853838682916095,
+                  1,
+                  403.1732492597778
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 9,
+              "path": "evidence/m7-road-depth/before-paulson-close-pan-09.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.81902889742765,
+                  18,
+                  421.1782069049935
+                ],
+                "target": [
+                  20.81902889742765,
+                  1,
+                  403.1782069049935
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 0,
+              "path": "evidence/m7-road-depth/before-paulson-close-zoom-0.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.935736609703625,
+                  18.3092223723997,
+                  421.4927932876793
+                ],
+                "target": [
+                  20.571945583351024,
+                  1,
+                  403.165381363962
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 1,
+              "path": "evidence/m7-road-depth/before-paulson-close-zoom-1.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  41.07734402505235,
+                  18.62406936101074,
+                  421.8099339439038
+                ],
+                "target": [
+                  20.34314477680442,
+                  1,
+                  403.14915462048066
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 2,
+              "path": "evidence/m7-road-depth/before-paulson-close-zoom-2.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  41.22153005092096,
+                  18.944643275078306,
+                  422.1328428520401
+                ],
+                "target": [
+                  20.110185021417056,
+                  1,
+                  403.1326323254866
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 3,
+              "path": "evidence/m7-road-depth/before-paulson-close-zoom-3.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  41.07681440149007,
+                  18.622892630773073,
+                  421.8087486926924
+                ],
+                "target": [
+                  20.343999541757025,
+                  1,
+                  403.1492153189327
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 4,
+              "path": "evidence/m7-road-depth/before-paulson-close-zoom-4.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.934693552987476,
+                  18.306911032724386,
+                  421.4904655959591
+                ],
+                "target": [
+                  20.573621749782287,
+                  1,
+                  403.1655009730745
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 5,
+              "path": "evidence/m7-road-depth/before-paulson-close-zoom-5.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  40.79512095834792,
+                  17.996595040907163,
+                  421.1778893714902
+                ],
+                "target": [
+                  20.799126792574757,
+                  1,
+                  403.1814946222944
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            }
+          ]
+        },
+        {
+          "label": "washington-wide",
+          "frames": [
+            {
+              "kind": "pan",
+              "index": 0,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-00.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  220.00000000000006,
+                  402,
+                  260.00000000000006
+                ],
+                "target": [
+                  0,
+                  2,
+                  0
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 1,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-01.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  219.61853753409025,
+                  402,
+                  259.9890273638313
+                ],
+                "target": [
+                  -0.3814624659098027,
+                  1.9999999999999998,
+                  -0.010972636168747683
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 2,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-02.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  219.10820201612404,
+                  402,
+                  260.0809550979007
+                ],
+                "target": [
+                  -0.8917979838760237,
+                  1.999999999999999,
+                  0.08095509790061929
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 3,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-03.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  218.7165191480502,
+                  402,
+                  260.4485329201714
+                ],
+                "target": [
+                  -1.2834808519498546,
+                  1.9999999999999991,
+                  0.4485329201713379
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 4,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-04.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  218.56240349651057,
+                  402,
+                  260.97219226613214
+                ],
+                "target": [
+                  -1.4375965034895335,
+                  1.9999999999999996,
+                  0.9721922661319838
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 5,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-05.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  218.45211074336592,
+                  402,
+                  261.67370461476185
+                ],
+                "target": [
+                  -1.547889256634186,
+                  1.9999999999999998,
+                  1.6737046147616932
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 6,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-06.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  218.23949021310932,
+                  402,
+                  262.1978444666541
+                ],
+                "target": [
+                  -1.7605097868907893,
+                  1.9999999999999998,
+                  2.1978444666540007
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 7,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-07.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  217.862086339126,
+                  402,
+                  262.4478706535252
+                ],
+                "target": [
+                  -2.13791366087411,
+                  1.999999999999999,
+                  2.447870653525065
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 8,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-08.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  217.23801570979376,
+                  402,
+                  262.51558708082587
+                ],
+                "target": [
+                  -2.7619842902063603,
+                  1.9999999999999973,
+                  2.5155870808257776
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 9,
+              "path": "evidence/m7-road-depth/before-washington-wide-pan-09.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  216.60844573388422,
+                  402,
+                  262.51170277864355
+                ],
+                "target": [
+                  -3.391554266115885,
+                  1.9999999999999991,
+                  2.511702778643462
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 0,
+              "path": "evidence/m7-road-depth/before-washington-wide-zoom-0.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  216.7173968352237,
+                  408.40353742028987,
+                  266.57929440159813
+                ],
+                "target": [
+                  -6.804548745935787,
+                  1.999999999999999,
+                  2.416995078409685
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 1,
+              "path": "evidence/m7-road-depth/before-washington-wide-zoom-1.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  217.17255136075093,
+                  414.90958806931235,
+                  270.71249287068713
+                ],
+                "target": [
+                  -9.927722077370825,
+                  1.9999999999999436,
+                  2.3212606256341535
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 2,
+              "path": "evidence/m7-road-depth/before-washington-wide-zoom-2.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  217.63500530505792,
+                  421.51979306530814,
+                  274.9118590857902
+                ],
+                "target": [
+                  -13.100880880861544,
+                  1.9999999999999436,
+                  2.2239935933399764
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 3,
+              "path": "evidence/m7-road-depth/before-washington-wide-zoom-3.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  217.17184724147694,
+                  414.8995333747218,
+                  270.706105269812
+                ],
+                "target": [
+                  -9.92289611462002,
+                  1.9999999999999993,
+                  2.3214085762428387
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 4,
+              "path": "evidence/m7-road-depth/before-washington-wide-zoom-4.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  216.71599810164605,
+                  408.38374512766507,
+                  266.56672062862134
+                ],
+                "target": [
+                  -6.795061718569747,
+                  2.0000000000000577,
+                  2.4172862956390913
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 5,
+              "path": "evidence/m7-road-depth/before-washington-wide-zoom-5.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  216.26734252036243,
+                  401.9707797056513,
+                  262.49265781905245
+                ],
+                "target": [
+                  -3.7165863177455853,
+                  2.0000000000001137,
+                  2.5116510103793424
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            }
+          ]
+        },
+        {
+          "label": "paulson-wide",
+          "frames": [
+            {
+              "kind": "pan",
+              "index": 0,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-00.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  129.99999999999997,
+                  302,
+                  578
+                ],
+                "target": [
+                  -20,
+                  2,
+                  398
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 1,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-01.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  129.74411500565753,
+                  302,
+                  577.9907136007098
+                ],
+                "target": [
+                  -20.255884994342487,
+                  1.9999999999999996,
+                  397.9907136007098
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 2,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-02.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  129.3653033480967,
+                  302,
+                  578.0542292966738
+                ],
+                "target": [
+                  -20.634696651903322,
+                  1.9999999999999998,
+                  398.05422929667384
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 3,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-03.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  129.09656262531462,
+                  302,
+                  578.2865309317089
+                ],
+                "target": [
+                  -20.903437374685396,
+                  1.9999999999999998,
+                  398.2865309317089
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 4,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-04.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  128.96167727060103,
+                  302,
+                  578.6855878652044
+                ],
+                "target": [
+                  -21.038322729399084,
+                  1.9999999999999996,
+                  398.6855878652045
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 5,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-05.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  128.87487915862974,
+                  302,
+                  579.1762278445364
+                ],
+                "target": [
+                  -21.12512084137024,
+                  1.9999999999999996,
+                  399.1762278445364
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 6,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-06.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  128.7316699559604,
+                  302,
+                  579.5433264777467
+                ],
+                "target": [
+                  -21.268330044039722,
+                  1.9999999999999998,
+                  399.54332647774686
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 7,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-07.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  128.40945083642254,
+                  302,
+                  579.7649299274942
+                ],
+                "target": [
+                  -21.590549163577585,
+                  1.9999999999999996,
+                  399.76492992749434
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 8,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-08.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.98771160000044,
+                  302,
+                  579.8056865547555
+                ],
+                "target": [
+                  -22.012288399999676,
+                  1.9999999999999998,
+                  399.8056865547557
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "pan",
+              "index": 9,
+              "path": "evidence/m7-road-depth/before-paulson-wide-pan-09.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.54383658658288,
+                  302,
+                  579.8013552628342
+                ],
+                "target": [
+                  -22.45616341341723,
+                  1.9999999999999998,
+                  399.8013552628344
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 0,
+              "path": "evidence/m7-road-depth/before-paulson-wide-zoom-0.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.45880059654874,
+                  306.73963524241964,
+                  582.5967760483957
+                ],
+                "target": [
+                  -24.91101702466108,
+                  1.9999999999999998,
+                  399.75299490294384
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 1,
+              "path": "evidence/m7-road-depth/before-paulson-wide-zoom-1.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.6370193826322,
+                  311.5541509589432,
+                  585.4385726764795
+                ],
+                "target": [
+                  -27.140056096839675,
+                  1.9999999999999998,
+                  399.70608210111317
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 2,
+              "path": "evidence/m7-road-depth/before-paulson-wide-zoom-2.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.8180736003734,
+                  316.4447301700175,
+                  588.3252664014876
+                ],
+                "target": [
+                  -29.404291484635657,
+                  1.9999999999999996,
+                  399.6584282994768
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 3,
+              "path": "evidence/m7-road-depth/before-paulson-wide-zoom-3.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.63677967762291,
+                  311.54772462742534,
+                  585.4347794807318
+                ],
+                "target": [
+                  -27.13708263609019,
+                  1.9999999999999996,
+                  399.70614470427626
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 4,
+              "path": "evidence/m7-road-depth/before-paulson-wide-zoom-4.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.45830922030592,
+                  306.72698260901814,
+                  582.5893075636786
+                ],
+                "target": [
+                  -24.905182084203496,
+                  1.9999999999999998,
+                  399.75311799826744
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            },
+            {
+              "kind": "zoom",
+              "index": 5,
+              "path": "evidence/m7-road-depth/before-paulson-wide-zoom-5.png",
+              "camera": {
+                "version": 1,
+                "projection": "perspective",
+                "position": [
+                  127.28261817787522,
+                  301.9813164246718,
+                  579.788149608429
+                ],
+                "target": [
+                  -22.70804003446092,
+                  1.9999999999999996,
+                  399.7993597536255
+                ],
+                "fov": 43,
+                "near": 0.5,
+                "far": 6000,
+                "zoom": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "missing": [],
+  "requests": [
+    "http://127.0.0.1:4173/",
+    "http://127.0.0.1:4173/assets/map-DNGGB08G.js",
+    "http://127.0.0.1:4173/assets/modulepreload-polyfill-P2Xu9kJm.js",
+    "http://127.0.0.1:4173/assets/map-BpkvtC2Z.css",
+    "http://127.0.0.1:4173/assets/tile--1_-1-yxbNmdRu.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-2-rlfVFns8.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-3-Dz3JiItX.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-4-BawXpavq.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-5-D5AIHzaf.glb",
+    "http://127.0.0.1:4173/assets/tile--1_0-B5o0KG2h.glb",
+    "http://127.0.0.1:4173/assets/tile--1_1-BofKhyw6.glb",
+    "http://127.0.0.1:4173/assets/tile--1_2-kX6RvMny.glb",
+    "http://127.0.0.1:4173/assets/tile--1_3-ENP8jkby.glb",
+    "http://127.0.0.1:4173/assets/tile--1_4-Ir9wCbpa.glb",
+    "http://127.0.0.1:4173/assets/tile--1_5-C2pGTg5p.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-1-DYol13Ka.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-2-B2gtQuRZ.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-3-6v-V_OYM.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-4-ChV0CYO_.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-5-Bdy8Mwd8.glb",
+    "http://127.0.0.1:4173/assets/tile--2_0-CxBtKBkk.glb",
+    "http://127.0.0.1:4173/assets/tile--2_1-BncO5zV9.glb",
+    "http://127.0.0.1:4173/assets/tile--2_2-OdSdqO3E.glb",
+    "http://127.0.0.1:4173/assets/tile--2_3-D4FXHKMq.glb",
+    "http://127.0.0.1:4173/assets/tile--2_4-BHYdFR9S.glb",
+    "http://127.0.0.1:4173/assets/tile--2_5-Cj43MT5G.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-1-ChRfzMz8.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-2-5kFSUK2t.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-3-BhQ2wlpL.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-4-CJ9a-J3f.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-5-BvVHnKAP.glb",
+    "http://127.0.0.1:4173/assets/tile--3_0-BwEGQvBg.glb",
+    "http://127.0.0.1:4173/assets/tile--3_1-BIofBSFH.glb",
+    "http://127.0.0.1:4173/assets/tile--3_2-CJXfYfAt.glb",
+    "http://127.0.0.1:4173/assets/tile--3_3-DI_fLEpK.glb",
+    "http://127.0.0.1:4173/assets/tile--3_4-BIRJRJw7.glb",
+    "http://127.0.0.1:4173/assets/tile--3_5-Bvk8Q0zV.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-1-CK37HLlQ.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-2-_zbAawjP.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-3-Brn2Re1k.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-4-yAGAFAA9.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-5-BBNWJ1yK.glb",
+    "http://127.0.0.1:4173/assets/tile--4_0-DNqdRT3z.glb",
+    "http://127.0.0.1:4173/assets/tile--4_1-CL59DqEo.glb",
+    "http://127.0.0.1:4173/assets/tile--4_2-BCEjpydx.glb",
+    "http://127.0.0.1:4173/assets/tile--4_3-A21CLE0S.glb",
+    "http://127.0.0.1:4173/assets/tile--4_4-CP45kegV.glb",
+    "http://127.0.0.1:4173/assets/tile--4_5-DOY0O8N8.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-1-CJi1e3uK.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-2-dk3LZl1c.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-3-Bm6Tz5An.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-4-CSYnzyes.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-5-B2eNgvkL.glb",
+    "http://127.0.0.1:4173/assets/tile--5_0-BT__Gb7W.glb",
+    "http://127.0.0.1:4173/assets/tile--5_1-DfbBNYL8.glb",
+    "http://127.0.0.1:4173/assets/tile--5_2-CqGA4t48.glb",
+    "http://127.0.0.1:4173/assets/tile--5_3-DQ5V3OxE.glb",
+    "http://127.0.0.1:4173/assets/tile--5_4-VejfILUM.glb",
+    "http://127.0.0.1:4173/assets/tile--5_5-DIIStIpZ.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-1-CSS_03IJ.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-2-BcW38E4e.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-3-CBr4J0cE.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-4-Bx5SDYDL.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-5-D2fnxL-U.glb",
+    "http://127.0.0.1:4173/assets/tile-0_0-CVAhRz-X.glb",
+    "http://127.0.0.1:4173/assets/tile-0_1-EOEhugcf.glb",
+    "http://127.0.0.1:4173/assets/tile-0_2-ZRVrL02L.glb",
+    "http://127.0.0.1:4173/assets/tile-0_3-DrFPsD-R.glb",
+    "http://127.0.0.1:4173/assets/tile-0_4-XNk7YfPe.glb",
+    "http://127.0.0.1:4173/assets/tile-0_5-ozBLFReM.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-1-BXxkWJJ_.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-2-B0oh09FP.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-3-DmTp5w_h.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-4-CJ3GRvXC.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-5-9uDDNdqU.glb",
+    "http://127.0.0.1:4173/assets/tile-1_0-C2Kd_l3K.glb",
+    "http://127.0.0.1:4173/assets/tile-1_1-GH3TJT9L.glb",
+    "http://127.0.0.1:4173/assets/tile-1_2-BGRASKxv.glb",
+    "http://127.0.0.1:4173/assets/tile-1_3-_TffNmZH.glb",
+    "http://127.0.0.1:4173/assets/tile-1_4-QO2sS46x.glb",
+    "http://127.0.0.1:4173/assets/tile-1_5-wDL71ARY.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-1-Cca6PDqR.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-2-D2yEHK9Z.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-3-GGqmZpSw.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-4-DOv8OhIg.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-5-t7Zk5tnG.glb",
+    "http://127.0.0.1:4173/assets/tile-2_0--jb-Q4CL.glb",
+    "http://127.0.0.1:4173/assets/tile-2_1-2l9ew9Mr.glb",
+    "http://127.0.0.1:4173/assets/tile-2_2-BjNw5IK9.glb",
+    "http://127.0.0.1:4173/assets/tile-2_3-DKN8l7Cg.glb",
+    "http://127.0.0.1:4173/assets/tile-2_4-D9eID6p8.glb",
+    "http://127.0.0.1:4173/assets/tile-2_5-Cs8khuGe.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-1-K33iwS3l.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-2-CqwVxG1k.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-3-YEzhe5ti.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-4-CbwZCydf.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-5-B5pVQS4t.glb",
+    "http://127.0.0.1:4173/assets/tile-3_0-j6KFytkO.glb",
+    "http://127.0.0.1:4173/assets/tile-3_1--YQh1IiS.glb",
+    "http://127.0.0.1:4173/assets/tile-3_2-RbK3yt4-.glb",
+    "http://127.0.0.1:4173/assets/tile-3_3-CsW8yUmu.glb",
+    "http://127.0.0.1:4173/assets/tile-3_4-CWpNg8GI.glb",
+    "http://127.0.0.1:4173/assets/tile-3_5-Bbzfhkzc.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-1-CbydSnH7.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-2-BXy3yp0L.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-3-B4XEDXC5.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-4-BYwEGYmG.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-5-BfPh6Weq.glb",
+    "http://127.0.0.1:4173/assets/tile-4_0-sXvqmPxv.glb",
+    "http://127.0.0.1:4173/assets/tile-4_1-_CeyfzF-.glb",
+    "http://127.0.0.1:4173/assets/tile-4_2-CslOaukF.glb",
+    "http://127.0.0.1:4173/assets/tile-4_3-BwaVYbM9.glb",
+    "http://127.0.0.1:4173/assets/tile-4_4-8Okegl-u.glb",
+    "http://127.0.0.1:4173/assets/tile-4_5-CSs7Vajx.glb",
+    "http://127.0.0.1:4173/assets/bobst-library-OoV73M1-.glb",
+    "http://127.0.0.1:4173/assets/washington-square-arch-mOrC1lvY.glb",
+    "http://127.0.0.1:4173/assets/lipton-hall-lWLAI2Ei.glb",
+    "http://127.0.0.1:4173/assets/courant-institute-BkNsbOmB.glb",
+    "http://127.0.0.1:4173/assets/stern-school-of-business-DQmPGm9U.glb",
+    "http://127.0.0.1:4173/assets/washington-square-trees-3UhepDUW.glb",
+    "http://127.0.0.1:4173/assets/washington-square-fountain-BI46kdXS.glb",
+    "http://127.0.0.1:4173/assets/courant-garden-oyBi5iUE.glb",
+    "http://127.0.0.1:4173/assets/streets-parks-C0_weDgG.glb"
+  ],
+  "initial": {
+    "status": "ready",
+    "loaded": 121,
+    "failed": [],
+    "selected": null,
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 30.799999952316284,
+    "loadMilliseconds": 2473,
+    "removedKimmelTriangles": 200,
+    "removedSilverCenterTriangles": 380,
+    "removedLeslieTriangles": 164,
+    "mapped-streets": {
+      "sourceWays": 4830,
+      "roadWays": 1065,
+      "pathWays": 3696,
+      "skippedGradeSeparated": 69,
+      "inferredWidths": 4737,
+      "buildingExclusions": 6501,
+      "source": "OpenStreetMap local snapshot; widths inferred when absent",
+      "coordinateSpace": "Washington Square X/Z meters; identity root",
+      "mergedMeshes": 4,
+      "triangles": 197888,
+      "pathFootprintPolygons": 31,
+      "grades": {
+        "roads": 0.02,
+        "sidewalks": 0.16,
+        "curbs": 0.2,
+        "outsidePaths": 0.18,
+        "parkPaths": 0.76
+      },
+      "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+    },
+    "mapped-parks": {
+      "parkCount": 52,
+      "surfacePartCount": 558,
+      "surfaceCount": 0,
+      "polygons": 1925,
+      "coordinateSpace": "Washington Square meters; Y up",
+      "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+    },
+    "environmentSurfaces": {
+      "meshes": 10,
+      "triangles": 230451
+    },
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        218.89015691721391,
+        141.77650826210711,
+        331.520781224766
+      ],
+      "target": [
+        82.74069512437818,
+        11.999999999999865,
+        180.88733413482007
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 700,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -780,
+          "maxX": 780,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -780,
+          "maxZ": 970
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 421,
+      "triangles": 657444
+    },
+    "landmarks": [
+      {
+        "id": "nyu-kimmel-center",
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "screen": {
+          "x": 522.1426110121777,
+          "y": 191.6467671976953,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source CityGML massing with photo-informed facade approximation; not a survey or current entrance-access model.",
+          "architecture": {
+            "sourceTriangles": 200,
+            "windows": 229,
+            "crownPanels": 350,
+            "displayBays": 25,
+            "reference": "docs/kimmel-reference.md",
+            "preservedNeighbor": "Global Center for Academic and Spiritual Life, footprint11021"
+          },
+          "buildingId": "nyu-kimmel-center"
+        }
+      },
+      {
+        "id": "nyu-silver-center",
+        "bounds": {
+          "min": [
+            116.27423095703125,
+            1.3041272163391113,
+            19.216636657714844
+          ],
+          "max": [
+            177.37234497070312,
+            58.22825241088867,
+            87.29178619384766
+          ]
+        },
+        "screen": {
+          "x": 1334.4996150734682,
+          "y": 302.33360708759204,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 73892,
+        "details": {
+          "buildingId": "nyu-silver-center",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11667,
+          "sourceTriangles": 380,
+          "windowCount": 857
+        }
+      },
+      {
+        "id": "nyu-leslie-elab-building",
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "screen": {
+          "x": 1320.331318170455,
+          "y": 543.818272661452,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "details": {
+          "buildingId": "nyu-leslie-elab-building",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11174,
+          "sourceTriangles": 164,
+          "windowCount": 498,
+          "storefrontCount": 16
+        }
+      },
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 560.2181329612299,
+          "y": 278.5431299299025,
+          "visible": true
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 1038.1059667373083,
+          "y": 158.70981128804473,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "lipton-hall",
+        "bounds": {
+          "min": [
+            -212.58099365234375,
+            -0.36399999260902405,
+            -108.59200286865234
+          ],
+          "max": [
+            -162.03399658203125,
+            59.82699966430664,
+            -57.926998138427734
+          ]
+        },
+        "screen": {
+          "x": 666.3238741887199,
+          "y": -3.9093969763427383,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 5628,
+        "details": {
+          "buildingId": "lipton-hall"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 749.8563283101993,
+          "y": 728.9512003282279,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "courant",
+            "sourceGlassComponents": 370,
+            "windows": 370,
+            "faces": 370,
+            "occludedFaces": 370,
+            "addedMeshes": 2,
+            "addedTriangles": 26640,
+            "sourcePalette": {
+              "trim": [
+                0.26635560393333435,
+                0.21952620148658752,
+                0.18116424977779388
+              ],
+              "mullion": [
+                0.12477181851863861,
+                0.08650045841932297,
+                0.07227185368537903
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": -2926.5906336450153,
+          "y": 1209.906575273458,
+          "visible": false
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      },
+      {
+        "id": "nyu-gould-plaza",
+        "bounds": {
+          "min": [
+            78.45346069335938,
+            -0.11999999731779099,
+            171.71893310546875
+          ],
+          "max": [
+            148.7293701171875,
+            10.483983039855957,
+            258.1990051269531
+          ]
+        },
+        "screen": {
+          "x": 720.2524516254276,
+          "y": 687.9980076402114,
+          "visible": true
+        },
+        "meshes": 11,
+        "triangles": 18108,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+          "architecture": {
+            "pavers": 6466,
+            "skylights": 2,
+            "benches": 8,
+            "frontSteps": 6,
+            "mainCourtMeters": [
+              58.7,
+              36.8
+            ],
+            "reference": "docs/gould-plaza-reference.md"
+          },
+          "planting": {
+            "trees": 4,
+            "shrubPlanters": 3,
+            "provenance": "User-requested planting proposal, not surveyed existing vegetation"
+          },
+          "buildingId": "nyu-gould-plaza"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "screen": {
+          "x": 615.7631914851936,
+          "y": 444.81753317493065,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 92140,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "stern",
+            "sourceGlassComponents": 1098,
+            "windows": 1073,
+            "faces": 1095,
+            "occludedFaces": 1101,
+            "addedMeshes": 2,
+            "addedTriangles": 78288,
+            "sourcePalette": {
+              "trim": [
+                0.5457244515419006,
+                0.5271151065826416,
+                0.4793201684951782
+              ],
+              "mullion": [
+                0.2345505803823471,
+                0.24228112399578094,
+                0.22696587443351746
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "stern-school-of-business"
+        }
+      }
+    ]
+  }
+}

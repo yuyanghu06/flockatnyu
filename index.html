@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#354345" />
+    <title>NYU · Campus Atlas</title>
+  </head>
+  <body>
+    <main id="app">
+      <div id="map" aria-label="Interactive 3D Washington Square campus map"></div>
+      <header class="masthead"><span class="mark">N</span><div><p class="eyebrow">NEW YORK UNIVERSITY</p><h1>Campus Atlas<span>Washington Square</span></h1></div><span class="preview">LOCAL PREVIEW</span></header>
+      <nav class="toolbar" aria-label="Map controls"><button id="reset">Reset view</button><button id="camera-open">Camera angle ↗</button></nav>
+      <aside class="explorer" aria-label="Campus buildings"><p class="eyebrow">EXPLORE CAMPUS</p><h2>A place to connect.</h2><p class="intro">Explore the buildings around Washington Square. Select a landmark to take a closer look.</p><label for="building">Campus landmark</label><select id="building"><option value="">Choose a building</option></select><section id="building-detail" hidden><div class="detail-title"><h3 id="building-name"></h3><button id="clear" aria-label="Clear building selection">×</button></div><p id="building-description"></p><button id="focus">Focus on building</button></section><div class="activity"><label for="date">Activity date · New York</label><input id="date" type="date"/><p>Club activity is not connected yet.</p><span>Calendar, updates and resources will appear here.</span></div></aside>
+      <div id="hover" hidden></div>
+      <div class="bottom"><p class="hints">Drag to orbit <b>·</b> Right-drag to pan <b>·</b> Scroll to zoom<span>Touch: one finger orbit · two fingers pan / pinch</span></p><div id="status" role="status">Preparing campus…</div><details id="errors" hidden><summary>Some assets could not load</summary><ul id="error-list"></ul></details><p class="attribution">Geometry: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a> · <a href="https://www.nyc.gov/site/doitt/initiatives/3d-building.page" target="_blank" rel="noreferrer">NYC building data</a></p></div>
+      <dialog id="camera-dialog"><form method="dialog"><button class="close" aria-label="Close camera panel">×</button></form><p class="eyebrow">YOUR POINT OF VIEW</p><h2>Save your camera angle</h2><p>Explore freely, then copy the JSON below to share your exact view. Paste a saved angle here to restore it.</p><label for="camera-json">Camera configuration</label><textarea id="camera-json" spellcheck="false" rows="11"></textarea><div class="dialog-actions"><button id="camera-copy">Copy camera</button><button id="camera-restore">Restore angle</button></div><p id="camera-message" role="status"></p></dialog>
+    </main><script type="module" src="/src/main.js"></script>
+  </body>
+</html>

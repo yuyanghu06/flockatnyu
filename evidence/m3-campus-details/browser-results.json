@@ -1,0 +1,1051 @@
+{
+  "browser": "154.0.8037.99",
+  "checks": [
+    {
+      "name": "normal load and exact replacement contracts",
+      "pass": true,
+      "detail": {
+        "loaded": 122,
+        "landmarks": [
+          {
+            "id": "nyu-leslie-elab-building",
+            "bounds": {
+              "min": [
+                157.273681640625,
+                -0.09082202613353729,
+                129.48802185058594
+              ],
+              "max": [
+                200.84979248046875,
+                59.4202995300293,
+                166.80621337890625
+              ]
+            },
+            "screen": {
+              "x": 1320.331318170455,
+              "y": 543.818272661452,
+              "visible": true
+            },
+            "meshes": 7,
+            "triangles": 31772,
+            "details": {
+              "buildingId": "nyu-leslie-elab-building",
+              "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+              "coordinateSpace": "Baked Washington Square map meters; identity root",
+              "sourceFootprintIndex": 11174,
+              "sourceTriangles": 164,
+              "windowCount": 498,
+              "storefrontCount": 16
+            }
+          },
+          {
+            "id": "bobst-library",
+            "bounds": {
+              "min": [
+                -37.04813229862255,
+                2.68800003652754,
+                108.53189870264993
+              ],
+              "max": [
+                56.43214018266443,
+                53.77473711675113,
+                200.48407872263823
+              ]
+            },
+            "screen": {
+              "x": 560.2181329612299,
+              "y": 278.5431299299025,
+              "visible": true
+            },
+            "meshes": 10,
+            "triangles": 1856,
+            "details": {
+              "buildingId": "bobst-library"
+            }
+          },
+          {
+            "id": "washington-square-arch",
+            "bounds": {
+              "min": [
+                10.510046783447871,
+                0.68,
+                -53.33341635506916
+              ],
+              "max": [
+                27.87195321655213,
+                21.18,
+                -39.00058364493084
+              ]
+            },
+            "screen": {
+              "x": 1038.1059667373083,
+              "y": 158.70981128804473,
+              "visible": true
+            },
+            "meshes": 1,
+            "triangles": 315,
+            "details": {
+              "buildingId": "washington-square-arch"
+            }
+          },
+          {
+            "id": "lipton-hall",
+            "bounds": {
+              "min": [
+                -212.58099365234375,
+                -0.36399999260902405,
+                -108.59200286865234
+              ],
+              "max": [
+                -162.03399658203125,
+                59.82699966430664,
+                -57.926998138427734
+              ]
+            },
+            "screen": {
+              "x": 666.3238741887199,
+              "y": -3.9093969763427383,
+              "visible": false
+            },
+            "meshes": 1,
+            "triangles": 5628,
+            "details": {
+              "buildingId": "lipton-hall"
+            }
+          },
+          {
+            "id": "courant-institute",
+            "bounds": {
+              "min": [
+                115.60099792480469,
+                3.752000093460083,
+                207.3649139404297
+              ],
+              "max": [
+                165.12399291992188,
+                54.98899841308594,
+                270.4930114746094
+              ]
+            },
+            "screen": {
+              "x": 749.8563283101993,
+              "y": 728.9512003282279,
+              "visible": true
+            },
+            "meshes": 1,
+            "triangles": 4748,
+            "details": {
+              "buildingId": "courant-institute"
+            }
+          },
+          {
+            "id": "nyu-john-a-paulson-center",
+            "bounds": {
+              "min": [
+                -65.42637634277344,
+                2.4856998920440674,
+                411.0456237792969
+              ],
+              "max": [
+                39.85437774658203,
+                93.48570251464844,
+                535.2313232421875
+              ]
+            },
+            "screen": {
+              "x": -2926.5906336450153,
+              "y": 1209.906575273458,
+              "visible": false
+            },
+            "meshes": 8,
+            "triangles": 52440,
+            "details": {
+              "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+              "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+              "architecture": {
+                "studentHeight": 69,
+                "facultyHeight": 91,
+                "podiumHeight": 25.48,
+                "reference": "docs/paulson-reference.md"
+              },
+              "buildingId": "nyu-john-a-paulson-center"
+            }
+          },
+          {
+            "id": "nyu-silver-towers",
+            "bounds": {
+              "min": [
+                -158.7720184326172,
+                2.6319398880004883,
+                387.1189880371094
+              ],
+              "max": [
+                -34.74934768676758,
+                94.82760620117188,
+                473.9687194824219
+              ]
+            },
+            "screen": {
+              "x": -1570.7217786381932,
+              "y": 530.3086146023365,
+              "visible": false
+            },
+            "meshes": 5,
+            "triangles": 111108,
+            "details": {
+              "coordinateSpace": "Washington Square map meters; identity root",
+              "modelFidelity": "Original CityGML shells with photo-informed facade relief",
+              "towers": [
+                {
+                  "footprintIndex": 11190,
+                  "datasetHeightRange": [
+                    2.88306,
+                    91.69161
+                  ]
+                },
+                {
+                  "footprintIndex": 11189,
+                  "datasetHeightRange": [
+                    2.63194,
+                    91.62066
+                  ]
+                },
+                {
+                  "footprintIndex": 11195,
+                  "datasetHeightRange": [
+                    2.95401,
+                    94.82761
+                  ]
+                }
+              ],
+              "buildingId": "nyu-silver-towers"
+            }
+          },
+          {
+            "id": "nyu-gould-plaza",
+            "bounds": {
+              "min": [
+                78.45346069335938,
+                -0.11999999731779099,
+                171.71893310546875
+              ],
+              "max": [
+                148.7293701171875,
+                4.650534152984619,
+                258.1990051269531
+              ]
+            },
+            "screen": {
+              "x": 720.2505404446442,
+              "y": 701.6093567415629,
+              "visible": true
+            },
+            "meshes": 8,
+            "triangles": 15668,
+            "details": {
+              "coordinateSpace": "Washington Square map meters; identity transform",
+              "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+              "architecture": {
+                "pavers": 6466,
+                "skylights": 2,
+                "benches": 8,
+                "frontSteps": 6,
+                "mainCourtMeters": [
+                  58.7,
+                  36.8
+                ],
+                "reference": "docs/gould-plaza-reference.md"
+              },
+              "buildingId": "nyu-gould-plaza"
+            }
+          },
+          {
+            "id": "stern-school-of-business",
+            "bounds": {
+              "min": [
+                30.535999298095703,
+                2.890000104904175,
+                151.9720001220703
+              ],
+              "max": [
+                119.41000366210938,
+                55.499000549316406,
+                247.55499267578125
+              ]
+            },
+            "screen": {
+              "x": 615.7631914851936,
+              "y": 444.81753317493065,
+              "visible": true
+            },
+            "meshes": 1,
+            "triangles": 13852,
+            "details": {
+              "buildingId": "stern-school-of-business"
+            }
+          }
+        ],
+        "oldGouldRequest": false
+      }
+    },
+    {
+      "name": "new models multiple camera sides and complete-root clicks",
+      "pass": true,
+      "detail": [
+        {
+          "id": "nyu-silver-towers",
+          "label": "silver-south-east",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              83.23931694030759,
+              178.72977304458615,
+              610.5438537597656
+            ],
+            "target": [
+              -96.76068305969238,
+              48.72977304458618,
+              430.5438537597656
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-silver-towers",
+          "label": "silver-north-west",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              -276.7606830596924,
+              198.7297730445862,
+              250.54385375976568
+            ],
+            "target": [
+              -96.76068305969238,
+              48.72977304458618,
+              430.5438537597656
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-leslie-elab-building",
+          "label": "leslie-north-east",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              264.0617370605469,
+              94.66473875194788,
+              53.14711761474611
+            ],
+            "target": [
+              179.06173706054688,
+              29.664738751947883,
+              148.1471176147461
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-leslie-elab-building",
+          "label": "leslie-south-east",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              234.06173706054688,
+              109.66473875194788,
+              178.1471176147461
+            ],
+            "target": [
+              179.06173706054688,
+              29.664738751947883,
+              148.1471176147461
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-gould-plaza",
+          "label": "gould-overhead",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              112.09999999999984,
+              128.3,
+              204.09999999999982
+            ],
+            "target": [
+              111.99999999999999,
+              3.3,
+              203.99999999999997
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-gould-plaza",
+          "label": "gould-entrance",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              125.99999999999999,
+              27.3,
+              181.99999999999997
+            ],
+            "target": [
+              111.99999999999999,
+              3.3,
+              203.99999999999997
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "all nine landmark menu, focus, hover and actual canvas clicks",
+      "pass": true,
+      "detail": [
+        {
+          "id": "nyu-leslie-elab-building",
+          "point": {
+            "x": 720,
+            "y": 499.9999999999999
+          }
+        },
+        {
+          "id": "bobst-library",
+          "point": {
+            "x": 720.0000000000001,
+            "y": 500.0000000000001
+          }
+        },
+        {
+          "id": "washington-square-arch",
+          "point": {
+            "x": 719.9999999999998,
+            "y": 500
+          }
+        },
+        {
+          "id": "lipton-hall",
+          "point": {
+            "x": 719.9999999999999,
+            "y": 500.0000000000002
+          }
+        },
+        {
+          "id": "courant-institute",
+          "point": {
+            "x": 719.9999999999999,
+            "y": 500
+          }
+        },
+        {
+          "id": "nyu-john-a-paulson-center",
+          "point": {
+            "x": 719.9999999999998,
+            "y": 500.00000000000034
+          }
+        },
+        {
+          "id": "nyu-silver-towers",
+          "point": {
+            "x": 660,
+            "y": 499.9999999999999
+          }
+        },
+        {
+          "id": "nyu-gould-plaza",
+          "point": {
+            "x": 569.9999999999998,
+            "y": 580.0000000000001
+          }
+        },
+        {
+          "id": "stern-school-of-business",
+          "point": {
+            "x": 720,
+            "y": 500
+          }
+        }
+      ]
+    },
+    {
+      "name": "free camera and pan bounds remain usable",
+      "pass": true,
+      "detail": {
+        "before": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            630,
+            211.99999999999997,
+            850
+          ],
+          "target": [
+            429.99999999999994,
+            12,
+            650
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "after": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            630,
+            211.99999999999997,
+            718.9146503672254
+          ],
+          "target": [
+            430,
+            11.999999999999996,
+            518.9146503672254
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "mobile canvas and controls",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "name": "default GPU performance",
+      "pass": true,
+      "detail": {
+        "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5060 Ti (0x00002D04) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "frames": 90,
+        "meanMs": 6.059999999999996,
+        "fps": 165.0165016501651,
+        "p95Ms": 6.100000000000364,
+        "render": {
+          "calls": 391,
+          "triangles": 227062
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "missing": [],
+  "requests": [
+    "http://127.0.0.1:4173/",
+    "http://127.0.0.1:4173/assets/map-D8ZDgkyx.js",
+    "http://127.0.0.1:4173/assets/modulepreload-polyfill-P2Xu9kJm.js",
+    "http://127.0.0.1:4173/assets/map-BpkvtC2Z.css",
+    "http://127.0.0.1:4173/assets/tile--1_-1-yxbNmdRu.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-2-rlfVFns8.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-3-Dz3JiItX.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-4-BawXpavq.glb",
+    "http://127.0.0.1:4173/assets/tile--1_-5-D5AIHzaf.glb",
+    "http://127.0.0.1:4173/assets/tile--1_0-B5o0KG2h.glb",
+    "http://127.0.0.1:4173/assets/tile--1_1-BofKhyw6.glb",
+    "http://127.0.0.1:4173/assets/tile--1_2-kX6RvMny.glb",
+    "http://127.0.0.1:4173/assets/tile--1_3-ENP8jkby.glb",
+    "http://127.0.0.1:4173/assets/tile--1_4-Ir9wCbpa.glb",
+    "http://127.0.0.1:4173/assets/tile--1_5-C2pGTg5p.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-1-DYol13Ka.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-2-B2gtQuRZ.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-3-6v-V_OYM.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-4-ChV0CYO_.glb",
+    "http://127.0.0.1:4173/assets/tile--2_-5-Bdy8Mwd8.glb",
+    "http://127.0.0.1:4173/assets/tile--2_0-CxBtKBkk.glb",
+    "http://127.0.0.1:4173/assets/tile--2_1-BncO5zV9.glb",
+    "http://127.0.0.1:4173/assets/tile--2_2-OdSdqO3E.glb",
+    "http://127.0.0.1:4173/assets/tile--2_3-D4FXHKMq.glb",
+    "http://127.0.0.1:4173/assets/tile--2_4-BHYdFR9S.glb",
+    "http://127.0.0.1:4173/assets/tile--2_5-Cj43MT5G.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-1-ChRfzMz8.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-2-5kFSUK2t.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-3-BhQ2wlpL.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-4-CJ9a-J3f.glb",
+    "http://127.0.0.1:4173/assets/tile--3_-5-BvVHnKAP.glb",
+    "http://127.0.0.1:4173/assets/tile--3_0-BwEGQvBg.glb",
+    "http://127.0.0.1:4173/assets/tile--3_1-BIofBSFH.glb",
+    "http://127.0.0.1:4173/assets/tile--3_2-CJXfYfAt.glb",
+    "http://127.0.0.1:4173/assets/tile--3_3-DI_fLEpK.glb",
+    "http://127.0.0.1:4173/assets/tile--3_4-BIRJRJw7.glb",
+    "http://127.0.0.1:4173/assets/tile--3_5-Bvk8Q0zV.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-1-CK37HLlQ.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-2-_zbAawjP.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-3-Brn2Re1k.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-4-yAGAFAA9.glb",
+    "http://127.0.0.1:4173/assets/tile--4_-5-BBNWJ1yK.glb",
+    "http://127.0.0.1:4173/assets/tile--4_0-DNqdRT3z.glb",
+    "http://127.0.0.1:4173/assets/tile--4_1-CL59DqEo.glb",
+    "http://127.0.0.1:4173/assets/tile--4_2-BCEjpydx.glb",
+    "http://127.0.0.1:4173/assets/tile--4_3-A21CLE0S.glb",
+    "http://127.0.0.1:4173/assets/tile--4_4-CP45kegV.glb",
+    "http://127.0.0.1:4173/assets/tile--4_5-DOY0O8N8.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-1-CJi1e3uK.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-2-dk3LZl1c.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-3-Bm6Tz5An.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-4-CSYnzyes.glb",
+    "http://127.0.0.1:4173/assets/tile--5_-5-B2eNgvkL.glb",
+    "http://127.0.0.1:4173/assets/tile--5_0-BT__Gb7W.glb",
+    "http://127.0.0.1:4173/assets/tile--5_1-DfbBNYL8.glb",
+    "http://127.0.0.1:4173/assets/tile--5_2-CqGA4t48.glb",
+    "http://127.0.0.1:4173/assets/tile--5_3-DQ5V3OxE.glb",
+    "http://127.0.0.1:4173/assets/tile--5_4-VejfILUM.glb",
+    "http://127.0.0.1:4173/assets/tile--5_5-DIIStIpZ.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-1-CSS_03IJ.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-2-BcW38E4e.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-3-CBr4J0cE.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-4-Bx5SDYDL.glb",
+    "http://127.0.0.1:4173/assets/tile-0_-5-D2fnxL-U.glb",
+    "http://127.0.0.1:4173/assets/tile-0_0-CVAhRz-X.glb",
+    "http://127.0.0.1:4173/assets/tile-0_1-EOEhugcf.glb",
+    "http://127.0.0.1:4173/assets/tile-0_2-ZRVrL02L.glb",
+    "http://127.0.0.1:4173/assets/tile-0_3-DrFPsD-R.glb",
+    "http://127.0.0.1:4173/assets/tile-0_4-XNk7YfPe.glb",
+    "http://127.0.0.1:4173/assets/tile-0_5-ozBLFReM.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-1-BXxkWJJ_.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-2-B0oh09FP.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-3-DmTp5w_h.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-4-CJ3GRvXC.glb",
+    "http://127.0.0.1:4173/assets/tile-1_-5-9uDDNdqU.glb",
+    "http://127.0.0.1:4173/assets/tile-1_0-C2Kd_l3K.glb",
+    "http://127.0.0.1:4173/assets/tile-1_1-GH3TJT9L.glb",
+    "http://127.0.0.1:4173/assets/tile-1_2-BGRASKxv.glb",
+    "http://127.0.0.1:4173/assets/tile-1_3-_TffNmZH.glb",
+    "http://127.0.0.1:4173/assets/tile-1_4-QO2sS46x.glb",
+    "http://127.0.0.1:4173/assets/tile-1_5-wDL71ARY.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-1-Cca6PDqR.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-2-D2yEHK9Z.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-3-GGqmZpSw.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-4-DOv8OhIg.glb",
+    "http://127.0.0.1:4173/assets/tile-2_-5-t7Zk5tnG.glb",
+    "http://127.0.0.1:4173/assets/tile-2_0--jb-Q4CL.glb",
+    "http://127.0.0.1:4173/assets/tile-2_1-2l9ew9Mr.glb",
+    "http://127.0.0.1:4173/assets/tile-2_2-BjNw5IK9.glb",
+    "http://127.0.0.1:4173/assets/tile-2_3-DKN8l7Cg.glb",
+    "http://127.0.0.1:4173/assets/tile-2_4-D9eID6p8.glb",
+    "http://127.0.0.1:4173/assets/tile-2_5-Cs8khuGe.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-1-K33iwS3l.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-2-CqwVxG1k.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-3-YEzhe5ti.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-4-CbwZCydf.glb",
+    "http://127.0.0.1:4173/assets/tile-3_-5-B5pVQS4t.glb",
+    "http://127.0.0.1:4173/assets/tile-3_0-j6KFytkO.glb",
+    "http://127.0.0.1:4173/assets/tile-3_1--YQh1IiS.glb",
+    "http://127.0.0.1:4173/assets/tile-3_2-RbK3yt4-.glb",
+    "http://127.0.0.1:4173/assets/tile-3_3-CsW8yUmu.glb",
+    "http://127.0.0.1:4173/assets/tile-3_4-CWpNg8GI.glb",
+    "http://127.0.0.1:4173/assets/tile-3_5-Bbzfhkzc.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-1-CbydSnH7.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-2-BXy3yp0L.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-3-B4XEDXC5.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-4-BYwEGYmG.glb",
+    "http://127.0.0.1:4173/assets/tile-4_-5-BfPh6Weq.glb",
+    "http://127.0.0.1:4173/assets/tile-4_0-sXvqmPxv.glb",
+    "http://127.0.0.1:4173/assets/tile-4_1-_CeyfzF-.glb",
+    "http://127.0.0.1:4173/assets/tile-4_2-CslOaukF.glb",
+    "http://127.0.0.1:4173/assets/tile-4_3-BwaVYbM9.glb",
+    "http://127.0.0.1:4173/assets/tile-4_4-8Okegl-u.glb",
+    "http://127.0.0.1:4173/assets/tile-4_5-CSs7Vajx.glb",
+    "http://127.0.0.1:4173/assets/bobst-library-OoV73M1-.glb",
+    "http://127.0.0.1:4173/assets/washington-square-arch-mOrC1lvY.glb",
+    "http://127.0.0.1:4173/assets/lipton-hall-lWLAI2Ei.glb",
+    "http://127.0.0.1:4173/assets/courant-institute-BkNsbOmB.glb",
+    "http://127.0.0.1:4173/assets/stern-school-of-business-DQmPGm9U.glb",
+    "http://127.0.0.1:4173/assets/washington-square-trees-3UhepDUW.glb",
+    "http://127.0.0.1:4173/assets/park-grass-BoS2EWs0.glb",
+    "http://127.0.0.1:4173/assets/washington-square-fountain-BI46kdXS.glb",
+    "http://127.0.0.1:4173/assets/courant-garden-oyBi5iUE.glb"
+  ],
+  "initial": {
+    "status": "ready",
+    "loaded": 122,
+    "failed": [],
+    "selected": null,
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 37.700000047683716,
+    "loadMilliseconds": 695,
+    "removedSilverTriangles": 228,
+    "removedLeslieTriangles": 164,
+    "removedDistantGrassTriangles": 327,
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        218.89015691721391,
+        141.77650826210711,
+        331.520781224766
+      ],
+      "target": [
+        82.74069512437818,
+        11.999999999999865,
+        180.88733413482007
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 700,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -430,
+          "maxX": 430,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -430,
+          "maxZ": 650
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 391,
+      "triangles": 227062
+    },
+    "landmarks": [
+      {
+        "id": "nyu-leslie-elab-building",
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "screen": {
+          "x": 1320.331318170455,
+          "y": 543.818272661452,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "details": {
+          "buildingId": "nyu-leslie-elab-building",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11174,
+          "sourceTriangles": 164,
+          "windowCount": 498,
+          "storefrontCount": 16
+        }
+      },
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 560.2181329612299,
+          "y": 278.5431299299025,
+          "visible": true
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 1038.1059667373083,
+          "y": 158.70981128804473,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "lipton-hall",
+        "bounds": {
+          "min": [
+            -212.58099365234375,
+            -0.36399999260902405,
+            -108.59200286865234
+          ],
+          "max": [
+            -162.03399658203125,
+            59.82699966430664,
+            -57.926998138427734
+          ]
+        },
+        "screen": {
+          "x": 666.3238741887199,
+          "y": -3.9093969763427383,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 5628,
+        "details": {
+          "buildingId": "lipton-hall"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 749.8563283101993,
+          "y": 728.9512003282279,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 4748,
+        "details": {
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": -2926.5906336450153,
+          "y": 1209.906575273458,
+          "visible": false
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      },
+      {
+        "id": "nyu-silver-towers",
+        "bounds": {
+          "min": [
+            -158.7720184326172,
+            2.6319398880004883,
+            387.1189880371094
+          ],
+          "max": [
+            -34.74934768676758,
+            94.82760620117188,
+            473.9687194824219
+          ]
+        },
+        "screen": {
+          "x": -1570.7217786381932,
+          "y": 530.3086146023365,
+          "visible": false
+        },
+        "meshes": 5,
+        "triangles": 111108,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity root",
+          "modelFidelity": "Original CityGML shells with photo-informed facade relief",
+          "towers": [
+            {
+              "footprintIndex": 11190,
+              "datasetHeightRange": [
+                2.88306,
+                91.69161
+              ]
+            },
+            {
+              "footprintIndex": 11189,
+              "datasetHeightRange": [
+                2.63194,
+                91.62066
+              ]
+            },
+            {
+              "footprintIndex": 11195,
+              "datasetHeightRange": [
+                2.95401,
+                94.82761
+              ]
+            }
+          ],
+          "buildingId": "nyu-silver-towers"
+        }
+      },
+      {
+        "id": "nyu-gould-plaza",
+        "bounds": {
+          "min": [
+            78.45346069335938,
+            -0.11999999731779099,
+            171.71893310546875
+          ],
+          "max": [
+            148.7293701171875,
+            4.650534152984619,
+            258.1990051269531
+          ]
+        },
+        "screen": {
+          "x": 720.2505404446442,
+          "y": 701.6093567415629,
+          "visible": true
+        },
+        "meshes": 8,
+        "triangles": 15668,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+          "architecture": {
+            "pavers": 6466,
+            "skylights": 2,
+            "benches": 8,
+            "frontSteps": 6,
+            "mainCourtMeters": [
+              58.7,
+              36.8
+            ],
+            "reference": "docs/gould-plaza-reference.md"
+          },
+          "buildingId": "nyu-gould-plaza"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "screen": {
+          "x": 615.7631914851936,
+          "y": 444.81753317493065,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 13852,
+        "details": {
+          "buildingId": "stern-school-of-business"
+        }
+      }
+    ]
+  }
+}

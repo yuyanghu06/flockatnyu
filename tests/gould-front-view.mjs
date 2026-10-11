@@ -1,0 +1,5 @@
+import { chromium } from 'playwright-core';
+import fs from 'node:fs';
+const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});const page=await browser.newPage({viewport:{width:1440,height:1000}});
+await page.goto('http://127.0.0.1:4173');await page.waitForFunction(()=>window.__map?.snapshot().status==='ready');const s=await page.evaluate(()=>window.__map.snapshot());
+await page.click('#camera-open');await page.fill('#camera-json',JSON.stringify({...s.camera,target:[123.8952,3,189.4444],position:[130.9377,12,178.5172],fov:70}));await page.click('#camera-restore');const message=await page.locator('#camera-message').textContent();await page.locator('#camera-dialog .close').click();await page.waitForTimeout(300);await page.mouse.move(10,990);await page.screenshot({path:'evidence/m3-campus-details/gould-front-low.png'});const snapshot=await page.evaluate(()=>window.__map.snapshot());await browser.close();fs.writeFileSync('evidence/m3-campus-details/gould-front-view.json',JSON.stringify({message,snapshot},null,2));console.log(message);

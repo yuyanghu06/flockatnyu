@@ -1,0 +1,146 @@
+CHECK offline projection, source counts and anchored alignment
+CHECK baked environment bounds and fountain clearance
+CHECK low close road curbs and park entry transitions
+{
+  "checks": [
+    {
+      "name": "offline projection, source counts and anchored alignment",
+      "pass": true,
+      "detail": {
+        "sourceNodes": 18367,
+        "sourceWays": 4830,
+        "sourceSurfaceParts": 564,
+        "sourceHoles": 241,
+        "maxProjectionError": 0.000049996565422816275,
+        "archCornerErrors": [
+          0.00044022819564382447,
+          0.000547262858577466,
+          0.0004193625657489682,
+          0.0004192675941877823
+        ],
+        "street": {
+          "sourceWays": 4830,
+          "roadWays": 1065,
+          "pathWays": 3696,
+          "skippedGradeSeparated": 69,
+          "inferredWidths": 4737,
+          "buildingExclusions": 6501,
+          "source": "OpenStreetMap local snapshot; widths inferred when absent",
+          "coordinateSpace": "Washington Square X/Z meters; identity root",
+          "mergedMeshes": 4,
+          "triangles": 197888,
+          "pathFootprintPolygons": 31,
+          "grades": {
+            "roads": 0.02,
+            "sidewalks": 0.16,
+            "curbs": 0.2,
+            "outsidePaths": 0.18,
+            "parkPaths": 0.76
+          },
+          "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+        },
+        "park": {
+          "parkCount": 52,
+          "surfacePartCount": 558,
+          "surfaceCount": 0,
+          "polygons": 1925,
+          "coordinateSpace": "Washington Square meters; Y up",
+          "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+        },
+        "oldGrassRequested": false
+      }
+    },
+    {
+      "name": "baked environment bounds and fountain clearance",
+      "pass": true,
+      "detail": {
+        "meshes": 10,
+        "triangles": 230451,
+        "bounds": {
+          "min": [
+            -960,
+            0.019999999552965164,
+            -960
+          ],
+          "max": [
+            960,
+            0.7599999904632568,
+            1152
+          ]
+        },
+        "fountainCenterHits": 0
+      }
+    },
+    {
+      "name": "low close road curbs and park entry transitions",
+      "pass": true,
+      "detail": [
+        {
+          "label": "washington-park-entry",
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              50,
+              18.999999999999996,
+              -39
+            ],
+            "target": [
+              30,
+              1,
+              -59
+            ],
+            "fov": 60,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "label": "mercer-street-close",
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              41,
+              18,
+              421
+            ],
+            "target": [
+              20.999999999999996,
+              1,
+              403
+            ],
+            "fov": 60,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "label": "union-square-entry",
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              619.0000000000001,
+              21,
+              -437.0000000000001
+            ],
+            "target": [
+              599.0000000000001,
+              1,
+              -457.0000000000001
+            ],
+            "fov": 60,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "missing": []
+}

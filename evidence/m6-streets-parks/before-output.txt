@@ -1,0 +1,163 @@
+CHECK new models multiple camera sides and complete-root clicks
+{
+  "checks": [
+    {
+      "name": "new models multiple camera sides and complete-root clicks",
+      "pass": true,
+      "detail": [
+        {
+          "id": "washington-square-arch",
+          "label": "washington-square-overview",
+          "point": {
+            "sceneOnly": true
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              120.00000000000004,
+              322,
+              200.00000000000006
+            ],
+            "target": [
+              0,
+              2,
+              0
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "washington-square-arch",
+          "label": "washington-square-close",
+          "point": {
+            "sceneOnly": true
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              49.999999999999986,
+              87,
+              84.99999999999999
+            ],
+            "target": [
+              0,
+              2,
+              0
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-john-a-paulson-center",
+          "label": "paulson-streets",
+          "point": {
+            "sceneOnly": true
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              97.99999999999999,
+              153,
+              610
+            ],
+            "target": [
+              -12,
+              8,
+              470
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "nyu-john-a-paulson-center",
+          "label": "paulson-close",
+          "point": {
+            "sceneOnly": true
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              30.000000000000007,
+              73,
+              345
+            ],
+            "target": [
+              -20,
+              5,
+              415
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "washington-square-arch",
+          "label": "union-square-region",
+          "point": {
+            "sceneOnly": true
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              545,
+              542,
+              -570
+            ],
+            "target": [
+              425,
+              2,
+              -430
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "washington-square-arch",
+          "label": "southeast-parks",
+          "point": {
+            "sceneOnly": true
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              480,
+              262,
+              620
+            ],
+            "target": [
+              390,
+              2,
+              500
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "missing": []
+}

@@ -1,47 +1,65 @@
 # Prioritized work
 
-## P0: M0 managed agent workflow
+## Completed M0/M1 foundation
 
-- [x] Inspect workspace and preserve assets/source site/MCP settings.
-- [x] Obtain a bounded planner brief and journal its pass.
-- [x] Create actual project-local role configs and workflow/ownership rules.
-- [x] Initialize rolling snapshot, to-do list, append-only history, and folder guides.
-- [x] Verify TOML parsing, role definitions, references, and installed CLI smoke checks.
-- [ ] Verify named-role discovery/execution in a new trusted Codex session (runtime follow-up; current native project layer is trust-gated).
-- [x] Obtain independent evaluation, resolve findings, and journal the result.
-- [x] Finalize M0 and record the new-session handoff.
+- [x] Workflow, role configs, immutable history and folder guides.
+- [x] Reusable map assets and confirmed Paulson extraction/placement.
+- [x] Vite/Three.js first campus scene and six selectable landmarks.
+- [x] Free camera, reset, camera JSON sharing/restore and visible load failures.
+- [x] Independent production browser/visual acceptance and source geometry checks.
 
-## Completed repository organization
+## M2: User-directed campus refinement
 
-- [x] Move all project files, hidden configuration, documentation, milestones, assets, and archive into `tech-visualized/`; verify preservation and update active references.
+- [x] Use supplied240.9752133m distance as starting zoom; independent free angle.
+- [x] Bound panning without angle snapping and expand to110 populated city tiles.
+- [x] Inspect real architect photos/section and record sources/inferences.
+- [x] Replace runtime coarse Paulson slab with photo-informed merged architecture.
+- [x] Verify broader coverage, camera bounds, all landmark selection and performance.
+- [x] Fix facade banding and refine faculty/podium glass to match photo character.
+- [x] Final visual confirmation and integrated M2 acceptance.
 
-## P1: M1 initial Washington Square map — handoff to another assistant
+The earlier exact saved-pose interpretation is superseded by the zoom-only request.
+The original GLB is preserved; runtime geometry now provides detailed approximation.
 
-- [ ] Inspect exported geometry, placement metadata, and source-site interactions.
-- [ ] Finalize initial campus coverage, selectable buildings, detail targets, and measurable acceptance criteria.
-- [ ] Select rendering/application stack and initialize application source in the project root during authorized implementation.
-- [ ] Build aligned close-up campus view with adjustable palette and preserved parks/water.
-- [ ] Implement complete-building hover/selection, camera focus, and building information view.
-- [ ] Add freely adjustable orbit/pan/zoom camera, reset and camera position/target copy.
-- [ ] Verify visual fidelity, loading, interaction and performance in a browser.
+## Future scope
 
-The user cancelled this session’s implementation in favor of a Markdown prompt for another assistant. No application work started; pending implementation items above remain for that handoff.
+- [ ] User feedback on the new camera/navigation and Paulson appearance.
+- [ ] Higher-detail/as-built model if suitable measured source becomes available.
+- [ ] Actual mobile hardware/touch performance evaluation.
+- [ ] Confirm club identity, sign-in, roles and data model.
+- [ ] Calendar sync; authorized Discord summaries and Drive retrieval.
+- [ ] Member assistant with original sources/access boundaries and background jobs.
+- [ ] Native named-role discovery in standalone trusted Codex session; this session
+  used actual collaboration API agents rather than native role-config discovery.
 
-## P2: Later product scope
+## M3: Campus details and color studies
 
-- [ ] Resolve club identity, membership, permissions, and initial data model.
-- [ ] Implement calendar synchronization with source identity and cancellation handling.
-- [ ] Implement daily authorized Discord summaries.
-- [ ] Implement Drive retrieval and original resource links.
-- [ ] Implement the member-facing conversational assistant and verify source access boundaries.
-- [ ] Establish actual background workers and source-specific refresh schedules.
+- [x] Photo-informed Silver Towers and complete Leslie eLab host.
+- [x] Gould Plaza footprint, paving, skylights, benches and grounded approach.
+- [x] Integrate nine selectable landmarks without source GLB edits.
+- [x] Three Tech@NYU color studies with desktop/mobile captures and token notes.
+- [x] Review fixes: occupied top-floor windows, foundation grounding and mobile sample spacing.
+- [x] Final independent updated-model visual acceptance.
+- [ ] User choice of palette; apply only following that choice.
 
-## Completed prompt handoff and new input
 
-- [x] Cancel this session's map implementation at the user's request and stop the planner's ongoing research.
-- [x] Record partial planner evidence without claiming a finished map.
-- [x] Write `docs/initial-map-prompt.md` with local map scope and free camera controls.
-- [x] Include extraction/identification/alignment requirements for `/Users/yuyang/Downloads/scene.glb`.
-- [x] Confirm whether spoken “Halcyon Center” means NYU's John A. Paulson Center (user confirmed 2026-10-10).
-- [x] Identify and extract the complete target building, preserve source scene, and record placement transform (`campus-assets/`, `tools/extract-paulson-center.mjs`).
-- [ ] Verify Paulson alignment and Coles removal visually in the running map.
+## M4
+- [x] Kimmel photo-informed model.
+- [x] Silver Center model and restore ordinary Silver Towers context.
+- [x] Add plaza trees/vegetation with clear circulation.
+- [x] Browser checks and independent visual acceptance.
+- Courant/Stern refinement canceled by user; Bobst excluded.
+
+## M5
+- [x] Courant/Stern window detailing with existing colors preserved.
+- [x] Same-pose before/after and source color/geometry invariants.
+- [x] Browser selection, camera/mobile and independent visual acceptance.
+
+## M6
+- [x] Offline attributed street/path/park geometry and coordinate alignment.
+- [x] Clean road/sidewalk/path rendering and all mapped parks in loaded region.
+- [x] Visual alignment, close zoom, camera/selection and performance acceptance.
+
+## M7
+- [x] Fix road surface depth conflict during camera motion.
+- [x] Verify zoom/pan sequences and camera/selection/performance.

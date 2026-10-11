@@ -1,0 +1,36 @@
+{
+  "poses": [
+    {
+      "label": "courant-front",
+      "maxCameraDelta": 0
+    },
+    {
+      "label": "courant-side",
+      "maxCameraDelta": 0
+    },
+    {
+      "label": "stern-front",
+      "maxCameraDelta": 0
+    },
+    {
+      "label": "stern-side",
+      "maxCameraDelta": 0
+    }
+  ],
+  "models": [
+    {
+      "id": "courant-institute",
+      "boundsUnchanged": true,
+      "originalTriangles": 4748,
+      "finalTriangles": 31388,
+      "addedTriangles": 26640
+    },
+    {
+      "id": "stern-school-of-business",
+      "boundsUnchanged": true,
+      "originalTriangles": 13852,
+      "finalTriangles": 92140,
+      "addedTriangles": 78288
+    }
+  ]
+}

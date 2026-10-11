@@ -1,0 +1,26 @@
+{
+  "meshes": 7,
+  "triangles": 73892,
+  "bounds": {
+    "min": [
+      116.27422332763672,
+      1.3041272163391113,
+      19.216636657714844
+    ],
+    "max": [
+      177.37234497070312,
+      58.22825241088867,
+      87.29178619384766
+    ]
+  },
+  "details": {
+    "buildingId": "nyu-silver-center",
+    "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+    "coordinateSpace": "Baked Washington Square map meters; identity root",
+    "sourceFootprintIndex": 11667,
+    "sourceTriangles": 380,
+    "windowCount": 857
+  },
+  "sourceUnchanged": true,
+  "removed": 380
+}

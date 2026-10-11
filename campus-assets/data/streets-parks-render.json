@@ -1,0 +1,43 @@
+{
+  "source": "OpenStreetMap contributors",
+  "attributionUrl": "https://www.openstreetmap.org/copyright",
+  "fetchedAt": "2026-10-11T00:55:46.001703+00:00",
+  "osmTimestamp": null,
+  "extent": {
+    "minX": -960,
+    "maxX": 960,
+    "minZ": -960,
+    "maxZ": 1152
+  },
+  "streets": {
+    "sourceWays": 4830,
+    "roadWays": 1065,
+    "pathWays": 3696,
+    "skippedGradeSeparated": 69,
+    "inferredWidths": 4737,
+    "buildingExclusions": 6501,
+    "source": "OpenStreetMap local snapshot; widths inferred when absent",
+    "coordinateSpace": "Washington Square X/Z meters; identity root",
+    "mergedMeshes": 4,
+    "triangles": 204930,
+    "pathFootprintPolygons": 31,
+    "grades": {
+      "roads": 0.02,
+      "sidewalks": 0.16,
+      "curbs": 0.2,
+      "outsidePaths": 0.18,
+      "parkPaths": 0.76
+    },
+    "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+  },
+  "parks": {
+    "parkCount": 52,
+    "surfacePartCount": 558,
+    "surfaceCount": 0,
+    "polygons": 1925,
+    "coordinateSpace": "Washington Square meters; Y up",
+    "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+  },
+  "meshes": 10,
+  "triangles": 237493
+}

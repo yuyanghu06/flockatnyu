@@ -1,0 +1,62 @@
+{
+  "archMaxAxisErrorMeters": 0.00046800015035586284,
+  "archErrorsMeters": [
+    [
+      -1.4185475077255205e-05,
+      -0.000439999586973272
+    ],
+    [
+      -9.696040137363582e-05,
+      -0.00040799956141768234
+    ],
+    [
+      0.00020090181868859247,
+      -0.0003679996939993657
+    ],
+    [
+      0.0002836767449849731,
+      0.00046800015035586284
+    ],
+    [
+      -1.4185475077255205e-05,
+      -0.000439999586973272
+    ]
+  ],
+  "counts": {
+    "roads": 4830,
+    "surfaces": 564,
+    "nodes": 18367,
+    "buildings": 6501,
+    "holes": 241,
+    "unresolvedRings": 0,
+    "highways": {
+      "motorway_link": 18,
+      "motorway": 9,
+      "footway": 3582,
+      "primary_link": 4,
+      "residential": 489,
+      "pedestrian": 74,
+      "primary": 246,
+      "unclassified": 6,
+      "service": 124,
+      "secondary": 156,
+      "trunk": 12,
+      "steps": 89,
+      "tertiary": 2,
+      "secondary_link": 1,
+      "elevator": 4,
+      "path": 2,
+      "cycleway": 6,
+      "living_street": 6
+    }
+  },
+  "snapshotFetchedAt": "2026-10-11T00:55:46.001703+00:00",
+  "checks": [
+    "unique road/surface IDs",
+    "all geographic node references resolve",
+    "all projected points equal referenced nodes",
+    "finite road coordinates",
+    "all polygon rings closed"
+  ],
+  "rawSourceBytes": 5476832
+}

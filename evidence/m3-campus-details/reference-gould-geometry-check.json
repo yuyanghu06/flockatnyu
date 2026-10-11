@@ -1,0 +1,28 @@
+{
+  "meshes": 8,
+  "triangles": 15500,
+  "bounds": {
+    "min": [
+      78.45346069335938,
+      -0.11999999731779099,
+      171.93873596191406
+    ],
+    "max": [
+      148.7293701171875,
+      4.650534152984619,
+      258.1990051269531
+    ]
+  },
+  "rootIdentity": true,
+  "architecture": {
+    "pavers": 6466,
+    "skylights": 2,
+    "benches": 8,
+    "frontSteps": 6,
+    "mainCourtMeters": [
+      58.7,
+      36.8
+    ],
+    "reference": "docs/gould-plaza-reference.md"
+  }
+}

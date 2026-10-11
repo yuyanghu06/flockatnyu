@@ -1,0 +1,117 @@
+CHECK new models multiple camera sides and complete-root clicks
+{
+  "checks": [
+    {
+      "name": "new models multiple camera sides and complete-root clicks",
+      "pass": true,
+      "detail": [
+        {
+          "id": "courant-institute",
+          "label": "courant-front",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              215.36249542236328,
+              77.37049925327302,
+              313.92896270751953
+            ],
+            "target": [
+              140.36249542236328,
+              29.370499253273014,
+              238.92896270751953
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "courant-institute",
+          "label": "courant-side",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              80.36249542236328,
+              81.37049925327301,
+              308.92896270751953
+            ],
+            "target": [
+              140.36249542236328,
+              29.370499253273014,
+              238.92896270751953
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "stern-school-of-business",
+          "label": "stern-front",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              74.97300148010254,
+              77.19450032711032,
+              99.76349639892572
+            ],
+            "target": [
+              74.97300148010252,
+              29.194500327110294,
+              199.76349639892575
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "id": "stern-school-of-business",
+          "label": "stern-side",
+          "point": {
+            "x": 720,
+            "y": 500
+          },
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              4.973001480102539,
+              94.19450032711029,
+              134.76349639892578
+            ],
+            "target": [
+              74.97300148010252,
+              29.194500327110294,
+              199.76349639892575
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "missing": []
+}

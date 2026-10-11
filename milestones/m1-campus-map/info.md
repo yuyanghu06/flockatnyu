@@ -1,7 +1,12 @@
 # M1: Initial Washington Square campus map
 
-Implementation deferred to another assistant after the user cancelled this session's coding request. The requested handoff is docs/initial-map-prompt.md. Partial asset/reference research is recorded in history; no application or extracted model exists.
+Goal: a local, usable campus preview with existing buildings/scenery, warm palette,
+free camera controls, reset and camera sharing, selectable landmarks, and aligned
+Paulson replacement. Source extraction is complete from a prior pass.
 
-Requested scope: local close Washington Square map, exported detailed landmarks/scenery, warm palette, freely adjustable orbit/pan/zoom, reset and camera export/restore. New source /Users/yuyang/Downloads/scene.glb requires exact center identification, complete extraction, and map alignment. Spoken center identity remains to confirm.
-
-Future completion requires browser evidence for visuals/alignment, camera controls, model extraction and loading/performance plus appropriate build checks. No live integrations, roads or deployment in this phase. The authoritative rolling state is ../milestone.md.
+Implementation exists in src/ and index.html. First-preview browser testing,
+visual evidence and independent evaluation passed; see ../milestone.md for
+authoritative results and source-detail limitations.
+Acceptance requires successful production asset loading, landmark alignment and
+Coles removal, working camera/selection, responsive UI and visible errors, and
+recorded performance/visual checks. No roads, integrations or deployment are in scope.

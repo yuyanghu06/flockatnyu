@@ -1,0 +1,20 @@
+{
+  "silver": {
+    "source": 1028,
+    "removedTowers": [
+      76,
+      72,
+      80
+    ],
+    "removedColes": 92,
+    "retainedUnchanged": 708,
+    "sourceTrianglesWithAllVerticesRepresentedWithin1mm": 228
+  },
+  "leslie": {
+    "source": 1690,
+    "removed": 164,
+    "retainedUnchanged": 1526,
+    "creationPreservedSource": true,
+    "modelTriangles": 31772
+  }
+}

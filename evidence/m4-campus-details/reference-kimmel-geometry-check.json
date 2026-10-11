@@ -1,0 +1,33 @@
+{
+  "milliseconds": 31.1922,
+  "meshes": 7,
+  "triangles": 19316,
+  "removed": 200,
+  "sourceBefore": 2598,
+  "sourceAfter": 2398,
+  "bounds": {
+    "min": [
+      -77.52751922607422,
+      -0.11999999731779099,
+      81.26399993896484
+    ],
+    "max": [
+      -19.11124610900879,
+      51.463932037353516,
+      152.19158935546875
+    ]
+  },
+  "rootIdentity": true,
+  "userData": {
+    "coordinateSpace": "Washington Square map meters; identity transform",
+    "modelFidelity": "Source CityGML massing with photo-informed facade approximation; not a survey or current entrance-access model.",
+    "architecture": {
+      "sourceTriangles": 200,
+      "windows": 229,
+      "crownPanels": 350,
+      "displayBays": 25,
+      "reference": "docs/kimmel-reference.md",
+      "preservedNeighbor": "Global Center for Academic and Spiritual Life, footprint11021"
+    }
+  }
+}

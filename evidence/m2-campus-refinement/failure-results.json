@@ -1,0 +1,31 @@
+[
+  {
+    "name": "asset failure is visible and remaining campus loads",
+    "pass": true,
+    "detail": {
+      "loaded": 120,
+      "failed": [
+        {
+          "name": "bobst-library",
+          "message": "Failed to fetch"
+        }
+      ]
+    }
+  },
+  {
+    "name": "resize while assets are pending updates final canvas",
+    "pass": true,
+    "detail": {
+      "loading": "Preparing campus…",
+      "dimensions": {
+        "w": 390,
+        "h": 844
+      }
+    }
+  },
+  {
+    "name": "missing WebGL gives user-readable status",
+    "pass": true,
+    "detail": "This device could not start the 3D map. Enable WebGL and reload."
+  }
+]

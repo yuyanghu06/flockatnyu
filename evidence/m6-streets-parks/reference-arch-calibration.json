@@ -1,0 +1,92 @@
+{
+  "version": "0.6",
+  "generator": "openstreetmap-cgimap 2.1.0 (3814576 spike-06.openstreetmap.org)",
+  "copyright": "OpenStreetMap and contributors",
+  "attribution": "http://www.openstreetmap.org/copyright",
+  "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+  "elements": [
+    {
+      "type": "node",
+      "id": 2550067579,
+      "lat": 40.731162,
+      "lon": -73.9970293,
+      "timestamp": "2023-12-20T23:02:35Z",
+      "version": 2,
+      "changeset": 145349434,
+      "user": "kguenther24",
+      "uid": 11697944
+    },
+    {
+      "type": "node",
+      "id": 2550067587,
+      "lat": 40.7312151,
+      "lon": -73.9969847,
+      "timestamp": "2023-12-20T23:02:35Z",
+      "version": 2,
+      "changeset": 145349434,
+      "user": "kguenther24",
+      "uid": 11697944
+    },
+    {
+      "type": "node",
+      "id": 2550067595,
+      "lat": 40.7312544,
+      "lon": -73.9972203,
+      "timestamp": "2023-12-20T23:02:35Z",
+      "version": 2,
+      "changeset": 145349434,
+      "user": "kguenther24",
+      "uid": 11697944
+    },
+    {
+      "type": "node",
+      "id": 2550067607,
+      "lat": 40.7313074,
+      "lon": -73.9971757,
+      "timestamp": "2023-12-20T23:02:35Z",
+      "version": 2,
+      "changeset": 145349434,
+      "user": "kguenther24",
+      "uid": 11697944
+    },
+    {
+      "type": "way",
+      "id": 248166269,
+      "timestamp": "2025-07-25T15:57:17Z",
+      "version": 11,
+      "changeset": 169462859,
+      "user": "brandonbds",
+      "uid": 9883637,
+      "nodes": [
+        2550067579,
+        2550067595,
+        2550067607,
+        2550067587,
+        2550067579
+      ],
+      "tags": {
+        "access": "permissive",
+        "architect": "Stanford White",
+        "architect:wikidata": "Q572735",
+        "building": "triumphal_arch",
+        "fixme": "OSM thinks this is a building. for accurate representation, a custom geometry must be uploaded to fix this. It is supposed to be an arch. a model can be found here https://www.cgtrader.com/free-3d-models/exterior/historic-exterior/ancient-arc-dbeaa29f-543",
+        "height": "20.5",
+        "historic": "monument",
+        "inscription": "To commemorate the one hundredth anniversary of the inauguration of George Washington as first president of the United States",
+        "material": "marble",
+        "name": "Washington Square Arch",
+        "name:fr": "Arche du square Washington",
+        "nycdoitt:bin": "1088400",
+        "operator": "New York City Department of Parks and Recreation",
+        "operator:short": "NYC Parks",
+        "operator:type": "government",
+        "operator:wikidata": "Q1894232",
+        "start_date": "1892",
+        "tourism": "attraction",
+        "website": "https://www.nycgovparks.org/parks/washington-square-park/monuments/1657",
+        "wikidata": "Q2550491",
+        "wikipedia": "en:Washington Square Arch"
+      }
+    }
+  ]
+}
