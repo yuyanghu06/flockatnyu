@@ -144,7 +144,7 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 
 ## Current objective: dev snapshot
 - [x] Stop new backend implementation and Supabase retries; document actual state.
-- [ ] Create/use dev branch, commit current intended project work and push without force.
+- [x] Create/use dev branch, commit current intended project work and push without force (3abac9e on origin/codex/dev).
 - Backend acceptance remains incomplete; future fixes and runtime checks above are preserved.
 
-- Git publication blocked: restore normal repository metadata write access and network resolution, then create/use codex/dev, inspect staged changes, commit and push. No force-push or reset.
+- Previous Git publication blocker resolved: normal branch creation, commit and push succeeded. Backend follow-up remains above.

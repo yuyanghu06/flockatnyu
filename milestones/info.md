@@ -37,3 +37,5 @@ M12 memory and frame workload tracking lives in m12-memory/.
 M13 loading screen tracking lives in m13-loading/.
 
 M14: m14-supabase-setup tracks preparation versus authenticated connection; not complete until scoped connectivity verified.
+
+M15 assistant scaffold and the dev snapshot publication are tracked in the rolling snapshot; Git publication history records the successful origin/codex/dev push.

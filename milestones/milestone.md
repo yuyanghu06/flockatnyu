@@ -1,6 +1,10 @@
 # Current milestone and session handoff
 
-## Latest: development snapshot requested; backend work stopped
+## Latest: dev snapshot published
+
+Snapshot commit 3abac9e (180 files) was pushed successfully to origin/codex/dev, with upstream tracking configured. The previous Git permission/network blocker is resolved for this pass. Application acceptance and M15 open findings remain unchanged; no runtime tests were rerun for this Git-only request. See [publication record](history/2026-10-11_14-29-20-978625-orchestrator-dev-snapshot-published.md).
+
+## Prior: development snapshot requested; backend work stopped
 
 The user changed the objective to document and commit/push the current work to a dev branch. No further backend implementation or Supabase retry is part of this pass. Existing map work through M13 is preserved, including landmark refinements, vegetation, camera navigation, atmosphere, resource optimization and explicit loading-screen entry. Existing evidence records distinguish source checks from unverified browser appearance/performance.
 
