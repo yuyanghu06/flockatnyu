@@ -1,28 +1,24 @@
-# Active M22: working-tree publication
+# Completed M22: accumulated work committed and published
 
-The user authorized splitting, committing and pushing all accumulated project
-changes. Plan: Discord backend/admin/dependencies, then map interaction/startup,
-then shared documentation/evidence/journal. Keep the existing codex/dev branch and
-normal origin push; preserve all earlier work and immutable history.
+The authorized working tree was split into coherent commits and pushed normally
+to origin/codex/dev:
 
-Grouping and metadata/secret checks passed: no actual credential matches or
-files over100MB. Generated Supabase CLI state is now ignored; local credentials
-and MCP configuration remain excluded. Frontend51 checks, assistant33 checks and API/frontend builds passed. Discord
-fixtures ran270 cases:269passed/one clock-dependent historical seeding failure.
-The test-only historical seeding/artifact repair and independent270/270Discord
-rerun passed;253legacy evidence hashes are unchanged. Applied migrations and
-production code remain unchanged. All354checks and API/frontend builds passed. Built138 files contain no actual secret values.
-Backend66paths and map18paths are committed as coherent reviewed groups, with
-no credential/generated paths, whitespace errors or migration mismatch. Shared
-documentation/evidence/journal is being prepared as its own commit. Push pending.
-[Feature commit pass](history/2026-10-13_12-31-09-892393-orchestrator-feature-commit-boundaries-created.md).
-[Acceptance pass](history/2026-10-13_12-22-02-255382-tester-precommit-full-discord-suite-accepted.md).
-[Acceptance pass](history/2026-10-13_12-22-02-258874-evaluator-precommit-staged-backend-accepted.md).
-[Fixture repair](history/2026-10-13_12-17-28-401871-coder-historical-scale-fixture-isolated.md).
-[Clock fixture failure](history/2026-10-13_12-12-36-407285-tester-precommit-clock-fixture-failure.md).
-[Accepted plan](history/2026-10-13_12-08-09-197869-planner-working-tree-commit-split-accepted.md). Root owns integration and Git;
-tester owns its publication report. No cloud deployment/model call belongs to
-this publication pass. Previous M20/M21 acceptance and limitations remain below.
+- 6ca5228: Discord discovery, per-channel RAG retention, admin/backend/deployment and fixtures.
+- e991922: campus startup, camera/WASD controls and Stern/Gould selection.
+- 94eb208: current guides, hosted metadata proofs, browser evidence and milestone history.
+
+Direct remote verification matched local94eb208 and the working tree was clean.
+A final small forward publication-receipt commit records that verification;
+there is no forcepush or history rewrite.
+
+Verification: Discord270/270, frontend51/51 and assistant33/33 checks passed
+(354total); API/frontend builds passed. The historical scale fixture was corrected
+without changing applied001–010, and generated fixture artifacts now use unique
+OS temporary directories. All253legacy evidence hashes stayed unchanged during
+rerun. Staged source/evidence and138built files contain no actual secret values.
+Local.env, MCP configuration, build output and Supabase CLI cache remain ignored.
+No cloud/model/deployment or purchase belongs to this publication pass.
+[Verified publication](history/2026-10-13_12-46-26-733624-orchestrator-split-commits-published.md). Product follow-ups below remain open.
 
 ---
 

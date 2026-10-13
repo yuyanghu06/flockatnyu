@@ -15,3 +15,7 @@ Root frontend51/assistant33checks and both builds pass. Stagedbackend66paths pas
 independent boundary/migration review and actualsecret-value scan. The only new
 source adjustment is test-fixture setup/output isolation plus blank-line cleanup;
 applied SQL and production application code are unchanged by publication.
+
+publication-receipt.json records the actualpublishedcorehead/directremotecheck
+and cleanstatus before the finalreceiptcommit. The receipt is a normalforward
+commit; agenttoolverificationconfirms its ownpushwithouta recursivejournal loop.

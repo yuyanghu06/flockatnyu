@@ -1,4 +1,4 @@
-# Active M22: commit and push accumulated work
+# Completed M22: commit and publish accumulated work
 
 - [x] Inspect current branch/changes; accept coherent commit boundaries and secret/size scan.
 - [x] Ignore generated Supabase CLI cache without deleting local files.
@@ -6,8 +6,9 @@
 - [x] Fix historical scale seeding/isolate fixture artifacts; focused1scale+4budget checks pass, migrations unchanged.
 - [x] Independent270/270Discordsuite/253legacy-hash preservation and staged66backend reviewPASS.
 - [x] Create reviewed backend66path and map18path commits.
-- [ ] Commit shared documentation/evidence, push normally and record publication receipt.
-- [ ] Verify published remote head and clean working tree; record final handoff.
+- [x] Commit shared documentation/evidence and push all three coherent commits normally.
+- [x] Record actual published-head verification in a small forward receipt commit.
+- [x] Verify published remote head94eb208 and clean working tree; final receipt uses the same normal push workflow.
 
 # Current M20: accepted implementation and current-calendar retention
 
