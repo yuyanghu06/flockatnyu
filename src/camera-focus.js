@@ -58,21 +58,29 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     const box = new THREE.Box3().setFromObject(root);
     if (box.isEmpty() || ![...box.min.toArray(),...box.max.toArray()].every(Number.isFinite)) return false;
     box.min.y -= 4.5; box.max.y += 4.5;
-    const target = box.getCenter(new THREE.Vector3()), radius = box.getSize(new THREE.Vector3()).length()/2;
+    const view = buildingViews[id];
+    const target = view?.target ? new THREE.Vector3().fromArray(view.target) : box.getCenter(new THREE.Vector3());
+    const radius = box.getSize(new THREE.Vector3()).length()/2;
     const vertical = THREE.MathUtils.degToRad(camera.getEffectiveFOV ? camera.getEffectiveFOV() : camera.fov)/2;
     const halfFov = Math.min(vertical, Math.atan(Math.tan(vertical)*camera.aspect));
     if (!Number.isFinite(halfFov) || halfFov<=0 || halfFov>=Math.PI/2) return false;
-    const distance = radius/Math.sin(halfFov)*1.12;
+    const distance = radius/Math.sin(halfFov)*1.12*(view?.distanceScale ?? 1);
     if (!Number.isFinite(distance)) return false;
-    const front = buildingViews[id]?.front;
+    const front = view?.front;
     const theta = front ? Math.atan2(front[0],front[1]) : current().sphere.theta;
+    const originalPolar = view?.polarAngle ?? buildingFocusPolarAngle;
+    const verticalOffset = Math.cos(originalPolar) * (view?.heightScale ?? 1);
+    const horizontalOffset = Math.sin(originalPolar);
+    const phi = Math.atan2(horizontalOffset, verticalOffset);
     zoomGesture = null;
     if(!overviewSnapshot) {
       overviewSnapshot=current();
       overviewSnapshot.sphere.phi=Math.min(overviewSnapshot.sphere.phi,overviewMaxPolar);
     }
     focusedRange = true; controls.maxPolarAngle = focusedMaxPolar;
-    begin(target,distance,theta,buildingFocusPolarAngle,10);
+    // Per-building pullback scales the original fit; profile lowering sets only
+    // the viewing angle, so selecting a new view does not also zoom inward.
+    begin(target,distance,theta,phi,10);
     focusedId = id ?? null;
     return true;
   }

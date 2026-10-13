@@ -5,50 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#354345" />
     <title>Tech Visualized</title>
-    <link rel="stylesheet" href="/src/loading-screen.css" />
-    <style>#loading-screen{position:fixed;inset:0;z-index:10000;background:#000;color:#fff}#loading-screen[hidden]{display:none}body.loading-map{background:#000}</style>
+    <style>
+      body{margin:0;background:#dce6e8}
+      #app[aria-busy="true"] #map canvas{visibility:hidden}
+      #startup-notice{position:fixed;left:18px;bottom:18px;z-index:1000;max-width:min(360px,calc(100% - 36px));padding:10px 14px;background:#faf8f1;color:#354345;border-radius:7px;font:13px/1.5 system-ui,sans-serif}
+      #startup-notice[hidden],#startup-notice [hidden]{display:none}
+      #startup-notice p{margin:0}#startup-retry{margin-top:8px}
+    </style>
   </head>
-  <body class="map-only loading-map">
-    <section id="loading-screen" aria-labelledby="loading-title" aria-describedby="loading-status" aria-busy="true" data-state="loading">
-      <div class="loading-content">
-        <svg class="loading-gears" viewBox="0 0 170 128" width="136" height="102" aria-hidden="true" focusable="false">
-          <defs>
-            <path id="loading-gear" d="M86.00,50.00 L96.81,54.18 L94.30,65.69 L82.73,64.99 L81.18,68.00 L88.45,77.03 L80.52,85.74 L70.85,79.34 L68.00,81.18 L69.79,92.63 L58.57,96.21 L53.39,85.84 L50.00,86.00 L45.82,96.81 L34.31,94.30 L35.01,82.73 L32.00,81.18 L22.97,88.45 L14.26,80.52 L20.66,70.85 L18.82,68.00 L7.37,69.79 L3.79,58.57 L14.16,53.39 L14.00,50.00 L3.19,45.82 L5.70,34.31 L17.27,35.01 L18.82,32.00 L11.55,22.97 L19.48,14.26 L29.15,20.66 L32.00,18.82 L30.21,7.37 L41.43,3.79 L46.61,14.16 L50.00,14.00 L54.18,3.19 L65.69,5.70 L64.99,17.27 L68.00,18.82 L77.03,11.55 L85.74,19.48 L79.34,29.15 L81.18,32.00 L92.63,30.21 L96.21,41.43 L85.84,46.61 Z M50,33 A17,17 0 1,0 50,67 A17,17 0 1,0 50,33 Z" fill-rule="evenodd" />
-            <pattern id="loading-hatch" width="3" height="3" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#414141"/><path d="M0 0L3 3" stroke="#777" stroke-width=".65"/></pattern>
-          </defs>
-          <g transform="translate(80 1) scale(.72)"><g class="loading-gear-rotor loading-gear-reverse"><use href="#loading-gear" y="7" fill="url(#loading-hatch)"/><use href="#loading-gear" fill="#bdbdbd" stroke="#111" stroke-width="1.1"/></g></g>
-          <g transform="translate(3 20)"><g class="loading-gear-rotor"><use href="#loading-gear" y="7" fill="url(#loading-hatch)"/><use href="#loading-gear" fill="#dedede" stroke="#111" stroke-width="1.1"/><circle cx="50" cy="53" r="11" fill="none" stroke="#8b8b8b" stroke-width="4"/></g></g>
-        </svg>
-        <h1 id="loading-title">Tech Visualized</h1>
-        <p id="loading-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">Loading…</p>
-        <div class="loading-action">
-          <button id="loading-enter" type="button" hidden disabled>Click to enter <span aria-hidden="true">↗</span></button>
-          <button id="loading-retry" type="button" hidden>Retry loading <span aria-hidden="true">↻</span></button>
-        </div>
-        <p id="loading-error" hidden></p>
-        <noscript>JavaScript is required to load the campus map. Enable it and reload this page.</noscript>
-      </div>
-    </section>
-    <main id="app" inert aria-hidden="true">
+  <body class="map-only">
+    <aside id="startup-notice" role="status" aria-live="polite" aria-atomic="true">
+      <p id="startup-status">Preparing campus…</p>
+      <button id="startup-retry" type="button" hidden>Retry loading</button>
+      <noscript>JavaScript is required to load the campus map. Enable it and reload.</noscript>
+    </aside>
+    <main id="app" inert aria-busy="true">
       <div id="map" aria-label="Interactive 3D Washington Square campus map"></div>
       <header class="masthead"><span class="mark">N</span><div><p class="eyebrow">NEW YORK UNIVERSITY</p><h1>Campus Atlas<span>Washington Square</span></h1></div><span class="preview">LOCAL PREVIEW</span></header>
-      <nav class="toolbar" aria-label="Map controls"><button id="reset">Reset view</button><button id="camera-open">Camera angle ↗</button></nav>
+      <nav class="toolbar" aria-label="Map controls"><button id="reset">Reset view</button><button id="camera-open">Camera angle ↗</button><a href="/admin.html" aria-label="Discord channel administration">Admin ↗</a></nav>
       <aside class="explorer" aria-label="Campus buildings"><p class="eyebrow">EXPLORE CAMPUS</p><h2>A place to connect.</h2><p class="intro">Explore the buildings around Washington Square. Select a landmark to take a closer look.</p><label for="building">Campus landmark</label><select id="building"><option value="">Choose a building</option></select><section id="building-detail" hidden><div class="detail-title"><h3 id="building-name"></h3><button id="clear" aria-label="Clear building selection">×</button></div><p id="building-description"></p><button id="focus">Focus on building</button></section><div class="activity"><label for="date">Activity date · New York</label><input id="date" type="date"/><p>Club activity is not connected yet.</p><span>Calendar, updates and resources will appear here.</span></div></aside>
       <div id="hover" hidden></div>
-      <div class="bottom"><p class="hints">Drag to orbit <b>·</b> Right-drag to pan <b>·</b> Scroll to zoom<span>Touch: one finger orbit · two fingers pan / pinch</span></p><div id="status" role="status">Preparing campus…</div><details id="errors" hidden><summary>Some assets could not load</summary><ul id="error-list"></ul></details><p class="attribution">Geometry: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a> · <a href="https://www.nyc.gov/site/doitt/initiatives/3d-building.page" target="_blank" rel="noreferrer">NYC building data</a></p></div>
+      <div class="bottom"><p class="hints">Drag to orbit <b>·</b> Right-drag / WASD to pan <b>·</b> Scroll to zoom<span>Touch: one finger orbit · two fingers pan / pinch</span></p><div id="status" role="status">Preparing campus…</div><details id="errors" hidden><summary>Some assets could not load</summary><ul id="error-list"></ul></details><p class="attribution">Geometry: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a> · <a href="https://www.nyc.gov/site/doitt/initiatives/3d-building.page" target="_blank" rel="noreferrer">NYC building data</a></p></div>
       <dialog id="camera-dialog"><form method="dialog"><button class="close" aria-label="Close camera panel">×</button></form><p class="eyebrow">YOUR POINT OF VIEW</p><h2>Save your camera angle</h2><p>Explore freely, then copy the JSON below to share your exact view. Paste a saved angle here to restore it.</p><label for="camera-json">Camera configuration</label><textarea id="camera-json" spellcheck="false" rows="11"></textarea><div class="dialog-actions"><button id="camera-copy">Copy camera</button><button id="camera-restore">Restore angle</button></div><p id="camera-message" role="status"></p></dialog>
     </main>
     <script>
       // A failed entry-module download cannot run the application's error UI.
       window.addEventListener('error', function (event) {
         if (event.target && event.target.id === 'map-bootstrap') {
-          document.getElementById('loading-screen').setAttribute('aria-busy', 'false');
-          document.getElementById('loading-screen').dataset.state = 'failed';
-          document.getElementById('loading-status').textContent = 'Unable to load the campus.';
-          var message = document.getElementById('loading-error');
-          message.hidden = false;
-          message.textContent = 'The application could not download. Check your connection and retry.';
-          var retry = document.getElementById('loading-retry');
+          document.getElementById('app').setAttribute('aria-busy', 'false');
+          document.getElementById('startup-notice').hidden = false;
+          document.getElementById('startup-status').textContent = 'The map could not download. Check your connection and retry.';
+          var retry = document.getElementById('startup-retry');
           retry.hidden = false;
           retry.onclick = function () { window.location.reload(); };
           retry.focus();

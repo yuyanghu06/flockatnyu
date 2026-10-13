@@ -14,8 +14,8 @@ function rig(){const element=new Events(),controls=new Events(),calls={focus:[],
 const results={checks:[],limitations:['Synthetic event dispatch only; actual browser propagation, pointer capture and touch interaction remain unverified.']};
 const check=(name,fn)=>{fn();results.checks.push({name,pass:true});};
 const click=r=>{r.element.emit('pointerdown');r.element.emit('pointerup');};
-check('All eleven configured IDs focus immediately on click; blank click only deselects',()=>{
- const ids=[...fs.readFileSync('src/config.js','utf8').matchAll(/\{ id: '([^']+)'/g)].map(m=>m[1]);assert.equal(ids.length,11);const r=rig();for(const id of ids){r.setId(id);click(r);}assert.deepEqual(r.calls.focus,ids);assert.deepEqual(r.calls.select,ids);r.setId(null);click(r);assert.equal(r.calls.select.at(-1),null);assert.equal(r.calls.focus.length,11);
+check('All ten configured IDs focus immediately on click; blank click only deselects',()=>{
+ const ids=[...fs.readFileSync('src/config.js','utf8').matchAll(/\{ id: '([^']+)'/g)].map(m=>m[1]);assert.equal(ids.length,10);const r=rig();for(const id of ids){r.setId(id);click(r);}assert.deepEqual(r.calls.focus,ids);assert.deepEqual(r.calls.select,ids);r.setId(null);click(r);assert.equal(r.calls.select.at(-1),null);assert.equal(r.calls.focus.length,10);
 });
 check('Drag-away-return, threshold move, right button, secondary pointer and cancel never click',()=>{
  for(const scenario of ['return','threshold','right','secondary','cancel']){const r=rig();r.element.emit('pointerdown',{button:scenario==='right'?2:0,isPrimary:scenario!=='secondary'});if(scenario==='return'){r.element.emit('pointermove',{clientX:100,buttons:1});r.element.emit('pointermove',{clientX:10,buttons:1});}if(scenario==='threshold')r.element.emit('pointermove',{clientX:15,buttons:1});if(scenario==='cancel')r.element.emit('pointercancel');r.element.emit('pointerup');assert.equal(r.calls.focus.length,0,scenario);assert.equal(r.calls.select.length,0,scenario);}
@@ -54,5 +54,28 @@ check('Outward burst delivers every delta with zero synchronous raycasts',()=>{
 });
 check('Inward blank burst picks once; moved pointer and fresh gesture remain eligible',()=>{
  const r=rig();r.setId(null);for(let i=0;i<100;i++){r.time(i);r.element.emit('wheel',{deltaY:-.25});}assert.equal(r.calls.hits.length,1);assert.equal(r.calls.zoom.length,100);r.setId('b');r.time(110);r.element.emit('wheel',{deltaY:-1,clientX:30});assert.equal(r.calls.hits.length,2);assert.deepEqual(r.calls.focus,['b']);r.time(120);r.element.emit('wheel',{deltaY:-1,clientX:100});assert.equal(r.calls.hits.length,2);r.setId('a');r.time(310);r.element.emit('wheel',{deltaY:-1,clientX:100});assert.equal(r.calls.hits.length,3);assert.deepEqual(r.calls.focus,['b','a']);
+});
+// A shared capture ancestor receives an event before the canvas; this helper
+// preserves event identity and respects stopImmediatePropagation across paths.
+function screenRig() {
+ const element=new Events(),screen=new Events(),controls=new Events(),calls=[];let time=0,enabled=true;
+ const navigation={focusedId:'a',returning:false,zoomDelta(d){calls.push(d);this.returning=true;},endZoomGesture(){},cancel(){},reconcile(){},focus(){throw Error('Outward screen wheel must not pick/focus');}};
+ const api=createMapInteractions({element,wheelEventTarget:screen,controls,navigation,isWheelEnabled:()=>enabled,hit:()=>{throw Error('Outward screen wheel must not raycast');},select:()=>{},setHovered:()=>{},getRoot:()=>{},now:()=>time});
+ const dispatch=(values={},overCanvas=false)=>{const event=screen.emit('wheel',values);if(overCanvas&&!event.stopped)element.handlers.get('wheel')?.(event);return event;};
+ return {element,screen,controls,navigation,calls,api,dispatch,time:n=>time=n,enabled:n=>enabled=n};
+}
+check('Focused outward screen capture consumes overlay event and returns once for canvas event',()=>{
+ for(const overCanvas of [false,true]) {const r=screenRig(),event=r.dispatch({deltaY:2},overCanvas);assert(event.prevented&&event.stopped);assert.deepEqual(r.calls,[2]);assert.equal(r.navigation.returning,true);assert.deepEqual(r.screen.options.get('wheel'),{capture:true,passive:false});}
+});
+check('Inactive and inward overlay, zero/nonfinite deltas and loading gate retain native event',()=>{
+ for(const scenario of ['inactive','inward','zero','nan','infinity','loading']) {const r=screenRig();if(scenario==='inactive')r.navigation.focusedId=null;if(scenario==='loading')r.enabled(false);const e=r.dispatch({deltaY:scenario==='inward'?-5:scenario==='zero'?0:scenario==='nan'?NaN:scenario==='infinity'?Infinity:5});assert(!e.prevented&&!e.stopped,scenario);assert.deepEqual(r.calls,[],scenario);}
+});
+check('Screen return tails stay consumed after focus clears; idle screen scroll resumes natively',()=>{
+ const r=screenRig();r.dispatch({deltaY:1});r.navigation.focusedId=null;r.navigation.returning=false;
+ for(const t of [40,80,160,250]) {r.time(t);const e=r.dispatch({deltaY:.1});assert(e.prevented&&e.stopped);}
+ assert.deepEqual(r.calls,[1]);r.time(431);r.api.update(.001);const idle=r.dispatch({deltaY:2});assert(!idle.prevented&&!idle.stopped);assert.deepEqual(r.calls,[1]);
+});
+check('Loading-disabled outward canvas input is untouched and both listener targets dispose',()=>{
+ const r=screenRig();r.enabled(false);const event=r.dispatch({deltaY:10},true);assert(!event.prevented&&!event.stopped);assert.deepEqual(r.calls,[]);r.api.dispose();assert.equal(r.screen.handlers.size,0);assert.equal(r.element.handlers.size,0);assert.equal(r.controls.handlers.size,0);
 });
 console.log(JSON.stringify(results,null,2));

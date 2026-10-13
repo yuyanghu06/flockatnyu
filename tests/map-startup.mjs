@@ -1,0 +1,33 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createLoadingState} from '../src/loading-state.js';
+const checks=[],check=(name,fn)=>{fn();checks.push({name,pass:true});};
+const ready=s=>{s.start(1);s.jobFinished();s.sceneReady();};
+check('Initial state never enters; invalid totals/counters cannot manufacture readiness',()=>{const s=createLoadingState();assert.equal(s.snapshot().status,'loading');assert.equal(s.enter(),false);assert.equal(s.jobFinished(),false);assert.equal(s.resourceFinished(),false);for(const n of [0,-1,.5,NaN,Infinity,Number.MAX_SAFE_INTEGER+1,'1',null])assert.throws(()=>s.start(n),RangeError);assert.equal(s.snapshot().started,false);s.start(2);assert.equal(s.start(1),false);s.jobFinished();assert.equal(s.enter(),false);s.jobFinished();assert.equal(s.jobFinished(),false);assert.equal(s.snapshot().completedJobs,2);assert.equal(s.enter(),false);});
+function perms(a){return a.length?a.flatMap((v,i)=>perms(a.filter((_,j)=>j!==i)).map(p=>[v,...p])):[[]];}
+check('Adversarial order of job/resource/scene milestones never permits premature entry',()=>{
+ for(const order of perms(['job','resourceA','resourceB','scene'])){let entered=0;const s=createLoadingState({onEnter:()=>entered++});s.resourceStarted();s.start(1);s.resourceStarted();for(let i=0;i<order.length;i++){const event=order[i];if(event==='job')s.jobFinished();else if(event==='scene')s.sceneReady();else s.resourceFinished();assert.equal(s.snapshot().status,i===3?'ready':'loading');assert.equal(entered,0);if(i<3)assert.equal(s.enter(),false);}assert.equal(s.enter(),true);assert.equal(entered,1);}
+});
+check('Nested resource starts and late resources revoke ready until balanced completion',()=>{const s=createLoadingState();s.resourceStarted();ready(s);assert.equal(s.snapshot().status,'loading');s.resourceStarted();s.resourceFinished();assert.equal(s.snapshot().pendingResources,1);s.resourceFinished();assert.equal(s.snapshot().status,'ready');s.resourceStarted();assert.equal(s.snapshot().status,'loading');assert.equal(s.enter(),false);s.resourceFinished();assert.equal(s.snapshot().status,'ready');assert.equal(s.resourceFinished(),false);});
+check('Ready never auto-enters and explicit/reentrant enter callback runs once',()=>{let changes=0,enters=0;let s;s=createLoadingState({onChange:()=>changes++,onEnter:snapshot=>{enters++;assert.equal(snapshot.status,'entered');assert.equal(s.enter(),false);}});ready(s);assert.equal(enters,0);assert.equal(s.snapshot().entered,false);assert.equal(s.enter(),true);assert.equal(s.enter(),false);assert.equal(enters,1);assert.equal(s.start(1),false);assert(changes>0);s.resourceStarted();s.resourceFinished();assert.equal(s.enter(),false);});
+check('Any failure is terminal even if all jobs/resources finish, with deduplicated diagnostics',()=>{for(const when of ['initial','loading','ready']){let entered=0;const s=createLoadingState({onEnter:()=>entered++});if(when!=='initial')s.start(1);if(when==='ready'){s.jobFinished();s.sceneReady();}s.fail(' network error ');assert.equal(s.fail('network error'),false);s.start(1);s.jobFinished();s.sceneReady();s.resourceStarted();s.resourceFinished();assert.equal(s.snapshot().status,'failed');assert.equal(s.enter(),false);assert.equal(entered,0);assert.deepEqual(s.snapshot().errors,['network error']);}const s=createLoadingState();s.fail();assert.equal(s.snapshot().errors[0],'Unknown loading error.');});
+check('Snapshots and notifications are immutable independent values',()=>{const events=[],s=createLoadingState({onChange:x=>events.push(x)}),before=s.snapshot();s.start(1);s.fail('x');assert(Object.isFrozen(before)&&Object.isFrozen(before.errors));assert.equal(before.started,false);assert.equal(before.errors.length,0);assert.throws(()=>events[0].errors.push('bad'),TypeError);assert.equal(events[0].errors.length,0);assert.equal(s.snapshot().errors.length,1);});
+const saved={document:globalThis.document,window:globalThis.window,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout};
+const nodes=new Map(),events=[];function node(id){if(!nodes.has(id))nodes.set(id,{hidden:false,inert:id==='app',dataset:{},attributes:new Map(),listeners:{},setAttribute(k,v){this.attributes.set(k,v);},focus(){events.push('focus:'+id);},addEventListener(k,fn){this.listeners[k]=fn;}});return nodes.get(id);}
+let reloads=0;globalThis.document={getElementById:node,dispatchEvent:e=>events.push(e.type)};globalThis.window={location:{reload:()=>reloads++}};globalThis.setTimeout=()=>1;globalThis.clearTimeout=()=>{};
+try {
+ const {campusStartup:s}=await import('../src/map-startup.js');
+ check('Automatically enters once only after complete jobs, resources and scene preparation',()=>{
+  assert(node('app').inert);s.start(1);s.resourceStarted();s.jobFinished();s.sceneReady();assert(node('app').inert);assert.equal(events.filter(x=>x==='campus-enter').length,0);
+  s.resourceFinished();assert.equal(s.snapshot().status,'entered');assert.equal(node('app').inert,false);assert.equal(node('app').attributes.get('aria-busy'),'false');assert(node('startup-notice').hidden);assert.equal(events.filter(x=>x==='campus-enter').length,1);assert.equal(s.enter(),false);
+ });
+ check('Post-startup failure stops input, shows retry and does not re-enter',()=>{
+  s.fail('Graphics context lost');assert(node('app').inert);assert.equal(node('startup-notice').hidden,false);assert.equal(node('startup-retry').hidden,false);assert.equal(events.at(-1),'focus:startup-retry');assert(events.includes('campus-loading-failed'));node('startup-retry').listeners.click();assert.equal(reloads,1);assert.equal(s.enter(),false);
+ });
+}finally{Object.assign(globalThis,saved);}
+check('Removed visual loader and CTA; actual preparation and import fallback remain',()=>{
+ const html=fs.readFileSync('index.html','utf8'),main=fs.readFileSync('src/main.js','utf8'),bootstrap=fs.readFileSync('src/bootstrap.js','utf8');
+ assert(!html.includes('loading-screen'));assert(!html.includes('loading-enter'));assert(!html.includes('loading-gear'));assert(html.includes('startup-retry'));assert(bootstrap.includes('campusStartup.fail('));
+ const end=main.slice(main.indexOf('await Promise.all(Array.from'));assert(end.indexOf('await renderer.compileAsync')<end.indexOf('campusStartup.sceneReady()'));assert(end.indexOf('renderer.render(scene, camera)')<end.indexOf('campusStartup.sceneReady()'));
+});
+const evidence=process.env.MAP_EVIDENCE||'evidence/m21-map-input';fs.mkdirSync(evidence,{recursive:true});fs.writeFileSync(`${evidence}/startup-results.json`,JSON.stringify({checks},null,2)+'\n');console.log(`${checks.length}/${checks.length} startup checks passed`);

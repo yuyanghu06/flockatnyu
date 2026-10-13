@@ -34,9 +34,9 @@ check('Maximum distance and map target clamps, minimum-distance tiny target, ori
  const r=rig(.3);r.focus.focus(model(1200,1400,300,220,300));done(r);near(r.camera.position.distanceTo(r.controls.target),limits.maxDistance);near(r.controls.target.x,limits.targetBounds.maxX);near(r.controls.target.z,limits.targetBounds.maxZ);
  const small=rig(2);small.controls.enableDamping=false;small.focus.focus(model(0,0,.001,.001,.001));small.focus.update(10);assert.equal(small.controls.enableDamping,false);validate(small);assert(small.camera.position.distanceTo(small.controls.target)>=limits.minDistance-1e-8);
 });
-check('All eleven configured front orientations finish at requested angle after spring settling',()=>{
- assert.equal(Object.keys(buildingViews).length,11);
- for(const [id,view] of Object.entries(buildingViews)){const r=rig();r.focus.focus(model(),id);r.focus.update(.1);assert(r.focus.active);r.focus.update(10);assert.equal(r.focus.active,false);assert.equal(r.focus.focusedId,id);near(Math.atan2(Math.sin(r.controls.getAzimuthalAngle()-Math.atan2(...view.front)),Math.cos(r.controls.getAzimuthalAngle()-Math.atan2(...view.front))),0);near(r.controls.getPolarAngle(),buildingFocusPolarAngle);validate(r);}
+check('All ten configured front orientations finish at requested angle after spring settling',()=>{
+ assert.equal(Object.keys(buildingViews).length,10);
+ for(const [id,view] of Object.entries(buildingViews)){const r=rig();r.focus.focus(model(),id);r.focus.update(.1);assert(r.focus.active);r.focus.update(10);assert.equal(r.focus.active,false);assert.equal(r.focus.focusedId,id);near(Math.atan2(Math.sin(r.controls.getAzimuthalAngle()-Math.atan2(...view.front)),Math.cos(r.controls.getAzimuthalAngle()-Math.atan2(...view.front))),0);const phi=view.polarAngle??buildingFocusPolarAngle;near(r.controls.getPolarAngle(),Math.atan2(Math.sin(phi),(view.heightScale??1)*Math.cos(phi)));validate(r);}
 });
 check('Front focus rotates along shortest azimuth arc',()=>{
  const r=rig(),id='nyu-kimmel-center',end=Math.atan2(...buildingViews[id].front),start=end-5.5;
@@ -69,10 +69,10 @@ check('Repeated refocus and wheel retarget preserve momentum rather than restart
 });
 check('Invalid delta no-ops, extreme finite frame settles safely, reduced motion immediate',()=>{
  const r=rig();r.focus.focus(model(),'nyu-kimmel-center');const before=pose(r);for(const dt of [0,-1,NaN,Infinity])assert.equal(r.focus.update(dt),false);assert.deepEqual(pose(r),before);r.focus.update(Number.MAX_VALUE);assert.equal(r.focus.active,false);validate(r);
- const rm=rig(1.6,()=>true);rm.focus.focus(model(),'nyu-kimmel-center');rm.focus.update(.001);assert.equal(rm.focus.active,false);near(rm.controls.getPolarAngle(),buildingFocusPolarAngle);validate(rm);
+ const rm=rig(1.6,()=>true);rm.focus.focus(model(),'nyu-kimmel-center');rm.focus.update(.001);assert.equal(rm.focus.active,false);const view=buildingViews['nyu-kimmel-center'];near(rm.controls.getPolarAngle(),Math.atan2(Math.sin(view.polarAngle),view.heightScale*Math.cos(view.polarAngle)));validate(rm);
 });
 check('Deselect leaveFocus transitions smoothly back to overview without pose jump',()=>{
- const r=rig();r.focus.focus(model(),'nyu-kimmel-center');done(r);const before=pose(r);assert(r.focus.leaveFocus());pose(r).forEach((v,i)=>near(v,before[i]));r.focus.update(.02);assert(r.focus.active);assert(r.controls.getPolarAngle()<buildingFocusPolarAngle);done(r);assert.equal(r.focus.focusedId,null);near(r.controls.maxPolarAngle,limits.maxPolarAngle);
+ const r=rig();r.focus.focus(model(),'nyu-kimmel-center');done(r);const before=pose(r),focusedPolar=r.controls.getPolarAngle();assert(r.focus.leaveFocus());pose(r).forEach((v,i)=>near(v,before[i]));r.focus.update(.02);assert(r.focus.active);assert(r.controls.getPolarAngle()<focusedPolar);done(r);assert.equal(r.focus.focusedId,null);near(r.controls.maxPolarAngle,limits.maxPolarAngle);
 });
 const traces={};
 check('Continuous outward trackpad with tiny tail and mouse bursts stay monotonic and bounded',()=>{
@@ -93,5 +93,14 @@ check('Repeated outward events do not restart or retarget an active overview ret
  const a=rig(),b=rig();for(const r of [a,b]){r.focus.focus(model(),'nyu-kimmel-center');done(r);r.focus.zoomDelta(3);}
  for(let i=0;i<45;i++){assert.equal(a.focus.zoomDelta(20),false);a.focus.update(1/60);b.focus.update(1/60);pose(a).forEach((v,j)=>near(v,pose(b)[j]));}done(a);done(b);
 });
+check('Bobst and Silver pull back 20% at their existing angles without compounding',()=>{
+ for(const id of ['bobst-library','nyu-silver-center']){
+  const r=rig(),root=model(),box=new T.Box3().setFromObject(root);box.min.y-=4.5;box.max.y+=4.5;
+  const distance=box.getSize(new T.Vector3()).length()/2/Math.sin(43*Math.PI/360)*1.12*1.2;
+  assert(r.focus.focus(root,id));done(r);near(r.camera.position.distanceTo(r.controls.target),distance);
+  const first=pose(r);assert(r.focus.focus(root,id));done(r);pose(r).forEach((n,i)=>near(n,first[i]));
+ }
+});
 result.traces=traces;
-fs.mkdirSync('evidence/m11-atmosphere-navigation',{recursive:true});fs.writeFileSync('evidence/m11-atmosphere-navigation/clickfocus-results.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({...result,traces:Object.fromEntries(Object.entries(traces).map(([k,v])=>[k,{frames:v.length,start:v[0],end:v.at(-1)}]))},null,2));
+const evidenceDir=process.env.MAP_EVIDENCE??'evidence/m11-atmosphere-navigation';
+fs.mkdirSync(evidenceDir,{recursive:true});fs.writeFileSync(`${evidenceDir}/clickfocus-results.json`,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({...result,traces:Object.fromEntries(Object.entries(traces).map(([k,v])=>[k,{frames:v.length,start:v[0],end:v.at(-1)}]))},null,2));

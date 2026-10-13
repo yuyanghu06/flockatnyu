@@ -37,11 +37,10 @@ export const buildings = [
   { id: 'nyu-kimmel-center', name: 'Kimmel Center', description: 'NYU’s Kimmel Center for University Life at 60 Washington Square South. Pale masonry, glazed corners and upper terraces overlook Washington Square Park.' },
   { id: 'nyu-global-center', name: 'Global Center (GCASL)', description: 'NYU’s Global Center for Academic and Spiritual Life beside Kimmel. Its patterned ochre stone screen draws on a tree-of-life motif. This reference-informed exterior is an architectural approximation.' },
   { id: 'nyu-leslie-elab-building', name: 'Leslie eLab building', description: 'The Leslie Entrepreneurs Lab occupies the ground floor at 16 Washington Place, within the stepped building at 12–16 Washington Place.' },
-  { id: 'nyu-gould-plaza', name: 'Gould Plaza', description: 'The shared plaza beside Stern and Courant. Photo-informed paving, skylights and seating, with an added planting proposal of trees and shrubs around the court.' },
   { id: 'bobst-library', name: 'Bobst Library', description: 'NYU’s library on the south side of Washington Square Park.' },
   { id: 'washington-square-arch', name: 'Washington Square Arch', description: 'The marble arch at the northern entrance to Washington Square Park.' },
   { id: 'lipton-hall', name: 'Lipton Hall', description: 'An NYU residence hall beside Washington Square Park.' },
   { id: 'courant-institute', name: 'Courant Institute', description: 'NYU’s center for mathematics and computer science, southeast of Washington Square Park.' },
-  { id: 'stern-school-of-business', name: 'Stern School of Business', description: 'NYU’s business school beside Gould Plaza, near Washington Square Park.' },
+  { id: 'stern-school-of-business', name: 'Stern School of Business', description: 'NYU’s business school and adjoining Gould Plaza, near Washington Square Park.' },
   { id: 'nyu-john-a-paulson-center', name: paulson.name, description: `${paulson.address}. Explore the student and faculty towers above a shared podium. This map model is an architectural approximation.` },
 ];

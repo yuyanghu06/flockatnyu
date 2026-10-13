@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { loadingScreen } from './loading-screen.js';
+import { campusStartup } from './map-startup.js';
 import { createAssistant } from './assistant.js';
 import './assistant.css';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -11,6 +11,7 @@ import { createMapAtmosphere } from './atmosphere.js';
 import { createLandmarkEffects } from './landmark-effects.js';
 import { createCameraFocus } from './camera-focus.js';
 import { createMapInteractions } from './map-interactions.js';
+import { createKeyboardPan } from './keyboard-pan.js';
 import { compactContextGeometry, freezeStaticSubtree } from './map-resources.js';
 import { removeReplacedBuilding, trimDistantGrass, validateCamera, constrainPan } from './geometry.js';
 import { createPaulsonModel } from './paulson.js';
@@ -26,6 +27,7 @@ import './style.css';
 const $ = id => document.getElementById(id);
 const state = { status: 'loading', loaded: 0, failed: [], selected: null, hovered: null, removedColesTriangles: 0, startedAt: performance.now(), loadMilliseconds: null };
 const roots = new Map();
+let sternBuilding, sternPlaza;
 const scene = new THREE.Scene();
 const mapAtmosphere = createMapAtmosphere(scene,palette,mapExtent,atmosphere);
 const reducedMotionQuery = matchMedia('(prefers-reduced-motion: reduce)');
@@ -45,7 +47,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.25;
 $('map').appendChild(renderer.domElement);
 renderer.domElement.tabIndex = 0;
-renderer.domElement.setAttribute('aria-label', 'Campus map. Drag to orbit; right drag to pan; scroll to zoom. Click a detailed building to select it.');
+renderer.domElement.setAttribute('aria-label', 'Campus map. Drag to orbit; right drag or WASD to pan; scroll to zoom. Click a detailed building to select it.');
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enabled = false;
 document.addEventListener('campus-loading-failed', () => { controls.enabled = false; });
@@ -56,9 +58,9 @@ document.addEventListener('campus-enter', () => {
   animate();
 }, { once: true });
 renderer.domElement.addEventListener('webglcontextlost', () => {
-  loadingScreen.fail('The graphics context was lost. Retry loading the map.');
+  campusStartup.fail('The graphics context was lost. Retry loading the map.');
 });
-renderer.debug.onShaderError = () => loadingScreen.fail('A map shader could not compile on this device. Retry loading or try another browser.');
+renderer.debug.onShaderError = () => campusStartup.fail('A map shader could not compile on this device. Retry loading or try another browser.');
 controls.enableDamping = true;
 controls.dampingFactor = 0.09;
 controls.minDistance = cameraLimits.minDistance;
@@ -82,6 +84,7 @@ ground.position.y = -0.12;
 scene.add(ground);
 mapAtmosphere.apply(ground);
 const cameraNavigation = createCameraFocus({ camera, controls, limits: cameraLimits, constrainPan, reducedMotion: () => reducedMotionQuery.matches });
+const keyboardPan = createKeyboardPan({ camera, controls, navigation: cameraNavigation, constrainPan, limits: cameraLimits });
 
 function exportCamera() {
   return { version: 1, projection: 'perspective', position: camera.position.toArray(), target: controls.target.toArray(), fov: camera.fov, near: camera.near, far: camera.far, zoom: camera.zoom };
@@ -154,10 +157,12 @@ $('focus').addEventListener('click', focusSelection);
 const pointer = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
 const pickMeshes = [], pickHits = [];
+const pickMeshSet = new Set();
 // Register scene meshes once; keep context occluders, omit decorative glow/sky.
 function registerPickMeshes(root) {
   root.traverse(object => {
-    if (!object.isMesh || object.userData.mapDecoration) return;
+    if (!object.isMesh || object.userData.mapDecoration || pickMeshSet.has(object)) return;
+    pickMeshSet.add(object);
     object.geometry.computeBoundingBox();
     pickMeshes.push(object);
   });
@@ -182,7 +187,7 @@ function setHovered(id) {
   if (id !== state.hovered) { state.hovered = id; repaint(); }
   renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
 }
-const mapInteractions = createMapInteractions({ element: renderer.domElement, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id) });
+const mapInteractions = createMapInteractions({ element: renderer.domElement, wheelEventTarget: window, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id) });
 createAssistant({ getBuilding: () => { const building = buildings.find(item => item.id === state.selected); return building ? { id: building.id, name: building.name } : null; } });
 
 $('camera-open').addEventListener('click', () => {
@@ -212,11 +217,11 @@ $('camera-restore').addEventListener('click', () => {
 const loadingManager = new THREE.LoadingManager();
 const itemStart = loadingManager.itemStart.bind(loadingManager);
 const itemEnd = loadingManager.itemEnd.bind(loadingManager);
-loadingManager.itemStart = url => { loadingScreen.resourceStarted(); itemStart(url); };
-loadingManager.itemEnd = url => { itemEnd(url); loadingScreen.resourceFinished(); };
+loadingManager.itemStart = url => { campusStartup.resourceStarted(); itemStart(url); };
+loadingManager.itemEnd = url => { itemEnd(url); campusStartup.resourceFinished(); };
 loadingManager.onError = url => {
   const name = url.startsWith('data:') || url.startsWith('blob:') ? 'an embedded model resource' : url.split('/').pop().split('?')[0];
-  loadingScreen.fail(`Could not load ${name}. Check your connection and retry.`);
+  campusStartup.fail(`Could not load ${name}. Check your connection and retry.`);
 };
 const loader = new GLTFLoader(loadingManager);
 loader.setMeshoptDecoder(MeshoptDecoder);
@@ -228,9 +233,9 @@ const jobs = [
   { name: 'mapped-streets-parks', url: new URL('../campus-assets/models/environment/streets-parks.glb', import.meta.url).href },
   { name: 'mapped-park-vegetation', url: new URL('../campus-assets/models/environment/park-vegetation.glb', import.meta.url).href },
 ];
-loadingScreen.start(jobs.length);
+campusStartup.start(jobs.length);
 function recordError(name, error) {
-  loadingScreen.fail(`Could not prepare ${name}. Retry loading the campus.`);
+  campusStartup.fail(`Could not prepare ${name}. Retry loading the campus.`);
   state.failed.push({ name, message: String(error.message || error) });
   $('errors').hidden = false;
   const li = document.createElement('li');
@@ -332,7 +337,9 @@ async function loadJob(job) {
       }
       if (job.name === 'courant-institute') enhanceCourant(model);
       if (job.name === 'stern-school-of-business') enhanceStern(model);
-      if (buildings.some(b => b.id === job.name)) {
+      if (job.name === 'stern-school-of-business') sternBuilding = model;
+      else if (job.name === 'nyu-gould-plaza') sternPlaza = model;
+      else if (buildings.some(b => b.id === job.name)) {
         registerLandmark(job.name, model);
       }
     }
@@ -343,7 +350,7 @@ async function loadJob(job) {
     if (!model.userData.buildingId) registerPickMeshes(model);
     state.loaded++;
   } catch (error) { recordError(job.name, error); }
-  loadingScreen.jobFinished();
+  campusStartup.jobFinished();
   $('status').textContent = `Loading campus · ${state.loaded + state.failed.length} / ${jobs.length} assets`;
 }
 // Bound concurrent decoding/network work while keeping the initial view responsive.
@@ -369,6 +376,7 @@ function animate() {
   landmarkEffects.update(delta,now/1000);
   lastFrame = now;
   controls.update();
+  keyboardPan.update(delta);
   cameraNavigation.update(elapsedSeconds);
   constrainPan(camera.position, controls.target, cameraLimits);
   mapInteractions.update(delta);
@@ -381,16 +389,25 @@ function animate() {
 await Promise.all(Array.from({ length: 5 }, async () => {
   while (nextJob < jobs.length) await loadJob(jobs[nextJob++]);
 }));
-if (!state.failed.length && loadingScreen.snapshot().status !== 'failed') {
+// Existing map coordinates stay intact; one root owns selection, lift and focus.
+if (sternBuilding && sternPlaza) {
+  const stern = new THREE.Group();
+  stern.name = 'Stern School of Business and Gould Plaza';
+  stern.userData = { ...sternBuilding.userData, includesGouldPlaza: true, plaza: structuredClone(sternPlaza.userData) };
+  stern.add(sternBuilding, sternPlaza);
+  registerLandmark('stern-school-of-business', stern);
+  scene.add(stern);
+}
+if (!state.failed.length && campusStartup.snapshot().status !== 'failed') {
   // Await shader preparation, upload/draw the complete scene, then allow a
-  // presentation frame beneath the still-opaque screen before exposing Enter.
+  // presentation frame before automatically enabling map navigation.
   scene.updateMatrixWorld(true);
   await renderer.compileAsync(scene, camera);
   renderer.render(scene, camera);
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  loadingScreen.sceneReady();
+  campusStartup.sceneReady();
 }
-state.status = state.failed.length || loadingScreen.snapshot().status === 'failed' ? 'partial' : 'ready';
+state.status = state.failed.length || campusStartup.snapshot().status === 'failed' ? 'partial' : 'ready';
 state.loadMilliseconds = Math.round(performance.now() - state.startedAt);
 $('status').textContent = state.failed.length ? `Campus partially loaded · ${state.failed.length} issue(s)` : `${roots.size} landmarks · Washington Square campus`;
 
@@ -409,7 +426,11 @@ function landmarkSnapshot(id, root) {
     meshes++;
     triangles += (mesh.geometry.index?.count ?? mesh.geometry.attributes.position.count) / 3;
   });
-  return { id, bounds: { min: box.min.toArray(), max: box.max.toArray() }, screen: project(id), meshes, triangles, details: structuredClone(root.userData) };
+  const parts = root.userData.includesGouldPlaza ? root.children.map(part => {
+    const bounds = new THREE.Box3().setFromObject(part);
+    return { name: part.name, bounds: { min: bounds.min.toArray(), max: bounds.max.toArray() } };
+  }) : undefined;
+  return { id, bounds: { min: box.min.toArray(), max: box.max.toArray() }, screen: project(id), meshes, triangles, details: structuredClone(root.userData), parts };
 }
 Object.defineProperty(window, '__map', { value: Object.freeze({
   snapshot: () => ({ ...structuredClone(state), camera: exportCamera(), navigation: { mapExtent: { ...mapExtent }, cameraLimits: structuredClone(cameraLimits), loadedTileCount: tiles.length }, render: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, logarithmicDepthBuffer: renderer.capabilities.logarithmicDepthBuffer }, landmarks: [...roots].map(([id, root]) => landmarkSnapshot(id, root)) }),
