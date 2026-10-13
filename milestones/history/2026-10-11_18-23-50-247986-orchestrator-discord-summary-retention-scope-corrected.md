@@ -1,0 +1,10 @@
+# M20 retention direction corrected
+
+- Local timestamp / acting role / milestone: 2026-10-11T18:23:50.247986-04:00 / orchestrator / M20.
+- Requested scope: User explicitly says no recent daily summaries; summaries should replace stored old messages, with only monthly summaries for older months. Weekly Monday mornings and monthly1st mornings; go continues authorized work.
+- Starting repository state: M18 archive accepted/scheduled,108836 originals;006 is still unapplied, no actual Discord summary or raw prune. Prior summary pipeline retained all originals and offered daily generation, which does not meet corrected intent.
+- Work performed / changed files: Redirected planner to bounded compaction lifecycle. Tester/evaluator finish prior-scope baseline evidence only; no old daily/all779 generation or hosted006. CLIpolicyRevision whitelist fix passed17runner checks. Shared state/guides updated to reflect correction.
+- Decisions: Raw recent records, weekly source-scoped summaries on Mondays, previous calendar-month summaries on1st, NewYork08:00 routine choice. Monthly closure replaces all prior-month raw and weekly content only after verified publication. Weekly minimumraw retention7days; eligible records may await nextMonday. Initial historical bootstrap remains authorized. No images/embeddings/dailyLLM calls.
+- Checks and evidence: Prior provider/runner/SQL baseline checks are technical evidence, not retention acceptance. Planner identifies missing lifecycle: mixedraw+verifiedsummary inputs, atomic publish/prune, independent immutable summary results, exact compacted-range guard against ingestion resurrection and source-bound lineage/citations.
+- Resulting state / acceptance: Corrected M20 active; live raw archive unchanged. Prior forever-original/daily summaries design explicitly superseded.
+- Remaining work and handoff: Complete/journal newplan, implement/test/evaluate compaction and NYDST schedule, then actualpilot/historicalmonthly passes, verifiedpruning and hostedcontinuation. Never prune without successful verifiedsummary; preserve blacklists/sourceACL/unrelateddata.

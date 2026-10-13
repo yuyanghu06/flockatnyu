@@ -1,0 +1,10 @@
+# Discord local backfill and Railway launch contract
+
+- Local timestamp / acting role / milestone: 2026-10-11T16:02:09.949055-04:00 / planner / M17.
+- Requested scope: resume M16, initial full Discord historical backfill locally using configured token, then new Railway worker service.
+- Starting state: accepted local M16 archive/admin/retrieval, extensive uncommitted changes; MCP live read now verified, no hosted schema yet.
+- Work performed / changed files: read-only specialist inspected archive client/config/store/sync, migrations, tests, API defaults and deployment configuration; no edits. Orchestrator journals this pass.
+- Decisions: explicit channel/thread scope; CLI preflight/register/backfill/sync; full-history registration uses 2015-01-01T00:00:00Z without changing historical defaults. Validate Message Content application flags, effective history permissions, trusted operator admin membership; no automatic reader grants. Strict Discord runtime rejects missing config/no channels; generic daily no-op remains. Bounded repeated local jobs reuse atomic Supabase checkpoints and catch up before handoff. Isolate worker deployment from API railway.json.
+- Checks and evidence: planner ran node --test tests/discord-client.test.mjs tests/discord-sync.test.mjs, 15/15 pass. Injected missing-config worker returned no_op/storage_not_configured, motivating strict entrypoint. Prior local migration tests passed; migration files are non-idempotent, apply once in order after checking hosted schema/vector placement.
+- Resulting state / acceptance: plan accepted for bounded local implementation; live launch pending credentials/channel scope. No code/deployment/live data changes by specialist.
+- Remaining work and handoff: coder owns CLI/client/guide, tester owns tests/evidence, orchestrator owns deployment/docs/scripts/journal. MCP project creation failed Unauthorized even after login, but supported CLI railway init succeeded and created tech-nyu project f13799d2-95ff-4d22-9b17-acfce19406ca. No service/deployment yet. Bot/guild/service-role credentials missing.

@@ -1,3 +1,11 @@
+# Current backend status after M16
+
+The Discord archive, admin channel UI and scoped retrieval tools are implemented and locally accepted. Production authentication, live connections and deployment remain pending. See [Discord archive setup](discord-archive.md) and the rolling milestone for current truth. npm dependencies and lock were refreshed; API import/syntax and production builds pass. The earlier chat history/request and retrieval query limit findings below are fixed and covered by regression tests. The daily worker now runs the configured Discord adapter rather than always being a no-op. Historical M15-only notes below remain for context and are superseded where stated here.
+
+Independent integrated verification: 75 tests passed, zero skipped/failed, including local PostgreSQL/pgvector SQL execution and real Hono fixtures. Five Chrome admin checks passed using fixture responses. No hosted Supabase migration, actual model/Discord/Drive call, production identity integration or active Railway job was verified.
+
+---
+
 # Assistant/backend development snapshot
 
 Status: incomplete; development stopped for a user-requested dev-branch snapshot. No deployment, live connector, database migration or paid model call was performed.

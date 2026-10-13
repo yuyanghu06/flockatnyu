@@ -1,0 +1,27 @@
+{
+  "changedFunctions": [
+    "discord_summary_claim_job",
+    "discord_summary_commit_usage",
+    "discord_summary_fail_job",
+    "discord_summary_finish_job",
+    "discord_summary_get_inputs",
+    "discord_summary_get_parts",
+    "discord_summary_lock_job",
+    "discord_summary_renew_job",
+    "discord_summary_reserve_request",
+    "discord_summary_save_part"
+  ],
+  "bodiesSignaturesAclRlsRolesGlobalSettingsUnchanged": true,
+  "migrationHashes": {
+    "202610120001_knowledge.sql": "40fd17bdd3b2605b9acb4d99ff63caada22c60714a790993c304563c45a6c086",
+    "202610120002_discord_archive.sql": "63d125caca75cee05b94d38e0990345895f8ebe8196cf67102ef6a34b37c5295",
+    "202610120003_discord_discovery_memory.sql": "d33d255d12d81afdc2c259a2434703d7d29533af9a4a725bc37c18137aa4a260",
+    "202610120004_discord_memory_rebuild_performance.sql": "4d665957d3252824079486423f42a751bcc2231803e949ce18b391356e0f2bb3",
+    "202610120005_discord_memory_runtime_budget.sql": "16e343e89ee6139102f1b6b5b1e85db6665e3d65801430dccb9dd1646fdf46c9",
+    "202610120006_discord_memory_summaries.sql": "b514fe4e4775045a05f2dfe58834e7f2b7fd699a4c563e2252ccabf808a2549d",
+    "202610120007_discord_summary_planning_performance.sql": "2678385838b31764e46d0818a4a1316a456732b09e9607e72d82c856345f715b",
+    "202610120008_discord_summary_planning_budget.sql": "3c6b88d3cc93b64364a0f12821e3525079049030604bf8aceea04832e1fbc1ad",
+    "202610120009_discord_summary_sliced_planning.sql": "7466b2e1871d20a8c5752f0a1186802e880091353da89a7c69eaffbb4c95b59f"
+  },
+  "newMigrationHash": "5e65ff3325471c8d63f956c977fcb8e8a1b14e63e09296a6edfaea354b3375d8"
+}

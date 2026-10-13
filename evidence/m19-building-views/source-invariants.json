@@ -1,0 +1,35 @@
+{
+  "note": "Color/model source hashes compared with HEAD. This establishes no source edits in these files, not pixel-perfect GPU material equivalence.",
+  "files": [
+    {
+      "file": "src/config.js",
+      "current": "12883d0801f83e78aa395cd957972de99f84fe273af62de4b788dda7dc40d016",
+      "baseline": "12883d0801f83e78aa395cd957972de99f84fe273af62de4b788dda7dc40d016",
+      "unchanged": true
+    },
+    {
+      "file": "src/paulson.js",
+      "current": "3bf9d4553adea8f833243448d402dec8e9a4b610f45efebc133ebb5521394a08",
+      "baseline": "3bf9d4553adea8f833243448d402dec8e9a4b610f45efebc133ebb5521394a08",
+      "unchanged": true
+    },
+    {
+      "file": "src/kimmel.js",
+      "current": "ba3d8d92b88e6a19ba83a2b1aba3c78d45be1e07c9a85025507128320a448158",
+      "baseline": "ba3d8d92b88e6a19ba83a2b1aba3c78d45be1e07c9a85025507128320a448158",
+      "unchanged": true
+    },
+    {
+      "file": "src/global-center.js",
+      "current": "57e60b3fd068925c580269f10d80ac675b29608794f7adfe25c4c9b381ea1887",
+      "baseline": "57e60b3fd068925c580269f10d80ac675b29608794f7adfe25c4c9b381ea1887",
+      "unchanged": true
+    },
+    {
+      "file": "src/leslie-elab.js",
+      "current": "9831257134993b2cd4e26528600364f96421d857d4ae092a0fda9715a2069f28",
+      "baseline": "9831257134993b2cd4e26528600364f96421d857d4ae092a0fda9715a2069f28",
+      "unchanged": true
+    }
+  ]
+}

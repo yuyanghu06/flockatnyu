@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-11T16:36:33.784968-04:00",
+  "projectId": "f13799d2-95ff-4d22-9b17-acfce19406ca",
+  "serviceId": "2dad5e78-ff4f-4342-acc3-bf3daba2f3f3",
+  "environmentId": "dfe169c1-46a0-415a-9171-309fc9974ef8",
+  "deploymentId": "eebc997b-1d5e-491f-b7d7-258c8693a5f1",
+  "deploymentStatus": "SUCCESS",
+  "workerExited": true,
+  "startCommand": "node server/discord/cli.js sync",
+  "cronSchedule": "15 6 * * *",
+  "nextCronRunAt": "2026-10-12T06:15:00Z",
+  "initialBackfill": {
+    "channelId": "1203562091982622814",
+    "uniqueMessages": 10212,
+    "pages": 103,
+    "runs": 2,
+    "embedded": 0,
+    "complete": true,
+    "targetAt": "2026-10-11T20:31:08.775Z"
+  },
+  "scheduledInvocationObserved": false
+}

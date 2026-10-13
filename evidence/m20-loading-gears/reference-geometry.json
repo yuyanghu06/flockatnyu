@@ -1,0 +1,49 @@
+{
+  "source": "https://techatnyu.vercel.app/#teams",
+  "viewBox": [
+    0,
+    0,
+    720,
+    680
+  ],
+  "projection": [
+    0.731,
+    0.682,
+    -0.731,
+    0.682,
+    0,
+    0
+  ],
+  "gears": [
+    {
+      "name": "top",
+      "teeth": 19,
+      "outerRadius": 203.36,
+      "center": [
+        213.536,
+        16.478
+      ],
+      "pathSha256": "f205b318ab78fc06b702a6735aace61635cd7db2e73ceb7b6b8ad15060642721"
+    },
+    {
+      "name": "selector",
+      "teeth": 15,
+      "outerRadius": 163.68,
+      "center": [
+        250,
+        340
+      ],
+      "pathSha256": "c2daaec41c1195a9acf91d2b518b9893f4b58f83844735ef5ed1086aff645efc"
+    },
+    {
+      "name": "bottom",
+      "teeth": 13,
+      "outerRadius": 143.84,
+      "center": [
+        219.971,
+        606.43
+      ],
+      "pathSha256": "5cc8e3b6dd570c776f86096caf2261b2aaf6f9151b6c1431c4265f74611fb29e"
+    }
+  ]
+}

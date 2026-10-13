@@ -1,0 +1,59 @@
+{
+  "checks": [
+    {
+      "name": "Initial state never enters; invalid totals/counters cannot manufacture readiness",
+      "pass": true
+    },
+    {
+      "name": "Adversarial order of job/resource/scene milestones never permits premature entry",
+      "pass": true
+    },
+    {
+      "name": "Nested resource starts and late resources revoke ready until balanced completion",
+      "pass": true
+    },
+    {
+      "name": "Ready never auto-enters and explicit/reentrant enter callback runs once",
+      "pass": true
+    },
+    {
+      "name": "Any failure is terminal even if all jobs/resources finish, with deduplicated diagnostics",
+      "pass": true
+    },
+    {
+      "name": "Snapshots and notifications are immutable independent values",
+      "pass": true
+    },
+    {
+      "name": "Opaque initial overlay outside inert aria-hidden app with accessible explicit entry button",
+      "pass": true
+    },
+    {
+      "name": "Resources/jobs gate preparation; compile and full render precede sceneReady; entry enables controls",
+      "pass": true
+    },
+    {
+      "name": "Dynamic import failures and stalled load expose failure; retry reloads instead of bypassing gate",
+      "pass": true
+    },
+    {
+      "name": "Three reference-sized gears and decorative loading phrases preserve an accessible white entry pill",
+      "pass": true
+    },
+    {
+      "name": "Continuous animation starts only on explicit campus entry after prepared render",
+      "pass": true
+    },
+    {
+      "name": "Actual UI stays gated until click, ready focuses entry, enter releases inert and retry reloads",
+      "pass": true
+    },
+    {
+      "name": "Post-entry failure re-gates the app, focuses retry and cannot re-enter",
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "Pure state, fake-DOM UI and static integration checks only; no browser render/accessibility interaction or network loading verification."
+  ]
+}

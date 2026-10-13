@@ -39,3 +39,17 @@ M13 loading screen tracking lives in m13-loading/.
 M14: m14-supabase-setup tracks preparation versus authenticated connection; not complete until scoped connectivity verified.
 
 M15 assistant scaffold and the dev snapshot publication are tracked in the rolling snapshot; Git publication history records the successful origin/codex/dev push.
+
+M16: m16-discord-archive tracks accepted local archive/admin/tool implementation, independent SQL/browser evidence and pending live launch.
+
+M17: m17-discord-launch tracks full-history local collection, hosted schema and the dedicated Railway service. Completion requires actual bot configuration/backfill and an observed Railway run/schedule.
+
+M18 tracks automatic Discord discovery, inherited blacklists, Discord-only reset and original time-tier storage with images/embeddings deferred.
+
+M19: m19-building-views tracks screenshot-derived camera profiles and focused outward wheel return from anywhere on screen.
+
+M20: m20-loading-gears tracks the reference loading gears, user feedback for original size shifted left and one right CTA, composited motion and truthful entry/error verification.
+
+M20 adds authorized Luna summarypasses overM18source-isolatedtimegroups; itsguide is m20-discord-summaries/info.md. Current rollingstate distinguishes rawgroups, actualAIgeneration andhostedworker acceptance.
+
+M21: m21-map-input tracks stripped loader/automatic entry, WASD, Bobst/Silver pullback and Gould under Stern; it supersedes the M20 visual entry screen.

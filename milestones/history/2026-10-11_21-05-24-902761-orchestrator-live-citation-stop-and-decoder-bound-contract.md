@@ -1,0 +1,10 @@
+# Live citation stop and bounded decoder contract
+
+- Local timestamp / acting role / milestone: 2026-10-11_21-05-24-902761; orchestrator/planner; M20.
+- Requested scope: finish actualhistoricalsummaryretention while preserving accepted sourcecitations/caps/rawuntilverified.
+- Starting state: audited68-originalpilotpublished; fullsameoperationbootstrapstarted after0paidplanningproof.
+- Work performed / changed files: actualCLI stoppedfailed/foreign_citation after23additionalgroups/869represented,33dispatches/$0.0334091. Paidpilot4dispatches/$0.0047877 alsoretained. Read-onlymetadata foundfailed35-recordjob0parts and94-recordjob2cachedmaps/0reduces. Affectedoriginalsintact. Delegatedexclusive provider/reducer decoderfix/test/evaluation.
+- Decisions: constrainmessageIds toexactallowedset inone shared$defs enum reused7fields; max512unique values (≤10240stringchars), emptysetarraysmax0, neverinvalidemptyenum. Includegeneratedschema inreservationestimate. Reducer additionallypacks≤512uniquecites alongwith64children/48KiB withouttruncation. Preservev3prompt/provider/canonical/cache semantics: acceptedparts alreadyvalidatedsameallowedset; newconstraint merelyenforcesexistingpolicy atdecode. NoSQL001–009 edits/newoperation/costreset. Allcachedinflightparts are maps, so changedreducerpacking doesnotinvalidate a storedreduction.
+- Checks and evidence: actualCLIexit1metadata; sourcebody/invalidsummarynotpublished. OfficialprimaryOpenAIdocs https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses support$defsrefs andmax1000enumvalues/singleenum>250≤15000characters. Input31–35schema-regression/fakeprovider acceptance belongs to tester; no newmodelcalls byspecialists.
+- Resulting state / acceptance: fullhistorynotcomplete, workerstoppedpreservingdurableoperation46219c71-4480-43e1-961d-a8f5844efbac/accepted24summaries andoriginalpendingdata. Prior25-filecontextwillbeobsolete aftercodefix; donotdeploy it.
+- Remaining work and handoff: coder/providerpackingfix, independenttests/evaluator, SAMEoperation resume toall695withinoriginal$5/10000cap, finalmetadata/cleanup/authchecks andfreshRailwaydeploy/cron.

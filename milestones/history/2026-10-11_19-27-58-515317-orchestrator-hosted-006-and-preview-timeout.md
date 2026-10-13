@@ -1,0 +1,10 @@
+# M20 hosted006 applied and preview timeout
+
+- Local timestamp / acting role / milestone: 2026-10-11T19:27:58.515317-04:00 / orchestrator / M20.
+- Requested scope: Already-authorized hosted retention rollout after local211/evaluator acceptance.
+- Starting repository state: Reviewed006SHA256 b514fe4e4775045a05f2dfe58834e7f2b7fd699a4c563e2252ccabf808a2549d;108836 originals intact; Railway summary service preparedcronOFF.
+- Work performed / changed files: Applied ONLY006 once viaSupabaseMCP as20261011232316_discord_memory_summaries. Read catalog/aggregates, ran actualruntimeAPIpreview, inspected scopedpostgreslogs andperformanceadvisors, captured internal EXPLAIN in evidence/m20-discord-summaries/hosted-summary-plan-before-007.json.
+- Decisions:006 and001–005 are immutable. New bounded007 assigned for actual-host planning fix; no blind global timeout changes. Rootowns hostedapply and diagnostics; exclusive coder/tester/evaluator followup.
+- Checks and evidence: Migration success.11forcedRLS summary/ledger tables with0browserprivilege/RLSmismatches,0unsafe summaryfunctions.108836 originals remain,0unnamed currentweek messages,0summaries/sourcegrants/documentgrants. ActualCLIbootstrappreview failed; postgreslogs count1statementtimeout in23:23:15–23:24:50UTC. Performanceadvisors onlyINFOunindexedFK/unusedindex. Raw content5168832chars/extracted5603543chars(max3080)/storedpayload104174814bytes. EXPLAIN rawrecords late-name sourcejoin estimates15wide composite rows, Materialize undereligible216actual sources; likely costly repeated spool scans. This is plan-based diagnosis, not an executed full EXPLAINANALYZE.
+- Resulting state / acceptance: Schema applied/permissions/namesverified; hostedplanninggateFAILED. No actual Discordmodel request, summary publication or rawprune occurred.
+- Remaining work and handoff: Preserve006, test/evaluate007 manifest/fingerprint equivalence and planshape, apply once and remeasure actualAPI, then bounded staged Luna factualpilot/commit/history and Railway image/cron.

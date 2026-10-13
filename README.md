@@ -85,3 +85,7 @@ interactive proposals. The live map retains its existing palette.
 Courant and Stern now have thin window frames, mullions and projecting sills in their existing palettes. Original geometry and material colors remain intact. See [detail notes](docs/courant-stern-detailing.md) and [before/after evidence](evidence/m5-window-details/).
 
 The street/park layer uses an attributed offline OpenStreetMap snapshot with coherent intersections, curb edges and mapped park holes. Regenerate with python tools/fetch-streets-parks.py --reuse then node tools/build-streets-parks.mjs. Widths and terrain transitions are approximate; see [data provenance](docs/streets-parks-data.md) and [surface notes](docs/streets-rendering.md).
+
+## Discord archive and assistant retrieval
+
+A separate one-shot archive worker, admin channel configuration and source-scoped text/date/author search are implemented locally. Optional semantic embeddings are off by default. Open /admin.html with the local API and administrator access configured; run npm run worker:discord for a configured archive job. See [setup, permissions and limitations](docs/discord-archive.md). Local tests and production build pass; no live Discord history, hosted migrations, production authentication or Railway deployment is claimed.

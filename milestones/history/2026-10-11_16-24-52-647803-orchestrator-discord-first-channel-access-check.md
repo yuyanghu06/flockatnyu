@@ -1,0 +1,10 @@
+# First Discord channel access check
+
+- Local timestamp / acting role / milestone: 2026-10-11T16:24:52.647803-04:00 / orchestrator / M17.
+- Requested scope: use channel1203562091982622814 for now, after user bot invite/token/guild setup; user also asks about all-channel discovery with a blacklist for future channels/threads.
+- Starting state: accepted local CLI and prepared Railway service, hosted/runtime database ready; no archived messages/deployment.
+- Work performed / changed files: inspected current Git/journal/workflow. Ran real CLI preflight for specified channel; instrumented HTTP endpoint/status metadata only to locate denial. No secrets/response bodies output. Updated shared tracking; no implementation/schema/source changes.
+- Decisions: current live collection scope remains the one supplied channel. Automatic discovery/blacklist is a requested future capability, not implemented or enabled. Preserve channel/thread source permissions and originals; exclusions should propagate to descendants, and actual private-thread membership still applies.
+- Checks and evidence: npm run discord:preflight -- --channel1203562091982622814 exited1 permission_denied. Live application GET200, Message Content flags enabled; configured guild1203562091500404776 GET200. Selected channel GET403. Thus token/application/guild access is working, but bot lacks View Channel on the requested channel. No history request/registration/backfill was performed.
+- Resulting state / acceptance: first-channel collection cannot proceed until channel permissions allow the bot to view/read history. Railway unchanged, no deployment/cron. Direct orchestrator diagnostic, no independent specialist pass needed for read-only operational check.
+- Remaining work and handoff: user adjust bot role/channel overrides, then rerun preflight/register/full history and verify actual rows. Decide exclusions before enabling automatic discovery/blacklist; implementation/tests remain future work. Existing98tests/evaluator acceptance unchanged; no application tests rerun.

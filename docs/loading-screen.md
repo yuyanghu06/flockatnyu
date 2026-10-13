@@ -1,21 +1,28 @@
-# Initial loading screen
+# Automatic campus startup
 
-Only the loading screen uses the new black/white style. Its title is Tech Visualized. Two small inline SVG gears use pale faces and offset hatched sides, informed by the supplied screenshot. No fonts, images, dependencies or second WebGL scene are fetched for the design. The reference site could not be opened with the available web tool; the screenshot was inspected directly.
+The user removed the decorative loading screen. There are no gears, orbiting
+phrases, fullscreen entry overlay or “Click to enter” CTA in the application.
+Only a small bottom-left “Preparing campus…” status appears during real loading;
+it disappears when the map opens automatically. A recoverable failure shows a
+message and Retry loading. Prior M13/M20 screenshots remain historical evidence.
 
-The opaque screen exists in initial HTML outside the inert, aria-hidden map app. Its essential black fixed positioning is inline to prevent geometry pop-in before application CSS arrives. All other screen styles are scoped to #loading-screen; existing map CSS and camera configuration are unchanged. The two gears rotate smoothly in opposing directions only while loading; readiness/failure pauses them. Reduced-motion disables rotation. The native enter/retry action is a rounded white pill with dark text and distinct hover/focus. No descriptive tagline is displayed; the title and required loading/ready/error status remain.
+index.html contains this notice outside the initially inert app. It can also
+report failure to download bootstrap itself without requiring the app module.
+map-startup.js uses the existing loading-state.js job/resource/prepared-scene gate,
+automatically calling enter only when the gate is actually ready. main.js still
+waits for successful jobs, compileAsync, a complete initial render and two
+presentation frames. This establishes a prepared/submitted frame, not GPU
+completion. There is no timed reveal or fabricated success.
 
-## Readiness and entry
+Automatic entry releases app inert, hides the notice, dispatches campus-enter,
+enables controls and starts map rendering and the assistant. That event name is
+retained for existing consumers; it no longer requires a user click. Canvas
+visibility is hidden while aria-busy is true to avoid incomplete geometry flashes.
+Asset/import/WebGL/compiler failures or a120-second stall deny entry, disable
+navigation and show retry. Late graphics failure restores the retry notice.
 
-bootstrap.js loads the map through a caught dynamic import. loading-state.js is a pure, single-use state gate. main.js registers the actual job total, counts every completed job and wraps LoadingManager itemStart/itemEnd so nested resources count too. Any loader or preparation failure permanently denies entry until reload. Jobs completing with failures are not success.
-
-After jobs finish successfully, main waits for compileAsync, submits the complete initial scene with renderer.render, and waits two animation frames before sceneReady. This is a prepared/submitted first frame, not proof of GPU completion. Readiness still requires zero pending nested resources. There is no fake progress or timed reveal. The Enter button is both hidden and disabled until ready. A late resource revokes readiness.
-
-The user must click/tap the native Enter button, or activate it by keyboard. Ready focus moves to the button; Enter dismisses the overlay, removes app inert/aria-hidden, enables controls and focuses the canvas. Continuous rendering starts only on entry, avoiding GPU work behind the waiting screen. The initial canvas was already rendered beneath the opaque screen.
-
-## Failures
-
-Required model/nested resource failures, startup import errors, WebGL creation/context loss and shader compilation failures show an error with Retry loading. A separate inline fallback handles failure to download the entry module itself. A 120-second no-state-progress watchdog offers retry for stalled startup, never success. Retry reloads the page for a clean scene and resource state. A late graphics failure restores the opaque error screen and disables controls.
-
-## Validation limits
-
-Tests cover readiness ordering, nested and late resources, explicit entry, terminal failure, counters, DOM focus/inert/error state and source integration. No browser screenshot, actual WebGL shader run, network throttling or physical keyboard/touch result is claimed. Existing browser denial and streets-parks.glb build realpath permission limit remain; user's server is untouched.
+The gear UI/CSS, keyframe authoring tool and obsolete gear tests were removed.
+Current tests are tests/map-startup.mjs and tests/map-input-browser.mjs. Actual
+held/failed model requests and automatic entry are verified in Chrome; evidence
+is in evidence/m21-map-input/. Direct checks were performed by the primary agent
+per user instruction, without independent specialists or live model/API calls.

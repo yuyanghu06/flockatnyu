@@ -1,0 +1,2318 @@
+{
+  "environment": {
+    "url": "http://127.0.0.1:5173",
+    "chrome": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "headless": true,
+    "version": "154.0.8037.99"
+  },
+  "checks": [
+    {
+      "name": "Loading completes with gated entry and no failed map assets",
+      "pass": true,
+      "detail": {
+        "loadMs": 3305,
+        "loaded": 124
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: stern-school-of-business",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            253.0540240929077,
+            99.09343683495533,
+            109.02668330570857
+          ],
+          "target": [
+            74.97300148010252,
+            29.194500327110294,
+            199.76349639892575
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "meshes": 3,
+        "triangles": 92140,
+        "projected": [
+          [
+            0.4662061509357865,
+            -0.20241409149577064,
+            0.9959524778835731
+          ],
+          [
+            -0.14196519629931506,
+            -0.04193159685264768,
+            0.9965727954481174
+          ],
+          [
+            0.5030191209125161,
+            0.3547833568208508,
+            0.9956197123973805
+          ],
+          [
+            -0.15141526102893293,
+            0.438471205364374,
+            0.9963335646521733
+          ],
+          [
+            0.2430119537503863,
+            -0.7037186579133673,
+            0.9940147710425467
+          ],
+          [
+            -0.5436000503453783,
+            -0.3834054066963769,
+            0.9952528869898838
+          ],
+          [
+            0.27207937501768065,
+            0.08036281400342565,
+            0.9932789218685169
+          ],
+          [
+            -0.5943148142163875,
+            0.2580354054544798,
+            0.9947944582603532
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: courant-institute",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            175.7151515188248,
+            85.04825042104002,
+            370.8668714420235
+          ],
+          "target": [
+            140.36249542236328,
+            29.370499253273014,
+            238.92896270751953
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "projected": [
+          [
+            -0.1450995973670642,
+            -0.1299676162290039,
+            0.994939997331657
+          ],
+          [
+            -0.41940868847834367,
+            -0.6176036540300134,
+            0.9927518277196412
+          ],
+          [
+            -0.16141490005447198,
+            0.5557046908424979,
+            0.9943522981208021
+          ],
+          [
+            -0.48961621309071507,
+            0.32155195841958417,
+            0.9915106076940271
+          ],
+          [
+            0.3151904129444656,
+            -0.20699905731796567,
+            0.9945943340797759
+          ],
+          [
+            0.22570884221444784,
+            -0.7770500885659889,
+            0.9920363435967509
+          ],
+          [
+            0.35325801008886437,
+            0.5201929379141117,
+            0.9939213255359837
+          ],
+          [
+            0.26781766483649594,
+            0.23988780199550438,
+            0.9905195270044292
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: bobst-library",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            26.65173021510864,
+            111.00407989556165,
+            -39.34256962926395
+          ],
+          "target": [
+            9.692003942020943,
+            28.231368576639337,
+            154.50798871264408
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "projected": [
+          [
+            0.48699414731986285,
+            -0.5524612271902094,
+            0.9947036637985125
+          ],
+          [
+            0.28060804509368376,
+            -0.03781884494079535,
+            0.996426059260054
+          ],
+          [
+            0.5467135149585753,
+            0.11165391280237968,
+            0.9940337421824215
+          ],
+          [
+            0.30329249564550526,
+            0.44158936817244615,
+            0.996123666152227
+          ],
+          [
+            -0.4273164171505189,
+            -0.6221663554767467,
+            0.9944703759840069
+          ],
+          [
+            -0.34307374524911455,
+            -0.07006507976985496,
+            0.9963181381668114
+          ],
+          [
+            -0.48224291597371066,
+            0.06499410969103875,
+            0.9937381830378625
+          ],
+          [
+            -0.37167481421352855,
+            0.4216394080014114,
+            0.9959972962841831
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: nyu-kimmel-center",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            87.48248590373423,
+            82.52941842911548,
+            47.53328652125418
+          ],
+          "target": [
+            -48.31938266754155,
+            25.671966020017862,
+            116.7277946472168
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "projected": [
+          [
+            0.4369571540660919,
+            -0.29030305518073307,
+            0.9946409654143136
+          ],
+          [
+            -0.15310633460202955,
+            -0.11351550057621847,
+            0.9954304662533381
+          ],
+          [
+            0.48530177314389716,
+            0.4304987027936385,
+            0.994029604343312
+          ],
+          [
+            -0.1673996746663011,
+            0.5111895951465097,
+            0.9949883139293904
+          ],
+          [
+            0.2445112373829761,
+            -0.7466657309563844,
+            0.9926029332902182
+          ],
+          [
+            -0.4869975768190173,
+            -0.43200300655416907,
+            0.994008159384787
+          ],
+          [
+            0.283116855140776,
+            0.20990739290053959,
+            0.9914087013239814
+          ],
+          [
+            -0.5478197440975339,
+            0.36395729860458437,
+            0.9932390085250357
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: nyu-global-center",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            -74.93003516438229,
+            83.58648348090706,
+            -8.852620865568781
+          ],
+          "target": [
+            -72.9739933013916,
+            16.02063697949052,
+            103.20894241333008
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -97.33972930908203,
+            -0.11999999731779099,
+            70.20575714111328
+          ],
+          "max": [
+            -48.60825729370117,
+            32.16127395629883,
+            136.21212768554688
+          ]
+        },
+        "meshes": 6,
+        "triangles": 12718,
+        "projected": [
+          [
+            0.3792216397087891,
+            -0.7135133446234564,
+            0.9911225425136008
+          ],
+          [
+            0.26310518921313947,
+            0.04548337948152893,
+            0.9941816849699555
+          ],
+          [
+            0.4465213973030516,
+            -0.0927988242871871,
+            0.9895174961918298
+          ],
+          [
+            0.2922545591336622,
+            0.517072085166488,
+            0.9935186085370928
+          ],
+          [
+            -0.39498580481387213,
+            -0.6988295899016763,
+            0.9911817255061769
+          ],
+          [
+            -0.24986235449694202,
+            0.051927931944564895,
+            0.9942076597909605
+          ],
+          [
+            -0.46454371770635894,
+            -0.08030635298903929,
+            0.9895994541609001
+          ],
+          [
+            -0.2774111668082571,
+            0.5219548378548611,
+            0.9935506422703921
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: nyu-john-a-paulson-center",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            184.5541139255719,
+            210.22524885446742,
+            401.31254627060497
+          ],
+          "target": [
+            -12.785999298095701,
+            47.985701203346245,
+            473.13847351074213
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "projected": [
+          [
+            0.42659964178558146,
+            -0.15084460500470145,
+            0.9969971510887107
+          ],
+          [
+            -0.20371246444430505,
+            0.052485118148619524,
+            0.9973022814168355
+          ],
+          [
+            0.5179180138236088,
+            0.5202826224337295,
+            0.9963186782472119
+          ],
+          [
+            -0.24232561182662044,
+            0.6852970554614183,
+            0.9967593422969755
+          ],
+          [
+            0.2997994675648834,
+            -0.8478331729050337,
+            0.995951202925675
+          ],
+          [
+            -0.49696828380070956,
+            -0.4992372442374312,
+            0.9964743295421271
+          ],
+          [
+            0.39164049402127377,
+            -0.10090348500059697,
+            0.9946598270743995
+          ],
+          [
+            -0.6254338418324578,
+            0.22115189884572942,
+            0.9955198623276196
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Landscape screenshot view and lowered camera: nyu-leslie-elab-building",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            165.0486592419565,
+            112.1028485702169,
+            59.67202631236171
+          ],
+          "target": [
+            179.06173706054688,
+            29.664738751947883,
+            148.1471176147461
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "projected": [
+          [
+            0.260630898275157,
+            -0.7401458001909125,
+            0.992218118603369
+          ],
+          [
+            0.2817052880016343,
+            -0.19458892672144643,
+            0.9936276628866627
+          ],
+          [
+            0.3834473333929822,
+            0.21096574108054117,
+            0.9884725379761932
+          ],
+          [
+            0.3824900437711367,
+            0.7226987263783552,
+            0.9912882204731975
+          ],
+          [
+            -0.32930135849497283,
+            -0.6222009598800904,
+            0.9925228503068608
+          ],
+          [
+            -0.2076036542425286,
+            -0.11421975054763744,
+            0.9938353111050939
+          ],
+          [
+            -0.47587999822083543,
+            0.32871579642288895,
+            0.9891204281442575
+          ],
+          [
+            -0.27871089007671723,
+            0.7914897892880298,
+            0.991666726055894
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Outward scroll returns saved overview over launcher",
+      "pass": true,
+      "detail": {
+        "before": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "after": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.853180603688735,
+            300.75691000587994,
+            -205.23631179446062
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "Outward scroll returns saved overview over assistant",
+      "pass": true,
+      "detail": {
+        "before": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "after": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.853180603688735,
+            300.75691000587994,
+            -205.23631179446062
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "Outward scroll returns saved overview over canvas",
+      "pass": true,
+      "detail": {
+        "before": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "after": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.853180603688735,
+            300.75691000587994,
+            -205.23631179446062
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "Outward scroll returns saved overview over document",
+      "pass": true,
+      "detail": {
+        "before": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "after": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.853180603688735,
+            300.75691000587994,
+            -205.23631179446062
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "Inactive and inward overlay wheel remain native; focused return consumes tails once",
+      "pass": true,
+      "detail": {
+        "overview": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "focused": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            175.7151515188248,
+            85.04825042104002,
+            370.8668714420235
+          ],
+          "target": [
+            140.36249542236328,
+            29.370499253273014,
+            238.92896270751953
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "Actual canvas hover/click moves complete building geometry together",
+      "pass": true,
+      "detail": {
+        "hit": {
+          "x": 720,
+          "y": 500
+        },
+        "lift": 4.491729188119578,
+        "meshes": 3,
+        "triangles": 31388
+      }
+    },
+    {
+      "name": "Portrait building frame and camera bounds: stern-school-of-business",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            439.4340805693276,
+            172.249843636929,
+            14.061301252763599
+          ],
+          "target": [
+            74.97300148010252,
+            29.194500327110294,
+            199.76349639892575
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "meshes": 3,
+        "triangles": 92140,
+        "projected": [
+          [
+            0.7512880277072218,
+            -0.10467160435270782,
+            0.9979874481149132
+          ],
+          [
+            -0.24628137790660043,
+            -0.023342682203501358,
+            0.9981660193784458
+          ],
+          [
+            0.780838591376003,
+            0.17672568848373563,
+            0.997901731925322
+          ],
+          [
+            -0.25514606402343726,
+            0.23709367597527836,
+            0.9980940073021686
+          ],
+          [
+            0.3204598148629826,
+            -0.2977862731256604,
+            0.9975634325310575
+          ],
+          [
+            -0.8109962622776591,
+            -0.18355121582322062,
+            0.9978142547230051
+          ],
+          [
+            0.33563316064075,
+            0.03181149249849021,
+            0.9974401722013484
+          ],
+          [
+            -0.8455384836651534,
+            0.1178028483926249,
+            0.9977140594228231
+          ]
+        ],
+        "distance": 433.3382220650237
+      }
+    },
+    {
+      "name": "Portrait building frame and camera bounds: courant-institute",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            212.71533235323193,
+            143.32072805438824,
+            508.9534262052672
+          ],
+          "target": [
+            140.36249542236328,
+            29.370499253273014,
+            238.92896270751953
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "projected": [
+          [
+            -0.25026038650662313,
+            -0.07193176643462645,
+            0.997273924900488
+          ],
+          [
+            -0.6094420185928169,
+            -0.28798143791216646,
+            0.9967092204720885
+          ],
+          [
+            -0.2650900216596517,
+            0.2928555710894189,
+            0.9971025093937532
+          ],
+          [
+            -0.6531106170118542,
+            0.13763908615889286,
+            0.9964614816694147
+          ],
+          [
+            0.5280307150990065,
+            -0.11127925836295875,
+            0.9971710795557746
+          ],
+          [
+            0.3119136787234182,
+            -0.3445835416258187,
+            0.9965612755184802
+          ],
+          [
+            0.5605009677711772,
+            0.26485517854939555,
+            0.9969868707235532
+          ],
+          [
+            0.3352913787892696,
+            0.09637202868291503,
+            0.9962910530712163
+          ]
+        ],
+        "distance": 301.88209377672246
+      }
+    },
+    {
+      "name": "Portrait building frame and camera bounds: bobst-library",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            44.401823370601406,
+            197.63421253956537,
+            -242.2270627754324
+          ],
+          "target": [
+            9.692003942020943,
+            28.231368576639337,
+            154.50798871264408
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "projected": [
+          [
+            0.6870286569031918,
+            -0.25009936130171845,
+            0.9976935712510059
+          ],
+          [
+            0.4784225886606525,
+            -0.020690905027468863,
+            0.9981201653838128
+          ],
+          [
+            0.7227696033675365,
+            0.04736676067480236,
+            0.9975649139287709
+          ],
+          [
+            0.4988350212022027,
+            0.23306311579619687,
+            0.998032848534855
+          ],
+          [
+            -0.5890706883212018,
+            -0.27522255697580394,
+            0.9976468536711659
+          ],
+          [
+            -0.5773791345781214,
+            -0.03783858529573395,
+            0.9980882785915277
+          ],
+          [
+            -0.6203252204193838,
+            0.026827935231430296,
+            0.9975131583238374
+          ],
+          [
+            -0.6024141321475341,
+            0.21929709652629104,
+            0.9979981596644126
+          ]
+        ],
+        "distance": 432.78262001464293
+      }
+    },
+    {
+      "name": "Portrait building frame and camera bounds: nyu-kimmel-center",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            229.6130709742725,
+            142.03657441706062,
+            -24.88586372371799
+          ],
+          "target": [
+            -48.31938266754155,
+            25.671966020017862,
+            116.7277946472168
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "projected": [
+          [
+            0.7016497549898583,
+            -0.14958663696735353,
+            0.9973194037876949
+          ],
+          [
+            -0.26414623682197635,
+            -0.0628443306956387,
+            0.9975446226314446
+          ],
+          [
+            0.7396147198700629,
+            0.21053542594243987,
+            0.9971653429307343
+          ],
+          [
+            -0.2772520768177819,
+            0.2716826296760415,
+            0.9974145269994122
+          ],
+          [
+            0.33307963421731085,
+            -0.32638872160790156,
+            0.996860352572818
+          ],
+          [
+            -0.7408763959417519,
+            -0.21089456902331635,
+            0.9971602230814884
+          ],
+          [
+            0.35419177000079716,
+            0.08426750648204338,
+            0.9966507821332902
+          ],
+          [
+            -0.7833334140975114,
+            0.16700100043603153,
+            0.9969879335871689
+          ]
+        ],
+        "distance": 332.92881988790947
+      }
+    },
+    {
+      "name": "Portrait building frame and camera bounds: nyu-global-center",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            -76.97723361116519,
+            154.30107227901524,
+            -126.13654133231486
+          ],
+          "target": [
+            -72.9739933013916,
+            16.02063697949052,
+            103.20894241333008
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            -97.33972930908203,
+            -0.11999999731779099,
+            70.20575714111328
+          ],
+          "max": [
+            -48.60825729370117,
+            32.16127395629883,
+            136.21212768554688
+          ]
+        },
+        "meshes": 6,
+        "triangles": 12718,
+        "projected": [
+          [
+            0.527893396655283,
+            -0.31872408725455914,
+            0.9961266935480377
+          ],
+          [
+            0.45058163138904606,
+            0.02499519122152312,
+            0.996877652545685
+          ],
+          [
+            0.566000019070683,
+            -0.03774646737213136,
+            0.9958350622064104
+          ],
+          [
+            0.4767108645598516,
+            0.2706478090978651,
+            0.9966869217794514
+          ],
+          [
+            -0.5518358499478042,
+            -0.31329926559976734,
+            0.9961385457160347
+          ],
+          [
+            -0.428740746795329,
+            0.02859266442532079,
+            0.9968855123168422
+          ],
+          [
+            -0.5915455134796787,
+            -0.03281490454920948,
+            0.9958486843755663
+          ],
+          [
+            -0.45354057593419117,
+            0.27383238171461166,
+            0.9966957183391696
+          ]
+        ],
+        "distance": 267.8373678823172
+      }
+    },
+    {
+      "name": "Portrait building frame and camera bounds: nyu-john-a-paulson-center",
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Portrait building clipped\n    at file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/building-view-browser.mjs:91:99\n    at async check (file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/building-view-browser.mjs:38:117)\n    at async file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/building-view-browser.mjs:89:29"
+    },
+    {
+      "name": "Portrait building frame and camera bounds: nyu-leslie-elab-building",
+      "pass": true,
+      "detail": {
+        "pose": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            150.38253594078935,
+            198.3827864226933,
+            -32.9262318947936
+          ],
+          "target": [
+            179.06173706054688,
+            29.664738751947883,
+            148.1471176147461
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "projected": [
+          [
+            0.40354937855532375,
+            -0.3677458068612262,
+            0.996217390662526
+          ],
+          [
+            0.47891042112351234,
+            -0.10615417489310089,
+            0.9965994476361614
+          ],
+          [
+            0.47992496493588094,
+            0.0847303935862253,
+            0.9954699497110987
+          ],
+          [
+            0.5593083740186912,
+            0.33911589339591003,
+            0.9960005919594777
+          ],
+          [
+            -0.51990439518488,
+            -0.31522475193208677,
+            0.9962940981441354
+          ],
+          [
+            -0.3581027037314909,
+            -0.06322276449093323,
+            0.9966621493541356
+          ],
+          [
+            -0.6160367266309315,
+            0.13654927421695823,
+            0.9955780426933909
+          ],
+          [
+            -0.4169893934389917,
+            0.37999340128279485,
+            0.996085861492173
+          ]
+        ],
+        "distance": 249.15022393989403
+      }
+    }
+  ],
+  "console": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "responses": [],
+  "limitations": [
+    "Screenshot azimuths and original polar angles are estimates; exact pixel reconstruction cannot be established from the provided images.",
+    "Runs an isolated installed Chrome instance, not the existing user Chrome tab.",
+    "Mouse wheel is real browser input; document-target wheel and gesture tails are synthetic. Touch and physical trackpad hardware are not exercised."
+  ],
+  "loadMs": 3305,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "initial": {
+    "status": "ready",
+    "loaded": 124,
+    "failed": [],
+    "selected": null,
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 179,
+    "loadMilliseconds": 3121,
+    "removedKimmelTriangles": 200,
+    "removedGlobalCenterTriangles": 88,
+    "removedSilverCenterTriangles": 380,
+    "removedLeslieTriangles": 164,
+    "parkVegetation": {
+      "seed": 104729,
+      "trees": 72,
+      "shrubs": 117,
+      "sourceParkParts": 53,
+      "groundParkParts": 52,
+      "sourceSurfaceParts": 564,
+      "parksWithAdditions": 21,
+      "meshCount": 4,
+      "triangles": 17136,
+      "source": "OpenStreetMap eligible cover; deterministic illustrative planting, not surveyed tree inventory",
+      "coordinateSpace": "Washington Square meters; Y up; identity transform"
+    },
+    "mapped-streets": {
+      "sourceWays": 4830,
+      "roadWays": 1065,
+      "pathWays": 3696,
+      "skippedGradeSeparated": 69,
+      "inferredWidths": 4737,
+      "buildingExclusions": 6501,
+      "source": "OpenStreetMap local snapshot; widths inferred when absent",
+      "coordinateSpace": "Washington Square X/Z meters; identity root",
+      "mergedMeshes": 4,
+      "triangles": 204930,
+      "pathFootprintPolygons": 31,
+      "grades": {
+        "roads": 0.02,
+        "sidewalks": 0.16,
+        "curbs": 0.2,
+        "outsidePaths": 0.18,
+        "parkPaths": 0.76
+      },
+      "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+    },
+    "mapped-parks": {
+      "parkCount": 52,
+      "surfacePartCount": 558,
+      "surfaceCount": 0,
+      "polygons": 1925,
+      "coordinateSpace": "Washington Square meters; Y up",
+      "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+    },
+    "environmentSurfaces": {
+      "meshes": 10,
+      "triangles": 237493
+    },
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        28.85318060368872,
+        300.75691000588006,
+        -205.23631179446073
+      ],
+      "target": [
+        74,
+        12,
+        116
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 434.2943200101229,
+        "minPolarAngle": 0.006885420692679254,
+        "maxPolarAngle": 0.8434529930137906,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -780,
+          "maxX": 780,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -780,
+          "maxZ": 970
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 374,
+      "triangles": 699347,
+      "logarithmicDepthBuffer": false
+    },
+    "landmarks": [
+      {
+        "id": "nyu-kimmel-center",
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "screen": {
+          "x": 1092.5678923615123,
+          "y": 501.92808543734435,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source CityGML massing with photo-informed facade approximation; not a survey or current entrance-access model.",
+          "architecture": {
+            "sourceTriangles": 200,
+            "windows": 229,
+            "crownPanels": 350,
+            "displayBays": 25,
+            "reference": "docs/kimmel-reference.md",
+            "preservedNeighbor": "Global Center for Academic and Spiritual Life, footprint11021"
+          },
+          "buildingId": "nyu-kimmel-center"
+        }
+      },
+      {
+        "id": "nyu-global-center",
+        "bounds": {
+          "min": [
+            -97.33972930908203,
+            -0.11999999731779099,
+            70.20575714111328
+          ],
+          "max": [
+            -48.60825729370117,
+            32.16127395629883,
+            136.21212768554688
+          ]
+        },
+        "screen": {
+          "x": 1168.4906505928661,
+          "y": 559.3319217318975,
+          "visible": true
+        },
+        "meshes": 6,
+        "triangles": 12718,
+        "details": {
+          "buildingId": "nyu-global-center",
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source massing and architect-text-informed screen approximation; exterior photo and browser validation pending.",
+          "architecture": {
+            "sourceTriangles": 88,
+            "screenPanels": 680,
+            "foliageApertures": 1079,
+            "densityCounts": [
+              146,
+              152,
+              219,
+              163
+            ],
+            "mullions": 146,
+            "reference": "docs/global-center-reference.md"
+          }
+        }
+      },
+      {
+        "id": "nyu-silver-center",
+        "bounds": {
+          "min": [
+            116.27423095703125,
+            1.3041272163391113,
+            19.216636657714844
+          ],
+          "max": [
+            177.37234497070312,
+            58.22825241088867,
+            87.29178619384766
+          ]
+        },
+        "screen": {
+          "x": 452.5070730912748,
+          "y": 570.4866265920516,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 73892,
+        "details": {
+          "buildingId": "nyu-silver-center",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11667,
+          "sourceTriangles": 380,
+          "windowCount": 857
+        }
+      },
+      {
+        "id": "nyu-leslie-elab-building",
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "screen": {
+          "x": 443.60682465205144,
+          "y": 377.6267077083184,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "details": {
+          "buildingId": "nyu-leslie-elab-building",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11174,
+          "sourceTriangles": 164,
+          "windowCount": 498,
+          "storefrontCount": 16
+        }
+      },
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 916.8017829595481,
+          "y": 410.1311753507753,
+          "visible": true
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 850.0941695421609,
+          "y": 962.1913739447438,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "lipton-hall",
+        "bounds": {
+          "min": [
+            -212.58099365234375,
+            -0.36399999260902405,
+            -108.59200286865234
+          ],
+          "max": [
+            -162.03399658203125,
+            59.82699966430664,
+            -57.926998138427734
+          ]
+        },
+        "screen": {
+          "x": 1902.703167234429,
+          "y": 1227.5985530671765,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 5628,
+        "details": {
+          "buildingId": "lipton-hall"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 601.4770159567191,
+          "y": 256.0350199398369,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "courant",
+            "sourceGlassComponents": 370,
+            "windows": 370,
+            "faces": 370,
+            "occludedFaces": 370,
+            "addedMeshes": 2,
+            "addedTriangles": 26640,
+            "sourcePalette": {
+              "trim": [
+                0.26635560393333435,
+                0.21952620148658752,
+                0.18116424977779388
+              ],
+              "mullion": [
+                0.12477181851863861,
+                0.08650045841932297,
+                0.07227185368537903
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": 978.7150852807239,
+          "y": 15.558924747184621,
+          "visible": true
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      },
+      {
+        "id": "nyu-gould-plaza",
+        "bounds": {
+          "min": [
+            78.45346069335938,
+            -0.11999999731779099,
+            171.71893310546875
+          ],
+          "max": [
+            148.7293701171875,
+            10.483983039855957,
+            258.1990051269531
+          ]
+        },
+        "screen": {
+          "x": 657.4519516878463,
+          "y": 343.2783320377305,
+          "visible": true
+        },
+        "meshes": 11,
+        "triangles": 18108,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+          "architecture": {
+            "pavers": 6466,
+            "skylights": 2,
+            "benches": 8,
+            "frontSteps": 6,
+            "mainCourtMeters": [
+              58.7,
+              36.8
+            ],
+            "reference": "docs/gould-plaza-reference.md"
+          },
+          "planting": {
+            "trees": 4,
+            "shrubPlanters": 3,
+            "provenance": "User-requested planting proposal, not surveyed existing vegetation"
+          },
+          "buildingId": "nyu-gould-plaza"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "screen": {
+          "x": 747.9927564973826,
+          "y": 321.78223788135483,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 92140,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "stern",
+            "sourceGlassComponents": 1098,
+            "windows": 1073,
+            "faces": 1095,
+            "occludedFaces": 1101,
+            "addedMeshes": 2,
+            "addedTriangles": 78288,
+            "sourcePalette": {
+              "trim": [
+                0.5457244515419006,
+                0.5271151065826416,
+                0.4793201684951782
+              ],
+              "mullion": [
+                0.2345505803823471,
+                0.24228112399578094,
+                0.22696587443351746
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "stern-school-of-business"
+        }
+      }
+    ]
+  },
+  "final": {
+    "status": "ready",
+    "loaded": 124,
+    "failed": [],
+    "selected": "nyu-leslie-elab-building",
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 179,
+    "loadMilliseconds": 3121,
+    "removedKimmelTriangles": 200,
+    "removedGlobalCenterTriangles": 88,
+    "removedSilverCenterTriangles": 380,
+    "removedLeslieTriangles": 164,
+    "parkVegetation": {
+      "seed": 104729,
+      "trees": 72,
+      "shrubs": 117,
+      "sourceParkParts": 53,
+      "groundParkParts": 52,
+      "sourceSurfaceParts": 564,
+      "parksWithAdditions": 21,
+      "meshCount": 4,
+      "triangles": 17136,
+      "source": "OpenStreetMap eligible cover; deterministic illustrative planting, not surveyed tree inventory",
+      "coordinateSpace": "Washington Square meters; Y up; identity transform"
+    },
+    "mapped-streets": {
+      "sourceWays": 4830,
+      "roadWays": 1065,
+      "pathWays": 3696,
+      "skippedGradeSeparated": 69,
+      "inferredWidths": 4737,
+      "buildingExclusions": 6501,
+      "source": "OpenStreetMap local snapshot; widths inferred when absent",
+      "coordinateSpace": "Washington Square X/Z meters; identity root",
+      "mergedMeshes": 4,
+      "triangles": 204930,
+      "pathFootprintPolygons": 31,
+      "grades": {
+        "roads": 0.02,
+        "sidewalks": 0.16,
+        "curbs": 0.2,
+        "outsidePaths": 0.18,
+        "parkPaths": 0.76
+      },
+      "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+    },
+    "mapped-parks": {
+      "parkCount": 52,
+      "surfacePartCount": 558,
+      "surfaceCount": 0,
+      "polygons": 1925,
+      "coordinateSpace": "Washington Square meters; Y up",
+      "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+    },
+    "environmentSurfaces": {
+      "meshes": 10,
+      "triangles": 237493
+    },
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        150.38253594078935,
+        198.3827864226933,
+        -32.9262318947936
+      ],
+      "target": [
+        179.06173706054688,
+        29.664738751947883,
+        148.1471176147461
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 434.2943200101229,
+        "minPolarAngle": 0.006885420692679254,
+        "maxPolarAngle": 0.8434529930137906,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -780,
+          "maxX": 780,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -780,
+          "maxZ": 970
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 99,
+      "triangles": 531853,
+      "logarithmicDepthBuffer": false
+    },
+    "landmarks": [
+      {
+        "id": "nyu-kimmel-center",
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "screen": {
+          "x": 1355.1445518335277,
+          "y": 675.7158447083141,
+          "visible": false
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source CityGML massing with photo-informed facade approximation; not a survey or current entrance-access model.",
+          "architecture": {
+            "sourceTriangles": 200,
+            "windows": 229,
+            "crownPanels": 350,
+            "displayBays": 25,
+            "reference": "docs/kimmel-reference.md",
+            "preservedNeighbor": "Global Center for Academic and Spiritual Life, footprint11021"
+          },
+          "buildingId": "nyu-kimmel-center"
+        }
+      },
+      {
+        "id": "nyu-global-center",
+        "bounds": {
+          "min": [
+            -97.33972930908203,
+            -0.11999999731779099,
+            70.20575714111328
+          ],
+          "max": [
+            -48.60825729370117,
+            32.16127395629883,
+            136.21212768554688
+          ]
+        },
+        "screen": {
+          "x": 1512.3765280161047,
+          "y": 785.7579164376219,
+          "visible": false
+        },
+        "meshes": 6,
+        "triangles": 12718,
+        "details": {
+          "buildingId": "nyu-global-center",
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source massing and architect-text-informed screen approximation; exterior photo and browser validation pending.",
+          "architecture": {
+            "sourceTriangles": 88,
+            "screenPanels": 680,
+            "foliageApertures": 1079,
+            "densityCounts": [
+              146,
+              152,
+              219,
+              163
+            ],
+            "mullions": 146,
+            "reference": "docs/global-center-reference.md"
+          }
+        }
+      },
+      {
+        "id": "nyu-silver-center",
+        "bounds": {
+          "min": [
+            116.27423095703125,
+            1.3041272163391113,
+            19.216636657714844
+          ],
+          "max": [
+            177.37234497070312,
+            58.22825241088867,
+            87.29178619384766
+          ]
+        },
+        "screen": {
+          "x": 298.22255258273003,
+          "y": 827.7257418168183,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 73892,
+        "details": {
+          "buildingId": "nyu-silver-center",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11667,
+          "sourceTriangles": 380,
+          "windowCount": 857
+        }
+      },
+      {
+        "id": "nyu-leslie-elab-building",
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "screen": {
+          "x": 195,
+          "y": 422,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "details": {
+          "buildingId": "nyu-leslie-elab-building",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11174,
+          "sourceTriangles": 164,
+          "windowCount": 498,
+          "storefrontCount": 16
+        }
+      },
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 961.3383734456778,
+          "y": 489.1354966352555,
+          "visible": false
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 1531.3854432557255,
+          "y": 2106.1515559121053,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "lipton-hall",
+        "bounds": {
+          "min": [
+            -212.58099365234375,
+            -0.36399999260902405,
+            -108.59200286865234
+          ],
+          "max": [
+            -162.03399658203125,
+            59.82699966430664,
+            -57.926998138427734
+          ]
+        },
+        "screen": {
+          "x": 9197.218903377847,
+          "y": 5771.906235315743,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 5628,
+        "details": {
+          "buildingId": "lipton-hall"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 375.66139101561237,
+          "y": 227.62986191502517,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "courant",
+            "sourceGlassComponents": 370,
+            "windows": 370,
+            "faces": 370,
+            "occludedFaces": 370,
+            "addedMeshes": 2,
+            "addedTriangles": 26640,
+            "sourcePalette": {
+              "trim": [
+                0.26635560393333435,
+                0.21952620148658752,
+                0.18116424977779388
+              ],
+              "mullion": [
+                0.12477181851863861,
+                0.08650045841932297,
+                0.07227185368537903
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": 766.0584382907759,
+          "y": -78.24448017024136,
+          "visible": false
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      },
+      {
+        "id": "nyu-gould-plaza",
+        "bounds": {
+          "min": [
+            78.45346069335938,
+            -0.11999999731779099,
+            171.71893310546875
+          ],
+          "max": [
+            148.7293701171875,
+            10.483983039855957,
+            258.1990051269531
+          ]
+        },
+        "screen": {
+          "x": 457.339155706179,
+          "y": 353.0736896186672,
+          "visible": false
+        },
+        "meshes": 11,
+        "triangles": 18108,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+          "architecture": {
+            "pavers": 6466,
+            "skylights": 2,
+            "benches": 8,
+            "frontSteps": 6,
+            "mainCourtMeters": [
+              58.7,
+              36.8
+            ],
+            "reference": "docs/gould-plaza-reference.md"
+          },
+          "planting": {
+            "trees": 4,
+            "shrubPlanters": 3,
+            "provenance": "User-requested planting proposal, not surveyed existing vegetation"
+          },
+          "buildingId": "nyu-gould-plaza"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            2.890000104904175,
+            151.9720001220703
+          ],
+          "max": [
+            119.41000366210938,
+            55.499000549316406,
+            247.55499267578125
+          ]
+        },
+        "screen": {
+          "x": 626.9588274320404,
+          "y": 331.81349093583617,
+          "visible": false
+        },
+        "meshes": 3,
+        "triangles": 92140,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "stern",
+            "sourceGlassComponents": 1098,
+            "windows": 1073,
+            "faces": 1095,
+            "occludedFaces": 1101,
+            "addedMeshes": 2,
+            "addedTriangles": 78288,
+            "sourcePalette": {
+              "trim": [
+                0.5457244515419006,
+                0.5271151065826416,
+                0.4793201684951782
+              ],
+              "mullion": [
+                0.2345505803823471,
+                0.24228112399578094,
+                0.22696587443351746
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "stern-school-of-business"
+        }
+      }
+    ]
+  },
+  "performance": {
+    "samples": 300,
+    "frameIntervalMs": {
+      "p50": 16.700000762939453,
+      "p95": 26.899999618530273,
+      "p99": 28.5
+    },
+    "mainThreadFrameMs": {
+      "p50": 0.699999988079071,
+      "p95": 26.700000762939453,
+      "p99": 28.299999237060547
+    },
+    "resources": {
+      "geometries": 381,
+      "textures": 1
+    },
+    "programs": 7,
+    "note": "Rolling 300 frames; CPU timing excludes asynchronous GPU execution. Resource counts are not bytes."
+  }
+}

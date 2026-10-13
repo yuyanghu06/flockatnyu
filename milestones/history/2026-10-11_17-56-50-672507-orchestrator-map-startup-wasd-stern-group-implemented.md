@@ -1,0 +1,10 @@
+# Remove loading design and implement current map feedback
+
+- Local timestamp / acting role / milestone: 2026-10-11T17:56:50.672507-04:00 / direct primary implementation / M21.
+- Requested scope: Strip the gear loading screen; WASD navigation; pull Bobst and Silver farther back; group Gould Plaza with Stern.
+- Starting repository state: M20 loader and M19 angles implemented; concurrent backend/migration work preserved.
+- Work performed / changed files: Removed loading-screen.js/css and gear authoring/tests, preserving immutable M20 evidence. index.html has a small truthful startup status/retry only, with no entry CTA. map-startup.js automatically activates the existing job/resource/scene gate. main/bootstrap use it. keyboard-pan.js adds camera-relative bounded ground panning with typing/modal/modifier/blur guards. Bobst and Silver distanceScale1.2 retains angles and original fit. Gould selectable record/profile removed; all source geometry now shares a single Stern root, deferred until both parts load, with deduplicated picking and part-bound diagnostics. Existing assistant/admin/geometry files preserved.
+- Decisions: Keep original readiness/error behavior, auto-enter after preparation, no replacement decorative loader. Keyboard pans both camera and target and cancels stale scripted return. Source plaza geometry stays in its original coordinates; hover/lift/focus apply to the complete Stern group.
+- Checks and evidence: Build passed with existing chunk advisory. Direct startup9/9, WASD5/5, camera21/21 and input16/16 unit/synthetic checks passed. Chrome map input/grouping and full camera suites running; no browser acceptance claimed yet. Evidence/m21-map-input/. An initial stale11-landmark assertion was corrected to10 after grouping.
+- Resulting state / acceptance: Implemented; browser/visual acceptance and final documentation pending. No specialists used per persistent user request to do changes directly.
+- Remaining work and handoff: Verify automatic startup/failure, real WASD/typing, world bounds and plaza hover/click, and two farther focus distances in desktop/portrait Chrome. No publication/cloud/provider operation in this scope.

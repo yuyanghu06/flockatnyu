@@ -1,0 +1,41 @@
+# M20 corrected retention tester pass
+
+- Milestone / role / scope: M20 independent tester. Current verdict **FAIL pending the reducer's64-child batching fix and retest**. No production migration, Discord call, model call, credential access, cloud write or child agent. The original tester-report.md and baseline191 logs are preserved; they describe the superseded original-preserving design.
+- Starting state and files inspected: project instructions, milestone/to-do, workflow, tester role/report template, corrected retention planner report, runner/provider/scheduler/CLI/store modules and genuine migrations001–006.006 remains unapplied in production. Storage and runner were independently exercised using real PGlite SQL and injected providers.
+- Work performed and changed files: adapted discord-summaries.test.mjs to mixed raw/verified-summary records; created discord-summary-schedule.test.mjs; rewrote discord-summary-sql.test.mjs for verified atomic replacement/pruning. Added retention logs and before/after internal SQL plans. Application implementation and shared journals were not changed.
+- Decisions and assumptions: no daily LLM work;168 elapsed-hour minimum current-month raw retention, Monday weeks clipped to month/cutoff; full prior-calendar-month closure overrides recent-day retention. NY08 hour allows delayed08:37 startup but freezes08:00 asOf. Synthetic summary input IDs never become original citations. Performance uses synthetic text and no model network; it does not establish hosted execution time or actual summary quality.
+
+## Executed checks
+
+| Command | Exit / actual result | Evidence |
+| --- | --- | --- |
+| node --test tests/discord-summaries.test.mjs tests/discord-summary-schedule.test.mjs tests/discord-summary-provider.test.mjs |1;52 checks,51 pass,1 fail: new65-map reducer regression |retention-runner-tests.log, retention-reduction-before-fix.log |
+| node --test --test-name-pattern='genuine006' tests/discord-summary-sql.test.mjs |0;14/14 pass against latest006 |retention-guard-tests.log |
+| node --test --test-name-pattern='stale monthly\|exact durable\|summary store' tests/discord-summary-sql.test.mjs |0;3/3 pass |retention-cache-tests.log |
+| node --test tests/discord-summary-sql.test.mjs |1;17 checks,16 pass,1 fail at representative largest-group reduction (before the additional completed-empty-scope check) |retention-scale-reduction-before-fix.log |
+| git diff --check |0 at the executed checkpoint |tool output; final integration rerun pending |
+
+The genuine lifecycle checks cover11 forced-RLS service-only summary/ledger tables and invoker/browser-denied functions; scoped60s/16MB settings on preview/begin/finish;65s store budgets for those calls and12s for ordinary RPCs; no automatically created reader grants. Canonical fingerprints change for author/reply/extracted text/component URL edits.
+
+Bootstrap directly selects historical monthly groups and eligible current-month weekly groups. Refusal and missing segment coverage retain all original content. Publication first rejects paused/blacklisted/disabled/inactive sources, expired leases and changed raw input. Valid publication removes consumed originals/revisions/temp content and repairs raw memory counts.
+
+The tested weekly prefix extension combines one verified prefix with two disjoint raw records, represents three originals once, deletes the old prefix body and leaves nonoverlapping active ranges. Monthly closure consumes two verified weekly records plus recent prior-month raw, represents six originals, and retains dependency counts/digests and original Discord citations. Inactive dependencies, changed verified-summary hash and overlapping raw/represented ranges are rejected. An injected AFTER DELETE error rolls back publication, ledger and prune together; resume reuses saved parts.
+
+Post-prune reads require both trusted source scope and durable member/source grants, paginate without duplicates, and work without raw/part rereads. Terminal retries and completed operations dispatch no new model request. Stale monthly jobs lose superseded input/map content after successful replacement; greater-than-ten ordinary one-request pauses continue safely; exact operation request/cost caps permit free cached finalization. Charged request accounting survives content cleanup.
+
+Covered collector pages cannot resurrect originals, preserve the legacy boolean RPC result and still advance CAS checkpoints; stale checkpoints returnfalse. A foreign existing message ID is rejected before a covered-range skip. New sources without ledgers ingest old history normally. Empty/null-checkpoint and partial-history sources report wait_for_sync with no model dispatch. Missing/incomplete/old-revision discovery cannot falsely complete an empty operation; genuinely completed all-excluded scope is a safe zero-job result. Scoped reset preserves another guild's retained output, operator, channel configuration and grants.
+
+Scheduler/runner checks cover NY DST UTC12/13 gates, Monday1st monthly priority, delayed08-hour fixed snapshots, pending work outside the gate, current-month-only weekly input, no daily/obsolete CLI commands, invalid Gregorian timestamps, inherited original citations and processed-versus-represented counts. Bounded scheduled continuation drains more jobs than a single invocation under one durable operation. Existing provider retry/refusal/incomplete/schema/usage/unknown-charge/abort/no-tools/no-images/no-vectors guards remain passing.
+
+## Representative scale and material finding
+
+Seeded108836 originals across216 ready sources,779 raw memory groups and5,659,472 extracted-text bytes; embeddings0. Bootstrap selects695 retention groups representing106961 eligible originals, leaving1875 recent raw records. Largest monthly group contains6397 originals.
+
+The first planning run did not finish within the observed roughly100-second test interval and was terminated; no completed preview timing is claimed. The saved internal unchecked-stat EXPLAIN showed the final216-source loop repeatedly executing the entire canonical-record aggregate. Storage changed only that aggregate to MATERIALIZED. Independent measured retest: preview8918.7ms, begin10507.7ms, repeated idempotent begin9179.0ms, all within existing60s database/65s store budgets. The largest-group fingerprint12s bound passed before generation. See retention-scale-before-fix-explain.txt and retention-scale-explain.txt.
+
+**Outstanding blocker:** the6397-original job produced72 map parts. Their small outputs all fit the byte-limited reducer batch, but SQL accepts at most64 child references. Saving the72-child reducer fails23514 Invalid reduction, reports invalid_request, and publishes/prunes nothing. A dedicated65-map mock reproduces this independently. Cap each reducer batch at64 children as well as its byte limit; retain the SQL guard. Then rerun largest-group publication/prune and cached finalization.
+
+- Findings / failures / unavailable checks: material reducer contract failure above. Fixture-only unqualified certificate SELECT, unsupported inactive status and over-limit extracted-text seed were corrected; these were not product defects. AllDiscord/backend integration and API build are deferred until the blocker is fixed. No hosted60/65s runtime, real LLM summary quality, production storage reduction, Railway schedule or real concurrent transaction race is claimed.
+- Acceptance verdict and remaining work: **FAIL for current corrected-retention implementation**, with passing lifecycle/scheduling/security/budget guards. Required next checks:64-child fix, full genuine006 suite including6397-original atomic publication/prune, allDiscord plus assistant/backend suites, API build and final diff check. Root separately owns hosted preview/begin and real pilot before any production prune.
+- Folder-guide updates needed: orchestrator should document the new scheduler test, mixed-input/certificate retention SQL fixtures and preserved prior-scope evidence in affected info.md guides.
+- Handoff and recommended next action: root owns the bounded runner fix at summaries.js reducer batching. Tester can immediately rerun the final suites afterward. Orchestrator must journal this actual failing pass before accepting any later retest.

@@ -1,0 +1,68 @@
+{
+  "checks": [
+    {
+      "name": "Loading has only a small status notice, no fullscreen screen or entry CTA",
+      "pass": true
+    },
+    {
+      "name": "Successful preparation automatically enables map and assistant without a click",
+      "pass": true
+    },
+    {
+      "name": "Actual W pans in the camera-relative direction with unchanged zoom/height",
+      "pass": true
+    },
+    {
+      "name": "Actual S pans in the camera-relative direction with unchanged zoom/height",
+      "pass": true
+    },
+    {
+      "name": "Actual A pans in the camera-relative direction with unchanged zoom/height",
+      "pass": true
+    },
+    {
+      "name": "Actual D pans in the camera-relative direction with unchanged zoom/height",
+      "pass": true
+    },
+    {
+      "name": "WASD typing in the assistant never pans or consumes characters",
+      "pass": true
+    },
+    {
+      "name": "Window blur clears held keys and prevents stuck travel",
+      "pass": true
+    },
+    {
+      "name": "Gould has one shared Stern root and no separate selectable entry",
+      "pass": true
+    },
+    {
+      "name": "Grouping preserves original Stern and plaza world-space geometry bounds",
+      "pass": true
+    },
+    {
+      "name": "Hover over plaza lifts both plaza and Stern together",
+      "pass": true
+    },
+    {
+      "name": "Actual plaza click selects Stern",
+      "pass": true
+    },
+    {
+      "name": "Actual asset failure denies automatic entry and keeps recoverable retry",
+      "pass": true
+    },
+    {
+      "name": "No uncaught JavaScript errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "plazaHit": {
+    "x": 690.3094679308897,
+    "y": 393.19389103037736
+  },
+  "limitations": [
+    "Direct checks by primary agent, not independently delegated. Isolated installed Chrome; physical keyboard/touch not tested. API status mocked; no model/backend calls."
+  ]
+}

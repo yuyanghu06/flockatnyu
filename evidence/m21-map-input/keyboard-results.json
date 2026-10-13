@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "W/S and A/D move with camera bearing, preserving height, angle and distance",
+      "pass": true
+    },
+    {
+      "name": "Diagonal speed is normalized, opposite keys cancel, and steps are time based",
+      "pass": true
+    },
+    {
+      "name": "Pan clamps target bounds while translating the camera equally, with bounded suspended-frame steps",
+      "pass": true
+    },
+    {
+      "name": "Typing, modal dialogs, modifiers, loading and hidden tabs never consume WASD",
+      "pass": true
+    },
+    {
+      "name": "Blur, focus transfer and tab hiding clear held keys so motion cannot get stuck",
+      "pass": true
+    }
+  ]
+}

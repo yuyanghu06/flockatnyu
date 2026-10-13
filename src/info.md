@@ -63,6 +63,14 @@ M11: atmosphere.js replaces texture sky with one analytic triangle matching fog 
 
 M12: map-resources.js compacts neutral context buffers exactly and freezes static local matrices; main.js caches picking and exposes bounded timing diagnostics.
 
-M13: bootstrap.js catches map startup failures; loading-state.js gates actual readiness; loading-screen.js/css own the scoped monochrome entry UI.
+M21 supersedes the M13/M20 entry UI: bootstrap.js catches startup failures; loading-state.js still gates real resources/scene readiness; map-startup.js automatically opens the map and uses only the small static status/retry notice in index.html.
 
 - assistant.js / assistant.css / chat-client.js provide the M15 entry-gated assistant scaffold; backend acceptance is incomplete (see docs/assistant-backend.md).
+
+M16: discord-admin.js/css and discord-admin-client.js power the standalone /admin.html channel settings page without loading the map. API authorization stays on the server; no credentials or grant management are exposed in the browser. chat-client.js enforces aggregate history/UTF-8 budgets.
+
+M19: building-views.js configures screenshot-derived original azimuth/polar and height factors for eight buildings. camera-focus.js derives the lower viewing angle while retaining the original full-building zoom distance, following the user's zoom feedback; it uses the full-building target except for Stern's rotunda presentation anchor. map-interactions.js shares focused outward wheel return between canvas and window, with native overlay scrolling outside focus and loading gates.
+
+Stern uses a view-only rotunda anchor with the original full-building zoom; its earlier explicit close distance is removed. Off-canvas outward return preserves hover coordinates and does not introduce picking.
+
+M20 decorative loader is removed at the user’s request. M21 keyboard-pan.js provides camera-relative bounded WASD with typing/modal/modifier/blur guards. Bobst and Silver profiles use distanceScale1.2. main.js registers Stern and Gould geometry as one Stern root; the plaza no longer has a separate building record. Snapshot part bounds expose grouping alignment for verification.

@@ -1,0 +1,10 @@
+# M20 Luna summary storage implemented
+
+- Local timestamp / acting role / milestone: 2026-10-11T18:15:45.911899-04:00 / coder / M20.
+- Requested scope: Service-only stable summary storage, complete coverage and durable accounting.
+- Starting repository state: Applied001–005; runner modules complete; independent SQL tests identified alias, text completeness and resume/pagination findings.
+- Work performed / changed files: New006 and summary-store.js implement nine forced-RLS/service-only tables, stable source/period/full-canonical fingerprints, fixed operations, leases, original references and8000-codepoint segments, parts/DAG coverage, guarded current-input publication and derived citations, explicit permission reader and guild reset extension. No existing applied migration changed. Coder report: evidence/m20-discord-summaries/storage-coder-report.md.
+- Decisions: Preserve originals and no automatic reader grants. Every dispatch reserves cost; known actual usage releases unused reservation, unknown attempts retain full allocation. Pagination filters stale fingerprints before counting returned rows. Genuine failure count is separate from budget/runtime claims and resets on saved progress.
+- Checks and evidence: Genuine six-migration end-to-end fixture and preliminary SQL12/13checks passed. Representative108828 originals/779groups/216eligible sources: preview10361ms,begin11522ms,resume9681ms; unique source-scoped108828inputreferences and29.71Mcanonicalchars. Independent tester measured separate6395/8523/6480ms fixture. Final new pagination/resume/publication-race regressions and integratedsuite remain pending. No hosted/model calls.
+- Resulting state / acceptance: Coder implementation and local evidence recorded, final independent acceptance not yet claimed. Function-only preview/begin60s/16MB; store65s; otherRPC12s. Actualhostedlatency proof required before model dispatch.
+- Remaining work and handoff: Finaltester/evaluator, reviewed006application, realruntimepreview/manifest, pilot/all779groups and separate Railway summary worker. Root owns shared guides/journal/liveoperations.

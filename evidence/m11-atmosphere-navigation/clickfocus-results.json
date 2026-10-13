@@ -21,7 +21,7 @@
       "pass": true
     },
     {
-      "name": "All eleven configured front orientations finish at requested angle after spring settling",
+      "name": "All ten configured front orientations finish at requested angle after spring settling",
       "pass": true
     },
     {
@@ -78,6 +78,10 @@
     },
     {
       "name": "Repeated outward events do not restart or retarget an active overview return",
+      "pass": true
+    },
+    {
+      "name": "Bobst and Silver pull back 20% at their existing angles without compounding",
       "pass": true
     }
   ],

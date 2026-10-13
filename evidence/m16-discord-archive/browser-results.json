@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checks": [
+    "denied access hides channel controls and explains admin requirement",
+    "authorized fixture shows inert user text, New York backfill, configured guild, honest service status",
+    "disable and add forms roundtrip with identity and DST conversion and omit permission grants",
+    "mobile controls fit viewport without horizontal overflow",
+    "database unavailable hides stale configuration and reports failure without browser errors"
+  ],
+  "browser": "154.0.8037.99",
+  "errors": [],
+  "fixturesOnly": true
+}

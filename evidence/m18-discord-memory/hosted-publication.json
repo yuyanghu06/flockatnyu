@@ -1,0 +1,55 @@
+{
+  "migration004HostedVersion": "20261011213945",
+  "fixedTargetAt": "2026-10-11T21:02:08.697Z",
+  "originals": 108828,
+  "groups": 779,
+  "memberships": 108828,
+  "directPublicationElapsedMs": 35408,
+  "repeated16MBElapsedMs": 36658,
+  "runtimeApi": {
+    "httpStatus": 500,
+    "code": "57014",
+    "elapsedMs": 9186
+  },
+  "runtimeAccepted": true,
+  "migration005HostedVersion": "20261011214737",
+  "runtimeClassification": {
+    "status": "ready",
+    "exitCode": 0,
+    "groups": 779,
+    "messages": 108828,
+    "elapsedMs": 43218
+  },
+  "failedDeployment": {
+    "id": "52696393-5d07-4649-8bde-7c995b6ba151",
+    "code": "aborted",
+    "discoveryRuntimeMs": 240000
+  },
+  "replacementDeployment": {
+    "id": "e5ec96e5-d670-43e0-b32b-cdf138c81ad8",
+    "status": "ready",
+    "exitCode": 0,
+    "complete": true,
+    "channelsProcessed": 216,
+    "pages": 216,
+    "scanned": 8218,
+    "messages": 251,
+    "embedded": 0,
+    "completedAt": "2026-10-11T22:03:49.612Z",
+    "discoveryRuntimeMs": 900000
+  },
+  "currentArchive": {
+    "originals": 108836,
+    "groups": 779,
+    "memberships": 108836,
+    "unassigned": 0,
+    "vectorRows": 0,
+    "watermark": "2026-10-11T21:58:22.897Z",
+    "groupingAsOf": "2026-10-11T22:03:03.249Z"
+  },
+  "cron": {
+    "schedule": "15 6 * * *",
+    "nextRunAt": "2026-10-12T06:15:00Z",
+    "scheduledInvocationObserved": false
+  }
+}

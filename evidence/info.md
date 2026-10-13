@@ -1,3 +1,16 @@
+Current M20 Discord retention is accepted: actual cloud compaction, root-enforced
+read-only terminal audit,99 independent tester artifact assertions and evaluator
+PASS. See m20-discord-summaries/info.md for proofs and execution attribution.
+Scheduled summary execution remains unverified; developer MCP needs reconnect.
+
+Bounded token-truncation recovery passed80 provider/11 pure cache checks, API build and independent review. It reserves and charges one6400→12800 retry only for an explicit eligible token-limit response, within the existing3-attempt and spending caps. Full historical bootstrap remains incomplete; live deployment is root-owned.
+
+M20 current6400token ceiling locally accepted57provider/11purecache/API/evaluatorPASS. Allresponseusage reserved/accounted; original$1/$5caps and byte/cache/source/SQLboundaries unchanged. Fullbootstrap incomplete.
+
+Current M20: phase-aware final structured response parsing accepted; commentary excluded while full-response usage is charged.57provider/12cache and independent review PASS. Full historical/bootstrap and Railway summary rollout remain pending.
+
+Citation decoder acceptance:63focused/243integrated, shared allowed-ID enum and genuine780-original/37-stage cached publication. Provider/runner only changed; applied SQL001–009 remain immutable. Actual API/history/deployment acceptance remains root-owned.
+
 # Verification evidence
 
 `m1-campus-map/` contains the preserved source identification screenshot and the
@@ -31,3 +44,15 @@ M11: m11-atmosphere-navigation contains motion/routing/analytic shader evidence 
 M12 memory evidence separates retained geometry bytes and Node process figures from browser/GPU metrics.
 
 M13 loading evidence records state and source/DOM checks, not browser visual verification.
+
+M16 local archive acceptance lives in m16-discord-archive/: integrated fixture/SQL test output and Chrome admin desktop/mobile/denied captures. These do not establish live Discord, hosted Supabase, actual model calls or Railway scheduling.
+
+M17: m17-discord-launch contains independent CLI/backfill/deployment fixture verification (98 integrated tests), signal handling evidence and API build output. These records do not establish a container build, live Discord history or Railway job success.
+
+M18 evidence contains local independent discovery/policy/time-tier/reset acceptance logs. Hosted reset/backfill/worker evidence is added only after actual execution.
+
+M19: m19-building-views contains current camera numerical results and independent Chrome angle/input evidence as executed; screenshot-derived poses are estimates, not exact camera JSON.
+
+M20: m20-loading-gears contains the source layout/geometry manifest, final direct state/geometry/Chrome checks, compositor layer reasons and desktop/mobile loading/ready/entry/failure captures. first-pass/ is preserved superseded UI evidence. Compositing is verified; physical touch and every-device FPS are not claimed.
+
+M21: m21-map-input is current map UI evidence after gear removal: startup9/WASD5/camera21/input16 checks,14Chrome startup/input/grouping checks,23Chrome camera checks and desktop/mobile captures. M20 is preserved historical UI evidence, superseded by the removal request.

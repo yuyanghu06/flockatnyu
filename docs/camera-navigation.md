@@ -4,18 +4,40 @@
 
 `building-views.js` records camera offset directions in map X/Z: north
 `[0.5421,-0.8403]`, east `[0.8403,0.5421]`, south/west their negatives.
-Kimmel, Global Center, Bobst and Leslie eLab use north-facing frontage;
-Silver Center and Courant use west; Lipton and Paulson use east; the arch
-uses its south park-facing side; Stern uses the east Gould-facing rotunda;
-Gould uses its north open approach. These model-based choices follow existing
-facade code and the measured plaza layout in `gould-plaza-reference.md`.
-They are presentation directions, not surveyed access bearings.
+Eight building views now follow the user's screenshot-facing corners. These
+azimuths and original polar angles are estimated from roof edges and adjacency;
+exact camera JSON was not supplied. They are presentation directions rather
+than surveyed bearings. The final image labeled Stern is interpreted as Silver
+Center based on its facade and adjacent buildings; the original Stern view is
+retained. Lipton, the arch and Gould retain their previous directions.
+
+| Building | Azimuth | Original polar | Height factor |
+| --- | ---: | ---: | ---: |
+| Stern | 117° | 65° | .75 |
+| Courant | 15° | 63° | .80 |
+| Bobst | 175° | 62° | .80 |
+| Kimmel | 117° | 65° | .80 |
+| GCASL | 181° | 53° | .80 |
+| Paulson | 110° | 46° | .80 |
+| Leslie eLab | 189° | 41° | .80 |
+| Silver Center | 197° | 60° | .80 |
+
+Height factors derive the lower viewing angle in this Y-up scene. For original
+polar `p` and factor `s`, final polar is `atan2(sin(p),s*cos(p))`.
+Original full-building fit is retained, with a1.2 distance multiplier for Bobst
+and Silver Center following the latest request to pull both farther back.
+Lowering changes orientation only and no longer shortens distance.
+Repeated focus does not compound the adjustment.
 
 Focus uses a complete world bounding box expanded vertically ±4.5 m for hover
 motion. Sphere radius divided by the sine of the smaller effective horizontal
-and vertical half-FOV, times 1.12, provides conservative framing. Aspect and
+and vertical half-FOV, times1.12, with the per-building multiplier above, provides conservative framing. Aspect and
 camera zoom are included. An oversized portrait fit remains capped by the
-global maximum and may therefore crop. Front polar angle is 65°; focused
+global maximum and may therefore crop. Stern retains the rotunda presentation
+target `[85,25,193]`, using the same full-building distance calculation as all
+other views. Its earlier 94.36 m close-distance override is removed following
+the user's zoom feedback. Foreground overlap can remain at the lowered angle;
+the complete root remains selectable. Unconfigured views retain65°; focused
 maximum is 78°. Overview A/B angles, minimum angle, global C distance cap,
 pan bounds, ground guard and default pose remain unchanged.
 
@@ -32,6 +54,12 @@ input controller suppresses the remainder of the same outward gesture even
 if the return finishes before its trackpad tail. After a 180 ms event gap, a
 new gesture can resume ordinary overview zoom. Focused context and expanded
 tilt range clear only when the return settles, preventing a premature clamp.
+
+Window capture routes outward scrolling over panels, controls and page content
+through that same return path. It consumes each event once before canvas or
+overlay handlers, and leaves inward/unfocused overlay scrolling native. The
+loading gate also leaves input untouched. Off-canvas return events preserve the
+map's hover pointer and perform no new picking. Disposal removes both listeners.
 
 A primary pointer press or controls start cancels motion with `preserveOverview:true`,
 so clicking another building does not erase the saved overview. A real pointer
@@ -122,3 +150,30 @@ Earlier checks cover 30/60/144 Hz equality for a fixed goal, invalid delta,
 manual cancellation and damping restoration. Independent tester traces provide
 broader acceptance. No browser/server was launched by this coder. Synthetic
 continuity and event accounting do not establish perceived visual smoothness.
+
+## WASD panning and Stern grouping
+
+W/S move forward/back along the current camera bearing projected onto the ground;
+A/D move left/right across that bearing. Held keys move camera and target equally,
+retaining height, orbit angle and zoom. Speed scales with camera distance between
+15and120meters per second; diagonal movement is normalized and delta capped at
+0.1seconds to avoid large jumps after suspension. Existing target bounds apply.
+
+keyboard-pan.js ignores typing in inputs/textarea/select/contenteditable, open
+native dialogs, composition and Ctrl/Meta/Alt shortcuts. Focus transfer, blur,
+visibility changes and disabled controls clear held keys. Key-up is captured to
+avoid losing a release over an overlay. Manual keyboard travel cancels a scripted
+focus/return and invalidates the old saved overview, like manual pointer panning.
+
+Gould Plaza's original geometry is now under the shared Stern root. It has no
+separate building record or camera profile. main.js waits for both parts before
+registering one selectable root, preserving their map-space transforms, with
+one set of pick meshes. Hover glow/lift, selection and complete focus bounds now
+operate together. Source plaza/Stern world bounds are verified unchanged before
+hover; Stern's fit can expand to cover its adjoining plaza. Its existing view
+angle and rotunda anchor remain unchanged.
+
+M21 evidence/m21-map-input/ records automatic startup, keyboard/typing and actual
+plaza click/lift checks. building-views/ records all8desktop/portrait directions,
+input returns and the two pullbacks: at1440×1000 Bobst264.466m and Silver206.738m,
+versus220.388m and172.282m previously. Repeated focus does not compound scaling.

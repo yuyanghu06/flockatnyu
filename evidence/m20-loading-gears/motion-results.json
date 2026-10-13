@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "name": "All three SVG faces exactly preserve the recorded reference path geometry",
+      "pass": true
+    },
+    {
+      "name": "Reference phase, opposite gear rotation and 19:15:13 tooth ratios stay meshed",
+      "pass": true
+    },
+    {
+      "name": "Five moving labels wrap while invisible, with one prominent phrase and bounded opacity",
+      "pass": true
+    },
+    {
+      "name": "Runtime uses three composited HTML rotors and CSS orbit, without JS animation work",
+      "pass": true
+    }
+  ]
+}

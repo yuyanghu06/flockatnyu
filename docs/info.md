@@ -1,3 +1,7 @@
+Current M20: summary Railway deployment initiated with acceptedphaseparser/6400token ceiling; localbootstrap stoppedcleanly beforecloudhandoff.39records/2146represented/currentweek1769protected. CronOFF until commandverified; fullhistory incomplete.
+
+Discord launch guide now distinguishes applied006–008 from pending009 hosted preparation and actual generation. Current-week records have names; no historical summaries/pruning are claimed yet.
+
 # Project documentation
 
 `agent-workflow.md` explains orchestration, role ownership, iteration, and handoff.
@@ -36,3 +40,11 @@ M13 loading-screen.md explains actual readiness, explicit entry, errors and veri
 M14: supabase-mcp-setup.md records normal local setup attempt, Windows config-write denial and OAuth next steps; connection inventory is in AGENTS.md. backend-direction.md records assistant-first architecture decisions.
 
 - assistant-backend.md records the incomplete M15 source, setup boundaries, checks and open findings.
+
+M16: discord-archive.md documents the implemented daily/backfill worker, original JSONB messages, scoped text/vector retrieval, local admin setup, cost choices and pending live launch.
+
+M17: discord-launch.md gives current bot invite/credential/local backfill/Railway handoff steps and hosted migration version mapping.
+
+M19 camera-navigation.md records the screenshot-derived view table, Y-up height interpretation, Stern rotunda presentation anchor, and shared screen-wide outward return.
+
+M21: loading-screen.md describes automatic readiness/startup and minimal failure recovery after the user removed M20. camera-navigation.md documents WASD, Bobst/Silver20%pullback and Gould joining Stern.
