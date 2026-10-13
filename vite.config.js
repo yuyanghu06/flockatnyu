@@ -7,7 +7,7 @@ export default defineConfig({
   preview: { host: '127.0.0.1', proxy: apiProxy },
   build: {
     rolldownOptions: {
-      input: { map: 'index.html', colors: 'docs/color-schemes.html' },
+      input: { map: 'index.html', colors: 'docs/color-schemes.html', admin: 'admin.html' },
     },
   },
 });

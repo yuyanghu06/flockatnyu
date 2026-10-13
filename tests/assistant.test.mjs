@@ -24,7 +24,7 @@ test('offline fixture: abort is propagated and reader is released', async () => 
   const abort = new AbortController(); abort.abort(); await assert.rejects(streamAssistant({ messages: [], signal: abort.signal, fetchImpl: async () => response(['{"type":"done"}\n']) }), { name: 'AbortError' });
 });
 test('history excludes system roles and is bounded; citations allow only explicit HTTP(S)', () => {
-  const messages = boundedMessages([{ role: 'system', content: 'bad' }, ...Array.from({length:30},(_,i)=>({role:i%2?'assistant':'user',content:'x'.repeat(9000)}))]); assert.equal(messages.length,20); assert(messages.every(m=>m.content.length===8000));
+  const messages = boundedMessages([{ role: 'system', content: 'bad' }, ...Array.from({length:30},(_,i)=>({role:i%2?'assistant':'user',content:'x'.repeat(9000)}))]); assert(messages.length<=20); assert(messages.every(m=>m.content.length<=8000)); assert(messages.reduce((n,m)=>n+m.content.length,0)<=16000); assert(Buffer.byteLength(JSON.stringify({messages}))<=32500); assert.equal(messages.at(-1).role,'assistant');
   for (const url of ['javascript:alert(1)','data:text/html,test','file:///secret','/relative',null]) assert.equal(safeSourceUrl(url),null); assert.equal(safeSourceUrl('https://example.com/a'),'https://example.com/a');
 });
 class Element {

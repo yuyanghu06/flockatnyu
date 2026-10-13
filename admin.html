@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord channels · Tech Visualized</title>
+  </head>
+  <body>
+    <main class="admin-page">
+      <header><a href="/">Tech Visualized ↗</a><p class="eyebrow">ADMINISTRATION</p><h1>Discord archive</h1><p>Choose which channels the assistant can search.</p></header>
+      <p id="admin-status" role="status" aria-live="polite">Checking access…</p>
+      <button id="admin-retry" type="button">Refresh</button>
+      <section id="admin-content" hidden>
+        <h2>Selected channels</h2>
+        <p>Disabling a channel removes it from search and future sync. Its archived messages are retained.</p>
+        <ul id="channel-list"></ul>
+        <form id="channel-form">
+          <h2>Add a channel</h2>
+          <label for="guild-id">Discord server ID</label><input id="guild-id" name="guildId" inputmode="numeric" pattern="[0-9]{1,20}" required />
+          <label for="channel-id">Channel or thread ID</label><input id="channel-id" name="channelId" inputmode="numeric" pattern="[0-9]{1,20}" required />
+          <label for="channel-title">Channel name</label><input id="channel-title" name="title" maxlength="300" required />
+          <label for="backfill-date">Archive messages from</label><input id="backfill-date" name="backfillDate" type="date" value="2026-01-01" required />
+          <p>Dates use New York time. Threads must be selected individually. Adding a channel does not grant members access to its messages.</p>
+          <button id="channel-save" type="submit">Add channel</button>
+        </form>
+      </section>
+    </main>
+    <script type="module" src="/src/discord-admin.js"></script>
+  </body>
+</html>

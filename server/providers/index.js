@@ -42,6 +42,48 @@ export async function* parseSSE(body, signal) {
 
 export function createProvider(config, { fetchImpl = fetch } = {}) {
   return {
+    async planTools({ messages, system, tools, signal }) {
+      if (!config.configured) throw new ProviderError('not_configured');
+      const anthropic = config.provider === 'anthropic';
+      const toolDefinitions = tools.map(tool => anthropic
+        ? { name: tool.name, description: tool.description, input_schema: tool.parameters }
+        : { type: 'function', function: { name: tool.name, description: tool.description, parameters: tool.parameters } });
+      const body = anthropic
+        ? { model: config.model, system, messages, tools: toolDefinitions, max_tokens: 1024, stream: false }
+        : { model: config.model, messages: [{ role: 'system', content: system }, ...messages], tools: toolDefinitions, tool_choice: 'auto', stream: false, store: false };
+      let response;
+      try {
+        response = await fetchImpl(`${config.baseUrl.replace(/\/$/, '')}/${anthropic ? 'messages' : 'chat/completions'}`, {
+          method: 'POST', signal, redirect: 'error',
+          headers: { 'content-type': 'application/json', accept: 'application/json',
+            ...(anthropic ? { 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01' } : { authorization: `Bearer ${config.apiKey}` }) },
+          body: JSON.stringify(body),
+        });
+      } catch { throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable'); }
+      if (!response.ok || !response.body) { await response.body?.cancel(); throw new ProviderError('provider_unavailable'); }
+      const reader = response.body.getReader(), decoder = new TextDecoder('utf-8', { fatal: true });
+      let raw = '';
+      try {
+        while (true) {
+          if (signal?.aborted) throw new ProviderError('aborted');
+          const { value, done } = await reader.read();
+          raw += decoder.decode(value, { stream: !done });
+          if (raw.length > 65536) throw new ProviderError('invalid_provider_response');
+          if (done) break;
+        }
+      } finally { await reader.cancel().catch(() => {}); reader.releaseLock(); }
+      let data;
+      try { data = JSON.parse(raw); } catch { throw new ProviderError('invalid_provider_response'); }
+      if (data?.error) throw new ProviderError('provider_unavailable');
+      const calls = anthropic ? data.content?.filter(item => item.type === 'tool_use') : data.choices?.[0]?.message?.tool_calls || [];
+      if (!Array.isArray(calls) || calls.length > 8) throw new ProviderError('invalid_provider_response');
+      return calls.slice(0, 2).map(call => {
+        let args;
+        try { args = anthropic ? call.input : JSON.parse(call.function.arguments); } catch { throw new ProviderError('invalid_provider_response'); }
+        if (!args || typeof args !== 'object' || Array.isArray(args)) throw new ProviderError('invalid_provider_response');
+        return { name: anthropic ? call.name : call.function.name, arguments: args };
+      });
+    },
     async *stream({ messages, system, signal }) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic = config.provider === 'anthropic';

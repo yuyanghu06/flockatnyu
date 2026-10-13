@@ -2,7 +2,25 @@ export function safeSourceUrl(value) {
   try { const u = new URL(value); return ['http:', 'https:'].includes(u.protocol) ? u.href : null; } catch { return null; }
 }
 export function boundedMessages(messages) {
-  return messages.filter(m => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string').slice(-20).map(m => ({ role: m.role, content: m.content.slice(0, 8000) }));
+  const candidates = messages.filter(m => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string' && m.content.trim()).slice(-20);
+  const result = [];
+  let chars = 0;
+  const encoder = new TextEncoder();
+  for (let i = candidates.length - 1; i >= 0; i--) {
+    const message = { role: candidates[i].role, content: candidates[i].content.slice(0, 8000) };
+    const proposed = [message, ...result];
+    // Leave space for the optional building context and JSON request envelope.
+    if (chars + message.content.length > 16000 || encoder.encode(JSON.stringify({ messages: proposed })).length > 32500) break;
+    result.unshift(message);
+    chars += message.content.length;
+  }
+  if (!result.length && candidates.length) {
+    const last = candidates.at(-1);
+    let content = last.content.slice(0, 8000);
+    while (encoder.encode(JSON.stringify({ messages: [{ role: last.role, content }] })).length > 32500) content = content.slice(0, -100);
+    result.push({ role: last.role, content });
+  }
+  return result;
 }
 export async function getAssistantStatus({ signal, fetchImpl = fetch } = {}) {
   const r = await fetchImpl('/api/status', { signal, headers: { Accept: 'application/json' }, cache: 'no-store' });

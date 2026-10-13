@@ -12,15 +12,32 @@
     "start": "node --env-file-if-exists=.env server/index.js",
     "build:api": "node tools/check-api.mjs",
     "test:assistant": "node --test tests/assistant.test.mjs tests/backend-provider.test.mjs tests/knowledge.test.mjs",
-    "worker:daily": "node --env-file-if-exists=.env server/worker.js"
+    "worker:daily": "node --env-file-if-exists=.env server/worker.js",
+    "worker:discord": "node --env-file-if-exists=.env server/discord/cli.js sync",
+    "test:discord": "node --test tests/discord*.test.mjs",
+    "discord:preflight": "node --env-file-if-exists=.env server/discord/cli.js preflight",
+    "discord:register": "node --env-file-if-exists=.env server/discord/cli.js register",
+    "discord:backfill": "node --env-file-if-exists=.env server/discord/cli.js backfill",
+    "deploy:discord:prepare": "node tools/prepare-discord-deploy.mjs",
+    "discord:policy": "node --env-file-if-exists=.env server/discord/cli.js policy",
+    "discord:discover": "node --env-file-if-exists=.env server/discord/cli.js discover",
+    "discord:reset": "node --env-file-if-exists=.env server/discord/cli.js reset",
+    "discord:classify": "node --env-file-if-exists=.env server/discord/cli.js classify",
+    "discord:summaries:preview": "node --env-file-if-exists=.env server/discord/summary-cli.js preview",
+    "discord:summaries:bootstrap": "node --env-file-if-exists=.env server/discord/summary-cli.js bootstrap",
+    "discord:summaries:weekly": "node --env-file-if-exists=.env server/discord/summary-cli.js weekly",
+    "discord:summaries:monthly": "node --env-file-if-exists=.env server/discord/summary-cli.js monthly",
+    "worker:summaries": "node --env-file-if-exists=.env server/discord/summary-cli.js scheduled"
   },
   "dependencies": {
+    "@hono/node-server": "^2.1.4",
     "clipper-lib": "^6.4.2",
-    "three": "^0.186.1",
     "hono": "^4.13.13",
-    "@hono/node-server": "^2.1.4"
+    "three": "^0.186.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-pgvector": "^0.0.9",
     "@gltf-transform/core": "^4.5.1",
     "@gltf-transform/extensions": "^4.5.1",
     "@gltf-transform/functions": "^4.5.1",

@@ -13,5 +13,7 @@ export function readConfig(env = process.env) {
     production, host: production ? (env.HOST || '0.0.0.0') : '127.0.0.1',
     port: Number(env.PORT || 3001),
     allowedSourceIds: Object.freeze((env.DEV_ALLOWED_SOURCE_IDS || '').split(',').map(s => s.trim()).filter(Boolean)),
+    devAdminEnabled: !production && env.DEV_ADMIN_ENABLED === 'true',
+    retrievalToolsEnabled: env.LLM_RETRIEVAL_TOOLS_ENABLED !== 'false',
   });
 }
