@@ -324,7 +324,7 @@ async function loadJob(job) {
     } else {
       if (['lipton-hall','25-union-square-west','235-park-avenue-south'].includes(job.name)) {
         // Preserve the baked geometry, using the same pale material as city context.
-        // Lipton remains selectable; Union Square buildings remain ordinary context.
+        // Lipton and the Union Square buildings are ordinary, non-selectable context.
         model.traverse(mesh => { if (mesh.isMesh) mesh.material = cityMaterial; });
       }
       if (job.name === 'bobst-library') {

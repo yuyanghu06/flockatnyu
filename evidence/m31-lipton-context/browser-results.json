@@ -1,0 +1,1010 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "checks": [
+    {
+      "name": "Actual fully loaded map exposes nine selectable landmarks with no Lipton picker/root/debug entry",
+      "pass": true,
+      "data": {
+        "ids": [
+          "nyu-kimmel-center",
+          "nyu-global-center",
+          "nyu-silver-center",
+          "nyu-leslie-elab-building",
+          "bobst-library",
+          "washington-square-arch",
+          "courant-institute",
+          "nyu-john-a-paulson-center",
+          "stern-school-of-business"
+        ],
+        "loaded": 124
+      }
+    },
+    {
+      "name": "Lipton asset remains visible and pickable as context occluder with unchanged pale material and geometry",
+      "pass": true,
+      "data": {
+        "actual": {
+          "bounds": {
+            "min": [
+              -212.58099365234375,
+              -0.36399999260902405,
+              -108.59200286865234
+            ],
+            "max": [
+              -162.03399658203125,
+              59.82699966430664,
+              -57.926998138427734
+            ]
+          },
+          "meshes": 1,
+          "triangles": 5628,
+          "pickMeshes": 1,
+          "visible": true,
+          "materials": [
+            {
+              "color": "dedfdb",
+              "roughness": 1,
+              "vertexColors": false,
+              "side": 2
+            }
+          ],
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            "XYZ"
+          ],
+          "buildingId": null
+        },
+        "original": {
+          "bounds": {
+            "min": [
+              -212.58099365234375,
+              -0.36399999260902405,
+              -108.59200286865234
+            ],
+            "max": [
+              -162.03399658203125,
+              59.82699966430664,
+              -57.926998138427734
+            ]
+          },
+          "meshes": 1,
+          "triangles": 5628,
+          "pickMeshes": 0,
+          "visible": true,
+          "materials": [
+            {
+              "color": "ffffff",
+              "roughness": 0.88,
+              "vertexColors": true,
+              "side": 2
+            }
+          ],
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "rotation": [
+            0,
+            0,
+            0,
+            "XYZ"
+          ],
+          "buildingId": null
+        },
+        "rootRegistered": false,
+        "buildingIds": [
+          "nyu-kimmel-center",
+          "nyu-kimmel-center",
+          "nyu-kimmel-center",
+          "nyu-kimmel-center",
+          "nyu-kimmel-center",
+          "nyu-kimmel-center",
+          "nyu-kimmel-center",
+          "nyu-global-center",
+          "nyu-global-center",
+          "nyu-global-center",
+          "nyu-global-center",
+          "nyu-global-center",
+          "nyu-global-center",
+          "nyu-silver-center",
+          "nyu-silver-center",
+          "nyu-silver-center",
+          "nyu-silver-center",
+          "nyu-silver-center",
+          "nyu-silver-center",
+          "nyu-silver-center",
+          "nyu-leslie-elab-building",
+          "nyu-leslie-elab-building",
+          "nyu-leslie-elab-building",
+          "nyu-leslie-elab-building",
+          "nyu-leslie-elab-building",
+          "nyu-leslie-elab-building",
+          "nyu-leslie-elab-building",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "bobst-library",
+          "washington-square-arch",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "courant-institute",
+          "courant-institute",
+          "courant-institute",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "nyu-john-a-paulson-center",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business",
+          "stern-school-of-business"
+        ]
+      }
+    },
+    {
+      "name": "Unknown debug selection/focus cannot register or focus Lipton",
+      "pass": true,
+      "data": {
+        "before": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "after": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            28.85318060368872,
+            300.75691000588006,
+            -205.23631179446073
+          ],
+          "target": [
+            74,
+            12,
+            116
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        }
+      }
+    },
+    {
+      "name": "Real mouse hover and click on Lipton geometry produce no hover, selection, glow, lift or focus",
+      "pass": true,
+      "data": {
+        "hitsTested": 5,
+        "actual": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "glows": 0,
+          "cursor": "grab"
+        }
+      }
+    },
+    {
+      "name": "Real hover/click still selects, lifts and focuses stern-school-of-business",
+      "pass": true,
+      "data": {
+        "hit": {
+          "x": 798.5784274321674,
+          "y": 305.8561196380482
+        },
+        "lift": 4.498015568101875,
+        "camera": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            305.4590519683624,
+            111.53282112839914,
+            80.67050245070455
+          ],
+          "target": [
+            85.00000000000001,
+            25,
+            193.00000000000003
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "triangles": 110248
+      }
+    },
+    {
+      "name": "Real hover/click still selects, lifts and focuses bobst-library",
+      "pass": true,
+      "data": {
+        "hit": {
+          "x": 1011.2972904155304,
+          "y": 406.9472086391503
+        },
+        "lift": 4.497907346923011,
+        "camera": {
+          "version": 1,
+          "projection": "perspective",
+          "position": [
+            30.90254230959206,
+            136.24826797261588,
+            -87.92957419841994
+          ],
+          "target": [
+            9.692003942020943,
+            32.72927592356235,
+            154.50798871264408
+          ],
+          "fov": 43,
+          "near": 0.5,
+          "far": 6000,
+          "zoom": 1
+        },
+        "triangles": 1856
+      }
+    },
+    {
+      "name": "No uncaught browser errors and asset placements unchanged after interaction",
+      "pass": true,
+      "data": {
+        "errors": []
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:5173/yuyang-site-3d-assets/models/buildings/lipton-hall.glb",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:5173/yuyang-site-3d-assets/models/buildings/lipton-hall.glb",
+      "status": 200
+    }
+  ],
+  "limitations": [
+    "Isolated installed headless Chrome; no physical mouse/touch/mobile hardware.",
+    "Read-only Chrome debugger captures actual scene references for inspection; application source files are not instrumented or modified.",
+    "API requests intercepted; no backend/model calls."
+  ],
+  "chrome": "155.0.8059.80",
+  "initial": {
+    "status": "ready",
+    "loaded": 124,
+    "failed": [],
+    "selected": null,
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 343.6000000014901,
+    "loadMilliseconds": 3495,
+    "removedKimmelTriangles": 200,
+    "removedGlobalCenterTriangles": 88,
+    "removedSilverCenterTriangles": 380,
+    "removedLeslieTriangles": 164,
+    "parkVegetation": {
+      "seed": 104729,
+      "trees": 72,
+      "shrubs": 117,
+      "sourceParkParts": 53,
+      "groundParkParts": 52,
+      "sourceSurfaceParts": 564,
+      "parksWithAdditions": 21,
+      "meshCount": 4,
+      "triangles": 17136,
+      "source": "OpenStreetMap eligible cover; deterministic illustrative planting, not surveyed tree inventory",
+      "coordinateSpace": "Washington Square meters; Y up; identity transform"
+    },
+    "mapped-streets": {
+      "sourceWays": 4830,
+      "roadWays": 1065,
+      "pathWays": 3696,
+      "skippedGradeSeparated": 69,
+      "inferredWidths": 4737,
+      "buildingExclusions": 6501,
+      "source": "OpenStreetMap local snapshot; widths inferred when absent",
+      "coordinateSpace": "Washington Square X/Z meters; identity root",
+      "mergedMeshes": 4,
+      "triangles": 204930,
+      "pathFootprintPolygons": 31,
+      "grades": {
+        "roads": 0.02,
+        "sidewalks": 0.16,
+        "curbs": 0.2,
+        "outsidePaths": 0.18,
+        "parkPaths": 0.76
+      },
+      "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+    },
+    "mapped-parks": {
+      "parkCount": 52,
+      "surfacePartCount": 558,
+      "surfaceCount": 0,
+      "polygons": 1925,
+      "coordinateSpace": "Washington Square meters; Y up",
+      "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+    },
+    "environmentSurfaces": {
+      "meshes": 10,
+      "triangles": 237493
+    },
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        28.85318060368872,
+        300.75691000588006,
+        -205.23631179446073
+      ],
+      "target": [
+        74,
+        12,
+        116
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 434.2943200101229,
+        "minPolarAngle": 0.006885420692679254,
+        "maxPolarAngle": 0.8434529930137906,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -780,
+          "maxX": 780,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -780,
+          "maxZ": 970
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 374,
+      "triangles": 699347,
+      "logarithmicDepthBuffer": false
+    },
+    "landmarks": [
+      {
+        "id": "nyu-kimmel-center",
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "screen": {
+          "x": 1092.5678923615123,
+          "y": 501.92808543734435,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source CityGML massing with photo-informed facade approximation; not a survey or current entrance-access model.",
+          "architecture": {
+            "sourceTriangles": 200,
+            "windows": 229,
+            "crownPanels": 350,
+            "displayBays": 25,
+            "reference": "docs/kimmel-reference.md",
+            "preservedNeighbor": "Global Center for Academic and Spiritual Life, footprint11021"
+          },
+          "buildingId": "nyu-kimmel-center"
+        }
+      },
+      {
+        "id": "nyu-global-center",
+        "bounds": {
+          "min": [
+            -97.33972930908203,
+            -0.11999999731779099,
+            70.20575714111328
+          ],
+          "max": [
+            -48.60825729370117,
+            32.16127395629883,
+            136.21212768554688
+          ]
+        },
+        "screen": {
+          "x": 1168.4906505928661,
+          "y": 559.3319217318975,
+          "visible": true
+        },
+        "meshes": 6,
+        "triangles": 12718,
+        "details": {
+          "buildingId": "nyu-global-center",
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source massing and architect-text-informed screen approximation; exterior photo and browser validation pending.",
+          "architecture": {
+            "sourceTriangles": 88,
+            "screenPanels": 680,
+            "foliageApertures": 1079,
+            "densityCounts": [
+              146,
+              152,
+              219,
+              163
+            ],
+            "mullions": 146,
+            "reference": "docs/global-center-reference.md"
+          }
+        }
+      },
+      {
+        "id": "nyu-silver-center",
+        "bounds": {
+          "min": [
+            116.27423095703125,
+            1.3041272163391113,
+            19.216636657714844
+          ],
+          "max": [
+            177.37234497070312,
+            58.22825241088867,
+            87.29178619384766
+          ]
+        },
+        "screen": {
+          "x": 452.5070730912748,
+          "y": 570.4866265920516,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 73892,
+        "details": {
+          "buildingId": "nyu-silver-center",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11667,
+          "sourceTriangles": 380,
+          "windowCount": 857
+        }
+      },
+      {
+        "id": "nyu-leslie-elab-building",
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "screen": {
+          "x": 443.60682465205144,
+          "y": 377.6267077083184,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "details": {
+          "buildingId": "nyu-leslie-elab-building",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11174,
+          "sourceTriangles": 164,
+          "windowCount": 498,
+          "storefrontCount": 16
+        }
+      },
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 916.8017829595481,
+          "y": 410.1311753507753,
+          "visible": true
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 850.0941695421609,
+          "y": 962.1913739447438,
+          "visible": true
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 601.4770159567191,
+          "y": 256.0350199398369,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "courant",
+            "sourceGlassComponents": 370,
+            "windows": 370,
+            "faces": 370,
+            "occludedFaces": 370,
+            "addedMeshes": 2,
+            "addedTriangles": 26640,
+            "sourcePalette": {
+              "trim": [
+                0.26635560393333435,
+                0.21952620148658752,
+                0.18116424977779388
+              ],
+              "mullion": [
+                0.12477181851863861,
+                0.08650045841932297,
+                0.07227185368537903
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": 978.7150852807239,
+          "y": 15.558924747184621,
+          "visible": true
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            -0.11999999731779099,
+            151.9720001220703
+          ],
+          "max": [
+            148.7293701171875,
+            55.499000549316406,
+            258.1990051269531
+          ]
+        },
+        "screen": {
+          "x": 712.0380367337193,
+          "y": 314.47365235553445,
+          "visible": true
+        },
+        "meshes": 14,
+        "triangles": 110248,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "stern",
+            "sourceGlassComponents": 1098,
+            "windows": 1073,
+            "faces": 1095,
+            "occludedFaces": 1101,
+            "addedMeshes": 2,
+            "addedTriangles": 78288,
+            "sourcePalette": {
+              "trim": [
+                0.5457244515419006,
+                0.5271151065826416,
+                0.4793201684951782
+              ],
+              "mullion": [
+                0.2345505803823471,
+                0.24228112399578094,
+                0.22696587443351746
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "includesGouldPlaza": true,
+          "plaza": {
+            "coordinateSpace": "Washington Square map meters; identity transform",
+            "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+            "architecture": {
+              "pavers": 6466,
+              "skylights": 2,
+              "benches": 8,
+              "frontSteps": 6,
+              "mainCourtMeters": [
+                58.7,
+                36.8
+              ],
+              "reference": "docs/gould-plaza-reference.md"
+            },
+            "planting": {
+              "trees": 4,
+              "shrubPlanters": 3,
+              "provenance": "User-requested planting proposal, not surveyed existing vegetation"
+            }
+          },
+          "buildingId": "stern-school-of-business"
+        },
+        "parts": [
+          {
+            "name": "stern-school-of-business",
+            "bounds": {
+              "min": [
+                30.535999298095703,
+                2.890000104904175,
+                151.9720001220703
+              ],
+              "max": [
+                119.41000366210938,
+                55.499000549316406,
+                247.55499267578125
+              ]
+            }
+          },
+          {
+            "name": "nyu-gould-plaza",
+            "bounds": {
+              "min": [
+                78.45346069335938,
+                -0.11999999731779099,
+                171.71893310546875
+              ],
+              "max": [
+                148.7293701171875,
+                10.483983039855957,
+                258.1990051269531
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "lipton": {
+    "actual": {
+      "bounds": {
+        "min": [
+          -212.58099365234375,
+          -0.36399999260902405,
+          -108.59200286865234
+        ],
+        "max": [
+          -162.03399658203125,
+          59.82699966430664,
+          -57.926998138427734
+        ]
+      },
+      "meshes": 1,
+      "triangles": 5628,
+      "pickMeshes": 1,
+      "visible": true,
+      "materials": [
+        {
+          "color": "dedfdb",
+          "roughness": 1,
+          "vertexColors": false,
+          "side": 2
+        }
+      ],
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "buildingId": null
+    },
+    "original": {
+      "bounds": {
+        "min": [
+          -212.58099365234375,
+          -0.36399999260902405,
+          -108.59200286865234
+        ],
+        "max": [
+          -162.03399658203125,
+          59.82699966430664,
+          -57.926998138427734
+        ]
+      },
+      "meshes": 1,
+      "triangles": 5628,
+      "pickMeshes": 0,
+      "visible": true,
+      "materials": [
+        {
+          "color": "ffffff",
+          "roughness": 0.88,
+          "vertexColors": true,
+          "side": 2
+        }
+      ],
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "rotation": [
+        0,
+        0,
+        0,
+        "XYZ"
+      ],
+      "buildingId": null
+    },
+    "rootRegistered": false,
+    "buildingIds": [
+      "nyu-kimmel-center",
+      "nyu-kimmel-center",
+      "nyu-kimmel-center",
+      "nyu-kimmel-center",
+      "nyu-kimmel-center",
+      "nyu-kimmel-center",
+      "nyu-kimmel-center",
+      "nyu-global-center",
+      "nyu-global-center",
+      "nyu-global-center",
+      "nyu-global-center",
+      "nyu-global-center",
+      "nyu-global-center",
+      "nyu-silver-center",
+      "nyu-silver-center",
+      "nyu-silver-center",
+      "nyu-silver-center",
+      "nyu-silver-center",
+      "nyu-silver-center",
+      "nyu-silver-center",
+      "nyu-leslie-elab-building",
+      "nyu-leslie-elab-building",
+      "nyu-leslie-elab-building",
+      "nyu-leslie-elab-building",
+      "nyu-leslie-elab-building",
+      "nyu-leslie-elab-building",
+      "nyu-leslie-elab-building",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "bobst-library",
+      "washington-square-arch",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "courant-institute",
+      "courant-institute",
+      "courant-institute",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "nyu-john-a-paulson-center",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business",
+      "stern-school-of-business"
+    ]
+  },
+  "liptonHits": [
+    {
+      "x": 713.0324511208272,
+      "y": 417.43707806398834,
+      "buildingId": null,
+      "distance": 205.62507924048487
+    },
+    {
+      "x": 749.9861094029554,
+      "y": 392.40258647879466,
+      "buildingId": null,
+      "distance": 239.02901836469323
+    },
+    {
+      "x": 785.7573346931983,
+      "y": 368.16914166844003,
+      "buildingId": null,
+      "distance": 243.6046376013636
+    },
+    {
+      "x": 679.7961877738954,
+      "y": 390.0067342977693,
+      "buildingId": null,
+      "distance": 209.79739771208034
+    },
+    {
+      "x": 716.632947300466,
+      "y": 365.84927934908575,
+      "buildingId": null,
+      "distance": 220.38881839617926
+    },
+    {
+      "x": 647.7234054819111,
+      "y": 363.536627396012,
+      "buildingId": null,
+      "distance": 214.19960388839849
+    },
+    {
+      "x": 684.4290290081914,
+      "y": 340.2109146696842,
+      "buildingId": null,
+      "distance": 212.74489632582984
+    },
+    {
+      "x": 616.7540613087093,
+      "y": 337.97720310038926,
+      "buildingId": null,
+      "distance": 227.09452830023832
+    },
+    {
+      "x": 653.3159616171655,
+      "y": 315.44100434925946,
+      "buildingId": null,
+      "distance": 207.89050554715124
+    }
+  ]
+}
