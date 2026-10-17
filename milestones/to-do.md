@@ -4,7 +4,8 @@
 - [x] Correct stale current docs and delete user-authorized output/.
 - [x] Verify581/581 regressions,55/55 focused checks, both builds; deploy independent Gmail switch.
 - [x] Complete scoped source commit238a346; preserve unrelated map/UI/artwork; documentation handoff follows.
-- [ ] Next: align overall architecture with the user and reflect confirmed decisions in the repo.
+- [x] Prepare current-versus-target architecture draft after cleanup; docs commit48ad290 completed.
+- [ ] Align architecture with the user and reflect confirmed decisions in docs/architecture.md.
 
 # M37: tool organization complete
 

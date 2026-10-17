@@ -1,4 +1,4 @@
-# M38 complete: final housekeeping; architecture alignment next
+# Architecture alignment: M38 housekeeping complete
 
 Goal: finish the bounded cleanup so map/UI and agent work can proceed independently.
 
@@ -31,3 +31,9 @@ Independent Gmail switch and enqueue gate implemented; redundant metadata worker
 [Implementation pass](history/2026-10-17_15-04-51-162664-orchestrator-final-housekeeping-implementation.md)
 
 [Housekeeping verification and source commit](history/2026-10-17_15-07-19-846937-orchestrator-housekeeping-verified-and-committed.md)
+
+## Architecture discussion
+
+Cleanup documentation commit48ad290 completed; no push. [Architecture draft](../docs/architecture.md) records current facts and a proposed target for user review. Confirm service/repository boundaries before new feature implementation.
+
+[Architecture draft pass](history/2026-10-17_15-08-29-487595-orchestrator-architecture-alignment-draft.md)

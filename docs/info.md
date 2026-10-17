@@ -28,3 +28,5 @@ Building reference guides record inspected sources, placement/geometry contracts
 `avatars/` contains the 26 current generated low-poly profile PNGs with readable person names. The original scratch `output/` directory was deleted at the user’s request; these retained documentation images are not source photos.
 
 [Cleanup handoff](cleanup-handoff.md) defines current folder ownership for parallel map/UI, agent and collector work.
+
+[Architecture alignment draft](architecture.md) separates current deployed behavior from the target under discussion.
