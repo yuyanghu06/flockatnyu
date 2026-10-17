@@ -1,91 +1,53 @@
-# NYU Campus Atlas
+# Tech@NYU campus assistant
 
-Local 3D preview of NYU's Washington Square campus, built with Vite and Three.js.
-The first interactive preview is implemented and browser-verified. Verification
-results and remaining limitations live in [the milestone snapshot](milestones/milestone.md).
+A floating club assistant over a detailed 3D map of NYU's Washington Square campus, built with Vite, Three.js and a Hono API. Current implementation, hosted evidence and unfinished work live in the [milestone snapshot](milestones/milestone.md).
 
 ## Run locally
 
-Use Node.js 22.12+ (or a compatible newer release).
+Use Node.js 22.12 or newer. Install dependencies, copy `.env.example` to an ignored `.env` if settings are not already present, then run:
 
 ```sh
 npm ci
-npm run dev -- --host 127.0.0.1
+npm run dev
 ```
 
-Open the local URL printed by Vite (normally http://127.0.0.1:5173).
+This starts the API, checks its health, then starts Vite (normally http://127.0.0.1:5173). `PORT` configures the API and local proxy; its default is 3001. Existing listeners are preserved: stop your own API session or choose another `PORT`. Frontend arguments work normally, for example `npm run dev -- --port 5180 --strictPort`.
 
-```sh
-npm run build
-npm run preview -- --host 127.0.0.1
-```
+Set `LLM_PROVIDER`, `LLM_MODEL` and `LLM_API_KEY` on the server for replies. OpenAI-compatible and Anthropic protocols are supported; `.env.example` explains their API roots. An unconfigured API still starts and reports its actual state. Credentials must never use a `VITE_` prefix or enter browser code.
 
-The production preview normally uses http://127.0.0.1:4173. This is a local
-preview; no deployment or external service setup is required.
+Use `npm run dev:api` for API watch mode and `npm run dev:web` for Vite alone. Paired mode needs a restart after backend edits. `npm run build` and `npm run preview` serve a production frontend; preview needs a separate API for chat. Production member authentication is unfinished, so protected production API routes deny access by default.
 
-## Explore and share a view
+## Assistant and map
 
-- Left-drag to orbit, right-drag to pan, and scroll to zoom. On touch screens,
-  use one finger to orbit and two fingers to pan/pinch.
-- The starting zoom uses your saved 240.975-meter camera distance. Viewing angles
-  remain free; panning stays within the populated campus and zoom ranges from
-  15 to 700 meters to keep the surrounding map useful.
-- Select a campus landmark in the map or building selector. Selection leaves
-  the camera where it is; use the optional focus button to move closer.
-- Use **Reset view** to return to the initial campus angle.
-- Open **Camera angle**, then **Copy camera**. If clipboard access is unavailable,
-  select and copy the JSON from the text field. Send that JSON to share your angle.
-- Paste saved JSON into the same field and choose **Restore angle**.
+The campus opens when resources are ready. Click **Ask Tech@NYU** or press **⌘K / Ctrl+K** for the assistant. Enter sends, Shift+Enter adds a line, and Escape or the backdrop closes it. Drafts and completed conversation survive dismissal; closing or Stop cancels an unfinished reply. Original source links accompany retrieved answers. API status reports configuration, not provider health.
 
-## Assets and scope
+Discord questions read messages live through the bot, with explicit denial/coverage limits and no stored-summary fallback. Gmail/Drive tools remain read-only. Independent Discord/Gmail collectors have received real new inputs into the shared temporary cache. See [Google setup](docs/google-connector.md) and [automation](docs/agent-automation.md) for access, processing and missing map/Calendar adapters.
 
-The map uses 110 city tiles around Washington Square and Paulson, Bobst Library,
-the arch, Lipton Hall, Courant, Stern, park scenery, and the extracted John A.
-Paulson Center. Paulson now has a photo-informed glass podium, stepped towers,
-window panels, fins and planted terraces. It is an architectural approximation;
-exact setbacks and window spacing are inferred. The original extracted GLB is
-preserved. The runtime model follows the recorded footprint and replaces the old
-Coles Sports Center. See [visual references and modeling notes](docs/paulson-reference.md).
+Drag to orbit, right-drag or WASD to pan, and scroll to zoom. Touch supports orbit and two-finger pan/pinch. Select a detailed building to focus it; outward scrolling returns to the preceding overview. While the assistant is open, typing and scrolling stay within its modal. Gould Plaza shares Stern's selection and motion. Legacy building/date controls are hidden in the current map presentation.
 
-Roads, sidewalks and mapped park paths now cover the loaded campus region. Traffic and distant waterfront scenery remain outside this preview.
-Calendar, Discord, Drive, authentication, database, and club assistant integrations
-are future work. No sample club events are presented as real information.
+## Services and data
 
-Preserve the original GLB metadata and applicable licenses. See the
-[exported asset documentation](yuyang-site-3d-assets/README.md) and
-[asset manifest](yuyang-site-3d-assets/asset-manifest.json).
-OpenStreetMap-derived geometry is attributed to
-[OpenStreetMap contributors](https://www.openstreetmap.org/copyright).
+The Railway `tech-nyu` production environment has three services sharing Supabase:
 
-## Project guides
+| Service | Current role |
+| --- | --- |
+| `discord-events` | Continuous new/edit/delete Gateway ingestion, metadata-only refresh and inherited blacklist checks; no historical backfill. |
+| `gmail-events` | Active authenticated Gmail callback, watch renewal and reconciliation; no LLM processing. |
+| `miro-sync` | Provisioned Miro worker, paused with `MIRO_SYNC_ENABLED=false`. |
 
-The initial preview passed 13 browser/failure checks. M2 verification covers the
-expanded map, camera boundaries, and photo-informed Paulson model; see the current
-[milestone snapshot](milestones/milestone.md) for results and measurements.
-See [test instructions](tests/info.md) and [current view](evidence/m2-campus-refinement/01-default-campus.png).
+No LLM service or Calendar/map write adapter is active. The [five database tables](docs/database-tables.md) separate policy/catalogue metadata, Miro records, pending inputs and metadata-only checkpoints. Discord/Gmail are separate running services; Miro sync remains paused. No historical Discord archive, stored summaries or vectors are retained. [Deployment inputs](deployment/info.md) contain isolated runtime dependencies; exact verification and limitations live in the milestone.
 
-- [Project instructions](AGENTS.md)
-- [Current milestone and verification](milestones/milestone.md)
-- [Prioritized work](milestones/to-do.md)
-- [Agent workflow](docs/agent-workflow.md)
-- [Original implementation brief](docs/initial-map-prompt.md)
+The scene uses source building tiles, detailed selectable roots, roads, sidewalks and park geometry. Detailed buildings are photo-informed approximations. Preserve geometry, placement metadata and licenses: [asset export](yuyang-site-3d-assets/README.md), [manifest](yuyang-site-3d-assets/asset-manifest.json), [OpenStreetMap attribution](https://www.openstreetmap.org/copyright). Traffic remains outside scope. Building/day activity views are unfinished, and no sample club events are presented as real information.
 
-## Campus details and color samples
+## Guides and checks
 
-The latest map includes Kimmel Center, Silver Center and the full
-Leslie eLab host at 12–16 Washington Place. Silver Towers retain ordinary city geometry after the user corrected the target to Silver Center. Gould Plaza now fills its surrounding
-court with paving, skylights, seating, four planter trees and three shrub planters. Models are photo-informed approximations;
-Gould includes a synthetic lower approach to reconcile source elevation datums.
-See the three building reference documents in `docs/` for evidence and limits.
+- [Assistant/API setup](docs/assistant-backend.md) and [backend direction](docs/backend-direction.md)
+- [Discord live access](docs/discord-live-only.md) and [operations](docs/discord-launch.md)
+- [Miro ingestion and tools](docs/miro-sync.md), [Google connector](docs/google-connector.md) and [automation](docs/agent-automation.md)
+- [Camera/navigation](docs/camera-navigation.md), [tests](tests/info.md) and [workflow](docs/agent-workflow.md)
 
-Open [Tech@NYU color samples](http://127.0.0.1:4173/docs/color-schemes.html) with the
-preview running. [Token and brand notes](docs/color-schemes.md) accompany the three
-interactive proposals. The live map retains its existing palette.
+Run `npm run test:assistant`, `npm run build:api` and `npm run build` for core local checks. See the test guide for focused connector and browser commands and their limits.
 
-Courant and Stern now have thin window frames, mullions and projecting sills in their existing palettes. Original geometry and material colors remain intact. See [detail notes](docs/courant-stern-detailing.md) and [before/after evidence](evidence/m5-window-details/).
+## Code ownership for parallel work
 
-The street/park layer uses an attributed offline OpenStreetMap snapshot with coherent intersections, curb edges and mapped park holes. Regenerate with python tools/fetch-streets-parks.py --reuse then node tools/build-streets-parks.mjs. Widths and terrain transitions are approximate; see [data provenance](docs/streets-parks-data.md) and [surface notes](docs/streets-rendering.md).
-
-## Discord archive and assistant retrieval
-
-A separate one-shot archive worker, admin channel configuration and source-scoped text/date/author search are implemented locally. Optional semantic embeddings are off by default. Open /admin.html with the local API and administrator access configured; run npm run worker:discord for a configured archive job. See [setup, permissions and limitations](docs/discord-archive.md). Local tests and production build pass; no live Discord history, hosted migrations, production authentication or Railway deployment is claimed.
+Map/UI changes belong in src/ and their focused tests; agent/API work belongs in server/ and callable tools/. Source collectors live in server/discord/, server/google/ and server/miro/, with independent deployment/ packages. Development and deployment utilities live in scripts/. Coordinate package.json, shared tests and milestone journals through one integrator. See [tool guide](tools/info.md) and [cleanup handoff](docs/cleanup-handoff.md).

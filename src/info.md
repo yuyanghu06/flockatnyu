@@ -1,3 +1,7 @@
+# Current administration boundary
+
+Discord administration configures live-readable channel metadata. It has no archive date, retention claim or backfill control. Disabling a channel prevents reads and event ingestion; migration020 preserves that intent through discovery. The assistant reports live Discord/Google/Miro readiness without retired generic knowledge storage status.
+
 # Campus map application
 
 `main.js` loads and renders the local Washington Square scene, owns map interaction
@@ -47,7 +51,7 @@ M4 correction: silver-towers.js is retained as an unused historical implementati
 
 M5: courant-stern.js adds merged window frames, mullions and sills to existing Courant/Stern roots before registration. Source meshes/material colors remain unchanged; no new facade palette or glass planes.
 
-M6: streets.js and parks.js generate offline street/park geometry. tools/build-streets-parks.mjs bakes the model; main.js loads the result, replacing old coarse grass.
+M6: streets.js and parks.js generate offline street/park geometry. scripts/build-streets-parks.mjs bakes the model; main.js loads the result, replacing old coarse grass.
 
 M7: main.js biases only the background ground plane behind street surfaces; streets.js removes asphalt beneath crossings instead of using near-coplanar overlays.
 
@@ -65,7 +69,7 @@ M12: map-resources.js compacts neutral context buffers exactly and freezes stati
 
 M21 supersedes the M13/M20 entry UI: bootstrap.js catches startup failures; loading-state.js still gates real resources/scene readiness; map-startup.js automatically opens the map and uses only the small static status/retry notice in index.html.
 
-- assistant.js / assistant.css / chat-client.js provide the M15 entry-gated assistant scaffold; backend acceptance is incomplete (see docs/assistant-backend.md).
+- assistant.js / assistant.css provide the M24 floating Spotlight assistant after automatic campus readiness: native modal, query-first compact layout, Cmd/Ctrl+K, focus restoration, editable offline drafts, streaming/cancellation and safe sources. chat-client.js owns the bounded HTTP/NDJSON transport and truthful connection failures. Closing stops unfinished replies; see docs/assistant-backend.md for server setup and boundaries.
 
 M16: discord-admin.js/css and discord-admin-client.js power the standalone /admin.html channel settings page without loading the map. API authorization stays on the server; no credentials or grant management are exposed in the browser. chat-client.js enforces aggregate history/UTF-8 budgets.
 
@@ -74,3 +78,26 @@ M19: building-views.js configures screenshot-derived original azimuth/polar and 
 Stern uses a view-only rotunda anchor with the original full-building zoom; its earlier explicit close distance is removed. Off-canvas outward return preserves hover coordinates and does not introduce picking.
 
 M20 decorative loader is removed at the user’s request. M21 keyboard-pan.js provides camera-relative bounded WASD with typing/modal/modifier/blur guards. Bobst and Silver profiles use distanceScale1.2. main.js registers Stern and Gould geometry as one Stern root; the plaza no longer has a separate building record. Snapshot part bounds expose grouping alignment for verification.
+
+M23 keyboard-pan.js integrates eased ground-plane velocity for smoother starts,
+releases and direction changes. Cruising speed is 60% higher (24–192 m/s), with
+normalized diagonals and existing pan bounds. Short release tails stop within
+250 ms; safety guards, pointer/wheel/control takeover and camera restore/focus
+clear held keys and momentum immediately. Captured wheel reset covers overlay
+returns, and held-key repeats cannot resurrect movement after a reset. See
+docs/camera-navigation.md for the rates, exact integration and handoff contract.
+
+M24: main.js suspends the captured map-wheel path while a native dialog is open. This lets the floating assistant scroll independently; keyboard-pan already guards dialog[open].
+
+M24 client connection checks time out after eight seconds. Gateway/network errors use bounded actionable messages; status/configuration checks never invoke a model.
+
+M31: Lipton Hall remains loaded at its original placement with neutral context
+materials. Its entry is removed from the selectable `config.js` building list,
+so it has no picker option, selection root, hover effect, focus target or debug
+landmark lookup. Its meshes still occlude buildings behind it during raycasting.
+
+M32: chat-client.js samples the browser's IANA time zone at every chat send and
+includes `timeZone` in the request body. Changes during travel apply on the next
+request. Detection failure explicitly uses UTC; the server validates the zone and
+uses it for date-based Discord window interpretation. Message/building context
+and stream cancellation retain their existing contracts.

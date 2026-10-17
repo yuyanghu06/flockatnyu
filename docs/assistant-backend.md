@@ -1,34 +1,31 @@
-# Current backend status after M16
+# Assistant and backend
 
-The Discord archive, admin channel UI and scoped retrieval tools are implemented and locally accepted. Production authentication, live connections and deployment remain pending. See [Discord archive setup](discord-archive.md) and the rolling milestone for current truth. npm dependencies and lock were refreshed; API import/syntax and production builds pass. The earlier chat history/request and retrieval query limit findings below are fixed and covered by regression tests. The daily worker now runs the configured Discord adapter rather than always being a no-op. Historical M15-only notes below remain for context and are superseded where stated here.
+The floating assistant uses a Hono API with server-only model and source credentials. Discord content is read live through the bot; no archive, durable summary/vector storage or stored-summary fallback remains. [Backend direction](backend-direction.md), [database tables](database-tables.md) and the [milestone snapshot](../milestones/milestone.md) describe current boundaries and rollout evidence.
 
-Independent integrated verification: 75 tests passed, zero skipped/failed, including local PostgreSQL/pgvector SQL execution and real Hono fixtures. Five Chrome admin checks passed using fixture responses. No hosted Supabase migration, actual model/Discord/Drive call, production identity integration or active Railway job was verified.
+## Local startup and interface
 
----
+`npm run dev` loads ignored `.env` and `.env.google`, starts the API, verifies `/healthz` identifies `tech-nyu-api`, then starts Vite. `PORT` defaults to 3001 and drives the API and proxy. Frontend flags are forwarded. The supervisor stops its own children and refuses occupied API ports. Restart paired mode after backend edits; `npm run dev:api` provides watch mode and `npm run dev:web` runs Vite separately. Preview also needs a separate API.
 
-# Assistant/backend development snapshot
+The compact native dialog opens after campus readiness through the launcher or Cmd/Ctrl+K. Enter submits, Shift+Enter adds a line, and Escape/backdrop/close restore focus. Closing stops an unfinished reply. Completed history and drafts remain in memory until Clear or reload. Modal focus, wheel and WASD guards keep assistant input separate from map controls.
 
-Status: incomplete; development stopped for a user-requested dev-branch snapshot. No deployment, live connector, database migration or paid model call was performed.
+`/api/status` reports configuration without probing the model. API-unavailable, missing configuration and denied access are distinct states. Client status checks time out after eight seconds; retry preserves drafts. Secrets must never use `VITE_` variables.
 
-## Implemented source
+## API and source access
 
-- Assistant panel and launcher appear after explicit campus entry, with selected-building context, streamed text, cancellation, safe links and honest configuration/error states.
-- Hono exposes health, status and chat routes. Adapters implement OpenAI-compatible and Anthropic streaming protocols, timeouts, cancellation and sanitized errors. Model/provider settings and credentials remain server-side.
-- Development access requires loopback checks. Production protected routes fail closed until real member authentication is implemented.
-- Knowledge repository and local SQL provide permission-scoped storage/search, originals, links, timestamps, source/document grants, summaries and sync state. Seven tables are protected; embeddings reserve 1,536 dimensions without a selected model/provider or generated vectors. Current retrieval is text search.
-- Daily worker is a truthful no-op without connector adapters. No scheduler is activated. Discord/Drive adapters remain future work; Luma/Miro are deferred.
-- Vite proxies `/api` to the local backend; Railway configuration describes a future API service, not an actual deployment.
+`/api/chat` accepts bounded conversation, optional building ID and validated browser `timeZone`, then streams newline-delimited `meta`, `delta`, `done` or `error` records. Timeouts, cancellation and incomplete streams are explicit. Responses render as text, and source links accept only HTTP(S). Conversation count, characters and UTF-8 request size are bounded.
 
-## Setup boundary
+OpenAI-compatible Chat Completions and Anthropic Messages adapters use explicitly configured provider, model, API root and key. The browser cannot supply credentials. Shared source scope comes from `ASSISTANT_ALLOWED_SOURCE_IDS` (`DEV_ALLOWED_SOURCE_IDS` compatibility alias). Browser/model arguments cannot grant source access or administration. There are no per-person membership tables. Production protected routes remain closed until a production authentication policy is implemented.
 
-`.env.example` documents server-only variables. Copy it to ignored `.env` locally; never use `VITE_` prefixes for credentials. A model name, provider and key must be explicitly configured for real model calls. Database runtime credentials are separate from MCP OAuth; source IDs and database grants must both permit access.
+The API captures one server clock for planning, retrieval and answers. Calendar-date Discord windows use the user's validated IANA timezone; legacy clients use explicit UTC. See [date behavior](discord-live-only.md#dates-and-user-timezone) for inclusive-start/exclusive-end bounds, DST and overrides. Google tools retain provider query syntax; this does not deterministically rewrite Gmail date queries.
 
-After package installation is available, `npm install` must resolve Hono dependencies and refresh `package-lock.json`. The current lock is stale; `npm ci` and deployment are not validated. `npm run dev:api` starts the API on loopback port 3001; `npm run dev` starts Vite separately. `npm run build:api` checks syntax and real imports. `npm run test:assistant` runs fixture tests. `npm run worker:daily` currently reports no-op status. These commands are documented, not a claim that unavailable dependencies were installed.
+## Read tools and independent collectors
 
-## Verification and open issues
+Discord planning resolves channels and requested windows, then reads originals through the bot. Search locates messages and does not establish exhaustive period coverage. Larger summaries use bounded request-memory map/reduce with original citations. Failed, partial or denied reads disclose limits and never fall back to stored summaries. Live local access requires `DISCORD_LIVE_READ_ENABLED`, `DEV_LIVE_DISCORD_ENABLED`, server source scope and current bot/channel policy. See [Discord contract](discord-live-only.md).
 
-Latest targeted run: 32 tests passed, one Hono integration test explicitly skipped, zero failures. Fixture coverage includes provider protocols, split UTF-8, cancellation/errors, safe frontend rendering, scoped repository behavior and SQL source contracts. SQL checks do not execute PostgreSQL. Hono was unavailable after registry DNS failures.
+Gmail/Drive read-only tools use backend OAuth and account-authorized scope without sends/file edits. The independent `gmail-events` receiver accepts signed notifications and has enqueued real email. See [Google connector](google-connector.md).
 
-Review found two unresolved issues: chat history can exceed the server's 16,000-character and 32,768-byte budgets, causing HTTP 400 until cleared; chat questions over 500 characters are accepted by chat but rejected by retrieval. Align these limits and add regression coverage in a future development pass.
+Miro has bounded read-only board/frame/item/relationship tools and a separate ingestion service. Original layout and explicit coverage limits reach model context. The `miro-sync` service exists with `MIRO_SYNC_ENABLED=false`; consult [Miro setup](miro-sync.md) for board coverage and freshness.
 
-Production authentication, connector adapters, scheduler activation, live provider/database tests and real browser integration remain unfinished. Previous frontend build was blocked by asset realpath permission; no production build success is claimed. Supabase registration was observed, but authentication status was unknown, no database response was obtained and the migration remains unapplied. See [schema guide](../supabase/info.md) and the inventory in AGENTS.md.
+The Railway production environment contains running `discord-events`, running `gmail-events` and paused `miro-sync`, sharing Supabase. Discord receives new native events while preserving inherited exclusions; there is no message-history archive job. The [cache-driven agent handler](agent-automation.md) is implemented but not deployed, with no concrete Calendar/map write adapters. Collection does not invoke an LLM. The local supervisor starts only web/API processes.
+
+Building/day activity and history views remain unfinished. Local fixture checks and historical live smoke tests are recorded in [tests](../tests/info.md) and the milestone; they do not prove current cloud health.

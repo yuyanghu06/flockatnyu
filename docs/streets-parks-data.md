@@ -7,7 +7,7 @@ This pass implements source data, not road widths, paving, elevation or park ren
 
 ## Collection and reproduction
 
-Run `python tools/fetch-streets-parks.py` from the repository. The script first
+Run `python scripts/fetch-streets-parks.py` from the repository. The script first
 queries Overpass. During this pass geographic queries returned HTTP 500/406,
 so the script used the official OSM map API in sixteen small bounding boxes,
 then fetched full selected relations. This is a manual offline snapshot, not a

@@ -1,50 +1,30 @@
-Current M20: summary Railway deployment initiated with acceptedphaseparser/6400token ceiling; localbootstrap stoppedcleanly beforecloudhandoff.39records/2146represented/currentweek1769protected. CronOFF until commandverified; fullhistory incomplete.
-
-Discord launch guide now distinguishes applied006–008 from pending009 hosted preparation and actual generation. Current-week records have names; no historical summaries/pruning are claimed yet.
-
 # Project documentation
 
-`agent-workflow.md` explains orchestration, role ownership, iteration, and handoff.
-`templates/` holds the reusable assignment, report, and history formats. Current
-state and unfinished tasks belong in `milestones/`; avoid duplicating that state
-in new design documents. The orchestrator owns shared workflow edits.
+The [milestone snapshot](../milestones/milestone.md) and [to-do list](../milestones/to-do.md) hold current implementation/evidence and unfinished work. [Immutable history](../milestones/history/info.md) preserves previous decisions. Guides describe current contracts; historical commands are not operational instructions.
 
-`initial-map-prompt.md` is the user's requested handoff prompt for another assistant
-to build the first local Washington Square map with free camera controls and
-extract the missing center from `/Users/yuyang/Downloads/scene.glb`. It is an
-implementation request, not evidence of implemented application behavior.
+## Backend and integrations
 
-`paulson-reference.md` records the architect photos actually inspected, geometry
-contract, source credits, and approximation limits for the runtime Paulson model.
+- [assistant-backend.md](assistant-backend.md): floating assistant, local API, streaming, source scope and runtime boundaries.
+- [backend-direction.md](backend-direction.md): current product/service architecture.
+- [discord-live-only.md](discord-live-only.md): bot-only content reads, request-memory summaries, timezone behavior and the single metadata table.
+- [discord-launch.md](discord-launch.md): supported metadata/live-access operations. [discord-archive.md](discord-archive.md) points to retired designs and immutable cutover evidence.
+- [database-tables.md](database-tables.md): the five current service-only tables.
+- [google-connector.md](google-connector.md): account-authorized Gmail/Drive tools and Gmail receiver setup/status.
+- [agent-automation.md](agent-automation.md): temporary input cache, event updater, handler prompt, trusted adapters and activation boundaries.
+- [miro-sync.md](miro-sync.md): scoped board ingestion and direct read-only tools; [miro-api-research.md](miro-api-research.md) records API research and coverage limits.
+- [schema-cleanup-audit.md](schema-cleanup-audit.md): historical pre-cleanup assessment; follow the milestone and current table guide for applied state.
+- [supabase-mcp-setup.md](supabase-mcp-setup.md): developer connection setup history, separate from runtime credentials.
 
-M3 references: silver-towers-reference.md, leslie-elab-reference.md, gould-plaza-reference.md. color-schemes.html is a separately built interactive proposal page; color-schemes.md records brand provenance, tokens and contrast.
+Railway production contains continuous `discord-events`, active `gmail-events` and paused `miro-sync`. Discord creates and a real Gmail email have reached the shared temporary cache. No LLM service or Calendar write adapters are deployed. Live Discord edit/delete and blacklist probes remain pending. Integration owners maintain their own guides; shared workflow/journal changes belong to the orchestrator.
 
-M4 reference guides: kimmel-reference.md and silver-center-reference.md document corrected building identities, photographic provenance and preserved source geometry. Silver Towers notes now describe a superseded runtime model.
+## Map, design and workflow
 
-M5: courant-stern-detailing.md records window enhancement and exact existing-color preservation contracts.
+[agent-workflow.md](agent-workflow.md) explains role ownership and handoff; `templates/` supplies assignment, report and history formats. `initial-map-prompt.md` is the original implementation request, not an implementation claim.
 
-M6: streets-parks-data.md records OSM snapshot/projection; streets-rendering.md and parks-rendering.md explain surface generation, layering and limits.
+Building reference guides record inspected sources, placement/geometry contracts and approximation limits: `paulson-reference.md`, `silver-towers-reference.md`, `leslie-elab-reference.md`, `gould-plaza-reference.md`, `kimmel-reference.md`, `silver-center-reference.md`, `global-center-reference.md` and `courant-stern-detailing.md`. Some describe superseded models; preserve their provenance.
 
-Global Center references and fidelity limitations: global-center-reference.md.
+`streets-parks-data.md`, `streets-rendering.md`, `parks-rendering.md` and `park-vegetation.md` describe offline data, layering and planting bounds. `map-presentation.md`, `hover-reference.md`, `camera-navigation.md`, `union-square-context.md`, `map-performance.md`, `map-performance-research.md` and `loading-screen.md` explain presentation/input/loading contracts and evidence limits. `color-schemes.html` and `color-schemes.md` are design proposals and token notes.
 
-Map-only controls, camera mapping and appearance settings: map-presentation.md; glow provenance: hover-reference.md.
+`avatars/` contains the 26 current generated low-poly profile PNGs with readable person names. The original scratch `output/` directory was deleted at the user’s request; these retained documentation images are not source photos.
 
-Camera navigation research and input contracts: camera-navigation.md. Park planting eligibility, exclusions and bake audit: park-vegetation.md.
-
-M11: map-presentation.md describes analytic sky/fog and screenshot-guided reset; camera-navigation.md records saved-overview exit and wheel routing; union-square-context.md records source geometry restoration and pale materials.
-
-M12: map-performance.md documents resource ownership; map-performance-research.md records sources, zoom investigation and live verification limits.
-
-M13 loading-screen.md explains actual readiness, explicit entry, errors and verification limits.
-
-M14: supabase-mcp-setup.md records normal local setup attempt, Windows config-write denial and OAuth next steps; connection inventory is in AGENTS.md. backend-direction.md records assistant-first architecture decisions.
-
-- assistant-backend.md records the incomplete M15 source, setup boundaries, checks and open findings.
-
-M16: discord-archive.md documents the implemented daily/backfill worker, original JSONB messages, scoped text/vector retrieval, local admin setup, cost choices and pending live launch.
-
-M17: discord-launch.md gives current bot invite/credential/local backfill/Railway handoff steps and hosted migration version mapping.
-
-M19 camera-navigation.md records the screenshot-derived view table, Y-up height interpretation, Stern rotunda presentation anchor, and shared screen-wide outward return.
-
-M21: loading-screen.md describes automatic readiness/startup and minimal failure recovery after the user removed M20. camera-navigation.md documents WASD, Bobst/Silver20%pullback and Gould joining Stern.
+[Cleanup handoff](cleanup-handoff.md) defines current folder ownership for parallel map/UI, agent and collector work.

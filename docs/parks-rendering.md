@@ -10,7 +10,7 @@ Washington Square Fountain way959929617 is excluded from generated water, and it
 bowl footprint is cut out of park surfaces to preserve the original fountain model.
 Road/path widths and surface appearance are stylized; this is not surveyed terrain.
 
-Run `node tools/build-streets-parks.mjs` after data or renderer edits. This bakes
+Run `node scripts/build-streets-parks.mjs` after data or renderer edits. This bakes
 streets and parks to one GLB plus small metadata JSON; the app loads those assets
 without doing polygon Boolean operations at startup. Source snapshot attribution
 and geographic calibration are in streets-parks-data.md. Parks includes mapped

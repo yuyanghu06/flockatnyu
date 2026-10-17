@@ -1,0 +1,62 @@
+{
+  "target": "jssehnrmqhstcrtxulpa",
+  "localSha256": "9eb5ee6c1189e7f175b5f0844d93462a165686101a601121f3a9d77934bc69b4",
+  "applyHttpStatus": 200,
+  "historyReceipt": [
+    {
+      "name": "discord_manual_channel_disable",
+      "version": "20261017184647"
+    }
+  ],
+  "preserved": {
+    "miro": true,
+    "policy": true,
+    "tables": true,
+    "sources": true,
+    "identities": true,
+    "unchanged_functions": true
+  },
+  "afterFingerprints": [
+    {
+      "fingerprint": {
+        "miro": "af85c9d5ae89c5fc4c20d157f02e1278",
+        "policy": "29332684630f4bbef668ac454ecfff66",
+        "tables": [
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwd/postgres}",
+            "rls": true,
+            "name": "agent_automation_state",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwd/postgres}",
+            "rls": true,
+            "name": "agent_input_cache",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "name": "discord_view_policies",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "name": "knowledge_sources",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "name": "miro_boards",
+            "force": true
+          }
+        ],
+        "sources": "c758e86028d8701ead486a9deebaf53c",
+        "identities": "f4f3b649cbb357bc423e93e55e46e381",
+        "unchanged_functions": "5e1f91f6764dae363cfa85e6df4bb379"
+      }
+    }
+  ]
+}

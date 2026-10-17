@@ -1,0 +1,66 @@
+{
+  "fingerprints": [
+    {
+      "fingerprint": {
+        "miro": "af85c9d5ae89c5fc4c20d157f02e1278",
+        "policy": "29332684630f4bbef668ac454ecfff66",
+        "tables": [
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwd/postgres}",
+            "rls": true,
+            "name": "agent_automation_state",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwd/postgres}",
+            "rls": true,
+            "name": "agent_input_cache",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "name": "discord_view_policies",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "name": "knowledge_sources",
+            "force": true
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "name": "miro_boards",
+            "force": true
+          }
+        ],
+        "sources": "c758e86028d8701ead486a9deebaf53c",
+        "identities": "f4f3b649cbb357bc423e93e55e46e381",
+        "unchanged_functions": "5e1f91f6764dae363cfa85e6df4bb379"
+      }
+    }
+  ],
+  "migrationVersions": [
+    "20261011200346",
+    "20261011200348",
+    "20261011205557",
+    "20261011213945",
+    "20261011214737",
+    "20261011232316",
+    "20261011233820",
+    "20261011235513",
+    "20261012003929",
+    "20261012023824",
+    "20261015203437",
+    "20261015203824",
+    "20261015230516",
+    "20261015230552",
+    "20261015230959",
+    "20261015231144",
+    "20261016003623",
+    "20261017182014",
+    "20261017182143"
+  ]
+}

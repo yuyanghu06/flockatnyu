@@ -1,0 +1,78 @@
+{
+  "logs": [
+    {
+      "service": "discord-events",
+      "results": [
+        {
+          "timestamp": "2026-10-17T18:48:12.247569060Z",
+          "status": "gateway_ready"
+        },
+        {
+          "timestamp": "2026-10-17T18:48:12.247574880Z",
+          "status": "listening"
+        },
+        {
+          "timestamp": "2026-10-17T18:48:20.797280177Z",
+          "status": "event_queued"
+        },
+        {
+          "timestamp": "2026-10-17T18:48:40.842438217Z",
+          "status": "event_queued"
+        },
+        {
+          "timestamp": "2026-10-17T18:49:00.852190859Z",
+          "status": "event_queued"
+        },
+        {
+          "timestamp": "2026-10-17T18:49:04.846408738Z",
+          "status": "event_queued"
+        }
+      ]
+    },
+    {
+      "service": "gmail-events",
+      "results": [
+        {
+          "timestamp": "2026-10-17T18:48:08.281188079Z",
+          "status": "listening"
+        },
+        {
+          "timestamp": "2026-10-17T18:48:09.821863332Z",
+          "status": "ready",
+          "queued": 0,
+          "messages": 0,
+          "duplicates": 0
+        }
+      ]
+    }
+  ],
+  "sameExpectedSupabase": true,
+  "configs": [
+    {
+      "serviceName": "discord-events",
+      "startCommand": "node server/discord/event-cli.js serve",
+      "cronSchedule": null,
+      "healthcheckPath": "/healthz",
+      "healthcheckTimeout": 60,
+      "restartPolicyType": "ON_FAILURE",
+      "restartPolicyMaxRetries": 3,
+      "latestDeployment": {
+        "id": "381fc0f6-340c-4db0-b34e-7175877a094b",
+        "status": "SUCCESS"
+      }
+    },
+    {
+      "serviceName": "gmail-events",
+      "startCommand": "node server/google/subscription-cli.js serve",
+      "cronSchedule": null,
+      "healthcheckPath": "/healthz",
+      "healthcheckTimeout": 60,
+      "restartPolicyType": "ON_FAILURE",
+      "restartPolicyMaxRetries": 3,
+      "latestDeployment": {
+        "id": "1f4d4571-ebdc-4295-b016-91f4eec956c1",
+        "status": "SUCCESS"
+      }
+    }
+  ]
+}

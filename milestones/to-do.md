@@ -1,3 +1,230 @@
+# M38: final housekeeping
+
+- [x] Separate Gmail collection and model processing switches; remove redundant daily worker.
+- [x] Correct stale current docs and delete user-authorized output/.
+- [x] Verify581/581 regressions,55/55 focused checks, both builds; deploy independent Gmail switch.
+- [x] Complete scoped source commit238a346; preserve unrelated map/UI/artwork; documentation handoff follows.
+- [ ] Next: align overall architecture with the user and reflect confirmed decisions in the repo.
+
+# M37: tool organization complete
+
+- [x] Move existing callable tools to tools/{discord,google,miro} and developer scripts to scripts/.
+- [x] Update imports, package commands, syntax checks and current folder guides.
+- [x] Verify full suite/builds and unchanged slim collector runtime; record handoff boundaries.
+
+# M36: collector cleanup
+
+- [x] Retire obsolete Discord archive/storage/vector/fallback production implementations; preserve live reads and SQL history.
+- [x] Delegate concise current docs and minimal separate Discord/Gmail deployment packages.
+- [x] Implement live new/edit/delete ingestion target and remove archive admin controls.
+- [x] Resolve manual-disable refresh bug with forward020 and real SQL verification; hosted20261017184647 verified.
+- [x] Independently verify blacklist inheritance, committed replay checkpoints and permanent/transient failure behavior locally.
+- [x] Review and deploy slim collectors to existing separate Railway services; no cron, healthy Gateway/Gmail and same Supabase verified.
+- [x] Finish final documentation/status and acceptance journal; final hosted collector review ACCEPT.
+- [x] Resumed by user in M38: separate Gmail ingestion and agent enable flags.
+
+Historical and concurrent unfinished work below is retained. Archive-related historical tasks are superseded by M29/M36; migration tests/evidence remain historical verification only.
+
+# M34/M35: agent handler and Gmail subscription
+
+- [x] Inspect architecture and accept independent bounded implementation plan.
+- [x] Verify existing Gmail OAuth token/scope without exposing credentials; receive techflock project ID.
+- [x] Implement source-event enqueue, hybrid leased agent handler, sample prompt and bounded provider tool-turn API.
+- [x] Implement authenticated Gmail Pub/Sub callback, incremental history/cursor, watch renewal and reconciliation.
+- [x] Independently accept M34 SQL/runner/tool loop (84/84); preserve live integration limitations.
+- [x] Fix M35 history-page stall; independent71/71 and evaluator reproduction ACCEPT.
+- [x] Final combined107/107, API build and integrated guides after Gmail fix.
+- [x] Prepare empty disabled gmail-events Railway service and callback domain; no secrets/code deployed.
+- [x] User enabled correct Tech@NYU Chrome profile; verify completed Cloud Shell resources.
+- [x] Verify techflock resources; apply018/019 and independently verify exact schema, preserved data and migration receipts.
+- [x] Securely provision only new Gmail service and submit reviewed deployment.
+- [x] Verify deploymentSUCCESS, health200, unsigned/forged401 and active Gmail watch checkpoint.
+- [x] Implement/review bounded diagnostic reasons and canonical base64url compatibility; diagnostic deployment submitted.
+- [x] Isolate signed push rejection to non-string notification historyId.
+- [x] Independently test/review safe numeric compatibility41/41; submit final revision79247d6f-c10f-4642-9371-540a3cee14d9.
+- [x] Verify final revisionSUCCESS, signed push200, health200, unsigned/forged401 and durable ready checkpoint.
+- [x] Verify actual full correct-source email cache entry from the user’s test and advanced ready checkpoint.
+- [x] Notify user that signed notifications/watch work and113/113 pass; distinguish pending real-email test and inactive LLM/tools.
+- [x] Receive test subject and verify real-email cache ingestion.
+- [x] Complete independent real-email ingestion acceptance and prepare the final setup-completion notice.
+- [ ] Next: collaborate on the prompt and trusted map/Calendar tool adapters before enabling LLM execution.
+
+# M27 resumed: Miro connection
+
+- [x] Inspect existing implementation and obtain independent activation plan.
+- [x] Verify missing token/scope locally and on Railway; zero registered boards in live Supabase.
+- [x] Obtain user confirmation for displayed Miro developer-team terms.
+- [ ] Create/configure read-only app, authorize board team and provision token securely.
+- [ ] Verify preflight, complete initial snapshot and authorized live assistant tools.
+- [ ] Enable daily worker, verify settings and observe a natural scheduled run.
+
+# M33: shared input cache migration
+
+- [x] Bound migration-only scope and assign implementation ownership.
+- [x] Create migration018 with exactly uuid/raw_response and forced RLS/service CRUD.
+- [x] Independently execute SQL and check schema, raw JSON, duplicate/null failures and role permissions.
+- [x] Independently review and integrate local migration; document unapplied hosted status.
+- [x] Superseded by M34: generic event updater, exact processed-row cleanup and hybrid leased trigger implemented.
+- [x] Discord Gateway listener completed in M36.
+- [ ] Separate feature work: trusted durable map/Calendar context/action adapters.
+
+# Agent cadence and message buffer — proposed follow-up
+
+- [x] Correct scope to expressed location plans and event responsibilities; earlier RSVP/signup proposal is superseded by user clarification.
+- [x] Discuss Discord Gateway ingestion, temporary Supabase buffering, conditional five-minute batches and durable context after cleanup.
+- [x] Record exactly two cache columns (uuid/raw_response JSONB), native event payload fields and message/member event distinctions.
+- [x] M33–M35 implement temporary shared buffering with failure retention and exact successful-row cleanup; M36 subsequently activates live Discord ingestion without a historical archive.
+- [ ] Define plan/commitment expiry, corrections, source scope, thread context and durable tool execution/checkpoints.
+- [ ] Measure batch tokens, calls, processing lag and listener/storage cost before tuning cadence.
+- [ ] Choose Calendar/OAuth write scope and human-edit ownership before Calendar automation.
+
+# M32 complete: user timezone scans
+
+- [x] Plan request timezone, trusted clock and deterministic boundary contract.
+- [x] Send browser timezone with every chat request.
+- [x] Implement validated API context and shared Discord date conversion; coder pass accepted.
+- [x] Independently verify DST, local-day rollover, request propagation and access guards (95 Node and4 Chrome checks).
+- [x] Independent evaluator ACCEPT; refreshed local runtime and integrated documentation.
+
+# M30/M31 complete
+
+- [x] Reproduce Discord search denial and distinguish app guard from bot HTTP permissions.
+- [x] Validate registered allowed thread search hits beneath selected parents without broadening source scope.
+- [x] Independent scope/permission/race regressions and real bot search retest.
+- [x] Remove Lipton from selectable registration, preserve context geometry and pass build/numerical checks.
+- [x] Independent browser raycast/click/other-landmark verification.
+- [x] Refresh current runtime and record integrated acceptance.
+
+# M29 complete: Discord catalogue only
+
+- [x] Accept bounded single-table/live-only plan and explicit summary-data deletion scope.
+- [x] Preserve Miro/discovery database variables before summary service retirement.
+- [x] Remove summary Railway service and scheduled work.
+- [x] Implement017 one-table catalogue and explicit16table/function retirement.
+- [x] Remove runtime stored fallback and retire durable worker/embedding entrypoints.
+- [x] Independently test/review live-only schema, source scope, discovery and Miro preservation.
+- [x] Apply017 and verify exact3tables/channelidentities/policy/Miro boundaries.
+- [x] Deploy metadata discovery worker and verify real bot live access without stored content.
+- [x] Refresh current guides and record final actual state.
+
+- [x] Superseded by M36: continuous Discord collector refreshes metadata; old metadata cron retired.
+
+Historical M25 summary catchup/embedding tasks below are cancelled by the user's
+M29 live-only direction; existing migrations/history remain immutable.
+
+# M28 cleanup — complete
+
+- [x] User approved14table cleanup and Miro27to12columns.
+- [x] Implement new013/014 with explicit empty guards, preserved ACLs/leases and immutable earlier migrations.
+- [x] Independently execute current schema and populated preservation fixtures.
+- [x] Complete runtime retirement and historical/current test separation.
+- [x] Independently review final runtime and run targeted regressions.
+- [x] Fix obsolete memory-store test expectation and rerun full Discord regression; final shared-access run342/342.
+- [x] Apply013/014 to hosted project and verify retained fingerprints and permissions.
+- [x] Implement/test/apply015 requested policy rename.
+- [x] User confirms shared access; implement/test/review016 to remove both membertables.
+- [x] Verify hosted 016: 19 tables, preserved remaining rows, source scope and backend admin boundaries.
+- [x] Deploy all three reviewed worker images; preserve schedules/budgets and verify successful builds.
+
+# M28 schema simplification assessment — complete
+
+- [x] Inspect Miro27columns and recommend15removals/12retained, without modifying schema.
+- [x] Query exact34Discord/knowledge table counts/FKs/functions/triggers; independently audit dependencies.
+- [x] Recommend14empty table retirements/20retained, preserving legacy summaries/receipts/ACLs; narrower11option retains genericdocument scaffold.
+- [x] Superseded by completed M28 implementation: applied 013–016 with runtime retirement and preservation checks.
+
+- [x] Prove raw cleanup preserves legacy summaries, usage receipts, certificates and policy.
+- [x] Correct actual Luna tool-planning compatibility and verify cited live end-to-end chat.
+- [x] Complete metadata-only Railway discovery; initial live-period/vector drain running.
+- [x] Independently verify hosted schema, permissions, guards and data preservation.
+- [x] Observe natural summary cron execution (22:10 UTC); it published/embedded 28 results.
+- [x] Cancelled by M29: scheduled Discord catchup/summary/vector work and its storage were explicitly removed.
+
+# Current M25/M26 integration follow-up
+
+- [x] Final connector regressions132/132 and independent local ACCEPT.
+- [x] Retire default raw worker entrypoints; metadata discovery only.
+- [x] Apply reviewed011 and enable summary-only write guard.
+- [x] Historical: provisioned local reader scope; per-person grant tables later superseded by M28 shared source access.
+- [x] Verify metadata-only Railway discovery, nonempty direct monthly publication and raw cleanup preservation.
+- [x] Verify726/726current summaries embedded with correct hashes/dimensions.
+- [x] Cancelled by M29: scheduled Discord catchup/summary/vector work and its storage were explicitly removed.
+- [ ] Finish Google account OAuth consent when client credentials/account are supplied.
+
+# External reference review
+
+- [x] Read Morpheus README and principal source modules; explain architecture and difference from Tech NYU direction. No implementation or runtime verification requested.
+
+# Active M27: daily Miro sync
+
+- [x] Reverify apply request against live migration/service: already applied; source token/scope still missing.
+
+- [x] Accept independent bounded plan and confirm dedicated table/service are absent.
+- [x] Write migration012 and initial worker/API integration; raw context, leased atomic publication and failure retention implemented.
+- [x] Resolve independent pagination/context findings; direct live LLM tools independently accepted.
+- [x] Independent realSQL/worker/deployment/context tests25/25 and evaluatorACCEPT; material findings resolved.
+- [x] Apply only012; separate miro-sync image deployed SUCCESS and daily6AMNY schedule/config verified.
+- [ ] Configure board scope and secure Miro token in worker and API; job currently explicitly paused.
+- [ ] Register/sync real board, grant intended principal matching source scope, and verify direct LLM reads.
+- [ ] Enable sync after credential validation and observe an actual scheduled invocation.
+- [ ] Obtain board/team scope and Miro authorization; run real sync and read back complete snapshots before claiming operational.
+
+# Miro feasibility research — 2026-10-15
+
+- [x] Research REST, SDK, MCP, full-board/region capture and calendar reconstruction; sources and limitations in docs/miro-api-research.md. User confirmed Free plan and shapes/text/cards/stickies: prioritize REST extraction and context-preserving LLM representation; Enterprise export excluded.
+- [x] Superseded by M27 implementation authorization: Miro is selected for bounded daily ingestion/direct model reads. Real-board coverage and date/legend interpretation remain unverified in the open M27 tasks above.
+
+# Active M25/M26
+
+- [x] Accept independent summary-only/embedding, liveDiscord and Googleconnector plans; assign exclusivecoders.
+- [x] Implement and independently accept RAM-only periodic summaries, additive SQL and summary vectors.
+- [x] Implement live Discord tools and live-first orchestration with labelled scoped fallback; direct chat helper acceptance is in progress.
+- [x] Install Google OAuth dependency and prepare Gmail/Drive read tools plus consent CLI; actual account OAuth remains pending.
+- [x] Independently test/evaluate local changes and hosted structural/preservation contract.
+- [x] Apply011, deploy new worker, retire raw collector and verify raw cleanup/preserved summaries.
+- [x] Finish initial vector backfill:726/726ready, no stale vectors.
+- [ ] Observe remaining434closed-period jobs completing and natural cron execution.
+- [x] Verify live bot tools and end-to-end local cited chat.
+- [ ] Production API deployment remains dependent on member access policy.
+- [ ] Observe actualfutureweekly/monthlyscheduledexecution (cannot claim fromconfigalone).
+
+# Completed M24: floating assistant and base LLM integration
+
+- [x] Inspect current frontend/provider/startup and accept bounded plan.
+- [x] Implement compact Spotlight dialog and accessible keyboard/focus/input behavior; independently accepted.
+- [x] Implement paired local startup and honest status/error handling; independently accepted.
+- [x] Root live configured-model adapter smoke returns OK (one short request, no database/source retrieval).
+- [x] Integrate native-dialog map-wheel guard; 51 existing movement/camera/input checks pass.
+- [x] Verify streaming/stop/citations and desktop/mobile/modal map isolation independently (90 checks pass).
+- [x] Independent evaluator ACCEPT; final guides/evidence/journal integrated.
+- [ ] Optional user feedback on the floating assistant.
+- [ ] Choose authorized chat sources and provision matching local/member scope plus database reader grants; current local source allowlist is empty (verified post-M24).
+
+# Latest status check — 2026-10-15
+
+- [x] Inspect current Git/source/journal state; verify frontend/API builds, 33 assistant tests and 14 movement checks.
+- Existing product priorities and optional M23 feedback remain below; this check performed no commit, push or cloud operation.
+
+# M23: smooth WASD
+
+- [x] Plan and implement smooth60% faster WASD.
+- [x] Fix independent caller frame-time finding.
+- [x] Independent14numerical/16production Chrome and preserved14browser regressions pass.
+- [x] Accept evaluator review and integrate documented milestone.
+- [ ] Optional user feedback on keyboard movement tuning.
+
+---
+
+# Functionality audit follow-ups — 2026-10-13
+
+- [x] Inspect current frontend/backend independently and rerun local checks/builds plus browser startup/input/grouping (354 local assertions, 14 browser checks).
+- [ ] Implement production member authentication and source access policy; protected routes currently deny production requests.
+- [ ] Wire permission-aware weekly/monthly summary retrieval into chat/tools; current Discord tool searches raw messages only.
+- [ ] Implement authorized Drive/Calendar connectors and connected building/day activity/history UI.
+- [ ] Decide which hidden map controls to expose; current map-only styling hides the older toolbar/sidebar.
+- [ ] Refresh older root/server/backend guides that still lead with superseded launch or explicit-entry claims.
+- Existing summary-cron observation and embedding-provider follow-ups remain below; this audit made no cloud/model changes.
+
 # Completed M22: commit and publish accumulated work
 
 - [x] Inspect current branch/changes; accept coherent commit boundaries and secret/size scan.
@@ -416,3 +643,48 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 - [x] Check current official OpenAI/Groq/DeepSeek/Gemini pricing and API capabilities; provide a provisional recommendation.
 - [ ] Evaluate GPT-6 Luna and Groq GPT-OSS120B on representative club retrieval/summary cases before final provider choice; measure link/date correctness, permissions, latency and full billed tokens.
 - [ ] Implement and verify the selected provider API; no model choice or live calls authorized by this discussion alone.
+
+## Live retrieval architecture discussion
+
+- [x] Explain direct bot-backed Discord reading/search versus archive/summary storage; verify current official endpoint documentation.
+- [ ] Proposed only: add bounded live Discord search/history tools if requested; validate actual bot support and member/channel access before rollout. Existing storage and worker behavior remain unchanged.
+
+
+# Avatar asset delivery
+
+- [x] Generate the full 26-person folder using the approved coarse geometry prompt and preserve exact prompts.
+- [x] Include two subsequently requested likeness revisions; preserve prior versions.
+- [x] Verify source coverage, all PNGs and ZIP integrity; prepare labeled overview and local package.
+- [x] Open the three identified requested portraits in the system Preview app.
+- [ ] Clarify the additionally requested identity absent from the source folder before opening its portrait.
+- [ ] Optional user feedback on the latest likeness revisions.
+
+- [x] Regenerate requester avatar with unchanged approved prompt; preserve original and refresh verified delivery archive.
+
+- [x] Copy all 26 current avatars into docs/ with readable person-name filenames and verify copy hashes.
+
+- [x] Move the 26 named documentation avatar copies into docs/avatars/ (supersedes earlier docs-root placement at user request).
+
+- [x] Explain knowledge_sources registry, Miro linkage and separate Discord catalogue from local schema; no live query or implementation change.
+
+- [x] M27 independent readiness:25 Miro tests and6 shared-access SQL tests pass; app created/read-only consent authorized; user reports exposed client secret rotated.
+
+- [x] M27 provision approved token/exact board/team privately; preflight1/1; stage paused Railway variables and preserve local source IDs.
+- [ ] M27 fix/test actual mixed-table pages with truthful metadata-only coverage, then retest live tools.
+
+- [x] M27 mixed-page implementation preserves originals, partial table metadata and cursor/index coverage; coder33/33 tests pass.
+- [ ] M27 independent mixed-page evaluator and fresh live first-page verification.
+
+- [x] M27 independent mixed-page evaluator ACCEPT;33 Miro +6 provider +4 schema-roundtrip checks pass.
+
+- [x] M27 record actual2495-object type inventory and read-only runtime contingency; no concurrent hydration change.
+
+- [ ] M27 fix actual split-group pages and unsafe numeric wrapper IDs; verify all groups before fresh full capture and repaired isolated worker deployment.
+
+- [x] M27 implement exact numeric IDs and canonical/raw group slices; coder42/42 tests.
+- [ ] M27 correct optional group-total semantics, independently review and pass real all-group diagnostic before retry.
+
+- [x] M27 optional totals now follow raw membership count and reject ambiguous legacy shapes; coder43/43 tests.
+
+- [x] M27 independent Node22 review43/43 +real41group/71member diagnostic pass.
+- [ ] M27 verify fresh full capture and paused repaired worker deployment before enabling dailyjob.

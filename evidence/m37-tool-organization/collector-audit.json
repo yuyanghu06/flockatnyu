@@ -1,0 +1,52 @@
+{
+  "discord": {
+    "modules": 12,
+    "runtimeUnchanged": true,
+    "containsCallableTools": false,
+    "hashes": {
+      "server/automation/events.js": "5ed0fca4ca15e4be76823798603e72e7644195c51bd8e878c2ff01edff057cb8",
+      "server/automation/store.js": "cc70efd1400e1ffc34d8e8524e364c3123d00086aa3c1dd4c3d1882d8634f026",
+      "server/automation/validation.js": "9e108aa7e0bc87c2a8dd47ea66a348761d2ee5405fcc32b8eb4b18057fafdaaf",
+      "server/discord/client.js": "75d3e68cba9d6203f59cd3e4596f4a97681ac72fb42170dc69f69b24cd1f2a6a",
+      "server/discord/config.js": "48fe7258463003616dd239ef859e3382387baeb6a89a9130255ca9fb5cd9fe2d",
+      "server/discord/discovery.js": "899308474c65e7f41abf920c626adef7f31b6ee8b7b751f7294a10a349971b39",
+      "server/discord/event-cli.js": "73155c9476f54cadc36407492af2329da2d2b74a5d39e8a722540c66be3474f5",
+      "server/discord/event-config.js": "8fc2c32236cafdb2f60e392f08c01018773029cd6ddcf88cccd55df78c287e42",
+      "server/discord/event-listener.js": "f6777bcab387b6b01360bf3ed84c0d6a22c230b2477b6ff510eb7f4a2d54e71e",
+      "server/discord/event-state.js": "84824ff77ef0cc27d5becbba312387f5961a62c9076dbb1e0dee90a0723be3ec",
+      "server/discord/gateway.js": "ae7f96d38dcf23f292eebc2a6ad55a169000aea8066c0f20600fcc1b0ac516c8",
+      "server/discord/store.js": "ded4919bf78a705f6f7e7011b6a7a8805c360885945fb20c10335bc4f318038c"
+    }
+  },
+  "gmail": {
+    "modules": 11,
+    "runtimeUnchanged": true,
+    "containsCallableTools": false,
+    "hashes": {
+      "server/automation/config.js": "8f57deecef610d5a1a9f42d2a500113e3c5eb71a5a12e562cc3a79d0ef85257e",
+      "server/automation/events.js": "5ed0fca4ca15e4be76823798603e72e7644195c51bd8e878c2ff01edff057cb8",
+      "server/automation/store.js": "cc70efd1400e1ffc34d8e8524e364c3123d00086aa3c1dd4c3d1882d8634f026",
+      "server/automation/validation.js": "9e108aa7e0bc87c2a8dd47ea66a348761d2ee5405fcc32b8eb4b18057fafdaaf",
+      "server/google/client.js": "ac728fd5fad0e894741e21f157864a085bf9de05732c068b41e32d95554ca72e",
+      "server/google/config.js": "ffccb36a11988db819fe1e2eadd70e56e0d2e28b91a03363a7b292539c6adfaa",
+      "server/google/oauth.js": "eaab4683aa8e538282b31eccc9ac39763f21127c466e27a26f8fc3bb6541b04b",
+      "server/google/subscription-app.js": "bac76de31609493159db694fad0100b418f551caf64c558cfe2ab9f8553fef03",
+      "server/google/subscription-cli.js": "b71ae4800c046e2d450448da89877822737beb2478b22126cf7793ce5692af7a",
+      "server/google/subscription-store.js": "c6feb16ab16cc47f635531b20533d009ddefbf7752bc683cd5ad6bb808b594b7",
+      "server/google/subscription.js": "96201e8bdfcee262dc65f7711357c90c3b3027aede0434d7b0e4b068eb311292"
+    }
+  },
+  "miro": {
+    "modules": 6,
+    "runtimeUnchanged": true,
+    "containsCallableTools": false,
+    "hashes": {
+      "server/miro/cli.js": "63762081e54a3aebea71b61f3af8972d7772a0374b9cf565d783e4f2fbd4e890",
+      "server/miro/client.js": "3eb86a97d479de4b2124f348760086c726d48574e1c8374379cb812ff389d9ee",
+      "server/miro/config.js": "0247bc875c316eb4b1ca1f12bc3b2e6722822b2329005e94b87e28b6b1735cb3",
+      "server/miro/snapshot.js": "79ecd1c48f1c14770212b63799229a8cb93726b235d6dac0b3e6376042deaffa",
+      "server/miro/store.js": "7bb81065d36c9b680c90531dcbe5410984dd65423d5b72357727e8a36acacae8",
+      "server/miro/sync.js": "4ff3336bec1dfcc4ae6d7dabf1b0e5d6658880f3be21234ce202e98638af2fea"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "verifiedAt": "2026-10-17T19:06:52.676798+00:00",
+  "deploymentId": "8f10ca33-b53b-4358-96d9-b2becdf6f5e5",
+  "deploymentStatus": "SUCCESS",
+  "gmailEnabled": true,
+  "modelEnabled": false,
+  "http": {
+    "health": 200,
+    "unsigned": 401,
+    "forged": 401
+  },
+  "runtimeModules": 10,
+  "modelConfigModuleIncluded": false
+}

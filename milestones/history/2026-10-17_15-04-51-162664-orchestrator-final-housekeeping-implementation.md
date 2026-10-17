@@ -1,0 +1,9 @@
+# Final housekeeping implementation
+
+- Local timestamp / role / milestone: 2026-10-17_15-04-51-162664 America/New_York / orchestrator / M38.
+- Requested scope: independently control Gmail, remove redundant worker, repair stale docs, delete output and prepare Git handoff. User also requests architecture alignment after cleanup.
+- Starting state: M37 complete with581 passing tests; large pre-existing uncommitted source and documentation changes preserved. No staged changes at entry.
+- Work performed: Gmail reads GMAIL_EVENTS_ENABLED, updater uses collector enable and no longer imports automation config. Removed server/worker.js, its npm alias and wrapper-only knowledge test; existing metadata-discovery test now calls real management entrypoint. Added nine-case switch matrix, including invalid model configuration; runtime ingestion fixture explicitly keeps model disabled. Updated packaging expectation from11to10 Gmail modules, current docs and .env.example. Deleted user-authorized98MB output/ after verifying it was untracked, not a symlink and within checkout;26 documentation avatars retained.
+- Checks / findings: first focused run exposed expected stale package closure assertion; corrected it to exclude removed automation/config.js. No functional failure observed. Full verification/deployment pending.
+- Decisions / limits: no new agent/memory/Calendar tools or schema. Applied migrations/history/evidence preserved. Sequential implementation/review; no new specialists. Existing unrelated map/UI changes remain untouched. Need scoped Git integration without mixing unrelated changes.
+- Remaining work: tests/builds, Gmail isolated rollout with collection true/model false, final journal/commit handoff. Native hosted edit/delete/blacklist and browser validation remain distinct from cleanup. Architecture discussion follows.

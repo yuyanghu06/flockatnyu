@@ -1,5 +1,46 @@
 # Project instructions
 
+## Collector cleanup and Discord pending events (2026-10-17)
+
+The user authorized independent slim Discord/Gmail ingestion services sharing
+Supabase and a continuous Discord Gateway listener for new messages, edits and
+deletions. Ingestion covers the configured guild's eligible channels except
+blacklisted channels/categories and descendant threads; manually disabled
+channels remain disabled. The listener may buffer original native events in the
+temporary shared agent_input_cache, with metadata-only replay checkpoints in
+agent_automation_state. This bounded pending-work buffer supersedes the earlier
+live-only no-storage rule only for incoming events. Historical Discord backfill,
+durable message archives, stored summaries, vectors and scheduled summary jobs
+remain retired. Assistant live-read source allowlists and backend access checks
+remain independent and unchanged. Preserve applied migrations and historical SQL
+verification fixtures. Gmail ingestion/agent enable-flag separation is deferred.
+Current implementation and hosted status live in milestones/milestone.md.
+
+## Discord live-only override (2026-10-15)
+
+The user explicitly retired all durable Discord summaries, vectors, accounting
+and scheduled summary jobs. Migration017 removes every Discord table except
+`discord_view_policies`, which stores one server row with channel metadata,
+stable source UUIDs, exclusions/view settings and discovery checkpoints. All
+Discord content is read live through the bot; bounded on-demand summaries stay
+in request memory. There is no stored-summary fallback or embedding worker.
+Discord rows no longer duplicate the catalogue in knowledge_sources. Preserve
+Miro and unrelated source data. Shared source allowlists, current policy, final
+catalogue rechecks and backend admin checks still apply. This overrides all older
+instructions to retain Discord summaries, receipts, vectors or catchup work.
+
+## Shared source access override (2026-10-15)
+
+The user confirmed this is a shared general-purpose assistant, without per-person
+source memberships. M28 removes knowledge_source_members and discord_admin_members
+through migration016; service-only SQL, server-configured source allowlists and
+backend admin checks remain. ASSISTANT_ALLOWED_SOURCE_IDS is the shared source
+setting, with DEV_ALLOWED_SOURCE_IDS as a compatibility alias. Live Discord reads
+must also enforce this allowlist, enabled channels and current exclusion policy.
+The policy table is discord_view_policies (015); Miro has12columns with original
+content in data JSONB (014). Preserve these new migrations and all earlier files.
+This schema work does not publish a public frontend or redesign API authentication.
+
 ## Current product direction override (2026-10-11)
 
 The Tech NYU assistant is primary; map and history are secondary. Planned backend: Hono on Railway, Supabase Postgres plus pgvector. Daily scheduled synchronization/summaries must retain original records, links and permissions; no weekly briefing. Initial integrations are Discord bot and Tech NYU Google Drive with designed read/write capability, not blanket authorization to modify Drive files. Luma/Miro are tentative/deferred; no Mural implementation. Model provider and member auth/access policy are unresolved. See docs/backend-direction.md. Current M15 authorization includes assistant frontend and Hono backend wiring, configurable LLM adapters, local Supabase migrations and permission-aware persistence. No live Discord/Drive/Luma/Miro connections, cloud schema changes, model calls without credentials, deployment or purchases. Follow the local MCP policy below.
@@ -213,3 +254,11 @@ Ignore MCP-only connection files, never credentials or tokens in tracked docs. K
 
 ## Current road scope override (2026-10-10)
 The user explicitly requested roads, sidewalks, pedestrian paths and all park geometry within the current loaded campus region. This supersedes the earlier exclusion for M6. Traffic and vehicle animation remain excluded. Preserve source exports; add attributed offline street/park geometry separately.
+
+## Backend direction override (2026-10-15)
+
+The user authorized Railway backend changes: fetch Discord originals directly through the existing bot for each completed per-channel week/month, summarize without durable raw-message storage, and retain/embed weekly and monthly summaries. Preserve existing summaries, source permissions/exclusions/citations and accounting metadata; retire raw collection through a verified cutover. Live bot retrieval is the assistant's primary path for channel/time-window questions, with Supabase summaries only a disclosed permission-scoped fallback. Explicitly connect the assistant to read-only bot tools. Gmail/Drive runtime connector setup is authorized; actual Tech@NYU Google account consent is pending. Private Google data requires OAuth client credentials and consent rather than a generic API key. No Google sends/file edits or broader member grants are authorized by connector setup. This supersedes older raw-retention and embeddings-off direction for summaries only; preserve unrelated source data.
+
+## Miro daily sync authorization (2026-10-15)
+
+The user authorized a new daily Railway Miro sync service and dedicated Supabase table. Miro is no longer deferred for this bounded ingestion work. Preserve raw objects, source links, layout/relationships and freshness; use explicit board/team scope and server-only credentials. Cloud schema/service deployment for this sync is authorized. The user subsequently authorized direct read-only assistant tools for the board. Preserve explicit source/member authorization; no Miro board writes, model calls for sync, embeddings or broader member grants follow from this request. M27 owns server/miro and migration012; preserve concurrent M25/M26 work.

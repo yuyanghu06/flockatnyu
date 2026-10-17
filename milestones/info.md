@@ -53,3 +53,33 @@ M20: m20-loading-gears tracks the reference loading gears, user feedback for ori
 M20 adds authorized Luna summarypasses overM18source-isolatedtimegroups; itsguide is m20-discord-summaries/info.md. Current rollingstate distinguishes rawgroups, actualAIgeneration andhostedworker acceptance.
 
 M21: m21-map-input tracks stripped loader/automatic entry, WASD, Bobst/Silver pullback and Gould under Stern; it supersedes the M20 visual entry screen.
+
+The October 13 functionality audit distinguishes the visible map/assistant UI,
+recorded operational Discord pipeline and unfinished member auth/summary retrieval.
+Its three read-only review/verification passes are linked at the top of the snapshot.
+
+M23 m23-smooth-wasd/ tracks eased keyboard travel and increased cruising speed,
+with bounds, input handoff and frame-rate/browser verification.
+
+M24 m24-spotlight-assistant/ tracks the floating query-first assistant and paired local frontend/API startup.
+
+M25 m25-live-discord-summaries/ tracks live-firstbot tools,summary-onlyDiscordstorage andsummaryvectors; M26 m26-google-connector/ preparesclubGoogleOAuth/Gmail/Drive runtimeaccess.
+
+avatar-assets/ records the local 26-person profile-artwork delivery, requested likeness revisions and artifact verification.
+
+m27-miro-sync/ tracks the dedicated daily Miro ingestion table/service and direct read-only model board tools; see the rolling snapshot for authorization and deployment state.
+
+m28-schema-cleanup-audit/ records the completed assessment of Miro columns and obsolete Discord/knowledge tables. Implementation is separate from the read-only proposal.
+
+M29 (`m29-discord-live-only/`) completes user-directed removal of durable Discord
+summaries/accounting, retaining one metadata/view policy table and live bot content.
+
+M32 records browser timezone context and deterministic Discord calendar scans.
+
+M33 (`m33-agent-input-cache/`) tracks the local two-column shared input-cache
+migration and its independent SQL/access verification.
+
+M34 (`m34-agent-automation/`) and M35 (`m35-gmail-subscription/`) track local
+cache-driven agent handlers and Gmail subscription code versus actual activation.
+
+M36 collector cleanup and M37 tool organization are complete; see the rolling snapshot and docs/cleanup-handoff.md for current parallel-work boundaries.

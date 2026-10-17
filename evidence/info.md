@@ -1,3 +1,9 @@
+M38 final housekeeping: m38-final-housekeeping/ records581/581 full tests,55/55 focused checks, both builds and independent Gmail-switch rollout.
+
+# Current cleanup evidence
+
+M37 tool organization: m37-tool-organization/ records581/581 full tests, API/web builds and byte-identical callable-tool/collector audits. M36 configured rollout acceptance and prior independent reviews are under m36-collector-cleanup/. Older entries below are historical; current repository truth lives in ../milestones/milestone.md.
+
 Current M20 Discord retention is accepted: actual cloud compaction, root-enforced
 read-only terminal audit,99 independent tester artifact assertions and evaluator
 PASS. See m20-discord-summaries/info.md for proofs and execution attribution.
@@ -56,3 +62,38 @@ M19: m19-building-views contains current camera numerical results and independen
 M20: m20-loading-gears contains the source layout/geometry manifest, final direct state/geometry/Chrome checks, compositor layer reasons and desktop/mobile loading/ready/entry/failure captures. first-pass/ is preserved superseded UI evidence. Compositing is verified; physical touch and every-device FPS are not claimed.
 
 M21: m21-map-input is current map UI evidence after gear removal: startup9/WASD5/camera21/input16 checks,14Chrome startup/input/grouping checks,23Chrome camera checks and desktop/mobile captures. M20 is preserved historical UI evidence, superseded by the removal request.
+
+M23 smooth-wasd evidence contains14numerical checks,16production Chrome checks,
+actual motion traces and selection/alignment captures; earlier environment/test
+fixture failures are kept separately. See m23-smooth-wasd/info.md.
+
+M24: m24-spotlight-assistant/ holds independent local provider/proxy/browser evidence and responsive screenshots; m24-spotlight-live/ records the primary agent's separate single real provider smoke. Fixture results do not establish current cloud data health.
+
+M25: m25-connectors/ records independent live-tool/Google/orchestration fixtures; m25-summary-only/ records full Discord and real local SQL lifecycle acceptance. Hosted evidence is tracked separately from these fixtures.
+
+
+m25-connectors records132 accepted local connector assertions. m25-summary-only records independent summary/SQL evidence. m25-cloud stores non-secret hosted before/after counts, deployment and preservation evidence; cloud verification is in progress.
+
+m27-miro-sync/ contains independent local Miro verification and non-secret hosted deployment/schema receipts. Real Miro ingestion is separate from fixture/disabled-job evidence.
+
+schema-cleanup-audit/ holds a source-content-free hosted table/count/FK/trigger/function-reference inventory for M28; this evidence does not authorize deletions.
+
+`m28-schema-cleanup/` contains independent local acceptance, hosted migration
+receipts, exact retained-data fingerprints, final source/admin access smoke and
+reviewed worker image/configuration evidence for the completed 19-table cleanup.
+
+`m29-discord-live-only/` records explicit summary/accounting retirement, one-table
+catalogue preservation, real live bot access, local API refresh and final metadata
+worker deployment. Historical M25/M28 evidence remains append-only context.
+
+`m30-discord-search/` records the false scope-denial diagnosis and scoped live
+retest. `m31-lipton-context/` records real browser nonselection and preserved geometry.
+
+m32-user-time-zone contains deterministic boundary/API results and installed-Chrome timezone transport evidence; no live model calls.
+
+M33 (`m33-agent-input-cache/`) records real local001–018 SQL/access verification
+and independent review for the shared two-column input cache; no hosted apply.
+
+M34 local automation acceptance is recorded in m34-agent-automation/. M35 Gmail
+fixtures/review in m35-gmail-subscription/ distinguish initial passing cases from
+the subsequent history-page liveness finding and required regression fix.

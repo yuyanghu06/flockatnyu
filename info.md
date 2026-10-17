@@ -1,27 +1,11 @@
 # Project root guide
 
-This Git checkout is the project root. Application source belongs in `src/`, with
-`index.html` at the root. Vite scripts in `package.json` provide `npm run dev`,
-`npm run build`, and `npm run preview`. The user resumed implementation on
-2026-10-10; earlier cancelled-session notes are historical.
+This Git checkout is the application root. `src/` and `index.html` supply the Vite/Three.js campus interface; `server/` contains the Hono assistant API and independent source workers. `package.json` provides local paired web/API startup, separate sessions, builds and focused checks. Runtime keys belong in ignored settings or service secrets.
 
-`AGENTS.md` records product scope and development rules. `README.md` is the entry
-point. `.codex/` contains project-local development-agent configuration.
-`docs/` explains collaboration and contains assignment/report templates.
-`milestones/` tracks current state, unfinished work, and immutable pass history.
+`README.md` is the entry point. `AGENTS.md` defines scope and development rules; `.codex/` holds tracked agent configuration. `docs/` describes current contracts and source references. `milestones/` owns the rolling state, to-do list and immutable pass history. The orchestrator serializes shared journal updates and assigns exclusive writer ownership.
 
-`yuyang-site-3d-assets/` is the preliminary export from the personal site, with its
-own README and manifest. `campus-assets/` contains the extracted Paulson model
-and its placement metadata. `tools/` contains extraction and journal utilities.
-Preserve source geometry and metadata. `.gitignore` excludes dependencies, build
-output, local secrets, and redundant archives. `tests/` and `evidence/` hold
-browser acceptance checks and captured results as implementation proceeds.
+`deployment/` contains independent Discord/Gmail event collector and Miro worker images. Railway production has exactly `discord-events` and `gmail-events` running continuously, plus paused `miro-sync`. All share Supabase. The Discord discovery cron is removed. Native Discord creates and Gmail ingestion have reached the pending queue; edit/delete lifecycle and live blacklist probes remain follow-up. No LLM service or Calendar/map write adapters are active. `supabase/` preserves immutable migrations and the five service-only tables; the rolling milestone records exact deployment evidence.
 
-M16 extends the existing website: admin.html is a standalone channel settings entry; server/ owns Hono and a separate daily Discord REST worker, supabase/ holds local migrations, docs/discord-archive.md describes the future separate cron service; the API-only legacy railway.json is not reused for it. Runtime keys stay in ignored environment files. The archive is locally tested, with live launch pending; see docs/discord-archive.md.
+`admin.html` supplies guarded Discord channel administration. Discord message content is read live through the bot, with bounded request-memory summaries and no stored fallback. Google tools are read-only; Gmail buffering does not itself run the agent. Miro tools preserve explicit source scope and coverage limits. Their implementation guides live under `server/` and `docs/`.
 
-`deployment/discord-worker/` provides an isolated backend-only Docker input for the dedicated Railway archive service. `docs/discord-launch.md` describes bot setup and local-to-Railway handoff; current verification and remaining inputs are in milestones/.
-
-M21 supersedes the removed M20 loading design: index.html/map-startup.js open
-the prepared map automatically, with a small status/retry notice only. WASD pans
-the map; Bobst/Silver focus20%farther back; Gould Plaza is grouped under Stern.
-See docs/loading-screen.md, docs/camera-navigation.md and evidence/m21-map-input/.
+`yuyang-site-3d-assets/` is the reusable source export with its README/manifest. `campus-assets/` contains the extracted Paulson model and placement metadata. Preserve source geometry, coordinate boundaries and licenses. Selectable facade/rooftop details stay merged with their building root. `tools/` holds callable assistant tools by capability; `scripts/` holds extraction/build/deployment utilities; `tests/` and `evidence/` separate checks from recorded observations. Dependencies, generated output, secrets and caches are excluded by `.gitignore`.

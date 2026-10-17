@@ -7,7 +7,7 @@ No tree locations or species are presented as a surveyed inventory.
 
 ## Build and integration
 
-Run `node tools/build-park-vegetation.mjs` from the project root. The build reads
+Run `node scripts/build-park-vegetation.mjs` from the project root. The build reads
 the local streets/parks snapshot, prepares the existing street/building exclusion
 polygons, and writes:
 
