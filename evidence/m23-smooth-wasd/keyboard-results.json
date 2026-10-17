@@ -1,0 +1,177 @@
+{
+  "checks": [
+    {
+      "name": "W/S and A/D preserve camera bearing, height and zoom throughout acceleration and braking",
+      "pass": true
+    },
+    {
+      "name": "Start gradually accelerates; released motion gradually decelerates and settles within250ms",
+      "pass": true
+    },
+    {
+      "name": "Equal elapsed hold/release/reversal paths agree at30,60and144Hz",
+      "pass": true
+    },
+    {
+      "name": "Reversal brakes through zero smoothly before moving the opposite direction",
+      "pass": true
+    },
+    {
+      "name": "Diagonal matches axial travel; opposite keys brake to rest, then released opposite resumes",
+      "pass": true
+    },
+    {
+      "name": "Steady speed is60percent faster at close, middle and far zoom with24–192bounds",
+      "pass": true
+    },
+    {
+      "name": "Invalid frame deltas cause no travel; suspended frame travel is capped at100ms",
+      "pass": true
+    },
+    {
+      "name": "Release expires after a suspended frame without another braking tail",
+      "pass": true
+    },
+    {
+      "name": "Bounds retain camera offset and remove blocked-axis momentum for immediate reverse acceleration",
+      "pass": true
+    },
+    {
+      "name": "Typing, dialogs, disabled/loading controls, hidden tabs and modified/composing/prevented keys are untouched",
+      "pass": true
+    },
+    {
+      "name": "Blur, focus transfer, visibility, pointer, canvas/window wheel and controls.start stop inertia immediately",
+      "pass": true
+    },
+    {
+      "name": "Dynamic typing/dialog/disabled/hidden guards stop accumulated velocity and held input immediately",
+      "pass": true
+    },
+    {
+      "name": "Scripted navigation and explicit reset immediately clear held travel, including repeated keydown",
+      "pass": true
+    },
+    {
+      "name": "Disposal clears inertia and every registered listener",
+      "pass": true
+    }
+  ],
+  "observations": {
+    "startSpeeds": [
+      9.668591700348692,
+      26.270419948593204,
+      39.41723452049329,
+      49.828059810545334,
+      58.07228373469262,
+      64.60079864276898,
+      69.77066148214874,
+      73.86462192404582,
+      77.10658648297967,
+      79.67386439163293,
+      81.7068649813825,
+      83.31677693676156,
+      84.59164941694712,
+      85.60120763241599,
+      86.40066624985536,
+      87.03374918772369,
+      87.53508096084744,
+      87.93208036125726,
+      88.2464600442836,
+      88.4954140351406,
+      88.69255810299812,
+      88.84867443339971,
+      88.97230132657945,
+      89.07020017340706,
+      89.14772524876625,
+      89.20911654707297,
+      89.25773167566561,
+      89.29622948876428,
+      89.32671550528383,
+      89.35085706368525
+    ],
+    "releaseSpeeds": [
+      73.65145605461976,
+      49.37004741312464,
+      33.09373245474745,
+      22.183392262557504,
+      14.869972522663915,
+      9.96764066594082,
+      6.681509350060253,
+      4.478749655119714,
+      3.0021956750020706,
+      2.012431943075512,
+      1.3489734727259872,
+      0.9042439603383912,
+      0.6061328531214372,
+      0.4063030020081726,
+      0.27235304701036966
+    ],
+    "frameRatePaths": [
+      [
+        2.6712190090475336,
+        0,
+        -86.77149786974681
+      ],
+      [
+        2.6712190090475683,
+        0,
+        -86.77149786974681
+      ],
+      [
+        2.6712190090475265,
+        0,
+        -86.77149786974685
+      ]
+    ],
+    "reversalShifts": [
+      1.16842448941361,
+      0.6150304445537387,
+      0.17680347435630495,
+      -0.17022389103043167,
+      -0.4450312409135222,
+      -0.6626483140386057,
+      -0.8349770037031163,
+      -0.9714422950289219,
+      -1.0795077353969447,
+      -1.1650836301059542,
+      -1.2328502882559746,
+      -1.286513997790479,
+      -1.3290097294617738,
+      -1.3626616559861304,
+      -1.389310265487893,
+      -1.4104130213097221,
+      -1.4271240734659898,
+      -1.4403573813110313,
+      -1.4508366997216626,
+      -1.4591351626333449,
+      -1.46570662882975,
+      -1.4709105043462145,
+      -1.475031399072222,
+      -1.4782946926097154,
+      -1.4808788607139505,
+      -1.4829252364733563,
+      -1.484545740086034,
+      -1.485828999989124,
+      -1.4868452001172798,
+      -1.4876499183960732
+    ],
+    "cruise": [
+      {
+        "distance": 15,
+        "speed": 23.999999999984993,
+        "oldSpeed": 15
+      },
+      {
+        "distance": 100,
+        "speed": 79.99999999995111,
+        "oldSpeed": 50
+      },
+      {
+        "distance": 1000,
+        "speed": 191.99999999987995,
+        "oldSpeed": 120
+      }
+    ]
+  }
+}

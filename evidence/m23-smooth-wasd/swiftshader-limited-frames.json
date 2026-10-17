@@ -1,0 +1,126 @@
+{
+  "message": "Insufficient usable rendering frames",
+  "stack": "AssertionError [ERR_ASSERTION]: Insufficient usable rendering frames\n    at file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/keyboard-pan-browser.mjs:40:5\n    at check (file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/keyboard-pan-browser.mjs:11:42)\n    at file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/keyboard-pan-browser.mjs:39:3",
+  "checks": [
+    {
+      "name": "Real production assets load automatically and map is enabled",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "traces": {
+    "w": {
+      "downAt": 9627.600000023842,
+      "upAt": 10634.600000023842,
+      "frames": [
+        {
+          "time": 9798,
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              30.08731415170862,
+              300.75691000588006,
+              -196.4549953135014
+            ],
+            "target": [
+              75.2341335480199,
+              12,
+              124.78131648095935
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "time": 10081.3,
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              32.404833724327524,
+              300.75691000588006,
+              -179.96498671545606
+            ],
+            "target": [
+              77.5516531206388,
+              12,
+              141.27132507900467
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "time": 10414.7,
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              34.98951300138932,
+              300.75691000588006,
+              -161.57403804537674
+            ],
+            "target": [
+              80.1363323977006,
+              12,
+              159.662273749084
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "time": 10731.3,
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              35.98671258378507,
+              300.75691000588006,
+              -154.4785943296238
+            ],
+            "target": [
+              81.13353198009635,
+              11.999999999999998,
+              166.75771746483693
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        },
+        {
+          "time": 11014.5,
+          "camera": {
+            "version": 1,
+            "projection": "perspective",
+            "position": [
+              36.077176488921076,
+              300.75691000588006,
+              -153.83491019805047
+            ],
+            "target": [
+              81.22399588523236,
+              11.999999999999998,
+              167.40140159641027
+            ],
+            "fov": 43,
+            "near": 0.5,
+            "far": 6000,
+            "zoom": 1
+          }
+        }
+      ],
+      "startSpeeds": [],
+      "releaseSpeeds": []
+    }
+  }
+}

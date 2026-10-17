@@ -91,6 +91,7 @@ function exportCamera() {
 }
 function restoreCamera(value) {
   validateCamera(value, cameraLimits);
+  keyboardPan.reset();
   cameraNavigation.clearFocus();
   // Drain pending damping before applying an exact external view.
   controls.enableDamping = false;
@@ -150,7 +151,10 @@ $('building').addEventListener('change', event => select(event.target.value));
 $('clear').addEventListener('click', () => select(null));
 function focusSelection() {
   const root = roots.get(state.selected);
-  if (root) cameraNavigation.focus(root,state.selected);
+  if (root) {
+    keyboardPan.reset();
+    cameraNavigation.focus(root,state.selected);
+  }
 }
 $('focus').addEventListener('click', focusSelection);
 
@@ -376,7 +380,7 @@ function animate() {
   landmarkEffects.update(delta,now/1000);
   lastFrame = now;
   controls.update();
-  keyboardPan.update(delta);
+  keyboardPan.update(elapsedSeconds);
   cameraNavigation.update(elapsedSeconds);
   constrainPan(camera.position, controls.target, cameraLimits);
   mapInteractions.update(delta);

@@ -155,15 +155,34 @@ continuity and event accounting do not establish perceived visual smoothness.
 
 W/S move forward/back along the current camera bearing projected onto the ground;
 A/D move left/right across that bearing. Held keys move camera and target equally,
-retaining height, orbit angle and zoom. Speed scales with camera distance between
-15and120meters per second; diagonal movement is normalized and delta capped at
-0.1seconds to avoid large jumps after suspension. Existing target bounds apply.
+retaining height, orbit angle and zoom. Cruising speed is `distance * .8`, clamped
+to 24–192 meters per second: 60% faster at every zoom than the previous controls.
+Diagonal movement is normalized and delta capped at 0.1 seconds to avoid large
+jumps after suspension. Existing target bounds apply, discarding velocity into a
+blocked axis while retaining movement along the free axis.
+
+Ground-plane velocity eases toward the current desired direction at 14/s, or
+toward zero at 24/s after release or opposing keys. Each frame integrates the
+velocity curve exactly: `v1 = goal + (v0-goal)*exp(-rate*dt)` and
+`movement = goal*dt + (v0-goal)*(1-exp(-rate*dt))/rate`. This preserves velocity
+through direction changes and makes fixed-goal travel independent of frame rate
+within the delta cap. Release motion stops completely after at most 250 ms of
+elapsed update time. Larger suspended-frame deltas count toward this cutoff,
+while displacement still uses the 0.1-second cap. Invalid deltas change no state.
+Main passes uncapped elapsed time to keyboard update so release expiry includes
+suspended frames; the keyboard module applies the displacement cap internally.
 
 keyboard-pan.js ignores typing in inputs/textarea/select/contenteditable, open
 native dialogs, composition and Ctrl/Meta/Alt shortcuts. Focus transfer, blur,
-visibility changes and disabled controls clear held keys. Key-up is captured to
-avoid losing a release over an overlay. Manual keyboard travel cancels a scripted
-focus/return and invalidates the old saved overview, like manual pointer panning.
+visibility changes and disabled controls clear held keys and momentum immediately.
+Key-up is captured to avoid losing a release over an overlay. Canvas pointerdown,
+controls start and window wheel capture also reset keyboard movement without
+consuming those events, including focused outward scrolling over UI panels.
+The `reset()` API clears keys, velocity and release timing; restore and explicit
+focus invoke it, and an active scripted journey clears keyboard state on update.
+After a reset, a held key's repeat events cannot restart travel until a fresh
+physical keydown. Manual keyboard travel cancels a scripted focus/return and
+invalidates the old saved overview, like manual pointer panning.
 
 Gould Plaza's original geometry is now under the shared Stern root. It has no
 separate building record or camera profile. main.js waits for both parts before

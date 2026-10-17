@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import * as T from 'three';
 const out=process.env.MAP_EVIDENCE||'evidence/m21-map-input',url=process.env.MAP_URL||'http://127.0.0.1:4179';
 await fs.mkdir(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--use-angle=swiftshader']});
+const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:process.env.MAP_SOFTWARE_WEBGL==='true'?['--use-angle=swiftshader']:[]});
 const checks=[],errors=[];
 const check=(name,fn)=>{fn();checks.push({name,pass:true});};
 async function fixture(fail=false){
@@ -29,7 +29,7 @@ try{
  check('Successful preparation automatically enables map and assistant without a click',()=>{});
  await page.screenshot({path:`${out}/overview-no-loader.png`});
  for(const code of ['w','s','a','d']){
-  await reset(page);const a=await camera(page);await page.keyboard.down(code);await page.waitForTimeout(450);await page.keyboard.up(code);await page.waitForTimeout(120);const b=await camera(page);
+  await reset(page);const a=await camera(page);await page.keyboard.down(code);await page.waitForTimeout(450);await page.keyboard.up(code);await page.waitForTimeout(300);const b=await camera(page);
   const offset=a.position.map((n,i)=>n-a.target[i]),forward=new T.Vector3(-offset[0],0,-offset[2]).normalize(),right=new T.Vector3(-forward.z,0,forward.x),delta=new T.Vector3(...b.target).sub(new T.Vector3(...a.target));
   check('Actual '+code.toUpperCase()+' pans in the camera-relative direction with unchanged zoom/height',()=>{assert(delta.length()>1);const axis=code==='w'||code==='s'?forward:right;assert(delta.dot(axis)*(code==='s'||code==='a'?-1:1)>1);assert(Math.abs(delta.y)<.001);b.position.map((n,i)=>n-b.target[i]).forEach((n,i)=>assert(Math.abs(n-offset[i])<.002));});
   const frozen=await camera(page);await page.waitForTimeout(250);same(frozen,await camera(page));
