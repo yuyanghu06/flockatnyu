@@ -58,7 +58,7 @@ tilt range clear only when the return settles, preventing a premature clamp.
 Window capture routes outward scrolling over panels, controls and page content
 through that same return path. It consumes each event once before canvas or
 overlay handlers, and leaves inward/unfocused overlay scrolling native. The
-loading gate also leaves input untouched. Off-canvas return events preserve the
+loading gate also leaves input untouched. Native dialogs (including the floating assistant) suspend the captured wheel path, so scrolling their content cannot return or zoom the map. Off-canvas return events preserve the
 map's hover pointer and perform no new picking. Disposal removes both listeners.
 
 A primary pointer press or controls start cancels motion with `preserveOverview:true`,

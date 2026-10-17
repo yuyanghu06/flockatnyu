@@ -1,0 +1,40 @@
+{
+  "message": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'snapshot')\n    at eval (eval at evaluate (:370:30), <anonymous>:1:18)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+  "stack": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'snapshot')\n    at eval (eval at evaluate (:370:30), <anonymous>:1:18)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at camera (/Users/yuyang/Documents/techatnyu/techvisualized/tests/spotlight-browser.mjs:36:23)\n    at /Users/yuyang/Documents/techatnyu/techvisualized/tests/spotlight-browser.mjs:56:1124\n    at async check (/Users/yuyang/Documents/techatnyu/techvisualized/tests/spotlight-browser.mjs:35:30)\n    at async file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/spotlight-browser.mjs:56:2",
+  "checks": [
+    {
+      "name": "Actual campus loads all assets and assistant starts collapsed",
+      "pass": true
+    },
+    {
+      "name": "Cmd+K opens centered compact native modal and focuses query",
+      "pass": true
+    },
+    {
+      "name": "Typing/WASD and wheel anywhere in modal preserve map pose and trap focus",
+      "pass": true
+    },
+    {
+      "name": "Shift+Enter adds newline; Enter streams via real proxy/provider with safe text and source link",
+      "pass": true
+    },
+    {
+      "name": "Completed multi-turn history reaches provider; close/reopen retains draft and restores focus",
+      "pass": true
+    },
+    {
+      "name": "Stop cancels upstream transport and incomplete turn is excluded from future history",
+      "pass": true
+    },
+    {
+      "name": "Upstream failure is sanitized and another query succeeds",
+      "pass": true
+    },
+    {
+      "name": "Clear resets history and empty compact state; backdrop closes without map movement",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "runtimeOutput": "[dev] Assistant API ready at http://127.0.0.1:58934\n\n  VITE v8.3.4  ready in 108 ms\n\n  ➜  Local:   http://127.0.0.1:58935/\n3:53:27 PM [vite] (client) page reload src/assistant.js\n"
+}

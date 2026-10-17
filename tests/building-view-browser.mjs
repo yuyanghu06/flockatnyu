@@ -87,16 +87,25 @@ try {
     assert(Math.abs(delta) < 1e-5); assert(Math.abs(offset[1] / Math.hypot(offset[0], offset[2]) - scale / Math.tan(polar * Math.PI / 180)) < 1e-5);
     const result = poseAndProjection(state, id); await page.screenshot({ path: `${out}/${id}-landscape.png` }); framingContract(result, id); return result;
   });
-  for (const target of ['launcher', 'assistant', 'canvas', 'document']) await check('Outward scroll returns saved overview over ' + target, async () => {
+  for (const target of ['launcher', 'canvas', 'document']) await check('Outward scroll returns saved overview over ' + target, async () => {
     await reset(); const before = (await snap()).camera; await focus('bobst-library');
     let point;
-    if (target === 'assistant') { await page.getByRole('button', { name: 'Open campus assistant', exact: true }).click(); point = await page.locator('.assistant-transcript').boundingBox(); }
-    else if (target === 'launcher') point = await page.locator('.assistant-launcher').boundingBox();
+    if (target === 'launcher') point = await page.locator('.assistant-launcher').boundingBox();
     else point = { x: 600, y: 350, width: 100, height: 100 };
     if (target === 'document') await page.evaluate(() => document.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 120 })));
     else { await page.mouse.move(point.x + point.width / 2, point.y + point.height / 2); await page.mouse.wheel(0, 120); }
     await settle(); const after = await snap(); sameCamera(after.camera, before); assert.equal(after.selected, 'bobst-library');
-    if (target === 'assistant') await page.screenshot({ path: `${out}/assistant-outward-return.png` }); return { before, after: after.camera };
+    return { before, after: after.camera };
+  });
+  await check('Open assistant blocks focused wheel; closing restores map wheel', async () => {
+    await reset(); const overview = (await snap()).camera; await focus('bobst-library');
+    await page.getByRole('button', { name: 'Open campus assistant', exact: true }).click();
+    const before = (await snap()).camera, box = await page.locator('.assistant-panel').boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await page.mouse.wheel(0, 120); await settle();
+    sameCamera((await snap()).camera, before); assert.equal((await snap()).selected, 'bobst-library');
+    await page.screenshot({ path: `${out}/assistant-blocks-map-wheel.png` }); await closeAssistant();
+    await page.mouse.move(600, 350); await page.mouse.wheel(0, 120); await settle(); sameCamera((await snap()).camera, overview);
+    return { before, after: (await snap()).camera };
   });
   await check('Inactive and inward overlay wheel remain native; focused return consumes tails once', async () => {
     await reset(); const overview = (await snap()).camera;

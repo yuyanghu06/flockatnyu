@@ -1,0 +1,10 @@
+# Paired local LLM runtime implemented
+
+- Local timestamp / acting role / milestone: 2026-10-15_15-54-33-644310 / coder spotlight_runtime (actual specialist, root journal) / M24.
+- Requested scope: Reliable base local frontend-to-LLM startup and connection states.
+- Starting repository state: Existing compatible/Anthropic adapters; Vite-only startup caused likely screenshot proxy error.
+- Work performed / changed files: tools/dev.mjs, package.json, vite.config.js, src/chat-client.js, server/app.js. Supervisor starts API before Vite after identified health; respects server-only PORT, rejects occupied ports without killing existing listeners and cleans owned children on failure/signals. Added dev:web; dev:api retains watch mode. Configuration-only status remains distinct from model reachability. Transport status timeout, sanitized connectivity failures and cancellation preserved.
+- Decisions: Keep existing provider protocol and credentials. Supervisor uses direct children without backend auto-reload; restart paired dev after server edits or use separate watch command.
+- Checks and evidence: Coder syntax/API checks, five existing transport/history fixtures, eight inline error/timeout/cancel checks and actual spare-port proxy/unconfigured/cleanup/occupied-owner checks PASS. Owned-file diff check PASS. Independent runtime suite and browser transport are in progress.
+- Resulting state / acceptance: Runtime implementation ready for evaluation after independent acceptance. Root additionally used the existing configured gpt-6-luna adapter for one short prompt; exact OK streamed successfully in 2087ms, no database/source retrieval. Official stream contract inspected at https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events . No credential value printed or changed.
+- Remaining work and handoff: Finish independent browser/runtime tests and final evaluation; root updates guides. Production identity/source access and summary retrieval remain separate scope.

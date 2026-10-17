@@ -191,7 +191,8 @@ function setHovered(id) {
   if (id !== state.hovered) { state.hovered = id; repaint(); }
   renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
 }
-const mapInteractions = createMapInteractions({ element: renderer.domElement, wheelEventTarget: window, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id) });
+const mapInteractions = createMapInteractions({ element: renderer.domElement, wheelEventTarget: window, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id),
+  isWheelEnabled: () => controls.enabled && !document.querySelector('dialog[open]') });
 createAssistant({ getBuilding: () => { const building = buildings.find(item => item.id === state.selected); return building ? { id: building.id, name: building.name } : null; } });
 
 $('camera-open').addEventListener('click', () => {

@@ -1,0 +1,10 @@
+# Repository status check
+
+- Local timestamp / acting role / milestone: 2026-10-15_15-47-37-997695 / orchestrator / status inventory after completed M23.
+- Requested scope: Report the current repository state.
+- Starting repository state: codex/dev at ff38922; HEAD matches the cached origin/codex/dev ref (0 ahead/0 behind). Twelve tracked files modified and thirteen untracked status entries before this journal pass, covering M23 movement, tests/evidence and the prior functionality audit. No remote fetch performed.
+- Work performed / changed files: Read startup instructions, latest snapshot/to-do/history and workflow; inspected Git status, movement diffs, package commands and backend auth/retrieval source. Updated only shared journal documentation for this status pass; existing edits preserved.
+- Decisions: M23 remains complete with local uncommitted changes. Recorded hosted evidence is historical, not a current cloud health check. No specialist agents were needed for this bounded inventory; current checks ran directly.
+- Checks and evidence: npm run build PASS (existing large-chunk warning); npm run build:api PASS; npm run test:assistant 33/33 PASS; node tests/keyboard-pan.mjs 14/14 PASS; git diff --check PASS before journal update. No browser, Discord suite, cloud, model or remote verification was rerun.
+- Resulting state / acceptance: Status inventory complete. Map/assistant/admin frontend and Hono/Discord persistence/retention are implemented. Prior October 12 hosted evidence records 216 sources and 722 summaries representing 108,957 originals including four current-week raw messages; current live counts are unverified.
+- Remaining work and handoff: Member authentication/source access policy, weekly/monthly summary retrieval in chat, Drive/Calendar connectors and building/day activity UI; observe actual summary cron invocation. Movement feedback and optional commit/publication remain separate work. Some older documentation is superseded by newer snapshot sections.
