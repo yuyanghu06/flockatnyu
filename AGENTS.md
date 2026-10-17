@@ -77,7 +77,7 @@ The club name, membership model, and exact campus coverage remain to be confirme
 
 ## Session startup and managed agent workflow
 
-At the start of each session, read this file, `milestones/milestone.md`,
+At the start of each session, read this file, `notes.md`, `milestones/milestone.md`,
 `milestones/to-do.md`, the most recent linked history entry, and
 `docs/agent-workflow.md`. Inspect the current files and Git state before acting.
 
@@ -105,6 +105,16 @@ side effects, acceptance criteria, and expected report; use
 handoff. Planner and evaluator passes are read-only. Testers own assigned tests
 and evidence, while coders own assigned implementation. The orchestrator resolves
 scope and file conflicts before writers proceed.
+
+## Persistent user notes
+
+`notes.md` at the repository root stores notes and ideas the user asks to persist.
+Read it at session startup. Update it when the user asks to save or remember an
+idea, including corrections to existing notes. Date meaningful additions and
+preserve superseded intent with a clear correction. Distinguish ideas/preferences
+from approved implementation; a saved note does not authorize deployment, source
+writes or schema changes. Never store credentials or private source contents.
+Keep architecture and actual implementation status in their existing guides.
 
 ## Milestone journal and iteration
 

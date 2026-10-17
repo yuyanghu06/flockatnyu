@@ -1,3 +1,5 @@
+M39 publication verification: fresh14 keyboard,21 camera,16 interaction and13 offline Chrome assistant checks pass. The old interaction count now explicitly excludes Lipton; Spotlight uses the current live-tool context and an injected source fixture instead of the retired knowledge-search RPC. Actual Hono auth/tool validation, Vite proxy, provider streaming and UI are exercised without live source/model calls. Prior M38 full581/581 and both builds cover unchanged product source. Fresh evidence: evidence/m39-working-tree-publication/.
+
 # Current backend and collector verification
 
 Run `node --test --test-concurrency=2 tests/*.test.mjs` for the current unit/API/SQL regression suite. The bounded concurrency prevents overlapping PGlite instances from exhausting memory. M38 final full suite passed581/581 after Gmail switch separation and wrapper removal (focused55/55), with API and frontend builds; see evidence/m37-tool-organization. M36 independent final integration passed578/578 before final Gateway regressions, and final focused rollout review passed58/58; see evidence/m36-collector-cleanup.

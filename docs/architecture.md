@@ -1,6 +1,6 @@
-# Architecture alignment draft
+# Initial MVP architecture
 
-Status: current implementation facts plus a target for discussion with the user. Target deployment and data-model decisions below are proposals, not completed work. No migrations or infrastructure changes follow from this document.
+Status: user-confirmed initial MVP direction (2026-10-17), with current implementation distinguished from planned work. The user plans substantial frontend changes; keep backend contracts explicit and allow independent UI work. No new migrations or infrastructure changes follow from this documentation pass.
 
 ## Current implementation
 
@@ -19,9 +19,9 @@ The shared Supabase project currently has five service-only tables: discord_view
 
 Callable read tools live under tools/{discord,google,miro}; connector API clients and source-policy enforcement remain under server/. Developer/deployment utilities live under scripts/. Entrypoints select trusted tools; collectors do not import callable tool registries, model runners or provider configuration. Current source access is shared, with server allowlists/current policy and backend admin checks.
 
-## Proposed target to confirm
+## Confirmed MVP direction
 
-Keep one repository with independently deployable components. Frontend, interactive Chat API and background Automation Worker have separate runtime lifecycles. Discord/Gmail/Miro collectors can each be disabled or redeployed independently. Shared code is imported at build/runtime boundaries, without creating an additional tool-hosting service.
+Keep one repository with independently deployable components. The user accepted this as the initial MVP direction; expand after the core workflow works. Frontend, interactive Chat API and background Automation Worker have separate runtime lifecycles. Discord/Gmail/Miro collectors can each be disabled or redeployed independently. Shared code is imported at build/runtime boundaries, without creating an additional tool-hosting service. Chat and automation share tool implementations. The user’s target is the same tool catalog for both, with different prompts; exact tool exposure and registry wiring are a follow-up discussion. Source scope and authorized actions remain enforced by backend code rather than prompts.
 
 ```mermaid
 flowchart LR
@@ -41,16 +41,16 @@ flowchart LR
   R --> L[Live source APIs]
 ```
 
-This diagram is a target. Scheduled wake-ups, Miro event-to-cache production, durable activity/memory schemas, Calendar/map write adapters, update_memory and deployed chat/automation services remain unimplemented or inactive. The current automation defaults are five eligible events or oldest age five minutes plus a cooldown; a production wake-up interval is not yet agreed. A cron-only process detects thresholds when it wakes, rather than immediately on the fifth arrival.
+This diagram shows the agreed direction; it is not a claim of completed implementation. Scheduled wake-ups, Miro event-to-cache production, durable activity/memory schemas, Calendar/map write adapters, update_memory and deployed chat/automation services remain unimplemented or inactive. The current automation defaults are five eligible events or oldest age five minutes plus a cooldown; a production wake-up interval is not yet agreed. A cron-only process detects thresholds when it wakes, rather than immediately on the fifth arrival.
 
 Collectors gather source changes and preserve identities/freshness; automation interprets them and applies permitted changes. Shared database access should use explicit ownership/RPC contracts so each integration does not become dependent on all other tables. Existing service credentials are not proof of per-service least-privilege database roles.
 
 Core operator instructions should remain separate from agent-editable short/long-term context. Memory updates should use a bounded update_memory tool with scope, provenance and versioning. This is design direction only: no prompt/memory migration was requested.
 
-## Decisions for discussion
+## Implementation decisions still open
 
-- Confirm separate Chat API and Automation Worker deployments sharing tool/provider code.
-- Confirm keeping one repository with independent deployment packages rather than splitting repositories now.
+- Implement the separate Chat API and Automation Worker deployments sharing tool/provider code.
+- Wire the intended shared tool catalog into both runtimes, with different prompts and explicit authorization; discuss exact exposure before implementing it.
 - Define ownership of durable activity, memory and Calendar edits before implementing write tools.
 - Choose production scheduling, source-event treatment for Miro and member authentication in their own implementation passes.
 
@@ -58,4 +58,4 @@ Core operator instructions should remain separate from agent-editable short/long
 
 Cleanup commits:238a346 (source/build/tests),48ad290 (docs/evidence). M38 passed581/581 tests,55/55 focused checks and both builds. Gmail revision8f10ca33-b53b-4358-96d9-b2becdf6f5e5 is healthy with collection enabled/model disabled. Hosted Discord edit/delete/blacklist and admin browser probes remain pending; local fixtures pass. Unrelated map/UI/artwork changes are preserved outside the cleanup commits.
 
-See cleanup-handoff.md for file ownership, backend-direction.md for current backend details, database-tables.md for actual schema and ../milestones/milestone.md for the rolling state. This draft will be revised after architecture discussion; it is not authorization to deploy or add schemas.
+See cleanup-handoff.md for file ownership, backend-direction.md for current backend details, database-tables.md for actual schema and ../milestones/milestone.md for the rolling state. Update this document when the user resolves the remaining implementation details. This confirmation does not expand Google OAuth scopes, grant source writes or authorize prompt/memory migrations.

@@ -51,3 +51,5 @@ Run `npm run test:assistant`, `npm run build:api` and `npm run build` for core l
 ## Code ownership for parallel work
 
 Map/UI changes belong in src/ and their focused tests; agent/API work belongs in server/ and callable tools/. Source collectors live in server/discord/, server/google/ and server/miro/, with independent deployment/ packages. Development and deployment utilities live in scripts/. Coordinate package.json, shared tests and milestone journals through one integrator. See [tool guide](tools/info.md) and [cleanup handoff](docs/cleanup-handoff.md).
+
+[User notes](notes.md) preserves requested ideas and preferences, including the fall26 calendar choice. [MVP architecture](docs/architecture.md) records confirmed service boundaries and planned work.

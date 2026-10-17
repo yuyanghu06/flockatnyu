@@ -1,3 +1,10 @@
+# M39: working-tree publication
+
+- [x] Inspect diff, upstream and credentials; no divergence or detected credentials.
+- [x] Commit map controls, assistant UI/runtime, avatars and historical records in coherent groups.
+- [x] Run64 focused checks, record confirmed MVP/shared-tool architecture and persistent notes/fall26 calendar.
+- [ ] Push codex/dev and verify remote SHA and clean working tree.
+
 # M38: final housekeeping
 
 - [x] Separate Gmail collection and model processing switches; remove redundant daily worker.
@@ -5,7 +12,7 @@
 - [x] Verify581/581 regressions,55/55 focused checks, both builds; deploy independent Gmail switch.
 - [x] Complete scoped source commit238a346; preserve unrelated map/UI/artwork; documentation handoff follows.
 - [x] Prepare current-versus-target architecture draft after cleanup; docs commit48ad290 completed.
-- [ ] Align architecture with the user and reflect confirmed decisions in docs/architecture.md.
+- [x] Confirm initial MVP architecture and shared-tool intent; implementation details remain in docs/architecture.md.
 
 # M37: tool organization complete
 

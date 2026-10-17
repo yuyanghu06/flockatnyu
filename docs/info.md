@@ -29,4 +29,4 @@ Building reference guides record inspected sources, placement/geometry contracts
 
 [Cleanup handoff](cleanup-handoff.md) defines current folder ownership for parallel map/UI, agent and collector work.
 
-[Architecture alignment draft](architecture.md) separates current deployed behavior from the target under discussion.
+[Initial MVP architecture](architecture.md) records the confirmed service direction, current deployed behavior, shared-tool intent and remaining implementation work.
