@@ -1,4 +1,4 @@
-# M39: grouped commits ready for publication
+# M39 complete: working tree committed and published
 
 Goal: publish the completed working tree and preserve the confirmed initial MVP direction, then allow independent frontend and agent work.
 
@@ -19,7 +19,7 @@ Root [notes.md](../notes.md) stores requested ideas; AGENTS.md requires startup 
 ## Commit grouping
 
 Previous cleanup:238a346 source/build/tests;48ad290 docs/evidence;8336bdd architecture draft.
-Remaining work now grouped: a97a1d1 map movement;0fba007 avatars;5c9f8e4 assistant UI; b92d3a5 Lipton fixture alignment;ec4cf07 historical verification. Final notes/handoff commit and push pending.
+Remaining work now grouped: a97a1d1 map movement;0fba007 avatars;5c9f8e4 assistant UI; b92d3a5 Lipton fixture alignment;ec4cf07 historical verification. c067d80 records confirmed MVP architecture, persistent notes and verification. Source publication to origin/codex/dev is verified; no force push.
 
 ## Verification and limits
 
@@ -29,8 +29,10 @@ Native Discord creates and a real email were observed; hosted edit/delete and bl
 
 ## Next action
 
-Push codex/dev without rewriting history, verify remote SHA and clean tree, then proceed with MVP implementation/frontend work against the confirmed contracts. Miro authorization/initial capture and the agent’s trusted action adapters remain open.
+Publication is complete: source commitc067d80 matched the remote and the working tree was clean. This documentation-only acceptance follow-up is also being published. Proceed with MVP implementation/frontend work against the confirmed contracts. Miro authorization/initial capture and the agent’s trusted action adapters remain open.
 
 ## Latest pass
 
 [Grouped commits and persistent notes](history/2026-10-17_15-16-22-803683-orchestrator-grouped-commits-and-mvp-notes.md)
+
+[Verified publication](history/2026-10-17_15-17-13-485425-orchestrator-publication-verified.md)

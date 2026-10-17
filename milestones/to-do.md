@@ -3,7 +3,7 @@
 - [x] Inspect diff, upstream and credentials; no divergence or detected credentials.
 - [x] Commit map controls, assistant UI/runtime, avatars and historical records in coherent groups.
 - [x] Run64 focused checks, record confirmed MVP/shared-tool architecture and persistent notes/fall26 calendar.
-- [ ] Push codex/dev and verify remote SHA and clean working tree.
+- [x] Push codex/dev without force; verify matching remote SHA and clean working tree.
 
 # M38: final housekeeping
 
