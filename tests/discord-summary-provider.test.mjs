@@ -47,15 +47,14 @@ test('an API response outside the requested enum remains unpublishable and retai
  const f=fixture({fetchImpl:async()=>Response.json(response({output:[{content:[{type:'output_text',text:JSON.stringify(summary('999999999999999999'))}]}]}))}),result=await f.invoke();assert.equal(result.status,'foreign_citation');assert.equal(result.summary,undefined);assert.equal(f.reserves.length,1);assert.equal(f.commits.length,1);assert.equal(f.commits[0].status,'succeeded');assert.equal(result.usage.costUsd,0.000007);assert.deepEqual(enumsIn(f.calls[0].body.text.format.schema),[[id]]);
 });
 
-test('summary configuration pins Luna and official endpoint and never raises operation/run cost caps',()=>{
-  assert.equal(config.configured,true);assert.equal(config.embeddingsEnabled,false);
+test('summary configuration pins Luna and official endpoint and has no retired worker settings',()=>{
+  assert.equal(config.configured,true);assert(!Object.hasOwn(config,'embeddingsEnabled'));
   for(const override of [{LLM_MODEL:'another-model'},{LLM_PROVIDER:'other'},{LLM_BASE_URL:'https://other.example/v1'},{LLM_API_KEY:''}])assert.equal(readDiscordSummaryConfig({...env,...override}).configured,false);
-  const bounded=readDiscordSummaryConfig({...env,DISCORD_SUMMARY_OPERATION_MAX_USD:'500',DISCORD_SUMMARY_RUN_MAX_USD:'500',DISCORD_SUMMARY_CONCURRENCY:'500'});
-  assert.equal(bounded.maxOperationCostUsd,5);assert.equal(bounded.maxRunCostUsd,1);assert.equal(bounded.concurrency,4);
+  for(const key of ['maxOperationCostUsd','maxRunCostUsd','concurrency','maxGroups','maxRequests'])assert(!Object.hasOwn(config,key));
 });
 
-test('6400 output tokens are reserved before dispatch while operation/run/input/byte/timeout/retry limits remain fixed',async()=>{
- assert.equal(config.maxOutputTokens,6400);assert.equal(config.maxOutputBytes,32768);assert.equal(config.maxInputBytes,49152);assert.equal(config.maxOperationCostUsd,5);assert.equal(config.maxOperationRequests,10000);assert.equal(config.maxRunCostUsd,1);assert.equal(config.requestTimeoutMs,30000);assert.equal(config.maxRetries,2);assert.equal(config.concurrency,4);assert.equal(config.model,'gpt-6-luna');assert.equal(config.promptVersion,'discord-calendar-retention-v3');
+test('6400 output tokens are reserved before dispatch while input/byte/timeout/retry limits remain fixed',async()=>{
+ assert.equal(config.maxOutputTokens,6400);assert.equal(config.maxOutputBytes,32768);assert.equal(config.maxInputBytes,49152);assert.equal(config.requestTimeoutMs,30000);assert.equal(config.maxRetries,2);assert.equal(config.model,'gpt-6-luna');assert.equal(config.promptVersion,'discord-live-request-v1');
  const f=fixture({fetchImpl:async(url,options)=>{assert.equal(f.reserves.length,1,'full reservation precedes fetch');assert.equal(f.reserves[0].outputTokens,6400);assert.equal(JSON.parse(options.body).max_output_tokens,6400);return Response.json(response());}});assert.equal((await f.invoke()).status,'ready');const body=f.calls[0].body,estimate=f.reserves[0];assert.equal(estimate.inputTokens,Buffer.byteLength(JSON.stringify(body),'utf8')+1024);assert.equal(estimate.maxCostUsd,(estimate.inputTokens*config.inputPricePerMillion+6400*config.outputPricePerMillion)/1e6);assert.deepEqual({...estimate,attempt:undefined},{...estimateDiscordSummaryRequest(config,body),attempt:undefined});
  const previousEstimate=estimateDiscordSummaryRequest({...config,maxOutputTokens:3200},{...body,max_output_tokens:3200});assert(Math.abs((estimate.maxCostUsd-previousEstimate.maxCostUsd)-3200*config.outputPricePerMillion/1e6)<1e-12);
 });

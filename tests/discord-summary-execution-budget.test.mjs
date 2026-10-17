@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {createDiscordSummaryStore} from '../server/discord/summary-store.js';
+import {createDiscordSummaryStore} from './fixtures/legacy-summary-store.mjs';
 
 const op='11111111-1111-4111-8111-111111111111',job='22222222-2222-4222-8222-222222222222',lease='33333333-3333-4333-8333-333333333333',reservation='44444444-4444-4444-8444-444444444444',member='55555555-5555-4555-8555-555555555555',source='66666666-6666-4666-8666-666666666666',guild='1203562091500404776',channel='1203562091982622814';
 const env={SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fixture-budget-private'};

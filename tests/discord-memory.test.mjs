@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {classifyDiscordTimestamp,getDiscordMemoryBoundaries} from '../server/discord/memory.js';
-import {normalizeMessage,snowflakeBefore} from '../server/discord/sync.js';
+import {classifyDiscordTimestamp,getDiscordMemoryBoundaries} from './fixtures/legacy-memory.mjs';
+import {normalizeMessage,snowflakeBefore} from './fixtures/legacy-message.mjs';
 import {createDiscordStore} from '../server/discord/store.js';
 
 test('rolling seven-day precedence crosses month boundaries at exact elapsed-hour cutoff',()=>{
@@ -45,23 +45,13 @@ const generation='55555555-5555-4555-8555-555555555555';
 const asOf='2026-10-10T16:00:00.000Z';
 const policyInput={paused:false,discovery_enabled:true,excluded_category_ids:[categoryId],excluded_channel_ids:['1203562091982622819'],backfill_from:'2015-01-01T00:00:00Z'};
 
-test('memory store uses named permission-scoped RPCs, filters foreign rows and rejects unbounded or untrusted requests locally',async()=>{
-  const source='22222222-2222-4222-8222-222222222222',foreign='99999999-9999-4999-8999-999999999999',bucket='88888888-8888-4888-8888-888888888888';
+test('active catalogue policy failures remain sanitized',async()=>{
+  const source='22222222-2222-4222-8222-222222222222',bucket='88888888-8888-4888-8888-888888888888';
   const calls=[],principal={id:reader,allowedSourceIds:[source]};
   const store=createDiscordStore({env:{SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fixture-private-role'},fetchImpl:async(url,options)=>{
-    const body=JSON.parse(options.body);calls.push({url,body});
-    if(url.endsWith('/discord_memory_list'))return Response.json([{id:bucket,source_id:source,tier:'daily',period_start:'2026-10-09T04:00:00Z',period_end:'2026-10-10T04:00:00Z',message_count:1,policy_revision:1},{id:bucket,source_id:foreign,tier:'daily'}]);
-    if(url.endsWith('/discord_memory_page'))return Response.json([{message_id:'1558086628147200001',source_id:source,created_at:'2026-10-09T12:00:00Z',url:'https://discord.com/channels/1203562091500404776/1203562091982622814/1558086628147200001',payload:{content:'Fixture original'}},{message_id:'1558086628147200002',source_id:foreign,payload:{content:'Foreign fixture'}}]);
-    if(url.endsWith('/discord_persist_page'))return Response.json(false);
-    throw new Error('fixture-private-role malicious-body');
+    calls.push({url,body:JSON.parse(options.body)});throw new Error('fixture-private-role malicious-body');
   }});
-  assert.equal((await store.listMemory({principal:{id:reader,allowedSourceIds:[]}})).status,'forbidden');
-  assert.equal((await store.listMemory({principal,limit:101})).status,'invalid_request');assert.equal((await store.resetArchive({principal,guildId,expectedPolicyRevision:1})).status,'forbidden');assert.equal(calls.length,0);
-  const list=await store.listMemory({principal,tier:'daily',limit:2});assert.equal(list.buckets.length,1);assert.equal(list.buckets[0].sourceId,source);assert.deepEqual(calls[0].body.p_allowed_source_ids,[source]);assert.equal(calls[0].body.p_member_id,reader);
-  const page=await store.pageMemory({principal,bucketId:bucket,after:'1558086628147200000',limit:1});assert.equal(page.messages.length,1);assert.equal(calls[1].body.p_bucket_id,bucket);assert.equal(calls[1].body.p_after,'1558086628147200000');
-  const state={status:'succeeded',lastSuccessAt:asOf,before:null,windowFrom:null,windowTo:null,expectedBefore:null,expectedWindowTo:null,expectedLastSuccessAt:null,expectedPolicyRevision:7};
-  assert.equal((await store.persistPage({channel:{sourceId:source,channelId,guildId,policyRevision:7},messages:[],state})).status,'stale');assert.equal(calls[2].body.p_state.expected_policy_revision,7);
-  const failure=await store.getPolicy({guildId});assert.equal(failure.status,'unavailable');assert(!JSON.stringify(failure).includes('fixture-private-role'));assert(!JSON.stringify(failure).includes('malicious-body'));
+  const failure=await store.getPolicy({guildId});assert.equal(failure.status,'unavailable');assert.equal(calls.length,1);assert(calls[0].url.endsWith('/discord_get_policy'));assert(!JSON.stringify(failure).includes('fixture-private-role'));assert(!JSON.stringify(failure).includes('malicious-body'));
 });
 function original(createdAt,idOffset=1,cid=channelId,gid=guildId,extra={}){
   const id=(BigInt(snowflakeBefore(createdAt))+BigInt(idOffset)).toString();

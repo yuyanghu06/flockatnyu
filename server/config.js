@@ -12,8 +12,11 @@ export function readConfig(env = process.env) {
     timeoutMs: Number.isFinite(timeout) ? Math.min(120000, Math.max(100, timeout)) : 30000,
     production, host: production ? (env.HOST || '0.0.0.0') : '127.0.0.1',
     port: Number(env.PORT || 3001),
-    allowedSourceIds: Object.freeze((env.DEV_ALLOWED_SOURCE_IDS || '').split(',').map(s => s.trim()).filter(Boolean)),
+    allowedSourceIds: Object.freeze((env.ASSISTANT_ALLOWED_SOURCE_IDS || env.DEV_ALLOWED_SOURCE_IDS || '').split(',').map(s => s.trim()).filter(Boolean)),
     devAdminEnabled: !production && env.DEV_ADMIN_ENABLED === 'true',
+    devLiveDiscordEnabled: !production && env.DEV_LIVE_DISCORD_ENABLED === 'true',
+    devGoogleEnabled: !production && env.DEV_GOOGLE_ENABLED === 'true',
+    discordGuildId: env.DISCORD_GUILD_ID || '',
     retrievalToolsEnabled: env.LLM_RETRIEVAL_TOOLS_ENABLED !== 'false',
   });
 }

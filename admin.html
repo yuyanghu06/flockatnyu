@@ -7,20 +7,19 @@
   </head>
   <body>
     <main class="admin-page">
-      <header><a href="/">Tech Visualized ↗</a><p class="eyebrow">ADMINISTRATION</p><h1>Discord archive</h1><p>Choose which channels the assistant can search.</p></header>
+      <header><a href="/">Tech Visualized ↗</a><p class="eyebrow">ADMINISTRATION</p><h1>Discord channels</h1><p>Choose which channels the assistant can read live.</p></header>
       <p id="admin-status" role="status" aria-live="polite">Checking access…</p>
       <button id="admin-retry" type="button">Refresh</button>
       <section id="admin-content" hidden>
         <h2>Selected channels</h2>
-        <p>Disabling a channel removes it from search and future sync. Its archived messages are retained.</p>
+        <p>Disabling a channel prevents the assistant from reading it. Message content is fetched live and is not archived.</p>
         <ul id="channel-list"></ul>
         <form id="channel-form">
           <h2>Add a channel</h2>
           <label for="guild-id">Discord server ID</label><input id="guild-id" name="guildId" inputmode="numeric" pattern="[0-9]{1,20}" required />
           <label for="channel-id">Channel or thread ID</label><input id="channel-id" name="channelId" inputmode="numeric" pattern="[0-9]{1,20}" required />
           <label for="channel-title">Channel name</label><input id="channel-title" name="title" maxlength="300" required />
-          <label for="backfill-date">Archive messages from</label><input id="backfill-date" name="backfillDate" type="date" value="2026-01-01" required />
-          <p>Dates use New York time. Threads must be selected individually. Adding a channel does not grant members access to its messages.</p>
+          <p>Threads must be selected individually. Source scope and server permissions still apply to every read.</p>
           <button id="channel-save" type="submit">Add channel</button>
         </form>
       </section>

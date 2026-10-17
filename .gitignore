@@ -21,3 +21,6 @@ supabase/.temp/
 /.claude/mcp.json
 /.cursor/mcp.json
 /.vscode/mcp.json
+
+# One-time Google OAuth bootstrap output; contains local account tokens.
+.env.google

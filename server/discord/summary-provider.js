@@ -34,7 +34,7 @@ export function summaryMessageIds(summary) { return [...new Set(SUMMARY_FIELDS.f
 export function buildDiscordSummaryRequest({config,stage,input,allowedMessageIds=[]}) {
   return {model:config.model,service_tier:'default',store:false,stream:false,reasoning:{effort:'none'},max_output_tokens:config.maxOutputTokens,
     instructions:SUMMARY_INSTRUCTIONS,input:[{role:'user',content:[{type:'input_text',text:canonicalDiscordSummaryJson({stage,evidence:input})}]}],
-    text:{format:{type:'json_schema',name:'discord_archive_summary',strict:true,schema:buildDiscordSummarySchema(allowedMessageIds)}}};
+    text:{format:{type:'json_schema',name:'discord_live_summary',strict:true,schema:buildDiscordSummarySchema(allowedMessageIds)}}};
 }
 export function estimateDiscordSummaryRequest(config,body) {
   const inputTokens = bytes(JSON.stringify(body)) + 1024, outputTokens = body.max_output_tokens??config.maxOutputTokens;

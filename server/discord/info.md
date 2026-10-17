@@ -1,59 +1,19 @@
-# Discord collection and summary workers
+# Discord live reads and metadata discovery
 
-This folder contains separate one-shot workers for Discord REST collection and
-Luna summarization. Credentials stay in the ignored environment file or private
-Railway variables. Neither worker posts Discord messages or joins private threads.
-A successful scheduled collector exits normally; it does not keep a Gateway
-connection or Discord online presence.
+This folder supports read-only bot retrieval and channel/thread metadata discovery. Message content is fetched live; larger on-demand summaries run only in request memory with bounded evidence and original citations. No historical Discord message archive, durable summaries, vectors or accounting are stored. New native events may remain in the shared temporary pending queue until explicitly processed. Tools do not post messages or join private threads. Credentials remain private server settings.
 
-The client, config, CLI and sync modules check bot access, collect text and source
-links, and save atomic resumable checkpoints. Discovery enrolls accessible text
-channels and threads automatically. Category and channel exclusions cover their
-descendants; missing or ambiguous ancestry fails closed. Images are scrubbed and
-attachment bytes are never downloaded. Embeddings are disabled.
+`live-config.js`, `live-client.js` and `live-retrieval.js` enforce trusted source scope, content capability, enabled catalogue entries, current policy and fresh bot/parent metadata. Unknown or excluded channels and ambiguous ancestry fail closed. Results disclose coverage. Accepted descendant-thread search hits need their own allowed source UUID and ancestry beneath an originally selected channel; final policy/catalogue checks cover every accepted source. A failed/partial read has no stored-summary fallback.
 
-The memory module supplies legacy date-group metadata for raw originals. These
-buckets do not contain AI summaries or duplicate message bodies. Actual retention
-is controlled by the summary schedule and database: keep the current New York
-Monday–Sunday week as individual messages, earlier completed weeks in the current
-month as per-channel weekly summaries, and older months as per-channel monthly
-summaries. Current-week raw survives month boundaries until the next Monday can
-complete the prior monthly record. Names accompany channel IDs.
+The live summary adapter owns the request-memory summarization path. Its helpers pack bounded inputs, validate original citations and enforce request budgets. These helpers support user-requested live windows only; no periodic content/embedding job remains.
 
-The summary config, provider, runner, CLI and store modules use exactly gpt-6-luna
-through OpenAI Responses. They send text only, select one final structured answer,
-validate original citations and preserve whole-response usage accounting. Complete
-canonical input segments and the map/reduce ancestry must pass database validation
-before atomic publication removes their originals and temporary processing bodies.
-Cached valid stages survive interruption. Compacted ranges prevent re-importing
-consumed history. The original operation and its budget remain intact on resume.
+`store.js` supports protected channel configuration, policy and metadata discovery against `discord_view_policies`, the sole Discord table. Its JSONB catalogue retains stable source UUIDs, names/types, eligibility/access metadata and discovery generation/cursors. Discord sources do not duplicate `knowledge_sources`. `discovery.js` resumes bounded metadata pages and reconciles only complete generations; it never stores message bodies.
 
-Execution RPCs have scoped 55-second SQL/lock budgets and 60-second HTTP deadlines;
-publication retains its 60/65-second budget. Metadata reads stay short. Applied
-migrations are immutable and never run at worker startup. Service tables force RLS;
-readers need trusted backend scope and explicit source grants. Discovery grants no
-member access. Member authentication and production RAG wiring remain unresolved.
+`cli.js` supports metadata preflight, registration, policy and discovery; explicit one-shot discovery uses `npm run discord:discover`; the redundant generic worker wrapper was removed. Railway now runs `event-cli.js serve` continuously as `discord-events`. Its shared queue holds native creates/edits/deletion payloads until handled; no historical backfill or content archive exists. Applied migrations remain immutable and are never run at startup.
 
-These summaries are stored for permission-aware RAG, with no daily AI summaries,
-briefings, automatic context injection or Discord posting. Monday and first-of-month
-runs are gated at 08:00 America/New_York. Daily collection has its own schedule.
-Root owns live rollout and shared documentation. See the rolling milestone for
-actual backfill progress, deployment evidence and outstanding verification.
+The policy table forces RLS and remains service-only. Assistant reads require backend source allowlists and current bot/policy checks; ingress instead uses the explicitly authorized eligible guild catalogue and inherited blacklist. HTTP administration still requires trusted admin context. No per-person membership tables or source grant expansion follows from collection.
 
-The original bootstrap and Monday rollover completed on Railway. The latest
-storage snapshot has 673 monthly summaries, 49 weekly summaries and four raw
-messages from October 12–18, with zero older raw. Root-executed terminal storage/permission checks and independent artifact
-analysis passed. Both workers finish as successful one-shot
-jobs. Daily collection has executed; summary cron configuration matches its
-effective image, but a scheduled summary invocation has not been verified.
+## Event collector
 
-Bounded token-truncation recovery passed 80 provider and 11 cache checks, API
-build and independent review. It permits one freshly reserved 6,400→12,800 retry
-only for explicit eligible token-limit truncation within the original attempt and
-spending caps. Default output, byte limits and cache version remain unchanged.
+`event-cli.js serve` runs the independently deployed collector. `event-config.js` reads its opt-in switch; `event-listener.js` applies current guild policy, inherited blacklists, bot access and source identity before enqueue. `gateway.js` uses the Gateway-only SDK for heartbeat/reconnect and serializes committed checkpoints; `event-state.js` accesses only metadata CAS RPCs. Shutdown uses a resumable close code. Invalid/expired Discord sessions are disclosed as possible gaps; historical message backfill is never started.
 
-Developer MCP now requires reauthentication; the already-authenticated CLI and
-server runtime connection work. The terminal SQL ran under SET TRANSACTION READ
-ONLY; the guarded reader was tested separately through its existing runtime API.
-No grants, credentials or schema changed during the audit. Reports attribute
-root execution separately from independent tester/evaluator analysis.
+`live-summary-utils.js` holds pure UTF-8 chunking used by the request-memory summarizer. No archive or vector provider remains in production source. Metadata management remains in `cli.js`; hourly/event-triggered metadata refresh in the listener replaces the old daily Railway discovery job. Migration020 records explicit manual disables in existing channel JSONB so discovery cannot re-enable them.

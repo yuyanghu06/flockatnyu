@@ -14,89 +14,38 @@ function fixture(data = [row], status = 200) {
   return { store, calls };
 }
 
-test('archive store rejects invalid or absent permissions without touching database', async () => {
-  const { store, calls } = fixture();
-  for (const p of [null, { id: principal.id }, { ...principal, allowedSourceIds: [] }, { ...principal, id: 'attacker' }, { ...principal, allowedSourceIds: ['bad'] }]) assert.equal((await store.search({ query: 'room', principal: p })).status, 'forbidden');
-  assert.equal((await store.listChannels({ principal })).status, 'forbidden');
-  assert.equal(calls.length, 0);
-});
-
-test('archive retrieval passes trusted scope, filters foreign sources, bounds excerpts, and creates exact original links', async () => {
-  const { store, calls } = fixture([{ ...row, source_id: foreign }, row, ...Array.from({ length: 7 }, () => ({ ...row, excerpt: 'x'.repeat(9000) }))]);
-  const result = await store.search({ query: 'room', principal, limit: 8 });
-  assert.equal(result.status, 'ready');
-  assert(result.sources.every(s => s.sourceId === sourceId));
-  assert(result.sources.every(s => s.excerpt.length <= 1800));
-  assert(result.sources.reduce((n, s) => n + s.excerpt.length, 0) <= 12000);
-  assert.equal(result.sources[0].url, `https://discord.com/channels/${row.guild_id}/${row.channel_id}/${row.message_id}`);
-  assert.deepEqual(calls[0].body.p_allowed_source_ids, [sourceId]);
-  assert.equal(calls[0].body.p_member_id, principal.id);
-  assert.equal(calls[0].options.headers.Authorization, 'Bearer fixture-service-secret');
-  assert(!JSON.stringify(result).includes('fixture-service-secret'));
-});
-
-test('archive admin cannot turn client-submitted permission fields into grants', async () => {
+test('catalogue admin cannot turn client-submitted permission fields into grants', async () => {
   const response = { source_id: sourceId, channel_id: row.channel_id, guild_id: row.guild_id, title: 'Events', enabled: true, backfill_from: '2026-01-01T05:00:00Z' };
   const { store, calls } = fixture(response);
-  const result = await store.configureChannel({ principal: { ...principal, isAdmin: true }, channel: { sourceId, channelId: row.channel_id, guildId: row.guild_id, title: 'Events', enabled: true, allowedMemberIds: ['attacker'], canRead: true } });
+  const result = await store.configureChannel({ principal: { isAdmin: true }, channel: { sourceId, channelId: row.channel_id, guildId: row.guild_id, title: 'Events', enabled: true, allowedMemberIds: ['attacker'], canRead: true } });
   assert.equal(result.status, 'ready');
-  assert(!JSON.stringify(calls[0].body).includes('attacker'));
-  assert.equal(calls[0].body.p_channel.backfill_from, '2026-01-01T05:00:00.000Z');
+  assert(!JSON.stringify(calls[0].body).includes('attacker'));assert.equal(calls[0].body.p_member_id,null);
+  assert.equal(calls[0].body.p_channel.backfill_from, '2015-01-01T00:00:00.000Z');
+  assert(!Object.hasOwn(result.channel,'backfillFrom'));
 });
 
-test('real archive store accepts the API text-search contract and responds with original links', async () => {
+test('a catalogue store alone cannot expose raw-message search through the live API', async () => {
   const { store, calls } = fixture();
   const app = createApp({ config: readConfig({}), auth: () => principal, discordStore: store });
   const response = await app.request('/api/tools/search-discord', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: 'room', mode: 'relevance' }) });
-  assert.equal(response.status, 200);
-  const result = await response.json();
-  assert.equal(result.status, 'ready');
-  assert.equal(calls.length, 1);
-  assert.equal(result.sources[0].messageId, row.message_id);
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).status, 'not_configured');
+  assert.equal(calls.length, 0);
 });
 
-test('store HTTP errors are sanitized and missing configuration never performs a request', async () => {
-  assert.equal((await fixture({ secret: 'fixture-service-secret' }, 403).store.search({ query: 'room', principal })).status, 'forbidden');
-  let requests = 0;
-  const store = createDiscordStore({ env: {}, fetchImpl: async () => { requests++; } });
-  assert.equal((await store.search({ query: 'room', principal })).status, 'not_configured');
-  assert.equal(requests, 0);
+test('active metadata HTTP errors sanitized, unconfigured metadata never fetches, cancellation preserved',async t=>{
+ assert.equal((await fixture({secret:'fixture-service-secret'},403).store.listSyncChannels()).status,'forbidden');
+ let requests=0;const missing=createDiscordStore({env:{},fetchImpl:async()=>{requests++;}});assert.equal((await missing.listSyncChannels()).status,'not_configured');assert.equal(requests,0);
+ const timeouts=[];t.mock.method(AbortSignal,'timeout',ms=>{timeouts.push(ms);return new AbortController().signal;});
+ let start;const started=new Promise(resolve=>start=resolve);
+ const store=createDiscordStore({env,fetchImpl:async(url,options)=>{start(options.signal);return new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(new Error('private-fixture')),{once:true}));}});
+ const controller=new AbortController(),pending=store.listSyncChannels({signal:controller.signal});const signal=await started;controller.abort();assert.equal(signal.aborted,true);const result=await pending;assert.equal(result.status,'aborted');assert(!JSON.stringify(result).includes('private-fixture'));assert.deepEqual(timeouts,[12000]);
+ const calls=timeouts.length;assert.equal((await store.listSyncChannels({signal:controller.signal})).status,'aborted');assert.equal(timeouts.length,calls);
 });
 
-test('classification alone receives the extended RPC budget and both timeout and caller cancellation remain effective',async t=>{
-  const budgets=[],timers=[];
-  t.mock.method(AbortSignal,'timeout',milliseconds=>{
-    budgets.push(milliseconds);
-    const controller=new AbortController();timers.push(controller);return controller.signal;
-  });
-  let pending=false,started;
-  const store=createDiscordStore({env,fetchImpl:async(url,options)=>{
-    if(pending){
-      started(options.signal);
-      return new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(options.signal.reason),{once:true}));
-    }
-    return Response.json(url.endsWith('/discord_rebuild_memory')?{buckets:1,messages:1}:[]);
-  }});
-  const options={guildId:'123456789012345678',expectedPolicyRevision:1,asOf:'2026-10-11T12:00:00Z'};
-  assert.equal((await store.rebuildMemory(options)).status,'ready');
-  assert.equal((await store.listSyncChannels()).status,'ready');
-  assert.equal((await store.search({principal,mode:'latest'})).status,'empty');
-  assert.deepEqual(budgets,[65000,12000,12000]);
-  pending=true;
-  let signalSeen;
-  const start=new Promise(resolve=>{started=signal=>{signalSeen=signal;resolve();};});
-  const caller=new AbortController(),request=store.rebuildMemory({...options,signal:caller.signal});
-  await start;caller.abort(new Error('private-fixture-caller-reason'));
-  assert.equal(signalSeen.aborted,true);
-  const aborted=await request;assert.equal(aborted.status,'aborted');assert(!JSON.stringify(aborted).includes('private-fixture'));
-  const count=budgets.length;
-  assert.equal((await store.rebuildMemory({...options,signal:caller.signal})).status,'aborted');
-  assert.equal(budgets.length,count);
-  let timeoutSignal;
-  const timerStarted=new Promise(resolve=>{started=signal=>{timeoutSignal=signal;resolve();};});
-  const timedRequest=store.rebuildMemory(options);
-  await timerStarted;timers.at(-1).abort(new Error('private-fixture-timer-reason'));
-  assert.equal(timeoutSignal.aborted,true);
-  const timedOut=await timedRequest;assert.equal(timedOut.status,'unavailable');assert(!JSON.stringify(timedOut).includes('private-fixture'));
-  assert.equal(budgets.at(-1),65000);
+test('backend admin capability remains required without per-person identities',async()=>{
+ const {store,calls}=fixture();
+ const channel={sourceId,channelId:row.channel_id,guildId:row.guild_id,title:'Events',enabled:true};
+ for(const principal of [null,{}, {isAdmin:false}, {id:'server-operator'}]){assert.equal((await store.listChannels({principal})).status,'forbidden');assert.equal((await store.configureChannel({principal,channel})).status,'forbidden');}
+ assert.equal(calls.length,0);
 });

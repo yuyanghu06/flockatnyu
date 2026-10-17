@@ -4,11 +4,11 @@ import {readFile,writeFile,readdir} from 'node:fs/promises';
 import {createHash,randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {createDiscordSummaryStore} from '../server/discord/summary-store.js';
-import {readDiscordSummaryConfig} from '../server/discord/summary-config.js';
+import {createDiscordSummaryStore} from './fixtures/legacy-summary-store.mjs';
+import {readDiscordSummaryConfig} from './fixtures/legacy-summary-config.mjs';
 import {SUMMARY_FIELDS} from '../server/discord/summary-provider.js';
-import {runDiscordSummaries,runDiscordSummaryBackfill,discordSummaryChunks} from '../server/discord/summaries.js';
-import {normalizeMessage} from '../server/discord/sync.js';
+import {runDiscordSummaries} from './fixtures/legacy-summaries.mjs';
+import {normalizeMessage} from './fixtures/legacy-message.mjs';
 
 // Supersedes the prior daily/forever-original SQL fixture. Baseline191 evidence
 // remains under its original report/log names. Only verified retention is tested.

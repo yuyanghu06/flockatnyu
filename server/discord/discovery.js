@@ -53,8 +53,9 @@ function metadata(channel,guildId) {
 const record = (channel,eligible,accessStatus) => ({channelId:channel.id,guildId:channel.guild_id,parentId:channel.parent_id,type:channel.type,title:channel.name || `Discord ${channel.id}`,eligible,accessStatus});
 const integer = (value,fallback,min,max) => value == null ? fallback : Number.isInteger(value) && value >= min && value <= max ? value : (raise('invalid_request'));
 
-/** Metadata-only discovery. Complete generations reconcile disappeared sources;
- * capped/failed generations retain durable per-endpoint archive checkpoints. */
+/** Metadata-only discovery. Complete generations reconcile the channel catalogue;
+ * capped/failed generations keep metadata endpoint cursors in the policy JSONB.
+ * No message bodies, summaries, embeddings or model accounting are persisted. */
 export async function runDiscordDiscovery({config,store,client,now = new Date(),signal,limits = {}} = {}) {
   const result = {status:'not_configured',complete:false,pages:0,channels:0,eligible:0,excluded:0,denied:0,limitations:[]};
   let combined = signal;
@@ -72,7 +73,7 @@ export async function runDiscordDiscovery({config,store,client,now = new Date(),
     const policy = loadedPolicy.policy;
     if (policy.guildId !== config.guildId || !Number.isSafeInteger(policy.revision) || !Array.isArray(policy.excludedCategoryIds) || !Array.isArray(policy.excludedChannelIds) || ![...policy.excludedCategoryIds,...policy.excludedChannelIds].every(snowflake)) raise('invalid_request');
     // An explicit metadata preview is allowed while collection is paused. The
-    // scheduled sync/backfill caller must check pause before invoking discovery.
+    // Callers must respect the current discovery pause policy.
     result.policyPaused = policy.paused === true;
     if (!policy.discoveryEnabled) return {...result,status:'disabled'};
     const loaded = await store.getDiscoveryState({guildId:config.guildId,signal:combined});

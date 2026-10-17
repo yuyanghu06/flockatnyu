@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { vector } from '@electric-sql/pglite-pgvector';
-import { normalizeMessage } from '../server/discord/sync.js';
+import { normalizeMessage } from './fixtures/legacy-message.mjs';
 
 const admin = '11111111-1111-4111-8111-111111111111', reader = '33333333-3333-4333-8333-333333333333', otherReader = '44444444-4444-4444-8444-444444444444';
 const channel = { channelId: '234567890123456789', guildId: '123456789012345678', title: 'Events', enabled: true, backfillFrom: '2026-01-01T05:00:00Z' };

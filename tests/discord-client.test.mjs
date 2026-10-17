@@ -2,7 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readDiscordConfig } from '../server/discord/config.js';
 import { createDiscordClient } from '../server/discord/client.js';
-import { createEmbeddingProvider } from '../server/discord/embeddings.js';
 
 const guildId = '123456789012345678', channelId = '234567890123456789', botId = '345678901234567890';
 const config = readDiscordConfig({ DISCORD_BOT_TOKEN: 'fixture-secret', DISCORD_GUILD_ID: guildId });
@@ -21,11 +20,12 @@ function channelFixture({ permissions = '66560', overwrites = [], type = 0, guil
   return { client, calls };
 }
 
-test('Discord configuration is absent by default and January backfill uses New York midnight', async () => {
+test('Discord configuration is absent by default and ignores retired archive flags', async () => {
   assert.equal(readDiscordConfig({}).configured, false);
   assert.equal(config.timezone, 'America/New_York');
-  assert.equal(new Date(config.backfillFrom).toISOString(), '2026-01-01T05:00:00.000Z');
-  assert.equal(config.embedding.configured, false);
+  assert(!Object.hasOwn(config,'backfillFrom'));
+  assert(!Object.hasOwn(config,'embedding'));
+  assert.equal(readDiscordConfig({DISCORD_BOT_TOKEN:'fixture',DISCORD_GUILD_ID:guildId,DISCORD_BACKFILL_FROM:'invalid'}).configured,true);
   let calls = 0;
   const client = createDiscordClient({ config: readDiscordConfig({}), fetchImpl: () => { calls++; } });
   await assert.rejects(client.getMessages({ channelId }), { code: 'not_configured' });
@@ -69,24 +69,4 @@ test('empty history is trusted only after explicit view+read-history permissions
   await assert.rejects(channelFixture({ guild: '999999999999999999' }).client.getChannel({ channelId }), { code: 'channel_scope_denied' });
   await assert.rejects(channelFixture({ type: 2 }).client.getChannel({ channelId }), { code: 'channel_scope_denied' });
   assert.equal((await channelFixture({ permissions: '8' }).client.getChannel({ channelId })).id, channelId);
-});
-
-test('archive config hard-disables stale embedding flags; dormant provider unit validates dimensions/order and provenance', async () => {
-  let calls = 0;
-  const disabled = createEmbeddingProvider({ config, fetchImpl: async () => { calls++; } });
-  assert.deepEqual(await disabled.embed({ texts: ['Meeting'] }), { status: 'not_configured', vectors: [] });
-  assert.equal(calls, 0);
-  const stale = readDiscordConfig({ EMBEDDING_ENABLED: 'true', EMBEDDING_MODEL: 'fixture-model', EMBEDDING_API_KEY: 'fixture-key' });
-  assert.equal(stale.embedding.configured,false); assert.equal(stale.embedding.apiKey,'');
-  const configured = {embedding:{...stale.embedding,configured:true,apiKey:'fixture-key'}};
-  let payload;
-  const provider = createEmbeddingProvider({ config: configured, fetchImpl: async (_, init) => { payload = JSON.parse(init.body); return json({ data: [{ index: 1, embedding: Array(1536).fill(2) }, { index: 0, embedding: Array(1536).fill(1) }] }); } });
-  const result = await provider.embed({ texts: ['First', 'Second'] });
-  assert.equal(result.status, 'ready');
-  assert.equal(result.vectors[0][0], 1);
-  assert.equal(result.model, 'fixture-model');
-  assert.equal(result.provider, 'openai-compatible');
-  assert.equal(payload.dimensions, 1536);
-  const bad = createEmbeddingProvider({ config: configured, fetchImpl: async () => json({ data: [{ index: 0, embedding: [1, 2] }] }) });
-  assert.equal((await bad.embed({ texts: ['First'] })).status, 'unavailable');
 });

@@ -1,0 +1,114 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile,readdir} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
+import {PGlite} from '@electric-sql/pglite';
+import {vector} from '@electric-sql/pglite-pgvector';
+import {SUMMARY_FIELDS} from '../server/discord/summary-provider.js';
+const guild='1203562091500404776',otherGuild='123456789012345678',channel='1203562091982622814',source='22222222-2222-4222-8222-222222222222',otherSource='44444444-4444-4444-8444-444444444444';
+const legacyJob=randomUUID(),legacyResult=randomUUID(),legacyCertificate=randomUUID(),legacyOperation=randomUUID(),legacyReceipt=randomUUID(),messageId='1500000000000000001';
+const hash='a'.repeat(64),summary=Object.fromEntries(SUMMARY_FIELDS.map(k=>[k,k==='overview'?[{text:'Preserved fixture fact',messageIds:[messageId]}]:[]]));
+const citations=[{messageId,url:`https://discord.com/channels/${guild}/${channel}/${messageId}`}];
+const empty=()=>Object.fromEntries(SUMMARY_FIELDS.map(k=>[k,[]]));
+function rpc(db,name,args={}){const keys=Object.keys(args);return db.query('select public.discord_live_summary_'+name+'('+keys.map((k,i)=>k+' => $'+(i+1)).join(',')+') value',keys.map(k=>args[k]&&typeof args[k]==='object'&&!Array.isArray(args[k])?JSON.stringify(args[k]):args[k])).then(r=>r.rows[0].value);}
+async function seed(db){
+ for(const [sid,gid,cid] of [[source,guild,channel],[otherSource,otherGuild,'123456789012345679']]){
+  await db.query('insert into public.discord_guild_policies(guild_id,revision,paused,discovery_enabled) values($1,1,false,true)',[gid]);
+  await db.query("insert into public.knowledge_sources(id,kind,external_id,title,status) values($1,'discord',$2,'Fixture','active')",[sid,cid]);
+  await db.query("insert into public.discord_channels(source_id,channel_id,guild_id,title,enabled,policy_revision,backfill_from) values($1,$2,$3,'Fixture channel',true,1,'2020-01-01Z')",[sid,cid,gid]);
+  const generation=randomUUID();await db.query("insert into public.discord_channel_metadata(guild_id,channel_id,channel_type,access_status,eligible,generation) values($1,$2,0,'ready',true,$3)",[gid,cid,generation]);
+  await db.query("insert into public.discord_discovery_state(guild_id,policy_revision,generation,state) values($1,1,$2,'{\"phase\":\"complete\"}')",[gid,generation]);
+  await db.query('insert into public.knowledge_source_members(source_id,member_id,can_read) values($1,$2,true)',[sid,'local-development']);
+  await db.query("insert into public.discord_messages(message_id,source_id,channel_id,guild_id,author_id,created_at,content,embedding_text,payload,content_hash,url) values($1,$2,$3,$4,'345678901234567890',now(),'RAW_SENTINEL_M25','RAW_SENTINEL_M25','{\"content\":\"RAW_SENTINEL_M25\"}',$5,$6)",[sid===source?messageId:'1500000000000000002',sid,cid,gid,hash,`https://discord.com/channels/${gid}/${cid}/1500000000000000001`]);
+  await db.query("insert into public.knowledge_documents(source_id,external_id,source_version,title,url,original_text,source_updated_at) values($1,'copy','1','Raw copy','https://example.com/copy','RAW_SENTINEL_M25',now())",[sid]);
+ }
+ await db.query("insert into public.discord_message_revisions(message_id,payload,content_hash) values($1,'{\"content\":\"RAW_SENTINEL_M25\"}',$2)",[messageId,hash]);
+ await db.query("insert into public.discord_sync_state(source_id) values($1)",[source]);
+ await db.query("insert into public.discord_summary_operations(id,guild_id,policy_revision,provider,model,prompt_version,mode,as_of,due_identity,manifest_fingerprint,total_jobs,max_cost_usd,max_requests) values($1,$2,1,'openai-compatible','gpt-6-luna','legacy-v1','weekly',now(),'fixture',$3,1,1,100)",[legacyOperation,guild,hash]);
+ await db.query("insert into public.discord_summary_jobs(id,source_id,guild_id,channel_id,channel_name,tier,period_key,period_start,period_end,input_record_count,represented_message_count,raw_message_count,summary_input_count,input_fingerprint,message_count,segment_count,input_chars,provider,model,prompt_version,policy_revision,status,operation_id) values($1,$2,$3,$4,'Fixture channel','weekly','weekly:2026-09-28','2026-09-28T04:00Z','2026-10-05T04:00Z',1,1,1,0,$5,1,1,30,'openai-compatible','gpt-6-luna','legacy-v1',1,'succeeded',$6)",[legacyJob,source,guild,channel,hash,legacyOperation]);
+ await db.query("insert into public.discord_summary_certificates(id,job_id,source_id,channel_name,range_start,range_end,tier,period_key,represented_message_count,raw_message_count,summary_input_count,input_record_count,coverage_digest,input_fingerprint,summary_hash,provider,model,prompt_version) values($1,$2,$3,'Fixture channel','2026-09-28T04:00Z','2026-10-05T04:00Z','weekly','weekly:2026-09-28',1,1,0,1,$4,$4,encode(sha256(convert_to($5::jsonb::text,'UTF8')),'hex'),'openai-compatible','gpt-6-luna','legacy-v1')",[legacyCertificate,legacyJob,source,hash,JSON.stringify(summary)]);
+ await db.query("insert into public.discord_summary_results(id,job_id,source_id,certificate_id,channel_name,summary,citations) values($1,$2,$3,$4,'Fixture channel',$5,$6)",[legacyResult,legacyJob,source,legacyCertificate,JSON.stringify(summary),JSON.stringify(citations)]);
+ await db.query("insert into public.discord_compaction_ledger(source_id,certificate_id,range_start,range_end,tier,period_key,represented_message_count,coverage_digest) values($1,$2,'2026-09-28T04:00Z','2026-10-05T04:00Z','weekly','weekly:2026-09-28',1,$3)",[source,legacyCertificate,hash]);
+ const pendingJob=randomUUID();await db.query("insert into public.discord_summary_jobs select $1,source_id,guild_id,channel_id,channel_name,tier,'weekly:2026-09-21','2026-09-21T04:00Z','2026-09-28T04:00Z',input_record_count,represented_message_count,raw_message_count,summary_input_count,completed_lease_token,input_fingerprint,message_count,segment_count,input_chars,provider,model,prompt_version,policy_revision,'pending',operation_id,lease_token,lease_owner,lease_expires_at,lease_seconds,attempts,failure_count,error_code,created_at,updated_at from public.discord_summary_jobs where id=$2",[pendingJob,legacyJob]);
+ await db.query("insert into public.discord_summary_inputs(job_id,input_id,kind,source_id,ordinal,input_hash,segment_count,input_chars,represented_message_count,citation_message_ids,raw_message_id) values($1,$2,'raw',$3,0,$4,1,16,1,array[$2],$2)",[pendingJob,messageId,source,hash]);
+ await db.query("insert into public.discord_summary_requests(id,operation_id,job_id,lease_token,max_cost_usd,status,input_tokens,output_tokens,actual_cost_usd) values($1,$2,$3,$4,0.001,'succeeded',10,10,0.0001)",[legacyReceipt,legacyOperation,legacyJob,randomUUID()]);
+}
+async function plan(db,mode='scheduled'){const now=(await db.query('select now() value')).rows[0].value;return rpc(db,'plan',{p_guild_id:guild,p_as_of:now,p_mode:mode,p_provider:'openai-compatible',p_model:'gpt-6-luna',p_prompt_version:'test-v1'});}
+async function claim(db){return rpc(db,'claim',{p_guild_id:guild,p_provider:'openai-compatible',p_model:'gpt-6-luna',p_prompt_version:'test-v1',p_lease_seconds:300});}
+async function finish(db,job,body=empty(),cites=[],count=0){return rpc(db,'finish',{p_job_id:job.id,p_lease_token:job.lease_token,p_summary:body,p_citations:cites,p_coverage:{complete:true,inputHash:hash,pages:1,inputBytes:0,messageCount:count}});}
+async function transaction(db,fn){await db.exec('begin');try{await fn();}finally{await db.exec('rollback');}}
+test('001–011 real SQL summaryonly cutover, provenance, ACL, accounting and embedding lifecycle',async t=>{
+ const db=new PGlite({extensions:{vector}});
+ try{
+  await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');
+  for(const file of (await readdir(new URL('../supabase/migrations/',import.meta.url))).filter(f=>/^202610(?:12|15)00\d{2}_.+\.sql$/.test(f)&&Number(f.slice(8,12))<=12).sort())await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+  await seed(db);await db.exec('set role service_role');
+  await t.test('all6tables forcedRLS browserdenied, helperRPC invoker serviceonly',async()=>{
+   const tables=(await db.query("select count(*)::int n,count(*) filter(where not relrowsecurity or not relforcerowsecurity or has_table_privilege('anon',oid,'SELECT,INSERT,UPDATE,DELETE') or has_table_privilege('authenticated',oid,'SELECT,INSERT,UPDATE,DELETE'))::int invalid from pg_class where relnamespace='public'::regnamespace and relkind='r' and (relname like 'discord_live_summary_%' or relname='discord_summary_vectors')")).rows[0];assert.deepEqual(tables,{n:6,invalid:0});
+   const f=(await db.query("select count(*)::int n,count(*) filter(where prosecdef or has_function_privilege('anon',oid,'EXECUTE') or has_function_privilege('authenticated',oid,'EXECUTE') or not has_function_privilege('service_role',oid,'EXECUTE'))::int invalid from pg_proc where pronamespace='public'::regnamespace and proname like 'discord_live_summary_%'")).rows[0];assert(f.n>=18);assert.equal(f.invalid,0);
+  });
+  await t.test('activelegacy lease blocks cutover atomically',()=>transaction(db,async()=>{await db.query("update public.discord_summary_jobs set status='running',lease_token=gen_random_uuid(),lease_expires_at=now()+interval '5 minute' where id=$1",[legacyJob]);await assert.rejects(rpc(db,'cutover',{p_guild_id:guild,p_expected_policy_revision:1,p_delete_raw:true}),e=>e.code==='40001');}));
+  await t.test('stale policy cannot delete data',async()=>{await assert.rejects(rpc(db,'cutover',{p_guild_id:guild,p_expected_policy_revision:2,p_delete_raw:true}),e=>e.code==='40001');assert.equal((await db.query('select count(*)::int n from public.discord_messages where guild_id=$1',[guild])).rows[0].n,1);});
+  const before=(await db.query('select * from public.discord_summary_results where id=$1',[legacyResult])).rows[0];const receiptBefore=(await db.query('select * from public.discord_summary_requests where id=$1',[legacyReceipt])).rows[0];
+  const cut=await rpc(db,'cutover',{p_guild_id:guild,p_expected_policy_revision:1,p_delete_raw:true});assert.equal(cut.summaryOnly,true);assert.equal(cut.deletedRawMessages,1);assert.equal(cut.remainingRawMessages,0);
+  await t.test('cutover deletes onlytargetrawcopies/revisions/cursors preservinglegacyIDs/citations/certificates/ledger/receipts/ACL/unrelatedguild',async()=>{
+   assert.deepEqual((await db.query('select * from public.discord_summary_results where id=$1',[legacyResult])).rows[0],before);assert.deepEqual((await db.query('select * from public.discord_summary_requests where id=$1',[legacyReceipt])).rows[0],receiptBefore);
+   for(const table of ['discord_summary_certificates','discord_compaction_ledger'])assert.equal((await db.query('select count(*)::int n from public.'+table)).rows[0].n,1);
+   assert.equal((await db.query('select count(*)::int n from public.discord_message_revisions')).rows[0].n,0);assert.equal((await db.query('select count(*)::int n from public.discord_sync_state where source_id=$1',[source])).rows[0].n,0);assert.equal((await db.query('select count(*)::int n from public.knowledge_documents where source_id=$1',[source])).rows[0].n,0);
+   for(const table of ['discord_summary_inputs','discord_summary_parts','discord_summary_part_coverage','discord_summary_part_children','discord_summary_requests','discord_summary_results','discord_summary_certificates','discord_compaction_ledger','discord_live_summary_results','discord_live_summary_jobs','discord_live_summary_runs','discord_live_summary_requests','discord_summary_vectors'])assert.equal((await db.query('select count(*)::int n from public.'+table+" t where row_to_json(t)::text like '%RAW_SENTINEL_M25%'")).rows[0].n,0,table);
+   assert.equal((await db.query('select count(*)::int n from public.discord_messages where guild_id=$1',[otherGuild])).rows[0].n,1);assert.equal((await db.query('select count(*)::int n from public.knowledge_documents where source_id=$1',[otherSource])).rows[0].n,1);assert.equal((await db.query('select count(*)::int n from public.knowledge_source_members')).rows[0].n,2);
+  });
+  await t.test('oldworker raw INSERT and legacydispatch/resultupdate fail aftercutover',async()=>{
+   await assert.rejects(db.query("insert into public.discord_messages(message_id,source_id,channel_id,guild_id,author_id,created_at,content,embedding_text,payload,content_hash,url) select '1500000000000000003',$1,$2,$3,author_id,created_at,content,embedding_text,payload,content_hash,$4 from public.discord_messages where source_id=$5",[source,channel,guild,`https://discord.com/channels/${guild}/${channel}/1500000000000000003`,otherSource]),e=>e.code==='23514');
+   await assert.rejects(db.query("update public.discord_summary_jobs set status='running' where id=$1",[legacyJob]),e=>e.code==='23514');await assert.rejects(db.query('update public.discord_summary_results set summary=summary where id=$1',[legacyResult]),e=>e.code==='23514');
+  });
+  await t.test('planner catchesup missedperiods, weeklyANDmonthly remain separate, rerun idempotent',()=>transaction(db,async()=>{
+   await db.query("update public.discord_live_summary_state set transitioned_at=now()-interval '75 days' where guild_id=$1",[guild]);const first=await plan(db);assert(first.planned>8);assert.equal((await plan(db)).planned,0);const rows=(await db.query('select tier,period_start,period_end from public.discord_live_summary_jobs where guild_id=$1',[guild])).rows;assert(rows.some(r=>r.tier==='monthly'));assert(rows.some(r=>r.tier==='weekly'));assert(rows.every(r=>Date.parse(r.period_start)<Date.parse(r.period_end)));
+  }));
+  await plan(db);
+  await t.test('emptycompleteperiod publishes once, zero modelcalls needed and result receivespendingvector',()=>transaction(db,async()=>{const j=await claim(db);assert(j);const result=await finish(db,j);assert.equal(result.emptyPeriod,true);await db.exec('savepoint duplicate_finish');await assert.rejects(finish(db,j),e=>e.code==='40001');await db.exec('rollback to savepoint duplicate_finish');assert.equal((await db.query('select count(*)::int n from public.discord_live_summary_results where job_id=$1',[j.id])).rows[0].n,1);assert.equal((await db.query('select count(*)::int n from public.discord_summary_vectors where summary_id=$1',[result.summaryId])).rows[0].n,1);}));
+  await t.test('publication rejects policyrevision/pause/exclusion/expiredlease and doesnot alter legacydata',async()=>{
+   for(const sql of ["update public.discord_guild_policies set paused=true where guild_id=$1","update public.discord_guild_policies set revision=revision+1 where guild_id=$1","update public.discord_guild_policies set excluded_channel_ids=array['"+channel+"'] where guild_id=$1","update public.discord_live_summary_jobs set lease_expires_at=now()-interval '1 second' where guild_id=$1"]){await transaction(db,async()=>{const j=await claim(db);await db.query(sql,[guild]);await assert.rejects(finish(db,j),e=>e.code==='40001');});}assert.deepEqual((await db.query('select * from public.discord_summary_results where id=$1',[legacyResult])).rows[0],before);
+  });
+  await t.test('citationURL/source coverage and incompletecoverage rejected withoutpublication',async()=>{
+   for(const cites of [[{messageId,url:'https://discord.com/channels/123/456/'+messageId}],[],[...citations,...citations]])await transaction(db,async()=>{const j=await claim(db);await assert.rejects(finish(db,j,summary,cites,1),e=>e.code==='23514');});
+  });
+  await t.test('unknownrequest chargedonce durableacrossretry, samereservation cannotredispatch/refund afterunknown',()=>transaction(db,async()=>{
+   const j=await claim(db),r=await rpc(db,'begin_run',{p_guild_id:guild,p_max_cost_usd:0.1,p_max_requests:2}),reservation=randomUUID();const args={p_run_id:r.id,p_reservation_id:reservation,p_job_id:j.id,p_lease_token:j.lease_token,p_vector_id:null,p_vector_lease:null,p_input_tokens:100,p_output_tokens:100,p_max_cost_usd:0.06};
+   assert.equal((await rpc(db,'reserve',args)).dispatchAllowed,true);assert.equal((await rpc(db,'reserve',args)).dispatchAllowed,false);assert.equal(await rpc(db,'commit_usage',{p_reservation_id:reservation,p_status:'unknown',p_usage:{}}),true);
+   assert.equal(await rpc(db,'commit_usage',{p_reservation_id:reservation,p_status:'succeeded',p_usage:{inputTokens:1,outputTokens:1,costUsd:0.0001}}),false);
+   assert.equal((await rpc(db,'reserve',{...args,p_reservation_id:randomUUID()})).status,'budget_exhausted');
+   await rpc(db,'fail',{p_job_id:j.id,p_lease_token:j.lease_token});const retry=await claim(db);const allocated=(await db.query('select allocated_usd,request_count from public.discord_live_summary_jobs where id=$1',[j.id])).rows[0];assert.equal(Number(allocated.allocated_usd),0.06);assert.equal(allocated.request_count,1);assert(retry);
+  }));
+  await t.test('crashed reservedreceipt survives leaseexpiry and success settlement is idempotent',()=>transaction(db,async()=>{
+   const j=await claim(db),r=await rpc(db,'begin_run',{p_guild_id:guild,p_max_cost_usd:0.1,p_max_requests:5}),id=randomUUID();assert.equal((await rpc(db,'reserve',{p_run_id:r.id,p_reservation_id:id,p_job_id:j.id,p_lease_token:j.lease_token,p_vector_id:null,p_vector_lease:null,p_input_tokens:100,p_output_tokens:100,p_max_cost_usd:0.03})).dispatchAllowed,true);
+   await db.query("update public.discord_live_summary_jobs set lease_expires_at=now()-interval '1 second' where id=$1",[j.id]);await db.exec('savepoint duplicate_finish');await assert.rejects(finish(db,j),e=>e.code==='40001');await db.exec('rollback to savepoint duplicate_finish');assert.equal((await db.query('select status from public.discord_live_summary_requests where id=$1',[id])).rows[0].status,'reserved');
+   const args={p_reservation_id:id,p_status:'succeeded',p_usage:{inputTokens:10,outputTokens:10,costUsd:0.001}};assert.equal(await rpc(db,'commit_usage',args),true);assert.equal(await rpc(db,'commit_usage',args),true);assert.equal(Number((await db.query('select allocated_usd from public.discord_live_summary_runs where id=$1',[r.id])).rows[0].allocated_usd),0.001);
+  }));
+  await t.test('alllegacy+live final summaries queue idempotently with fullprovenance envelopes',()=>transaction(db,async()=>{
+   const j=await claim(db),created=await finish(db,j,summary,citations,1);assert.equal(await rpc(db,'queue_embeddings',{p_guild_id:guild,p_limit:1000}),1);assert.equal(await rpc(db,'queue_embeddings',{p_guild_id:guild,p_limit:1000}),0);
+   const rows=(await db.query('select summary_kind,summary_id,content_hash from public.discord_summary_vectors')).rows;assert.equal(rows.length,2);assert(rows.some(r=>r.summary_kind==='legacy'&&r.summary_id===legacyResult));assert(rows.some(r=>r.summary_kind==='live'&&r.summary_id===created.summaryId));
+   const envelope=await rpc(db,'envelope',{p_kind:'legacy',p_summary_id:legacyResult});assert.deepEqual(envelope.summary,summary);assert.deepEqual(envelope.citations,citations);assert.equal(envelope.summaryId,legacyResult);assert.equal(envelope.sourceId,source);assert.equal(envelope.channelId,channel);assert.equal(envelope.channelName,'Fixture channel');assert(envelope.periodStart&&envelope.periodEnd&&envelope.provider&&envelope.promptVersion);
+  }));
+  await t.test('embedding lease recovers aftercrash, stalehash/token CASfails, success stores1536vector',()=>transaction(db,async()=>{
+   await rpc(db,'queue_embeddings',{p_guild_id:guild,p_limit:1000});const item=await rpc(db,'claim_embedding',{p_guild_id:guild});assert(item);const vec=JSON.stringify(Array.from({length:1536},(_,i)=>i===0?1:0));
+   assert.equal(await rpc(db,'save_embedding',{p_id:item.id,p_lease_token:randomUUID(),p_content_hash:item.content_hash,p_vector:vec}),false);assert.equal(await rpc(db,'save_embedding',{p_id:item.id,p_lease_token:item.lease_token,p_content_hash:'b'.repeat(64),p_vector:vec}),false);
+   await db.query("update public.discord_summary_vectors set lease_expires_at=now()-interval '1 second' where id=$1",[item.id]);const recovered=await rpc(db,'claim_embedding',{p_guild_id:guild});assert.equal(recovered.id,item.id);assert.notEqual(recovered.lease_token,item.lease_token);
+   assert.equal(await rpc(db,'save_embedding',{p_id:item.id,p_lease_token:item.lease_token,p_content_hash:item.content_hash,p_vector:vec}),false);assert.equal(await rpc(db,'save_embedding',{p_id:item.id,p_lease_token:recovered.lease_token,p_content_hash:item.content_hash,p_vector:vec}),true);assert.equal((await rpc(db,'status',{p_guild_id:guild})).missingEmbeddings,0);assert.equal(await rpc(db,'claim_embedding',{p_guild_id:guild}),null);
+  }));
+  await t.test('changedcanonicalenvelope invalidatesclaimedvector CAS and requeueswithoutresettingdurableattempts',()=>transaction(db,async()=>{
+   await rpc(db,'queue_embeddings',{p_guild_id:guild,p_limit:1000});const item=await rpc(db,'claim_embedding',{p_guild_id:guild});assert(item);
+   await db.query("update public.discord_summary_jobs set channel_name='New metadata' where id=$1",[legacyJob]);
+   // The legacy envelope uses result.channel_name, so change a period bound to
+   // exercise the actual canonical envelope rather than a hash argument alone.
+   await db.query("update public.discord_summary_jobs set period_start=period_start+interval '1 minute' where id=$1",[legacyJob]);
+   assert.equal(await rpc(db,'save_embedding',{p_id:item.id,p_lease_token:item.lease_token,p_content_hash:item.content_hash,p_vector:JSON.stringify(Array(1536).fill(1))}),false);
+   assert.equal(await rpc(db,'queue_embeddings',{p_guild_id:guild,p_limit:1000}),1);const next=await rpc(db,'claim_embedding',{p_guild_id:guild});assert.equal(next.id,item.id);assert.notEqual(next.content_hash,item.content_hash);assert.equal(next.attempts,2);
+  }));
+  await t.test('fallback needs bothallowlist and durablegrant, respects sourcepause/exclusions/timewindow',async()=>{
+   const args={p_member_id:'local-development',p_allowed_source_ids:[source],p_query:'fixture',p_channel_ids:[],p_from:null,p_to:null,p_limit:5,p_vector:null};assert.equal((await rpc(db,'search',args)).length,1);assert.equal((await rpc(db,'search',{...args,p_allowed_source_ids:[source,...Array.from({length:215},()=>randomUUID())]})).length,1);assert.equal((await rpc(db,'search',{...args,p_allowed_source_ids:[otherSource]})).length,0);assert.equal((await rpc(db,'search',{...args,p_member_id:randomUUID()})).length,0);assert.equal((await rpc(db,'search',{...args,p_from:'2026-10-06T00:00Z'})).length,0);
+   await transaction(db,async()=>{await db.query('update public.discord_guild_policies set excluded_channel_ids=array[$1] where guild_id=$2',[channel,guild]);assert.equal((await rpc(db,'search',args)).length,0);});
+   await transaction(db,async()=>{await db.query('update public.discord_guild_policies set paused=true where guild_id=$1',[guild]);assert.equal((await rpc(db,'search',args)).length,0);});
+  });
+ }finally{await db.close();}
+});

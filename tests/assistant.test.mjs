@@ -27,10 +27,28 @@ test('history excludes system roles and is bounded; citations allow only explici
   const messages = boundedMessages([{ role: 'system', content: 'bad' }, ...Array.from({length:30},(_,i)=>({role:i%2?'assistant':'user',content:'x'.repeat(9000)}))]); assert(messages.length<=20); assert(messages.every(m=>m.content.length<=8000)); assert(messages.reduce((n,m)=>n+m.content.length,0)<=16000); assert(Buffer.byteLength(JSON.stringify({messages}))<=32500); assert.equal(messages.at(-1).role,'assistant');
   for (const url of ['javascript:alert(1)','data:text/html,test','file:///secret','/relative',null]) assert.equal(safeSourceUrl(url),null); assert.equal(safeSourceUrl('https://example.com/a'),'https://example.com/a');
 });
+test('connection checks bound hung fetch/body, preserve external abort and sanitize gateway failures', async () => {
+  const hang = () => new Promise(() => {});
+  await assert.rejects(getAssistantStatus({ timeoutMs: 10, fetchImpl: hang }), /timed out/);
+  await assert.rejects(getAssistantStatus({ timeoutMs: 10, fetchImpl: async () => ({ ok: true, json: hang }) }), /timed out/);
+  const controller = new AbortController();
+  const pending = getAssistantStatus({ signal: controller.signal, fetchImpl: hang }); controller.abort();
+  await assert.rejects(pending, { name: 'AbortError' });
+  for (const code of [500, 502, 504]) {
+    await assert.rejects(getAssistantStatus({ fetchImpl: async () => new Response('private upstream detail', { status: code }) }), e => e.message.includes('npm run dev') && !e.message.includes('private'));
+    await assert.rejects(streamAssistant({ messages: [], fetchImpl: async () => new Response('private upstream detail', { status: code }) }), e => e.message.includes('npm run dev') && !e.message.includes('private'));
+  }
+  for (const code of [401, 403, 429]) await assert.rejects(getAssistantStatus({ fetchImpl: async () => new Response('private', { status: code }) }), code === 429 ? /busy/ : /Access denied/);
+  await assert.rejects(streamAssistant({ messages: [], fetchImpl: async () => { throw new Error('private URL or key'); } }), e => e.message.includes('npm run dev') && !e.message.includes('private'));
+});
 class Element {
-  constructor(tag) { this.tagName=tag;this.children=[];this.listeners={};this.attributes={};this.hidden=false;this.disabled=false;this.value='';this.textContent='';this.className=''; }
+  constructor(tag) { this.tagName=tag;this.children=[];this.listeners={};this.attributes={};this.hidden=false;this.disabled=false;this.value='';this.textContent='';this.className='';this.style={};this.open=false; }
   append(...nodes){for(const n of nodes){this.children.push(n);n.parent=this;}}
   replaceChildren(...nodes){this.children=[];this.append(...nodes);}
+  get isConnected(){return this.tagName==='body'||Boolean(this.parent?.isConnected);}
+  showModal(){this.open=true;}
+  close(){this.open=false;}
+  getBoundingClientRect(){return {left:100,right:740,top:100,bottom:350};}
   get firstElementChild(){return this.children[0];}
   setAttribute(k,v){this.attributes[k]=v;}
   addEventListener(k,f){(this.listeners[k]??=[]).push(f);}
@@ -48,10 +66,10 @@ test('offline fake DOM: gated entry, honest status, streaming safe text/sources,
   let assistant;
   try {
     assistant=createAssistant();const root=doc.body.children[0],find=c=>all(root).find(n=>n.className===c),panel=find('assistant-panel'),input=all(root).find(n=>n.tagName==='textarea'),form=find('assistant-form');assert(root.hidden);assistant.open();assert(panel.hidden);assert.equal(calls.length,0);
-    await doc.emit('campus-enter');await tick();assert(!root.hidden&&!panel.hidden);assert(input.disabled);assert(find('assistant-service').textContent.includes('not configured'));configured=true;await find('assistant-retry').emit('click');await tick();assert.equal(input.disabled,false);
+    await doc.emit('campus-enter');await tick();assert(!root.hidden&&panel.hidden&&!panel.open);assert(!input.disabled);assert(find('assistant-service').textContent.includes('setup pending'));assistant.open();assert(panel.open&&!panel.hidden);input.value='offline draft';await input.emit('input');assert(all(root).find(n=>n.attributes['aria-label']==='Send message').disabled);configured=true;await find('assistant-retry').emit('click');await tick();assert.equal(input.disabled,false);
     await doc.emit('campus-building-selected',{detail:{id:'bobst-library',name:'Bobst'}});assert.equal(find('assistant-context').textContent,'Selected: Bobst');input.value='hello';await form.emit('submit');assert.equal(find('assistant-announcement').textContent,'Reply complete.');assert(all(root).some(n=>n.textContent==='<script>fixture</script>'));const links=all(root).filter(n=>n.tagName==='a');assert.equal(links.length,1);assert.equal(links[0].textContent,'<img>');assert.equal(JSON.parse(calls.at(-1).options.body).buildingId,'bobst-library');
     const wheel=await root.emit('wheel');assert(wheel.stopped);await root.emit('keydown',{key:'Escape'});assert(panel.hidden);assistant.open();assert.equal(doc.activeElement,input);const shifted=await input.emit('keydown',{key:'Enter',shiftKey:true});assert(!shifted.prevented);
-    const clear=all(root).find(n=>n.tagName==='button'&&n.textContent==='Clear chat');await clear.emit('click');assert.equal(find('assistant-transcript').children.length,1);input.value='hello again';await form.emit('submit');assert.equal(JSON.parse(calls.at(-1).options.body).messages.length,1);
+    const clear=all(root).find(n=>n.tagName==='button'&&n.textContent==='Clear chat');await clear.emit('click');assert.equal(find('assistant-transcript').children.length,0);input.value='hello again';await form.emit('submit');assert.equal(JSON.parse(calls.at(-1).options.body).messages.length,1);
     input.value='hang';const stopped=form.emit('submit');await tick();const stop=all(root).find(n=>n.tagName==='button'&&n.textContent==='Stop');await stop.emit('click');await stopped;assert.equal(find('assistant-announcement').textContent,'Reply stopped.');assert(all(root).some(n=>n.textContent==='Stopped. This reply is incomplete.'));input.value='hang';const pending=form.emit('submit');await tick();assert(hangController);await doc.emit('campus-loading-failed');await pending;assert(root.hidden&&panel.hidden);assert(calls.at(-1).options.signal.aborted);assert(input.disabled);
   } finally {assistant?.dispose();globalThis.document=oldDoc;globalThis.fetch=oldFetch;}
 });
