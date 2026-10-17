@@ -1,0 +1,161 @@
+[
+  {
+    "service": "miro-sync",
+    "serviceId": "2c1afff2-84f8-4a4c-961d-686dcb39eeed",
+    "startCommand": "node server/miro/cli.js scheduled",
+    "cronSchedule": "0 10,11 * * *",
+    "nextCronRunAt": "2026-10-16T10:00:00Z",
+    "deploymentId": "ac53b225-d0f5-492a-93b9-f5a99cea6be5",
+    "deploymentStatus": "SUCCESS",
+    "instances": [
+      {
+        "id": "be7c28e9-17e1-46f5-abc4-5c9bbbc15281",
+        "status": "CREATED"
+      }
+    ],
+    "manifest": {
+      "build": {
+        "buildCommand": null,
+        "buildEnvironment": "V3",
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "Dockerfile",
+        "nixpacksConfigPath": null,
+        "nixpacksPlan": null,
+        "watchPatterns": []
+      },
+      "deploy": {
+        "cronSchedule": "0 10,11 * * *",
+        "drainingSeconds": null,
+        "healthcheckPath": null,
+        "healthcheckTimeout": null,
+        "ipv6EgressEnabled": false,
+        "limitOverride": null,
+        "multiRegionConfig": {
+          "europe-west4-drams3a": {
+            "numReplicas": 1
+          }
+        },
+        "numReplicas": 1,
+        "overlapSeconds": null,
+        "preDeployCommand": null,
+        "preDeployTimeoutSeconds": null,
+        "region": null,
+        "registryCredentials": null,
+        "requiredMountPath": null,
+        "restartPolicyMaxRetries": null,
+        "restartPolicyType": "NEVER",
+        "runtime": "V2",
+        "sleepApplication": false,
+        "startCommand": "node server/miro/cli.js scheduled",
+        "useLegacyStacker": false
+      }
+    },
+    "imageDigest": "sha256:569915d46518f2fd87cf47b82885cab7d97c8c13f6b336deb1c5fca4d961154e"
+  },
+  {
+    "service": "discord-archive",
+    "serviceId": "2dad5e78-ff4f-4342-acc3-bf3daba2f3f3",
+    "startCommand": "node server/discord/cli.js discover",
+    "cronSchedule": "0 10 * * *",
+    "nextCronRunAt": "2026-10-16T10:00:00Z",
+    "deploymentId": "46fc58c6-4219-47ea-aa00-37c8764a496a",
+    "deploymentStatus": "SUCCESS",
+    "instances": [
+      {
+        "id": "121f446b-9b1a-4a78-8fb5-213bb6dbb505",
+        "status": "RUNNING"
+      }
+    ],
+    "manifest": {
+      "build": {
+        "buildCommand": null,
+        "buildEnvironment": "V3",
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "Dockerfile",
+        "nixpacksConfigPath": null,
+        "nixpacksPlan": null,
+        "watchPatterns": []
+      },
+      "deploy": {
+        "cronSchedule": "0 10 * * *",
+        "drainingSeconds": null,
+        "healthcheckPath": null,
+        "healthcheckTimeout": null,
+        "ipv6EgressEnabled": false,
+        "limitOverride": null,
+        "multiRegionConfig": {
+          "europe-west4-drams3a": {
+            "numReplicas": 1
+          }
+        },
+        "numReplicas": 1,
+        "overlapSeconds": null,
+        "preDeployCommand": null,
+        "preDeployTimeoutSeconds": null,
+        "region": null,
+        "registryCredentials": null,
+        "requiredMountPath": null,
+        "restartPolicyMaxRetries": null,
+        "restartPolicyType": "NEVER",
+        "runtime": "V2",
+        "sleepApplication": false,
+        "startCommand": "node server/discord/cli.js discover",
+        "useLegacyStacker": false
+      }
+    },
+    "imageDigest": "sha256:15536621fd1235cf23c9b77a63d5a49e85720e0ab6c3005c04236f5b14392cdd"
+  },
+  {
+    "service": "discord-summaries",
+    "serviceId": "69883843-95df-4d3b-9a16-e44983e1964e",
+    "startCommand": "node server/discord/live-summary-cli.js scheduled",
+    "cronSchedule": "10 * * * *",
+    "nextCronRunAt": "2026-10-15T21:10:00Z",
+    "deploymentId": "cc2bdf36-9d3a-4fb3-ac66-24870b40b3e3",
+    "deploymentStatus": "CRASHED",
+    "instances": [
+      {
+        "id": "4a874aac-b720-4352-87a9-3eba842b113e",
+        "status": "CRASHED"
+      }
+    ],
+    "manifest": {
+      "build": {
+        "buildCommand": null,
+        "buildEnvironment": "V3",
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "Dockerfile",
+        "nixpacksConfigPath": null,
+        "nixpacksPlan": null,
+        "watchPatterns": []
+      },
+      "deploy": {
+        "cronSchedule": "10 * * * *",
+        "drainingSeconds": null,
+        "healthcheckPath": null,
+        "healthcheckTimeout": null,
+        "ipv6EgressEnabled": false,
+        "limitOverride": null,
+        "multiRegionConfig": {
+          "europe-west4-drams3a": {
+            "numReplicas": 1
+          }
+        },
+        "numReplicas": 1,
+        "overlapSeconds": null,
+        "preDeployCommand": null,
+        "preDeployTimeoutSeconds": null,
+        "region": null,
+        "registryCredentials": null,
+        "requiredMountPath": null,
+        "restartPolicyMaxRetries": null,
+        "restartPolicyType": "NEVER",
+        "runtime": "V2",
+        "sleepApplication": false,
+        "startCommand": "node server/discord/live-summary-cli.js scheduled",
+        "useLegacyStacker": false
+      }
+    },
+    "imageDigest": "sha256:7856db9460601ce9fea4cefc48b050c8366b3c3501a166ce0c4f88760436073e"
+  }
+]

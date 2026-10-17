@@ -1,0 +1,10 @@
+# hosted live only implementation accepted
+
+- Local timestamp / acting role / milestone: 2026-10-15_20-42-07-007651 / evaluator / M29.
+- Requested scope: Explicitly delete all durable Discord summary/storage records and keep one channel catalogue/view-settings table; all content access uses live bot.
+- Starting repository state: Local001–017implementationaccepted, hosted017applied and finalverification underway; concurrent dirty workspace preserved.
+- Work performed / changed files: Independent read-only hosted artifact review ACCEPT. Exact3tables, all269node fingerprints/219source IDs/settings/checkpoints unchanged; Miro/nonDiscordsource fingerprints unchanged. All16retired refs absent;19application RPCs service-onlyinvoker and3tablesforcedRLS/browserdenied. Summary service removedbefore017; database values preserved. Metadata imagec056f687…SUCCESS/buildOnly,47serverhashesmatchworkspace. Real scoped bot read has original links; currentlocalAPI live_only/no fallback.358/358Discord+118/118integrationPASS. No material mismatch.
+- Decisions: Userdirection supersedes previoussummary/accounting retention. AppliedSQL001–017immutable; noCASCADE. Shared sourceallowlist, current policy, finalcatalogueverification and backendadminchecks remain. All content remainsinDiscord/on-demandrequestRAM.
+- Checks and evidence: evidence/m29-discord-live-only/ contains independent report/log, before/aftercataloguehashes, preservation checks, migrationreceipt, service retirement/build/hash evidence and actuallive/localAPI smokes. RootfinalDiscord358/358,integration118/118,APIvalidation and targetedwhitespace checks pass.
+- Resulting state / acceptance: M29complete after independent local and hosted-evidence acceptance. Threepublictables remain: discord_view_policies,knowledge_sources,miro_boards.
+- Remaining work and handoff: Observe nextnaturalmetadata cron separately from successfulimagebuild. Mirotoken/board scope stillpending andsyncstaysdisabled. No storedDiscordcatchup/summary/embeddingbacklog remains; those tasksarecancelled byexplicitnewdirection. Production/publicAPIauthentication isunchanged.

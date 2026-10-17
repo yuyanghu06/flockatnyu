@@ -1,0 +1,1742 @@
+{
+  "checkedAt": "2026-10-15T17:24:43.140343-04:00",
+  "projectRef": "jssehnrmqhstcrtxulpa",
+  "readOnly": true,
+  "tables": [
+    {
+      "name": "discord_admin_members",
+      "row_count": 1,
+      "total_bytes": 32768
+    },
+    {
+      "name": "discord_channel_metadata",
+      "row_count": 269,
+      "total_bytes": 147456
+    },
+    {
+      "name": "discord_channels",
+      "row_count": 219,
+      "total_bytes": 139264
+    },
+    {
+      "name": "discord_compaction_ledger",
+      "row_count": 722,
+      "total_bytes": 516096
+    },
+    {
+      "name": "discord_discovery_state",
+      "row_count": 1,
+      "total_bytes": 786432
+    },
+    {
+      "name": "discord_guild_policies",
+      "row_count": 1,
+      "total_bytes": 32768
+    },
+    {
+      "name": "discord_live_summary_jobs",
+      "row_count": 438,
+      "total_bytes": 319488
+    },
+    {
+      "name": "discord_live_summary_requests",
+      "row_count": 1478,
+      "total_bytes": 598016
+    },
+    {
+      "name": "discord_live_summary_results",
+      "row_count": 59,
+      "total_bytes": 172032
+    },
+    {
+      "name": "discord_live_summary_runs",
+      "row_count": 14,
+      "total_bytes": 65536
+    },
+    {
+      "name": "discord_live_summary_state",
+      "row_count": 1,
+      "total_bytes": 32768
+    },
+    {
+      "name": "discord_memory_buckets",
+      "row_count": 0,
+      "total_bytes": 581632
+    },
+    {
+      "name": "discord_memory_members",
+      "row_count": 0,
+      "total_bytes": 36216832
+    },
+    {
+      "name": "discord_message_revisions",
+      "row_count": 0,
+      "total_bytes": 32768
+    },
+    {
+      "name": "discord_messages",
+      "row_count": 0,
+      "total_bytes": 204947456
+    },
+    {
+      "name": "discord_summary_certificates",
+      "row_count": 722,
+      "total_bytes": 704512
+    },
+    {
+      "name": "discord_summary_inputs",
+      "row_count": 0,
+      "total_bytes": 17965056
+    },
+    {
+      "name": "discord_summary_jobs",
+      "row_count": 722,
+      "total_bytes": 933888
+    },
+    {
+      "name": "discord_summary_operation_jobs",
+      "row_count": 1417,
+      "total_bytes": 376832
+    },
+    {
+      "name": "discord_summary_operations",
+      "row_count": 2,
+      "total_bytes": 28532736
+    },
+    {
+      "name": "discord_summary_part_children",
+      "row_count": 0,
+      "total_bytes": 57344
+    },
+    {
+      "name": "discord_summary_part_coverage",
+      "row_count": 0,
+      "total_bytes": 1433600
+    },
+    {
+      "name": "discord_summary_parts",
+      "row_count": 0,
+      "total_bytes": 262144
+    },
+    {
+      "name": "discord_summary_requests",
+      "row_count": 2245,
+      "total_bytes": 688128
+    },
+    {
+      "name": "discord_summary_results",
+      "row_count": 722,
+      "total_bytes": 2793472
+    },
+    {
+      "name": "discord_summary_vectors",
+      "row_count": 781,
+      "total_bytes": 6971392
+    },
+    {
+      "name": "discord_sync_state",
+      "row_count": 0,
+      "total_bytes": 40960
+    },
+    {
+      "name": "knowledge_chunks",
+      "row_count": 0,
+      "total_bytes": 40960
+    },
+    {
+      "name": "knowledge_daily_summaries",
+      "row_count": 0,
+      "total_bytes": 24576
+    },
+    {
+      "name": "knowledge_document_members",
+      "row_count": 0,
+      "total_bytes": 16384
+    },
+    {
+      "name": "knowledge_documents",
+      "row_count": 0,
+      "total_bytes": 40960
+    },
+    {
+      "name": "knowledge_source_members",
+      "row_count": 218,
+      "total_bytes": 131072
+    },
+    {
+      "name": "knowledge_sources",
+      "row_count": 219,
+      "total_bytes": 163840
+    },
+    {
+      "name": "knowledge_sync_state",
+      "row_count": 0,
+      "total_bytes": 16384
+    }
+  ],
+  "foreignKeys": [
+    {
+      "child": "discord_channel_metadata",
+      "parent": "discord_guild_policies",
+      "conname": "discord_channel_metadata_guild_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_channels",
+      "parent": "knowledge_sources",
+      "conname": "discord_channels_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_compaction_ledger",
+      "parent": "discord_channels",
+      "conname": "discord_compaction_ledger_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_compaction_ledger",
+      "parent": "discord_summary_certificates",
+      "conname": "discord_compaction_ledger_certificate_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_discovery_state",
+      "parent": "discord_guild_policies",
+      "conname": "discord_discovery_state_guild_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_live_summary_jobs",
+      "parent": "discord_channels",
+      "conname": "discord_live_summary_jobs_source_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_requests",
+      "parent": "discord_live_summary_jobs",
+      "conname": "discord_live_summary_requests_job_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_requests",
+      "parent": "discord_live_summary_runs",
+      "conname": "discord_live_summary_requests_run_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_requests",
+      "parent": "discord_summary_vectors",
+      "conname": "discord_live_summary_requests_vector_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_results",
+      "parent": "discord_channels",
+      "conname": "discord_live_summary_results_source_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_results",
+      "parent": "discord_live_summary_jobs",
+      "conname": "discord_live_summary_results_job_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_runs",
+      "parent": "discord_guild_policies",
+      "conname": "discord_live_summary_runs_guild_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_live_summary_state",
+      "parent": "discord_guild_policies",
+      "conname": "discord_live_summary_state_guild_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_memory_buckets",
+      "parent": "discord_channels",
+      "conname": "discord_memory_buckets_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_memory_members",
+      "parent": "discord_memory_buckets",
+      "conname": "discord_memory_members_bucket_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_memory_members",
+      "parent": "discord_messages",
+      "conname": "discord_memory_members_message_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_message_revisions",
+      "parent": "discord_messages",
+      "conname": "discord_message_revisions_message_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_messages",
+      "parent": "discord_channels",
+      "conname": "discord_messages_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_certificates",
+      "parent": "discord_channels",
+      "conname": "discord_summary_certificates_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_certificates",
+      "parent": "discord_summary_jobs",
+      "conname": "discord_summary_certificates_job_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_inputs",
+      "parent": "discord_summary_certificates",
+      "conname": "discord_summary_inputs_certificate_id_source_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_summary_inputs",
+      "parent": "discord_summary_jobs",
+      "conname": "discord_summary_inputs_job_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_jobs",
+      "parent": "discord_channels",
+      "conname": "discord_summary_jobs_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_jobs",
+      "parent": "discord_guild_policies",
+      "conname": "discord_summary_jobs_guild_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_summary_jobs",
+      "parent": "discord_summary_operations",
+      "conname": "discord_summary_jobs_operation_id_fkey",
+      "confdeltype": "n"
+    },
+    {
+      "child": "discord_summary_operation_jobs",
+      "parent": "discord_summary_jobs",
+      "conname": "discord_summary_operation_jobs_job_id_guild_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_operation_jobs",
+      "parent": "discord_summary_operations",
+      "conname": "discord_summary_operation_jobs_operation_id_guild_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_operations",
+      "parent": "discord_guild_policies",
+      "conname": "discord_summary_operations_guild_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_summary_part_children",
+      "parent": "discord_summary_parts",
+      "conname": "discord_summary_part_children_child_part_id_job_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_part_children",
+      "parent": "discord_summary_parts",
+      "conname": "discord_summary_part_children_part_id_job_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_part_coverage",
+      "parent": "discord_summary_inputs",
+      "conname": "discord_summary_part_coverage_job_id_input_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_part_coverage",
+      "parent": "discord_summary_parts",
+      "conname": "discord_summary_part_coverage_part_id_job_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_parts",
+      "parent": "discord_summary_jobs",
+      "conname": "discord_summary_parts_job_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_parts",
+      "parent": "discord_summary_requests",
+      "conname": "discord_summary_parts_reservation_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_requests",
+      "parent": "discord_summary_jobs",
+      "conname": "discord_summary_requests_job_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_requests",
+      "parent": "discord_summary_operations",
+      "conname": "discord_summary_requests_operation_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_results",
+      "parent": "discord_summary_certificates",
+      "conname": "discord_summary_results_certificate_id_source_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_summary_results",
+      "parent": "discord_summary_jobs",
+      "conname": "discord_summary_results_job_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "discord_summary_vectors",
+      "parent": "discord_channels",
+      "conname": "discord_summary_vectors_source_id_fkey",
+      "confdeltype": "a"
+    },
+    {
+      "child": "discord_sync_state",
+      "parent": "discord_channels",
+      "conname": "discord_sync_state_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_chunks",
+      "parent": "knowledge_documents",
+      "conname": "knowledge_chunks_document_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_daily_summaries",
+      "parent": "knowledge_sources",
+      "conname": "knowledge_daily_summaries_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_document_members",
+      "parent": "knowledge_documents",
+      "conname": "knowledge_document_members_document_id_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_document_members",
+      "parent": "knowledge_source_members",
+      "conname": "knowledge_document_members_source_id_member_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_documents",
+      "parent": "knowledge_sources",
+      "conname": "knowledge_documents_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_source_members",
+      "parent": "knowledge_sources",
+      "conname": "knowledge_source_members_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "knowledge_sync_state",
+      "parent": "knowledge_sources",
+      "conname": "knowledge_sync_state_source_id_fkey",
+      "confdeltype": "c"
+    },
+    {
+      "child": "miro_boards",
+      "parent": "knowledge_sources",
+      "conname": "miro_boards_source_id_fkey",
+      "confdeltype": "c"
+    }
+  ],
+  "functionTableReferences": [
+    {
+      "function_name": "discord_channel_allowed",
+      "table_name": "discord_channel_metadata"
+    },
+    {
+      "function_name": "discord_channel_allowed",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_channel_allowed",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_complete_discovery",
+      "table_name": "discord_channel_metadata"
+    },
+    {
+      "function_name": "discord_complete_discovery",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_complete_discovery",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_complete_discovery",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_complete_discovery",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_configure_channel",
+      "table_name": "discord_admin_members"
+    },
+    {
+      "function_name": "discord_configure_channel",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_configure_channel",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_configure_channel",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_configure_policy",
+      "table_name": "discord_admin_members"
+    },
+    {
+      "function_name": "discord_configure_policy",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_configure_policy",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_configure_policy",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_configure_policy",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_embedding_work",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_embedding_work",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_embedding_work",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_embedding_work",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_get_discovery_state",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_get_discovery_state",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_get_policy",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_get_sync_state",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_list_channels",
+      "table_name": "discord_admin_members"
+    },
+    {
+      "function_name": "discord_list_channels",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_begin_run",
+      "table_name": "discord_live_summary_runs"
+    },
+    {
+      "function_name": "discord_live_summary_claim",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_claim",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_claim",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_claim",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_claim",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_claim_embedding",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_claim_embedding",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_claim_embedding",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_claim_embedding",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_commit_usage",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_commit_usage",
+      "table_name": "discord_live_summary_requests"
+    },
+    {
+      "function_name": "discord_live_summary_commit_usage",
+      "table_name": "discord_live_summary_runs"
+    },
+    {
+      "function_name": "discord_live_summary_commit_usage",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "knowledge_daily_summaries"
+    },
+    {
+      "function_name": "discord_live_summary_cutover",
+      "table_name": "knowledge_documents"
+    },
+    {
+      "function_name": "discord_live_summary_enabled",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_enabled",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_envelope",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_envelope",
+      "table_name": "discord_live_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_envelope",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_live_summary_envelope",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_envelope",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_fail",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_finish",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_finish",
+      "table_name": "discord_live_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_finish",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_lock",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_lock",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_lock",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_lock",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_lock",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_plan",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_plan",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_plan",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_plan",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_plan",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_queue_embeddings",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_queue_embeddings",
+      "table_name": "discord_live_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_queue_embeddings",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_queue_embeddings",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_queue_embeddings",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_release_embedding",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "discord_live_summary_requests"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "discord_live_summary_runs"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_reserve",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_retire_archive",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_retire_archive",
+      "table_name": "discord_message_revisions"
+    },
+    {
+      "function_name": "discord_live_summary_retire_archive",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_live_summary_retire_archive",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_retire_archive",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_save_embedding",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_save_embedding",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_live_summary_save_embedding",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_save_embedding",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "discord_live_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "discord_live_summary_search",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_live_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_live_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_live_summary_state"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_live_summary_status",
+      "table_name": "discord_summary_vectors"
+    },
+    {
+      "function_name": "discord_memory_list",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_memory_list",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_memory_list",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_memory_list",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "discord_memory_list",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "discord_memory_members"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "discord_memory_page",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_persist_discovery",
+      "table_name": "discord_channel_metadata"
+    },
+    {
+      "function_name": "discord_persist_discovery",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_persist_discovery",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_persist_discovery",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_persist_discovery",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "discord_message_revisions"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_persist_page",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_rebuild_memory",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_rebuild_memory",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_rebuild_memory",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_rebuild_memory",
+      "table_name": "discord_memory_members"
+    },
+    {
+      "function_name": "discord_rebuild_memory",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_rebuild_memory",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_admin_members"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "knowledge_daily_summaries"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "knowledge_documents"
+    },
+    {
+      "function_name": "discord_reset_archive",
+      "table_name": "knowledge_sync_state"
+    },
+    {
+      "function_name": "discord_save_embedding",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_save_embedding",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_save_embedding",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_save_embedding",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_search",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_search",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_search",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_search",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "discord_search",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_begin_operation",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_begin_operation",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_summary_begin_operation",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_begin_operation",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_begin_operation",
+      "table_name": "discord_summary_operation_jobs"
+    },
+    {
+      "function_name": "discord_summary_begin_operation",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_claim_job",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_claim_job",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_claim_job",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_claim_job",
+      "table_name": "discord_summary_operation_jobs"
+    },
+    {
+      "function_name": "discord_summary_claim_job",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_claim_job",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_commit_usage",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_commit_usage",
+      "table_name": "discord_summary_requests"
+    },
+    {
+      "function_name": "discord_summary_current_fingerprint",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_current_fingerprint",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_current_fingerprint",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_summary_current_fingerprint",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_current_fingerprint",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_fail_job",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_memory_buckets"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_memory_members"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_inputs"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_part_children"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_part_coverage"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_parts"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_summary_finish_job",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_get_inputs",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_summary_get_inputs",
+      "table_name": "discord_summary_inputs"
+    },
+    {
+      "function_name": "discord_summary_get_inputs",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_get_operation",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_get_operation",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_get_operation",
+      "table_name": "discord_summary_operation_jobs"
+    },
+    {
+      "function_name": "discord_summary_get_operation",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_get_parts",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_get_parts",
+      "table_name": "discord_summary_part_children"
+    },
+    {
+      "function_name": "discord_summary_get_parts",
+      "table_name": "discord_summary_part_coverage"
+    },
+    {
+      "function_name": "discord_summary_get_parts",
+      "table_name": "discord_summary_parts"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "discord_summary_operation_jobs"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_get_pending_operation",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_input",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_invalidate_message",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_invalidate_message",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_ledger_guard",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "discord_summary_list_results",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_lock_job",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_lock_job",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_lock_job",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_lock_job",
+      "table_name": "discord_summary_operation_jobs"
+    },
+    {
+      "function_name": "discord_summary_lock_job",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_lock_job",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_summary_manifest",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_summary_period_manifest",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_messages"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_summary_planning_queue",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_summary_inputs"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_summary_operation_jobs"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_summary_prepare_operation",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_summary_preview",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_preview",
+      "table_name": "discord_discovery_state"
+    },
+    {
+      "function_name": "discord_summary_preview",
+      "table_name": "discord_guild_policies"
+    },
+    {
+      "function_name": "discord_summary_renew_job",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_reserve_request",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_reserve_request",
+      "table_name": "discord_summary_operations"
+    },
+    {
+      "function_name": "discord_summary_reserve_request",
+      "table_name": "discord_summary_requests"
+    },
+    {
+      "function_name": "discord_summary_save_part",
+      "table_name": "discord_summary_inputs"
+    },
+    {
+      "function_name": "discord_summary_save_part",
+      "table_name": "discord_summary_jobs"
+    },
+    {
+      "function_name": "discord_summary_save_part",
+      "table_name": "discord_summary_part_children"
+    },
+    {
+      "function_name": "discord_summary_save_part",
+      "table_name": "discord_summary_part_coverage"
+    },
+    {
+      "function_name": "discord_summary_save_part",
+      "table_name": "discord_summary_parts"
+    },
+    {
+      "function_name": "discord_summary_save_part",
+      "table_name": "discord_summary_requests"
+    },
+    {
+      "function_name": "discord_summary_verified_input",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_verified_input",
+      "table_name": "discord_compaction_ledger"
+    },
+    {
+      "function_name": "discord_summary_verified_input",
+      "table_name": "discord_summary_certificates"
+    },
+    {
+      "function_name": "discord_summary_verified_input",
+      "table_name": "discord_summary_results"
+    },
+    {
+      "function_name": "discord_summary_waiting_sources",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_summary_waiting_sources",
+      "table_name": "discord_sync_state"
+    },
+    {
+      "function_name": "discord_summary_waiting_sources",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "discord_sync_channels",
+      "table_name": "discord_channels"
+    },
+    {
+      "function_name": "discord_sync_channels",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "knowledge_delete_document",
+      "table_name": "knowledge_documents"
+    },
+    {
+      "function_name": "knowledge_delete_document",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "knowledge_delete_document",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "knowledge_get_document",
+      "table_name": "knowledge_document_members"
+    },
+    {
+      "function_name": "knowledge_get_document",
+      "table_name": "knowledge_documents"
+    },
+    {
+      "function_name": "knowledge_get_document",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "knowledge_get_document",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "knowledge_search",
+      "table_name": "knowledge_chunks"
+    },
+    {
+      "function_name": "knowledge_search",
+      "table_name": "knowledge_document_members"
+    },
+    {
+      "function_name": "knowledge_search",
+      "table_name": "knowledge_documents"
+    },
+    {
+      "function_name": "knowledge_search",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "knowledge_search",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "knowledge_upsert_document",
+      "table_name": "knowledge_chunks"
+    },
+    {
+      "function_name": "knowledge_upsert_document",
+      "table_name": "knowledge_document_members"
+    },
+    {
+      "function_name": "knowledge_upsert_document",
+      "table_name": "knowledge_documents"
+    },
+    {
+      "function_name": "knowledge_upsert_document",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "knowledge_upsert_document",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "miro_authorized_board",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "miro_authorized_board",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "miro_sync_finish",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "miro_sync_locked_board",
+      "table_name": "knowledge_sources"
+    },
+    {
+      "function_name": "miro_sync_register",
+      "table_name": "knowledge_source_members"
+    },
+    {
+      "function_name": "miro_sync_register",
+      "table_name": "knowledge_sources"
+    }
+  ],
+  "triggers": [
+    {
+      "table_name": "discord_compaction_ledger",
+      "trigger_name": "discord_compaction_disjoint",
+      "function_name": "discord_summary_ledger_guard"
+    },
+    {
+      "table_name": "discord_message_revisions",
+      "trigger_name": "discord_revision_retired",
+      "function_name": "discord_live_summary_retire_archive"
+    },
+    {
+      "table_name": "discord_messages",
+      "trigger_name": "discord_raw_retired",
+      "function_name": "discord_live_summary_retire_archive"
+    },
+    {
+      "table_name": "discord_messages",
+      "trigger_name": "discord_summary_original_changed",
+      "function_name": "discord_summary_invalidate_message"
+    },
+    {
+      "table_name": "discord_summary_jobs",
+      "trigger_name": "discord_legacy_job_retired",
+      "function_name": "discord_live_summary_retire_archive"
+    },
+    {
+      "table_name": "discord_summary_results",
+      "trigger_name": "discord_legacy_result_retired",
+      "function_name": "discord_live_summary_retire_archive"
+    },
+    {
+      "table_name": "knowledge_sources",
+      "trigger_name": "miro_source_config_guard",
+      "function_name": "miro_sync_source_guard"
+    }
+  ]
+}

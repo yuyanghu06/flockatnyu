@@ -1,0 +1,20 @@
+{
+  "server/google/client.js": "ac728fd5fad0e894741e21f157864a085bf9de05732c068b41e32d95554ca72e",
+  "server/google/subscription-cli.js": "6affda06ccce0122954da8e6a56ecfb3ef6235bac0e6a7e1f6d30fdd6d2136d0",
+  "server/google/tools.js": "02b01bc05f2e427b80773b1795fc5d57deb706adf49615399f481e0df02550f5",
+  "server/google/subscription-app.js": "9dfa81afcc904b42c5bbc889b6324d87d15c4f258ae494968df96de7d15dce00",
+  "server/google/subscription-store.js": "c6feb16ab16cc47f635531b20533d009ddefbf7752bc683cd5ad6bb808b594b7",
+  "server/google/subscription.js": "01d4ebdf0f463d638f49287c663c3fd40263d43bfb52b4e65ada33447bd99115",
+  "server/google/config.js": "ffccb36a11988db819fe1e2eadd70e56e0d2e28b91a03363a7b292539c6adfaa",
+  "server/google/oauth.js": "eaab4683aa8e538282b31eccc9ac39763f21127c466e27a26f8fc3bb6541b04b",
+  "server/automation/events.js": "5ed0fca4ca15e4be76823798603e72e7644195c51bd8e878c2ff01edff057cb8",
+  "server/automation/store.js": "cc70efd1400e1ffc34d8e8524e364c3123d00086aa3c1dd4c3d1882d8634f026",
+  "server/automation/handler.js": "b7829f46b048fe191f00273b78627008b8cc8f3107a2b00b2487c4d5584a97b0",
+  "server/automation/config.js": "8f57deecef610d5a1a9f42d2a500113e3c5eb71a5a12e562cc3a79d0ef85257e",
+  "server/automation/prompt.js": "8be73193ce5990410e257c584047c42dce4707ba19cfa76b9c0467a420a64ec8",
+  "server/automation/validation.js": "9e108aa7e0bc87c2a8dd47ea66a348761d2ee5405fcc32b8eb4b18057fafdaaf",
+  "server/automation/cli.js": "40a781f2519561d8b7677fac63638a83140d88fdad4bd83801b5618b2bcb3de2",
+  "server/providers/index.js": "2e810886b4a8980e76f1187fd6011841b46399afbe3b4fa5d89d6155d15e13a3",
+  "package.json": "7b4123b973d6bdad12721eee2b42b9677bb222ce3ea2bd4bcb4aa8969eb586a6",
+  "package-lock.json": "ce0e0a5699e5ab3fd6f000edf36821ae858bb0aa86628fce522cbfc34d2549c7"
+}

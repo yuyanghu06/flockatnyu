@@ -1,0 +1,15 @@
+{
+  "query": "Bolaji",
+  "searchHttpStatus": 200,
+  "appStatus": "channel_scope_denied",
+  "returnedSources": 0,
+  "searchedChannelCount": 16,
+  "returnedHitCount": 25,
+  "directSelectedChannelHits": 23,
+  "allowedRegisteredThreadHits": 2,
+  "bothThreadParentsSelected": true,
+  "threadMetadataStatus": 200,
+  "discord403Responses": 0,
+  "rawMessagesPersisted": false,
+  "modelCalls": 0
+}

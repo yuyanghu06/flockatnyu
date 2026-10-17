@@ -1,0 +1,40 @@
+{
+  "projectId": "f13799d2-95ff-4d22-9b17-acfce19406ca",
+  "serviceId": "2c1afff2-84f8-4a4c-961d-686dcb39eeed",
+  "environmentId": "dfe169c1-46a0-415a-9171-309fc9974ef8",
+  "serviceName": "miro-sync",
+  "deploymentId": "ac53b225-d0f5-492a-93b9-f5a99cea6be5",
+  "deploymentStatus": "SUCCESS",
+  "cronSchedule": "0 10,11 * * *",
+  "nextCronRunAt": "2026-10-16T10:00:00Z",
+  "startCommand": "node server/miro/cli.js scheduled",
+  "builder": "DOCKERFILE",
+  "restartPolicyType": "NEVER",
+  "healthcheckPath": null,
+  "syncEnabled": false,
+  "miroTokenConfigured": false,
+  "boardScopeConfigured": false,
+  "liveMiroReadVerified": false,
+  "actualCronExecutionObserved": false,
+  "imageDigest": "sha256:3a74f017068a985adbadd1ed73862716f14a682b7214315fda3d8eecc27176ed",
+  "workerHashes": {
+    "server/miro/cli.js": "63762081e54a3aebea71b61f3af8972d7772a0374b9cf565d783e4f2fbd4e890",
+    "server/miro/client.js": "3d85b9087b6bc75db34174eb980061ac3f3d4300ce5f756fd5826e9928e3c13f",
+    "server/miro/config.js": "0247bc875c316eb4b1ca1f12bc3b2e6722822b2329005e94b87e28b6b1735cb3",
+    "server/miro/snapshot.js": "1fa831d70f415fabbbf83603379ee1c0f9bd5f7b90ce70f1fca590b7e4340344",
+    "server/miro/store.js": "70789ee4c85c57d9ccc36210852faee98723e43475835209facd86086ef52349",
+    "server/miro/sync.js": "4ff3336bec1dfcc4ae6d7dabf1b0e5d6658880f3be21234ce202e98638af2fea"
+  },
+  "localRuntimeMiroToolsVerified": [
+    "list_miro_boards",
+    "read_miro_board",
+    "read_miro_item",
+    "read_miro_relationships"
+  ],
+  "localTests": {
+    "combinedPassed": 82,
+    "miroPassed": 25,
+    "apiValidation": "pass",
+    "whitespace": "pass"
+  }
+}

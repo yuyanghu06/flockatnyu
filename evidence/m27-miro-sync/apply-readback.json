@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-15T17:05:34.755770-04:00",
+  "migrationApplied": true,
+  "migrationVersion": "20261015203824",
+  "table": "public.miro_boards",
+  "rowCount": 0,
+  "railwayDeploymentStatus": "SUCCESS",
+  "cronSchedule": "0 10,11 * * *",
+  "syncEnabled": false,
+  "miroTokenConfigured": false,
+  "boardScopeConfigured": false,
+  "databaseConfigured": true,
+  "cloudMutationsThisPass": false
+}

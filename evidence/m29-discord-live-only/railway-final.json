@@ -1,0 +1,24 @@
+[
+  {
+    "service": "miro-sync",
+    "serviceId": "2c1afff2-84f8-4a4c-961d-686dcb39eeed",
+    "deployment": "55828f2f-706e-4909-a664-32c4dcf966a2",
+    "status": "SUCCESS",
+    "buildOnly": true,
+    "cron": "0 10,11 * * *",
+    "start": "node server/miro/cli.js scheduled",
+    "restartPolicy": "NEVER",
+    "healthcheckPath": null
+  },
+  {
+    "service": "discord-archive",
+    "serviceId": "2dad5e78-ff4f-4342-acc3-bf3daba2f3f3",
+    "deployment": "c056f687-2933-490b-9b47-da8d2e7430ce",
+    "status": "SUCCESS",
+    "buildOnly": true,
+    "cron": "0 10 * * *",
+    "start": "node server/discord/cli.js discover",
+    "restartPolicy": "NEVER",
+    "healthcheckPath": null
+  }
+]

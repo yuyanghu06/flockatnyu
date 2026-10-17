@@ -1,0 +1,20 @@
+{
+  "api": {
+    "configured": true,
+    "syncConfigured": true,
+    "embeddingsConfigured": false,
+    "liveConfigured": true,
+    "liveAllowed": true,
+    "retrieval": "live_only"
+  },
+  "toolPolicy": {
+    "discord": "live_only"
+  },
+  "discordTools": [
+    "list_discord_channels",
+    "search_discord",
+    "read_discord_messages",
+    "read_discord_window"
+  ],
+  "retiredFallbackPromised": false
+}

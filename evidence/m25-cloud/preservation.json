@@ -1,0 +1,14 @@
+{
+  "preserved": {
+    "legacySummaries": true,
+    "summaryFingerprint": true,
+    "legacyReceipts": true,
+    "legacyReceiptFingerprint": true,
+    "legacyCertificates": true,
+    "policy": true
+  },
+  "rawMessages": 0,
+  "rawRevisions": 0,
+  "sourceCount": 219,
+  "localReadGrants": 218
+}

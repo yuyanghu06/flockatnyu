@@ -1,0 +1,36 @@
+{
+  "status": {
+    "status": "ready",
+    "counts": {
+      "summaries": 87,
+      "pendingJobs": 351,
+      "rawMessages": 0,
+      "summaryOnly": true,
+      "legacySummaries": 722,
+      "readyEmbeddings": 809,
+      "missingEmbeddings": 0
+    }
+  },
+  "policy": {
+    "status": "ready",
+    "revision": 3,
+    "paused": false
+  },
+  "adminWithoutMember": {
+    "status": "ready",
+    "count": 219
+  },
+  "sharedSearchWithoutMember": {
+    "status": "ready",
+    "count": 2,
+    "allSourcesInScope": true
+  },
+  "unscopedSearch": {
+    "status": "forbidden",
+    "count": 0
+  },
+  "nonAdmin": {
+    "status": "forbidden",
+    "count": 0
+  }
+}

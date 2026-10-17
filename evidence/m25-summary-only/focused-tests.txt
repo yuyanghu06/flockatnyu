@@ -1,0 +1,56 @@
+✔ live schedule closes exact full NY weeks acrossDST and whole calendar leap month, both tiers onMondayfirst (2.391666ms)
+✔ strict live cursor traverses short pages through exact lower bound and never includes end (1.122292ms)
+✔ empty completion needs an actual empty page (0.097333ms)
+▶ repeated/foreign/channel/time/cursor malformed records failclosed
+  ✔ duplicate (0.214292ms)
+  ✔ foreignchannel (0.084875ms)
+  ✔ attimestampend (0.114917ms)
+  ✔ cursorend (0.097709ms)
+✔ repeated/foreign/channel/time/cursor malformed records failclosed (0.929292ms)
+▶ page/message/byte caps abort without claiming fullcoverage
+  ✔ {"maxPagesPerPeriod":1} (0.152459ms)
+  ✔ {"maxMessagesPerPeriod":1} (0.141166ms)
+  ✔ {"maxPeriodBytes":1} (0.101458ms)
+✔ page/message/byte caps abort without claiming fullcoverage (0.615959ms)
+✔ large Unicode evidence fragments reconstruct fullcanonicalrecord with no cutoff (9.219416ms)
+✔ mapreduce consumes everyfragment/input and preserves supported original citation IDs (2.5135ms)
+✔ embedding includes entire canonicalsummary above12k with unicode bytechunks and weightednormalized1536dimensions (31.650708ms)
+✔ embedding badmodel/vector, unknownusage, budgetdenial and oversized input failclosed before publication (0.843ms)
+✔ runtime never sends raw records in persistentDBarguments or safeoperationalresults and failure doesnotpublish (1.260375ms)
+▶ live ancestry verifies currentcategory/threadparents and deniesunknown/excluded/foreigncycles
+  ✔ excludedcategory (0.075834ms)
+  ✔ missingcategory (0.060667ms)
+  ✔ foreigncategory (0.05575ms)
+  ✔ missingparent (0.049375ms)
+  ✔ cycle (0.046375ms)
+  ✔ disabled-discovery (0.08675ms)
+✔ live ancestry verifies currentcategory/threadparents and deniesunknown/excluded/foreigncycles (0.74125ms)
+✔ category movedtoexcluded duringmodel phase cannot publishor leak providererrors (1.150458ms)
+✔ missingcontentintent and foreignguild failpreflight beforeany DBmutation (0.382708ms)
+✔ embedding network/cancellation uncertainty retains reservation via unknownusagecommit (0.535375ms)
+▶ 001–011 real SQL summaryonly cutover, provenance, ACL, accounting and embedding lifecycle
+  ✔ all6tables forcedRLS browserdenied, helperRPC invoker serviceonly (4.944375ms)
+  ✔ activelegacy lease blocks cutover atomically (5.529458ms)
+  ✔ stale policy cannot delete data (1.12775ms)
+  ✔ cutover deletes onlytargetrawcopies/revisions/cursors preservinglegacyIDs/citations/certificates/ledger/receipts/ACL/unrelatedguild (26.109ms)
+  ✔ oldworker raw INSERT and legacydispatch/resultupdate fail aftercutover (3.041416ms)
+  ✔ planner catchesup missedperiods, weeklyANDmonthly remain separate, rerun idempotent (38.03775ms)
+  ✔ emptycompleteperiod publishes once, zero modelcalls needed and result receivespendingvector (24.290208ms)
+  ✔ publication rejects policyrevision/pause/exclusion/expiredlease and doesnot alter legacydata (21.067792ms)
+  ✔ citationURL/source coverage and incompletecoverage rejected withoutpublication (13.233791ms)
+  ✔ unknownrequest chargedonce durableacrossretry, samereservation cannotredispatch/refund afterunknown (21.579042ms)
+  ✔ crashed reservedreceipt survives leaseexpiry and success settlement is idempotent (17.316542ms)
+  ✔ alllegacy+live final summaries queue idempotently with fullprovenance envelopes (28.784709ms)
+  ✔ embedding lease recovers aftercrash, stalehash/token CASfails, success stores1536vector (24.435208ms)
+  ✔ changedcanonicalenvelope invalidatesclaimedvector CAS and requeueswithoutresettingdurableattempts (10.415875ms)
+  ✔ realStore+runner fetch direct, persistonlysummary and safeusage, embedalllegacy+live, rerun costsnothing (115.126458ms)
+  ✔ fallback needs bothallowlist and durablegrant, respects sourcepause/exclusions/timewindow (41.534792ms)
+✔ 001–011 real SQL summaryonly cutover, provenance, ACL, accounting and embedding lifecycle (2278.822917ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2499.397709

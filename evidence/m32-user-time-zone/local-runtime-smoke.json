@@ -1,0 +1,16 @@
+{
+  "checks": [
+    {
+      "path": "/api/chat",
+      "status": 400,
+      "result": "invalid_request"
+    },
+    {
+      "path": "/api/tools/read-discord-window",
+      "status": 400,
+      "result": "invalid_request"
+    }
+  ],
+  "runtime": "Refreshed paired local API/Vite",
+  "limits": "Invalid inputs only; no bot or model dispatch."
+}

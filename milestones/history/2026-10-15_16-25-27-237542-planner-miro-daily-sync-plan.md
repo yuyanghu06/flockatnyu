@@ -1,0 +1,10 @@
+# Daily Miro sync plan accepted
+
+- Local timestamp / acting role / milestone: 2026-10-15_16-25-27-237542 / planner (actual specialist miro_plan), integrated by orchestrator / M27.
+- Requested scope: User authorized a new daily Railway job and new table for automated Miro board ingestion, following Free-plan ordinary-object calendar research.
+- Starting repository state: Concurrent M25/M26 and earlier map/UI changes present; no Miro modules/table/credentials. Prior read-only Miro research retained.
+- Work performed / changed files: Planner inspected current code, source ACL SQL, migration inventory, deployment preparation and official Miro documentation. Parent verified no miro table in target Supabase and the existing knowledge_sources kind constraint; Railway has only Discord services. Planner report returned in chat; no implementation edited by planner. Parent creates M27 tracking and updates shared docs.
+- Decisions: New service-only miro_boards table, full raw JSON/relationships and atomic leased snapshot publish. Extend source kind narrowly without member grants. Explicit board scope; no token-wide enumeration. Native-only isolated one-shot worker, server-only non-expiring Miro token; no OAuth refresh claimed. Default6AMNY via UTC10/11 candidates and local6 gate. Only migration012; no replay of earlier SQL. No model/embedding/Miro writes.
+- Checks and evidence: Read-only Git inventory, Supabase query and exact source constraint checked; official item/card/connector/group/tag and token/rate docs reviewed. No implementation tests or cloud mutations yet. No MIRO env variables locally. Parent asked user for board/team scope asynchronously.
+- Resulting state / acceptance: Plan accepted for bounded implementation; actual live sync awaits authorization/scope and independent tests.
+- Remaining work and handoff: Implement worker/schema; independently test/review; apply012; provision isolated job; configure/run/readback when Miro scope/token available. Preserve all concurrent work.

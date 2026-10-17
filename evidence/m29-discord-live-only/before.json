@@ -1,0 +1,3043 @@
+{
+  "at": "2026-10-16T00:34:28.202217+00:00",
+  "tables": [
+    {
+      "relname": "discord_channel_metadata",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_channels",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_compaction_ledger",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_discovery_state",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_live_summary_jobs",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_live_summary_requests",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_live_summary_results",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_live_summary_runs",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_live_summary_state",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_certificates",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_jobs",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_operation_jobs",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_operations",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_requests",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_results",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_summary_vectors",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "discord_view_policies",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "knowledge_sources",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    },
+    {
+      "relname": "miro_boards",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true,
+      "anon_access": false,
+      "authenticated_access": false
+    }
+  ],
+  "tableCounts": [
+    {
+      "table_name": "discord_channel_metadata",
+      "row_count": 269
+    },
+    {
+      "table_name": "discord_channels",
+      "row_count": 219
+    },
+    {
+      "table_name": "discord_compaction_ledger",
+      "row_count": 722
+    },
+    {
+      "table_name": "discord_discovery_state",
+      "row_count": 1
+    },
+    {
+      "table_name": "discord_live_summary_jobs",
+      "row_count": 438
+    },
+    {
+      "table_name": "discord_live_summary_requests",
+      "row_count": 1556
+    },
+    {
+      "table_name": "discord_live_summary_results",
+      "row_count": 120
+    },
+    {
+      "table_name": "discord_live_summary_runs",
+      "row_count": 17
+    },
+    {
+      "table_name": "discord_live_summary_state",
+      "row_count": 1
+    },
+    {
+      "table_name": "discord_summary_certificates",
+      "row_count": 722
+    },
+    {
+      "table_name": "discord_summary_jobs",
+      "row_count": 722
+    },
+    {
+      "table_name": "discord_summary_operation_jobs",
+      "row_count": 1417
+    },
+    {
+      "table_name": "discord_summary_operations",
+      "row_count": 2
+    },
+    {
+      "table_name": "discord_summary_requests",
+      "row_count": 2245
+    },
+    {
+      "table_name": "discord_summary_results",
+      "row_count": 722
+    },
+    {
+      "table_name": "discord_summary_vectors",
+      "row_count": 842
+    },
+    {
+      "table_name": "discord_view_policies",
+      "row_count": 1
+    },
+    {
+      "table_name": "knowledge_sources",
+      "row_count": 219
+    },
+    {
+      "table_name": "miro_boards",
+      "row_count": 0
+    }
+  ],
+  "miroFingerprint": [
+    {
+      "row_count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  ],
+  "unrelatedSourceFingerprint": [
+    {
+      "row_count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  ],
+  "discordSourceCount": [
+    {
+      "n": 219
+    }
+  ],
+  "functions": [
+    {
+      "proname": "discord_channel_allowed",
+      "arguments": "p_guild_id text, p_channel_id text, p_allow_paused boolean",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_complete_discovery",
+      "arguments": "p_guild_id text, p_generation uuid, p_expected_policy_revision bigint, p_expected_state jsonb, p_state jsonb",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_configure_channel",
+      "arguments": "p_member_id text, p_channel jsonb",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_configure_policy",
+      "arguments": "p_member_id text, p_guild_id text, p_policy jsonb, p_expected_revision bigint",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_get_discovery_state",
+      "arguments": "p_guild_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_get_policy",
+      "arguments": "p_guild_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_list_channels",
+      "arguments": "p_member_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_begin_run",
+      "arguments": "p_guild_id text, p_max_cost_usd numeric, p_max_requests integer",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_claim",
+      "arguments": "p_guild_id text, p_provider text, p_model text, p_prompt_version text, p_lease_seconds integer",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_claim_embedding",
+      "arguments": "p_guild_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_commit_usage",
+      "arguments": "p_reservation_id uuid, p_status text, p_usage jsonb",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_cutover",
+      "arguments": "p_guild_id text, p_expected_policy_revision bigint, p_delete_raw boolean",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_enabled",
+      "arguments": "p_guild_id text, p_revision bigint",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_envelope",
+      "arguments": "p_kind text, p_summary_id uuid",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_fail",
+      "arguments": "p_job_id uuid, p_lease_token uuid",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_finish",
+      "arguments": "p_job_id uuid, p_lease_token uuid, p_summary jsonb, p_citations jsonb, p_coverage jsonb",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_lock",
+      "arguments": "p_job_id uuid, p_lease_token uuid",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_plan",
+      "arguments": "p_guild_id text, p_as_of timestamp with time zone, p_mode text, p_provider text, p_model text, p_prompt_version text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_queue_embeddings",
+      "arguments": "p_guild_id text, p_limit integer",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_release_embedding",
+      "arguments": "p_id uuid, p_lease_token uuid",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_renew",
+      "arguments": "p_job_id uuid, p_lease_token uuid",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_reserve",
+      "arguments": "p_run_id uuid, p_reservation_id uuid, p_job_id uuid, p_lease_token uuid, p_vector_id uuid, p_vector_lease uuid, p_input_tokens bigint, p_output_tokens bigint, p_max_cost_usd numeric",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_retire_archive",
+      "arguments": "",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_save_embedding",
+      "arguments": "p_id uuid, p_lease_token uuid, p_content_hash text, p_vector extensions.vector",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_search",
+      "arguments": "p_member_id text, p_allowed_source_ids uuid[], p_query text, p_channel_ids text[], p_from timestamp with time zone, p_to timestamp with time zone, p_limit integer, p_vector extensions.vector",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_live_summary_status",
+      "arguments": "p_guild_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_persist_discovery",
+      "arguments": "p_guild_id text, p_expected_policy_revision bigint, p_expected_generation uuid, p_expected_state jsonb, p_channels jsonb, p_state jsonb",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_summary_citation_ids",
+      "arguments": "p_summary jsonb",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_summary_ledger_guard",
+      "arguments": "",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_summary_list_results",
+      "arguments": "p_member_id text, p_allowed_source_ids uuid[], p_tier text, p_after uuid, p_limit integer",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_summary_period_key",
+      "arguments": "p_tier text, p_start timestamp with time zone",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_summary_valid_summary",
+      "arguments": "p_summary jsonb, p_allowed_ids text[]",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "discord_sync_channels",
+      "arguments": "",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_authorized_board",
+      "arguments": "p_member_id text, p_allowed_source_ids uuid[], p_board_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_get_authorized_board",
+      "arguments": "p_member_id text, p_allowed_source_ids uuid[], p_board_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_claim",
+      "arguments": "p_board_id text, p_lease_seconds integer",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_config_guard",
+      "arguments": "",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_fail",
+      "arguments": "p_board_id text, p_lease_token uuid, p_config_revision bigint, p_error_code text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_finish",
+      "arguments": "p_board_id text, p_lease_token uuid, p_config_revision bigint, p_snapshot jsonb, p_content_hash text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_locked_board",
+      "arguments": "p_board_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_register",
+      "arguments": "p_board_id text, p_team_id text",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_renew",
+      "arguments": "p_board_id text, p_lease_token uuid, p_config_revision bigint, p_lease_seconds integer",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "miro_sync_source_guard",
+      "arguments": "",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "rls_auto_enable",
+      "arguments": "",
+      "prosecdef": true,
+      "anon_execute": true,
+      "authenticated_execute": true,
+      "service_execute": true
+    }
+  ],
+  "catalogueNodes": [
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622811",
+      "fingerprint": "bba316ffed17b60ea15c837d3444a731"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622812",
+      "fingerprint": "c70ad8054d01fa2045037cd36bcb783e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622813",
+      "fingerprint": "db445964e0a454301c292b68d53ac18b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622814",
+      "fingerprint": "439194ded8dbbb98086f70bd2924de2b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622815",
+      "fingerprint": "6a6640670839d224cdea0daca51def1b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622816",
+      "fingerprint": "356b3fac7eb30a50a4e0ada75b2bb16e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622819",
+      "fingerprint": "13b7b61e4c267b94e43561ff0a0fd83b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305364",
+      "fingerprint": "e305c305e8257d5a718c61c9e05ca006"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305365",
+      "fingerprint": "1241d3c9f6883be25913892fbfb515f0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305366",
+      "fingerprint": "8e87dc4814dcc00e4f5987823239ac07"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305367",
+      "fingerprint": "7cfa37625b1a87654ef6c7819ef5392c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305368",
+      "fingerprint": "18c1e94e403d9bffb9a78f9eedc5d9fc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305369",
+      "fingerprint": "dd959c09d43243e6e2f872ed8d6f369e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305370",
+      "fingerprint": "e6724739a234585ef00bd3fae4f94b5a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305371",
+      "fingerprint": "feee1b50e32211a1f2f191f0399a950e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305372",
+      "fingerprint": "55c4f318f2087db4a166c88fa0607878"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305373",
+      "fingerprint": "011b6e46fa06af5d02b0e7a1238b7efe"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092376891442",
+      "fingerprint": "a60108249e1fdc50ea55944e05a75d7b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092376891445",
+      "fingerprint": "e7fd06bb3f11d85b9eccd0f1dd4928ac"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092376891447",
+      "fingerprint": "8991a75f144555cb413087a16cdba34f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092376891448",
+      "fingerprint": "91507d4994e597d4099df65cc77b5f60"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277673",
+      "fingerprint": "95711b0463ca6b0f125aa0015e6eb194"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277674",
+      "fingerprint": "6aa112fd0aa4348611cf8a940991154a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277676",
+      "fingerprint": "4948e83869409a7806fe54f374a9e78c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277679",
+      "fingerprint": "776b13ebb0f49a8c1f686e43e115094e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277680",
+      "fingerprint": "046d9bcfdf93936e9746e207471c167d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277681",
+      "fingerprint": "e32c4c1e243e5e43df43a31cfba80e3f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092825813023",
+      "fingerprint": "802227f8616e10beb4de36a0e81c1773"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092825813024",
+      "fingerprint": "15b401fa661e19d53f5992115f8f79ea"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203567359231787068",
+      "fingerprint": "934734b61515e2cca9183f11bf0ec1d3"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203826896870309960",
+      "fingerprint": "8c704813659bea5a8e03493597b328c4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1205306545668100197",
+      "fingerprint": "e7e040c8112e4f9b0e81e022737d9278"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1205613128029831188",
+      "fingerprint": "e74c8db1b45dbd0df2c4a4dfaa12d7c2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1205613265141370960",
+      "fingerprint": "55ac156a8af19a94e344e7d38cf537b0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1212166210372898826",
+      "fingerprint": "ae8af9124e81742b5b165f0f986fe011"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1251711459654635541",
+      "fingerprint": "e6aa2285254d3187a81ec30d54b4a8e7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1251980067475558451",
+      "fingerprint": "639a1bd9c4a08241ec7165baf17cbd86"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1279834046947397793",
+      "fingerprint": "8eb712df7e26f40b17ffe30e95c9fdd6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1287860467741622292",
+      "fingerprint": "433e49b3d9804fc9bc141e2d081d3a5d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1287873933319868449",
+      "fingerprint": "68ac68e8bcb3fed1b3c06165d1aa7318"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1288200461828227183",
+      "fingerprint": "5de2766c44164bb3c35c80557cd0d57b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290112029041889280",
+      "fingerprint": "1b8be94e19fe42cd3eecc4a3f730d431"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290156457106346146",
+      "fingerprint": "3c33671b0922674b417d53b43f55bbbc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290368779263414374",
+      "fingerprint": "7605e5790fc2ee2acae6ee864d0a816f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290792221595013231",
+      "fingerprint": "b22daaa3aab64306a7608bdf7a7007e0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291154767103529072",
+      "fingerprint": "0b9ba80b09e1fd4d2ffb4a634fe37aae"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291155338371924030",
+      "fingerprint": "2abb30af49a25f27b6f94eaa218821eb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291528163138076723",
+      "fingerprint": "7d4b623e42da3c7631b39b45beb94e7c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291755060644282482",
+      "fingerprint": "cfa6469271f975ac12ca2c84c2b9b788"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1293608321336606742",
+      "fingerprint": "8a4e362d8286eb2df54a1dd1eb952b35"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1293947107547283576",
+      "fingerprint": "6b16081b9002714f68667f8c026d18e3"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1296263206217453570",
+      "fingerprint": "9400be3321147b22a8a60813aa5709ce"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1296603868272005143",
+      "fingerprint": "92c0d89bc3313a114173a16a2a8cba1b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1298666314969382983",
+      "fingerprint": "f71b408ce5aaddb5c530fbd3dccfb6e9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1308243111797063691",
+      "fingerprint": "5d70424678d28ba521156bdced735831"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1309344028071952484",
+      "fingerprint": "668a66985da6960649dd4d19e9e385cc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1330942704720543745",
+      "fingerprint": "35bc1e7154a1dbbb2fbadc16608b01b7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1331087962565513272",
+      "fingerprint": "2d2f93e609b052c8794d0a1deb69a027"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1331997984816103556",
+      "fingerprint": "67c2977f625356967dcaf134c77d72be"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1335418652106690581",
+      "fingerprint": "7838c8b55dd9e47914654a249d5122f9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1335423461526601819",
+      "fingerprint": "bb93bdaaa079c519a23b346e8e487506"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1336521981335699477",
+      "fingerprint": "dfd6cbf532520d0aa48e91cb8a81465d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1338965651615776818",
+      "fingerprint": "2886ea1765d2bff1d85c5a2393a65955"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1339407561513893918",
+      "fingerprint": "3203e358b1cbca4e6617b7de5749e024"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1339730203479642174",
+      "fingerprint": "eecee076e4b50a2c69b5d70d2932b8f9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1340536231829962763",
+      "fingerprint": "dab252f612fd7f2c5350acee095b0c2f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1340536317619998782",
+      "fingerprint": "0a93b469aa0fbd7ef264db91cbc64d2d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1341222595168571392",
+      "fingerprint": "8c975b160cd9d37b2914602cc04ec69a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1341599540268240896",
+      "fingerprint": "2deb232f44014a1a9d8901bc21390978"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1342643518795026482",
+      "fingerprint": "58b2e10db27682300d72c59d0787948f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1343004766569107666",
+      "fingerprint": "5cb41449f94f6bef06ac9d6246769088"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1343050971604844586",
+      "fingerprint": "a143d53af203aaa40b6f98241784f04c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1346996295755104307",
+      "fingerprint": "480aa82a3d2764632625f5eee9a9d42e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1347391436752031805",
+      "fingerprint": "f0efd0c23a8ea7116792e652c39800be"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1349539918724202568",
+      "fingerprint": "47ff64fa56d6dee33797f50c5fcf0748"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1357735265413628214",
+      "fingerprint": "a3909f2ed54f54711c361a49b1843e45"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1358953890594422784",
+      "fingerprint": "f09b0d9102a4e7790bf17a7d673bb2d1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1364361253832757320",
+      "fingerprint": "815c42f3497b3f7002b66cbbad7d3b49"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1365028229123149875",
+      "fingerprint": "e77cbeffbdd4e273b304044f15c3f32c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1366144655904866346",
+      "fingerprint": "18dd6d3ad1a5206c06c265bd3f44d0f7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1370439063835906180",
+      "fingerprint": "478181ea4e69e851f122de92117cc98a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1371269711639216159",
+      "fingerprint": "0ce11440f5fc7d8447fd4c02e781d466"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1372337157187961003",
+      "fingerprint": "a44fc22e5e4fcc516a090a9b786b5494"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1374088390445764749",
+      "fingerprint": "25d9590f656c528ac65c5ed6577a61a0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1374458522774933564",
+      "fingerprint": "0c5e4bac9a9ea38274969d3e58f93007"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1374458665364492318",
+      "fingerprint": "e938bcd13dc9a2390b015a12ef77b8f6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1383955642208878732",
+      "fingerprint": "e7cda0397e077f43c79abf1d9c5cff85"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1412918353298981031",
+      "fingerprint": "d142206e26f8c26bca9d691545d6cd39"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1413684324699476078",
+      "fingerprint": "e362b9aa98eac62ae7de760c09e0267d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1414740608542572704",
+      "fingerprint": "07c6157782a916ef92dc56c97bec4920"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1414740984545153184",
+      "fingerprint": "cf8e99f0f788388cede9f4714fa986e1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1415331664284094474",
+      "fingerprint": "a223e9d5abe3bafacec571487be5a9db"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1416561311386570835",
+      "fingerprint": "833c224f3d27d44f477e10634d401de0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1417923925350023337",
+      "fingerprint": "b7025727719e05dc6df4b47f339393a8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1418323421254778911",
+      "fingerprint": "39801c3d6610a2767eda96bef6cc64ee"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419046291010228406",
+      "fingerprint": "73b7357afe5e2542f91966f5895de056"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419366925787594957",
+      "fingerprint": "c21f80e963fca52c14197285b9ac353c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419777215515590676",
+      "fingerprint": "665416898715e6b7a8bd89ea882e6b5f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419781909159870626",
+      "fingerprint": "1059907d4071f1939860bcd423314ad8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1420531353585193020",
+      "fingerprint": "ecbdba3a4f6cf4b3b44777b444304b6b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1421580898561822781",
+      "fingerprint": "ef7bdcb87252bb89852a3669e7fa13fd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1422011619071889469",
+      "fingerprint": "9e8f310c88b930cf170ea2458a27c630"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1422113557713260584",
+      "fingerprint": "75eebfebbcdd8bdb1e7f5883ff068831"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1422360949037469736",
+      "fingerprint": "9ad2a9bf7ac9eaf087c406fa8264a7a3"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1423063000125804606",
+      "fingerprint": "05be4e9fb05fc50b75441130b6dad7fe"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1423712053704523829",
+      "fingerprint": "5c7dbb6a48890e5fd01a08208451e82b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1423738074935984228",
+      "fingerprint": "997b220c7d5e4185243d9d1b21798021"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1425165152579354795",
+      "fingerprint": "79be5b6b3f63e2e160d37df013a6ddbf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1425196589277778001",
+      "fingerprint": "2271a4f898057ca0dab45c225bf6af1d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1426244721465888808",
+      "fingerprint": "c18a20655ea5b8f9530c52dc351f9c8f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1426255091782123582",
+      "fingerprint": "4eef58d6de7220972f575b6a76684e7e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1427095690399715419",
+      "fingerprint": "78baa9087abe9670cb0842cb62e58798"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1427762204798615552",
+      "fingerprint": "7ca3e31f91365cdcb6b6c689db13d32b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1427770577824907406",
+      "fingerprint": "13e55d611cee7c3ff80bffd6a2267de9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1428039336452165682",
+      "fingerprint": "e7d0b95e5054e731b349c834ba3d3b37"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1428829267130581032",
+      "fingerprint": "357beb441dc8b4698cb0cb888c084eeb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1429863431426670723",
+      "fingerprint": "0058a1254227ecc4f8b5440c0b48fe8c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1429903359090888755",
+      "fingerprint": "6deb582f93934267c9fe30a35f8a3830"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1430239517461446836",
+      "fingerprint": "82b4626bba84f724781f6f9da0d7f321"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1431021894299291679",
+      "fingerprint": "2e3dec79bc8f1e0624b2e0680bc61b92"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1431800530811748474",
+      "fingerprint": "bede7d1f0f65daad88d51a232b2aa183"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1432049705969389750",
+      "fingerprint": "05b5131a0aafcc7e0e0e4cd62c956ca5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1433454449455534151",
+      "fingerprint": "b459689301c560cbc0641ef76cb0b26a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1433497953514815539",
+      "fingerprint": "b3b054be3cdc20ec220c6e4a9af11190"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1434272098263498893",
+      "fingerprint": "41cb3a85e4316f52eb9824f3bcf7970c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1434617551727362070",
+      "fingerprint": "fbb21a173ead5e82eb25912ef218d73b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1434737398704636024",
+      "fingerprint": "8da2817c47c9507eac2537f19900ccc5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435088178837983333",
+      "fingerprint": "c92a0891ff6fb26c8180d3d5c0371214"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435344525790019716",
+      "fingerprint": "bb540b39593c9bdde03a7cb43514ab4b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435366886375293079",
+      "fingerprint": "1b0912b9577fab87a4ddcc461322d0df"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435842793569521774",
+      "fingerprint": "aca04b6ed483d0ad37629b3eef2e4b22"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436197641829486623",
+      "fingerprint": "cbb2bf0a0306052422d7217da82c2891"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436509659136786492",
+      "fingerprint": "838d5ab892d9d398d258d8628b20c96a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436737935339950121",
+      "fingerprint": "09ac9aeb3d34e813b837bf630e765a58"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436886614625353868",
+      "fingerprint": "caf107b39d733c602b41289ead13a5a8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1437249309631447040",
+      "fingerprint": "efc8b896719f37b8418b147815596de7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1437439335195480171",
+      "fingerprint": "51d2b98ed7fa213dbc20e789e91d0de7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1437534669376847983",
+      "fingerprint": "330df8874a5e26e3015c22889d7f0e09"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1438009830437814423",
+      "fingerprint": "07bcbc493f851fd67e54f25911f4ff99"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1438321551647838360",
+      "fingerprint": "0f344d89f00081ded3e5b194298aa3ef"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1439297324227629097",
+      "fingerprint": "5152eac325a0ad3d9671be06975ded16"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1439362300275458089",
+      "fingerprint": "18de13606116daeab91578228660d369"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1439816742800068671",
+      "fingerprint": "2759a0a5446067010960ba284b8323e9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1440416276823675084",
+      "fingerprint": "7bfcf210e1396ebe82e85c87af559973"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1440562312845983905",
+      "fingerprint": "16b5bfaae94dd6e3aab7631766282204"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1440901220905779210",
+      "fingerprint": "70e1c6e990b46298d8d4f0a864de4656"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1443460519116935329",
+      "fingerprint": "baef591e231f19b859a0d2b19301ddb1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445117376872976446",
+      "fingerprint": "7d8544807ef6b6e709759110dcac3e1e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445173463475028223",
+      "fingerprint": "57114fbe111cf5050b7cc8c20335aa15"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445182641929191545",
+      "fingerprint": "86e7d4d4af440b8a405989b7d278af92"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445864551500353627",
+      "fingerprint": "45bd9bb40ed88ddd837e5ca13e544d1e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1446233711199912037",
+      "fingerprint": "b16ee6574f9ee49de75f64e9821959fc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1447656901105029303",
+      "fingerprint": "f3504dcd4165abbfe8c2e897dc3d0887"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1448058108013314148",
+      "fingerprint": "6c7c2089c264293e9a026ef565da9abd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1461039149455769889",
+      "fingerprint": "c8606d7c697f55a520b94410b20be1a4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1461311169586266165",
+      "fingerprint": "a34948e70a44ccf51953f618afe3a109"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1462379869991207026",
+      "fingerprint": "27e2c9d0c7c729f02b9a35afe080efcf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1462441453543227413",
+      "fingerprint": "8401a8b3161b7796d8d4fc8b15d91dda"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1464353712863707364",
+      "fingerprint": "ba9091c00baaff90e6456d50f42f0595"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1465123883337121886",
+      "fingerprint": "05718a575bed0fa1df3416f5cbb7583b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1465137003866750986",
+      "fingerprint": "82b7ed25e30d9f944bdc77b51a539f74"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1466173056157225102",
+      "fingerprint": "49210d79022ad9ce7792acaa02a363f2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1467638035515703388",
+      "fingerprint": "ab003ab9c34bb7ed4358a00fd63393a2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1468671187893620934",
+      "fingerprint": "142156a0c0fad71fed0eefa196a95cd8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814338469200003",
+      "fingerprint": "e9307193952111d849155ae536c2c9a2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814394228150475",
+      "fingerprint": "65292ea75e1f5ab0ccd30f0115c850e7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814455775498356",
+      "fingerprint": "4455e5bedea9c38cb952e14cb7a0fe90"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814570649096363",
+      "fingerprint": "4819927e18370cb27a1589207756c32b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470881607123472507",
+      "fingerprint": "2a50faa2e4d39ba5b20e49466ed50cbc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1471996282720751761",
+      "fingerprint": "184119f8cb9a18f26b67ab3df4062644"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1472031424629440512",
+      "fingerprint": "2f0d472c80e5d45718028f5a3d448c4d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1472451454173450372",
+      "fingerprint": "38f6d94c8c3520dc51fd4fb87b57f5d5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1473859482923831391",
+      "fingerprint": "51c27c4bc83b4da1c86528fadcdcc664"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1476426955451797755",
+      "fingerprint": "c116f83534757364c34788e472f3f3f5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1476568027821506710",
+      "fingerprint": "3c35ae9ef17b2f9fff09b690ad376aa1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478223171789258752",
+      "fingerprint": "663bbd02c708b62e6b345eb8e11dcaaa"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478236010767847537",
+      "fingerprint": "5d3547fde9e3e0519a222ec3665118db"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478436647807746258",
+      "fingerprint": "1b415415b72bc7dccd6ddb846b025990"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478489639101792337",
+      "fingerprint": "2b61501a3d364e57934b98515999fafd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1479602886190043256",
+      "fingerprint": "48c639c6b0cf33c807ed1aec6f4e6c9f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1479605145687031829",
+      "fingerprint": "085e7a1e2253738f7ee185ce3897599d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1480661422437437550",
+      "fingerprint": "68276634388586c28f15b3ecf33be69a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1481390787408433162",
+      "fingerprint": "97280131711b731eb62de1a5b1e8ab5c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1481390850444361969",
+      "fingerprint": "db375f04ac22364a3fbbf0c0976c91c8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1481496312682774590",
+      "fingerprint": "cf1f1f67d55eb50107edb06fd9869952"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1482196558798917712",
+      "fingerprint": "337858deb33aa818130445cbbf3ed918"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1483904984901881886",
+      "fingerprint": "67862765374effc2bd2aeae409d73fae"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1484905170847531181",
+      "fingerprint": "fcf00d5606ab7cbbcdbe4b6504895fef"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485684408102031382",
+      "fingerprint": "96696e839eb9bfdefc5951b86250ed8a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485729956464951588",
+      "fingerprint": "33b223aba406f2b96e306b5eb3943f7c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485731572505379068",
+      "fingerprint": "fc9ee63c60683fcadad6f1bde75097d7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485783698426036294",
+      "fingerprint": "72fbef5120af65f29743592de4ed0d4c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1486751981216464938",
+      "fingerprint": "04ce40ca14b0a3afc62d5affee64e9e5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1486885521182691469",
+      "fingerprint": "9f7aa4771f9b69ae97b2c5c01cec8831"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1486894837771800628",
+      "fingerprint": "f9adb904aedd51563b9b948fb577ba2d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1487198412888608819",
+      "fingerprint": "6f228a086a5e4419d1f98ea978931785"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1487938599084232876",
+      "fingerprint": "e8c3be08b93ec3c81b136a7bcdc5db7c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1487953779763576913",
+      "fingerprint": "695c89e78d54c0a17f11f3847cae19c5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488554202425720914",
+      "fingerprint": "1dfc8d59734c2c76c4e17af2930e5668"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488621346328936528",
+      "fingerprint": "0060f135581aa3e3d727fb641d4e47cc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488622001970090218",
+      "fingerprint": "8caaaa29372aaa350ce7ef8d14fd7ab0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488951964988346538",
+      "fingerprint": "2d6219dc3d4de6b9db0b3d8e4c704273"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488953874084663448",
+      "fingerprint": "e98bf84f75f3550d33ccb516128eb92c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490496936216760340",
+      "fingerprint": "56ebae48211d2120e6e453db7a8bb9b6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490734957688262746",
+      "fingerprint": "8f5655114f4443306091ca0abb59e68b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490856164533997751",
+      "fingerprint": "c9258d79916ad46a639feefd19ec4d55"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490926099285278862",
+      "fingerprint": "af0661d441519aae18bf7936cd07df7c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1491975204413636668",
+      "fingerprint": "c1c6bd0ddf65849164706b6a6fd9fc4d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1491976856780537946",
+      "fingerprint": "f0ea6a80561d218c599624a15017fe32"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1492400594135027852",
+      "fingerprint": "86a82115c861befde5398a1758e41bf1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1493033545420247120",
+      "fingerprint": "7712bd3717e816b1e287eda3d2203f0a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1494694100107132958",
+      "fingerprint": "b24bd3d1f0ac7917636ef8a9ca0240f8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1496231524016717955",
+      "fingerprint": "b010707f420c26c450e955da86fcb33c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1496612453684089004",
+      "fingerprint": "e1a2dba359a5fa4ac691156fe6420edf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1496925237546192957",
+      "fingerprint": "2aee6368705519a3ecc799ac651c0471"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1499634478312853655",
+      "fingerprint": "a841aae0b80775298eaf300111d4b966"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1514093743857340536",
+      "fingerprint": "623c5cfe14ce413f664a8101f1b6b8fb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1515491119138345112",
+      "fingerprint": "074099655dd78a12100f2313b5712973"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1524915850275061791",
+      "fingerprint": "45817cbe0a6aba5eef9d5e40b6c1e795"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533053124606955600",
+      "fingerprint": "bab89428e8dc67c04b633ed54d348e3a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533054833001631854",
+      "fingerprint": "5eb70df91e9bc731e66bd8eaf98a65b4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533058364916105336",
+      "fingerprint": "d880342de87456e3c19ffd18c7d8c873"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533058426488225862",
+      "fingerprint": "fd0a769c788d8e02e44fd9aa049dd5fb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533058465205977220",
+      "fingerprint": "9a3dbbd2c82068173ca10a19d2ea6032"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1537599018161537114",
+      "fingerprint": "ae6076479fc82c91936c65f79adac9ed"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1540139277269340270",
+      "fingerprint": "5b379600c7a76b14ad608b2307f6e999"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1542872290214027385",
+      "fingerprint": "ad14d8e629ef53d6d25cca5dadfa5bdd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1543109822671753216",
+      "fingerprint": "25172c742955a9c2d2160692ba913644"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1544434744786423889",
+      "fingerprint": "d755da69e25e66da55f7575fa8a9c9f9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1545893061572300940",
+      "fingerprint": "856e73d49857d5911d39b0b72a0da65b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1546625770733043903",
+      "fingerprint": "de8112d813d531c621616aba5086a39d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1547618193831497851",
+      "fingerprint": "43908175c72fbaf3c4d57980f3b20f6d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1550975772456521819",
+      "fingerprint": "f061fed4e1c8b1a4dbedf260818b50b9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551010845205471233",
+      "fingerprint": "d0fbd27b6e7b575fc974cafbcb024f32"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551442741227945984",
+      "fingerprint": "9de615f005ebb88faffb3eb34310495b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443272067457065",
+      "fingerprint": "4c886d39ca62f521de9fd8fa31b812e0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443354770866227",
+      "fingerprint": "86b09d0623b3baee579cbf3d19fb3e76"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443424660557834",
+      "fingerprint": "d02656bd1685095a9ae711e5206bb270"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443527697829888",
+      "fingerprint": "bcc8c1fba760a107063bdea536ef827a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551682723314401370",
+      "fingerprint": "1b6d41ae860f19241c9229d12cb9e740"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552143867900600405",
+      "fingerprint": "5a3d0578c4c028db842b90a0605a257f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552147677289123870",
+      "fingerprint": "030fdc4d424caccb7455a1db4af57ff6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552148504242290818",
+      "fingerprint": "f2f5ce162da0f3118e10990fd878ad3c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552148547305078784",
+      "fingerprint": "ef7d993545342f11e1f69950157307c2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552148576266747964",
+      "fingerprint": "0f275bf841356da8a37b0e9fd07c86f7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552148644633907200",
+      "fingerprint": "d50bde081dd6cf3aa2bbb55828807c4f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552149296764424283",
+      "fingerprint": "7d6aeab9dcbb548f60afd8d495ec92d8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552351731629826079",
+      "fingerprint": "f794fefea478f47fd83253010ceb0992"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552374835324387528",
+      "fingerprint": "5d500b3c1a00cf0f2a5335f1a11c45dc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552520333771284654",
+      "fingerprint": "11ea08a72a28d732337868212766fcb4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552531266300158044",
+      "fingerprint": "20c52055181ba75e8a65198d64a0cea5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552729580136169563",
+      "fingerprint": "649a5aa79b5afe229ae571e1f940ec9d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552823109063807046",
+      "fingerprint": "0aa7482c1cc7235635c01385f1a6eb0d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552848070688121014",
+      "fingerprint": "c548ec1fd88db7296b7d091cdd0e011f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552851897503846420",
+      "fingerprint": "a4d301d090b7c66209ca2f27695ec1bf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552851967850840144",
+      "fingerprint": "688ca9f636f9f5eec3daff31d10b54a9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1553035547734188196",
+      "fingerprint": "c5b30e5f1518230021b46f183f8e6fe0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1553837418216427520",
+      "fingerprint": "0c2aa9d38f7c230805205d8067afb22b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1553991405410451466",
+      "fingerprint": "20a45cc6d07ff22306cfa9d1e9f99fcb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1554574147990982816",
+      "fingerprint": "6c0b9578e2e7a5c0cfd9b0db3ac4e50d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1554689987327299624",
+      "fingerprint": "217f8f7c216a0fb51fa9c1ab795c4a99"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1555011284867485706",
+      "fingerprint": "87cc8d04e47b52adf616dd8d6306111c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1557376457515204608",
+      "fingerprint": "10f6b6f591a44ed63ddfba7763d0b8bd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1557522704242839724",
+      "fingerprint": "5e43dda528ebab18defaa35a9be49343"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1557739893776457790",
+      "fingerprint": "321ce69c0b3aae5ad96136cac0c3ee9a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1558105699920257024",
+      "fingerprint": "f0628882d96bf1b87f3fa07c737aa13d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1559193541295743058",
+      "fingerprint": "75de8a439f87339da811160477241661"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1559914187679989783",
+      "fingerprint": "cd11ce0f21883346ec34c196e14c97d0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1560275905136566294",
+      "fingerprint": "0fe356543604f23ac0f5d57fa505cd30"
+    }
+  ],
+  "registeredSources": [
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622814",
+      "source_id": "4bd1da54-bdbd-4a0e-b441-275772d0fb6c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562091982622816",
+      "source_id": "17f6741b-ae6d-45a5-bcb3-0bd2f1e57e1b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305366",
+      "source_id": "73330080-951c-46dc-9d21-f55802927932"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305367",
+      "source_id": "f7c67504-b924-4846-be0b-44f749216daa"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305368",
+      "source_id": "04d30d83-af89-41ef-b524-ae68d6bac04e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305369",
+      "source_id": "218c616e-c15c-4f51-b197-d27cb6ffb5cb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092213305370",
+      "source_id": "473dc9ff-dba6-45fb-a6fe-3259b8ea7ed9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277674",
+      "source_id": "0cefe0d7-2fd4-40e6-bed3-17141662652f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277680",
+      "source_id": "54ce5ddc-69b4-48ac-ae95-c93f6aa08be8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1203562092574277681",
+      "source_id": "f44821ed-57e1-4e7b-896f-e9c2823f5ec6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1212166210372898826",
+      "source_id": "fcbb6293-d537-4892-b88d-d90aa65b5f7f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1251980067475558451",
+      "source_id": "458773cb-8155-455a-bb54-2b8a85e35c55"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1279834046947397793",
+      "source_id": "7e3729b6-4868-49d3-85c1-3204af332e6a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1287860467741622292",
+      "source_id": "a58d3da8-ddb2-468f-a909-63cc9588f4ed"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1287873933319868449",
+      "source_id": "251a8f64-664c-415a-9005-dfead4551188"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1288200461828227183",
+      "source_id": "5308ef8e-ef1c-4d0b-ab2d-398b05c7fc4b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290112029041889280",
+      "source_id": "7d83b201-e636-4772-b08d-dd8bc5790c0d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290368779263414374",
+      "source_id": "fb7f8d74-e808-4684-9b9c-5a315597c853"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1290792221595013231",
+      "source_id": "d1fed9a2-1fd4-49d5-b4e7-3e9789880196"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291154767103529072",
+      "source_id": "0d1acf1a-5c7d-4dd2-ae3f-6082f3a8bc4f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291155338371924030",
+      "source_id": "a0815ecc-e90d-47b7-ac0c-a9e9c6b1d7c0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291528163138076723",
+      "source_id": "caf0de4b-bc9c-43a2-930b-beb349b548c0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1291755060644282482",
+      "source_id": "18d0a076-d69d-4719-a584-86391e5067cf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1293608321336606742",
+      "source_id": "14566b84-6ada-4e7c-8348-ad5206071926"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1293947107547283576",
+      "source_id": "dc8050b8-ae67-49c7-bf90-f79b434a704b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1296263206217453570",
+      "source_id": "e7cd10b1-cc04-4d01-a1b0-3c305c1dd1ee"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1296603868272005143",
+      "source_id": "bb918fa7-ef7f-49c1-bbd5-df65ee26c3a2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1308243111797063691",
+      "source_id": "d632c7e5-3b94-45c4-9d75-4dec6f6237ea"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1309344028071952484",
+      "source_id": "558d8026-7fd4-4dac-b927-2c876e32b72e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1330942704720543745",
+      "source_id": "a8dcd953-5671-4b10-bf4d-6c5a20ecb47d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1331087962565513272",
+      "source_id": "c443f044-97da-41c9-a3b5-1c38fd9071ae"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1331997984816103556",
+      "source_id": "b3d25e30-5929-4b90-8a50-bbd1b633e742"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1335418652106690581",
+      "source_id": "210714e8-a7b0-4122-8878-a119dcd12c89"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1335423461526601819",
+      "source_id": "5e47522a-f33d-4d6c-8b76-eecdaf54951a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1336521981335699477",
+      "source_id": "aae08218-def8-4684-9e20-46024a80220e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1339407561513893918",
+      "source_id": "101a7a44-ba9d-4f88-a0c5-b2d0f4aa3f0d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1340536231829962763",
+      "source_id": "94ebaf16-e526-467b-bbce-5bcef7c3834c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1340536317619998782",
+      "source_id": "278f4fed-3ac4-49bd-a21a-6a766cb7a2e3"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1341222595168571392",
+      "source_id": "895f2da6-d2d6-4a0e-bbb3-0e99decea94a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1342643518795026482",
+      "source_id": "2f04e603-e14b-47f6-bec6-96ff5ea5af74"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1343004766569107666",
+      "source_id": "dd651a8b-a5cf-418e-bf5d-cd9b14c678b8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1343050971604844586",
+      "source_id": "b7838315-4e06-4610-81db-04ffd5e8667d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1346996295755104307",
+      "source_id": "de27e001-4019-4b95-80f6-6dd743689fe6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1347391436752031805",
+      "source_id": "ad79d031-772a-49f2-8cfd-4268af5e521b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1349539918724202568",
+      "source_id": "0b7fa863-9a1c-4d1e-a068-31be0c859d46"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1357735265413628214",
+      "source_id": "bd47401e-e777-4f47-a089-9b63ff713102"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1358953890594422784",
+      "source_id": "a6de2377-5e2e-4e4f-9ad2-9ad5798bd116"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1364361253832757320",
+      "source_id": "dcdb0837-d4fe-4b49-94b3-97e1fbea54a1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1365028229123149875",
+      "source_id": "e553b3cc-f16e-49de-b3ff-76356de78e62"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1366144655904866346",
+      "source_id": "d9fe4309-6fc4-473c-b0a5-ccf44a781c47"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1370439063835906180",
+      "source_id": "570ace49-0d31-4bc6-a6d5-6e966c49dd0f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1371269711639216159",
+      "source_id": "df012f91-0bc5-4d29-ad1a-722d30988142"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1372337157187961003",
+      "source_id": "0456c5cc-4385-449c-9664-63f89b98bf46"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1374088390445764749",
+      "source_id": "9af705b2-e45e-40f0-9ba7-3710f5c89b39"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1374458665364492318",
+      "source_id": "d4440fcd-1d7b-48aa-900d-f74e67f55316"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1383955642208878732",
+      "source_id": "cf87c994-f367-4776-9c09-4104936be94e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1412918353298981031",
+      "source_id": "82e5182e-071f-4289-ab17-175434df06c8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1413684324699476078",
+      "source_id": "0cc56ac9-b5ea-4230-b478-0d945847bff2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1414740608542572704",
+      "source_id": "9b5f47ab-2601-4748-b0b1-7317ad06eb9d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1414740984545153184",
+      "source_id": "4d6a21b8-41d8-413f-ad22-e3a7c20907e7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1415331664284094474",
+      "source_id": "adec063d-ac57-46b8-b9c9-10f0c3755f0b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1416561311386570835",
+      "source_id": "1fdde54b-98fe-4580-8450-c3597925cb0a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1417923925350023337",
+      "source_id": "fcadfd72-885e-42c2-bdf7-c13886a283ca"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1418323421254778911",
+      "source_id": "9c0403df-7ee5-4c83-83b6-109633efa8ed"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419046291010228406",
+      "source_id": "06ee8791-7f07-4a16-bbd9-8000f016425e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419366925787594957",
+      "source_id": "f541b180-6ffc-4d5e-a964-73202a11d771"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419777215515590676",
+      "source_id": "a0d2cbda-2f5a-4940-bebc-76e254aff57f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1419781909159870626",
+      "source_id": "3f0b5769-91a6-43d1-a754-b97a93910b52"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1420531353585193020",
+      "source_id": "00d194f2-f480-4721-ba2d-c2e90b8e9f5b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1421580898561822781",
+      "source_id": "2d853b3b-e255-4f75-a0d4-cd2cc76f55c8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1422011619071889469",
+      "source_id": "cc56d94e-f4d9-43d4-b409-35f6e331c4ee"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1422113557713260584",
+      "source_id": "e7dc2712-016b-4765-97c7-048090c109ec"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1422360949037469736",
+      "source_id": "011b31ec-0e85-46c5-8e6e-ea617828bb2b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1423063000125804606",
+      "source_id": "871b4353-55ad-49c6-9593-d03157d9e17f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1423712053704523829",
+      "source_id": "8ace4402-0822-4754-ba2c-d122893d3afc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1423738074935984228",
+      "source_id": "6a206526-b299-4dbe-a2b6-39236f216a5f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1425165152579354795",
+      "source_id": "92965978-2141-49a5-9af0-7cb523428d2d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1425196589277778001",
+      "source_id": "39682ad3-73bc-4fd5-8b69-3829fe52bdc4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1426244721465888808",
+      "source_id": "be932a92-44ed-4efb-a41f-5031aa1c5ccd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1426255091782123582",
+      "source_id": "7f43ab3a-ea47-4848-b746-61bdff6f6097"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1427095690399715419",
+      "source_id": "ef068f40-3a95-462e-bedb-51ce8529ede8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1427762204798615552",
+      "source_id": "1365fb83-19f6-4d7f-acb6-30515c3ccad2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1427770577824907406",
+      "source_id": "b4f6f4a1-0fa4-4262-936a-3628655c86cf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1428039336452165682",
+      "source_id": "0a64e8c5-19c0-4217-9531-b2fa5c0271db"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1428829267130581032",
+      "source_id": "2a1e288e-ad00-4eb0-8cd5-539bc80631ad"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1429903359090888755",
+      "source_id": "316447cb-ee7d-4cc6-9836-ca24aae46dbc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1431021894299291679",
+      "source_id": "2003f205-17a8-42b4-841f-8ecea2d526de"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1431800530811748474",
+      "source_id": "90fdf76a-7395-4278-bd95-9e237b3239d7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1432049705969389750",
+      "source_id": "1295e18c-f919-4d05-99ff-a7dfcc72f693"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1433454449455534151",
+      "source_id": "eeafacb7-cf03-4fb8-891e-2a6cc39ada4f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1433497953514815539",
+      "source_id": "29c7ba85-9a5f-4e28-b6d6-873136c6baf0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1434272098263498893",
+      "source_id": "57d8baed-8b4d-44e4-a3d6-f85e8816ea0d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1434617551727362070",
+      "source_id": "1402b12c-e78f-4328-97c8-2044bc6969c0"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1434737398704636024",
+      "source_id": "004274f7-a5f9-4320-ad44-b0fd0d7bad8b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435088178837983333",
+      "source_id": "5501a229-d391-489c-9345-f8964decf20b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435344525790019716",
+      "source_id": "ef3aa26f-0c46-40a5-b926-78917cd04332"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435366886375293079",
+      "source_id": "d278cc48-2967-435d-94e8-dd4ee14ecfbb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1435842793569521774",
+      "source_id": "32547d1a-d0ea-421b-8dd8-e8ab51d06289"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436197641829486623",
+      "source_id": "d2acd678-297c-45a7-b26b-1bdba91c053f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436509659136786492",
+      "source_id": "1522a3ec-756a-42a3-a17b-76fbb3f17005"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436737935339950121",
+      "source_id": "f013c1c9-0d59-4a62-89ea-7ebbd3ebe440"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1436886614625353868",
+      "source_id": "7612d529-49a4-4139-96e0-ba0d661ca2af"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1437249309631447040",
+      "source_id": "c73fd73d-42bc-495b-a9cf-a2a622341a53"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1437439335195480171",
+      "source_id": "19aa693b-7867-48b2-813d-40a1ccd0a9df"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1437534669376847983",
+      "source_id": "e4b41348-90f8-4451-919b-d5a50f8fc3eb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1438009830437814423",
+      "source_id": "da897200-2ba9-45ae-88dd-366377c97ee6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1438321551647838360",
+      "source_id": "2ced1f7a-4d2d-43e4-b8ba-4706d58d928f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1439297324227629097",
+      "source_id": "219fa84c-f12f-4c47-884a-88c61988f12e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1439362300275458089",
+      "source_id": "4e4ca739-c386-4c54-9de4-572258bd623c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1439816742800068671",
+      "source_id": "eb79ec13-8873-4872-b999-c37ba63bbc3a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1440416276823675084",
+      "source_id": "2acdd98c-f643-4fa5-850a-1fe25a96bc0e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1440562312845983905",
+      "source_id": "d547c9de-1bd2-4e57-a053-9d1bda3bb857"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1440901220905779210",
+      "source_id": "3eb18c84-95c3-4ae7-9fc1-ada197645dba"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1443460519116935329",
+      "source_id": "6fdccbc8-315b-4f0e-964e-2ab8e4f55afe"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445117376872976446",
+      "source_id": "56f0c1e1-48f6-41e0-a1ad-f7b49708ad44"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445173463475028223",
+      "source_id": "776fbd38-fb0e-46f2-b133-d48d65b30810"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445182641929191545",
+      "source_id": "6564a5a8-fbf8-4abb-ba62-dba5f5855d94"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1445864551500353627",
+      "source_id": "0c8d7fc2-3611-46b1-a44a-9f04f7810a02"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1446233711199912037",
+      "source_id": "106b6947-018f-40de-9890-802e33f8f151"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1447656901105029303",
+      "source_id": "6ec18528-128f-4d31-97d3-ed9b85dd56ce"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1448058108013314148",
+      "source_id": "e4761380-1ea4-4f59-bb48-8ce28a79c871"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1461039149455769889",
+      "source_id": "6adbbb30-01db-498e-ad18-3131aa3c45c4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1462379869991207026",
+      "source_id": "5aea5730-74f8-4a4c-b7b3-de5fa5f75ec8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1462441453543227413",
+      "source_id": "4c36073d-06ed-4dc7-98e8-51c23c4275e7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1465123883337121886",
+      "source_id": "1188a35c-bc5c-4656-8efb-db9becc8b4d8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1465137003866750986",
+      "source_id": "053a25b0-6eaa-4564-a70a-b826eed665e4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1466173056157225102",
+      "source_id": "08478c65-606a-4664-8455-6f6e1a378d1a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1467638035515703388",
+      "source_id": "abaa355d-22c8-42a3-97a1-90502c2fbce6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1468671187893620934",
+      "source_id": "3c7668b9-9d8c-4fb4-987e-80587b41b463"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814338469200003",
+      "source_id": "221ca8be-6391-4ece-9f17-ed26bc6ffaed"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814394228150475",
+      "source_id": "16aac816-b642-430e-9c3d-05d4b14fc205"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814455775498356",
+      "source_id": "f0610206-2999-455c-8bf7-6812828fe133"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470814570649096363",
+      "source_id": "ab6d9e10-af29-42e1-98a6-d9340e2d0c4f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1470881607123472507",
+      "source_id": "5a92e931-3f49-4f10-90c8-7d249a35c786"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1471996282720751761",
+      "source_id": "184780ab-3a02-4c03-b446-758322e5abdf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1472031424629440512",
+      "source_id": "4503a09b-ab88-4e89-86e0-ee70e97b03fb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1472451454173450372",
+      "source_id": "5e635190-4f57-4164-bfd2-3f7fcdc7f079"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1473859482923831391",
+      "source_id": "b7a3a9e1-bfa9-4809-9865-1656e3f6712f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1476426955451797755",
+      "source_id": "255f62d0-a0ed-45cc-a879-80c26ee8e17b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1476568027821506710",
+      "source_id": "f6c20bfe-13dd-4aef-8dd6-5c0f76e9fd2c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478223171789258752",
+      "source_id": "7832981e-de06-4005-9e52-8b6122b0d735"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478236010767847537",
+      "source_id": "d43ceda0-5226-4f18-8304-09cd08bfc839"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478436647807746258",
+      "source_id": "d6bfb3ca-2910-40bd-8629-e57e21fa2962"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1478489639101792337",
+      "source_id": "bbae07b5-91f0-44ad-9f06-2c6c431e8474"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1479602886190043256",
+      "source_id": "c33edb96-55a9-4976-9f6d-64e6000f1f18"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1479605145687031829",
+      "source_id": "49698c4c-6080-4aa1-8ae3-8d0764a4eee8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1480661422437437550",
+      "source_id": "037f627e-9330-42d4-ba8a-d878bc87819b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1481390787408433162",
+      "source_id": "89ffb879-05a7-46fd-a9b8-7dc32f763f73"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1481390850444361969",
+      "source_id": "353c90d3-9797-485d-aee6-b458bf6255a6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1481496312682774590",
+      "source_id": "e67ea6ad-d3cf-4226-802c-a98ad60214a5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1483904984901881886",
+      "source_id": "638a935e-619f-4595-ad3c-bf5ccd769b0e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1484905170847531181",
+      "source_id": "ba1ae380-b169-4f42-b020-b6ebf90caec4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485684408102031382",
+      "source_id": "c327f46a-c53d-44c7-83c8-c725db495235"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485729956464951588",
+      "source_id": "9f0533f9-9525-40ff-98cb-d3d3192094c8"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485731572505379068",
+      "source_id": "7100dd4e-e823-41a3-bdf2-b1e21e41d9da"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1485783698426036294",
+      "source_id": "3aad53f6-45b6-4ccb-8df0-e5d97623921d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1486751981216464938",
+      "source_id": "4c2544b4-e63d-49d0-b923-c67663bf59f2"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1486885521182691469",
+      "source_id": "7cacab5e-0167-4b7a-8f76-01865e4cdf95"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1486894837771800628",
+      "source_id": "1187a21a-3064-45a3-97fb-f0b457537abb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1487198412888608819",
+      "source_id": "d5d25cc7-5a0a-4af6-95c4-2667edac15ae"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1487938599084232876",
+      "source_id": "8b155ff9-346d-425a-9911-f65af47bc795"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1487953779763576913",
+      "source_id": "8fedc9b0-c315-4aa1-b97f-3355031d8e42"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488554202425720914",
+      "source_id": "017d5e4f-9c9c-4a11-82cf-05a79d7416c5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488621346328936528",
+      "source_id": "d644ff2a-02ba-4733-8e5c-29111c305ed6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488622001970090218",
+      "source_id": "93efea22-d81c-45d0-b82c-5c4c6ee0c954"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488951964988346538",
+      "source_id": "5d894c53-296f-4d77-bbeb-c5f5a60c0ea4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1488953874084663448",
+      "source_id": "3511c671-4f48-47eb-96dd-ff432f5cdd17"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490496936216760340",
+      "source_id": "1d588a37-5553-45b0-b241-577d538219d5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490734957688262746",
+      "source_id": "451dfd47-2c67-46a5-abe7-fd7a789e6b78"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490856164533997751",
+      "source_id": "dcd68586-cf2c-4edd-95f3-10ca7cf0233d"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1490926099285278862",
+      "source_id": "02eb195a-923d-4301-b533-03c9c9a8c64e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1491975204413636668",
+      "source_id": "4092176f-1557-4078-9278-d03e93b0ce31"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1491976856780537946",
+      "source_id": "0965a407-7001-4377-9bbc-3cabdc551c94"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1492400594135027852",
+      "source_id": "20042093-a3dc-4da7-81df-efa8291e2882"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1493033545420247120",
+      "source_id": "661179e0-0845-4fcd-a41b-bbcf2039c76a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1494694100107132958",
+      "source_id": "c3e2372d-4926-4bf6-8219-66ab683e9e03"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1496231524016717955",
+      "source_id": "c83a1e42-407f-4214-b908-36bd14d6f174"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1496612453684089004",
+      "source_id": "163b6f64-b684-45c0-a51a-72c77b7fe5e3"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1496925237546192957",
+      "source_id": "70bc2ef3-ac3f-4e8e-a2cd-a0c8cc8634eb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1499634478312853655",
+      "source_id": "02ac4f68-e254-4446-b1a9-a7497ec6d78e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1514093743857340536",
+      "source_id": "3dfbee38-8362-41d5-bb62-25ef05f17acb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1524915850275061791",
+      "source_id": "b1275cc5-aa8b-48c8-aa12-c115bca2df0f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533058364916105336",
+      "source_id": "018a5fa9-089f-4322-a3dd-6e3a90516e5a"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533058426488225862",
+      "source_id": "7c061e5b-5d69-4d67-8012-42b526fbdf20"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1533058465205977220",
+      "source_id": "426dffe3-d95b-40c0-9561-e1b9014b2afc"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1537599018161537114",
+      "source_id": "a0c179d4-4168-427f-a065-5a2a03386ec7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1540139277269340270",
+      "source_id": "8b472c7c-e80c-438d-bad6-019a2367fb35"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1542872290214027385",
+      "source_id": "0b853015-5cdf-4e86-bc01-7a00312372bb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1544434744786423889",
+      "source_id": "ae74c4e8-ad02-437d-a62f-347efb53e34b"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1545893061572300940",
+      "source_id": "8744f128-4122-4fc5-8062-42dca5ed2b20"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1546625770733043903",
+      "source_id": "56464110-00fb-4c70-9e75-11756dbd3b06"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1547618193831497851",
+      "source_id": "e26fade1-3dbe-4cb6-8bc9-63d8d32b4630"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1550975772456521819",
+      "source_id": "b5f1287b-10d5-4146-b7c1-472d6e16a8cd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551010845205471233",
+      "source_id": "177b1d2d-3add-4060-8375-f77d17c5a1a6"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551442741227945984",
+      "source_id": "6f17d4d1-6575-489f-ac93-0eccc9be5746"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443272067457065",
+      "source_id": "52d0f00e-da10-4000-819f-a96bdf155fc7"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443354770866227",
+      "source_id": "30650cdd-5fe1-45be-bf01-7d04528eba54"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443424660557834",
+      "source_id": "fe54b7da-ce98-4ebb-83e7-0630b03cabf9"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551443527697829888",
+      "source_id": "bc9caac2-4569-4560-ae2c-35686a87d1af"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1551682723314401370",
+      "source_id": "6cb83acb-576b-4856-9977-152de5a1fcfd"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552143867900600405",
+      "source_id": "4892abb6-a118-4a59-b621-8ca3eb3f668f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552147677289123870",
+      "source_id": "2bb06717-3601-4f6a-8abc-63c93d596c1c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552149296764424283",
+      "source_id": "7b8f6077-ef79-4617-8349-06066311f081"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552351731629826079",
+      "source_id": "b7173289-f9d7-413d-b427-45f94081a40e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552374835324387528",
+      "source_id": "395bd7b7-14dc-4c50-8169-af3b4cdcfcc5"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552520333771284654",
+      "source_id": "e0e227e8-e18d-47b1-94e1-d12e61455be4"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552531266300158044",
+      "source_id": "f4b22826-5b31-4bb2-b3eb-024b7eb45f25"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552729580136169563",
+      "source_id": "aca573cd-f968-4164-aecc-2b9d3b48385c"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552823109063807046",
+      "source_id": "6d42f654-d605-4d99-b453-995a1f88db94"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552848070688121014",
+      "source_id": "e8107e8d-6c77-462d-85c9-de1e5acd6973"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1552851897503846420",
+      "source_id": "27bd9369-d604-41ac-9bff-d225b195d0cf"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1553837418216427520",
+      "source_id": "a4215d1c-8402-40ff-a761-b82d662fb59f"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1553991405410451466",
+      "source_id": "892523c9-9870-4f34-8722-f27e55dafa2e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1557376457515204608",
+      "source_id": "9bdb917d-ee5f-4dab-ae03-25ec55f00501"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1557739893776457790",
+      "source_id": "cb427a35-4884-44e0-98eb-a4594d9ec6a1"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1558105699920257024",
+      "source_id": "6e67353d-a4fb-491e-a5bc-6b3bd9f612b3"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1559193541295743058",
+      "source_id": "f835272e-049b-49fe-b561-8e94ae52a1fb"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1559914187679989783",
+      "source_id": "b8e2cbed-6834-436d-9cc1-1aaa8bfdb84e"
+    },
+    {
+      "guild_id": "1203562091500404776",
+      "channel_id": "1560275905136566294",
+      "source_id": "0c98a653-276a-4fa2-96b2-f4d4f07a7f48"
+    }
+  ],
+  "policies": [
+    {
+      "guild_id": "1203562091500404776",
+      "fingerprint": "05561d6cc6241b3b70be23ca5713338d"
+    }
+  ],
+  "discovery": [
+    {
+      "guild_id": "1203562091500404776",
+      "fingerprint": "d19ebce8be39764ba356b702227da8ca"
+    }
+  ]
+}

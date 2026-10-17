@@ -1,0 +1,13 @@
+{
+  "miro": {
+    "enabled": false,
+    "hasToken": false,
+    "hasBoardScope": false
+  },
+  "summaries": {
+    "DISCORD_LIVE_SUMMARY_MAX_GROUPS": "50",
+    "DISCORD_SUMMARY_MAX_REQUESTS": "1000",
+    "DISCORD_SUMMARY_MAX_RUNTIME_MS": "3600000",
+    "DISCORD_SUMMARY_RUN_MAX_USD": "1"
+  }
+}

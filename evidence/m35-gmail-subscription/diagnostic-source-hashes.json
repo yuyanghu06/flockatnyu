@@ -1,0 +1,5 @@
+{
+  "server/google/subscription.js": "fbe8a2a48176fec800d7688d2b299e61ed9ff1f6793f84593142aca9e89fecbd",
+  "server/google/subscription-app.js": "bac76de31609493159db694fad0100b418f551caf64c558cfe2ab9f8553fef03",
+  "server/google/subscription-cli.js": "d6a19c9a127d5df2a99a167ba21645dcda2db6d2939be5f66615df656001e039"
+}

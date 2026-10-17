@@ -1,0 +1,19 @@
+{
+  "httpStatus": 200,
+  "elapsedMs": 4476,
+  "types": [
+    "meta",
+    "delta",
+    "done"
+  ],
+  "sourceCount": 0,
+  "sourceKinds": [],
+  "hasOriginalLink": false,
+  "answerChars": 429,
+  "retrieval": [
+    {
+      "tool": "planning",
+      "status": "unavailable"
+    }
+  ]
+}

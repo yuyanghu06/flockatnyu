@@ -1,0 +1,10 @@
+# M33 integration; M34/M35 plans
+
+- Local timestamp / acting role / milestone: 2026-10-17_13-26-57-188332; orchestrator; M33 integration; M34/M35 plans.
+- Requested scope: shared two-column cache migration, followed by requested local automation handlers and Gmail subscription work.
+- Starting repository state: extensive dirty work preserved; M33 implementation local only, migrations001–017 immutable.
+- Work performed / changed files: Integrated M33 local acceptance and updated Supabase parent guide. New user scope: cache-driven spinup handler/sample prompt/source-event updater, then Gmail subscription, then notify user before prompting work. Assigned exclusive automation coder, Gmail coder and independent tester. User accepted hybrid future cadence and supplied Google Cloud project techflock. Existing Google OAuth client/refresh config is present; safe token-info check succeeds with Gmail readonly scope, lacks PubSub/cloud admin scope. No token/email/secret output. PubSub topic/subscription config absent; gcloud CLI absent; Railway currently has existing worker services only. Opened techflock Google Cloud console tab; sign-in required and subsequent browser frame query timed out. Requested user sign-in asynchronously. No cloud resources, SQL, subscriptions, model calls, source content or deployments changed.
+- Decisions: cache stays exactly uuid/raw_response; automation metadata is separate. Local implementation authorization does not mean hosted services are already active.
+- Checks and evidence: M33 artifact inspection PASS; credential presence/token-scope verification emitted booleans only. Cloud activation needs authenticated techflock access, PubSub resources and a public callback. Root owns integration/package/env/guides; no specialist file overlap.
+- Resulting state / acceptance: M33 local schema accepted; M34/M35 implementations and independent verification in progress.
+- Remaining work and handoff: finish automation/Gmail coders, independent tests/review, root integration. No prompt tuning yet; user requested notification after work.

@@ -1,0 +1,15 @@
+{
+  "exactThreeTables": true,
+  "allCatalogNodesUnchanged": true,
+  "stableRegisteredSourceIDs": true,
+  "viewSettingsUnchanged": true,
+  "discoveryCheckpointsUnchanged": true,
+  "miroPayloadUnchanged": true,
+  "nonDiscordSourcesUnchanged": true,
+  "noDuplicateDiscordSources": true,
+  "forcedRLSAndBrowserDenied": true,
+  "appFunctionsServiceOnlyInvoker": true,
+  "noObsoleteRPCs": true,
+  "noDanglingReferences": true,
+  "nineCatalogueRPCs": true
+}

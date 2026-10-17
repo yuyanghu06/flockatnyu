@@ -1,0 +1,16 @@
+{
+  "migrations": [
+    {
+      "version": "20261017182014",
+      "name": "agent_input_cache",
+      "sourceMatches": true
+    },
+    {
+      "version": "20261017182143",
+      "name": "agent_automation_state",
+      "sourceMatches": true
+    }
+  ],
+  "recovery": "019 explicit transaction committed but Management API returned400 without history receipt; exact8function bodies/table/ACL verified independently, then missing receipt inserted only; no DDL replay or prior history change.",
+  "source019Sha256": "52e27eccbeee5aabdd4afdd077a6c9822cf2ab8cc10f5e1d8898de7f605ecd8f"
+}

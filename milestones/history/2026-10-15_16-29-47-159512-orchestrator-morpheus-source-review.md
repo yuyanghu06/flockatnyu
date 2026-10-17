@@ -1,0 +1,10 @@
+# Morpheus external repository source review
+
+- Local timestamp / acting role / milestone: 2026-10-15_16-29-47-159512 / orchestrator / external reference review; active M25/M26/M27 preserved.
+- Requested scope: Read https://github.com/sean-lai-sh/morpheus and explain its purpose and architecture.
+- Starting repository state: Existing extensive uncommitted map, assistant, Discord, Google and Miro work; preserved.
+- Work performed / changed files: Read startup instructions, snapshot, to-do, latest linked history and workflow. Cloned public Morpheus main into /tmp/tech-nyu-morpheus-review-20261015 at 01e6700269e48c113a5b1fd4447f9e7e558b42f1. Inspected README/package, entrypoint, config, SQLite schema, FTS context store/types, scoped HTTP routing, SDK dispatcher/runtime/tools, live scheduling and task/calendar/digest code. Only local journal files changed.
+- Decisions: Morpheus is a Bun/TypeScript Discord assistant with SQLite originals plus FTS5 and markdown exports, hierarchical workspace access, queued bot questions/replies and optional external Grok or Cursor SDK workers. Source also implements task reminders and Calendar/Meet operations. Historical planning prose is not a reliable inventory of current source. Its archive-first storage differs from current Tech NYU live-first/summary-only direction; no adoption authorized.
+- Checks and evidence: Public GitHub API metadata and successful shallow Git clone; source inspection at exact commit. 65 test files observed, not executed. Browser web fetch failed; Git/API access succeeded. No dependencies installed, bot started, credentials read, model calls, live integrations or cloud changes. Review performed directly by primary agent, without an independent specialist audit.
+- Resulting state / acceptance: Requested architectural reading complete; runtime behavior and deployed state unverified. Existing product milestones unchanged.
+- Remaining work and handoff: No implementation requested. Continue existing M25/M26/M27 only under their existing scope; any Morpheus reuse needs a separate implementation request.
