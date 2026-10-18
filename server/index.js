@@ -14,6 +14,7 @@ import { readDiscordLiveSummaryConfig } from './discord/live-summary-config.js';
 import {readMiroConfig} from './miro/config.js';
 import {createMiroStore} from './miro/store.js';
 import {createMiroTools} from '../tools/miro/index.js';
+import {createMapPresenceService} from './map/presence.js';
 
 const config = readConfig(), discordConfig = readDiscordConfig();
 const discordStore = createDiscordStore(), liveConfig = readLiveDiscordConfig();
@@ -23,5 +24,6 @@ const liveDiscordTools = createLiveChatTools({ service: liveDiscordService, guil
 const googleClient = createGoogleClient({ config: readGoogleConfig() });
 const googleTools = { tools: GOOGLE_TOOLS, execute: options => executeGoogleTool({ ...options, client: googleClient }) };
 const miroTools = createMiroTools({config: readMiroConfig(), store: createMiroStore()});
-const app = createApp({ config, discordStore, discordConfig, liveDiscordService, liveDiscordTools, googleTools, googleClient, miroTools });
+const mapPresenceService = createMapPresenceService({production:config.production});
+const app = createApp({ config, mapPresenceService, discordStore, discordConfig, liveDiscordService, liveDiscordTools, googleTools, googleClient, miroTools });
 serve({ fetch: app.fetch, hostname: config.host, port: config.port });

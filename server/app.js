@@ -26,9 +26,9 @@ export function developmentAuth(c, config) {
     const host = c.req.header('host');
     if (host && !localHosts.includes(new URL(`http://${host}`).hostname)) return null;
     const originHeader = c.req.header('origin');
-    // Same-origin GET fetches generally omit Origin. Only the read-only status
-    // endpoint receives this exemption; mutation requests still require Origin.
-    if (!originHeader && c.req.method === 'GET' && ['/api/status', '/api/admin/discord', '/api/tools'].includes(requestUrl.pathname)) {
+    // Same-origin GET fetches generally omit Origin. Only the exact read-only
+    // routes below receive this exemption; mutation requests still require Origin.
+    if (!originHeader && c.req.method === 'GET' && ['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname)) {
       return { id: 'local-development', allowedSourceIds: [...config.allowedSourceIds], isAdmin: config.devAdminEnabled === true,
         ...(config.devLiveDiscordEnabled && /^[0-9]{1,20}$/.test(config.discordGuildId) ? { liveDiscord: { mode: 'local-operator', guildId: config.discordGuildId } } : {}),
         ...(config.devGoogleEnabled ? { googleAccess: true } : {}) };
@@ -78,7 +78,7 @@ async function readConversation(request, timeoutMs) {
   return { messages, buildingId: value.buildingId, timeZone };
 }
 
-export function createApp({ config = readConfig(), provider = createProvider(config), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, auth = developmentAuth, now = () => new Date() } = {}) {
+export function createApp({ config = readConfig(), provider = createProvider(config), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, mapPresenceService = null, auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
   app.get('/healthz', c => c.json({ ok: true, service: 'tech-nyu-api' }));
@@ -96,6 +96,17 @@ export function createApp({ config = readConfig(), provider = createProvider(con
   const authorize = async c => { try { return await auth(c, config); } catch { return null; } };
   const apiError = (c, code, status) => c.json({ status: code, error: { message: errorMessages[code] || 'This operation is unavailable.' } }, status);
   const resultStatus = status => ({ forbidden: 403, invalid_request: 400, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429 })[status] || 200;
+  app.get('/api/map/presence', async c => {
+    c.header('cache-control', 'no-store');
+    c.header('x-content-type-options', 'nosniff');
+    const principal = await authorize(c);
+    if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return apiError(c, 'access_denied', 403);
+    if (!mapPresenceService?.read) return c.json({status:'not_configured', buildings:[]}, 503);
+    try {
+      const result = await mapPresenceService.read({principal, signal:c.req.raw.signal});
+      return c.json(result, resultStatus(result.status));
+    } catch { return c.json({status:'unavailable', buildings:[]}, 503); }
+  });
   app.get('/api/tools', async c => {
     const principal = await authorize(c);
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return apiError(c, 'access_denied', 403);
