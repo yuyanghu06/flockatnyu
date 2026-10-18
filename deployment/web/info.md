@@ -2,7 +2,8 @@
 
 The runtime serves the built frontend and existing assistant API on one origin.
 Every page, asset and connected-source API requires a signed private operator
-session. Only minimal health and the password sign-in page are public. The
+session. Only minimal health, the password sign-in page and exact read-only
+/favicon.svg and /favicon.ico branding paths are public. The
 password and session signing secret come exclusively from server environment
 variables. Sessions do not grant administrator privileges or a member identity.
 

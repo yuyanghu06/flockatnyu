@@ -35,3 +35,20 @@ Chat binds the composite Google adapter per request so explicit current-user Cal
 Chat has a separate overall requestTimeoutMs (ASSISTANT_REQUEST_TIMEOUT_MS, default300s/max600s) so paced source reads fit before final answer generation; provider LLM_TIMEOUT_MS remains an independent per-call limit.
 
 Production entrypoint `web.js` wraps the shared `runtime-app.js` factory with `site-auth.js` signed sessions, fixed-origin writes and protected static assets/API. Local `index.js` retains development authentication. Internal Miro token broker uses an independent server credential.
+
+The web login template is a white terminal-style screen with a muted teal tilde,
+dark gray#62645f block cursor and muted#a19d93 enter password placeholder. Current local weekday,
+date and time appear above using an inline Intl clock. Group is centered at46%
+horizontally, with20px between clock/prompt and normal monospace tracking.
+Prompt uses.55em tilde/cursor and.45em cursor/placeholder gaps. Native placeholder
+state hides copy on typing; a length-only mask
+renders asterisks with textContent, clips long entries and places the cursor after
+them. Input/change/pageshow refresh the mask without plaintext echo, persistence
+or extra requests. Clearing restores placeholder. Cursor blinks instantly over
+1.1s; reduced motion keeps it steady. Accessible native password input and Enter
+POST remain. Fixed-origin checks, login limits and session issuance stay unchanged
+in web.js/site-auth.js. UI refinements remain local until publication.
+
+Login declares root SVG/ICO favicons. Only exact GET/HEAD /favicon.svg and
+/favicon.ico are public branding exceptions; existing static validation rejects
+symlinks and malformed paths. All other assets/API access still requires login.

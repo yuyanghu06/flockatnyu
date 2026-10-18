@@ -1,3 +1,69 @@
+## Password UI: release ready, deploying web
+
+Approved terminal password UI now declares/favicon.ico and/favicon.svg. Vite emits unchanged approved branding at these stable paths; only exact GET/HEAD icons bypass login, with safe static checks retained. Current workspace9/9site-auth (including concurrent recovery),2/2package tests, frontend/API builds pass. Local favicon bytes/MIME match originals; other assets/API remain gated. Railway CLI is authenticated; MCP auth expired. Current web crash belongs to concurrent password-minimum recovery, preserved in package. Push/deployment pending; no success claimed yet.
+
+[Pass record](history/2026-10-18_17-55-47-591580-orchestrator-password-ui-release-ready.md).
+
+## Password UI: stronger cursor contrast
+
+Cursor darkened to gray#62645f while placeholder remains#a19d93, keeping the white terminal palette. Chrome preview refreshed/screenshot inspected; scoped whitespace passes. Local only; next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-50-03-018510-orchestrator-password-cursor-contrast.md).
+
+## Password UI: roomier prompt spacing
+
+Prompt now uses normal monospace tracking, larger.55em tilde/cursor gap and.45em cursor/placeholder gap, with20px above the line. Responsive frame width matches these gaps so mask behavior stays stable. Chrome preview refreshed/screenshot inspected; scoped whitespace passes. Local only; next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-48-44-998842-orchestrator-terminal-prompt-roomier-spacing.md).
+
+## Password UI: gray terminal cursor, tilde and masked typing
+
+Final palette restores white background; cursor is gray#92928c, tilde muted teal#79aeb7, placeholder#a19d93 and date/time#777369. Typing hides placeholder and renders one asterisk per character, with cursor following the visible end. Fixed prompt width clips long masked entries without moving the frame; clearing restores the placeholder. Native password input/POST/auth unchanged. Chrome empty/7character/87character/clear screenshots inspected;7/7site-auth checks and scoped whitespace pass. Local only; next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-46-45-592804-orchestrator-terminal-tilde-gray-cursor-masked-entry.md).
+
+## Password UI: terminal block cursor and live date/time
+
+Password page now has a compact black block cursor beside gray22–40px monospace text with10px gap, with the full group centered slightly left at46%. Current browser-local weekday/date/24hour time with seconds/year appears above and updates each second. Clock is semantic and has no live announcements. Placeholder still disappears on typing and returns when cleared without shifting the cursor. Chrome screenshots/typing/clock progression checked;7/7site-auth checks and scoped whitespace pass. Local only; no auth/backend data/deployment changes. Next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-43-39-689980-orchestrator-terminal-block-cursor-live-clock.md).
+
+## Password UI: terminal font and black I-beam
+
+Placeholder now uses terminal-style monospace typography in its previous gray #aaa9a5. Cursor is a black inline SVG I-beam matching the reference, retaining responsive height and instant on/off blink. Existing position, hidden typing and Enter submission remain. Current Chrome preview refreshed and visually inspected; site-auth checks rerun and scoped whitespace checked. Local only. Next: user visual pass.
+
+[Pass record](history/2026-10-18_17-40-30-944409-orchestrator-terminal-font-black-ibeam.md).
+
+## Password UI: instant cursor blink
+
+Cursor now switches fully on/off with a1.1s stepped animation; no fade. Rounded gray shape, position and placeholder behavior retained, reduced motion remains steady. Chrome local preview refreshed; CSS/scoped whitespace checked. Local only; next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-34-28-446218-orchestrator-password-cursor-step-blink.md).
+
+## Password UI: group shifted right
+
+Cursor and placeholder moved together20viewport percentage points right from the previous position. Current anchor is40%minus responsive32–64px offset; vertical center and all entry/placeholder styling remain. Chrome local preview refreshed and screenshot inspected; scoped whitespace passes. Local only; next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-33-12-242478-orchestrator-password-prompt-right-shift.md).
+
+## Password UI: group shifted left
+
+Cursor and placeholder now sit30viewport percentage points left of their previous position, moving together while retaining vertical centering and existing entry behavior. Chrome local preview refreshed and visually verified; scoped whitespace passes. Local only. Next: user visual feedback.
+
+[Pass record](history/2026-10-18_17-32-32-960824-orchestrator-password-prompt-left-shift.md).
+
+## Password UI: softened cursor and placeholder
+
+Cursor now has rounded ends, a gray tone and smooth1.5s fade, positioned32–64px left of center. Gray enter password copy disappears immediately on typing and returns when cleared using native placeholder state. Cursor position remains stable; white background and hidden native password/Enter submission preserved. Chrome visual typing/clearing check and7/7site-auth tests pass. Local only; no auth/deployment changes. Next: user visual pass.
+
+[Pass record](history/2026-10-18_17-30-02-753307-orchestrator-soft-cursor-password-placeholder.md).
+
+## Rapid UI: cursor-only password page
+
+Local login now shows only a massive centered blinking black cursor on pure white, matching the supplied reference. Native accessible password input is transparent; typing stays hidden and Enter uses the existing POST/login path. No JavaScript, auth or credential changes. Reduced motion keeps cursor steady. Chrome local preview refreshed/visually checked;7/7site-auth checks, syntax and scoped whitespace pass. Not deployed; next action is the user's visual pass. Prior release state remains below.
+
+[Pass record](history/2026-10-18_17-28-21-352500-orchestrator-cursor-only-password-page.md).
+
 ## Current: optimization and live rollout accepted
 
 Goal: calm source-aware chat, autonomous Discord/Miro→Calendar→map reconciliation, efficient rendering/source reads and a private live site. Frontend and chat API are live at https://web-production-e4edc.up.railway.app on Railway; collectors and autonomous update worker are separate successful services. SITE_ACCESS_PASSWORD and session/broker credentials exist only in private Railway variables. Nonadmin source scope, leadership exclusions and Miro read-only boundary remain enforced.

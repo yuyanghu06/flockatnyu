@@ -1,0 +1,10 @@
+# Terminal tilde, gray cursor and masked entry
+
+- Local timestamp / acting role / milestone: 2026-10-18T17:46:45.592804-04:00 / direct implementation and verification / password UI.
+- Requested scope: try warm palette, then restore original white background, soften cursor to gray with terminal tilde at left, and show asterisks on typing while hiding placeholder.
+- Starting repository state: prior local terminal/clock edits plus unrelated documentation/evidence changes; preserve existing work.
+- Work performed / changed files: server/web.js final palette is white#fff, cursor#92928c, placeholder#a19d93, clock#777369, muted teal prefix#79aeb7 and masked stars#343434. Transient ivory/charcoal preview superseded by user correction. Added persistent tilde prefix and fixed-width prompt. Mask rendering reads password length only, renders literal asterisks using textContent on input/change/pageshow, follows the end of long content through horizontal clipping and retains the block cursor. CSS native placeholder state still hides prompt copy; clearing restores it. Source/milestone guides updated.
+- Decisions: no plaintext password echo, logging, storage or extra requests. Password remains in its existing native password input; unchanged POST/login, validation and auth checks. Cursor follows visible end; prompt frame stays stable when typing. Live date/time and reduced motion retained.
+- Checks and evidence: node --test tests/site-auth.test.mjs7/7pass after masked-entry implementation. Chrome screenshots visually verified white/gray/teal empty prompt,7asterisks for synthetic preview text with cursor afterward,87character synthetic entry bounded inside prompt, and clearing back to empty. Clock continued updating. No real credentials or form submission. Scoped whitespace passes. No deployment/commit/auth changes.
+- Resulting state / acceptance: requested terminal style and masked typing implemented locally, Chrome left with empty focused input.
+- Remaining work and handoff: next user visual feedback; preview127.0.0.1:5174/login; production unchanged by this pass.

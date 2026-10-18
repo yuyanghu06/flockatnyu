@@ -18,7 +18,57 @@ const types = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; chars
 const headers = {'cache-control':'no-store', 'x-content-type-options':'nosniff', 'referrer-policy':'same-origin',
   'strict-transport-security':'max-age=31536000', 'x-frame-options':'DENY',
   'content-security-policy':"frame-ancestors 'none'; base-uri 'self'; form-action 'self'"};
-const page = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tech @ NYU — private access</title><body><main><h1>Tech @ NYU</h1><p>Enter the shared access password to continue.</p><form method="post" action="/login"><label>Password <input type="password" name="password" autocomplete="current-password" required maxlength="1024"></label><button type="submit">Continue</button></form></main></body></html>`;
+const page = `<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flock@NYU — private access</title>
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon.ico?v=raised-at-80">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=raised-at-80">
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #fff; }
+  form { position: fixed; inset: 0; display: grid; place-items: center; }
+  input { position: absolute; inset: 0; box-sizing: border-box; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; opacity: 0; cursor: text; font-size: 16px; }
+  .terminal { position: absolute; left: 46%; top: 50%; transform: translate(-50%, -50%); display: grid; gap: 20px; font: 400 clamp(22px, 3vw, 40px)/1.2 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; letter-spacing: 0; pointer-events: none; }
+  .clock { color: #777369; font-size: clamp(14px, 1.5vw, 20px); letter-spacing: -.02em; white-space: nowrap; }
+  .prompt { position: relative; display: flex; align-items: center; width: calc(15ch + 1.55em); min-height: 1.2em; }
+  .prefix { flex: 0 0 auto; margin-right: .55em; color: #79aeb7; }
+  .masked { flex: 0 1 auto; min-width: 0; overflow: hidden; color: #343434; white-space: pre; }
+  .cursor { flex: 0 0 auto; width: .55em; height: 1em; background: #62645f; animation: blink 1.1s steps(1, end) infinite; }
+  .placeholder { position: absolute; left: calc(1ch + 1.55em); color: #a19d93; white-space: nowrap; }
+  input:not(:placeholder-shown) ~ .terminal .placeholder { visibility: hidden; }
+  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+</style>
+<body>
+<form method="post" action="/login">
+  <input type="password" name="password" aria-label="Password" placeholder="enter password" autocomplete="current-password" autofocus required maxlength="1024">
+  <span class="terminal"><time class="clock" aria-label="Current date and time"></time><span class="prompt" aria-hidden="true"><span class="prefix">~</span><span class="masked"></span><span class="cursor"></span><span class="placeholder">enter password</span></span></span>
+</form>
+<script>
+  const clock = document.querySelector('.clock');
+  const format = new Intl.DateTimeFormat('en-US', {weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'});
+  function tick() {
+    const now = new Date();
+    const parts = Object.fromEntries(format.formatToParts(now).map(part => [part.type, part.value]));
+    clock.textContent = parts.weekday + ' ' + parts.month + ' ' + parts.day + ' ' + parts.hour + ':' + parts.minute + ':' + parts.second + ' ' + parts.year;
+    clock.dateTime = now.toISOString();
+  }
+  tick();
+  setInterval(tick, 1000);
+  const password = document.querySelector('input');
+  const masked = document.querySelector('.masked');
+  function maskPassword() {
+    masked.textContent = '*'.repeat(password.value.length);
+    masked.scrollLeft = masked.scrollWidth;
+  }
+  password.addEventListener('input', maskPassword);
+  password.addEventListener('change', maskPassword);
+  window.addEventListener('pageshow', maskPassword);
+  maskPassword();
+</script>
+</body>
+</html>`;
 
 export function createWebsite({apiApp, siteAuth, miroTokenBroker, distRoot = resolve('dist'), now = Date.now} = {}) {
   const root = resolve(distRoot);
@@ -62,7 +112,8 @@ export function createWebsite({apiApp, siteAuth, miroTokenBroker, distRoot = res
       }
       return reply(null, 303, {'location':'/', 'set-cookie':sessionCookie});
     }
-    if (!siteAuth.session(request)) {
+    const publicIcon = ['/favicon.ico', '/favicon.svg'].includes(url.pathname) && ['GET', 'HEAD'].includes(request.method);
+    if (!publicIcon && !siteAuth.session(request)) {
       if (url.pathname.startsWith('/api/') || !['GET', 'HEAD'].includes(request.method)) return reply('{"status":"access_denied"}', 403, {'content-type':'application/json'});
       return reply(null, 303, {'location':'/login'});
     }

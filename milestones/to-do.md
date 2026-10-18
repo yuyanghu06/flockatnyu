@@ -1,3 +1,19 @@
+## Password UI refinement
+
+- [x] Replace visible login elements with a massive centered blinking cursor on white.
+- [x] Preserve native password form and verify existing authentication checks; refresh Chrome preview.
+- [x] Soften/round cursor, shift slightly left and hide enter password placeholder on typing.
+- [x] Move cursor and placeholder together30%of page width left.
+- [x] Move group20%of page width right from prior position.
+- [x] Replace smooth cursor fade with an instant on/off blink.
+- [x] Use terminal monospace font, black reference I-beam and original gray placeholder.
+- [x] Balance terminal proportions, use block cursor and add live local weekday/date/time above.
+- [x] Restore white background, gray block cursor, muted teal tilde and masked asterisk typing.
+- [x] Open up prompt tracking, element spacing and date-line separation.
+- [x] Darken gray cursor for stronger contrast against placeholder.
+- [x] User approved publication; fix login favicon and pass build/access/package checks.
+- [ ] Push isolated password UI changes and deploy/verify Railway web.
+
 ## Active: optimize, deploy live services, commit and push
 
 - [x] Audit frontend/backend and establish synthetic measured baselines.

@@ -17,3 +17,7 @@ The startup overlay uses static SVG contour masks over two composited rotating c
 The approved raised pastel finish is a static transparent SVG shadow/bevel/sheen image above those moving colors. The matching static favicon embeds that relief at 80% of the original mark size inside its rounded white badge. See scripts/build-brand-relief.mjs and scripts/build-brand-favicon.mjs.
 
 Building interaction uses a steady white surface highlight with smooth fades. Selection preserves the same overlay through camera/pointer changes; pulsing color, hover lift and the cancelled outline experiment are inactive. See docs/hover-reference.md and src/landmark-effects.js.
+
+Vite emits stable root favicon.svg/favicon.ico from the approved assets/branding
+sources for the public login page. These two read-only branding files are the
+only added anonymous static routes; application assets and APIs stay gated.

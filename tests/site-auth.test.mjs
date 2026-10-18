@@ -78,6 +78,35 @@ test('website gates static/API, protects mutations, denies traversal/symlinks an
   assert.equal(logout.status, 303); assert.match(logout.headers.get('set-cookie'), /Max-Age=0/);
 });
 
+test('login icons are public only at exact read-only paths and retain safe static-file checks', async t => {
+  const directory = await mkdtemp(join(tmpdir(), 'site-icons-test-'));
+  t.after(() => rm(directory, {recursive:true, force:true}));
+  await writeFile(join(directory, 'favicon.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
+  await writeFile(join(directory, 'favicon.ico'), new Uint8Array([0, 0, 1, 0]));
+  const siteAuth = createSiteAuth({config:readSiteAuthConfig(env), apiConfig});
+  const app = createWebsite({siteAuth, distRoot:directory});
+  const html = await (await app.fetch(request('/login'))).text();
+  assert.match(html, /href="\/favicon\.svg\?v=raised-at-80"/);
+  assert.match(html, /href="\/favicon\.ico\?v=raised-at-80"/);
+  for (const extension of ['svg', 'ico']) {
+    const icon = await app.fetch(request(`/favicon.${extension}?v=raised-at-80`));
+    assert.equal(icon.status, 200);
+    assert.equal(icon.headers.get('set-cookie'), null);
+    assert.match(icon.headers.get('content-type'), extension === 'svg' ? /image\/svg\+xml/ : /image\/x-icon/);
+    assert.ok((await icon.arrayBuffer()).byteLength > 0);
+    const head = await app.fetch(request(`/favicon.${extension}`, {method:'HEAD'}));
+    assert.equal(head.status, 200); assert.equal(await head.text(), '');
+    assert.equal((await app.fetch(request(`/favicon.${extension}`, {method:'POST'}))).status, 403);
+  }
+  for (const path of ['/', '/assets/favicon.svg', '/favicon.svg/other', '/favicon.svg%00', '/%66avicon.svg']) {
+    assert.equal((await app.fetch(request(path))).status, 303, path);
+  }
+  assert.equal((await app.fetch(request('/api/tools'))).status, 403);
+  await rm(join(directory, 'favicon.svg'));
+  await symlink(join(directory, 'favicon.ico'), join(directory, 'favicon.svg'));
+  assert.equal((await app.fetch(request('/favicon.svg'))).status, 404);
+});
+
 test('login denies foreign origin, oversized payloads, duplicate passwords and bounded repeated guesses', async () => {
   const siteAuth = createSiteAuth({config:readSiteAuthConfig(env), apiConfig});
   const app = createWebsite({siteAuth});

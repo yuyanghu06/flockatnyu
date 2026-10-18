@@ -17,7 +17,8 @@ expire after12hours by default, and require the configured origin for mutations.
 Rotate `SITE_SESSION_SECRET` to revoke all issued sessions; changing the password
 alone changes future sign-ins. Logout clears the current browser cookie.
 
-All pages/assets/APIs require login except the login page and minimal `/healthz`.
+All pages/assets/APIs require login except the login page, minimal `/healthz`,
+and exact read-only `/favicon.svg` and `/favicon.ico` branding paths.
 The exact `/internal/miro/token` route requires its separate server bearer secret;
 a browser session never authorizes it. Backend admin policy routes remain denied.
 

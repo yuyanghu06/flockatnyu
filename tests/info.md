@@ -382,3 +382,7 @@ Optimization checks include fresh batch authorization cost, exact answer-context
 scoped-agent-claim.test.mjs runs realSQL mixed-scope trigger/lease/ACL/finish cases and productionstore/handler wiring, preserving historical019fixtures.
 
 planner-workload-model.mjs reuses strict configured-model scenarios with synthetic sources/inert writes and the actual Miro adapter/parser to catch incompatible canvas/table arguments. Its aggregate receipt is evidence/optimization/planner-workload-model.json; this is not a live-source mutation test.
+
+site-auth.test.mjs includes login-favicon boundary checks: exact anonymous
+GET/HEAD routes serve correctly typed icons, while writes, aliases, other assets,
+APIs and symlinked files retain their original denial behavior.
