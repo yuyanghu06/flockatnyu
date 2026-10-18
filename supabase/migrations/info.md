@@ -1,8 +1,10 @@
 # Current migration boundary
 
-Applied001–020 are immutable. Hosted020 is20261017184647_discord_manual_channel_disable;018 is20261017182014 and019 is20261017182143.020 updates two existing invoker functions and adds manual-disable intent only inside existing catalogue JSONB. It creates no table, column, archive or new grant. Independent actualSQL tests and hosted preservation fingerprints are under evidence/m36-collector-cleanup.
+Applied001–021 are immutable. Hosted020 is20261017184647_discord_manual_channel_disable;018 is20261017182014 and019 is20261017182143.020 updates two existing invoker functions and adds manual-disable intent only inside existing catalogue JSONB. It creates no table, column, archive or new grant. Independent actualSQL tests and hosted preservation fingerprints are under evidence/m36-collector-cleanup.
 
 Never replay this directory with ordinary db push: local and hosted version prefixes differ. Apply only reviewed new migrations deliberately, verify receipts/definitions/access and preserve unrelated data. Historical notes below are superseded where013–020 remove the described structures.
+
+Migration021 is hosted as20261017194715_map_people_buildings. It adds two forced-RLS/service-only map tables,26avatar identity seeds,9map locations and five invoker functions for validation, atomic updates and freshness-filtered reads. Discord links are a separate service-role data import; no messages or location claims are seeded. Its receipt statements exactly match local SQL after a guarded correction of newly recorded history text; no prior receipt or DDL was replayed.
 
 # Ordered database migrations
 
@@ -43,6 +45,8 @@ Discord content persistence or change the deployed live-only runtime.
 | 017 | Live-only Discord; single channel catalogue table | 20261016003623 |
 | 018 | Shared two-column source-input cache | 20261017182014 |
 | 019 | Agent lease/cooldown/receipts and subscription metadata | 20261017182143 |
+| 020 | Preserve manual Discord channel disable through discovery | 20261017184647 |
+| 021 | Map location/person tables, avatar seeds and service-only presence RPCs | 20261017194715 |
 
 The deployed schema through019 has five service-only, forced-RLS public tables:
 discord_view_policies, knowledge_sources, miro_boards, agent_input_cache and
@@ -74,3 +78,39 @@ history receipt. The cause is unknown. After independent exact-schema verificati
 only the missing receipt was recorded with its complete original SQL. Both new
 receipts match local files exactly; no prior migration/history was altered. See
 ../evidence/m35-gmail-subscription/hosted-migrations.json.
+
+Migration022 restricts service-role writes on the fixed map_buildings catalogue
+to UPDATE(people_here). Table-wide INSERT, UPDATE and DELETE, plus explicit
+column UPDATE grants, are revoked before granting only that presence column.
+Existing SELECT, invoker RPCs and browser-role denial remain unchanged; the
+validation trigger still maintains updated_at. This local migration does not
+create agent tools or change any building or presence data. Hosted application
+and verification must be recorded separately before claiming it is deployed.
+
+Migration023 adds a required `label` string to each people_here JSON entry,
+allowing 0–200 Unicode code points without trimming or a generated fallback.
+It replaces only the existing map_validate_building function, retaining all
+prior presence validation and trigger-managed timestamps. A bounded backfill
+adds `label: ""` only where missing, preserving entry order, existing labels and
+all prior fields. Migration022's people_here-only runtime grant is unchanged;
+no catalogue columns, new functions or agent tools are introduced. Hosted
+application and fixture label updates are verified separately by the orchestrator.
+
+023 is now applied as20261017203512. Exact receipt/file hashes and preservation of people/catalogue/other functions/ACLs and all prior presence fields/order/times are recorded in evidence/map-presence-labels/hosted-verification.json.
+
+Migration024 adds only map_buildings.scheduled_events and its bounded flat-event
+validator/trigger. It preserves the022people_here-only runtime write boundary;
+service_role can read events but cannot update them or the fixed catalogue.
+Required/optional event fields and presentation policy are described in
+../../docs/database-tables.md. All nine arrays default empty.
+
+024 is applied as20261018000104 via the exact-project Supabase Management API,
+with its receipt in the same transaction. Transaction assertions preserved all
+existing map rows, public functions and table ACL/RLS. A subsequent read confirms
+receipt/local-file equality, NOT NULL JSONB default, validator, forced RLS, denied
+browser reads and denied runtime catalogue/event writes. Evidence lives in
+../../evidence/map-building-activity/. Do not replay prior migrations with db push.
+
+025_map_event_attendees.sql is an additive validator revision for optional attendee_ids arrays (<=500 unique existing map_people UUIDs), preserving legacy events and owner-only event writes. See rolling snapshot for actual hosted application status; do not assume a local file is applied.
+
+025 is now applied as hosted20261018001815_map_event_attendees. Owner verification confirmed exact validator body MD5 and absent runtime event-write grant; aggregate receipt lives in evidence/map-building-activity/attendee-migration-receipt.json.

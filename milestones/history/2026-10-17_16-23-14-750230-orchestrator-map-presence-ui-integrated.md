@@ -1,0 +1,10 @@
+# Map presence ui integrated
+
+- Local timestamp / acting role / milestone: 2026-10-17T16:23:14.750230-04:00; orchestrator; map-presence-ui.
+- Requested scope: seed five Bobst occupants and show actual avatar UI markers, preserving map appearance, for collaborative debugging.
+- Starting state: seven hosted service-only tables through021,26linked people, originally empty location arrays. Concurrent source/branding edits preserved.
+- Work performed: integrated safe map read endpoint, circular local portrait overlay and minimal main-loop hooks; reusable conditional fixture apply/clear script, npm commands, guides, tests/evidence and serialized journal. Hosted five planned debug entries expire after24hours; identities and other locations preserved. No migration, model run, Railway deployment or agent activation.
+- Checks and evidence: parent inspected real desktop and synthetic mobile screenshots; liveGET4187/api/map/presence returns200/9buildings/5Bobst debug occupants. Final live build loads all5hashed portraits, independent13API+20assistant+12synthetic browser checks and buildsPASS; evaluatorACCEPT. Scoped whitespace/privacy evidence checksPASS. Earlier cancellation and narrow wrapping bugs fixed/retested.
+- Decisions: exact local debug feed only; normal source-backed presence requires a future current-policy callback and production auth stays closed. Frontend refresh30seconds, local expiry filtering and safe error clearing; no inferred real presence.
+- Resulting state / acceptance: requested local debugging UI complete. Working paired server remains at http://127.0.0.1:4187 (API3127, session70408). Existing5173 API still404 for new route and was preserved; use4187 or restart that older API. Debug data expiry is2026-10-18T20:13:44.113Z; source rows remain until explicit cleanup but active UI filters expire them.
+- Remaining work and handoff: see docs/map-presence.md; npm run map:debug -- --apply refreshes fixture, --clear removes it. Ordinary-source/production map wiring remains separate. No commit/push performed.

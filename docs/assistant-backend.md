@@ -26,6 +26,6 @@ Gmail/Drive read-only tools use backend OAuth and account-authorized scope witho
 
 Miro has bounded read-only board/frame/item/relationship tools and a separate ingestion service. Original layout and explicit coverage limits reach model context. The `miro-sync` service exists with `MIRO_SYNC_ENABLED=false`; consult [Miro setup](miro-sync.md) for board coverage and freshness.
 
-The Railway production environment contains running `discord-events`, running `gmail-events` and paused `miro-sync`, sharing Supabase. Discord receives new native events while preserving inherited exclusions; there is no message-history archive job. The [cache-driven agent handler](agent-automation.md) is implemented but not deployed, with no concrete Calendar/map write adapters. Collection does not invoke an LLM. The local supervisor starts only web/API processes.
+The Railway production environment contains running `discord-events`, running `gmail-events` and paused `miro-sync`, sharing Supabase. Discord receives new native events while preserving inherited exclusions; there is no message-history archive job. The [update agent handler](agent-automation.md) is implemented but not deployed, with no concrete Calendar/map write adapters. Collection does not invoke an LLM. The local supervisor starts only web/API processes.
 
 Building/day activity and history views remain unfinished. Local fixture checks and historical live smoke tests are recorded in [tests](../tests/info.md) and the milestone; they do not prove current cloud health.

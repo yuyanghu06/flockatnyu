@@ -1,0 +1,11 @@
+# Update agent readiness audit
+
+- Local timestamp / acting role: 2026-10-17T19:52:28.728127-04:00; orchestrator.
+- Requested scope: report current blockers to running the autonomous update agent.
+- Starting state: existing queue/handler/source collectors; hosted map schema and table-driven UI; ongoing unrelated frontend work preserved.
+- Work performed: read runtime config/CLI/default adapters/tool registry/map read wiring/deployment assets and current journals. Inspected only non-secret config booleans; attempted read-only Railway status. No model/Calendar calls, queue claims, source/schema writes, activation or deployment.
+- Findings: local automation disabled and no local worker process found. Model, Supabase, Google, Miro and Calendar target configuration are present; this does not prove live credentials/access. Gmail source ID absent in local worker environment, so Gmail action scope is disabled there. Map agent reads/writes and label prompt wiring still absent; normal source-backed map display requires current-policy callback not wired in runtime. Default preparation requires Calendar writer/owner preflight for every batch, so the previously deferred target-sharing blocker stops even map-only processing. Target not rechecked, respecting user deferral. Durable memory remains unimplemented but is not necessary for a first map-only pilot.
+- Decisions: distinguish missing map action/policy wiring from already implemented DB/UI. Treat worker deploy/enable and a real bounded end-to-end run as remaining work. Production member login pertains to public/chat routes, not a prerequisite for a server-only worker.
+- Checks/evidence: local safe config audit confirms disabled, model/store configured,219allowlisted sources, Gmail source ID absent, bundled adapter selected,30inputs/1800seconds/60second cooldown. Railway status returns Unauthorized; last verified no update-agent deployment, but fresh hosted state unavailable. No new runtime tests executed for this read-only audit.
+- Resulting state: current blockers identified; no runtime changes.
+- Remaining work/handoff: implement map tools plus read policy, resolve Calendar hard dependency while deferred, provision worker source settings, prepare/deploy/enable dedicated worker and verify a real message-to-label pilot. Renew Railway authentication before deployment/status verification.

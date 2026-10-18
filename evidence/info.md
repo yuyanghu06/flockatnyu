@@ -97,3 +97,37 @@ and independent review for the shared two-column input cache; no hosted apply.
 M34 local automation acceptance is recorded in m34-agent-automation/. M35 Gmail
 fixtures/review in m35-gmail-subscription/ distinguish initial passing cases from
 the subsequent history-page liveness finding and required regression fix.
+
+M40 (`m40-assets/`) records source asset hashes, approved metadata changes, both builds, targeted geometry/camera checks and production desktop/mobile selection/loading evidence. The historical GCASL count limitation is explicit in its tester report.
+
+M41 (`m41-brand-loader/`) records native @ loader loop endpoints, unchanged silhouette, reduced-motion pixels, actual startup/failure/retry and desktop/mobile input acceptance. Before/fixed production entry and embedded-motion findings remain explicit.
+
+`m41-loader-diagonal/` records the faster 3.2-second diagonal revision: endpoint pixel identity, fixed silhouette, actual two-axis movement, unchanged static/startup files and focused production/reduced-motion acceptance.
+
+`m41-loader-contours/` records actual phase progression around both letter routes, fixed192segment geometry, exact3.2second repeat, full silhouette coverage and focused unchanged-startup/reduced-motion production acceptance, with240px sampled motion evidence.
+
+`m41-loader-speed150/` verifies exact1.5speed increase, consistently scaled192delays, identical normalized-phase frames/endpoints and preserved geometry/static/startup, with focusedbuild/startup acceptance.
+
+map-presence-ui/ contains independent map presence API/browser verification; live roster captures stay in private temporary files.
+
+map-building-write-scope/ contains independent local SQL tests and aggregate hosted022 ACL/receipt/data-preservation verification; live probes were rolled back without retained mutations.
+
+M42 (`m42-favicon/`) records approved-native-export still SVG/ICO and round transparent-corner checks, including the corrected initial ICO crop. M43 (`m43-smooth-reveal/`) preserves the failed video natural-load freeze/profile, exact sync/async facade equality and final compositor natural-load pixels/timing. Earlier video tests remain historical; final-natural-dev supersedes runtime media claims. Physical-device/uniform FPS are not established.
+
+map-presence-labels/ records independent SQL/API/browser checks and aggregate hosted023 label backfill/receipt verification. Private real-person screenshots remain outside the repository.
+
+favicon-small-mark/ contains independent smaller-mark SVG/ICO/static/corner/served-byte checks and light/dark 16/32/64px previews.
+
+M45 (`m45-raised-loader/`) contains the initial clipping finding and corrected raised finish, desktop/mobile/reduced pixel checks, blocked-JavaScript compositor frames, optional overlay failure, real startup and final80% favicon size/alpha/MIME evidence. Interim size1 icon results remain historical; final-80 results are current.
+
+M46 final evidence is m46-smooth-glow/: steady white, exact fade/reversal/selection continuity, shared-resource ownership, bounded repeated-hover shader counts and actual Bobst hover/click/leave/clear. The white-outline preparation was cancelled and is not accepted behavior.
+
+map-building-activity/ contains synthetic base-focus card/viewport evidence and
+aggregate hosted024 migration receipts, schema/ACL checks and preservation
+assertions. It contains no real roster/event contents or credentials.
+
+M47 (`m47-footprint-ring/`) contains the selected silhouette/footprint implementation checks, DPR1/2 synthetic GPU occlusion/edge/state tests, actual Bobst captures and first-returning-frame wheel cleanup evidence. Stern before-fix overhead documents its omitted higher-base wing; final source uses two authoritative source contours instead, with fixed same-pose evidence and exact area/bounds/ownership checks. Independent evaluator accepted M47. Exact330ms math and synchronization are independently checked; cold first-selection frame pacing is not established by sparse screenshots/CDP capture.
+
+map-building-activity/bobst-debug-events-receipt.json contains only the four explicitly fictional UI events and live API verification metadata. Current private map screenshots remain under /tmp.
+
+structured-map-prompt/ records independent shared-contract/SQL/handler prompt-delivery regressions, including the approved two-hour presence and timed-event policies. These are synthetic/in-memory checks, not a live-model pilot.

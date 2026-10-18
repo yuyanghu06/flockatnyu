@@ -1,3 +1,153 @@
+# Structured map prompt — completed locally
+
+- [x] Share exact people_here/scheduled_events schemas/examples with the actual update-agent system prompt; no events_here alias.
+- [x] Wire faithful activity labels, stable identities/source times, separate presence/plans/events and safe partial corrections.
+- [x] Save and prompt both approved two-hour defaults with explicit-end/all-day overrides.
+- [x] Verify actual handler delivery,001–024 SQL parity and unchanged ACLs: combined206/206 plus final32/32; independent evaluator ACCEPT.
+- [ ] Implement narrowly scoped shared map read/identity/presence-label tools with deterministic defaults and current source authorization; prompt alone cannot perform writes.
+- [ ] Define separately authorized event-write capability while keeping the building catalogue immutable; runtime currently cannot change scheduled_events.
+- [ ] Resolve Calendar sharing/preflight dependency and worker Gmail source ID, prepare deployment, then verify a bounded real source-to-queue-to-map pilot.
+
+# Building focus activity and event storage
+
+- [x] Add capped480×640left avatar frame and base-focus right inset card, including empty buildings.
+- [x] Add validated flattened scheduled_events array through024and apply exact hosted migration20261018000104; verify old data/functions/ACL/RLS preserved.
+- [x] Filter events by source policy, status and end time; retain today/current-only avatar population.
+- [x] Preserve newer parallel events-only card request; initial people-list section superseded, people remain avatars.
+- [x] Direct SQL/API/regression/build checks and five final real-map synthetic browser checks.
+- [ ] User appearance review on4190; no physical-device/performance acceptance claimed.
+- [ ] Future, separately scoped: authorized real-event population/ingestion and current source-policy callback wiring. Arrays currently empty; no runtime event-write grant added.
+
+# Active: user-led avatar redesign
+
+- [x] Rename Schedule, include current location, restore full-width rows and single-line subtitles.
+- [x] Add active-window yellow fill, darken it and remove orange outline.
+- [x] Pop whole panel in on reveal/person changes; respect reduced motion and avoid polling replay.
+- [ ] User visual review of Schedule animation, current-location layout and yellow fill.
+
+- [x] Generate all9stylized building portraits matching human avatars; retain originals/exact prompts and compact thumbnails.
+- [x] Show building portraits left of Scheduled names/times/activities; verify9-ID coverage and served thumbnail assets.
+- [ ] User visual review of building portrait style and schedule-row sizing.
+
+- [x] Centre Scheduled heading, remove timezone footer and make itinerary dividers black.
+
+- [x] Save three explicitly requested future plans using conditional bounded updates; preserve unrelated data.
+- [x] Verify future plans remain upcoming only and create no current map avatars before validity starts (17 API tests/live proxy).
+- [x] Make pure black the standard normal interface text color; persist the preference.
+- [x] Restart dedicated4187/API3127 preview and verify future feed; preserve separate5173/3001 runtime.
+
+- [x] Frame Kimmel on the left and centre the itinerary person-name header.
+
+- [x] Add solid inset future-location itinerary 20px right of clicked avatar; preserve plan authorization and truthful data states.
+- [x] Separate thought-bubble dots from the body and each other.
+- [ ] User visual review of itinerary/scroll/spacing. Dedicated4187/3127 is updated; separate5173/3001 may still require a restart.
+
+- [x] Give thought bubble bodies softly inset highlights/shadows matching portrait edges.
+
+- [x] Increase thought bubble gap to16px above portrait (+23px separation).
+
+- [x] Confine focused avatars to left44%; increase camera pullback and frame complete building bounds right, including Courant/Silver/GCASL/Paulson.
+
+- [x] Randomize focused screen positions once per focus session; retain positions across movement/polling.
+- [x] Make positional movement 30% longer and reduce default focused diameter to 37.5% grid size.
+- [x] Replace hover card with persistent count-scaled Instagram-style activity bubbles; hide blank notes.
+- [x] Add person click-focus with enlargement, dimming and click/Escape dismissal.
+- [x] Shift focused building right to leave room on its left; save building-activity view requirement.
+- [x] Initial selected-building event card/storage implemented; supersedes this unspecific saved requirement. Actual event ingestion remains separately scoped above.
+
+- [x] Reduce focused portrait width/height by 50%, retaining overview sizes and focused positions.
+
+- [x] Expand focused avatars freely into a full-viewport arrangement with smooth focus/overview transitions.
+
+- [x] Add focused-building avatar size boost (1.6× preferred, subject to fitting) with smooth return to overview size. Superseded by full-view focused arrangement per user correction.
+
+- [x] Match neutral context-building base color to sampled portrait off-white #fdfaf0.
+
+- [x] Slow repositioning and fit-size easing; remove intermediate grid snapping that caused jitter. User visual confirmation pending.
+
+- [x] Replace overlapping volume anchors with actual-mesh silhouette containment and non-overlapping portrait packing.
+- [x] Keep valid positions/identities stable and interpolate continuously to address camera jitter; user visual confirmation pending.
+- [x] Add soft rounded raised edges; remove lens distortion. Original assets/Supabase URLs remain unchanged.
+
+- [x] Fix pop origin: animate inner portraits only, keeping projected marker positions fixed.
+
+- [x] Disable overview avatar pointer hover effects/tooltips; retain focused-building hover and keyboard access.
+
+- [x] Implement borderless circular portraits throughout building height/footprint, world-relative scaling and removal of on-map labels/tethers.
+- [x] Add staggered scale-only bubble entrance without polling replay; respect reduced motion.
+- [x] Direct syntax/build checks; no specialist agents per user instruction.
+- [ ] User visual review of placement, zoom sizing and pop animation; follow their next requested changes.
+- [ ] Revise legacy roof-fan browser assertions if automated layout verification is requested later.
+
+# M43 additional color-spin speed
+
+- [x] Plan and implement another 50% speed increase: runtime loop now 1.422222 seconds.
+- [x] Build and check the focused diff; preserve reveal timing, assets and favicon.
+- [x] Independently verify both computed periods, directions, changing pixels and reduced motion; evaluator ACCEPT.
+
+# M42/M43 complete: rounded-square favicon and uninterrupted loader
+
+- [x] Author static SVG/ICO favicon; final rounded-square badge supersedes the circle, with full glyph and transparent corners.
+- [x] Implement cancellable1100ms logo zoom/fade then1000ms white dissolve, larger base and no visible preparing caption.
+- [x] Reproduce actual natural-load freeze and identify synchronous facade raycasting.
+- [x] Slice facade work cooperatively without changing generated geometry; author static vector contour masks.
+- [x] Finish compositor-only runtime motion and independently compare sync/async geometry.
+- [x] Verify natural-load visible motion, zoom continuity, high-DPI shape and failures/reduced motion; M43 evaluator ACCEPT.
+- [x] Verify latest user-requested rounded-square favicon routes/alpha and independent review; ACCEPT (supersedes circle).
+- [x] Evaluate final evidence and integrate current guides.
+
+# M41: pastel @ loading animation
+
+- [x] Independently plan lifecycle/animation and author native SVG loop/static assets.
+- [x] Integrate white startup loader while preserving real readiness and failure/retry.
+- [x] Verify silhouette, darker palette, loop continuity, reduced motion and desktop/mobile/error startup.
+- [x] Evaluate, resolve production-bootstrap/reduced-motion findings and integrate current guides/journal; ACCEPT.
+
+# Map buildings and people — hosted
+
+- [x] Inspect current nine map IDs, local database guide and location-plan semantics; prepare two-table schema proposal.
+- [x] User authorized creation, added first/last names and requested all26avatar identities/Discord matching.
+- [x] Implement/test/review/apply021:7publictables,9locations,26people,validated atomic service-only functions; previous tables/functions preserved.
+- [x] Apply15unique name matches after live membership checks; verify zero-write rerun and exact new receipt/source hashes.
+- [x] Receive user confirmation for11remaining identities, apply conditional links/name updates and verify26unique IDs; audit initial15accounts and roles (25Eboard + approved advisor).
+- [ ] Separate future work: frontend/agent location tools with current source-policy enforcement; no presence data inferred by this import.
+
+# Update agent Miro/Calendar
+
+- [x] Plan batch preparation, fixed-target idempotent Calendar tools and prompt contracts; receive exact target ID.
+- [x] Implement Calendar client/tools and optional OAuth scope expansion.
+- [x] Wire trusted default runtime, per-batch Miro preparation and event-reconciliation prompt.
+- [x] Independently test/review target/provenance/access, retries/human edits, partial reads and exact cleanup; standard automation104/104, Google/Miro55/55, API build; evaluator ACCEPT.
+- [x] Complete additional Calendar consent and verify required app OAuth scopes.
+- [ ] Deferred by user: await calendar owner sharing exact target with hello@techatnyu.org as Make changes to events; user cannot grant it, current target404/NYU session read-only.
+- [ ] Recheck exact-target owner/writer access after sharing, then verify operational runtime without claiming deployment.
+
+# M40: common assets folder
+
+- [x] Inspect source asset roots and independently plan content-preserving relocation.
+- [x] Move assets and update runtime, script, test, metadata and current documentation paths.
+- [x] Independently verify hashes, builds, asset loading and map interaction.
+- [x] Evaluate final diff and integrate journal/ownership guides; reviewer ACCEPT.
+- Known pre-existing limitation: Global Center legacy geometry check expects 11 selectable buildings; current configuration has nine. Asset move does not change this expectation or configuration.
+
+# Agent MVP completion priorities (post-M39 status)
+
+- [x] Set combined Discord/Gmail update-agent defaults to30inputs or30minutes; preserve1minute cooldown.
+- [x] Independently verify mixed-source threshold, age trigger and cooldown through real SQL (79/79 + API build).
+- [x] Evaluate and integrate update-agent cadence change (ACCEPT; no activation/deployment).
+
+- [ ] After update-agent deployment, measure idle worker memory, claim-query latency and metadata growth before optimizing polling cadence.
+
+- [x] Verify current update-agent inactivity against live Railway service inventory and local processes; document configured cadence separately.
+
+- [x] Persist chat agent and update agent names in notes and current guides.
+
+- [x] Inventory implemented local engine versus recorded deployed ingestion and unfinished actions.
+- [ ] Finalize prompt, shared tool exposure and durable activity/memory/action contracts.
+- [ ] Implement trusted production adapters for Calendar/map updates and durable memory.
+- [ ] Deploy/enable the update agent worker and deploy the chat agent API with appropriate production access.
+- [ ] Verify a real source event through model execution, successful action and persisted frontend-visible result.
+
 # M39: working-tree publication
 
 - [x] Inspect diff, upstream and credentials; no divergence or detected credentials.
@@ -696,3 +846,148 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 
 - [x] M27 independent Node22 review43/43 +real41group/71member diagnostic pass.
 - [ ] M27 verify fresh full capture and paused repaired worker deployment before enabling dailyjob.
+
+# Asset folder advisory
+
+- [x] Verify yuyang-site-3d-assets/ is still required by runtime models/placement imports and developer scripts/tests; retain folder. Consolidation/pruning remains a suggestion, with no implementation requested.
+
+# Branding exploration
+
+- [x] Generate and save light iridescent chrome Tech @ on white with prompt, without replacing current frontend branding.
+
+- [x] Revise the Tech @ to a matte satin iridescent finish; preserve glossy version and save exact prompt.
+
+- [x] Apply the supplied peach/pink/lilac/periwinkle reference palette to matte @; keep white background and earlier variants.
+
+- [x] Create a flatter, quieter @ with a broader pastel palette; save versioned v4 and exact prompt.
+
+## M41 motion refinement
+
+- [x] Halve loop period to 3.2 seconds and move the clipped color field and sheen diagonally.
+- [x] Verify exact loop, static fallback and updated production asset; refresh 3.2-second preview and independent acceptance.
+
+## M41 contour color flow
+
+- [x] Replace diagonal field with fixed outer-spiral/stem and inner-loop segments carrying traveling color phases.
+- [x] Verify actual route-following colors, seamless loop, smooth junctions and unchanged reduced-motion/startup; refresh GIF and integrate; evaluator ACCEPT.
+
+- [x] Apply and verify the user-corrected roster surname using its confirmed Discord spelling.
+
+- [x] Recheck live map migration receipt and populated people/building counts after surname correction.
+
+## M41 speed refinement
+
+- [x] Increase contour color speed by exactly50% using period3.2/1.5 and matching phase delays; retime preview.
+- [x] Verify current period/phase/loop, rebuild and accept speed-only revision; exact1.5speedratio and unchanged normalized frames.
+
+## Map presence avatar UI
+
+- [x] Plan safe read API and anchored avatar markers; seed five expiring Bobst debug entries.
+- [x] Implement bounded authenticated backend map read route.
+- [x] Complete circular portrait overlay with local test labels and cached camera projection.
+- [x] Independently verify API/privacy and desktop/mobile live marker behavior; evaluate/integrate.
+
+## Fixed map building catalogue
+
+- [x] Plan and implement022 to allow only people_here updates through runtime credentials.
+- [x] Independently test/review column privileges and existing presence RPC compatibility.
+- [x] Apply only022 and verify hosted effective grants plus unchanged data.
+
+## Explicit table labels
+
+- [x] Add requiredJSONlabel and preserve priorfields/expiry through hosted023backfill.
+- [x] Remove generateddebug/statuscaptions; pass/displaytablelabelsverbatim, blankhides.
+- [x] Verify schema/API/Unicode/HTML/longbadge/browser/live paths and integrate independentacceptance.
+
+## Smaller favicon mark
+
+- [x] Centerfavicon@at65%withinexistingbadge; regenerateSVG/ICO/cachekeys andverifylight/darksizes/staticframeswithindependentacceptance.
+
+- [ ] When wiring agent map writes, set people_here[].label from the person's stated activity at that location; keep unknown activities blank. Saved requirement only; map-write tools remain unexposed.
+
+- [x] Replace Bobst debug presence with only the two user-selected people and save their exact supplied activity labels; verify other fields/locations preserved.
+
+# M44 periwinkle design trial — rejected and restored
+
+- [x] Try the periwinkle base and traveling highlight; technical checks passed.
+- [x] User rejected the appearance; restore previous full-pastel v5 runtime and keep 1.422222-second speed.
+- [x] Close the trial preview, refresh Chrome and record the rejected exploration.
+- Cancelled: further v6 integration or styling; follow the next user direction.
+
+# M45 raised pastel loader and matching favicon
+
+- [x] Add static raised shading over existing pastel motion; fix direct-path clipping and obtain user appearance approval.
+- [x] Embed matching favicon relief; original-size interim superseded by final80% mark scale, with same badge and fresh SVG/ICO cache versions.
+- [x] Finish independent visual/motion/fallback and icon checks, review and integration; evaluator ACCEPT M45.
+
+# M46 white building hover outline
+
+- [x] Read current effects/rendering and plan a complete-building white perimeter; floating marker explicitly cancelled.
+- Cancelled: white perimeter and selected-outline suppression; user requested reverting it.
+- Cancelled: outline-specific GPU checks, superseded by steady white surface highlight.
+- Superseded: review the final steady white surface treatment instead.
+
+# M46 final: smooth white surface highlight
+
+- [x] Restore surface highlighting and remove outline module/render hook; floating marker remains cancelled.
+- [x] Use steady white0.18 with350ms/280ms fades; remove pulsing/lift and preserve selected overlay through click/pointer leave.
+- [x] Reuse at most two materials/views; verify26focused Node checks and build.
+- [x] Verify actual hover/click/rehover continuity and integrate final review; evaluator ACCEPT.
+
+## Update agent readiness audit
+
+- [x] Verify local worker disabled/not running; inspect current tools/config without model/source mutations.
+- [ ] Implement agent map identity/read/presence/label tools and current-source display authorization within people_here-only write scope.
+- [ ] Resolve mandatory Calendar preflight dependency while target sharing remains deferred (owner grant or controlled optional capability).
+- [ ] Provision the worker's Gmail source ID and verify its deployed source/configuration scope.
+- [ ] Renew Railway authentication, prepare dedicated update-agent deployment, enable deliberately and verify a bounded real input-to-map-label pilot.
+
+# M47 selected outline and footprint ring
+
+- [x] Plan persistent outline and generate/save the user-approved Bobst footprint concept with exact prompt.
+- Superseded: ring replacing outline; latest user requests both.
+- [x] Implement both selected indicators with depth-aware outline and rotated-footprint ground band.
+- [x] Add synchronized330ms entrance fade/outward ring morph; same selection remains steady.
+- [x] Correct Arch map/local coordinates and live reduced-motion completion latch.
+- [x] Supersede delayed overview-settlement cleanup with first-returning-frame clearing; actual first-RAF browser regression passes.
+- [x] Fix Stern ring to include both authoritative source building components; exact bounds/area, holes/ownership and same-pose browser fit pass.
+- [x] Verify visible ring, outline antialiasing, selection continuity and owned resources in Node/browser.
+- [x] Independent final evaluation ACCEPT and journal integration; no physical-device/cold-first-use FPS claim.
+
+## Assistant branding
+
+- [x] Replace placeholder with current raised pastel @ PNG and match launcher to avatar white #FDFAF0; verify image/color and build.
+
+- [x] Assistant logo animates as raised pastel SVG on hover/focus; PNG restored on leave, reduced motion respected; Chrome/build verified.
+
+## Scheduled event direction
+
+- [x] Save user correction: Scheduled is building events at a time, agent-populated from event sources; current presence remains separate.
+- Superseded as a future UI task: parallel event-card/storage implementation is reported in the rolling snapshot. This note-only pass changed no schema/Calendar/UI; actual event ingestion and source-policy wiring remain separate.
+
+## Panel refinement
+
+- [x] Pop in building activity card and assistant launcher; remove People there today section, leaving scheduled events; verify Chrome/reduced motion/build.
+
+## Bobst event UI debug
+
+- [x] Seed4explicit Bobst test events on hosted standardized scheduled_events schema, preserving other data and runtime grants.
+- [x] Verify exact local-only fixture read boundary and live4192preview; add New York weekday/date subtitle.
+- [x] Save future attendee UUID array, optional dedicated events table and event-type SVG icon ideas without implementing schema changes.
+- [ ] Remove expired debug event fixtures by exact dedicated provenance when UI debugging is finished.
+- Deferred: design event attendee UUID array and consider separate events table; define event types/SVG icons when requested.
+
+## Event attendee avatars
+
+- [x] Prepare optional attendee_ids validator, safe authorized profile resolution and right-side event avatars.
+- [x] Pass26SQL/API checks, both builds and synthetic actual-map layout verification.
+- [x] Note future event-driven map population and rationale for dedicated events table; implementation deferred.
+- [x] Use authenticated yuyang Chrome native window; apply025/sample attendees to exact hosted Bobst fixtures.
+- [x] Restart owned4192/API3132preview and verify live4events/6portraits and right-side layout.
+
+## Requested working-tree publication
+
+- [x] Inspect all pending paths, preserve authored assets/evidence and scan for secrets/oversized files.
+- [x] Create logical implementation/evidence commits; repair assistant asset imports exposed by full test run.
+- [x] Verify714Node cases across full run/focused fix, both builds, map/startup assertions and actual logo hover.
+- [ ] Commit shared documentation/history; push codex/dev normally and verify remote SHA/clean tree.

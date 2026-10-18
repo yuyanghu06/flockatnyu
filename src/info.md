@@ -1,14 +1,56 @@
+# Standard interface text
+
+The shared --ink token is pure black (#000000). Normal map, note/itinerary,
+assistant and admin text use it; startup also declares it before modules load.
+Accent/semantic states and contrasting text on filled controls retain their roles.
+
 # Current administration boundary
 
 Discord administration configures live-readable channel metadata. It has no archive date, retention claim or backfill control. Disabling a channel prevents reads and event ingestion; migration020 preserves that intent through discovery. The assistant reports live Discord/Google/Miro readiness without retired generic knowledge storage status.
 
 # Campus map application
 
+`map-presence.js` and `map-presence.css` display borderless circular portraits.
+Overview uses the cached 128px actual-mesh silhouette and distance-field packing
+in `map-presence-layout.js`. Building focus instead scatters portraits across the
+left 44% of the viewport using one stable random seed per focus session. Focus diameter is 37.5%
+of the largest viewport grid's diameter; it changes with occupant count. Polling
+preserves layout, animation and person-focus state. Position easing is 30% longer
+than before (~0.87s to cover 95%); size easing remains ~0.67s. No per-frame grid
+snapping. Overview containment/spacing applies to destinations; portraits can
+cross constraints during continuous transit. DOM overlays lack scene occlusion.
+
+Focused avatars show persistent Instagram-style activity notes with softly inset edges, a 16px body-to-portrait gap and small tail
+dots; note size decreases with occupant count. Text comes only from table labels,
+with blanks hidden and three-line visual truncation; accessible names retain the
+full label. The old hover profile card is removed. Clicking a person while the
+building is focused brings their portrait to the left region's centre, enlarges it 1.5× and dims
+others. Clicking again/outside or Escape clears person focus. Native keyboard
+activation and aria-pressed remain available. Overview has no avatar hover state.
+
+Portraits retain soft raised-edge shading, no lens distortion and original image
+assets/URLs. The inner wrapper alone owns the staggered bubble entrance. The solid inset itinerary panel follows 20px right of the clicked person, listing
+the selected current location and authorized active/future plans, with New York dates/times and
+truthful empty/unavailable states. Interacting with it retains person focus and
+scrolls the panel independently. Notes have two detached tail dots, with clear
+gaps from the body and between dots. Protected
+API access, bundled URL allowlist, polling/foreground refresh, expiry and failure
+clearing remain unchanged. `camera-focus.js` now shifts selected buildings to the
+right using complete projected bounds and a 25% pullback (within distance limits),
+preserving front direction, angle profiles and overview return.
+See docs/map-presence.md and docs/camera-navigation.md for current contracts.
+
+`window.__map.presence.refresh()` and `.snapshot()` provide a small verification
+seam without credentials or a fabricated roster fallback.
+
 `main.js` loads and renders the local Washington Square scene, owns map interaction
 and the small HTML interface. `assets.js` explicitly imports 110 nearby
 city tiles and the chosen campus assets, so production builds include this bounded area.
 `config.js` centralizes the palette, initial camera and factual landmark records.
-Asset placement metadata remains authoritative in the original asset folders.
+Neutral context buildings use #fdfaf0, sampled from the most common portrait
+background corner color; existing 3D lighting and atmosphere still shade it.
+Asset placement metadata remains authoritative under `../assets/yuyang-site-3d-assets/`
+and `../assets/campus-assets/`. Vite imports and model URLs resolve from those folders.
 `geometry.js` contains boundary-inclusive Coles geometry removal and camera input
 validation. `style.css` controls responsive layout.
 The grass export contains several parks in one mesh; triangle filtering restricts
@@ -49,7 +91,7 @@ M3 modules: silver-towers.js, leslie-elab.js and gould-plaza.js build merged, se
 
 M4 correction: silver-towers.js is retained as an unused historical implementation; main.js no longer imports it or removes tower source geometry. Active target is silver-center.js, alongside kimmel.js. Gould now includes requested planter trees and shrubs.
 
-M5: courant-stern.js adds merged window frames, mullions and sills to existing Courant/Stern roots before registration. Source meshes/material colors remain unchanged; no new facade palette or glass planes.
+M5: courant-stern.js adds merged window frames, mullions and sills to existing Courant/Stern roots before registration. Source meshes/material colors remain unchanged; no new facade palette or glass planes. The current shared generator supports synchronous offline exports and an asynchronous runtime wrapper with an 8ms budget, yielding between components and attaching completed details atomically. main.js awaits enhancement before readiness.
 
 M6: streets.js and parks.js generate offline street/park geometry. scripts/build-streets-parks.mjs bakes the model; main.js loads the result, replacing old coarse grass.
 
@@ -57,17 +99,25 @@ M7: main.js biases only the background ground plane behind street surfaces; stre
 
 M8: global-center.js replaces exactly88 GCASL source triangles with six merged meshes, preserving Kimmel and neighbors. main/config register nyu-global-center as the eleventh landmark.
 
-M9: atmosphere.js adds sky and edge haze; landmark-effects.js animates complete landmark roots. config.js contains exact camera samples and shared limits. Generic city materials are neutral; detailed model palettes remain intact.
+M9: atmosphere.js adds sky and edge haze; landmark-effects.js applies a steady white highlight to complete landmark roots. config.js contains exact camera samples and shared limits. Generic city materials are neutral; detailed model palettes remain intact.
 
 Final M9 effect follows yuyang-site commit964408f: merged additive surface overlays with hue/pulse, selected suppression and4.5mhover-only lift. This supersedes provisional sprite halos/emission. Decorations are separate nonpickable scene roots; underlying landmark materials remain unchanged.
 
-Current M9 supersedes idle/selected glow: only hovered roots show their overlay. camera-focus.js owns front focus, bounded scripted motion and focused tilt; map-interactions.js owns captured wheel routing while native pinch remains enabled. M10 park-vegetation.js is an offline generator; main.js loads its merged GLB at identity.
+Current selection preserves the steady white fill and adds both a selected union silhouette (landmark-outline.js) and an ordinary ground footprint band (landmark-footprint.js). They enter together over330ms without moving the building; the ground band expands outward through owned morph targets. Outline rendering follows the unchanged beauty render before avatar projection. Authoritative footprints are reused where available; Bobst/Courant base hulls are conservative approximations; Stern instead preserves the union of source contours11005 and11632, including its separately elevated front wing and concavities, with Gould excluded from the ground footprint. Hover fill retains its two-material pool and at most two crossfading views; no lift, pulse or source-buffer mutation is introduced. Starting an outward camera return clears selected indicators on its first frame through normal selection state, preserving hover and the ongoing camera transition. Explicit world-space Arch/Paulson footprint metadata prevents double placement, and reduced-motion completion stays latched when normal motion resumes. camera-focus.js owns front focus, bounded scripted motion and focused tilt; map-interactions.js owns captured wheel routing while native pinch remains enabled. M10 park-vegetation.js is an offline generator; main.js loads its merged GLB at identity.
 
 M11: atmosphere.js replaces texture sky with one analytic triangle matching fog rays/output color; camera-focus.js stores pre-focus overview for reverse exit; map-interactions.js preserves wheel deltas. config.js default matches supplied park-foreground composition. assets/main restore neutral25UnionSquareWest and235ParkAvenueSouth models and neutralizeLipton, retaininggeometry.
 
 M12: map-resources.js compacts neutral context buffers exactly and freezes static local matrices; main.js caches picking and exposes bounded timing diagnostics.
 
-M21 supersedes the M13/M20 entry UI: bootstrap.js catches startup failures; loading-state.js still gates real resources/scene readiness; map-startup.js automatically opens the map and uses only the small static status/retry notice in index.html.
+The pastel @ loading view uses two static SVG alpha masks over the original
+static logo. Each mask clips a prepainted conic-gradient disc; only each disc's
+transform rotates, keeping the silhouette fixed and avoiding SVG segment repaints
+or video loop seeks. Inline CSS presents the white view before modules; bootstrap
+warms mask decodes with a bounded timeout and gives it two paint opportunities.
+loading-state.js retains real resource/scene readiness. map-startup.js keeps the
+app inert through READY while startup-visual.js sequences logo zoom/fade, then
+white fade, and only then enters. Failures/new pending resources cancel stale
+reveal work. Reduced motion uses static artwork and skips reveal.
 
 - assistant.js / assistant.css provide the M24 floating Spotlight assistant after automatic campus readiness: native modal, query-first compact layout, Cmd/Ctrl+K, focus restoration, editable offline drafts, streaming/cancellation and safe sources. chat-client.js owns the bounded HTTP/NDJSON transport and truthful connection failures. Closing stops unfinished replies; see docs/assistant-backend.md for server setup and boundaries.
 
@@ -101,3 +151,29 @@ includes `timeZone` in the request body. Changes during travel apply on the next
 request. Detection failure explicitly uses UTC; the server validates the zone and
 uses it for date-based Discord window interpretation. Message/building context
 and stream cancellation retain their existing contracts.
+
+Kimmel has a left-side framing override in building-views.js; other profiles retain the default right band. The itinerary person name is centred in its panel header.
+
+Date-only upcoming plans display the New York date and “Time not specified” rather than fabricated midnight appointment times. Future plans never create current map markers before validity begins.
+
+The itinerary title is centred and reads Schedule. Its person name and copy use standard black, with no timezone footer. Current location appears first; full-width rows use single-line subtitles combining time/location and activity. Active windows receive a darker yellow fill without an outline; date-only plans use their New York day. A short scale/opacity bounce plays on opening or person switches, respects reduced motion, and does not replay on data refresh.
+
+Schedule rows now show a stylized building portrait left of the name/time/activity. A Vite glob maps all nine stable building IDs to local256px WebP thumbnails from assets/building-portraits; originals and exact prompts remain there. Rows use56px images (40px mobile), accessible adjacent text and safe image failure handling.
+
+The assistant launcher and dialog identity use the transparent raised pastel @ PNG from assets/branding/tech-at-assistant.png. Launcher white is #FDFAF0, matching the avatar background; images are decorative alongside accessible text.
+
+Assistant launcher hover/keyboard focus mounts the matching animated SVG; leave/blur/disposal removes it and restores PNG. Image loading failure and reduced-motion preferences retain the resting mark.
+
+Building activity cards now contain scheduled events only, without the former People there today roster. Opening/switching buildings reuses the schedule380ms pop-in; data updates preserve animation state. Assistant launcher also pops in when campus entry reveals it. Both honor reduced motion.
+
+Base building focus now adds a right-side inset activity card with scheduled
+events. The parallel conversation's newer events-only request removed the initial people
+list; people remain as avatars. Empty buildings retain the card; failures have
+explicit unavailable text. Avatar clicks open the existing person Schedule instead. The
+focused avatar frame is capped at480×640CSS pixels inside the left44%, keeping
+seeded positions independent of camera movement. Existing overview layout and
+parent-thread individual Schedule styling/animation are preserved.
+
+Building activity title now has a current New York weekday/month/day subtitle. Its render key includes the date so midnight changes update text without restarting the pop-in.
+
+Event rows support source-authorized attendee profiles from the map API, rendering right-side circular local portraits with name alternatives and initials fallback; current presence is independent.

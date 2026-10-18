@@ -5,11 +5,11 @@ M36 collector/archive retirement and M37 tool organization are the cleanup bound
 | Workstream | Primary files | Shared boundary |
 | --- | --- | --- |
 | Map and UI | src/ and focused map/browser tests | Coordinate assistant.js, chat-client.js, shared CSS and API shapes with agent work. |
-| Agent and prompting | server/automation/, server/providers/, tools/ and focused backend tests | server/app.js, server/index.js and assistant transport contracts need one owner per change. |
+| Chat agent, update agent and prompting | server/automation/, server/providers/, tools/ and focused backend tests | server/app.js, server/index.js and assistant transport contracts need one owner per change. |
 | Source ingestion | server/discord/, server/google/, server/miro/ and deployment/ | Keep collectors independent of callable tools/model runners. |
 | Build and deployment | scripts/, package.json and locks | One integrator owns dependency/script changes. |
 | Tracking | milestones/, current shared guides | Serialize updates through the integrator; history/evidence are append-only. |
 
 Existing read tools are centralized in tools/{discord,google,miro}. No empty Calendar/memory folders imply future functionality. finish_batch remains an internal automation control. Connector clients and source authorization remain under server/. Existing developer/asset/deployment commands now use scripts/; npm command names are unchanged. Slim collector runtime modules are byte-identical across this move, so this pass needs no collector redeployment.
 
-Follow-up product work: prompt and scoped memory design, trusted Calendar/map adapters, agent deployment, production member authentication, Miro authorization/initial capture. Gmail collection and model execution now have independent enable switches. These are separate workstreams, not additional cleanup prerequisites. Native Discord edit/delete and excluded-channel/thread probes remain unverified on hosted services; local fixtures cover them. Admin browser fixture was updated but not run. Invalid/expired Gateway sessions can leave gaps without backfill.
+Follow-up product work: prompt and scoped memory design, Calendar access/operational verification, map adapters, chat agent/update agent deployment, production member authentication, Miro authorization/initial capture. Gmail collection and model execution now have independent enable switches. These are separate workstreams, not additional cleanup prerequisites. Native Discord edit/delete and excluded-channel/thread probes remain unverified on hosted services; local fixtures cover them. Admin browser fixture was updated but not run. Invalid/expired Gateway sessions can leave gaps without backfill.

@@ -7,3 +7,5 @@ The requester avatar was subsequently regenerated using the unchanged shared pro
 Current avatars are also copied into docs/avatars/ under readable person-name filenames; update those copies when future revisions are accepted.
 
 2026-10-17 cleanup correction: the user authorized deleting output/, including scratch delivery variants/archive/prompts. The26 named documentation images remain in docs/avatars/. Earlier delivery statements above describe the historical artwork pass, not current storage.
+
+M40 relocation: all 26 retained images now live under assets/avatars/. Earlier docs/avatars/ locations above are historical; source photos and deleted scratch output remain outside current asset storage.

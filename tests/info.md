@@ -1,6 +1,50 @@
+## Map current/upcoming read verification
+
+`tests/map-presence.test.mjs` now has 17 checks, including minimal service-only building/people reads, current versus future-planned separation, identical source allowlist/current-policy checks for future plans, invalid-time/status exclusion, no provenance/private identity disclosure unchanged route authentication, exact local-owner-plan boundaries and clock advancement proving future-day plans do not populate the current map. The old roof-fan/hover browser layout fixture remains superseded; current visual review is user-led.
+
+## Map roster/schema verification
+
+`npm run test:map-roster` includes map-schema.test.mjs and map-roster.test.mjs. The26checks run actual001–021SQL with populated preservation fixtures, strict JSON references/expiry/moves, RLS/grants and deterministic9location/26avatar seeds, plus synthetic name ambiguity, short-surname prefixes, bots, incomplete searches, rate limits, precise string IDs, explicit apply and conditional identity-write behavior. Existing Discord client5/5 and API build also pass. PGlite does not establish independent concurrent-session timing; hosted counts/grants/receipt and live identity-import outcomes have separate evidence.
+
+## Branded startup verification
+
+`map-startup.mjs` keeps nine readiness/error tests and verifies input remains inert
+through the ordered 1100ms logo exit and 1000ms backdrop exit. `startup-visual.mjs`
+adds twelve focused cancellation/revocation/timer/reduced-motion/mask-decode tests.
+`startup-reveal-browser.mjs` records real compositor frames, phase mutations,
+transforms and long tasks on an unheld real map load or held-resource fixture.
+
+Runtime colors now use two static SVG masks and CSS conic-disc transforms;
+video and animated SVG exports are authoring/shareable artifacts. Browser pixel
+normalization and the deliberate 650ms main-thread block prove actual color
+movement independently of JS callbacks. The native SVG case in
+`brand-loader-browser.mjs` remains an asset-authoring check; its runtime fallback
+cases cover production failures and reduced-motion preferences.
+
+Use fresh `MAP_EVIDENCE` for every run and `MAP_URL` for the current server.
+`MAP_HOLD`, `MAP_BLOCK`, `MAP_MOBILE`, `MAP_DPR2` and optional `MAP_PROFILE`
+select bounded diagnostic variants. Phase durations use MutationObserver times,
+since an rAF sample may first observe a transition after it has already begun.
+All browser API routes are intercepted. No actual hardware/GPU FPS is claimed.
+Fresh M43 evidence is under `evidence/m43-smooth-reveal/`; earlier passes remain
+preserved. `map-input-browser.mjs` and `building-view-browser.mjs` wait for final
+entered state, beyond map readiness, before interacting with the scene.
+
+## Update agent Miro/Calendar verification
+
+`calendar-tools.test.mjs` exercises fixed-target Calendar transport, scope/account/ACL checks, source provenance, source-based retry identities, conditional edits, human changes and managed cancellation. `update-agent-calendar.test.mjs` exercises the real handler/bundled adapter with synthetic clients, per-ready-batch preparation, idle behavior, exact queue preservation, 37-frame headings, current source authorization and lossless UTF-8 fragments. Both are included in `npm run test:agent-automation`. These are simulated transports; live OAuth/target access is recorded separately in the milestone snapshot.
+
+## Update agent cadence verification
+
+`agent-automation.test.mjs` checks the 30-input/1800-second defaults and RPC parameters. `agent-automation-sql.test.mjs` uses real migrated SQL through the production config/store to verify mixed Discord/Gmail counting, duplicate suppression, oldest-input age, the 60-second cooldown and preserved 20-input claim limit. Thirty minutes is measured from the oldest eligible queued input, not fixed clock times or the prior run. Independent local suite: 79/79 with API build; no hosted activation or model calls.
+
 M39 publication verification: fresh14 keyboard,21 camera,16 interaction and13 offline Chrome assistant checks pass. The old interaction count now explicitly excludes Lipton; Spotlight uses the current live-tool context and an injected source fixture instead of the retired knowledge-search RPC. Actual Hono auth/tool validation, Vite proxy, provider streaming and UI are exercised without live source/model calls. Prior M38 full581/581 and both builds cover unchanged product source. Fresh evidence: evidence/m39-working-tree-publication/.
 
 # Current backend and collector verification
+
+Map asset checks resolve retained exports and derived data beneath root `assets/`.
+Older evidence and original request documents retain their historical paths;
+reruns must write fresh evidence rather than replace those records.
 
 Run `node --test --test-concurrency=2 tests/*.test.mjs` for the current unit/API/SQL regression suite. The bounded concurrency prevents overlapping PGlite instances from exhausting memory. M38 final full suite passed581/581 after Gmail switch separation and wrapper removal (focused55/55), with API and frontend builds; see evidence/m37-tool-organization. M36 independent final integration passed578/578 before final Gateway regressions, and final focused rollout review passed58/58; see evidence/m36-collector-cleanup.
 
@@ -242,3 +286,23 @@ Evidence and command results are in evidence/m35-gmail-subscription/.
 miro-unsupported-items.test.mjs verifies mixed-page original metadata/order, safe unknown type handling, cursor/index disclosure, context bounds and whole-page discard after supported detail denial.
 
 miro-group-pages.test.mjs covers exact 64-bit numeric identity, group membership-slice merging/raw envelope retention, malformed/conflicting groups, pagination/bounds, structural-first capture and fresh consistency retries.
+
+map-presence.test.mjs verifies authenticated safe map reads, debug restrictions, source policy, expiry and bounded failure. map-presence-browser.mjs exercises live and synthetic avatar markers through the paired local runtime; see its environment settings and evidence/map-presence-ui/.
+
+map-building-write-scope.test.mjs executes actual001–022 in PGlite to verify people_here-only runtime updates, catalogue/insert/delete/upsert denial, unchanged data/other grants, validation, internal timestamps and invoker atomic moves. Included in test:map-roster; historical021 checks remain unchanged.
+
+map-presence-labels-sql.test.mjs executes001–023 for required JSON label validation, ordered legacy backfill, Unicode bounds, unchanged fixed-catalogue grants and RPC compatibility. Current presence API/browser tests verify verbatim table labels, no isDebug/display inference, blank labels, safe text and long-caption bounds. Historical021/022 fixtures remain unchanged.
+
+map-events-sql.test.mjs executes001–024 in PGlite and checks flat-event validation,
+nine empty defaults, exact old-row/function/ACL preservation and runtime access
+boundaries. map-presence.test.mjs additionally checks event source-policy denial,
+cancellation/expiry, ordering, deduplication, safe links and presentation-only
+responses. map-building-activity-browser.mjs exercises the real map with synthetic
+people/events in an isolated preview; evidence is in evidence/map-building-activity.
+Checks are direct in this side conversation, without independent subagents.
+
+map-presence.test.mjs additionally verifies the exact Bobst event-fixture provenance/ID/title boundary, denial to production/members/other buildings, and independent ordinary-event authorization.
+
+map-contracts.test.mjs verifies shared schema/example parity against actual001–024 SQL and existing privileges. update-agent-prompt.test.mjs captures actual handler-to-provider system instructions and tests policies, scoped completion and unavailable actions using synthetic providers. Both run under test:update-agent-prompt and test:agent-automation; no live model calls or behavioral-compliance claims.
+
+025 SQL/API checks cover optional/legacy attendees, UUID type/duplicate/unknown/bounds rejection, profile trackability, source authorization and no derived current presence.

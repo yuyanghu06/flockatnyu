@@ -1,0 +1,10 @@
+# Hosted Map Tables And Name Links
+
+- Local timestamp / acting role / milestone: 2026-10-17T15:52:51.185956-04:00 / Orchestrator integrated by orchestrator / map-people-schema.
+- Requested scope: Add first/last names, create all avatar people and named map locations, match existing tech@nyu Discord names/IDs.
+- Starting repository state: Prior proposal and unrelated concurrent changes preserved; existing integrations/Calendar deferral unchanged.
+- Work performed / changed files: Applied only021transactionally to confirmed project and recorded new receipt20261017194715. Created26avatar people/nine locations; queried current role/RLS metadata and verified all five new function bodies equal local source. Applied15unique name matches through service-role CAS after15fresh guild-member rechecks; rerun zero writes.
+- Decisions: Identity roster is not source membership or evidence of location. Unknown names/ambiguous IDs stay null; do not archive guild directory or source bodies. All application access remains service-only.
+- Checks and evidence: Seven public tables, old table metadata/functions preserved,9/26exactavatarcoverage/allpresence[]/allfirstnamescomplete/eightsurnamesknown,15unique Discord IDs/11pending. First member recheck attempt hit429 before writes; corrected bounded retry respecting retry_after succeeded. Applyhelper saved nested history SQL using replacement-string escaping incorrectly; onlynewreceipttext affected. Guarded correction nowexactmatchesimmutableSQL MD5/SHA256; noDDLreplay or oldreceiptchange. Evidence files contain aggregatecounts/hashes/grants, no directory/rawIDs/credentials.
+- Resulting state / acceptance: Hosted creation and bounded15linkimport complete.11identities need explicit clarification. No UI/agent location writes, actual presence, deployment or Calendar changes.
+- Remaining work and handoff: Explicit confirmation for11remaining identities; frontend/agent map tools and current source-policy enforcement require a separate authorized pass. No commit/push requested.

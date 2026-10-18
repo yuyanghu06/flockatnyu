@@ -1,0 +1,3 @@
+# Raised pastel logo and matching favicon
+
+Completed locally with user appearance approval and independent tester/evaluator acceptance. The existing full-pastel @ has soft raised edges, sheen and contact shadow. Color motion remains1.422222 seconds and map reveal remains1100ms/1000ms. The SVG/ICO favicon embeds the same static relief at scale0.8:20% smaller than the original, inside the unchanged rounded white badge. No PNG favicon. Final evidence is under evidence/m45-raised-loader/; final-80 results supersede interim size1. Physical-device and tab-cache behavior remain unmeasured. Rejected periwinkle v6 stays inactive.

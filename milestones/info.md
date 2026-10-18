@@ -83,3 +83,31 @@ M34 (`m34-agent-automation/`) and M35 (`m35-gmail-subscription/`) track local
 cache-driven agent handlers and Gmail subscription code versus actual activation.
 
 M36 collector cleanup and M37 tool organization are complete; see the rolling snapshot and docs/cleanup-handoff.md for current parallel-work boundaries.
+
+M40 (`m40-assets/`) tracks consolidation of source models, datasets, avatars and references into root assets/ with binary preservation and map loading verification.
+
+M41 (`m41-brand-loader/`) tracks the approved flat pastel @ as a native looping startup animation, including real readiness, reduced-motion and failure acceptance.
+
+map-presence-ui/ tracks five temporary Bobst occupants and protected database-backed circular portrait markers without changing map appearance.
+
+M42 favicon and M43 smooth reveal track the round static browser icon and uninterrupted cinematic startup; see their info.md guides and rolling snapshot.
+
+map-building-write-scope/ tracks the user-required fixed location catalogue and people_here-only runtime mutation boundary.
+
+map-presence-labels/ tracks explicit table-stored JSON labels and removal of backend-generated display captions.
+
+favicon-small-mark/ tracks the user-confirmed smaller favicon glyph inside the retained rounded-square badge.
+
+M44 periwinkle loader was a rejected design trial; previous v5 runtime restored. Its folder/evidence distinguish technical checks from aesthetic rejection.
+
+M45 completes the approved raised pastel loader and matching raised SVG/ICO favicon at final80% mark scale. See the milestone guide and final independent evidence.
+
+M46 tracks the user-requested white hover perimeter that disappears on building selection; no floating marker.
+
+M47 (`m47-selection-indicators/`) tracks the persistent selected-building outline plus ground footprint ring, including smooth edges and a subtle entrance. M46's final accepted state is the steady white surface highlight; its earlier perimeter-only scope was superseded.
+
+map-building-activity/ tracks the capped base-focus avatar layout, event card and hosted024 flattened event storage. Direct browser and aggregate hosted evidence are in evidence/map-building-activity/.
+
+structured-map-prompt/ tracks runtime shared JSON contracts, evidence-based map interpretation and approved two-hour defaults without tool/deployment activation.
+
+map-event-attendees/ tracks optional event attendee IDs and right-side portrait UI; hosted status is recorded in the rolling snapshot. Separate-table normalization and automatic map presence remain deferred.

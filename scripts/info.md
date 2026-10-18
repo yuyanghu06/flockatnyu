@@ -5,6 +5,10 @@ original source scene (not included in this checkout). It preserves the source.
 `journal-pass.ps1` appends timestamped development records on Windows; shared
 journal writes belong to the orchestrator.
 
+Map utilities read source exports from `assets/yuyang-site-3d-assets/` and read/write
+project-derived data and models under `assets/campus-assets/`, relative to the
+repository root. Keep exported source geometry and original provenance intact.
+
 M6: fetch-streets-parks.py retrieves attributed OSM geometry (--reuse regenerates from cached raw evidence); build-streets-parks.mjs generates the runtime GLB and metadata. inspect-park-bounds.mjs checks existing scenery datums.
 
 M10: build-park-vegetation.mjs bakes deterministic trees/shrubs inside mapped parks and explicit vegetation cover, using actual runtime geometry exclusions. Writes identity GLB, placement audit and coder evidence.
@@ -25,3 +29,23 @@ M26: google-connect.mjs performs one-time club-account OAuth consent using a fix
 prepare-miro-deploy.mjs builds a fresh, symlink-rejecting allowlisted Miro-only deployment directory with no secrets or unrelated modules.
 
 Callable assistant tools live in ../tools/; these scripts are developer utilities and are not registered with the model.
+
+Google consent supports `npm run google:connect -- --force --calendar` to add Calendar event and calendar-list permissions to the existing authorized account. Default consent remains Gmail/Drive read-only. The loopback verifies the complete requested scope set before atomically replacing the ignored0600 credentials file; it never enables workers.
+
+`build-brand-loader.mjs` converts the approved flat v4 @ raster silhouette into two native SVGs under assets/branding/: a richer static mark and a seamless clipped color/sheen loader. Re-authoring requires local ImageMagick and Potrace; runtime does not. Prior raster designs and source geometry stay untouched.
+
+`map-roster.mjs` reads the26avatar-backed rows and searches only configured tech@nyu guild member-name prefixes through the existing bot. `npm run map:roster` proposes name matches; `npm run map:roster -- --apply` conditionally writes unique matches. Ambiguous/initial/prefix-only/incomplete results stay pending, and existing IDs/manual names are preserved. Optional candidate outputs use new mode0600 files under /tmp, never committed directory archives.
+
+The current brand loader samples two centerline routes by arc length and phases their stroke colors to circulate along the @; its output retains the approved silhouette and unchanged static fallback. No per-frame JavaScript runs in the website.
+
+`map-debug-presence.mjs` explicitly applies or clears five temporary Bobst UI fixtures using the configured Tech NYU project. Run `node --env-file-if-exists=.env scripts/map-debug-presence.mjs --apply` to seed/refresh24-hour planned debug entries, or `--clear` to remove only that exact fixture. Conditional updates preserve other occupants and concurrent edits. These entries are never real location reports; the protected local map feed labels them Test. No schema or worker changes.
+
+`build-brand-loader.mjs` also emits static outer/inner alpha-mask SVGs for compositor-only startup colors. `build-brand-loader-video.mjs` captures64native SVG frames at2048px and encodes a2.133333s MP4 export; runtime does not depend on it. `build-brand-favicon.mjs` freezes phase-zero contour colors and creates a rounded-square white SVG badge plus16/32/48px ICO with transparent corners, without a checked-in PNG.
+
+The map fixture now stores label: Test explicitly inside each JSON entry. The UI displays only that stored label; source metadata is used for cleanup/authorization, never to invent display text. Existing fixture labels can be edited without changing source identity or expiry.
+
+`build-brand-favicon.mjs` now centers a0.65scale mark within its existing white badge; source geometry/colors and16/32/48px ICO sizes remain. This sizing affects the site icon rather than startup artwork.
+
+`build-brand-loader-v6.mjs` reproduces vector assets for the rejected periwinkle/highlight trial. Its archived HTML preview captures that trial’s former runtime styling; neither the v6 artwork nor that preview is used by current startup.
+
+`build-brand-relief.mjs` derives a transparent static raised-edge/sheening overlay from the accepted v5 outline and captures a matching runtime-style loop-only preview. `build-brand-favicon.mjs` embeds those same relief filters with locally prefixed SVG IDs into its frozen mark, at scale 0.8 after the final 20% reduction. Generate relief before rebuilding favicon when authoring from scratch. No animated filters or runtime bitmap logo are introduced.

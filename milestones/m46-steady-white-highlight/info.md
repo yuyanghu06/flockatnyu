@@ -1,0 +1,3 @@
+# Steady white surface highlight
+
+Completed locally with independent tester/evaluator acceptance. Final user direction supersedes the outline and colored glow: white at opacity 0.18, 350ms fade in and 280ms fade out, with no hue pulse or building lift. Selection retains the same overlay through click, camera and pointer changes. A two-material pool and at most two crossfading views preserve source geometry and avoid repeat-hover shader compilation. Build, 26 Node checks and actual Bobst hover/click/leave/clear pass. Browser coverage is one desktop landmark; broad device/GPU performance remains unmeasured. Evidence: evidence/m46-smooth-glow/.

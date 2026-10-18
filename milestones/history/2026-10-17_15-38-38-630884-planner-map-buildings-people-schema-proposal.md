@@ -1,0 +1,10 @@
+# Map buildings and people schema proposal
+
+- Local timestamp / acting role / milestone: 2026-10-17T15:38:38.630884-04:00 / orchestrator and read-only planner map_people_schema_plan / map-people-schema.
+- Requested scope: Propose buildings table with JSON array of who's there and separate trackable people table BEFORE creating anything.
+- Starting repository state: Current local schema guide records five service-only tables; map config has nine selectable stable location IDs. Existing unrelated changes preserved; Calendar activation deferred by user.
+- Work performed / changed files: Read startup records, current database guide, map config/registration/occluder behavior and update-agent location semantics. Planner independently confirmed9registered locations and contextual-mesh distinction. Wrote proposal milestone guide and journal only; no SQL migration/application edits/cloud query or mutation.
+- Decisions: Proposed map_buildings text ID matches current frontend slugs, name, JSONB people_here array default[] and updated_at. Proposed map_people uuid ID, display_name, optional unique Discord ID/email, optional avatar, trackable flag and created/updated timestamps. Array entries use person ID, kind self_reported/planned, valid_from/expires_at and source provenance, without duplicating names or currentbuilding on people. Backend/RPC validates JSON person references and performs atomic moves; expired entries hidden. Seed nine registered locations initially, not every anonymous city mesh. No automatic identity merges from names or roster creation from image filenames.
+- Checks and evidence: Static inspection of src/config.js and src/main.js; no runtime tests needed for proposal. No live schema freshness claim or independent SQL execution.
+- Resulting state / acceptance: Proposal only; not approved and no tables created. Primary will present schema for user review before implementation.
+- Remaining work and handoff: Incorporate user feedback, then implement new forward migration, real SQL constraints/RPC/permission tests and approved hosted creation. Existing source tables/migrations remain unchanged.
