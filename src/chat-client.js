@@ -82,6 +82,7 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
   if (!r.headers.get('content-type')?.toLowerCase().includes('application/x-ndjson') || !r.body) throw new Error('The assistant API did not return a reply stream.');
   const reader = r.body.getReader(), decoder = new TextDecoder();
   let pending = '', reply = '', done = false;
+  const toolCalls = new Map();
   function line(value) {
     if (!value.trim()) return;
     let event;
@@ -92,6 +93,16 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
       if (typeof event.text !== 'string') throw new Error('The reply stream contained invalid text.');
       reply += event.text;
       if (reply.length > 150000) throw new Error('The reply exceeded the supported length.');
+    } else if (event.type === 'tool') {
+      const previous = toolCalls.get(event.id);
+      if (typeof event.id !== 'string' || !/^tool-[1-8]$/.test(event.id) ||
+          typeof event.name !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_.:-]{0,63}$/.test(event.name) ||
+          !['running', 'completed', 'partial', 'failed'].includes(event.status) ||
+          (!previous && event.status !== 'running') || (previous && (previous.name !== event.name || previous.status !== 'running' || event.status === 'running'))) {
+        throw new Error('The reply stream contained an invalid tool update.');
+      }
+      event = { type: 'tool', id: event.id, name: event.name, status: event.status };
+      toolCalls.set(event.id, event);
     } else if (event.type === 'done') done = true;
     else if (event.type !== 'meta') throw new Error('The reply stream contained an unknown event.');
     onEvent(event);

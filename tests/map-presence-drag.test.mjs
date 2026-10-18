@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {clampFocusedAvatarPosition as clamp} from '../src/map-presence-drag.js';
+const frame={left:20,top:40,width:480,height:640};
+const pixels=point=>({x:frame.left+point.u*frame.width,y:frame.top+point.v*frame.height});
+test('valid focused drops keep their exact position',()=>{assert.deepEqual(pixels(clamp({x:240,y:330,frame,size:120,noteWidth:200,noteHeight:60})),{x:240,y:330});});
+test('out-of-bounds drops contain the whole portrait and thought bubble',()=>{const options={frame,size:120,noteWidth:220,noteHeight:60};assert.deepEqual(pixels(clamp({...options,x:-200,y:-200})),{x:138,y:184});assert.deepEqual(pixels(clamp({...options,x:2000,y:2000})),{x:382,y:612});});
+test('blank notes reserve portrait edges only',()=>{assert.deepEqual(pixels(clamp({x:-100,y:-100,frame,size:120})),{x:88,y:108});});
+test('narrow frames and oversized captions produce finite, deterministic bounds',()=>{const f={left:0,top:24,width:100,height:300};const result=clamp({x:-100,y:500,frame:f,size:45,noteWidth:120,noteHeight:50});assert.equal(result.u,.5);assert(Number.isFinite(result.v));assert(result.v<1);});
+test('zero-size frames do not introduce NaN during hidden/resizing views',()=>{assert.deepEqual(clamp({x:0,y:0,frame:{left:0,top:0,width:0,height:0},size:50}),{u:.5,v:.5});});
