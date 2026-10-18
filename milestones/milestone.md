@@ -1,6 +1,6 @@
-## Active: requested logical commit publication
+## Latest: requested working tree committed and pushed
 
-User authorized committing/pushing the entire working tree.10logical implementation/evidence commits now separate asset relocation, Calendar, map data/API, automation, branding, selection and frontend UI. Shared guides/history are next, then normal push to origin/codex/dev. Secret/size/whitespace scans clean;714Node cases pass across full run plus repaired assistant-file retest, both builds and42additional map/startup assertions pass. Chrome logo hover regression passes. No deployment or new cloud data changes. [Preflight record](history/2026-10-17_20-36-15-139378-orchestrator-logical-commit-publication-preflight.md).
+All original pending content was split into12topic commits and pushed normally to origin/codex/dev through9084c93; remote SHA equality, clean tree and100%original live-file coverage verified. Topics separate assets, Calendar, map data/API, automation, branding/loading, selection, avatar/event/assistant UI, evidence and documentation. This publication receipt is included in a final docs commit/push.714Node cases pass across full run plus repaired assistant suite, both builds pass,42map/startup assertions and actual logo hover pass; secret/size/final whitespace checks clean. Ignored credentials/config/caches remain local. No deployment or additional cloud data changes. [Publication record](history/2026-10-17_20-37-19-668542-orchestrator-logical-commits-pushed.md).
 
 ## Complete locally/hosted: event attendee avatars
 

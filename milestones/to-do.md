@@ -990,4 +990,4 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 - [x] Inspect all pending paths, preserve authored assets/evidence and scan for secrets/oversized files.
 - [x] Create logical implementation/evidence commits; repair assistant asset imports exposed by full test run.
 - [x] Verify714Node cases across full run/focused fix, both builds, map/startup assertions and actual logo hover.
-- [ ] Commit shared documentation/history; push codex/dev normally and verify remote SHA/clean tree.
+- [x] Commit shared documentation/history; push12topic commits through9084c93 and verify matching remote SHA/clean tree. Final publication receipt follows in docs commit/push.
