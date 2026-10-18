@@ -13,7 +13,7 @@ export function readSiteAuthConfig(env = process.env) {
     origin = url.origin;
   } catch { throw new Error('site_origin_invalid'); }
   const password = env.SITE_ACCESS_PASSWORD || '', signingSecret = env.SITE_SESSION_SECRET || '';
-  if (password.length < 24 || password.length > 1024 || signingSecret.length < 32 || signingSecret.length > 1024 || /[\r\n\0]/.test(password + signingSecret)) throw new Error('site_credentials_invalid');
+  if (password.length < 12 || password.length > 1024 || signingSecret.length < 32 || signingSecret.length > 1024 || /[\r\n\0]/.test(password + signingSecret)) throw new Error('site_credentials_invalid');
   const ttlSeconds = Number(env.SITE_SESSION_TTL_SECONDS || 43200);
   if (!Number.isInteger(ttlSeconds) || ttlSeconds < 300 || ttlSeconds > 86400) throw new Error('site_session_duration_invalid');
   return Object.freeze({origin, password, signingSecret, ttlSeconds,

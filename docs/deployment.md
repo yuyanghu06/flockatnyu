@@ -7,7 +7,7 @@ The user authorized this live rollout and autonomous activation on2026-10-18.
 
 ## Access
 
-Set `SITE_ACCESS_PASSWORD` (at least24characters), `SITE_SESSION_SECRET` (at least
+Set `SITE_ACCESS_PASSWORD` (at least12characters), `SITE_SESSION_SECRET` (at least
 32characters), and exact HTTPS `PUBLIC_ORIGIN` in private Railway web variables.
 No password is checked into code or written to a local deployment credential file.
 The shared operator session is nonadmin and gets only server-configured source

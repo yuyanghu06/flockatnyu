@@ -17,6 +17,24 @@ test('production access config requires fixed HTTPS origin and strong server sec
   assert.equal(readSiteAuthConfig(env).origin, 'https://club.example');
 });
 
+test('configured production passwords accept twelve or fourteen characters while shorter and empty credentials fail closed', async () => {
+  for (const length of [12, 14]) {
+    const password = 'x'.repeat(length);
+    const config = readSiteAuthConfig({...env, NODE_ENV:'production', SITE_ACCESS_PASSWORD:password});
+    const siteAuth = createSiteAuth({config, apiConfig});
+    const app = createWebsite({siteAuth});
+    assert.equal((await app.fetch(request('/api/status'))).status, 403);
+    const response = await app.fetch(request('/login', {method:'POST', headers:{origin:env.PUBLIC_ORIGIN, 'content-type':'application/x-www-form-urlencoded'}, body:new URLSearchParams({password})}));
+    assert.equal(response.status, 303);
+    const cookie = response.headers.get('set-cookie');
+    for (const flag of ['HttpOnly', 'Secure', 'SameSite=Strict', 'Path=/']) assert.ok(cookie.includes(flag));
+    const authenticated = request('/api/status', {headers:{cookie:cookie.split(';')[0]}});
+    assert.equal(siteAuth.principal(authenticated).isAdmin, false);
+  }
+  for (const SITE_ACCESS_PASSWORD of ['', 'x'.repeat(11)]) assert.throws(() => readSiteAuthConfig({...env, NODE_ENV:'production', SITE_ACCESS_PASSWORD}), /site_credentials_invalid/);
+  for (const SITE_SESSION_SECRET of ['', 'x'.repeat(31)]) assert.throws(() => readSiteAuthConfig({...env, NODE_ENV:'production', SITE_ACCESS_PASSWORD:'x'.repeat(14), SITE_SESSION_SECRET}), /site_credentials_invalid/);
+});
+
 test('signed session resists forgery, expires, excludes secrets, and grants only configured nonadmin access', () => {
   let time = 1000000000000;
   const auth = createSiteAuth({config:readSiteAuthConfig(env), apiConfig, now:() => time});

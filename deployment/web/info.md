@@ -8,7 +8,7 @@ password and session signing secret come exclusively from server environment
 variables. Sessions do not grant administrator privileges or a member identity.
 
 Required settings: `PUBLIC_ORIGIN` (the exact HTTPS site origin),
-`SITE_ACCESS_PASSWORD` (at least 24 characters), `SITE_SESSION_SECRET` (at least
+`SITE_ACCESS_PASSWORD` (at least 12 characters), `SITE_SESSION_SECRET` (at least
 32 characters). Optional `SITE_SESSION_TTL_SECONDS` defaults to 43200. Source
 capabilities require `SITE_GOOGLE_ENABLED=true` and/or
 `SITE_DISCORD_ENABLED=true`, independently of local development flags. Shared
