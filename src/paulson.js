@@ -4,7 +4,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 /** Photo-informed approximation, not surveyed architecture. See docs/paulson-reference.md.
  * Returns one selectable Group with geometry baked in Washington Square MAP meters.
  * Root transform is identity: NEVER apply the extracted GLB's placement transform.
- * metadata is campus-assets/data/extracted-buildings.json's Paulson entry.
+ * metadata is assets/campus-assets/data/extracted-buildings.json's Paulson entry.
  */
 export function createPaulsonModel(metadata) {
   const footprint = metadata.footprintMap;

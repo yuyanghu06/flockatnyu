@@ -17,7 +17,7 @@ not independently survey or rename every adjacent building wing.
 
 Both existing assets are registered in `src/assets.js` and loaded as context:
 
-| File under `yuyang-site-3d-assets/models/buildings/` | Source footprint | Triangles | Minimum X/Y/Z | Maximum X/Y/Z |
+| File under `assets/yuyang-site-3d-assets/models/buildings/` | Source footprint | Triangles | Minimum X/Y/Z | Maximum X/Y/Z |
 | --- | --- | --- | --- | --- |
 | `25-union-square-west.glb` | 5449 | 3,460 | 501.809 / 5.560 / -623.013 | 532.222 / 55.125 / -589.758 |
 | `235-park-avenue-south.glb` | 5389 | 5,058 | 793.264 / 3.570 / -779.974 | 839.786 / 60.660 / -749.980 |

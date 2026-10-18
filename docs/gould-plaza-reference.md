@@ -47,7 +47,7 @@ benches are replaced along with the slab, not layered under the new model.
 The source Stern and Courant GLBs were decoded with NodeIO and inspected in plan.
 Their combined geometry contains no separate plaza stair mesh; their full
 building footprints and curved entrance remain untouched. Relevant source data
-in `yuyang-site-3d-assets/data/building-runtime.json`:
+in `assets/yuyang-site-3d-assets/data/building-runtime.json`:
 
 - Footprint 11632: western Stern/Kaufman mass and curved entrance.
 - Footprint 11005: southern Tisch wing, meeting the court along local V=37.15.

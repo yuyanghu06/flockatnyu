@@ -8,8 +8,8 @@ import {planParkVegetation,createParkVegetation,diskFits,clearExisting} from '..
 import {createGouldPlaza} from '../src/gould-plaza.js';
 
 const io=new NodeIO(),hash=b=>createHash('sha256').update(b).digest('hex');
-const dataPath='campus-assets/data/streets-parks.json';
-const sourcePaths=[dataPath,'src/gould-plaza.js',...['washington-square-trees','courant-garden','washington-square-fountain'].map(n=>`yuyang-site-3d-assets/models/environment/${n}.glb`)];
+const dataPath='assets/campus-assets/data/streets-parks.json';
+const sourcePaths=[dataPath,'src/gould-plaza.js',...['washington-square-trees','courant-garden','washington-square-fountain'].map(n=>`assets/yuyang-site-3d-assets/models/environment/${n}.glb`)];
 const sourceHashes={},existing=[];
 for(const path of sourcePaths){
   const bytes=await fs.readFile(path);sourceHashes[path]=hash(bytes);if(!path.endsWith('.glb'))continue;
@@ -56,10 +56,10 @@ for(const mesh of model.children){
 for(const[path,before]of Object.entries(sourceHashes))assert.equal(hash(await fs.readFile(path)),before,'source preserved');
 const metadata={...model.userData,attribution:'© OpenStreetMap contributors',attributionUrl:data.metadata.attributionUrl,extent:e,sourceHashes,existingExclusionCount:existing.length,existingExclusions:existing,minimumCrownGap:minimumGap,parks:plan.reports,placements:plan.placements,checks:{deterministic:true,eligibleCoverAndMargin:true,existingGeometryClearance:true,minimumSpacing:true,finiteGeometry:true,extent:true,sourceHashesPreserved:true},limitations:'Illustrative additions only in explicit mapped vegetation cover; unmapped planting not guessed. Existing source meshes use conservative world AABBs. Browser appearance not verified.'};
 scene.setExtras(model.userData);
-await fs.mkdir('campus-assets/models/environment',{recursive:true});
-await io.write('campus-assets/models/environment/park-vegetation.glb',doc);
-await fs.writeFile('campus-assets/data/park-vegetation-render.json',JSON.stringify(metadata,null,2)+'\n');
+await fs.mkdir('assets/campus-assets/models/environment',{recursive:true});
+await io.write('assets/campus-assets/models/environment/park-vegetation.glb',doc);
+await fs.writeFile('assets/campus-assets/data/park-vegetation-render.json',JSON.stringify(metadata,null,2)+'\n');
 await fs.mkdir('evidence/m10-park-vegetation',{recursive:true});
-const baked=await fs.readFile('campus-assets/models/environment/park-vegetation.glb');
+const baked=await fs.readFile('assets/campus-assets/models/environment/park-vegetation.glb');
 await fs.writeFile('evidence/m10-park-vegetation/coder-checks.json',JSON.stringify({...model.userData,bytes:baked.length,sha256:hash(baked),existingExclusionCount:existing.length,minimumCrownGap:minimumGap,checks:metadata.checks,parks:plan.reports},null,2)+'\n');
 console.log(JSON.stringify({...model.userData,bytes:baked.length,minimumCrownGap:minimumGap,parks:plan.reports},null,2));

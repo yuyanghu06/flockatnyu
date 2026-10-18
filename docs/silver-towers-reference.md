@@ -31,9 +31,9 @@ photographer; the downloaded files are research evidence, not app textures.
 ## Preserved measured geometry
 
 The original CityGML geometry is decoded using glTF-Transform with Meshopt.
-Source: `yuyang-site-3d-assets/models/buildings/city-tiles/tile--1_2.glb`.
+Source: `assets/yuyang-site-3d-assets/models/buildings/city-tiles/tile--1_2.glb`.
 Authoritative plan polygons come from the correspondingly indexed footprints in
-`yuyang-site-3d-assets/data/building-runtime.json`.
+`assets/yuyang-site-3d-assets/data/building-runtime.json`.
 
 | Footprint index | Original triangles | Ground Y | Highest source Y |
 | --- | ---: | ---: | ---: |

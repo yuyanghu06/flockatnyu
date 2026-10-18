@@ -19,7 +19,7 @@ const views = [
   ['nyu-leslie-elab-building', 189, 41, .8],
   ['nyu-silver-center', 197, 60, .8],
 ];
-const paulsonMetadata = JSON.parse(fs.readFileSync('campus-assets/data/extracted-buildings.json', 'utf8')).buildings['nyu-john-a-paulson-center'];
+const paulsonMetadata = JSON.parse(fs.readFileSync('assets/campus-assets/data/extracted-buildings.json', 'utf8')).buildings['nyu-john-a-paulson-center'];
 const report = { environment: { url, chrome: process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true }, checks: [], console: [], errors: [], failedRequests: [], responses: [], limitations: ['Screenshot azimuths and original polar angles are estimates; exact pixel reconstruction cannot be established from the provided images.', 'Runs an isolated installed Chrome instance, not the existing user Chrome tab.', 'Mouse wheel is real browser input; document-target wheel and gesture tails are synthetic. Touch and physical trackpad hardware are not exercised.'] };
 const browser = await chromium.launch({ executablePath: report.environment.chrome, headless: true });
 report.environment.version = browser.version();
@@ -31,7 +31,7 @@ page.on('pageerror', e => report.errors.push(e.message));
 page.on('requestfailed', r => report.failedRequests.push({ url: r.url(), failure: r.failure() }));
 page.on('response', r => { if (r.status() >= 400) report.responses.push({ url: r.url(), status: r.status() }); });
 // Avoid a live configured backend/model call; assistant UI remains operational.
-await page.route('**/api/status', r => r.fulfill({ json: { chat: { configured: false }, access: { allowed: false } } }));
+await page.route('**/api/**', r => r.fulfill({ json: { chat: { configured: false }, access: { allowed: false } } }));
 const snap = () => page.evaluate(() => window.__map.snapshot());
 const settle = () => page.waitForTimeout(1700);
 const closeAssistant = async () => { if (await page.locator('.assistant-panel').isVisible()) await page.getByRole('button', { name: 'Close assistant', exact: true }).click(); };
@@ -75,9 +75,9 @@ function framingContract(result, id) {
 }
 try {
   const start = Date.now(); await page.goto(url);
-  await page.waitForFunction(() => window.__map?.snapshot().status === 'ready', null, { timeout: 120000 });
+  await page.waitForFunction(() => document.querySelector('#app').dataset.state === 'entered', null, { timeout: 120000 });
   report.loadMs = Date.now() - start;
-  await check('Map opens automatically without an entry screen or failed assets', async () => { assert.equal((await snap()).failed.length, 0); assert.equal(report.errors.length, 0); assert.equal(report.failedRequests.length, 0); assert.equal(await page.locator('#loading-screen').count(), 0);assert.equal(await page.locator('#loading-enter').count(), 0); assert.equal(await page.locator('#app').evaluate(e => e.inert), false); return { loadMs: report.loadMs, loaded: (await snap()).loaded }; });
+  await check('Ready map automatically dismisses branded startup overlay without entry CTA or failed assets', async () => { assert.equal((await snap()).failed.length, 0); assert.equal(report.errors.length, 0); assert.equal(report.failedRequests.length, 0); assert.equal(await page.locator('#loading-enter').count(), 0); assert(await page.locator('#startup-notice').isHidden()); assert.equal(await page.locator('#app').evaluate(e => e.inert), false); return { loadMs: report.loadMs, loaded: (await snap()).loaded }; });
   await closeAssistant(); report.viewport = { width: 1440, height: 1000 }; report.initial = await snap();
   await page.screenshot({ path: `${out}/overview-landscape.png` });
   for (const [id, azimuth, polar, scale] of views) await check('Landscape screenshot view and lowered camera: ' + id, async () => {

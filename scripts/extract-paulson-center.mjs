@@ -12,9 +12,9 @@ import { MeshoptDecoder } from "meshoptimizer";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const SOURCE = path.resolve(process.argv[2] ?? "/Users/yuyang/Downloads/scene.glb");
-const EXPORT = path.join(ROOT, "yuyang-site-3d-assets");
-const OUT_MODEL = path.join(ROOT, "campus-assets/models/buildings/john-a-paulson-center.glb");
-const OUT_META = path.join(ROOT, "campus-assets/data/extracted-buildings.json");
+const EXPORT = path.join(ROOT, "assets/yuyang-site-3d-assets");
+const OUT_MODEL = path.join(ROOT, "assets/campus-assets/models/buildings/john-a-paulson-center.glb");
+const OUT_META = path.join(ROOT, "assets/campus-assets/data/extracted-buildings.json");
 
 const BUILDING_ID = "nyu-john-a-paulson-center";
 const TARGET_MESH_NODE = 10;
@@ -289,13 +289,13 @@ for (const [footprint, cells] of overlapCells) overlaps.push({ footprint, areaM2
 
 const sourceHashAfter = sha256(SOURCE);
 const metadata = {
-  coordinateSystem: "Washington Square origin; Y up; meters (matches yuyang-site-3d-assets).",
+  coordinateSystem: "Washington Square origin; Y up; meters (matches assets/yuyang-site-3d-assets).",
   buildings: {
     [BUILDING_ID]: {
       name: "John A. Paulson Center",
       address: "181 Mercer Street, New York, NY",
       identityConfirmedBy: "User confirmation on 2026-10-09 that spoken 'Halcyon Center' means NYU's John A. Paulson Center.",
-      file: "campus-assets/models/buildings/john-a-paulson-center.glb",
+      file: "assets/campus-assets/models/buildings/john-a-paulson-center.glb",
       placement,
       footprintMap: mapFootprint,
       replaces: {

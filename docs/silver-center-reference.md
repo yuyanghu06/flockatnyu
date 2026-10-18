@@ -41,7 +41,7 @@ exported data through the Washington Square Arch's known OSM/map correspondence.
 The Silver outline closely matches runtime footprint **11667**, generally within
 roughly half a meter; the connected Brown and Waverly outlines are distinct.
 
-Source tile: `yuyang-site-3d-assets/models/buildings/city-tiles/tile-0_0.glb`.
+Source tile: `assets/yuyang-site-3d-assets/models/buildings/city-tiles/tile-0_0.glb`.
 The exact authoritative plan polygon is exported as `silverCenterReplacement`
 from `src/silver-center.js`. NodeIO/Meshopt decoding extracted **380 triangles**
 within that footprint. Original ground and highest roof elevations are

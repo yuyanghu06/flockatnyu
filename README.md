@@ -37,7 +37,7 @@ The Railway `tech-nyu` production environment has three services sharing Supabas
 
 No LLM service or Calendar/map write adapter is active. The [five database tables](docs/database-tables.md) separate policy/catalogue metadata, Miro records, pending inputs and metadata-only checkpoints. Discord/Gmail are separate running services; Miro sync remains paused. No historical Discord archive, stored summaries or vectors are retained. [Deployment inputs](deployment/info.md) contain isolated runtime dependencies; exact verification and limitations live in the milestone.
 
-The scene uses source building tiles, detailed selectable roots, roads, sidewalks and park geometry. Detailed buildings are photo-informed approximations. Preserve geometry, placement metadata and licenses: [asset export](yuyang-site-3d-assets/README.md), [manifest](yuyang-site-3d-assets/asset-manifest.json), [OpenStreetMap attribution](https://www.openstreetmap.org/copyright). Traffic remains outside scope. Building/day activity views are unfinished, and no sample club events are presented as real information.
+The scene uses source building tiles, detailed selectable roots, roads, sidewalks and park geometry. Detailed buildings are photo-informed approximations. Preserve geometry, placement metadata and licenses: [asset export](assets/yuyang-site-3d-assets/README.md), [manifest](assets/yuyang-site-3d-assets/asset-manifest.json), [OpenStreetMap attribution](https://www.openstreetmap.org/copyright). Traffic remains outside scope. Building/day activity views are unfinished, and no sample club events are presented as real information.
 
 ## Guides and checks
 

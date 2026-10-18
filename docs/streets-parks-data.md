@@ -1,6 +1,6 @@
 # Offline streets and parks data
 
-`campus-assets/data/streets-parks.json` is a geographic snapshot from
+`assets/campus-assets/data/streets-parks.json` is a geographic snapshot from
 [OpenStreetMap](https://www.openstreetmap.org/copyright), licensed under ODbL 1.0.
 The app must retain visible OpenStreetMap contributor attribution and that link.
 This pass implements source data, not road widths, paving, elevation or park rendering.

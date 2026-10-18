@@ -43,7 +43,7 @@ material colors in the model are approximate; no survey accuracy is claimed.
 ## Identification and source geometry
 
 The campus source footprint is **11652** in
-`yuyang-site-3d-assets/data/building-runtime.json`; its CityGML massing appears in
+`assets/yuyang-site-3d-assets/data/building-runtime.json`; its CityGML massing appears in
 `models/buildings/city-tiles/tile--1_0.glb`. The adjoining western footprint **11021**
 belongs to the Global Center and remains separate. The geometry was decoded with
 NodeIO and Meshopt, with all node world transforms applied.

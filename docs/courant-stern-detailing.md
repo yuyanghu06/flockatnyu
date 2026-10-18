@@ -11,8 +11,8 @@ reference photographs were invented.
 
 The readonly sources are:
 
-- `yuyang-site-3d-assets/models/buildings/courant-institute.glb`
-- `yuyang-site-3d-assets/models/buildings/stern-school-of-business.glb`
+- `assets/yuyang-site-3d-assets/models/buildings/courant-institute.glb`
+- `assets/yuyang-site-3d-assets/models/buildings/stern-school-of-business.glb`
 
 Both contain geometry baked in Washington Square map coordinates, with white
 base materials and per-vertex color. GLTF-Transform/GLTFLoader inspection found

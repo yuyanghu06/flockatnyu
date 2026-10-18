@@ -158,8 +158,13 @@ and credentials; source-site edits require a request that includes that project.
 
 The preliminary asset export lives in:
 
-- `yuyang-site-3d-assets/`: the reusable asset directory.
-- `yuyang-site-3d-assets.zip`: a verified archive of that directory.
+- `assets/yuyang-site-3d-assets/`: the reusable asset directory.
+- `assets/yuyang-site-3d-assets.zip`: optional archive location; no ZIP is currently present.
+
+All retained assets live under `assets/`: the source export above, project-derived
+geometry/data in `assets/campus-assets/`, generated portraits in `assets/avatars/`
+and reference text in `assets/references/`. Historical journal/evidence paths
+describe their original locations and remain unchanged.
 
 The export includes 484 CityGML building tiles, the original Bobst Library and
 Washington Square Arch models, five baked detailed landmarks, river water,

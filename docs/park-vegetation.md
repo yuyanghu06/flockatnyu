@@ -11,8 +11,8 @@ Run `node scripts/build-park-vegetation.mjs` from the project root. The build re
 the local streets/parks snapshot, prepares the existing street/building exclusion
 polygons, and writes:
 
-- `campus-assets/models/environment/park-vegetation.glb`
-- `campus-assets/data/park-vegetation-render.json`
+- `assets/campus-assets/models/environment/park-vegetation.glb`
+- `assets/campus-assets/data/park-vegetation-render.json`
 - `evidence/m10-park-vegetation/coder-checks.json`
 
 `main.js` loads the GLB as an environment group at identity transform. Geometry uses
