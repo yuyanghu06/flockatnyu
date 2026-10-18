@@ -25,3 +25,8 @@ supabase/.temp/
 
 # One-time Google OAuth bootstrap output; contains local account tokens.
 .env.google
+
+# Private app Miro MCP OAuth credentials; never commit.
+.miro-mcp-auth.json
+.miro-mcp-auth.json.*.tmp
+.miro-mcp-auth.json.lock
