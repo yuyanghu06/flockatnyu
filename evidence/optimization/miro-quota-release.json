@@ -67,7 +67,12 @@
     "enabled": true
   },
   "hostedVerification": "miro-quota-hosted-release.json",
-  "publication": "logical source commits complete; final docs push pending",
+  "publication": {
+    "verified": true,
+    "branch": "codex/dev",
+    "verifiedRemoteCommit": "e89ca9532a8b721ba4022d3d5dc57fcd6a814415",
+    "unrelatedWorkingTreeChangesPreserved": true
+  },
   "compatibleSubsequentWebDeployment": "e4abfba6-a9ce-41c7-a0f1-99fd1f5adaca",
   "compatibleSubsequentWorkerDeployment": "578d0390-96aa-4151-8772-57b15c6b23b6"
 }

@@ -18,7 +18,7 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 ## Active: Miro quota recovery
 
 - [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
-- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+- [x] Independently test/review, deploy web and worker, verify hosted quota denial and push logical runtime/verification commits.
 
 ## Chat upload extension
 
@@ -30,7 +30,7 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 ## Active: Miro quota recovery
 
 - [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
-- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+- [x] Independently test/review, deploy web and worker, verify hosted quota denial and push logical runtime/verification commits.
 
 ## Future user identity idea
 
@@ -46,7 +46,7 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 ## Active: Miro quota recovery
 
 - [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
-- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+- [x] Independently test/review, deploy web and worker, verify hosted quota denial and push logical runtime/verification commits.
 
 ## Spotlight background replies and streaming button
 
@@ -58,7 +58,7 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 ## Active: Miro quota recovery
 
 - [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
-- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+- [x] Independently test/review, deploy web and worker, verify hosted quota denial and push logical runtime/verification commits.
 
 ## Current live operations
 
