@@ -1,0 +1,67 @@
+{
+  "url": "http://127.0.0.1:4185",
+  "chrome": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Actual abort-model gives focused Retry and stops animation",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. Could not load tile--1_-1-yxbNmdRu.glb. Check your connection and retry. Could not prepare tile--1_-1.glb. Retry loading the campus.",
+        "retryReloadVerified": false
+      }
+    },
+    {
+      "name": "Actual abort-bootstrap gives focused Retry and stops animation",
+      "pass": true,
+      "detail": {
+        "status": "The map could not download. Check your connection and retry.",
+        "retryReloadVerified": true
+      }
+    },
+    {
+      "name": "Actual abort-main gives focused Retry and stops animation",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. The map could not start. Check your connection and WebGL support, then retry.",
+        "retryReloadVerified": false
+      }
+    },
+    {
+      "name": "Watchdog is terminal even when real late asset responses finish",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. Loading stalled. Check your connection and retry."
+      }
+    },
+    {
+      "name": "Late graphics failure restores useful retry and disables map",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. The graphics context was lost. Retry loading the map."
+      }
+    },
+    {
+      "name": "Disabled JavaScript shows a static explanation without endless animation",
+      "pass": true,
+      "detail": {
+        "explanation": "JavaScript is required to load the campus map. Enable it and reload."
+      }
+    },
+    {
+      "name": "Reduced motion uses static art and live changes resume or stop compositor colors",
+      "pass": true,
+      "detail": {
+        "staticPixelIdentical": true,
+        "compositorColorsMove": true,
+        "livePreferenceToggleVerified": true
+      }
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Headless installed Chrome; emulated mobile viewport, no physical touch/GPU measurement.",
+    "All API routes intercepted; no live backend/model calls.",
+    "Broken image test overrides only the HTML image URL to request a missing resource because the production SVG is bundled inline.",
+    "Watchdog test accelerates only the120000ms timer to1000ms; source timeout remains unchanged."
+  ]
+}

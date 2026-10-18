@@ -1,0 +1,104 @@
+{
+  "url": "http://127.0.0.1:4181",
+  "chrome": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "White fullscreen branded loading gates real model readiness 1440",
+      "pass": true,
+      "detail": {
+        "releaseToEnteredMs": 489,
+        "loaded": 124,
+        "landmarks": 9
+      }
+    },
+    {
+      "name": "White fullscreen branded loading gates real model readiness 390",
+      "pass": true,
+      "detail": {
+        "releaseToEnteredMs": 186,
+        "loaded": 124,
+        "landmarks": 9
+      }
+    },
+    {
+      "name": "Initial HTML shows animation before bootstrap JavaScript downloads",
+      "pass": true,
+      "detail": {
+        "initialLoaderVisible": true
+      }
+    },
+    {
+      "name": "Actual abort-model gives focused Retry and stops animation",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. Could not load tile--1_-1-yxbNmdRu.glb. Check your connection and retry. Could not prepare tile--1_-1.glb. Retry loading the campus.",
+        "retryReloadVerified": false
+      }
+    },
+    {
+      "name": "Actual abort-bootstrap gives focused Retry and stops animation",
+      "pass": true,
+      "detail": {
+        "status": "The map could not download. Check your connection and retry.",
+        "retryReloadVerified": true
+      }
+    },
+    {
+      "name": "Actual abort-main gives focused Retry and stops animation",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. The map could not start. Check your connection and WebGL support, then retry.",
+        "retryReloadVerified": false
+      }
+    },
+    {
+      "name": "Watchdog is terminal even when real late asset responses finish",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. Loading stalled. Check your connection and retry."
+      }
+    },
+    {
+      "name": "Broken decorative image retains status and allows actual readiness",
+      "pass": true,
+      "detail": {
+        "entered": true
+      }
+    },
+    {
+      "name": "Late graphics failure restores useful retry and disables map",
+      "pass": true,
+      "detail": {
+        "status": "Unable to load the campus. The graphics context was lost. Retry loading the map."
+      }
+    },
+    {
+      "name": "Disabled JavaScript shows a static explanation without endless animation",
+      "pass": true,
+      "detail": {
+        "explanation": "JavaScript is required to load the campus map. Enable it and reload."
+      }
+    },
+    {
+      "name": "Native SVG frame endpoints loop exactly with stationary silhouette",
+      "pass": false,
+      "error": "page.evaluate: TypeError: document.querySelector(...).getBBox(...).toJSON is not a function\n    at eval (eval at evaluate (:370:30), <anonymous>:1:168)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /Users/yuyang/Documents/techatnyu/techvisualized/tests/brand-loader-browser.mjs:49:436\n    at async check (/Users/yuyang/Documents/techatnyu/techvisualized/tests/brand-loader-browser.mjs:11:47)\n    at async file:///Users/yuyang/Documents/techatnyu/techvisualized/tests/brand-loader-browser.mjs:49:2"
+    },
+    {
+      "name": "Reduced motion disables native SVG animation and embedded image movement",
+      "pass": true,
+      "detail": {
+        "nativeAnimationCount": 0
+      }
+    }
+  ],
+  "failures": [
+    "Native SVG frame endpoints loop exactly with stationary silhouette"
+  ],
+  "limitations": [
+    "Headless installed Chrome; emulated mobile viewport, no physical touch/GPU measurement.",
+    "All API routes intercepted; no live backend/model calls.",
+    "Broken image test overrides only the HTML image URL to request a missing resource because the production SVG is bundled inline.",
+    "Watchdog test accelerates only the120000ms timer to1000ms; source timeout remains unchanged."
+  ]
+}

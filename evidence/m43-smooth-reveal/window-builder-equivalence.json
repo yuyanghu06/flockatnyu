@@ -1,0 +1,72 @@
+{
+  "results": [
+    {
+      "building": "courant",
+      "syncMilliseconds": 219.362125,
+      "asyncMilliseconds": 257.09675,
+      "yields": 23,
+      "meshes": 3,
+      "windowDetailing": {
+        "version": 1,
+        "building": "courant",
+        "sourceGlassComponents": 370,
+        "windows": 370,
+        "faces": 370,
+        "occludedFaces": 370,
+        "addedMeshes": 2,
+        "addedTriangles": 26640,
+        "sourcePalette": {
+          "trim": [
+            0.26635560393333435,
+            0.21952620148658752,
+            0.18116424977779388
+          ],
+          "mullion": [
+            0.12477181851863861,
+            0.08650045841932297,
+            0.07227185368537903
+          ]
+        },
+        "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+      },
+      "signatureSha256": "28dc4b61167c72b6cefb2b50cc8d602ccbccc4c527b7e9ab760e5e8eec602851",
+      "exactEqual": true
+    },
+    {
+      "building": "stern",
+      "syncMilliseconds": 1687.1273749999998,
+      "asyncMilliseconds": 2000.677834,
+      "yields": 192,
+      "meshes": 3,
+      "windowDetailing": {
+        "version": 1,
+        "building": "stern",
+        "sourceGlassComponents": 1098,
+        "windows": 1073,
+        "faces": 1095,
+        "occludedFaces": 1101,
+        "addedMeshes": 2,
+        "addedTriangles": 78288,
+        "sourcePalette": {
+          "trim": [
+            0.5457244515419006,
+            0.5271151065826416,
+            0.4793201684951782
+          ],
+          "mullion": [
+            0.2345505803823471,
+            0.24228112399578094,
+            0.22696587443351746
+          ]
+        },
+        "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+      },
+      "signatureSha256": "b3a6f7664cf81951ba34d3dfa7f94134a3e0aa161a3b19935f44d26bfc91b5a3",
+      "exactEqual": true
+    }
+  ],
+  "limitations": [
+    "Node wall times are diagnostic, not browser/GPU benchmarks.",
+    "Exact geometry/index/material/transform/metadata equality checked on actual source GLBs."
+  ]
+}

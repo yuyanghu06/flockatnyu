@@ -1,0 +1,38 @@
+{
+  "header": [
+    0,
+    1,
+    3
+  ],
+  "frames": [
+    {
+      "size": 16,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "size": 32,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "size": 48,
+      "cornerAlpha": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "productFaviconPngFiles": [],
+  "pass": true
+}

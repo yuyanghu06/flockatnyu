@@ -1,0 +1,101 @@
+{
+  "url": "http://127.0.0.1:4181",
+  "chrome": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Native SVG frame endpoints loop exactly with stationary silhouette",
+      "pass": true,
+      "detail": {
+        "animations": 192,
+        "duration": 2133.3333333333335,
+        "sourceBytes": 40353,
+        "times": [
+          0,
+          533.3333333333334,
+          1066.6666666666667,
+          1600,
+          2133.3333333333335
+        ],
+        "routes": {
+          "outer": {
+            "count": 128,
+            "movements": [
+              {
+                "from": 0,
+                "to": 16,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(235, 188, 117)",
+                "after": "rgb(235, 188, 117)"
+              },
+              {
+                "from": 32,
+                "to": 48,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(123, 190, 231)",
+                "after": "rgb(123, 190, 231)"
+              },
+              {
+                "from": 64,
+                "to": 80,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(196, 143, 233)",
+                "after": "rgb(196, 143, 233)"
+              },
+              {
+                "from": 115,
+                "to": 3,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(242, 206, 119)",
+                "after": "rgb(242, 206, 119)"
+              }
+            ]
+          },
+          "inner": {
+            "count": 64,
+            "movements": [
+              {
+                "from": 0,
+                "to": 8,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(241, 198, 117)",
+                "after": "rgb(241, 198, 117)"
+              },
+              {
+                "from": 16,
+                "to": 24,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(121, 210, 221)",
+                "after": "rgb(121, 210, 221)"
+              },
+              {
+                "from": 32,
+                "to": 40,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(172, 146, 236)",
+                "after": "rgb(172, 146, 236)"
+              },
+              {
+                "from": 57,
+                "to": 1,
+                "deltaMs": 266.6666666666667,
+                "before": "rgb(242, 195, 134)",
+                "after": "rgb(242, 195, 134)"
+              }
+            ]
+          }
+        },
+        "geometryFixed": true,
+        "transforms": "none",
+        "sampled240pxFrames": 64,
+        "maxColorStep": 19
+      }
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Headless installed Chrome; emulated mobile viewport, no physical touch/GPU measurement.",
+    "All API routes intercepted; no live backend/model calls.",
+    "Broken image test overrides only the HTML image URL to request a missing resource because the production SVG is bundled inline.",
+    "Watchdog test accelerates only the120000ms timer to1000ms; source timeout remains unchanged."
+  ]
+}

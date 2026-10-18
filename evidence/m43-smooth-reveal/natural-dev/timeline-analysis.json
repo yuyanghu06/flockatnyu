@@ -1,0 +1,158 @@
+{
+  "phasesMs": {
+    "logo": 1099.800048828125,
+    "white": 1071.0
+  },
+  "largestVideoCallbackGaps": [
+    {
+      "milliseconds": 2652.60009765625,
+      "fromMediaTime": 2.066667,
+      "toMediaTime": 2.1,
+      "presentedFrameAdvance": 1,
+      "relativeReadyStartMs": -3257.900146484375
+    },
+    {
+      "milliseconds": 984.5,
+      "fromMediaTime": 0.033333,
+      "toMediaTime": 1,
+      "presentedFrameAdvance": 6,
+      "relativeReadyStartMs": -5300.10009765625
+    },
+    {
+      "milliseconds": 394.800048828125,
+      "fromMediaTime": 1.533333,
+      "toMediaTime": 1.933333,
+      "presentedFrameAdvance": 12,
+      "relativeReadyStartMs": -3783.60009765625
+    },
+    {
+      "milliseconds": 136.89990234375,
+      "fromMediaTime": 1.266667,
+      "toMediaTime": 1.4,
+      "presentedFrameAdvance": 4,
+      "relativeReadyStartMs": -4050.199951171875
+    },
+    {
+      "milliseconds": 130.89990234375,
+      "fromMediaTime": 1.933333,
+      "toMediaTime": 2.066667,
+      "presentedFrameAdvance": 4,
+      "relativeReadyStartMs": -3388.800048828125
+    }
+  ],
+  "largestCompositorCaptureGaps": [
+    {
+      "milliseconds": 2655.82470703125,
+      "from": "screencast/0041.jpg",
+      "to": "screencast/0042.jpg",
+      "relativeReadyStartMs": -3216.138916015625
+    },
+    {
+      "milliseconds": 1036.643798828125,
+      "from": "screencast/0003.jpg",
+      "to": "screencast/0004.jpg",
+      "relativeReadyStartMs": -5411.77587890625
+    },
+    {
+      "milliseconds": 215.26220703125,
+      "from": "screencast/0161.jpg",
+      "to": "screencast/0162.jpg",
+      "relativeReadyStartMs": 2102.137939453125
+    },
+    {
+      "milliseconds": 178.3369140625,
+      "from": "screencast/0160.jpg",
+      "to": "screencast/0161.jpg",
+      "relativeReadyStartMs": 1923.801025390625
+    },
+    {
+      "milliseconds": 131.120849609375,
+      "from": "screencast/0044.jpg",
+      "to": "screencast/0045.jpg",
+      "relativeReadyStartMs": -486.875
+    }
+  ],
+  "longtasks": [
+    {
+      "wall": 1792268437921.2,
+      "duration": 765
+    },
+    {
+      "wall": 1792268438751.3,
+      "duration": 91
+    },
+    {
+      "wall": 1792268438970.8,
+      "duration": 120
+    },
+    {
+      "wall": 1792268439229.7,
+      "duration": 383
+    },
+    {
+      "wall": 1792268439616.9,
+      "duration": 126
+    },
+    {
+      "wall": 1792268439747.9,
+      "duration": 2637
+    },
+    {
+      "wall": 1792268442803.2,
+      "duration": 64
+    },
+    {
+      "wall": 1792268442889.2,
+      "duration": 80
+    },
+    {
+      "wall": 1792268445105.0999,
+      "duration": 77
+    }
+  ],
+  "sampledPixels": [
+    {
+      "filename": "screencast/0044.jpg",
+      "captureRelativeReadyMs": -486.875,
+      "scale": 1.0,
+      "opacity": 1.0
+    },
+    {
+      "filename": "screencast/0052.jpg",
+      "captureRelativeReadyMs": -82.18408203125,
+      "scale": 1.0,
+      "opacity": 1.0
+    },
+    {
+      "filename": "screencast/0062.jpg",
+      "captureRelativeReadyMs": 109.262939453125,
+      "scale": 1.688271094354121,
+      "opacity": 0.8527902037603529
+    },
+    {
+      "filename": "screencast/0074.jpg",
+      "captureRelativeReadyMs": 308.31884765625,
+      "scale": 2.3739140932415244,
+      "opacity": 0.4665936256304548
+    },
+    {
+      "filename": "screencast/0086.jpg",
+      "captureRelativeReadyMs": 504.572998046875,
+      "scale": 2.730485279736328,
+      "opacity": 0.20902685306152344
+    },
+    {
+      "filename": "screencast/0104.jpg",
+      "captureRelativeReadyMs": 803.51904296875,
+      "scale": 2.9556585757639127,
+      "opacity": 0.03601640360910227
+    }
+  ],
+  "beforeReadyCompensatedColorDifference": 40.150322118826054,
+  "earlyToMidZoomCompensatedColorDifference": 19.336753360375408,
+  "midZoomCompensatedColorDifference": 20.43179829794003,
+  "limitations": [
+    "Logo crops compensate scale and opacity; JPEG and interpolation introduce noise, especially near invisibility.",
+    "Screencast and video callbacks are measured separately; neither is a physical-device FPS benchmark."
+  ]
+}

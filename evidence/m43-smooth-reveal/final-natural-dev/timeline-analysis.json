@@ -1,0 +1,114 @@
+{
+  "phasesMs": {
+    "logo": 1100,
+    "white": 1050.5
+  },
+  "largestVideoCallbackGaps": [],
+  "largestCompositorCaptureGaps": [
+    {
+      "milliseconds": 1373.89892578125,
+      "from": "screencast/0000.jpg",
+      "to": "screencast/0001.jpg",
+      "relativeReadyStartMs": -5399.052978515625
+    },
+    {
+      "milliseconds": 268.4580078125,
+      "from": "screencast/0242.jpg",
+      "to": "screencast/0243.jpg",
+      "relativeReadyStartMs": -46.72802734375
+    },
+    {
+      "milliseconds": 143.63916015625,
+      "from": "screencast/0352.jpg",
+      "to": "screencast/0353.jpg",
+      "relativeReadyStartMs": 2104.66796875
+    },
+    {
+      "milliseconds": 46.364990234375,
+      "from": "screencast/0356.jpg",
+      "to": "screencast/0357.jpg",
+      "relativeReadyStartMs": 2272.83203125
+    },
+    {
+      "milliseconds": 46.034912109375,
+      "from": "screencast/0314.jpg",
+      "to": "screencast/0315.jpg",
+      "relativeReadyStartMs": 1442.635009765625
+    }
+  ],
+  "longtasks": [
+    {
+      "wall": 1792269017976.7998,
+      "duration": 94
+    },
+    {
+      "wall": 1792269018396.4,
+      "duration": 978
+    },
+    {
+      "wall": 1792269019404.2,
+      "duration": 61
+    },
+    {
+      "wall": 1792269019580,
+      "duration": 125
+    },
+    {
+      "wall": 1792269019811,
+      "duration": 141
+    },
+    {
+      "wall": 1792269023220.7998,
+      "duration": 59
+    },
+    {
+      "wall": 1792269025405,
+      "duration": 65
+    }
+  ],
+  "sampledPixels": [
+    {
+      "filename": "screencast/0218.jpg",
+      "captureRelativeReadyMs": -447.405029296875,
+      "scale": 1.0,
+      "opacity": 1.0
+    },
+    {
+      "filename": "screencast/0240.jpg",
+      "captureRelativeReadyMs": -80.657958984375,
+      "scale": 1.0,
+      "opacity": 1.0
+    },
+    {
+      "filename": "screencast/0243.jpg",
+      "captureRelativeReadyMs": 221.72998046875,
+      "scale": 2.175216926772705,
+      "opacity": 0.5990066593294225
+    },
+    {
+      "filename": "screencast/0248.jpg",
+      "captureRelativeReadyMs": 304.802978515625,
+      "scale": 2.4064705421677957,
+      "opacity": 0.4439527820045813
+    },
+    {
+      "filename": "screencast/0260.jpg",
+      "captureRelativeReadyMs": 503.279052734375,
+      "scale": 2.7493761393554688,
+      "opacity": 0.19489066439453123
+    },
+    {
+      "filename": "screencast/0277.jpg",
+      "captureRelativeReadyMs": 802.763916015625,
+      "scale": 2.961396051191767,
+      "opacity": 0.031427731484444534
+    }
+  ],
+  "beforeReadyCompensatedColorDifference": 37.829714467509746,
+  "earlyToMidZoomCompensatedColorDifference": 9.093772369362922,
+  "midZoomCompensatedColorDifference": 22.451443569553806,
+  "limitations": [
+    "Logo crops compensate scale and opacity; JPEG and interpolation introduce noise, especially near invisibility.",
+    "Screencast and video callbacks are measured separately; neither is a physical-device FPS benchmark."
+  ]
+}

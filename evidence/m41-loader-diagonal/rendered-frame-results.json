@@ -1,0 +1,41 @@
+{
+  "endpoint0vs3200": {
+    "maxChannelDelta": 0,
+    "meanChannelDelta": 0.0
+  },
+  "silhouetteIoUsVsStart": [
+    0.999600263825875,
+    0.9997601726756735,
+    0.9997301888677925,
+    1.0
+  ],
+  "midframesVsStart": [
+    {
+      "maxChannelDelta": 95,
+      "meanChannelDelta": 9.967434895833334
+    },
+    {
+      "maxChannelDelta": 120,
+      "meanChannelDelta": 17.279083658854166
+    },
+    {
+      "maxChannelDelta": 98,
+      "meanChannelDelta": 10.765040690104167
+    }
+  ],
+  "reducedMotion": {
+    "direct": {
+      "maxChannelDelta": 0,
+      "meanChannelDelta": 0.0
+    },
+    "image": {
+      "maxChannelDelta": 0,
+      "meanChannelDelta": 0.0
+    }
+  },
+  "backdropCorners": "exact white for every loop frame",
+  "limitations": [
+    "Antialiased silhouette threshold permits subpixel color differences at its edge.",
+    "Quarter-cycle PNGs plus endpoint validate observed continuity; native SVG is the exact full runtime animation."
+  ]
+}

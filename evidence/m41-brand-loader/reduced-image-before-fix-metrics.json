@@ -1,0 +1,11 @@
+{
+  "direct": {
+    "maxChannelDelta": 0,
+    "meanChannelDelta": 0
+  },
+  "embeddedImage": {
+    "maxChannelDelta": 120,
+    "meanChannelDelta": 16.802352883387368
+  },
+  "sourceState": "Before parent picture/static SVG reduced-motion source; measured500ms apart in real reduced-motion context. Final screenshot filenames now contain successful post-fix captures."
+}

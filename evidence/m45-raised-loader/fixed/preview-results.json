@@ -1,0 +1,161 @@
+{
+  "chrome": "155.0.8059.80",
+  "previewUrl": "http://127.0.0.1:5173/assets/branding/tech-at-raised-v7-preview.html",
+  "sourceEquivalentCss": true,
+  "cases": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "dpr": 2,
+      "styles": [
+        {
+          "duration": "1.42222s",
+          "direction": "normal",
+          "timing": "linear",
+          "iterations": "infinite",
+          "background": "conic-gradient(rgb(240, 186, 114) 0%, rgb(243, 213, 120) 13%, rgb(241, 143, 173) 27%, rgb(231, 140, 229) 41%, rgb(174, 145, 236) 55%, rgb(126, 172, 240) 69%, rgb(120, 214, 219) 82%, rgb(145, 220, 178) 92%, rgb(240, 186, 114) 100%)",
+          "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-outer-mask.svg\")"
+        },
+        {
+          "duration": "1.42222s",
+          "direction": "reverse",
+          "timing": "linear",
+          "iterations": "infinite",
+          "background": "conic-gradient(from 190.187deg, rgb(240, 186, 114) 0%, rgb(145, 220, 178) 8%, rgb(120, 214, 219) 18%, rgb(126, 172, 240) 31%, rgb(174, 145, 236) 45%, rgb(231, 140, 229) 59%, rgb(241, 143, 173) 73%, rgb(243, 213, 120) 87%, rgb(240, 186, 114) 100%)",
+          "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-inner-mask.svg\")"
+        }
+      ],
+      "periods": [
+        1422.2222222,
+        1422.2222222
+      ],
+      "phases": [
+        {
+          "fraction": 0,
+          "file": "desktop-phase-0.png",
+          "transforms": [
+            "matrix(1, 0, 0, 1, -440, -440)",
+            "matrix(1, 0, 0, 1, -440, -440)"
+          ]
+        },
+        {
+          "fraction": 0.25,
+          "file": "desktop-phase-0.25.png",
+          "transforms": [
+            "matrix(0, 1, -1, 0, -440, -440)",
+            "matrix(0, -1, 1, 0, -440, -440)"
+          ]
+        },
+        {
+          "fraction": 0.5,
+          "file": "desktop-phase-0.5.png",
+          "transforms": [
+            "matrix(-1, 0, 0, -1, -440, -440)",
+            "matrix(-1, 0, 0, -1, -440, -440)"
+          ]
+        },
+        {
+          "fraction": 0.75,
+          "file": "desktop-phase-0.75.png",
+          "transforms": [
+            "matrix(0, -1, 1, 0, -440, -440)",
+            "matrix(0, 1, -1, 0, -440, -440)"
+          ]
+        },
+        {
+          "fraction": 1,
+          "file": "desktop-phase-1.png",
+          "transforms": [
+            "matrix(1, 0, 0, 1, -440, -440)",
+            "matrix(1, 0, 0, 1, -440, -440)"
+          ]
+        }
+      ],
+      "reduced": [
+        "none",
+        "none"
+      ]
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dpr": 2,
+      "styles": [
+        {
+          "duration": "1.42222s",
+          "direction": "normal",
+          "timing": "linear",
+          "iterations": "infinite",
+          "background": "conic-gradient(rgb(240, 186, 114) 0%, rgb(243, 213, 120) 13%, rgb(241, 143, 173) 27%, rgb(231, 140, 229) 41%, rgb(174, 145, 236) 55%, rgb(126, 172, 240) 69%, rgb(120, 214, 219) 82%, rgb(145, 220, 178) 92%, rgb(240, 186, 114) 100%)",
+          "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-outer-mask.svg\")"
+        },
+        {
+          "duration": "1.42222s",
+          "direction": "reverse",
+          "timing": "linear",
+          "iterations": "infinite",
+          "background": "conic-gradient(from 190.187deg, rgb(240, 186, 114) 0%, rgb(145, 220, 178) 8%, rgb(120, 214, 219) 18%, rgb(126, 172, 240) 31%, rgb(174, 145, 236) 45%, rgb(231, 140, 229) 59%, rgb(241, 143, 173) 73%, rgb(243, 213, 120) 87%, rgb(240, 186, 114) 100%)",
+          "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-inner-mask.svg\")"
+        }
+      ],
+      "periods": [
+        1422.2222222,
+        1422.2222222
+      ],
+      "phases": [
+        {
+          "fraction": 0,
+          "file": "mobile-phase-0.png",
+          "transforms": [
+            "matrix(1, 0, 0, 1, -304.188, -304.188)",
+            "matrix(1, 0, 0, 1, -304.188, -304.188)"
+          ]
+        },
+        {
+          "fraction": 0.25,
+          "file": "mobile-phase-0.25.png",
+          "transforms": [
+            "matrix(0, 1, -1, 0, -304.188, -304.188)",
+            "matrix(0, -1, 1, 0, -304.188, -304.188)"
+          ]
+        },
+        {
+          "fraction": 0.5,
+          "file": "mobile-phase-0.5.png",
+          "transforms": [
+            "matrix(-1, 0, 0, -1, -304.188, -304.188)",
+            "matrix(-1, 0, 0, -1, -304.188, -304.188)"
+          ]
+        },
+        {
+          "fraction": 0.75,
+          "file": "mobile-phase-0.75.png",
+          "transforms": [
+            "matrix(0, -1, 1, 0, -304.188, -304.188)",
+            "matrix(0, 1, -1, 0, -304.188, -304.188)"
+          ]
+        },
+        {
+          "fraction": 1,
+          "file": "mobile-phase-1.png",
+          "transforms": [
+            "matrix(1, 0, 0, 1, -304.188, -304.188)",
+            "matrix(1, 0, 0, 1, -304.188, -304.188)"
+          ]
+        }
+      ],
+      "reduced": [
+        "none",
+        "none"
+      ]
+    }
+  ],
+  "errors": [],
+  "pass": true
+}

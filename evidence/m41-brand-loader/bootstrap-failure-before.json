@@ -1,0 +1,16 @@
+{
+  "app": null,
+  "inert": true,
+  "retryHidden": true,
+  "status": "Preparing campus…",
+  "entryScripts": [
+    {
+      "id": "",
+      "src": "http://127.0.0.1:4181/assets/map-q4kb6coL.js"
+    },
+    {
+      "id": "",
+      "src": ""
+    }
+  ]
+}

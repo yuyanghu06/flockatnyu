@@ -1,0 +1,37 @@
+{
+  "pass": true,
+  "cases": [
+    {
+      "name": "desktop",
+      "loopEndpointPixelIdentical": true,
+      "phaseMeanChannelDifferences": [
+        10.767658402203857,
+        16.554487345041323,
+        11.283262741046832
+      ],
+      "imageBordersAllWhiteAtEveryPhase": true,
+      "reducedPixelsIdentical": true
+    },
+    {
+      "name": "mobile",
+      "loopEndpointPixelIdentical": true,
+      "phaseMeanChannelDifferences": [
+        10.62839167983824,
+        16.33739516140516,
+        11.131008194853832
+      ],
+      "imageBordersAllWhiteAtEveryPhase": true,
+      "reducedPixelsIdentical": true
+    }
+  ],
+  "unchangedSourceHashes": {
+    "assets/branding/favicon.svg": "7fa3ed74ebaa6fa349cad78caa372dfbe69c80a0b060b3707095272f115b9284",
+    "assets/branding/favicon.ico": "2a7dd58fc4cb5351d69094eff3369fb6bcb6b68ede1e26f18736b3b15f1ff029",
+    "assets/branding/tech-at-flat-pastel-v5.svg": "4cb8d5363378a60d694e256b18f874ba27152f93c2e798ffa601ea30f376b60c",
+    "assets/branding/tech-at-loading-outer-mask.svg": "f434fdafb464af5c3c065a827dbbc77da248d4eeada10744404f7849a0933131",
+    "assets/branding/tech-at-loading-inner-mask.svg": "fc0079c5ff674623ad1fb5d359d3c5d68e930939771970a41093db37adb3f331",
+    "src/startup-visual.js": "6eac36835f56f3b0ca333578c78a124fde614040f56a90193b58b93c9cfd9f51",
+    "src/map-startup.js": "b10c713ce026e0ae67bbabf76776d5d5c55c0dc92d9030bafeeccb1189486f38",
+    "src/bootstrap.js": "18bfb5d0125709ca6bbb7d40ced068c8b904953af3c0610a59de98b11185f7b1"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "url": "http://127.0.0.1:5173",
+  "chrome": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Both runtime discs are1.422222s linear infinite, opposite directions and advance while real main import is held",
+      "pass": true
+    },
+    {
+      "name": "Live reduced motion removes both animations and hides motion layers",
+      "pass": true
+    },
+    {
+      "name": "Reveal constants remain1100ms logo and1000ms backdrop",
+      "pass": true
+    },
+    {
+      "name": "Rendered colors change over400ms; reduced-motion rendered pixels identical over400ms",
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "Main module deliberately held; natural map/reveal/performance suites were not rerun for the duration-only edit.",
+    "Headless installed Chrome; no physical-device frame-rate claim."
+  ],
+  "errors": [],
+  "initial": [
+    {
+      "duration": "1.42222s",
+      "direction": "normal",
+      "timing": "linear",
+      "iterations": "infinite",
+      "name": "startup-color-rotation",
+      "state": "running",
+      "transform": "matrix(0.975725, 0.218998, -0.218998, 0.975725, -384, -384)",
+      "background": "conic-gradient(rgb(240, 186, 114) 0%, rgb(243, 213, 120) 13%, rgb(241, 143, 173) 27%, rgb(231, 140, 229) 41%, rgb(174, 145, 236) 55%, rgb(126, 172, 240) 69%, rgb(120, 214, 219) 82%, rgb(145, 220, 178) 92%, rgb(240, 186, 114) 100%)",
+      "width": "768px",
+      "height": "768px",
+      "left": "195.047px",
+      "top": "185.25px",
+      "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-outer-mask.svg\")"
+    },
+    {
+      "duration": "1.42222s",
+      "direction": "reverse",
+      "timing": "linear",
+      "iterations": "infinite",
+      "name": "startup-color-rotation",
+      "state": "running",
+      "transform": "matrix(0.975725, -0.218998, 0.218998, 0.975725, -384, -384)",
+      "background": "conic-gradient(from 190.187deg, rgb(240, 186, 114) 0%, rgb(145, 220, 178) 8%, rgb(120, 214, 219) 18%, rgb(126, 172, 240) 31%, rgb(174, 145, 236) 45%, rgb(231, 140, 229) 59%, rgb(241, 143, 173) 73%, rgb(243, 213, 120) 87%, rgb(240, 186, 114) 100%)",
+      "width": "768px",
+      "height": "768px",
+      "left": "187.406px",
+      "top": "192.297px",
+      "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-inner-mask.svg\")"
+    }
+  ],
+  "heldApp": {
+    "inert": true,
+    "state": "loading"
+  },
+  "later": [
+    {
+      "duration": "1.42222s",
+      "direction": "normal",
+      "timing": "linear",
+      "iterations": "infinite",
+      "name": "startup-color-rotation",
+      "state": "running",
+      "transform": "matrix(-0.802927, 0.596078, -0.596078, -0.802927, -384, -384)",
+      "background": "conic-gradient(rgb(240, 186, 114) 0%, rgb(243, 213, 120) 13%, rgb(241, 143, 173) 27%, rgb(231, 140, 229) 41%, rgb(174, 145, 236) 55%, rgb(126, 172, 240) 69%, rgb(120, 214, 219) 82%, rgb(145, 220, 178) 92%, rgb(240, 186, 114) 100%)",
+      "width": "768px",
+      "height": "768px",
+      "left": "195.047px",
+      "top": "185.25px",
+      "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-outer-mask.svg\")"
+    },
+    {
+      "duration": "1.42222s",
+      "direction": "reverse",
+      "timing": "linear",
+      "iterations": "infinite",
+      "name": "startup-color-rotation",
+      "state": "running",
+      "transform": "matrix(-0.802927, -0.596078, 0.596078, -0.802927, -384, -384)",
+      "background": "conic-gradient(from 190.187deg, rgb(240, 186, 114) 0%, rgb(145, 220, 178) 8%, rgb(120, 214, 219) 18%, rgb(126, 172, 240) 31%, rgb(174, 145, 236) 45%, rgb(231, 140, 229) 59%, rgb(241, 143, 173) 73%, rgb(243, 213, 120) 87%, rgb(240, 186, 114) 100%)",
+      "width": "768px",
+      "height": "768px",
+      "left": "187.406px",
+      "top": "192.297px",
+      "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-inner-mask.svg\")"
+    }
+  ],
+  "reduced": [
+    {
+      "duration": "0s",
+      "direction": "normal",
+      "timing": "ease",
+      "iterations": "1",
+      "name": "none",
+      "state": "paused",
+      "transform": "none",
+      "background": "conic-gradient(rgb(240, 186, 114) 0%, rgb(243, 213, 120) 13%, rgb(241, 143, 173) 27%, rgb(231, 140, 229) 41%, rgb(174, 145, 236) 55%, rgb(126, 172, 240) 69%, rgb(120, 214, 219) 82%, rgb(145, 220, 178) 92%, rgb(240, 186, 114) 100%)",
+      "width": "200%",
+      "height": "200%",
+      "left": "50.7974%",
+      "top": "48.2456%",
+      "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-outer-mask.svg\")"
+    },
+    {
+      "duration": "0s",
+      "direction": "reverse",
+      "timing": "ease",
+      "iterations": "1",
+      "name": "none",
+      "state": "paused",
+      "transform": "none",
+      "background": "conic-gradient(from 190.187deg, rgb(240, 186, 114) 0%, rgb(145, 220, 178) 8%, rgb(120, 214, 219) 18%, rgb(126, 172, 240) 31%, rgb(174, 145, 236) 45%, rgb(231, 140, 229) 59%, rgb(241, 143, 173) 73%, rgb(243, 213, 120) 87%, rgb(240, 186, 114) 100%)",
+      "width": "200%",
+      "height": "200%",
+      "left": "48.8038%",
+      "top": "50.0797%",
+      "mask": "url(\"http://127.0.0.1:5173/assets/branding/tech-at-loading-inner-mask.svg\")"
+    }
+  ],
+  "reducedMaskVisibility": [
+    "none",
+    "none"
+  ],
+  "reveal": {
+    "logoMilliseconds": 1100,
+    "backdropMilliseconds": 1000
+  },
+  "previousPeriodSeconds": 2.1333333333,
+  "actualPeriodSeconds": 1.42222,
+  "speedRatio": 1.5000023437302246,
+  "hashes": {
+    "src/startup-visual.js": "6eac36835f56f3b0ca333578c78a124fde614040f56a90193b58b93c9cfd9f51",
+    "src/map-startup.js": "b10c713ce026e0ae67bbabf76776d5d5c55c0dc92d9030bafeeccb1189486f38",
+    "src/bootstrap.js": "18bfb5d0125709ca6bbb7d40ced068c8b904953af3c0610a59de98b11185f7b1",
+    "assets/branding/tech-at-loading-outer-mask.svg": "f434fdafb464af5c3c065a827dbbc77da248d4eeada10744404f7849a0933131",
+    "assets/branding/tech-at-loading-inner-mask.svg": "fc0079c5ff674623ad1fb5d359d3c5d68e930939771970a41093db37adb3f331",
+    "assets/branding/tech-at-flat-pastel-v5.svg": "4cb8d5363378a60d694e256b18f874ba27152f93c2e798ffa601ea30f376b60c",
+    "assets/branding/favicon.svg": "7fa3ed74ebaa6fa349cad78caa372dfbe69c80a0b060b3707095272f115b9284",
+    "assets/branding/favicon.ico": "2a7dd58fc4cb5351d69094eff3369fb6bcb6b68ede1e26f18736b3b15f1ff029"
+  },
+  "pass": true,
+  "pixels": {
+    "normalChangedPixelsAbove10": 35832,
+    "normalMeanAbsoluteChannelDifference": 15.170912000868055,
+    "reducedPixelsIdentical": true
+  },
+  "sourcePeriodSeconds": 1.4222222222,
+  "sourceSpeedRatio": 1.5,
+  "sourceContainsRequestedPeriod": true,
+  "baselineLimit": "No pre-edit complete HTML snapshot exists for the dirty worktree. Prior accepted M43 traces establish previous2.1333333333s; implementation owner reports a single duration-token substitution. Current source/asset hashes recorded; no claim of independent whole-file pre/post equality."
+}

@@ -1,0 +1,11 @@
+{
+  "interiorPixels": 163250,
+  "interiorPixelsAnyDifference": 0,
+  "interiorMaxChannelDifference": 0,
+  "wholeImageDiffBBox": [
+    98,
+    124,
+    796,
+    742
+  ]
+}
