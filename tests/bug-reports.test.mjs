@@ -6,6 +6,7 @@ import {createBugReportTools} from '../tools/bug-reports/index.js';
 import {createBugReportStore} from '../server/bug-reports.js';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
+import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/assistant-context.js';
 
 const id='11111111-1111-4111-8111-111111111111';
 const principal={id:'local-development',allowedSourceIds:[]};
@@ -82,4 +83,44 @@ test('real chat planning saves one structured report, receives receipt, and dire
  const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:message}]})});
  const body=await response.text();assert.equal(response.status,200);assert(answered);assert.equal(saved.length,1);assert.equal(saved[0].report.user_message,message);
  assert(body.includes('"name":"bug_reports","status":"completed"'));assert(!body.includes('synthetic-secret'));
+});
+
+test('changed report arguments cannot create duplicate attempts or progress rows; memory still completes',async()=>{
+ const saved=[],events=[];let rounds=0,memoryWrites=0;
+ const bugReportTools=createBugReportTools({store:{configured:true,record:async value=>{
+  saved.push(value);return{status:'ready',reportId:value.reportId,createdAt:'2026-10-18T18:00:00Z',outcome:'created'};
+ }}});
+ const memoryTools={tools:[{name:'update_memory'}],execute:async()=>{memoryWrites++;return{status:'ready',outcome:'updated',memory:{updated_at:'2026-10-18T18:00:00Z'}};}};
+ const context=await retrieveAssistantContext({messages:[{role:'user',content:message}],principal,bugReportTools,memoryTools,
+  onToolEvent:event=>events.push(event),now:'2026-10-18T18:00:00Z',timeZone:'America/New_York',provider:{planTools:async({system,tools})=>{
+   const round=rounds++;
+   const retry={name:'bug_reports',arguments:{...args,summary:`Reworded report ${round}`}};
+   if(round===0)return[{name:'bug_reports',arguments:args},retry];
+   assert(!tools.some(tool=>tool.name==='bug_reports'));assert.match(system,/BUG REPORT ATTEMPT COMPLETE/);
+   if(round===1)return[retry,{name:'update_memory',arguments:{content:'Supplied club preference'}}];
+   if(round<5)return[retry];return[];
+  }}});
+ assert.equal(saved.length,1);assert.equal(memoryWrites,1);
+ assert.deepEqual(events.filter(event=>event.name==='bug_reports').map(event=>event.status),['running','completed']);
+ assert.equal(context.results.filter(result=>result.tool==='bug_reports').length,1);
+ assert.equal(context.results.find(result=>result.tool==='bug_reports').bugReport.outcome,'created');
+ assert(context.results.some(result=>result.memoryUpdate?.outcome==='updated'));
+ assert.match(assistantAnswerPrompt({...context,now:'2026-10-18T18:00:00Z',timeZone:'America/New_York'}),/"bugReport"/);
+});
+
+test('failed or thrown bug report attempts are final and cannot claim a saved report',async()=>{
+ for(const failure of ['conflict','unavailable','schema_not_ready','throw']){
+  let attempts=0,rounds=0;const events=[];
+  const bugReportTools={tools:[{name:'bug_reports'}],execute:async()=>{
+   attempts++;if(failure==='throw')throw Error('fixture');return{status:failure,sources:[]};
+  }};
+  const context=await retrieveAssistantContext({messages:[{role:'user',content:message}],principal,bugReportTools,
+   onToolEvent:event=>events.push(event),now:'2026-10-18T18:00:00Z',timeZone:'America/New_York',provider:{planTools:async({system})=>{
+    if(rounds++)assert.match(system,/must not be retried|Never call it again/);
+    return[{name:'bug_reports',arguments:{...args,context:`Attempt ${rounds}`}}];
+   }}});
+  assert.equal(attempts,1);assert.deepEqual(events.map(event=>event.status),['running','failed']);
+  const result=context.results.find(result=>result.tool==='bug_reports');
+  assert.equal(result.status,failure==='throw'?'unavailable':failure);assert.equal(result.bugReport,undefined);
+ }
 });

@@ -655,9 +655,13 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
     if (event.key === 'Escape' && focusedPersonId) { focusedPersonId = null; event.stopPropagation(); }
   }, { signal: listeners.signal });
   const refreshVisible = () => { if (document.visibilityState !== 'hidden') void refresh(); };
+  // A poll started before the save may still contain stale attendance. Queue a
+  // fresh read after it settles instead of sharing that pre-write response.
+  const refreshAfterWrite = () => { if (pending) void pending.then(refreshVisible); else refreshVisible(); };
   window.addEventListener('blur', () => { endDrag(); update(); }, { signal: listeners.signal });
   window.addEventListener('focus', refreshVisible, { signal: listeners.signal });
   document.addEventListener('visibilitychange', refreshVisible, { signal: listeners.signal });
+  document.addEventListener('campus-map-updated', refreshAfterWrite, { signal: listeners.signal });
   const poll = setInterval(refreshVisible, 30000);
   const expiry = setInterval(expire, 1000);
   void refresh();

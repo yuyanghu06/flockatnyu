@@ -1,14 +1,34 @@
 // Source references are evidence, never grants. Reuse the existing source
 // services so map visibility follows their current server-owned access policy.
+import {createMapEventStore,validateSnapshot,validEvent,text} from './events.js';
+import {chatAttendanceOrigin,chatAttendanceReference} from './chat-attendance.js';
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
-export function createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, gmailSourceId, calendarClient, calendarSourceId} = {}) {
-  return async function authorizeSource({principal, sourceId, sourceUrl, signal} = {}) {
+export function createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, gmailSourceId, calendarClient, calendarSourceId,
+  env=process.env,store=createMapEventStore({env}),publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date()} = {}) {
+  const attendanceOrigin=chatAttendanceOrigin(publicOrigin);
+  return async function authorizeSource({principal, sourceId, sourceUrl, eventId, personId, signal} = {}) {
     if (signal?.aborted || typeof principal?.id !== 'string' || !principal.id || !uuid(sourceId)
       || !Array.isArray(principal.allowedSourceIds) || !principal.allowedSourceIds.includes(sourceId)
       || typeof sourceUrl !== 'string' || sourceUrl.length > 2048) return false;
     try {
       const url = new URL(sourceUrl);
       if (url.protocol !== 'https:' || url.username || url.password) return false;
+      if(attendanceOrigin&&url.origin===attendanceOrigin) {
+        const reference=chatAttendanceReference(sourceUrl,attendanceOrigin);
+        // Bind this declaration to the actual relation being read/written;
+        // another existing person or event cannot borrow its valid marker.
+        if(!reference||reference.eventId!==eventId||reference.personId!==personId||store?.configured!==true)return false;
+        const data=validateSnapshot(await store.read({observedAt:new Date(now()).toISOString(),signal}));
+        const event=data.events.find(row=>row.id===reference.eventId),person=data.people.find(row=>row.id===reference.personId);
+        if(!event||!validEvent(event)||event.kind!=='scheduled_event'||event.source_id!==sourceId
+          ||person?.is_trackable!==true||!text(person.display_name,200,1))return false;
+        // A chat declaration inherits the event's access scope, not its authorship.
+        // Only an original supported provider reference may authorize the marker.
+        const original=new URL(event.source_url);
+        if(!['https://discord.com','https://calendar.google.com','https://miro.com','https://mail.google.com'].includes(original.origin)
+          ||original.origin===attendanceOrigin)return false;
+        return !signal?.aborted&&await authorizeSource({principal,sourceId,sourceUrl:event.source_url,signal})===true;
+      }
       if (url.origin === 'https://calendar.google.com') {
         if (!uuid(calendarSourceId) || sourceId !== calendarSourceId || !calendarClient?.configured
           || typeof calendarClient.calendarId !== 'string' || !calendarClient.calendarId || calendarClient.calendarId === 'primary'

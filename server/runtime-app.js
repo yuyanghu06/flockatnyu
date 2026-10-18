@@ -19,7 +19,9 @@ import {createMiroStore} from './miro/store.js';
 import {createMiroMcpTools} from '../tools/miro/mcp.js';
 import {createMapPresenceService} from './map/presence.js';
 import {createMapSourceAuthorizer} from './map/source-access.js';
-import {createMapEventService} from './map/events.js';
+import {createMapEventStore,createMapEventService} from './map/events.js';
+import {createChatAttendanceService} from './map/chat-attendance.js';
+import {createChatAttendanceTools} from '../tools/map/chat-attendance.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
 import {createBugReportStore} from './bug-reports.js';
@@ -55,11 +57,26 @@ const googleTools = {
 const miroStore = createMiroStore();
 const miroConfig = readMiroMcpConfig();
 const miroTools = createMiroMcpTools({config: miroConfig, store: miroStore, client: createMiroMcpClient({config: miroConfig})});
-const authorizeMapSource = createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient,
+const mapStore = createMapEventStore();
+const authorizeMapSource = createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, store:mapStore,
   gmailSourceId:process.env.AGENT_GMAIL_SOURCE_ID?.trim(),calendarClient,calendarSourceId:calendarConfig.sourceId});
-const mapPresenceService = createMapPresenceService({production:config.production, authorizeSource:authorizeMapSource});
-const mapTools = createChatMapTools({mapTools:createMapTools({service:createMapEventService({authorizeSource:authorizeMapSource})}),
+const mapPresenceService = createMapPresenceService({store:mapStore,production:config.production, authorizeSource:authorizeMapSource});
+const mapService = createMapEventService({store:mapStore,authorizeSource:authorizeMapSource,timeoutMs:15000});
+const sourceMapTools = createChatMapTools({mapTools:createMapTools({service:mapService}),
   gmailSourceId:process.env.AGENT_GMAIL_SOURCE_ID?.trim()});
+const attendanceTools = createChatAttendanceTools({service:createChatAttendanceService({store:mapStore,service:mapService,timeoutMs:15000})});
+const mapTools = {
+  configured:sourceMapTools.configured,
+  tools:[...sourceMapTools.tools,...attendanceTools.tools],
+  execute:options=>attendanceTools.tools.some(tool=>tool.name===options.name)
+    ? attendanceTools.execute(options) : sourceMapTools.execute(options),
+  createRequest:context=>{
+    const source=sourceMapTools.createRequest(context),attendance=attendanceTools.createRequest(context);
+    return {tools:[...source.tools,...attendance.tools],observe:(...args)=>source.observe(...args),
+      execute:options=>attendance.tools.some(tool=>tool.name===options.name)
+        ? attendance.execute(options) : source.execute(options)};
+  },
+};
 const bugReportTools = createBugReportTools({store: createBugReportStore()});
 const memoryTools = createMemoryTools({store: createMemoryStore()});
 const app = createApp({ ...(auth ? {auth} : {}), config, mapPresenceService, mapTools, discordStore, discordConfig, liveDiscordService, liveDiscordTools, googleTools, googleClient, miroTools, bugReportTools, memoryTools });

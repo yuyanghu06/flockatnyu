@@ -49,7 +49,7 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
               ['presence','personal_plan'].includes(event.kind)&&event.source_id===id&&event.source_url===url&&
               (!row.presence_basis||row.presence_basis==='planned');
           }
-          return authorizeProvenance({principal,sourceId:id,sourceUrl:url,buildingId:building.id,authorizeSource,signal:readSignal});
+          return authorizeProvenance({principal,sourceId:id,sourceUrl:url,buildingId:building.id,eventId:event.id,personId:person?.id,authorizeSource,signal:readSignal});
         };
         const current=new Map(buildings.map(b=>[b.id,new Map()])),labelTimes=new WeakMap();
         // Stable order makes overlap labels independent of database row order.

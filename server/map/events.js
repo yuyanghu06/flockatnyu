@@ -130,8 +130,8 @@ export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,
     },
   });
 }
-export async function authorizeProvenance({principal,sourceId,sourceUrl,authorizeSource,signal,buildingId:location}) {
-  return uuid(sourceId) && safeHttps(sourceUrl) && principal.allowedSourceIds.some(id=>typeof id==='string'&&id.toLowerCase()===sourceId.toLowerCase()) && typeof authorizeSource==='function' && await authorizeSource({principal,sourceId,sourceUrl,buildingId:location,signal})===true;
+export async function authorizeProvenance({principal,sourceId,sourceUrl,authorizeSource,signal,buildingId:location,eventId,personId}) {
+  return uuid(sourceId) && safeHttps(sourceUrl) && principal.allowedSourceIds.some(id=>typeof id==='string'&&id.toLowerCase()===sourceId.toLowerCase()) && typeof authorizeSource==='function' && await authorizeSource({principal,sourceId,sourceUrl,buildingId:location,eventId,personId,signal})===true;
 }
 const principalValid=principal=>text(principal?.id,200,1)&&Array.isArray(principal.allowedSourceIds)&&principal.allowedSourceIds.every(uuid);
 const eventKeys=new Set(['id','name','notes','kind','type_id','status','time_kind','starts_at','ends_at','starts_on','ends_on','time_zone','source_id','source_url','source_record_id','url','reported_at']);
@@ -140,7 +140,7 @@ const personKeys=new Set(['event_id','person_id','attendance_status','presence_b
 const buildingKeys=new Set(['event_id','building_id','location_notes']);
 const onlyKeys=(row,keys)=>object(row)&&Object.keys(row).every(key=>keys.has(key));
 export function createMapEventService({store=createMapEventStore(),authorizeSource=null,now=()=>new Date(),timeoutMs=5000}={}) {
-  const allowed=(principal,row,signal)=>authorizeProvenance({principal,sourceId:row.source_id,sourceUrl:row.source_url,authorizeSource,signal});
+  const allowed=(principal,row,signal)=>authorizeProvenance({principal,sourceId:row.source_id,sourceUrl:row.source_url,eventId:row.event_id||row.id,personId:row.person_id,authorizeSource,signal});
   const run=async(args,work)=>{
     if(!principalValid(args?.principal))return {status:'forbidden'};
     if(store?.configured!==true)return {status:'not_configured'};
