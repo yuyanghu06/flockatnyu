@@ -1,3 +1,4 @@
+import { AttachmentError, providerChatMessages } from '../chat-attachments.js';
 export class ProviderError extends Error {
   constructor(code = 'provider_unavailable') { super(code); this.code = code; }
 }
@@ -112,12 +113,14 @@ export function createProvider(config, { fetchImpl = fetch } = {}) {
     async planTools({ messages, system, tools, signal }) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic = config.provider === 'anthropic';
+      let nativeMessages;
+      try { nativeMessages = providerChatMessages(messages, config.provider); } catch (error) { throw new ProviderError(error instanceof AttachmentError ? error.code : 'invalid_provider_request'); }
       const toolDefinitions = tools.map(tool => anthropic
         ? { name: tool.name, description: tool.description, input_schema: tool.parameters }
         : { type: 'function', function: { name: tool.name, description: tool.description, parameters: tool.parameters } });
       const body = anthropic
-        ? { model: config.model, system, messages, tools: toolDefinitions, max_tokens: 1024, stream: false }
-        : { model: config.model, messages: [{ role: 'system', content: system }, ...messages], tools: toolDefinitions, tool_choice: 'auto', stream: false, store: false,
+        ? { model: config.model, system, messages: nativeMessages, tools: toolDefinitions, max_tokens: 1024, stream: false }
+        : { model: config.model, messages: [{ role: 'system', content: system }, ...nativeMessages], tools: toolDefinitions, tool_choice: 'auto', stream: false, store: false,
           // These models require none for Chat Completions function calls.
           // Answer streaming retains the configured model's default reasoning.
           ...(['gpt-6-luna', 'gpt-6-sol'].includes(config.model) && config.baseUrl.replace(/\/$/, '') === 'https://api.openai.com/v1'
@@ -158,9 +161,11 @@ export function createProvider(config, { fetchImpl = fetch } = {}) {
     async *stream({ messages, system, signal }) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic = config.provider === 'anthropic';
+      let nativeMessages;
+      try { nativeMessages = providerChatMessages(messages, config.provider); } catch (error) { throw new ProviderError(error instanceof AttachmentError ? error.code : 'invalid_provider_request'); }
       const body = anthropic
-        ? { model: config.model, system, messages, max_tokens: 2048, stream: true }
-        : { model: config.model, messages: [{ role: 'system', content: system }, ...messages], stream: true, store: false };
+        ? { model: config.model, system, messages: nativeMessages, max_tokens: 2048, stream: true }
+        : { model: config.model, messages: [{ role: 'system', content: system }, ...nativeMessages], stream: true, store: false };
       let response;
       try {
         response = await fetchImpl(`${config.baseUrl.replace(/\/$/, '')}/${anthropic ? 'messages' : 'chat/completions'}`, {

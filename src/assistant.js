@@ -1,3 +1,4 @@
+import { ATTACHMENT_ACCEPT, ATTACHMENT_ONLY_CONTENT, readAttachmentFiles } from './chat-attachments.js';
 import { boundedMessages, getAssistantStatus, safeSourceUrl, streamAssistant } from './chat-client.js';
 import { renderAssistantMarkdown } from './assistant-markdown.js';
 const assistantLogoUrl = new URL('../assets/branding/tech-at-assistant.png', import.meta.url).href;
@@ -5,6 +6,7 @@ const assistantHoverLogoUrl = new URL('../assets/branding/tech-at-assistant-hove
 
 export function createAssistant({ container = document.body, getBuilding = () => null } = {}) {
   let entered = false, disposed = false, available = false, busy = false;
+  let draftAttachments = [], readingFiles = false;
   let conversation = [], request, statusRequest, generation = 0, previousFocus, replyRender;
   let closing = false, closeTimer;
   let resizeAnimation, resizeFrame = 0, resizeFrom;
@@ -72,8 +74,17 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   input.rows = 1; input.maxLength = 8000; input.placeholder = 'Ask about Tech@NYU…';
   const compose = el('div', 'assistant-compose');
   const send = el('button', 'assistant-send', '↑'); send.type = 'submit'; send.setAttribute('aria-label', 'Send message');
-  compose.append(input, send);
-  form.append(label, compose);
+  const attach = el('button', 'assistant-attach'); attach.type = 'button';
+  attach.setAttribute('aria-label', 'Attach files');
+  attach.title = 'Attach PNG, JPEG, WebP, PDF, or UTF-8 text/code · up to 4 files · 5 MiB each (text 128 KiB)';
+  attach.innerHTML = '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 12 6-6a3 3 0 0 1 4 4l-8 8a5 5 0 0 1-7-7l9-9"/><path d="m6 14 8-8"/></svg>';
+  const fileInput = el('input'); fileInput.type = 'file'; fileInput.multiple = true; fileInput.accept = ATTACHMENT_ACCEPT; fileInput.hidden = true;
+  fileInput.setAttribute('aria-label', 'Choose files to attach');
+  const draftFiles = el('div', 'assistant-attachments'); draftFiles.hidden = true;
+  draftFiles.setAttribute('aria-label', 'Attached files');
+  const attachmentError = el('p', 'assistant-attachment-error'); attachmentError.hidden = true; attachmentError.setAttribute('role', 'alert');
+  compose.append(attach, input, send);
+  form.append(label, compose, fileInput, draftFiles, attachmentError);
   const connection = el('div', 'assistant-connection');
   const service = el('p', 'assistant-service', 'Checking connection…'); service.setAttribute('role', 'status');
   const retry = el('button', 'assistant-retry', 'Retry'); retry.type = 'button'; retry.hidden = true;
@@ -123,12 +134,44 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   function controls() {
     // Drafting remains possible while configuration or the network is unavailable.
     input.disabled = !entered;
-    send.disabled = !entered || (!busy && (!available || !input.value.trim()));
+    attach.disabled = !entered || readingFiles;
+    send.disabled = !entered || (!busy && (!available || readingFiles || (!input.value.trim() && !draftAttachments.length)));
     send.type = busy ? 'button' : 'submit';
     send.textContent = busy ? '■' : '↑';
     send.className = busy ? 'assistant-send is-stopping' : 'assistant-send';
     send.setAttribute('aria-label', busy ? 'Stop generating' : 'Send message');
     form.setAttribute('aria-busy', String(busy));
+  }
+  function renderDraftFiles() {
+    const height = panel.getBoundingClientRect().height;
+    draftFiles.replaceChildren(); draftFiles.hidden = !draftAttachments.length;
+    for (const [index, file] of draftAttachments.entries()) {
+      const chip = el('div', 'assistant-attachment');
+      if (file.mimeType.startsWith('image/')) {
+        const preview = el('img', 'assistant-attachment-preview'); preview.alt = ''; preview.src = `data:${file.mimeType};base64,${file.data}`; chip.append(preview);
+      }
+      const name = el('span', 'assistant-attachment-name', file.name); name.title = file.name;
+      const remove = el('button', 'assistant-attachment-remove', '×'); remove.type = 'button';
+      remove.setAttribute('aria-label', `Remove ${file.name}`); remove.disabled = readingFiles;
+      remove.addEventListener('click', () => {
+        draftAttachments = draftAttachments.filter((_, i) => i !== index);
+        attachmentError.hidden = true; renderDraftFiles(); controls(); input.focus();
+      });
+      chip.append(name, remove); draftFiles.append(chip);
+    }
+    queueResize(height);
+  }
+  function fileError(error) {
+    attachmentError.textContent = error.message; attachmentError.hidden = false;
+  }
+  async function addFiles(files) {
+    if (!entered || disposed || readingFiles || !files?.length) return;
+    readingFiles = true; attachmentError.hidden = true; controls(); renderDraftFiles();
+    try {
+      const attachments = await readAttachmentFiles(files, draftAttachments);
+      if (!disposed) draftAttachments = attachments;
+    } catch (error) { if (!disposed) fileError(error); }
+    finally { readingFiles = false; fileInput.value = ''; if (!disposed) { renderDraftFiles(); controls(); } }
   }
   function stopRequest() { replyRender?.flush(); request?.abort(); }
   function abort() {
@@ -236,9 +279,20 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   async function submit(event) {
     event.preventDefault();
-    const text = input.value.trim(); if (!entered || !available || busy || !text) return;
+    const text = input.value.trim(); if (!entered || !available || busy || readingFiles || (!text && !draftAttachments.length)) return;
+    const attachments = draftAttachments;
+    let messages;
+    try { messages = boundedMessages([...conversation, { role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }]); }
+    catch (error) { fileError(error); return; }
     const id = ++generation, controller = new AbortController(); request = controller; busy = true;
-    input.value = ''; resizeInput(); bubble('user', text); const reply = bubble('assistant', 'Thinking…'); controls();
+    input.value = ''; draftAttachments = []; attachmentError.hidden = true; renderDraftFiles(); resizeInput();
+    const userBubble = bubble('user', text || 'Attached files');
+    if (attachments.length) {
+      const files = el('ul', 'assistant-message-files');
+      for (const file of attachments) files.append(el('li', '', file.name));
+      userBubble.box.append(files);
+    }
+    const reply = bubble('assistant', 'Thinking…'); controls();
     announcement.textContent = 'Assistant is responding…'; let partial = '';
     let renderFrame = 0, events = [], renderedPartial = '';
     const cancelRender = () => {
@@ -262,10 +316,10 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       queueResize(height, true);
     };
     const rendering = { flush, cancel: cancelRender }; replyRender = rendering;
-    const messages = boundedMessages([...conversation, { role: 'user', content: text }]);
     try {
       const answer = await streamAssistant({ messages, buildingId: building?.id, signal: controller.signal, onEvent(event) {
         if (disposed || id !== generation || controller.signal.aborted) return;
+        if (event.type === 'tool' && event.status === 'completed' && ['set_map_attendance', 'upsert_map_event'].includes(event.name)) document.dispatchEvent(new CustomEvent('campus-map-updated'));
         if (event.type === 'done') { flush(partial || 'The assistant returned an empty reply.'); return; }
         if (event.type === 'delta') partial += event.text;
         else if (event.type === 'tool' || event.type === 'meta') events.push(event);
@@ -289,6 +343,9 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       reply.box.append(el('p', 'assistant-message-error', error.name === 'AbortError' ? 'Stopped. This reply is incomplete.' : error.message));
       queueResize(height, true);
       announcement.textContent = error.name === 'AbortError' ? 'Reply stopped.' : 'The reply could not finish.';
+      if (!input.value.trim() && !draftAttachments.length && !readingFiles) {
+        input.value = text; draftAttachments = attachments; renderDraftFiles(); resizeInput();
+      }
     } finally {
       cancelRender();
       if (replyRender === rendering) replyRender = null;
@@ -315,6 +372,18 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     if (event.key === 'Escape' && !event.isComposing) { event.preventDefault(); close(); }
   });
   root.addEventListener('keyup', preventMap);
+  attach.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => addFiles(fileInput.files));
+  input.addEventListener('paste', event => {
+    const files = Array.from(event.clipboardData?.files || []);
+    if (files.length) { event.preventDefault(); void addFiles(files); }
+  });
+  panel.addEventListener('dragover', event => {
+    if (Array.from(event.dataTransfer?.types || []).includes('Files')) { event.preventDefault(); event.stopPropagation(); }
+  });
+  panel.addEventListener('drop', event => {
+    if (event.dataTransfer?.files?.length) { event.preventDefault(); event.stopPropagation(); void addFiles(event.dataTransfer.files); }
+  });
   input.addEventListener('input', () => { resizeInput(); controls(); });
   input.addEventListener('keydown', event => {
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); if (!event.repeat) form.requestSubmit(); }
@@ -335,7 +404,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   controls();
   return Object.freeze({ open, close, dispose() {
     stopLogoAnimation();
-    disposed = true; onFailure();
+    disposed = true; draftAttachments = []; conversation = []; onFailure();
     document.removeEventListener('keydown', onShortcut);
     document.removeEventListener('campus-enter', onEnter);
     document.removeEventListener('campus-loading-failed', onFailure);

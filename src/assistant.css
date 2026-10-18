@@ -259,3 +259,13 @@
   .assistant-tool[data-status='running'] .assistant-tool-icon { animation: none; }
   .assistant-tool[data-status='running'] .assistant-tool-state, .assistant-message-text.is-thinking { animation: none; background: none; color: #000; }
 }
+
+.assistant-attach { flex: 0 0 auto; display: grid; place-items: center; align-self: center; width: 32px; height: 34px; padding: 4px; border: 0; border-radius: 9px; background: transparent; color: inherit; }
+.assistant-attach:hover, .assistant-attach:focus-visible { background: #00000008; }
+.assistant-attachments { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 10px; }
+.assistant-attachment { display: flex; align-items: center; gap: 7px; max-width: 100%; padding: 4px 7px; border-radius: 10px; background: #efefed; font-size: 11px; }
+.assistant-attachment-name { min-width: 0; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.assistant-attachment-preview { width: 30px; height: 30px; border-radius: 5px; object-fit: cover; }
+.assistant-attachment-remove { flex: 0 0 auto; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 7px; background: transparent; color: inherit; font-size: 20px !important; }
+.assistant-attachment-error { margin: 8px 0 0; color: #965d45; font-size: 12px; line-height: 1.5; }
+.assistant-message-files { margin: 4px 0 0; padding-left: 16px; font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }

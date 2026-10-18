@@ -1,3 +1,4 @@
+import { AttachmentError, attachmentErrors, attachmentBudget, normalizeAttachments, ATTACHMENT_ONLY_CONTENT, MAX_CHAT_BODY_BYTES } from './chat-attachments.js';
 import { Hono } from 'hono';
 import {canonicalTimeZone, createTimeContext} from './time-zone.js';
 import { readConfig } from './config.js';
@@ -6,6 +7,7 @@ import { retrieveAssistantContext, assistantAnswerPrompt } from './assistant-con
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
+  ...attachmentErrors,
   access_denied: 'Access is not enabled for this request.', invalid_request: 'Send a valid, bounded chat conversation.',
   not_configured: 'The assistant model is not configured yet.', timeout: 'The assistant request timed out. Please try again.',
   aborted: 'The request was cancelled.', provider_unavailable: 'The assistant provider is unavailable. Please try again.',
@@ -63,15 +65,21 @@ async function readJSON(request, timeoutMs, maxBytes = 32768) {
 }
 
 async function readConversation(request, timeoutMs) {
-  const value = await readJSON(request, timeoutMs);
+  const value = await readJSON(request, timeoutMs, MAX_CHAT_BODY_BYTES);
   if (!value || !Array.isArray(value.messages) || !value.messages.length || value.messages.length > 20) throw new Error('invalid');
   let total = 0;
+  const budget = attachmentBudget();
   const messages = value.messages.map(message => {
-    if (!message || !['user', 'assistant'].includes(message.role) || typeof message.content !== 'string' || !message.content.trim() || message.content.length > 8000) throw new Error('invalid');
-    total += message.content.length;
-    return { role: message.role, content: message.content };
+    if (!message || !['user', 'assistant'].includes(message.role) || typeof message.content !== 'string' || message.content.length > 8000) throw new Error('invalid');
+    if (message.attachments !== undefined && message.role !== 'user') throw new AttachmentError();
+    const attachments = normalizeAttachments(message.attachments, budget);
+    if (!message.content.trim() && !attachments.length) throw new Error('invalid');
+    const content = message.content.trim() ? message.content : ATTACHMENT_ONLY_CONTENT;
+    total += content.length;
+    return { role: message.role, content, ...(attachments.length ? { attachments } : {}) };
   });
-  if (total > 16000 || messages.at(-1).role !== 'user') throw new Error('invalid');
+  const textBytes = new TextEncoder().encode(JSON.stringify({ messages: messages.map(({ role, content }) => ({ role, content })) })).length;
+  if (total > 16000 || textBytes > 32500 || messages.at(-1).role !== 'user') throw new Error('invalid');
   if (value.buildingId !== undefined && (typeof value.buildingId !== 'string' || !/^[a-z0-9-]{1,80}$/.test(value.buildingId))) throw new Error('invalid');
   const timeZone = canonicalTimeZone(value.timeZone);
   if (!timeZone) throw new Error('invalid');
@@ -150,7 +158,8 @@ export function createApp({ config = readConfig(), provider = createProvider(con
     try { principal = await auth(c, config); } catch {}
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return deny(c, 'access_denied', 403);
     let conversation;
-    try { conversation = await readConversation(c.req.raw, config.timeoutMs); } catch { return deny(c, 'invalid_request', 400); }
+    try { conversation = await readConversation(c.req.raw, config.timeoutMs); } catch (error) { return deny(c, error instanceof AttachmentError ? error.code : 'invalid_request', 400); }
+    if (config.provider === 'anthropic' && conversation.messages.some(message => message.attachments?.length)) return deny(c, 'attachments_provider_unsupported', 400);
     const timeContext = createTimeContext({timeZone:conversation.timeZone,now:now()});
     if (!timeContext) return deny(c, 'invalid_request', 400);
     if (!config.configured) return deny(c, 'not_configured', 503);

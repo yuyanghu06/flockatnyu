@@ -1,24 +1,31 @@
+import { ATTACHMENT_ONLY_CONTENT, AttachmentError, attachmentBudget, normalizeAttachments, MAX_CHAT_BODY_BYTES } from './chat-attachments.js';
 export function safeSourceUrl(value) {
   try { const u = new URL(value); return ['http:', 'https:'].includes(u.protocol) ? u.href : null; } catch { return null; }
 }
 export function boundedMessages(messages) {
-  const candidates = messages.filter(m => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string' && m.content.trim()).slice(-20);
+  const candidates = messages.filter(m => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string' && (m.content.trim() || m.role === 'user' && m.attachments?.length)).slice(-20);
   const result = [];
-  let chars = 0;
+  let chars = 0, budget = attachmentBudget();
   const encoder = new TextEncoder();
   for (let i = candidates.length - 1; i >= 0; i--) {
-    const message = { role: candidates[i].role, content: candidates[i].content.slice(0, 8000) };
+    const candidate = candidates[i];
+    if (candidate.attachments !== undefined && candidate.role !== 'user') throw new AttachmentError();
+    const proposedBudget = { ...budget };
+    let attachments;
+    try { attachments = normalizeAttachments(candidate.attachments, proposedBudget); }
+    catch (error) { if (result.length && error.code === 'attachment_total') break; throw error; }
+    const message = { role: candidate.role, content: candidate.content.slice(0, 8000) || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) };
     const proposed = [message, ...result];
-    // Reserve room for building context, browser time zone and the JSON envelope.
-    if (chars + message.content.length > 16000 || encoder.encode(JSON.stringify({ messages: proposed })).length > 32500) break;
-    result.unshift(message);
-    chars += message.content.length;
+    const textOnly = proposed.map(({ role, content }) => ({ role, content }));
+    if (chars + message.content.length > 16000 || encoder.encode(JSON.stringify({ messages: textOnly })).length > 32500 || encoder.encode(JSON.stringify({ messages: proposed })).length > MAX_CHAT_BODY_BYTES - 512) break;
+    result.unshift(message); chars += message.content.length; budget = proposedBudget;
   }
   if (!result.length && candidates.length) {
     const last = candidates.at(-1);
-    let content = last.content.slice(0, 8000);
+    let content = last.content.slice(0, 8000) || ATTACHMENT_ONLY_CONTENT;
     while (encoder.encode(JSON.stringify({ messages: [{ role: last.role, content }] })).length > 32500) content = content.slice(0, -100);
-    result.push({ role: last.role, content });
+    const attachments = normalizeAttachments(last.attachments);
+    result.push({ role: last.role, content, ...(attachments.length ? { attachments } : {}) });
   }
   return result;
 }
