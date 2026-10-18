@@ -9,3 +9,5 @@ containing only reachable server/tool modules and the default trusted adapter.
 It includes no frontend assets, environment files, OAuth files or development
 history. Custom adapter modules are deliberately absent. Persistent Miro token
 ownership must be provisioned separately before declaring live sync ready.
+
+Current production tuning uses2inputs per batch and600000ms under unchanged16round/32tool bounds. A same-image preceding5input batch completed successfully but used569325ms, so smaller batches leave edit headroom. Recognized Miro navigation outages are explicitly deferred without Miro evidence; actual authorization/config/malformed failures remain fatal.

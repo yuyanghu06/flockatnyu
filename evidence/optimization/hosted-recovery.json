@@ -1,0 +1,92 @@
+{
+  "checkedAt": "2026-10-18T21:56:28.997Z",
+  "webDeployment": "da7c5ab1-173c-4f7d-9464-9578d03c1821",
+  "failedDeployment": "08ddc22e-cdf3-41fe-898d-b710c01ef9ee",
+  "failure": "configured_password_below_previous_minimum",
+  "passwordValueChanged": false,
+  "contextDiff": [
+    "server/site-auth.js"
+  ],
+  "health": 200,
+  "anonymousApi": 403,
+  "login": 303,
+  "authenticatedRoot": 200,
+  "authenticatedApi": 200,
+  "foreignOrigin": 403,
+  "secureCookie": true,
+  "httpOnlyCookie": true,
+  "currentWebDeployment": "fa9079b3-4e52-43d2-9f46-bc1da1350706",
+  "healthcheckConfiguration": {
+    "path": "/healthz",
+    "timeoutSeconds": 60,
+    "actualServiceInstanceReadback": true,
+    "onlyTwoHealthFieldsChanged": true,
+    "deployOrRestartTriggered": false,
+    "latestDeploymentUnchanged": true,
+    "futureDeploymentGate": true,
+    "continuousUptimeProbe": false
+  },
+  "finalDatabase": {
+    "checkedAt": "2026-10-18T22:21:35.032Z",
+    "rows": [
+      {
+        "receipt": {
+          "events": 4,
+          "completed_inputs": 15,
+          "pending_payloads": 151,
+          "scheduled_events": 4,
+          "demo_source_events": 0,
+          "done_payloads_remaining": 0
+        }
+      }
+    ]
+  },
+  "finalServices": {
+    "checkedAt": "2026-10-18T22:22:32.877Z",
+    "services": {
+      "web": {
+        "deployment": "fa9079b3-4e52-43d2-9f46-bc1da1350706",
+        "status": "SUCCESS"
+      },
+      "worker": {
+        "deployment": "2aaf552e-75db-4a18-aee3-cfe8a9fd6ec7",
+        "status": "SUCCESS"
+      },
+      "discord": {
+        "deployment": "3aa66021-bda0-4c40-a85e-5f62af638069",
+        "status": "SUCCESS"
+      },
+      "gmail": {
+        "deployment": "5244b48a-483e-4378-9b40-c821b66830ed",
+        "status": "SUCCESS"
+      }
+    },
+    "worker": {
+      "enabled": true,
+      "maxInputs": 2,
+      "maxRunMs": 600000,
+      "sameImageAsCompletedBatch": true
+    },
+    "websiteHealth": 200
+  },
+  "postTuningLease": {
+    "checkedAt": "2026-10-18T22:22:43.428Z",
+    "rows": [
+      {
+        "lease": {
+          "lease_until": "2026-10-18T22:24:37.703468+00:00",
+          "last_started": "2026-10-18T22:21:57.529366+00:00",
+          "leased_inputs": 2
+        }
+      }
+    ]
+  },
+  "currentSiteSmoke": {
+    "checkedAt": "2026-10-18T22:23:47.706Z",
+    "deployment": "fa9079b3-4e52-43d2-9f46-bc1da1350706",
+    "anonymousApi": 403,
+    "login": 303,
+    "authenticatedRoot": 200,
+    "authenticatedApi": 200
+  }
+}

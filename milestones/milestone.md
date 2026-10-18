@@ -1,8 +1,59 @@
+## Current: site and Discord/Calendar worker recovered; Miro explicitly deferred
+
+Websitefa9079b3-4e52-43d2-9f46-bc1da1350706, worker2aaf552e-75db-4a18-aee3-cfe8a9fd6ec7, Discord3aa66021-bda0-4c40-a85e-5f62af638069 and Gmail5244b48a-483e-4378-9b40-c821b66830ed all SUCCESS. Web health200 and protected login/API pass; existing password retained. Failed deploy08ddc22e built but rejected14character password under old minimum24; minimum now12, signing/origin/session safeguards retained. Actual future-deployment health gate /healthz/60seconds configured, website not restarted for that setting.
+
+**Real processing:** worker6ea0d49b completed5/5inputs22:20:33UTC,12tools/4rounds/569325ms, explicitMirodeferred(boardCount1,syncCompletefalse). HostedDB15completed inputs and0remaining corresponding cache payloads;151other pending payloads preserved. Calendar/map retain4real scheduled events and0example.invalid events after nine exact-source demo/manual-presence deletions. Current worker2aaf552e uses identical image digest, tuned to2inputs under the same600second deadline for edit headroom; enabled/config and active2input lease verified. No second completed two-input batch claim.
+
+**Boundaries/limitations:** source scopes/exclusions/manual-disabled/leadership rules preserved; Discord metadata continuation keeps same-generation guards and strict completion publication, avoiding hour-long partial gaps. Miro catalogue/access/broker checks pass but official overview and month-search returntool_result_error. Only recognized optional navigation failures defer; auth/config/forbidden/malformed still failclosed, no Miro facts/write authority or empty-board inference from failures. Discord/Calendar work continues; no full Miro sync claim. Next eligible batch retries Miro. Production2inputs/600s,30eligible-input-or-oldest30minute trigger,60secondcooldown,16rounds/32calls and1000ms per-process Discord pacing. Global cross-process limiter, empty-queue periodic sync, broad Calendar history and ambiguous edit policies remain separate follow-ups.
+
+**Verification/publication:** latest private-secret scan1972textfiles/13actualprivatepatterns found0matches; current diff whitespace passes. Final1038/1038tests and APIbuild; independent97collector/141Miro checks; strict actual-model5/5on32unchanged source hashes,49requests. Miro/RSVP usedfull16roundbudget; finite tests are not general reliability/throughput proof. Runtime logical commits263626b,d7b0e7c,a4d5f6a integrated with user UI commits. Documentation/evidence publication is the final integration step; confirm matching local/remoteHEAD and clean worktree after push. No credentials or private originals in tracked evidence.
+
+- [Final recovery pass](history/2026-10-18_18-24-23-616146-orchestrator-live-recovery-and-cache-cleanup-verified.md)
+- [Hosted recovery](../evidence/optimization/hosted-recovery.json)
+- [Completed batch](../evidence/optimization/hosted-worker-recovery.json)
+- [Final model cases](../evidence/optimization/planner-recovery-model.json)
+
+## Earlier recovery checkpoints (historical; current snapshot above supersedes pending statuses)
+
+## Web deployment health gate now configured
+
+Actual serviceInstance healthcheck was unset despite source manifest. Applied only /healthz and60second timeout through supported service-instance settings; verified readback. Current webfa9079SUCCESS unchanged, no redeploy/restart/variables/source changes. Future deployments now have intended health gate; no continuous uptime-monitoring claim. Current worker6ea0d49bSUCCESS is progressing through a real batch; all five original Discord reads and Calendar read ready, completion pending.
+
+[Pass record](history/2026-10-18_18-18-56-831575-orchestrator-web-healthcheck-configured.md).
+
+## Final recovery source and model acceptance complete; worker deploying
+
+Final1038/1038regressions, APIbuild, independent141/141Miro review and97/97collector review pass. Configured gpt-6-luna final5/5strictcases pass on32unchanged source hashes,49calls>=1500ms spacing. Outagecase completes unrelated authorized Calendar/map work with explicitMirodeferred and0Mirofacts; otherfour strictcreate/edit/RSVPchains pass. Prior interrupted diagnostic retained separately. Miro/RSVP usedfull16roundbudget; no general reliability claim.
+
+Logical source commits263626b(password),d7b0e7c(collector),a4d5f6a(Mirodeferral+parser/handler)integrated alongside user UI commits; sourcehashes rechecked before workerupload. Secret scan1968textfiles/12actualprivatepatterns0matches; current whitespace passes. Final worker release upload pending result/hosted actualcompletion. Current webfa9079 andcollector3aa660SUCCESS; external Miro navigation error remainsdeferred, notfixed orfullysynchronized.
+
+[Pass record](history/2026-10-18_18-09-57-035565-tester-final-five-recovery-model-cases-passed.md).
+
+## Miro outage recovery independently accepted
+
+Final evaluator141/141passed across11automation/prompt/MCP/provenance/sync-policy files, zero skipped. Actual handler supports authorized Discord/Calendar completion with safe Miro-deferred marker; malformed/auth/forbidden/fake-Miro action negatives remain blocked. Final configured-model5case run and full regression in progress; sanitized final worker context prepared. No source facts/grants from failed Miro reads. Miro external navigation error remains unresolved; this recovery prevents it blocking unrelated authorized work and never claims full Miro synchronization.
+
+[Pass record](history/2026-10-18_18-08-05-585642-evaluator-miro-outage-recovery-accepted.md).
+
+## Miro outage recovery: final parser-corrected verification running
+
+Optional Miro navigation outages now defer that board explicitly while preserving supported Discord/Calendar work and mandatory Calendar projection. Completion exposes only sanitized deferred board count, never board IDs/provider errors; no all-source sync claim. Reviewer found malformed JSON/envelope fallback ambiguity; narrow parser validation now treats it invalid_mcp_result and aborts before model/actions. Explicit upstream isError remains outage, not source evidence. Final source frozen,97focused checks pass; independent review, full suite/API build and five-case model rerun pending. Initial model diagnostic4completed cases passed/32recorded calls, then stopped before parser change; not final-build acceptance. Remaining final call cap52 keeps conservative total under100.
+
+- [Pass record](history/2026-10-18_18-07-28-716806-coder-miro-navigation-outage-deferral-implemented.md)
+- [Pass record](history/2026-10-18_18-07-28-717365-evaluator-miro-malformed-parser-finding.md)
+- [Pass record](history/2026-10-18_18-07-28-717495-coder-miro-parser-malformed-results-failclosed.md)
+
 ## Password UI: live on Railway and verified
 
 Final web deploymentfa9079b3-4e52-43d2-9f46-bc1da1350706 is SUCCESS at https://web-production-e4edc.up.railway.app. Terminal password UI, live clock, masked asterisks, gray block cursor/teal tilde and login favicons are published. Enter explicitly submits the native validated form; successful sign-in redirects directly into animated @ startup. UI/favicon sourcee6a43fc and keyboard694b1dc pushed, including separate auth recovery263626b. Hosted health/login/icons200, anonymousroot303/API403, actualpasswordPOST303and securestrictcookie/authenticatedroot200 pass. Icons match approved bytes; root has immediate animatedlogo markup. Actual syntheticChromeEnter→logo verified; final hosted screenshot unavailable after browser detach.11password/auth,21startup,2package checks and bothbuilds pass. Receipt:evidence/password-ui/hosted-release.json. No credentials persisted, no other services deployed by this pass. Next: normal user visual feedback; unrelated operational work below remains separate.
 
 [Pass record](history/2026-10-18_18-04-52-840912-orchestrator-password-ui-live-accepted.md).
+
+## Collector continuation accepted and deploying
+
+Independent97/97tests accepted corrected actual partial/aborted deadline handling. Collector3aa66021-bda0-4c40-a85e-5f62af638069 uploaded from sanitized context after fix; verification pending. Root recovery full1028/1028 and APIbuild pass before separate Miro-outage implementation. Current Miro source authorization/Calendar/broker allready, but official canvas_search overviewreturnsHTTP200/isError:true; cause not identified as quota/auth. Implementing recognized-navigation-outage deferral so unavailable Miro cannot invent facts or block otherwiseauthorized Discord/Calendarwork. All auth/config/forbidden/malformed checks remain failclosed.
+
+[Pass record](history/2026-10-18_18-03-20-292913-orchestrator-collector-review-and-rollout.md).
 
 ## Password UI: Enter verified, final followup deploying
 
@@ -10,11 +61,39 @@ Initial UI/favicon release850ab73b is SUCCESS; hosted page/icons and authenticat
 
 [Pass record](history/2026-10-18_18-01-16-867035-orchestrator-password-enter-verified.md).
 
+## Web restored; worker preparation still under diagnosis
+
+Recovery webda7c5ab1-173c-4f7d-9464-9578d03c1821 SUCCESS; hosted health200/login303/protected page+API200/anonymousAPI403/foreignOrigin403. Existing password retained. Receipt evidence/optimization/hosted-recovery.json. Private worker broker200 and Calendarpreflightowner/ready now pass. Worker latest prepare stillfails(preflight_failed), so bounded live Miro preparation diagnosis underway; no ongoing completion claim.
+
+Collector continuation implemented/frozen:9lifecycle cases and91targeted combined checks pass; same-generation bounded retries preserve strict complete-publication authorization. Independent review/full suite/API build and sanitized collector context in progress. No source expansion/migration/queue deletion.
+
+[Pass record](history/2026-10-18_17-59-09-859669-orchestrator-web-restored-collector-source-accepted.md).
+
 ## Password UI: release ready, deploying web
 
 Approved terminal password UI now declares/favicon.ico and/favicon.svg. Vite emits unchanged approved branding at these stable paths; only exact GET/HEAD icons bypass login, with safe static checks retained. Current workspace9/9site-auth (including concurrent recovery),2/2package tests, frontend/API builds pass. Local favicon bytes/MIME match originals; other assets/API remain gated. Railway CLI is authenticated; MCP auth expired. Current web crash belongs to concurrent password-minimum recovery, preserved in package. Push/deployment pending; no success claimed yet.
 
 [Pass record](history/2026-10-18_17-55-47-591580-orchestrator-password-ui-release-ready.md).
+
+## Web recovery source accepted and uploaded
+
+Password minimum24→12 only; user's private14character setting retained. Coder29/29 and independent11/11+14/14security checks pass; strictcookies/origin/signing/source access unchanged. Recovery context reuses preceding240file sanitized stable web package with only server/site-auth.js changed, preserving unpublished local UI. Uploaded to Railway; hosted startup/login acceptance next. Discord access already restored227channels; collector continuation fix proceeds separately.
+
+[Pass record](history/2026-10-18_17-55-24-172315-orchestrator-password-recovery-tested-and-uploaded.md).
+
+## Discord catalogue access restored; worker resumed preparation
+
+Same-generation metadata resume completed the16remaining archive pages at1000ms pacing. Discovery nowcomplete;227authorized channels restored, leadership still excluded and manual-disabled policy preserved. No message/model calls, source grants or queue deletion. Worker observed prepare_start21:54:17UTC; awaitactual completed batch. Collector continuation fix underway to avoid a full-hour wait after future partial slices. Web password startup fix independently tested29/29; separate review/deployment next.
+
+[Pass record](history/2026-10-18_17-55-03-316731-orchestrator-discord-catalogue-resumed.md).
+
+## Live recovery: web startup and Discord catalogue causes confirmed
+
+Latest web deploy08ddc22e-cdf3-41fe-898d-b710c01ef9ee built successfully but crashed at startup: configured password14characters versus old required24. Private signing/origin/port validation passes. Fixing minimum to12, preserving configured password and all session/origin safeguards; deploy only this patch from previous sanitized stable web context, preserving unpublished local UI edits.
+
+Worker currently has valid in-scope pending messages but zero enabled sync channels. Metadata discovery revision4 is incomplete at archive175/191 after15minute budget; all271nodes stay disabled until full guarded completion. Resume same generation with existing exclusions/manual-disabled boundaries and1000ms pacing. No forced catalogue publication or source expansion. Prior ten completed inputs and zero completed cache payloads remain verified. Both recoveries in progress; no current health claim.
+
+[Pass record](history/2026-10-18_17-53-45-936574-orchestrator-live-outages-diagnosed.md).
 
 ## Password UI: stronger cursor contrast
 
@@ -45,6 +124,20 @@ Password page now has a compact black block cursor beside gray22–40px monospac
 Placeholder now uses terminal-style monospace typography in its previous gray #aaa9a5. Cursor is a black inline SVG I-beam matching the reference, retaining responsive height and instant on/off blink. Existing position, hidden typing and Enter submission remain. Current Chrome preview refreshed and visually inspected; site-auth checks rerun and scoped whitespace checked. Local only. Next: user visual pass.
 
 [Pass record](history/2026-10-18_17-40-30-944409-orchestrator-terminal-font-black-ibeam.md).
+
+## Worker status follow-up
+
+Ten prior inputs completed and their cache payloads were removed. Latest retry remains forbidden/cooldown, with cause unresolved; enabled configuration alone does not establish healthy ongoing processing. Cleanup/status request is complete, operational repair remains open.
+
+[Pass record](history/2026-10-18_17-38-12-825904-orchestrator-worker-status-check-inconclusive.md).
+
+## Live data cleanup: demo events and manual presence removed
+
+Deleted six exact-source demo events and, on explicit follow-up, three manual presence/plans. Hosted events now contains four real Calendar scheduled events; zero example.invalid events, zero presence/personal plans and zero orphan relationships. Two guarded transactions proved all unrelated event facts/relations unchanged. No catalogues, schema, Calendar originals or queue data changed. Receipt: evidence/optimization/demo-cleanup.json.
+
+Cache behavior verified against hosted state:10completed inputs and0remaining payloads for completed inputs. Successful finish atomically deletes originals; unfinished/failed rows remain pending. Latest worker attempt reports forbidden/cooldown; a bounded read-only probe confirmed enabled configuration and credential presence but did not establish the failing authorization guard. Probe stopped without changes; current processing health is not claimed. Preserve unrelated local password UI edits.
+
+[Pass record](history/2026-10-18_17-36-01-392069-orchestrator-hosted-demo-and-presence-cleanup.md).
 
 ## Password UI: instant cursor blink
 

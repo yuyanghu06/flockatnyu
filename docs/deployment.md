@@ -57,7 +57,7 @@ transfer. Unit fixtures do not use real credentials.
 Collectors retain their independent ingestion switches and current exclusions.
 The update agent wakes for30eligible queued inputs or oldest input30minutes;
 there is no empty-queue periodic reconciliation. Defaults remain16rounds,
-32calls and180seconds, with60second cooldown. Production uses five-input batches
+32calls and180seconds, with60second cooldown. Production uses two-input batches
 and a configured600second deadline so paced source/permission checks can finish;
 tool/round limits remain unchanged. Discord requests are paced within
 each process and obey upstream cooldowns; separate services do not share a global
@@ -77,3 +77,7 @@ Deployment migration032 adds service-only scoped queue claims. The worker sends 
 A real hosted five-input batch completed with27toolcalls; four canonical Calendar-derived map events were persisted with building links. The initial larger/time-limited pilots retained unfinished inputs and successful durable actions. See hosted-worker and hosted-event-projection receipts for exact release/timing.
 
 Final service activation and protected-site HTTP smoke receipts are hosted-final-deployment.json and hosted-final-site.json. They distinguish final release activation from preceding live batch mutation acceptance. Access password is managed only at Railway web → Variables → SITE_ACCESS_PASSWORD.
+
+The2026-10-18 outage follow-up verified that the actual web service-instance health fields were unset despite the manifest. They are now explicitly /healthz with60second timeout, read back through the supported service API. This gates future rollout promotion; it is not continuous uptime monitoring. Environment-config dot-path editing did not apply these fields. See [Railway health checks](https://docs.railway.com/deployments/healthchecks).
+
+The recovery worker completed a real five-input batch in569325ms with12tools/4rounds and explicitMirodeferred status. Subsequent batches were tuned to2inputs under the same600second deadline for edit headroom; the tuned release has the same image digest and a verified active2input lease. Successful finish deletes only the handled original cache rows;15completed inputs had0payloads remaining at final verification. Optional Miro navigation outages are deferred with no source facts or full-sync claim. See hosted-worker-recovery.json and hosted-recovery.json.

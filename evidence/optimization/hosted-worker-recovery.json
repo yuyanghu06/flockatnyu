@@ -1,0 +1,404 @@
+{
+  "deployment": "6ea0d49b-0edf-4328-9654-0dd828fa8fc4",
+  "startedAt": "2026-10-18T22:10:27.585Z",
+  "observations": [
+    {
+      "timestamp": "2026-10-18T22:10:12.014804110Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:17.567033450Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:22.741648668Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:27.707033532Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:33.386532843Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:38.161563407Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:43.767320179Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:48.672335610Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:54.137080417Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:10:59.653624245Z",
+      "status": "cooldown"
+    },
+    {
+      "timestamp": "2026-10-18T22:11:29.769482802Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "prepare_start",
+      "round": 0,
+      "calls": 0,
+      "elapsedMs": 17447
+    },
+    {
+      "timestamp": "2026-10-18T22:11:59.880734126Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "prepare_done",
+      "round": 0,
+      "calls": 0,
+      "elapsedMs": 51028
+    },
+    {
+      "timestamp": "2026-10-18T22:12:20.200338264Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "model_start",
+      "round": 1,
+      "calls": 0,
+      "elapsedMs": 67126
+    },
+    {
+      "timestamp": "2026-10-18T22:12:20.200343074Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "model_done",
+      "round": 1,
+      "calls": 1,
+      "elapsedMs": 68774
+    },
+    {
+      "timestamp": "2026-10-18T22:12:20.200348813Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "list_discord_channels",
+      "round": 1,
+      "calls": 1,
+      "elapsedMs": 68774
+    },
+    {
+      "timestamp": "2026-10-18T22:13:20.777313437Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "list_discord_channels",
+      "round": 1,
+      "calls": 1,
+      "elapsedMs": 136094
+    },
+    {
+      "timestamp": "2026-10-18T22:13:40.638364456Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "model_start",
+      "round": 2,
+      "calls": 1,
+      "elapsedMs": 152520
+    },
+    {
+      "timestamp": "2026-10-18T22:13:40.638369676Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "model_done",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 156101
+    },
+    {
+      "timestamp": "2026-10-18T22:13:40.638373546Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 156101
+    },
+    {
+      "timestamp": "2026-10-18T22:14:20.924126345Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 195264
+    },
+    {
+      "timestamp": "2026-10-18T22:14:20.924137025Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 195264
+    },
+    {
+      "timestamp": "2026-10-18T22:15:01.116312565Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 233355
+    },
+    {
+      "timestamp": "2026-10-18T22:15:01.116315155Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 233355
+    },
+    {
+      "timestamp": "2026-10-18T22:15:41.161495968Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 271351
+    },
+    {
+      "timestamp": "2026-10-18T22:15:41.161498738Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 271351
+    },
+    {
+      "timestamp": "2026-10-18T22:16:21.361582837Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 309263
+    },
+    {
+      "timestamp": "2026-10-18T22:16:21.361588167Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 309263
+    },
+    {
+      "timestamp": "2026-10-18T22:17:01.657499749Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_discord_messages",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 347296
+    },
+    {
+      "timestamp": "2026-10-18T22:17:01.657504679Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "list_calendar_events",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 347296
+    },
+    {
+      "timestamp": "2026-10-18T22:17:31.901768564Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "list_calendar_events",
+      "round": 2,
+      "calls": 7,
+      "elapsedMs": 380286
+    },
+    {
+      "timestamp": "2026-10-18T22:17:40.477200692Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "model_start",
+      "round": 3,
+      "calls": 7,
+      "elapsedMs": 396145
+    },
+    {
+      "timestamp": "2026-10-18T22:17:44.081070768Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "model_done",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 399789
+    },
+    {
+      "timestamp": "2026-10-18T22:17:44.081077278Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 399789
+    },
+    {
+      "timestamp": "2026-10-18T22:18:24.058515409Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 433390
+    },
+    {
+      "timestamp": "2026-10-18T22:18:24.058519489Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 433390
+    },
+    {
+      "timestamp": "2026-10-18T22:18:54.298152100Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 466219
+    },
+    {
+      "timestamp": "2026-10-18T22:18:54.298162399Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 466219
+    },
+    {
+      "timestamp": "2026-10-18T22:19:34.117929015Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 501131
+    },
+    {
+      "timestamp": "2026-10-18T22:19:34.117933594Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 501131
+    },
+    {
+      "timestamp": "2026-10-18T22:20:04.205480700Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "tool_done",
+      "tool": "read_map_events",
+      "round": 3,
+      "calls": 11,
+      "elapsedMs": 535001
+    },
+    {
+      "timestamp": "2026-10-18T22:20:24.122178904Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "model_start",
+      "round": 4,
+      "calls": 11,
+      "elapsedMs": 551014
+    },
+    {
+      "timestamp": "2026-10-18T22:20:24.122181444Z",
+      "kind": "agent_progress",
+      "status": "ready",
+      "phase": "model_done",
+      "round": 4,
+      "calls": 12,
+      "elapsedMs": 553064
+    },
+    {
+      "timestamp": "2026-10-18T22:20:24.122184414Z",
+      "kind": "agent_progress",
+      "status": "started",
+      "phase": "tool_start",
+      "tool": "finish_batch",
+      "round": 4,
+      "calls": 12,
+      "elapsedMs": 553064
+    },
+    {
+      "timestamp": "2026-10-18T22:20:33.538352934Z",
+      "kind": "agent_progress",
+      "status": "completed",
+      "phase": "tool_done",
+      "tool": "finish_batch",
+      "round": 4,
+      "calls": 12,
+      "elapsedMs": 569325
+    },
+    {
+      "timestamp": "2026-10-18T22:20:33.538359044Z",
+      "status": "completed",
+      "calls": 12,
+      "handled": 5,
+      "remaining": 0,
+      "miroReconciliation": {
+        "status": "deferred",
+        "boardCount": 1,
+        "syncComplete": false
+      }
+    }
+  ],
+  "completed": true,
+  "deploymentStatus": "SUCCESS",
+  "checkedAt": "2026-10-18T22:20:51.652Z",
+  "completedAt": "2026-10-18T22:20:33.538359044Z",
+  "result": {
+    "timestamp": "2026-10-18T22:20:33.538359044Z",
+    "status": "completed",
+    "calls": 12,
+    "handled": 5,
+    "remaining": 0,
+    "miroReconciliation": {
+      "status": "deferred",
+      "boardCount": 1,
+      "syncComplete": false
+    }
+  }
+}

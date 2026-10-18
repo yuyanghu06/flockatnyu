@@ -1,0 +1,10 @@
+# Final five recovery model cases passed
+
+- Local timestamp / acting role / milestone: 2026-10-18T18:09:57.035565-04:00 / independent model tester integrated by orchestrator / live recovery.
+- Requested scope: actual configured-model proof for optional Miro navigation outage plus four existing strict planner synchronization cases.
+- Starting repository state: final parser-corrected sources frozen, evaluator141/141accepted; earlier model diagnostic stopped before parser correction.
+- Work performed / changed files: NEWtests/planner-recovery-model.mjs reuses historical strict harness in memory without modifying originals; evidence/optimization/planner-recovery-model.json records final and explicit prior diagnostic separately.
+- Decisions: synthetic sources/inert writes only, actual production Miro parser/adapter, gpt-6-luna only,>=1500ms spacing, actual default16rounds/32tools/180seconds. Five fixed cases and strict mutation assertions unchanged.
+- Checks and evidence: final5/5passed,49requests,32sourcehashesidenticalbeforeafter, strictWriteChain/strictAcceptance true, zero failed tools. Outage completes one input and one canonical Bobst Calendar projection with0Calendarwrites/0Mirofacts; exactly one upstream synthetic failure; context/validation/outwardcompletion reportMirodeferred. Four other cases retain strict canonical event identity/timestamp, Discord create/edit, exact Calendar reread and RSVP identity links. Prior diagnostic32recorded calls retained; conservative48prior+49final=97<=100cap.
+- Resulting state / acceptance: actual-model gate accepted. Miro/RSVP case used all16allowed rounds and three valid merged map writes; finite evidence is not a reliability/throughput estimate.
+- Remaining work and handoff: deploy reviewed sanitized worker, confirm real completion/cache deletion, retain external Miro navigation failure as deferred until source recovers. Root final1038/1038fullregressions and APIbuild also passed; secret scan1968textfiles/12actualprivatepatterns found0matches.

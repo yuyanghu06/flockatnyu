@@ -1,3 +1,23 @@
+## Current live operations
+
+- [x] Recover website/password gate, configure future deployment /healthz60 health check.
+- [x] Recover Discord catalogue/collector continuation, complete real worker batch and verify cache cleanup.
+- [x] Final1038regressions/97collector+141Miroreview/5actualmodelcases; logical recovery commits and final publication verification.
+- [ ] External follow-up: official Miro navigation tool_result_error; explicitly deferred, retries next eligible batch. No full Miro synchronization claim.
+
+## Live operations: cleanup and cache status
+
+- [x] Delete six exact-source demo events and three explicitly requested manual presence/plans; verify four real Calendar events preserved and zero orphan relationships.
+- [x] Verify agent ran:10completed input receipts and0remaining corresponding cache payloads.
+- [x] Identify worker catalogue blackout: same-generation metadata refresh stopped at archive175/191, leaving271nodes disabled.
+- [x] Finish guarded same-generation metadata refresh;227channels restored with leadership/manual-disabled exclusions preserved.
+- [x] Verify same-image real batch5/5complete,15totaldone/0completedpayloadsleft; final2inputtuning2aaf552eSUCCESS/activelease2.
+- [x] Diagnose latest web deploy: successful build, startup rejected configured14character password under old minimum24.
+- [x] Independently test/deploy minimum12 password validation; existing password protected hosted login verified on recoveryda7c5ab1.
+- [x] Independently review97/97anddeploycollectorcontinuation3aa660SUCCESS.
+- [x] Diagnose officialMiro navigation tool_result_error; implement/test explicitoptionaldeferral with malformed/auth negatives (1038full/141review/5modelPASS).
+- [x] Verify final worker image completes5/5withMirodeferred and removes completed payloads; tune subsequent batches2 for deadline headroom.
+
 ## Password UI refinement
 
 - [x] Replace visible login elements with a massive centered blinking cursor on white.

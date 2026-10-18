@@ -156,3 +156,7 @@ existing people, and reset when leaving focus. Polling/cancellation/blur/Escape 
 disposal clean capture; expired/removed people are never retained for a gesture.
 Overview portraits and scene/camera behavior are unchanged. No event, location,
 activity, profile or Supabase write occurs when a portrait is moved.
+
+### Hosted fixture cleanup (2026-10-18)
+
+The six remaining demo activity/event records and three manually entered personal plans were explicitly removed from hosted normalized events. Exact documented source UUID/URL pairs scoped cleanup; fixed catalogues and four genuine Calendar events remained unchanged. No example.invalid event rows or presence/personal_plan rows remained at verification; related links/participants were cascade-cleaned. Historical seed instructions above are retained as history; cleanup receipt is evidence/optimization/demo-cleanup.json.
