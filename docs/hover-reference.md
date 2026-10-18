@@ -1,4 +1,4 @@
-# Landmark surface glow and lift
+# Landmark highlight behavior
 
 ## Authoritative source inspected
 
@@ -27,102 +27,102 @@ Files actually read:
 - [src/components/map/manhattan/neighborhoods/landmarks.ts](https://github.com/yuyanghu06/yuyang-site/blob/964408fb988786be80005dc8e59e81bc19f657d3/src/components/map/manhattan/neighborhoods/landmarks.ts):
   confirms the source merges complete landmark geometry before interaction.
 
-## Reused behavior and parameters
+## Current behavior: steady highlight and both selected indicators
 
-`src/landmark-effects.js` now uses a geometry-matched surface overlay, not a
-ground halo or billboard. Material settings match the source: white initial
-color, additive blending, DoubleSide, no depth writes, polygon
-offset factor/units -1, and render order 4. The default tone-mapping behavior
-is retained. Original landmark materials and vertex colors are never modified.
+The earlier hover-outline proposal was cancelled. A later explicit request adds
+both a persistent selected-building silhouette and a ground footprint ring. Hover
+retains the accepted white surface highlight; selection keeps that highlight when
+the pointer leaves. There is no pulse, hue cycle, floating pin or building lift.
+Original materials, geometry, root positions, camera behavior and avatars stay
+unchanged.
 
-Using elapsed seconds `t` and original root position `baseY`:
+`landmark-effects.js` preserves its smoothstep 350ms fill fade-in and 280ms fade-out,
+with reversals from the current strength. A two-material pool and at most two
+crossfading surface views avoid shader churn. The selected ID is independent of
+that fill's active ID: selecting the currently hovered building adds the selected
+indicators without restarting the fill; deselecting while still hovered removes
+the indicators while preserving the fill.
 
-```text
-ease = 1 - exp(-min(delta, 0.05) * 9)
-lift = hovered ? 4.5 : 0
-wave = 0.5 + sin(t * 3.4 + baseY * 0.17) * 0.5
-hue = 0.56 + sin(t * 0.85 + baseY * 0.11) * 0.095
-color = HSL(hue, 0.72, 0.72)
-opacityTarget = hovered ? style.baseOpacity + wave * style.waveAmplitude : 0
-```
+Both selected indicators enter together over a 330ms smoothstep envelope. The
+outline fades in, and the ground band fades while spreading from 55% to 100% of
+its final outward distance from the fixed footprint edge. Ring-owned morph targets
+perform this expansion without scaling the footprint into walls or rebuilding
+geometry each frame. No selected-ID change means no replay during pointer events,
+camera motion or polling. Clearing/switching immediately retires the old ring;
+reduced motion applies and latches the final state immediately, so changing back
+to normal motion does not replay or retreat an entrance. On the first frame after an outward focused-camera return begins, main.js clears
+selection through the normal selection path, immediately removing both indicators
+while preserving any current ordinary hover fill. The existing camera return
+continues without restarting. Ordinary inward zoom and a newly focused different
+building do not trigger this cleanup.
 
-Root Y and hovered opacity interpolate with that ease. The user's later request
-overrides the reference's idle glow and selected suppression: new overlays start
-hidden at zero opacity, and leaving hover hides them immediately. A hovered
-selected landmark now both glows and lifts (the latest request removes the
-reference's selected exception). A different hovered landmark can glow
-and lift while another is selected. Original building materials stay unchanged.
+## Selected silhouette
 
-## Adaptation boundaries
+`landmark-outline.js` renders borrowed static/instanced mesh views of the complete
+selected root into one lazily allocated union mask with depth. It shares source
+geometry and instance matrices, follows world transforms/visibility and excludes
+map decorations. The complete union interior is subtracted, so shared mesh seams
+and individual facade edges do not become lines.
 
-The M12 memory pass supersedes the eager copied/merged overlays. Registration
-stores only each complete root and baseline position. On hover, **one active
-decoration group** creates lightweight mesh views sharing the original geometry
-objects directly. No position, index, normal, UV or color buffers are copied.
-Instanced views also share the source instanceMatrix rather than duplicating it.
-Leaving or switching hover removes those views immediately, retaining no idle
-overlay geometry. Smooth return of the previous building continues independently.
+The mask uses up to DPR 2, a 4096px maximum dimension, up to four MSAA samples and
+resolved depth. Linear resolved coverage produces a roughly 2 CSS-pixel white
+perimeter with a subtle additional 0.75-pixel dark understroke. A transparent quad
+is cropped to the projected complete-root bounds. Its fragment depth comes from
+nearby selected-mask depth and tests against the original beauty framebuffer's
+retained depth, hiding occluded lines. There is no beauty render target,
+EffectComposer, palette/tone-mapping change, full-scene depth rerender or CPU
+readback. This integration uses the existing standard WebGL perspective depth.
 
-This trades the previous one merged draw for one draw per visible source mesh
-of the hovered landmark (eight for Paulson). There are zero overlay draws when
-idle. No first-hover geometry cloning, deindexing, merging or bounds rebuilding
-is needed; switching allocates only the lightweight scene objects. Views disable
-frustum culling to avoid first-hover instance bounds computation; only the active
-hovered building is affected. Unlike the reference, instanced details
-are included so the entire current landmark receives the effect. No outline,
-label, postprocessing, camera transfer or camera lock is added.
+The render hook is immediately after the unchanged beauty render and before avatar
+projection updates. Target switching restores target-specific viewport/scissor;
+clear color/alpha, automatic clear, XR and render-info reset settings are restored.
+No selected ID means no extra render calls. A single target is retained for reuse,
+resized within the cap and disposed with the controller. High-DPI MSAA allocation
+and actual GPU timing remain browser measurements rather than inferred guarantees.
 
-Decoration groups remain separate identity scene roots. Each surface view is
-transformed with `inverse(scene.matrixWorld) * sourceMesh.matrixWorld`. This follows root
-rotation, translation and nonuniform scale while keeping decoration geometry
-out of landmark selection bounds and architecture counts. Each decoration
-group and child has `userData.mapDecoration=true` and a no-op raycast method.
+## Ground footprint ring
 
-The source's shadow invalidation is not in this module because this API owns
-neither renderer nor shadow policy. If the caller enables cached shadows later,
-it must invalidate them during lift. Material blending remains subject to the
-campus scene's lighting, atmosphere, renderer and camera, so parameter reuse
-does not claim identical final pixels to the original website.
+`landmark-footprint.js` creates two ordinary depth-tested, non-raycastable meshes
+outside the building base. The white band is 1.15 world meters wide, with an extra
+0.20m charcoal edge. It sits at map Y 0.80m, above the mapped paving maximum of
+0.76m, with tiny separate band elevations/polygon offsets against z-fighting.
+Both materials remain transparent, unlit, single-pass and in dark-then-white draw
+order throughout entrance. Normal scene depth hides the marker behind buildings
+or higher ground; it does not draw through walls.
 
-Reduced motion is an intentional accessibility extension: disable lift and
-time-varying pulse/hue; use hue 0.56, wave 0.5 and immediate state updates.
-Tiny residual lift (<0.001 m) snaps to its endpoint; nonhovered opacity is zero
-and its decoration is hidden immediately. The source leaves these values
-asymptotic. The provisional color argument is no longer used; HSL follows source.
+Silver, Kimmel, Global Center and Leslie use their existing authoritative replacement
+footprints. Paulson and the arch receive their existing placement footprints through
+optional registration metadata explicitly marked `footprintSpace: 'world'`, since
+those map-coordinate polygons must not receive the arch root's placement twice.
+Replacement-model polygons use root-local coordinates.
+Bobst and Courant use a conservative convex hull of the actual lowest geometry
+band, retaining rotation instead of using an axis-aligned rectangle. That fallback
+can bridge concave recesses and is not a surveyed building boundary.
 
-Central `landmarkGlowStyles` preserves Bobst's base opacity 0.18 and wave amplitude
-0.12 (range 0.18–0.30). Other landmarks use 0.14 and 0.08 (range 0.14–0.22),
-reducing average opacity from 0.24 to 0.18, or 25%, as requested. Hue and pulse
-timing are unchanged. This is an explicit brightness adjustment, not a claim
-that duplicate effects caused the previous appearance. Every source surface is
-preserved; no facet deduplication, simplification or architectural deletion occurs.
+Stern uses only two small baked source contours from `building-runtime.json`,
+indices 11005 and 11632, rather than the global lowest-Y slice that omitted its
+higher-base front wing. Clipper union preserves their concavity and two disjoint
+components. Offset-band differences retain each component's correctly owned holes;
+entrance morphs measure outward distance to actual contour segments rather than
+joining the two parts. The complete source area is 3559.5262475m², with map maxima
+X119.410/Z247.555. Gould Plaza remains excluded from Stern's ground footprint,
+while remaining in its selected highlight and silhouette. The full source dataset
+is not imported for this small contour constant.
 
-## Integration and verification
+Ring geometry is independently owned, removed on deselection/switching and follows
+root transforms without affecting source bounds, picking or geometry ownership.
 
-The API remains `createLandmarkEffects({scene,reducedMotion})` returning
-`register(id,root)`, `setActive(hovered,selected)`, `update(deltaSeconds,timeSeconds)`
-and `dispose()`. Register after complete building assembly and placement. The
-caller must stop its old material-emission repaint routine. A boolean or callback
-may supply reduced motion. Disposal restores baseline positions and releases
-only the one effect-owned material, without touching architecture resources.
-In particular, neither source geometry nor shared instance buffers are disposed
-through a temporary view; doing so could evict buffers still used by the building.
-Disposal is idempotent. Per-frame transform matrices are reused.
+## Controller contract and verification
 
-Syntax and targeted Node/Three geometry/lifecycle checks accompany this pass;
-independent integration checks are recorded by the tester. No browser or server
-was launched by this coder. Browser comparison with the source website has not
-been performed.
+`createLandmarkEffects({scene,reducedMotion})` provides `register(id,root,{footprint,footprintSpace})`,
+`setActive(hovered,selected)`, `update(delta)`, `renderOutline(renderer,camera)`,
+`snapshot()` and `dispose()`. Footprint metadata is optional. Register only after
+complete building assembly. The snapshot exposes selected ID, entrance strength,
+ring footprint/source/approximation and outline target/sample diagnostics.
 
-Baseline measurement supplied by the independent tester: eleven eager overlays
-held **12,224,628 bytes**, representing 339,573 copied triangles, within
-69,737,778 total distinct geometry-buffer bytes. The replacement adds zero
-distinct geometry/instance buffers and allocates no overlay objects at idle.
-Source buffers are not reduced; memory savings come only from removing copies.
-
-A local Node check on the actual eight-mesh Paulson model (3,775,680 source
-attribute/index bytes) measured registration at approximately 0.032 ms and first
-hover view creation at 1.384 ms in one run. It confirmed shared geometry identity,
-selected hover lift of 4.5 m, zero idle decorations and zero source disposal events
-through leave and repeated disposal. These are construction measurements, not FPS
-or GPU benchmarks; full-scene independent measurements remain the acceptance basis.
+Disposal releases only effect-owned materials, ring/morph/quad geometry and mask
+resources. Original geometry and shared instance buffers are never disposed through
+views. Syntax, production build and targeted ownership/selection/entrance checks
+pass locally; actual pixel, occlusion, DPR, camera and ring-fit acceptance belongs
+to the independent browser evidence. Earlier cancelled outline and steady-fill
+passes remain historical.

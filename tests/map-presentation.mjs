@@ -31,34 +31,31 @@ check('Real OrbitControls update clamps both tilt bounds and maximum zoom distan
 const scene=new T.Scene();let reduced=false;
 const effects=createLandmarkEffects({scene,reducedMotion:()=>reduced});
 const roots=Array.from({length:11},(_,i)=>{const root=new T.Group();root.position.set(i*10,3+i,4);root.rotation.y=.3;root.scale.set(1.2,1.5,.8);const nested=new T.Group();nested.position.set(2,1,-3);nested.rotation.z=.15;const m=new T.Mesh(new T.BoxGeometry(2,4,2),new T.MeshStandardMaterial({color:'#93784f',emissive:'#123456',emissiveIntensity:.3}));nested.add(m);root.add(nested);scene.add(root);effects.register(String(i),root);return {root,m,base:root.position.clone(),color:m.material.color.clone(),emissive:m.material.emissive.clone(),positions:Array.from(m.geometry.attributes.position.array)};});
-const glows=()=>scene.children.filter(o=>o.userData.mapDecoration);
+const glows=()=>scene.children.filter(o=>o.userData.mapDecoration&&o.name.startsWith('Landmark glow '));
 function aligned(i){scene.updateMatrixWorld(true);const r=roots[i],g=glows()[0].children[0];const positions=r.m.geometry.attributes.position,cloned=g.geometry.attributes.position;assert.equal(cloned,positions);for(let j=0;j<positions.count;j++){const a=new T.Vector3().fromBufferAttribute(positions,j).applyMatrix4(r.m.matrixWorld),b=new T.Vector3().fromBufferAttribute(cloned,j).applyMatrix4(g.matrixWorld);assert(a.distanceTo(b)<1e-5);}}
 check('Lazy hovered-only overlay shares source geometry without registration copies',()=>{
- assert.equal(glows().length,0);for(let i=0;i<11;i++){effects.setActive(String(i),null);assert.equal(glows().length,1);const g=glows()[0];assert.equal(g.children.length,1);const surface=g.children[0],m=surface.material;assert.equal(surface.geometry,roots[i].m.geometry);assert(m.isMeshBasicMaterial);assert.equal(m.opacity,0);assert.equal(m.blending,T.AdditiveBlending);assert.equal(m.side,T.DoubleSide);assert.equal(m.depthWrite,false);assert(m.polygonOffset);assert.equal(m.polygonOffsetFactor,-1);assert.equal(m.polygonOffsetUnits,-1);assert.equal(surface.renderOrder,4);aligned(i);g.traverse(o=>{assert(o.userData.mapDecoration);const hits=[];o.raycast(new T.Raycaster(),hits);assert.equal(hits.length,0);});}effects.setActive(null,null);assert.equal(glows().length,0);
+ assert.equal(glows().length,0);for(let i=0;i<11;i++){effects.setActive(String(i),null);assert.equal(glows().length,1);const g=glows()[0];assert.equal(g.children.length,1);const surface=g.children[0],m=surface.material;assert.equal(surface.geometry,roots[i].m.geometry);assert(m.isMeshBasicMaterial);assert.equal(m.opacity,0);assert.equal(m.color.getHexString(),'ffffff');assert.equal(m.toneMapped,false);assert.equal(m.forceSinglePass,true);assert.equal(m.blending,T.AdditiveBlending);assert.equal(m.side,T.DoubleSide);assert.equal(m.depthWrite,false);assert(m.polygonOffset);assert.equal(m.polygonOffsetFactor,-1);assert.equal(m.polygonOffsetUnits,-1);assert.equal(surface.renderOrder,4);aligned(i);g.traverse(o=>{assert(o.userData.mapDecoration);const hits=[];o.raycast(new T.Raycaster(),hits);assert.equal(hits.length,0);});effects.setActive(null,null);for(let step=0;step<6;step++)effects.update(.05,0);assert.equal(glows().length,0);}effects.setActive(null,null);assert.equal(glows().length,0);
 });
-check('Whole-root hover lift follows reference 4.5m/rate9/delta .05 cap and overlay tracks it',()=>{
- effects.setActive('0',null);effects.update(999,0);near(roots[0].root.position.y-3,4.5*(1-Math.exp(-.45)));
- const y=roots[0].root.position.y;effects.update(NaN);near(roots[0].root.position.y,y);effects.update(-1);near(roots[0].root.position.y,y);
- for(let i=0;i<100;i++)effects.update(.05,0);near(roots[0].root.position.y,7.5);aligned(0);
+check('White hover fades in without moving any complete building root',()=>{
+ effects.setActive('0',null);effects.update(999,0);for(const r of roots)assert(r.root.position.equals(r.base));
+ for(let i=0;i<8;i++)effects.update(.05,0);const m=glows()[0].children[0].material;assert.equal(m.color.getHexString(),'ffffff');near(m.opacity,.18);aligned(0);
 });
-check('Hovered selected also floats with configured hue/pulse',()=>{
- effects.setActive('0','0');const t=2.5;for(let i=0;i<100;i++)effects.update(.05,t);near(roots[0].root.position.y,7.5);
- const m=glows()[0].children[0].material,c=new T.Color().setHSL(.56+Math.sin(t*.85+3*.11)*.095,.72,.72);assert(m.color.equals(c));near(m.opacity,.14+(.5+Math.sin(t*3.4+3*.17)*.5)*.08);assert.equal(glows().filter(g=>g.visible).length,1);
+check('Selection retains the same white overlay through pointer leave with no pulse or reset',()=>{
+ const overlay=glows()[0],material=overlay.children[0].material;effects.setActive('0','0');assert.equal(effects.snapshot().selectedId,'0');assert.equal(effects.snapshot().ringMeshes,2);assert.equal(effects.snapshot().outline.proxyCount,1);effects.setActive('0',null);assert.equal(effects.snapshot().selectedId,null);assert.equal(effects.snapshot().ringMeshes,0);assert.equal(effects.snapshot().outline.proxyCount,0);assert.equal(glows()[0],overlay);effects.setActive('0','0');effects.setActive(null,'0');assert.equal(glows()[0],overlay);near(material.opacity,.18);
+ for(let i=0;i<100;i++)effects.update(.05,100);assert.equal(glows()[0],overlay);near(material.opacity,.18);assert.equal(material.color.getHexString(),'ffffff');for(const r of roots)assert(r.root.position.equals(r.base));
 });
-check('Leave immediately removes glow; selected without hover remains dark after updates',()=>{
- effects.setActive(null,'0');assert(glows().every(g=>!g.visible&&g.children[0].material.opacity===0));
- for(let i=0;i<100;i++)effects.update(.05,2.5);assert(glows().every(g=>!g.visible&&g.children[0].material.opacity===0));
+check('Selected building takes priority over another hover, then clear crossfades to that hover',()=>{
+ effects.setActive('1','0');for(let i=0;i<8;i++)effects.update(.05,2.5);assert.equal(glows().length,1);assert.equal(glows()[0].name,'Landmark glow 0');
+ effects.setActive('1',null);assert.equal(glows().length,2);assert.equal(glows().find(g=>g.name==='Landmark glow 1').children[0].material.opacity,0);for(let i=0;i<8;i++)effects.update(.05,2.5);assert.equal(glows().length,1);assert.equal(glows()[0].name,'Landmark glow 1');aligned(1);
 });
-check('Switching hover while another landmark is selected glows and lifts only current hover',()=>{
- effects.setActive('1','0');for(let i=0;i<100;i++)effects.update(.05,2.5);assert(glows()[0].visible);assert.equal(glows().filter(g=>g.visible).length,1);near(roots[1].root.position.y,roots[1].base.y+4.5);near(roots[0].root.position.y,roots[0].base.y);
- effects.setActive('2','0');assert.equal(glows().length,1);assert.equal(glows()[0].children[0].material.opacity,0);for(let i=0;i<100;i++)effects.update(.05,2.5);assert(glows()[0].visible);assert.equal(glows().filter(g=>g.visible).length,1);aligned(2);
- effects.setActive(null,null);assert(glows().every(g=>!g.visible&&g.children[0].material.opacity===0));for(let i=0;i<100;i++)effects.update(.05,2.5);assert(glows().every(g=>!g.visible&&g.children[0].material.opacity===0));
+check('Leave keeps outgoing view during280ms fade and fully idle clears views',()=>{
+ const overlay=glows()[0],opacity=overlay.children[0].material.opacity;effects.setActive(null,null);assert.equal(glows()[0],overlay);near(overlay.children[0].material.opacity,opacity);for(let i=0;i<6;i++)effects.update(.05,2.5);assert.equal(glows().length,0);
 });
-check('Original colors/emission/geometry stay untouched; deactivation restores baseline',()=>{
+check('Original root transforms, colors/emission and geometry stay untouched',()=>{
  for(const r of roots){assert(r.root.position.equals(r.base));assert(r.m.material.color.equals(r.color));assert(r.m.material.emissive.equals(r.emissive));assert.equal(r.m.material.emissiveIntensity,.3);assert.deepEqual(Array.from(r.m.geometry.attributes.position.array),r.positions);}
 });
-check('Reduced motion has no lift or pulse; dispose restores and removes all overlays',()=>{
- reduced=true;effects.setActive('0',null);effects.update(.01,1);const opacity=glows()[0].children[0].material.opacity;effects.update(.1,100);assert.equal(glows()[0].children[0].material.opacity,opacity);for(const r of roots)assert(r.root.position.equals(r.base));
+check('Reduced motion applies constant white immediately without lift; dispose removes views',()=>{
+ reduced=true;effects.setActive('0',null);effects.update(0,1);near(glows()[0].children[0].material.opacity,.18);effects.update(.1,100);near(glows()[0].children[0].material.opacity,.18);for(const r of roots)assert(r.root.position.equals(r.base));
  effects.dispose();assert.equal(glows().length,0);for(const r of roots){assert(r.m.material.emissive.equals(r.emissive));assert.equal(r.m.material.emissiveIntensity,.3);}effects.dispose();
 });
 check('Analytic sky and geometry share exact world-ray GLSL/colorspace; one nonpickable sky triangle',()=>{
@@ -92,7 +89,7 @@ check('Static map-only UI, neutral context and complete-root effect integration'
  assert(html.includes('<body class="map-only">'));assert(css.includes('.map-only #app > :not(#map){display:none!important}'));assert(html.includes('<div id="hover"'));
  assert(main.includes('color: palette.context, vertexColors: false'));assert(/^#[a-f0-9]{6}$/i.test(palette.context));
  assert(main.includes('if (job.tile) {\n      model.traverse(mesh => { if (mesh.isMesh) mesh.material = cityMaterial; });'));assert.equal((main.match(/mesh.material = cityMaterial/g)||[]).length,2);
- assert(main.includes('landmarkEffects.register(id,model)'));assert(main.includes('landmarkEffects.setActive(state.hovered,state.selected)'));assert(main.includes('landmarkEffects.update('));
+ assert(/landmarkEffects\.register\(id,\s*model(?:,|\))/.test(main));assert(main.includes('landmarkEffects.setActive(state.hovered,state.selected)'));assert(main.includes('landmarkEffects.update('));
  for(const key of ['maxDistance','minPolarAngle','maxPolarAngle'])assert(main.includes(`controls.${key} = cameraLimits.${key}`));
 });
 check('Both restored Union Square context assets and Lipton use neutral context, without new selectable IDs',()=>{
@@ -100,4 +97,4 @@ check('Both restored Union Square context assets and Lipton use neutral context,
  assert(main.includes("['lipton-hall','25-union-square-west','235-park-avenue-south'].includes(job.name)"));const block=main.slice(main.indexOf("if (['lipton-hall'"),main.indexOf("if (['lipton-hall'")+450);assert(block.includes('mesh.material = cityMaterial'));
 });
 results.camera={minPolar:L.minPolarAngle,maxPolar:L.maxPolarAngle,maxDistance:L.maxDistance};
-fs.mkdirSync('evidence/m12-memory',{recursive:true});fs.writeFileSync('evidence/m12-memory/presentation-results.json',JSON.stringify(results,null,2)+'\n');console.log(JSON.stringify(results,null,2));
+const evidence=process.env.MAP_EVIDENCE??'evidence/m12-memory';fs.mkdirSync(evidence,{recursive:true});fs.writeFileSync(evidence+'/presentation-results.json',JSON.stringify(results,null,2)+'\n');console.log(JSON.stringify(results,null,2));

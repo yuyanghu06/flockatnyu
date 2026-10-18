@@ -270,7 +270,8 @@ function registerLandmark(id, model) {
   freezeStaticSubtree(model);
   registerPickMeshes(model);
   roots.set(id, model);
-  landmarkEffects.register(id,model);
+  landmarkEffects.register(id,model,{ footprint: id === 'nyu-john-a-paulson-center' ? paulson.footprintMap
+    : id === 'washington-square-arch' ? placements.washingtonSquareArch.data.footprint : undefined, footprintSpace:'world' });
   mapAtmosphere.apply(model);
   [...$('building').options].find(option => option.value === id).disabled = false;
 }
@@ -382,10 +383,15 @@ function animate() {
   lastFrame = now;
   controls.update();
   keyboardPan.update(elapsedSeconds);
+  // Deselect on the first return frame; leaveFocus() preserves an already
+  // running return, so indicator cleanup does not restart camera movement.
+  if (cameraNavigation.returning && cameraNavigation.focusedId
+      && state.selected === cameraNavigation.focusedId) select(null);
   cameraNavigation.update(elapsedSeconds);
   constrainPan(camera.position, controls.target, cameraLimits);
   mapInteractions.update(delta);
   renderer.render(scene, camera);
+  landmarkEffects.renderOutline(renderer, camera);
   const sample = frameSamples++ % frameIntervals.length;
   frameIntervals[sample] = elapsedSeconds * 1000;
   frameCpu[sample] = performance.now() - now;
@@ -409,6 +415,7 @@ if (!state.failed.length && campusStartup.snapshot().status !== 'failed') {
   scene.updateMatrixWorld(true);
   await renderer.compileAsync(scene, camera);
   renderer.render(scene, camera);
+  landmarkEffects.renderOutline(renderer, camera);
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   campusStartup.sceneReady();
 }
