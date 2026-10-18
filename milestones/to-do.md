@@ -1,3 +1,9 @@
+## Building activity header live
+
+Decorative date removed;16px title/subtitle gap and light-gray Scheduled events deployed in Railway web e4abfba6. Event dates/times retained.28 focused tests, production build, Chrome DOM/visual check and hosted health/auth/byte-exact assets pass. Source41ecaaa pushed; receipt evidence/building-card-header/hosted-release.json. Refresh page for latest assets. Concurrent chat/backend changes remain separate.
+
+[Pass record](history/2026-10-18_19-06-03-878103-orchestrator-building-card-header-live.md).
+
 ## Building activity header simplified
 
 Removed the decorative current date; Scheduled events now sits16px below the title in light gray. Event time metadata retained.28 focused tests, isolated frontend build and Chrome synthetic DOM/visual checks pass. Web-only sanitized deployment underway; concurrent backend/chat edits excluded.

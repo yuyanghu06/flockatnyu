@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-18T23:05:47.468Z",
+  "origin": "https://web-production-e4edc.up.railway.app",
+  "deployment": "e4abfba6-a9ce-41c7-a0f1-99fd1f5adaca",
+  "status": "SUCCESS",
+  "sourceCommit": "41ecaaa6bc4c67aba74e12bbc2308f7b92e03971",
+  "committedRuntimeOnly": true,
+  "checks": {
+    "/healthz": 200,
+    "/login": 200,
+    "/": 303,
+    "/api/status": 403,
+    "/favicon.svg": 200,
+    "validPasswordPost": 303,
+    "authenticatedRoot": 200,
+    "secureHttpOnlyStrictSession": true
+  },
+  "localChecks": {
+    "targetedTests": 28,
+    "frontendBuild": true,
+    "browser": {
+      "decorativeDateRemoved": true,
+      "titleGap": 16,
+      "subtitleColor": "#8a8a8a",
+      "eventTimeRetained": true
+    }
+  },
+  "builtAssets": [
+    {
+      "path": "/assets/map-XLRxFq3N.js",
+      "status": 200,
+      "anonymousStatus": 303,
+      "bytes": 1985,
+      "sha256": "50a9dbd5ccc22ee7dbb20b12327dd1999837961c590621ac92c1d78b9b7d4417"
+    },
+    {
+      "path": "/assets/main-DJG1Ytsd.js",
+      "status": 200,
+      "anonymousStatus": 303,
+      "bytes": 1042621,
+      "sha256": "bf01cd3e429368a98f1cdcc011bd6cd90ab4ddad0af0bfda048a7a1d2c9eb246"
+    },
+    {
+      "path": "/assets/main-ZvNo_JMX.css",
+      "status": 200,
+      "anonymousStatus": 303,
+      "bytes": 26460,
+      "sha256": "4082b415b39b7eb48172aad2e0642f6ac5ed9967b364bd95a4cc9a6056fe8707"
+    }
+  ]
+}
