@@ -1,3 +1,41 @@
+## Live: catalogue-based attendance resolution verified
+
+Website48d3baf9 is successful. Attendance lookup now exposes the authorized, date-filtered event catalogue with fuzzy ranking when normalized titles do not resolve. The model selects a clear match using actual title/date/context; incomplete lists, ambiguous references and unsupported short names require clarification. Person identities remain exact, and writes stay bound to returned events and fresh source/revision checks.
+
+Production verified both AWS Hackday → AWS Hack Day and the semantic alias Amazon Web Services hackathon → AWS Hack Day. The latter saved going and appeared on the event card; an unsupported PAWS request clarified without changing attendance. Other event facts, locations and people were preserved. Frontend and worker are unchanged.
+
+Final independent94 and parent162checks, API build/whitespace and actual Luna4/4 cases passed (24requests with final hashes). Source ced09e4/43a1efc is pushed; local/remote matched43a1efc. This documentation/evidence followup closes the task. [Hosted receipt](../evidence/chat-production-fixes/event-candidates-hosted.json) · [Final pass](history/2026-10-18_19-35-09-449610-orchestrator-event-catalogue-resolution-live-verified.md).
+
+## Catalogue resolution passed model checks; deploying
+
+Final actual Luna checks passed all four typo/alias/ambiguity/unrelated-reference cases using the real candidate/map services with synthetic source/storage (24 requests; final hashes match). Independent94 and parent162checks plus API build/whitespace pass. Formatting-only web9a9b9523 already resolved the user's full AWS Hackday wording on production. Final catalogue-based web48d3baf9 is deploying; worker and frontend bytes are unchanged. Live alias/no-write clarification checks remain.
+
+[Model/release pass](history/2026-10-18_19-33-12-005203-orchestrator-candidate-model-accepted-and-deploying.md).
+
+## Candidate resolution accepted locally; final model check running
+
+The tool now returns actual authorized/date-filtered event candidates with fuzzy ranking and context when normalized titles do not resolve. The model can select a clear typo/alias; ambiguity and incomplete catalogues require clarification. Actual-model testing exposed two wrong guesses, so full-context ambiguity and unsupported short-reference guards were added before release. Core35, independent94 and parent162checks pass, with API build/whitespace. Final actual-model four-case rerun is in progress. Only three backend modules change; frontend and worker are unchanged.
+
+[Final independent pass](history/2026-10-18_19-32-00-636430-tester-event-candidate-final-review-accepted.md).
+
+## Active: model-assisted event resolution
+
+Following the user's correction, attendance lookup will return authorized event candidates rather than hide all nonliteral matches. Formatting-only fix ced09e4 is already deployed; two coders are adding ranked catalogue fallback, complete-list write receipts and model guidance to resolve title/date/context or ask when uncertain. Exact matching, fixed roster, source access and optimistic writes remain. Final candidate-mode tests/model/live release are pending.
+
+[Revised plan](history/2026-10-18_19-24-58-869732-planner-model-assisted-event-candidates-accepted.md).
+
+## Attendance formatting fix accepted; web release ready
+
+AWS Hackday/Hack Day/hyphenated formatting now matches consistently during user-declaration binding, lookup and write revalidation. Coder68checks, independent56checks and parent80combinedchecks pass; API build/whitespace pass. Partial-token and invented-term matches remain rejected; equivalent candidates stay ambiguous. Only two attendance runtime modules differ in the sanitized package; frontend bytes are unchanged and the private-pattern scan found zero matches. Production deployment/wording verification pending.
+
+[Independent pass](history/2026-10-18_19-21-45-519118-tester-attendance-format-matching-accepted.md).
+
+## Active: attendance title formatting follow-up
+
+The new screenshot exposes a missing case: AWS Hackday does not match the existing AWS Hack Day because event lookup is literal. The earlier live acceptance used the shorter AWS query. A bounded fix will normalize formatting consistently during declaration binding, lookup and write revalidation while preserving whole-token boundaries, source/date gates and ambiguity checks. Implementation and fresh production verification are pending.
+
+[Plan](history/2026-10-18_19-20-19-108690-planner-attendance-format-matching-accepted.md).
+
 ## Live: chat fixes and uploads verified
 
 The website (9f71ac1d) and compatible update worker (578d0390) are both successful. Production chat marked Yuyang going to AWS Hack Day on Tuesday, October 20. He appears on its future event card without an early map avatar; other event facts, locations and participants were preserved. A real bug report saved once with no repeated failure rows. Image/text uploads worked through production, and a separate actual Luna check read image, PDF and text fixtures.

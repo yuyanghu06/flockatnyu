@@ -1,3 +1,15 @@
+## Model-assisted event candidates
+
+- [x] Accept user correction: expose actual authorized catalogue candidates for model resolution.
+- [x] Implement ranked candidate fallback and model/tool contracts with bounded complete-list receipts; add ambiguity/short-reference guards after actual-model findings.
+- [x] Independently verify94checks, actual model4cases, deploy web48d3baf9 and verify live alias resolution/no-write clarification; source43a1efc pushed.
+
+## Attendance title formatting follow-up
+
+- [x] Diagnose Hackday versus Hack Day literal-match failure.
+- [x] Implement consistent whole-token formatting normalization and regression checks.
+- [x] Independently verify and deploy formatting fix; full AWS Hackday wording passed on production.
+
 ## Chat release publication
 
 - [x] Verify liveweb/worker, once-only realreport, requestedYuyangAWSattendance and uploadedimage/text; localrealLunaPDFverified.

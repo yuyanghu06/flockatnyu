@@ -407,3 +407,7 @@ The rapid UI browser check waits for the hover glow transition to settle before
 reading its shadow; streaming animation is checked without hovering the button.
 
 Chat production coverage includes once-only varied bug-report attempts, chat-attendance-orchestration.test.mjs for intent/planning/receipt boundaries, chat-attendance.test.mjs for real service/source/projection behavior, and chat-attachments.test.mjs for bounded file validation/API/provider/history. Independent acceptance/browser evidence is maintained separately under evidence/chat-production-fixes.
+
+Attendance formatting regressions cover full find/write and Hono/RPC flows for compound spacing, punctuation and Unicode compatibility, plus partial-token/invented-query denials and normalized-title ambiguity.
+
+Candidate resolution acceptance also tests model-selected returned events, catalogue completeness, full-context ambiguity beyond display bounds, short-name clarification, date/source scope and stale receipt rejection. Actual-model evidence uses real production prompts/tools/core services with synthetic storage and authorization; independent API tests do not claim to prove arbitrary semantic judgment.

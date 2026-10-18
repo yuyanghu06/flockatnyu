@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-18T23:34:18.844Z",
+  "webDeployment": "48d3baf9-fc36-4003-b8ab-754fe083fddc",
+  "pass": true,
+  "querySpelling": "Amazon Web Services hackathon",
+  "storedTitleSpelling": "AWS Hack Day",
+  "actualModelFlow": true,
+  "semanticAliasResolved": true,
+  "unsupportedAcronymClarifiesWithoutWrite": true,
+  "attendanceSavedGoing": true,
+  "eventCardAttendeeVisible": true,
+  "eventFactsOtherEventsLocationsOtherPeoplePreserved": true,
+  "tools": [
+    {
+      "type": "tool",
+      "id": "tool-1",
+      "name": "find_map_attendance_targets",
+      "status": "completed"
+    },
+    {
+      "type": "tool",
+      "id": "tool-2",
+      "name": "set_map_attendance",
+      "status": "completed"
+    }
+  ],
+  "workerUnchanged": true,
+  "frontendUnchanged": true
+}
