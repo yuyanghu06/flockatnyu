@@ -52,3 +52,8 @@ in web.js/site-auth.js. UI refinements remain local until publication.
 Login declares root SVG/ICO favicons. Only exact GET/HEAD /favicon.svg and
 /favicon.ico are public branding exceptions; existing static validation rejects
 symlinks and malformed paths. All other assets/API access still requires login.
+
+Password Enter explicitly calls native form.requestSubmit with default prevented
+and IME-composition ignored. Native required validation and existing POST auth
+remain. Successful login redirects straight to / and its animated @ startup
+screen; automatic map reveal remains in the existing startup modules.

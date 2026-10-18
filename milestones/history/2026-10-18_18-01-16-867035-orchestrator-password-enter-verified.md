@@ -1,0 +1,10 @@
+# Explicit Enter submission verified
+
+- Local timestamp / acting role / milestone: 2026-10-18T18:01:16.867035-04:00 / direct implementation and verification / password publication.
+- Requested scope: ensure Enter submits and successful login goes directly into the animated @ loader.
+- Starting repository state: UI/favicon commit e6a43fc pushed; first Railway release850ab73b SUCCESS with public page/icons and authenticated login/root HTTP checks passed. Separate active recovery edits preserved.
+- Work performed / changed files: server/web.js explicitly handles Enter keydown with preventDefault and native form.requestSubmit, excluding IME composition. New tests/password-page.test.mjs executes actual inline presentation script against synthetic DOM: masked input/change/restore/clear, clock format, one native Enter submission, no ordinary/composing-key submission. Updated guides and journal.
+- Decisions: preserve native validation/origin checks/POST; no extra visible controls. Existing successful303to/ already serves index with immediate @ startup overlay and automatic map reveal, so no extra entry screen or map changes needed.
+- Checks and evidence: current11/11password+site-auth checks pass (includes concurrent password recovery). Isolated real Chrome fixture with actual page, synthetic preview password and Enter reaches Password submission verified at /, proving nativePOST→303→root. Earlier no-handler browser attempt did not navigate reliably; do not claim it passed. No actual credentials in browser fixture. Actual hosted initial release loginPOST303 and secure HttpOnly strictcookie, root200, anonymousroot303/API403 and favicon200byteidentical passed separately. Final keyboard followup deployment pending.
+- Resulting state / acceptance: Enter contract verified directly, final package/commit/deploy pending.
+- Remaining work and handoff: push keyboard followup, deploy web only, verify exact latest hosted UI/script/icons/gate and direct startup overlay; record release receipts. No secret/config/worker/source writes by this pass.

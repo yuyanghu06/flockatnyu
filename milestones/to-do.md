@@ -12,7 +12,9 @@
 - [x] Open up prompt tracking, element spacing and date-line separation.
 - [x] Darken gray cursor for stronger contrast against placeholder.
 - [x] User approved publication; fix login favicon and pass build/access/package checks.
-- [ ] Push isolated password UI changes and deploy/verify Railway web.
+- [x] Push UI/favicon commit and verify initial successful Railway release.
+- [x] Verify native Enter submission in Chrome and preserve direct @ startup.
+- [ ] Push/deploy final Enter followup and verify exact latest hosted release.
 
 ## Active: optimize, deploy live services, commit and push
 

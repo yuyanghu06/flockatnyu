@@ -386,3 +386,9 @@ planner-workload-model.mjs reuses strict configured-model scenarios with synthet
 site-auth.test.mjs includes login-favicon boundary checks: exact anonymous
 GET/HEAD routes serve correctly typed icons, while writes, aliases, other assets,
 APIs and symlinked files retain their original denial behavior.
+
+password-page.test.mjs executes the actual inline login script with synthetic DOM
+objects to check length-only masks for typing/paste/clear/restored values, live
+clock formatting, one native requestSubmit on Enter and no submission for IME
+composition/ordinary keys. Actual Chrome native form flow is separately checked
+with an isolated synthetic session, never real credentials.

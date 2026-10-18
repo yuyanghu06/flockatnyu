@@ -64,6 +64,11 @@ const page = `<!doctype html>
   }
   password.addEventListener('input', maskPassword);
   password.addEventListener('change', maskPassword);
+  password.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' || event.isComposing) return;
+    event.preventDefault();
+    password.form.requestSubmit();
+  });
   window.addEventListener('pageshow', maskPassword);
   maskPassword();
 </script>

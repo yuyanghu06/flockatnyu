@@ -1,3 +1,9 @@
+## Password UI: Enter verified, final followup deploying
+
+Initial UI/favicon release850ab73b is SUCCESS; hosted page/icons and authenticated login/root checks pass. Explicit Enter keydown now uses native requestSubmit with validation and IME guard. Actual Chrome synthetic fixture completes Enter→POST→303→root.11/11currentpassword/auth checks pass. Existing root index starts directly with animated @ overlay; no extra entry step. Commit/push/final followup deployment pending; no final release claim yet.
+
+[Pass record](history/2026-10-18_18-01-16-867035-orchestrator-password-enter-verified.md).
+
 ## Password UI: release ready, deploying web
 
 Approved terminal password UI now declares/favicon.ico and/favicon.svg. Vite emits unchanged approved branding at these stable paths; only exact GET/HEAD icons bypass login, with safe static checks retained. Current workspace9/9site-auth (including concurrent recovery),2/2package tests, frontend/API builds pass. Local favicon bytes/MIME match originals; other assets/API remain gated. Railway CLI is authenticated; MCP auth expired. Current web crash belongs to concurrent password-minimum recovery, preserved in package. Push/deployment pending; no success claimed yet.
