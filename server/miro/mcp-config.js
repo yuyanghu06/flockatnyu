@@ -21,6 +21,8 @@ const limit = (value, fallback, min, max) => value === undefined || value === ''
 
 export function readMiroMcpConfig(env = process.env) {
   const issues = [];
+  const budgetEnabled = env.MIRO_MCP_BUDGET_ENABLED === undefined ? env.NODE_ENV === 'production' : env.MIRO_MCP_BUDGET_ENABLED === 'true';
+  if (env.MIRO_MCP_BUDGET_ENABLED !== undefined && !['true', 'false'].includes(env.MIRO_MCP_BUDGET_ENABLED)) issues.push('invalid_budget_enabled');
   let boardIds = [];
   try { boardIds = parseBoardIds(env.MIRO_BOARD_IDS); } catch { issues.push('invalid_board_scope'); }
   if (!boardIds.length) issues.push('missing_board_scope');
@@ -55,5 +57,5 @@ export function readMiroMcpConfig(env = process.env) {
   if (env.MIRO_MCP_PERSIST_AUTH && !['true', 'false'].includes(env.MIRO_MCP_PERSIST_AUTH)) issues.push('invalid_persist_auth');
   if (!tokenBrokerUrl && !accessToken && !refreshToken && !hasFile) issues.push('auth_required');
   return Object.freeze({ endpoint: MIRO_MCP_ENDPOINT, configured: !issues.length, issues: Object.freeze(issues),
-    accessToken, refreshToken, clientId, clientSecret, authFile, persistAuth, tokenBrokerUrl, tokenBrokerSecret, boardIds: Object.freeze(boardIds), teamId, requestTimeoutMs, maxResponseBytes });
+    accessToken, refreshToken, clientId, clientSecret, authFile, persistAuth, tokenBrokerUrl, tokenBrokerSecret, boardIds: Object.freeze(boardIds), teamId, requestTimeoutMs, maxResponseBytes, budgetEnabled });
 }
