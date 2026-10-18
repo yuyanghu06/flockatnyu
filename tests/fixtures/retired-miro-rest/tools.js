@@ -1,5 +1,5 @@
-import {createMiroClient} from '../../server/miro/client.js';
-import {normalizeGroupPage} from '../../server/miro/snapshot.js';
+import {createMiroClient} from './client.js';
+import {normalizeGroupPage} from './snapshot.js';
 
 const id = {type: 'string', minLength: 1, maxLength: 200, pattern: '^[A-Za-z0-9_=-]+$'};
 const types = ['app_card', 'card', 'document', 'embed', 'frame', 'image', 'shape', 'sticky_note', 'text'];

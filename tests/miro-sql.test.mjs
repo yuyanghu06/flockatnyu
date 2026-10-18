@@ -4,10 +4,10 @@ import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {createMiroStore} from '../server/miro/store.js';
-import {runMiroSync} from '../server/miro/sync.js';
-import {readMiroConfig} from '../server/miro/config.js';
-import {MiroError} from '../server/miro/client.js';
+import {createMiroStore} from './fixtures/retired-miro-rest/store.js';
+import {runMiroSync} from './fixtures/retired-miro-rest/sync.js';
+import {readMiroConfig} from './fixtures/retired-miro-rest/config.js';
+import {MiroError} from './fixtures/retired-miro-rest/client.js';
 
 export function sqlRpc(db,name,args={}) {
  const keys=Object.keys(args);
