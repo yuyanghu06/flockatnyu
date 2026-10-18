@@ -130,3 +130,11 @@ Existing events default to other without rewriting any previous field, timestamp
 The user rejected both generated icon sets and cancelled event icons entirely. Category images, loaders, rendering code and newly generated project assets were removed. The five data categories remain. Applied028 retains its safe icon_key column as reserved compatibility metadata; the frontend does not use it or fetch any category images.
 
 Rows show the stored title, bold weekday/date/time, separate room/area notes and safe participant portraits. A repeated recognized building prefix is removed from display because the card heading already identifies the building. Original database location notes remain unchanged. Mobile portraits flow below details to keep the text column readable.
+
+## Chat-declared attendance
+
+An explicit current message naming a person and existing event, such as “Yuyang will be going to help with AWS on Tuesday,” can mark that person going without a Discord reference. Dedicated target lookup resolves a unique trackable roster full name or first-name token and a unique authorized, unexpired scheduled occurrence. Ambiguity, first-person identity, hypothetical/negated/quoted text and attachment contents cannot authorize this path. The service preserves event facts, buildings, other participants and individual timing, checks current access and uses optimistic concurrency. It cannot create events or edit Calendar/catalogues.
+
+Participation inherits the original event source UUID only as its access scope. Its server-generated source URL is a distinct app marker, PUBLIC_ORIGIN/?event=<eventUUID>#attendance-<personUUID>-<requestUUID>, identifying the chat declaration rather than provider authorship. Current canonical app origin, existing trackable person/event and current access to the event's supported original are rechecked when displaying or preserving participation. No raw transcript or new account identity is stored; marker links open the existing map but do not implement event navigation. Worker and web must use the same PUBLIC_ORIGIN. Generic map upserts retain original-provider evidence and exact identity receipts.
+
+Successful chat writes trigger an immediate frontend map refresh. Future going participants appear on the event card/upcoming list and become map avatars only in the event's valid active window.

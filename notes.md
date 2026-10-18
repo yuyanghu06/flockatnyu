@@ -81,3 +81,7 @@ a password gate with SITE_ACCESS_PASSWORD in private Railway environment
 variables only. Split the current working tree into logical commits, then push.
 This supersedes the earlier activation/deployment deferral for this rollout;
 preserve all source permissions and avoid credentials in code/history/output.
+
+## 2026-10-18 — Future personal memory and accounts
+
+- Consider persistent per-user memory, such as the user's name and preferences, identified through Chrome/browser local storage or Google OAuth account creation. These are alternative approaches to explore; no account model has been selected. Saved future idea only, not authorization to implement accounts, OAuth consent, browser identity tracking or personal-memory storage during the current chat bug/attendance fix.

@@ -1,0 +1,20 @@
+{
+  "syntheticOnly": true,
+  "pass": true,
+  "model": "gpt-6-luna",
+  "requests": 1,
+  "formats": [
+    "image/png",
+    "application/pdf",
+    "text/plain"
+  ],
+  "imageRead": true,
+  "pdfRead": true,
+  "textRead": true,
+  "sourceHashes": {
+    "server/app.js": "5ccd26ca07673fc32f4728a5299bc2824985e397bb0d340cb241a151f46c425a",
+    "server/providers/index.js": "0807de4351b5e5967dbdd3bb08993986505bec139049bc3827b6ec4671c6fc34",
+    "server/chat-attachments.js": "14ff1ac53ffae0a3db5c586271601574633be803c0e11d6022c26572e1f34b74"
+  },
+  "completedAt": "2026-10-18T23:05:31.399Z"
+}

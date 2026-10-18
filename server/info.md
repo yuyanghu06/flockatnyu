@@ -58,3 +58,5 @@ Password Enter explicitly calls native form.requestSubmit with default prevented
 and IME-composition ignored. Native required validation and existing POST auth
 remain. Successful login redirects straight to / and its animated @ startup
 screen; automatic map reveal remains in the existing startup modules.
+
+Chat production fixes add once-per-message report orchestration and a narrow request-local named-person attendance adapter, composed with existing provider-backed map tools in runtime-app.js. Attendance retains source scope and current access under distinct app provenance, with optimistic preservation. chat-attachments.js is a browser-safe, I/O-free validation/conversion contract for bounded in-memory image/PDF/UTF8 text attachments; the API retains string message text as the only action-intent channel.

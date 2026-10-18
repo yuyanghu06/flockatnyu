@@ -11,3 +11,5 @@ history. Custom adapter modules are deliberately absent. Persistent Miro token
 ownership must be provisioned separately before declaring live sync ready.
 
 Current production tuning uses2inputs per batch and600000ms under unchanged16round/32tool bounds. A same-image preceding5input batch completed successfully but used569325ms, so smaller batches leave edit headroom. Recognized Miro navigation outages are explicitly deferred without Miro evidence; actual authorization/config/malformed failures remain fatal.
+
+Worker and web use the same PUBLIC_ORIGIN to authorize chat-declared attendance markers against their exact person/event and current original source. This preserves those participants during ordinary source-backed event merges without inventing provider identity or granting broader access. The nonsecret origin is runtime configuration; passwords/tokens remain private environment variables.

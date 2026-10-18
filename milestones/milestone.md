@@ -1,3 +1,13 @@
+## Live: chat fixes and uploads verified
+
+The website (9f71ac1d) and compatible update worker (578d0390) are both successful. Production chat marked Yuyang going to AWS Hack Day on Tuesday, October 20. He appears on its future event card without an early map avatar; other event facts, locations and participants were preserved. A real bug report saved once with no repeated failure rows. Image/text uploads worked through production, and a separate actual Luna check read image, PDF and text fixtures.
+
+Verification: 1,136 regression tests on the preceding iteration, 101 final focused checks after the provenance/tool-exposure fixes, 146 independent Node checks, desktop/mobile Chrome, both builds and whitespace checks passed. Stable production picker/removal screenshot was inspected; the real authenticated campus loaded with no page errors. Source commits are 25cc4c0, dfca490 and 821e824; final documentation/evidence publication is pending.
+
+Attendance requires an unambiguous named existing person and event; first-person identity remains unlinked. Uploads support PNG/JPEG/WebP, PDF and UTF-8 text/code: four files, 10 MiB total, 5 MiB per binary file and 128 KiB per text file. Uploads stay in memory. Chrome local storage versus Google OAuth personal memory is saved in notes.md as a future idea; no accounts were added. Existing source boundaries, Miro quota handling, worker cadence and committed UI changes are preserved.
+
+[Hosted receipt](../evidence/chat-production-fixes/hosted-release.json) · [Release pass](history/2026-10-18_19-13-00-980869-orchestrator-chat-production-release-verified.md).
+
 ## Miro quota implementation published and verified
 
 Runtime40a2827/dfe7b44 and rollout documentatione89ca95 are pushed to origin/codex/dev; git rev-parse HEAD and ls-remote matched e89ca9532a8b721ba4022d3d5dc57fcd6a814415 before this final handoff record. All Miro-owned implementation/test/evidence files are committed; unrelated active chat/upload documentation and source notes remain preserved. Current compatible web/worker releases are SUCCESS and the actual website returns quota_exhausted with reset00UTC, zero facts and unchanged counters. Final1079tests/APIbuild plus independent125/94checks pass. Miro quota protection is complete; successful post-reset content reconciliation is not yet observed. Separate Discord discovery currently gates worker source authorization, with no new completed batch claim or forced policy publication. Next: normal operational observation after provider reset and discovery completion; no paid upgrade or wider access granted.

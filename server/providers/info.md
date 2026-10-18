@@ -14,3 +14,5 @@ responses fail closed. Tool authorization, schema checks and execution remain in
 the server handler. No provider/model is chosen and no live calls were made for
 this addition. Protocol references: [OpenAI function calling](https://developers.openai.com/api/docs/guides/function-calling)
 and [Anthropic tool-call handling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls).
+
+Chat planning and answer streaming convert validated user attachments into native OpenAI Chat Completions image_url, PDF file_data or quoted text blocks. Worker toolTurn remains text-only. The implemented Anthropic path rejects attachments before network dispatch rather than sending an incompatible schema. No Files API resource or durable upload is created.

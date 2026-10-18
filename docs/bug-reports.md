@@ -24,8 +24,8 @@ silently overwriting the first report. Separate user messages receive separate I
 
 The table forces RLS and denies browser roles all access. The service role has
 SELECT and RPC execution, but no direct INSERT/UPDATE/DELETE grants. The normal
-chat authentication boundary applies; production authentication remains separately
-unfinished. The general `/api/tools/:tool` read dispatcher cannot invoke this write
+chat authentication boundary applies, including the private password-gated shared
+operator session in production. The general `/api/tools/:tool` read dispatcher cannot invoke this write
 without server-owned chat context. Only a running API loaded with the new entrypoint
 exposes the tool in planning.
 
@@ -33,9 +33,14 @@ Migration `202610180029_bug_reports.sql` is applied to Tech NYU project
 jssehnrmqhstcrtxulpa at hosted version 20261018174146. Existing tables/functions and
 permissions were preserved. A service-role write was verified inside a rolled-back
 transaction, leaving zero synthetic reports. Receipt is in
-`evidence/bug-reports/hosted-receipt.json`. No live model call or production
-deployment is claimed. The existing preview API needs its normal restart to load
-the new tool; an isolated fresh entrypoint was verified without interrupting it.
+`evidence/bug-reports/hosted-receipt.json`. Those original schema checks did not
+include model calls or deployment. Current source/model/browser and live rollout
+evidence is recorded in `evidence/chat-production-fixes/` and the milestone snapshot.
 
-Tests: `node --test tests/bug-reports.test.mjs`. These checks were performed directly
-in the side conversation, without independent agents.
+Tests: `node --test tests/bug-reports.test.mjs`. The later production fix also has
+independent full-API/browser acceptance in `tests/chat-production-acceptance.test.mjs`
+and `tests/chat-production-browser.mjs`.
+
+## Once-per-message reporting
+
+Chat now permits exactly one report attempt for the current user message, regardless of rewritten model arguments or failure status. Later planning rounds omit the report tool and reuse the saved receipt or truthful failure. This prevents the observed successful save followed by conflicting retry rows. The database still rejects changed payloads under an existing UUID. Reporting does not prevent unrelated authorized memory or attendance work.

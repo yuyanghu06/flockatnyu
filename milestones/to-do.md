@@ -1,3 +1,8 @@
+## Chat release publication
+
+- [x] Verify liveweb/worker, once-only realreport, requestedYuyangAWSattendance and uploadedimage/text; localrealLunaPDFverified.
+- [ ] Publish final sanitized guides/history/evidence and verify matching remoteHEAD.
+
 ## Active: Miro quota recovery
 
 - [ ] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
@@ -24,8 +29,8 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 
 - [x] Verify official Luna/image/PDF contracts and assign bounded upload implementation.
 - [x] Complete image/PDF/text picker, draft/history handling, API validation and provider conversion; coder tests/browser/build pass.
-- [ ] Verify attachments in browser and production model; preserve background reply and map/source boundaries.
-- [ ] Deploy worker matching PUBLIC_ORIGIN/source-authorizer compatibility before live chat attendance.
+- [x] Verify attachments in browser and production model; preserve background reply and map/source boundaries.
+- [x] Deploy worker matching PUBLIC_ORIGIN/source-authorizer compatibility before live chat attendance.
 
 ## Active: Miro quota recovery
 
@@ -41,7 +46,7 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 
 - [x] Reproduce bug-report retries and confirm hosted schema readiness; accept bounded attendance plan.
 - [x] Implement once-per-message reporting and explicit named attendance on existing events; independent final review pending.
-- [ ] Independently verify ambiguity/source/concurrency boundaries, deploy isolated production fix and verify actual results.
+- [x] Independently verify ambiguity/source/concurrency boundaries, deploy production fix and verify actual saved report/attendance/uploads.
 
 ## Active: Miro quota recovery
 

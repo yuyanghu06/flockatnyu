@@ -1,0 +1,32 @@
+{
+  "mode": "local synthetic Hono + actual Chrome UI; no real model/source calls",
+  "observations": [
+    {
+      "width": 1280,
+      "oncePerMessage": true,
+      "reportStatus": "completed",
+      "memoryContinues": true,
+      "pickerAndRemove": true,
+      "attachmentRequest": true,
+      "hiddenCompletion": true,
+      "nextDraftSurvivesCompletionAndFailure": true,
+      "boundedLayout": true
+    },
+    {
+      "width": 390,
+      "oncePerMessage": true,
+      "reportStatus": "failed",
+      "memoryContinues": true,
+      "pickerAndRemove": true,
+      "attachmentRequest": true,
+      "hiddenCompletion": true,
+      "nextDraftSurvivesCompletionAndFailure": true,
+      "boundedLayout": true
+    },
+    {
+      "mapRefreshWhilePolling": true,
+      "freshAttendanceVisible": true
+    }
+  ],
+  "pageErrors": []
+}

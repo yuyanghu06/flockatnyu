@@ -405,3 +405,5 @@ Miro quota tests cover metadata-only shared UTC counters, background cadence, pr
 
 The rapid UI browser check waits for the hover glow transition to settle before
 reading its shadow; streaming animation is checked without hovering the button.
+
+Chat production coverage includes once-only varied bug-report attempts, chat-attendance-orchestration.test.mjs for intent/planning/receipt boundaries, chat-attendance.test.mjs for real service/source/projection behavior, and chat-attachments.test.mjs for bounded file validation/API/provider/history. Independent acceptance/browser evidence is maintained separately under evidence/chat-production-fixes.

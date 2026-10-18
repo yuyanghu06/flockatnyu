@@ -1,0 +1,5 @@
+# Chat production verification
+
+Sanitized evidence for once-per-message reports, chat-declared named attendance and image/PDF/text uploads. Node/Chrome acceptance uses synthetic originals and storage; model smoke uses actual configured Luna with synthetic inputs. Screenshots contain fixture conversations only. independent-report.json records verified source hashes; model receipts record formats and outcomes without private originals or credentials. Hosted release receipts are added only after actual verification.
+
+Hosted release receipt verifies private gating, exact bundle/new tools, stateless denial, actual requested attendance persistence/future projection and preservation, once-only real user report, and image/text upload response. Hosted-browser evidence uses real authenticated campus and picker/removal without sending files. The model smoke's tool-module hash predates the later conditional-exposure guard; the final backend guards are covered by independent acceptance and actual hosted execution.
