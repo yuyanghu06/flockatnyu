@@ -6,14 +6,18 @@
 - [x] Finish final1004/1004regressions, builds and volume bootstrap review.
 - [x] Finish environment-password-gated Railwayweb+worker sanitizedpackages and durable sharedMiroauth.
 - [x] Deployliveweb/collectorupdates andenableautonomousworker.
-- [ ] Resolve live mixed-scope queue starvation with scopedclaim; verifyrealcompletedupdates and browserlogin.
-- [ ] Splitcurrentworkingtreeintologicalcommits, secretscheck, push andreportliveURL/accessenv.
+- [x] Resolve mixed-scope queue starvation with service-only scoped claim032; real batch5/5, four canonical Calendar map projections and hosted desktop/mobile login verified.
+- [x] Push first logical implementation commits through9fb86c8.
+- [x] Verify final optimized worker activation, final1017/1017/4modelcases and secret scan; final runtime commit8079a39.
+- [x] Integrate logical publication commits and live URL/password environment-variable handoff (final integration push verified at session completion).
+- [x] Final1017/1017 regression, independent80/80 timestamp review and strict final4/4 actual-model planner workloads.
+- [ ] Future decision: outside-scope pending-input retention; current scoped claim preserves these rows without broader access.
 
 ## Agent prompts complete — operational follow-ups
 
 - [x] Implement requested chat/planner behavior, privacy, Luma note and slower Discord scans.
 - [x] Final937/937regressions, builds, independent reviews and strict focused real-model retests; exact multi-run limits in milestone.md.
-- [ ] Separate scope: enable/deploy worker and run live-source mutation pilot.
+- [x] Enable/deploy worker and verify live-source mutation pilot (authorized rollout); preceding worker completed5/5 and created four canonical Calendar map events.
 - [ ] Separate decision: empty-queue periodic reconciliation, broader Calendar coverage and ambiguous cross-source edit precedence.
 - [ ] Observe live throttle behavior when normal usage resumes; no extra load imposed for verification.
 

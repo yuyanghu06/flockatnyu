@@ -380,3 +380,5 @@ Final bundled-handler protocol checks cover invented Calendar pagination, empty 
 Optimization checks include fresh batch authorization cost, exact answer-context compaction, bounded Miro queue/token owner, web volume bootstrap, production site sessions/static isolation and sanitized runtime deployment. Independent browser evidence lives in evidence/optimization.
 
 scoped-agent-claim.test.mjs runs realSQL mixed-scope trigger/lease/ACL/finish cases and productionstore/handler wiring, preserving historical019fixtures.
+
+planner-workload-model.mjs reuses strict configured-model scenarios with synthetic sources/inert writes and the actual Miro adapter/parser to catch incompatible canvas/table arguments. Its aggregate receipt is evidence/optimization/planner-workload-model.json; this is not a live-source mutation test.

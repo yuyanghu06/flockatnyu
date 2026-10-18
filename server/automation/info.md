@@ -173,3 +173,7 @@ is independently rechecked.
 Batch authorization reuses only facts within each existing fresh authorization boundary, including preparation, while maintaining fresh checks before tools/mutations and completion. No authorization cache spans agent rounds.
 
 Production claims use trusted principal.allowedSourceIds via scoped RPC032 before bodies leave the queue. Counts/oldest/candidates exclude other sources; later fresh authorization still applies. Deferred outside-scope rows remain untouched.
+
+Planner workload starts from queued originals, prioritizes eboard and fetches exact current messages before actionable changes. Extra reply/context reads are targeted; routine historical sweeps and repeated catalogue discovery are avoided. Calendar/Miro reconciliation and projection completion remain required.
+
+Calendar projection preparation binds reported_at to the observed Calendar timestamp before action hashing, after existing identity/access checks. This does not replace the map optimistic revision or participant timestamps; sparse cancellations preserve known facts.

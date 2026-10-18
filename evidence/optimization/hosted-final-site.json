@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-18T20:35:03.790Z",
+  "base": "https://web-production-e4edc.up.railway.app",
+  "health": 200,
+  "anonymousApi": 403,
+  "login": 303,
+  "authenticatedRoot": 200,
+  "authenticatedApi": 200,
+  "referrerPolicy": "same-origin",
+  "secureCookie": true,
+  "httpOnlyCookie": true
+}

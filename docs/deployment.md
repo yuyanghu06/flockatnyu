@@ -72,3 +72,7 @@ rolling milestone and sanitized evidence/optimization deployment receipt.
 Live browser acceptance covers native desktop/mobile sign-in, protectedAPI, nine landmarks, focus/assistant controls and logout; see evidence/optimization/hosted-site.json. A fixed same-origin referrer policy preserves native form Origin while strict origin checks reject null/foreign values.
 
 Deployment migration032 adds service-only scoped queue claims. The worker sends its trusted shared source UUIDs; only those inputs count toward triggers or return in claimed batches. Other inputs remain deferred; no access expansion or implicit deletion occurs.
+
+A real hosted five-input batch completed with27toolcalls; four canonical Calendar-derived map events were persisted with building links. The initial larger/time-limited pilots retained unfinished inputs and successful durable actions. See hosted-worker and hosted-event-projection receipts for exact release/timing.
+
+Final service activation and protected-site HTTP smoke receipts are hosted-final-deployment.json and hosted-final-site.json. They distinguish final release activation from preceding live batch mutation acceptance. Access password is managed only at Railway web → Variables → SITE_ACCESS_PASSWORD.

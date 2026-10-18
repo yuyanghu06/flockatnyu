@@ -1,3 +1,44 @@
+## Current: optimization and live rollout accepted
+
+Goal: calm source-aware chat, autonomous Discord/Miro→Calendar→map reconciliation, efficient rendering/source reads and a private live site. Frontend and chat API are live at https://web-production-e4edc.up.railway.app on Railway; collectors and autonomous update worker are separate successful services. SITE_ACCESS_PASSWORD and session/broker credentials exist only in private Railway variables. Nonadmin source scope, leadership exclusions and Miro read-only boundary remain enforced.
+
+Final worker4da381d1-1e1d-4662-a1ce-18a1231cee80 is enabled and observed preparing a batch; web4bbf57ff-e204-4434-8b43-ae3ef932ccf9, Discorda2a8b966-2e74-498a-afb4-6ba4d12b9035 and Gmail5244b48a-483e-4378-9b40-c821b66830ed all SUCCESS. Final prepared worker sources match reviewed files. Prior hosted worker completed5/5inputs (27toolcalls/11rounds); four canonical Calendar map events with building links were persisted. Do not conflate preceding live mutation evidence with final-build synthetic model checks.
+
+**Verification:** final1017/1017fullregressions, API build, unchanged frontend build and independent desktop/mobile browser acceptance; final timestamp review80/80; strict actual-model four-case run4/4,36calls,31unchanged source hashes, zero failed tools. Includes Discord scheduled-event create/edit and Miro→Calendar→map/RSVP with actual Miro adapter/parser and inert writes. Earlier3/4 diagnostic retained. Hosted final health200/login303/protected page+API200/anonymousAPI403; secure HttpOnly session. Secret scan1932textfiles/13actualprivatepatterns found0matches. Current diff whitespace passes; historical appended records retain earlier immutable whitespace.
+
+**Architecture:** shared authorized source tools; Calendar canonical scheduled events, map mirrors plus informal activities; exact current Discord originals precede action. Calendar-owned reported_at canonicalized from exact observed updatedAt/createdAt before action hashing, with optimistic revisions and participant timestamps preserved. Service-only migration032 filters queue claims before bodies return; unrelated pending sources stay deferred. Production batches5inputs/600s,16rounds/32calls, eligible30input-or-oldest30minute trigger. Queued originals replace routine historical sweeps. Discord request spacing1000ms per process; upstream cooldowns retained. Web owns persistent Miro refresh credentials and worker receives access tokens through private broker.
+
+**Measured improvements:** fixture stream renders501→1, stable map card derivations600→0, repeated authorization adapter calls120→6; high-level Discord metadata operations40→2 (not actual HTTP counts). Answer fixture37308→24492bytes. No billed-token, device FPS or live throughput claim.
+
+**Limitations/next action:** normal-use monitoring; empty-queue periodic reconciliation absent, Calendar default rolling window now−24h/+8days, ambiguous cross-source edits defer. Deferred outside-scope input retention and cross-process global rate coordination remain future decisions. Shared password provides no per-member identity. Source/tool limits may yield disclosed partial summaries. Final runtime commit8079a39 and documentation/evidence commit are the final logical publication unit; verify push and clean worktree immediately after integration.
+
+- [Final integration pass](history/2026-10-18_16-37-03-755279-orchestrator-final-live-release-accepted.md)
+- [Final service receipt](../evidence/optimization/hosted-final-deployment.json)
+- [Final site receipt](../evidence/optimization/hosted-final-site.json)
+- [Final model evidence](../evidence/optimization/planner-workload-model.json)
+
+## Earlier checkpoints (historical; current snapshot above supersedes pending statuses)
+
+## Final source acceptance complete; optimized worker deploying
+
+Final regression **1017/1017 passed**, API build passed; independent timestamp review80/80 accepted. Strict configured-model four-case run **4/4 passed** with36calls,31unchanged source hashes and zero failed tools, including Discord create/edit and Miro→Calendar→map/RSVP. Prior3/4 diagnostic preserved in the model artifact. Final sanitized worker release4da381d1-1e1d-4662-a1ce-18a1231cee80 uploaded; final web4bbf57ff-e204-4434-8b43-ae3ef932ccf9 SUCCESS. Hosted preceding worker completed5inputs/fourmapprojections; final release activation verification, final logical commits and push remain.
+
+- [Pass record](history/2026-10-18_16-35-32-057530-coder-calendar-owned-projection-timestamp.md)
+- [Pass record](history/2026-10-18_16-35-32-058024-evaluator-calendar-timestamp-accepted.md)
+- [Pass record](history/2026-10-18_16-35-32-058150-tester-final-four-model-workloads-accepted.md)
+
+## Earlier rollout checkpoints (historical, superseded by current snapshot above)
+
+## Final model diagnostic found a rejected stale timestamp
+
+Strict four-case model run using actual Miro adapter/parser passed3/4. Discord edit correctly updated/reread Calendar but copied the prior map reported_at. Runtime rejected the map write; no bad write/inputcompletion. Binding Calendar-owned reported_at to the exact observed current original before receipt hashing; no processing-clock fallback. Samefour finalcases will rerun; no assertions weakened. Successful real hosted batch andfourmapprojections remain valid preceding-build evidence. Web-only Miroread guidance rollout is independent of this worker-only timestampfix.
+
+## Live batch completion verified; final efficiency rollout pending
+
+Hosted worker completed all five queued inputs at20:22:04UTC (27calls/11rounds). Four canonical Calendar-derived scheduled events were created on the map with building links; prior partial work was retained and reused. Website, collectors and real desktop/mobile login/chat pass. Logical implementation commits pushed through9fb86c8 oncodex/dev.
+
+Final queued-first/narrowcontext prompt and static Miro argument guidance are accepted in1013/1013fullchecks and independent source review. Exact current originals still precede actionable changes; no source expansion or broad historical scans. Final four strict configured-model cases use synthetic sources/inert writes and actual Miro adapter/parser; running before optimized web/worker rollout. Source mutation pilot above belongs to preceding deployment; do not conflate revisions.
+
 ## Initial live Calendar projection succeeded; completion verification continues
 
 The first five-input run wrote four canonical Calendar-derived scheduled events to the map before reaching the16-round cap. Inputs remain pending; durable action receipts and stable event IDs preserve successful work. The next batch can reuse current map snapshots. No full batch completion is claimed yet. Privacy-safe optional progress logging is independently accepted and deploying enabled for operational visibility. Full regression1010/1010 and API build pass. Website/collectors/browser/chat remain healthy.
@@ -41,6 +82,14 @@ Worker deployed/enabled but realbatchescurrentlyforbidden:154pendinginputs inclu
 - [Pass record](history/2026-10-18_16-10-54-772240-evaluator-worker-progress-privacy-accepted.md)
 
 - [Pass record](history/2026-10-18_16-13-14-057044-tester-live-calendar-map-projection.md)
+
+- [Pass record](history/2026-10-18_16-25-39-403788-tester-first-live-batch-completed.md)
+
+- [Pass record](history/2026-10-18_16-25-39-404722-coder-queued-first-and-miro-guidance.md)
+
+- [Pass record](history/2026-10-18_16-25-39-405075-evaluator-queued-first-miro-guidance-accepted.md)
+
+- [Pass record](history/2026-10-18_16-28-00-379569-tester-strict-model-timestamp-diagnostic.md)
 
 ## Active: optimization, password-gated live site and autonomous deployment
 

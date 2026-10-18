@@ -13,8 +13,11 @@ The autonomous planner requested by the user is this update agent; the internal
 chat retrieval planner remains a separate component. The unchanged default
 trigger is thirty eligible deduplicated inputs OR the oldest eligible input
 reaching thirty minutes, subject to the existing claim/cooldown limits. Each
-claimed batch prioritizes eboard coordination, follows authorized Discord
-originals for explicit study/co-working/location/participation facts, reconciles
+claimed batch prioritizes queued eboard originals and uses native queued IDs.
+Gateway ingestion supplies new activity; routine historical/channel sweeps are
+avoided. Actionable changes require the exact current original, with narrow
+reply/reference/event context when needed. It captures explicit
+study/co-working/location/participation facts, reconciles
 scheduled club events from concrete Miro/Discord evidence into the fixed Calendar, then projects actual Calendar
 occurrences onto the map. Leadership exclusions remain backend policy, including
 descendant threads. The prompt cannot grant source access or start a worker.
@@ -22,8 +25,8 @@ descendant threads. The prompt cannot grant source access or start a worker.
 The bundled update-agent adapter registers `read_map_events`,
 `lookup_map_person` and `upsert_map_event` from `tools/map/`. They share the trusted
 service in `server/map/events.js`. Chat uses the same shared map tools through its
-separate registration. Adding tool definitions does not activate the disabled
-worker or establish a deployed worker/consent. Current live readiness belongs in
+separate registration. Activation and deployment are explicit operational steps.
+Current live readiness belongs in
 the rolling milestone rather than inferred from prompt or tool availability.
 
 An event has a stable UUID and source identity, name/notes, kind, fixed type_id, status, original
@@ -258,3 +261,5 @@ tools and mixed completion calls remain rejected. Calendar continuation tokens
 must match an observed unfinished page for the same window before HTTP. Declared
 Miro boardId choices are restricted to configured boards; current authorization
 is independently rechecked.
+
+For authorized observed Calendar projections, trusted preparation sets reported_at from the exact original updatedAt/createdAt before receipt hashing. It preserves map optimistic revision tokens and participant timestamps; sparse cancellations retain known facts. Missing/invalid source timestamps never fall back to the processing clock.
