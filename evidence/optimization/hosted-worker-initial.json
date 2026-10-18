@@ -1,0 +1,70 @@
+{
+  "deployment": "99fda085-6671-4cb2-b838-969c8cdf8fad",
+  "service": "1f78ef50-a542-4d5d-9d23-8bc8e7e0435f",
+  "settings": {
+    "inputs": 5,
+    "maxRunMs": 600000,
+    "maxRounds": 16,
+    "maxCalls": 32
+  },
+  "startedMonitoringAt": "2026-10-18T20:07:26.609Z",
+  "statuses": [
+    {
+      "status": "busy",
+      "timestamp": "2026-10-18T20:01:35.273319695Z"
+    },
+    {
+      "timestamp": "2026-10-18T20:11:08.695472964Z",
+      "status": "round_limit"
+    }
+  ],
+  "samples": [
+    {
+      "at": "2026-10-18T20:07:28.427Z",
+      "last_started": "2026-10-18T20:01:39.960886+00:00",
+      "lease_until": "2026-10-18T20:09:24.382968+00:00",
+      "claimed_inputs": 5,
+      "succeeded_actions": 0,
+      "pending_inputs": 154,
+      "event_count": 9
+    },
+    {
+      "at": "2026-10-18T20:08:31.342Z",
+      "last_started": "2026-10-18T20:01:39.960886+00:00",
+      "lease_until": "2026-10-18T20:10:29.069824+00:00",
+      "claimed_inputs": 5,
+      "succeeded_actions": 1,
+      "pending_inputs": 154,
+      "event_count": 10
+    },
+    {
+      "at": "2026-10-18T20:09:35.896Z",
+      "last_started": "2026-10-18T20:01:39.960886+00:00",
+      "lease_until": "2026-10-18T20:11:35.283647+00:00",
+      "claimed_inputs": 5,
+      "succeeded_actions": 2,
+      "pending_inputs": 156,
+      "event_count": 11
+    },
+    {
+      "at": "2026-10-18T20:10:39.480Z",
+      "last_started": "2026-10-18T20:01:39.960886+00:00",
+      "lease_until": "2026-10-18T20:12:35.771507+00:00",
+      "claimed_inputs": 5,
+      "succeeded_actions": 3,
+      "pending_inputs": 156,
+      "event_count": 12
+    },
+    {
+      "at": "2026-10-18T20:11:43.697Z",
+      "last_started": "2026-10-18T20:11:12.889556+00:00",
+      "lease_until": "2026-10-18T20:13:39.993726+00:00",
+      "claimed_inputs": 5,
+      "succeeded_actions": 4,
+      "pending_inputs": 156,
+      "event_count": 13
+    }
+  ],
+  "completed": false,
+  "checkedAt": "2026-10-18T20:11:43.697Z"
+}

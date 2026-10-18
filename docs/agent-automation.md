@@ -178,3 +178,7 @@ Miro live-only cutover: both runtimes use the same official MCP reader. Migratio
 The previously planned long-term note is now implemented for the chat agent through agent_memory and read_memory/update_memory. It is proactively maintained from useful club context in any chat without explicit remember requests. This pass does not register memory tools in the update agent or activate its worker; its prior no-memory capability boundary remains until separately wired.
 
 Production worker claims only configured shared source UUIDs using scoped RPC032. Outside-scope ingestion remains independent and deferred; it cannot trigger/starve valid work. This never grants source access or replaces fresh policy/ancestry checks. Deferred input retention is unchanged.
+
+Live rollout pacing: five inputs per batch and configured600second maximum run, with unchanged16round/32call limits and fresh authorization. Library default180seconds stays unchanged; configurable ceiling is600seconds. The first20-input180second live pilot aborted safely and kept its inputs pending.
+
+Optional AGENT_AUTOMATION_LOG_PROGRESS=true emits bounded safe phase/status/counter/registered-tool-name metadata. Source contents, IDs, arguments, URLs, results and private errors never enter logs. Default CLI final-status-only behavior remains unchanged.

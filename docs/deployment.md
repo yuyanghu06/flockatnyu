@@ -56,7 +56,9 @@ transfer. Unit fixtures do not use real credentials.
 Collectors retain their independent ingestion switches and current exclusions.
 The update agent wakes for30eligible queued inputs or oldest input30minutes;
 there is no empty-queue periodic reconciliation. Defaults remain16rounds,
-32calls and180seconds, with60second cooldown. Discord requests are paced within
+32calls and180seconds, with60second cooldown. Production uses five-input batches
+and a configured600second deadline so paced source/permission checks can finish;
+tool/round limits remain unchanged. Discord requests are paced within
 each process and obey upstream cooldowns; separate services do not share a global
 rate-limit queue.
 

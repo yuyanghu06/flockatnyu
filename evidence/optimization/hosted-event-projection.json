@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-18T20:10:20.769Z",
+  "status": 201,
+  "aggregates": [
+    {
+      "created_events": 3,
+      "canonical_calendar_events": 3,
+      "building_links": 3
+    }
+  ]
+}

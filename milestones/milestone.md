@@ -1,3 +1,11 @@
+## Initial live Calendar projection succeeded; completion verification continues
+
+The first five-input run wrote four canonical Calendar-derived scheduled events to the map before reaching the16-round cap. Inputs remain pending; durable action receipts and stable event IDs preserve successful work. The next batch can reuse current map snapshots. No full batch completion is claimed yet. Privacy-safe optional progress logging is independently accepted and deploying enabled for operational visibility. Full regression1010/1010 and API build pass. Website/collectors/browser/chat remain healthy.
+
+## Live worker pacing follow-up
+
+The first corrected scoped20-input batch reached its180second limit without completing. Existing lease/authorization fences kept inputs pending. Reducing deployed batch size to5 and allowing configured600second runs while retaining default180seconds,16rounds/32calls and fresh authorization. Real getChannel also reads roles/member permissions: earlier40→2fixture figures count high-level client operations, not all live HTTP. This correction supersedes earlier HTTP wording; relative repeated-work reduction remains measured in the fixture. Website/collectors/browser/chat remain healthy; autonomous completion is still a launch acceptance blocker.
+
 ## Live rollout verification in progress
 
 Website and collectors deployed successfully on Railway. Domain https://web-production-e4edc.up.railway.app. Password/signing/broker secrets exist only in private Railway variables; anonymousAPI403 and signed-session API/static200 verified. Nativebrowser found Referrer-Policy:no-referrer causing Origin:null and403; changed to same-origin with strictOrigincheck retained,21focusedchecks pass, corrected web release accepted in real desktop/mobile Chrome: native sign-in,9landmarks,focus/assistant,logout/API denial and zero browser/asset errors. Independentsecurity23/23pass. Finalpre-headerfull995/995 passed, bothbuilds passed.
@@ -22,11 +30,23 @@ Worker deployed/enabled but realbatchescurrentlyforbidden:154pendinginputs inclu
 
 - [Pass record](history/2026-10-18_15-57-34-624310-orchestrator-final-regression-and-logical-commits.md)
 
+- [Pass record](history/2026-10-18_16-00-44-151222-tester-live-pilot-deadline-observed.md)
+
+- [Pass record](history/2026-10-18_16-00-44-152062-coder-bounded-paced-worker-window.md)
+
+- [Pass record](history/2026-10-18_16-02-04-763327-evaluator-paced-worker-window-accepted.md)
+
+- [Pass record](history/2026-10-18_16-10-54-771416-coder-optional-private-worker-progress.md)
+
+- [Pass record](history/2026-10-18_16-10-54-772240-evaluator-worker-progress-privacy-accepted.md)
+
+- [Pass record](history/2026-10-18_16-13-14-057044-tester-live-calendar-map-projection.md)
+
 ## Active: optimization, password-gated live site and autonomous deployment
 
 User explicitly authorized optimization then LIVE Railway website/services deployment and agent activation, logical commits and push. This supersedes older activationdeferrals for the rollout. Frontend Railwaywebservice servesbuiltstatic+chatAPI behind SITE_ACCESS_PASSWORD privateenv sessiongate; worker/collectorsseparate. No publicdevelopmentauth. ExistingGoogle/Miro/Discordsourceboundaries preserved.
 
-Implemented frontend stream/render/presentation optimization and backend freshboundaryauthorization/evidencecompaction. Preliminarymeasurements501→1streamrenders, unchangedmarkerDOM preserved,600→0stablecardderivations;20samechannel auth120→6calls/40→2Discord; answerfixture34.35%bytes saved. Frontend independent browser11/11 and50focused checks pass; backend241focused checks and independent75checks accepted. ExistingM12/M43geometry/startupoptimizationpreserved.
+Implemented frontend stream/render/presentation optimization and backend freshboundaryauthorization/evidencecompaction. Preliminarymeasurements501→1streamrenders, unchangedmarkerDOM preserved,600→0stablecardderivations;20samechannel auth120→6calls/40→2high-level Discordclientoperations (not totalHTTP; permission reads add requests); answerfixture34.35%bytes saved. Frontend independent browser11/11 and50focused checks pass; backend241focused checks and independent75checks accepted. ExistingM12/M43geometry/startupoptimizationpreserved.
 
 Privateproductionentrypoint/sanitizedpackages and durableMirocredentials implemented; independent security22/22 accepted after two fixes. Volume bootstrap and explicit startcommand verified; latest39/39 runtimechecks pass. OneOAuthowner withpersistentvolume/access-tokenbroker avoidstwo-service refreshtokenrotation races. CLI confirmsTechNYUproductioncollectorshealthy; no newdeployment/activationyet. Prior937fullchecks remainpre-optimizationbaseline. Final fullregressions running; frontend/API builds pass. Railway web/update-agent services, public domain and private persistent volume provisioned; secret-free web/Discord/Gmail uploads launched; worker deployment waits for broker readiness. Local API stopped before OAuth ownership transfer.
 

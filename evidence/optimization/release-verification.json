@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-18T19:55:47.428Z",
+  "checkedAt": "2026-10-18T20:01:41.421Z",
   "fullRegression": {
     "command": "node --test tests/*.test.mjs",
-    "passed": 1004,
+    "passed": 1010,
     "failed": 0,
     "skipped": 0
   },
@@ -22,21 +22,32 @@
     "sameChannelInputs": 20,
     "authorizationAdapterCallsBefore": 120,
     "authorizationAdapterCallsAfter": 6,
-    "discordHTTPBefore": 40,
-    "discordHTTPAfter": 2,
     "answerFixtureBytesBefore": 37308,
-    "answerFixtureBytesAfter": 24492
+    "answerFixtureBytesAfter": 24492,
+    "discordClientOperationsBefore": 40,
+    "discordClientOperationsAfter": 2
   },
   "security": {
     "independentCasesWithPackaging": 23,
     "passed": 23,
     "hostedDesktopAndMobile": "passed",
-    "hostedModelGreeting": "passed"
+    "hostedModelGreeting": "passed",
+    "optionalProgressPrivacyAndFailureChecks": "56/56 independent pass"
   },
   "limits": [
     "Synthetic render/authorization measurements do not establish device FPS or live service throughput.",
     "No billed-token savings measured.",
-    "Final full regression includes scoped claim migration and native origin fix.",
-    "Agent real batch outcome pending; outside-scope inputs stay deferred."
-  ]
+    "Agent real batch outcome pending; outside-scope inputs stay deferred.",
+    "Discord cost fixture counts high-level client metadata operations. Real getChannel also performs roles/member permission requests; these numbers are not total live HTTP calls.",
+    "Final full regression includes extended bounded worker deadline with default unchanged.",
+    "Optional status-only progress instrumentation is off by default; live pilot continued without interruption during its test/review."
+  ],
+  "runtime": {
+    "maxInputs": 5,
+    "maxRunMs": 600000,
+    "maxRounds": 16,
+    "maxCalls": 32,
+    "minQueuedInputs": 30,
+    "oldestInputSeconds": 1800
+  }
 }
