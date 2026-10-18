@@ -1,0 +1,13 @@
+{
+  "verifiedAt": "2026-10-17T20:22:21.122Z",
+  "url": "http://127.0.0.1:4188",
+  "mode": "built-preview with freshly restarted development API3127",
+  "pass": true,
+  "status": 200,
+  "buildings": 9,
+  "people": 5,
+  "hashedPortraitUrls": 5,
+  "portraitHttp200": 5,
+  "loadedPortraits": 5,
+  "pageErrors": 0
+}

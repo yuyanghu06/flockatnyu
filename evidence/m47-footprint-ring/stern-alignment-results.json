@@ -1,0 +1,500 @@
+{
+  "method": "Existing public restoreCamera supplies a valid overhead test pose; only itinerary DOM visibility hidden for unobstructed canvas evidence. No source or default framing edits.",
+  "errors": [],
+  "pose": {
+    "version": 1,
+    "projection": "perspective",
+    "position": [
+      89.6326847076416,
+      275,
+      275.0855026245117
+    ],
+    "target": [
+      89.6326847076416,
+      15,
+      205.08550262451172
+    ],
+    "fov": 43,
+    "near": 0.5,
+    "far": 6000,
+    "zoom": 1
+  },
+  "snapshot": {
+    "status": "ready",
+    "loaded": 124,
+    "failed": [],
+    "selected": "stern-school-of-business",
+    "hovered": null,
+    "removedColesTriangles": 92,
+    "startedAt": 431.6000000014901,
+    "loadMilliseconds": 4176,
+    "removedKimmelTriangles": 200,
+    "removedGlobalCenterTriangles": 88,
+    "removedSilverCenterTriangles": 380,
+    "removedLeslieTriangles": 164,
+    "parkVegetation": {
+      "seed": 104729,
+      "trees": 72,
+      "shrubs": 117,
+      "sourceParkParts": 53,
+      "groundParkParts": 52,
+      "sourceSurfaceParts": 564,
+      "parksWithAdditions": 21,
+      "meshCount": 4,
+      "triangles": 17136,
+      "source": "OpenStreetMap eligible cover; deterministic illustrative planting, not surveyed tree inventory",
+      "coordinateSpace": "Washington Square meters; Y up; identity transform"
+    },
+    "mapped-streets": {
+      "sourceWays": 4830,
+      "roadWays": 1065,
+      "pathWays": 3696,
+      "skippedGradeSeparated": 69,
+      "inferredWidths": 4737,
+      "buildingExclusions": 6501,
+      "source": "OpenStreetMap local snapshot; widths inferred when absent",
+      "coordinateSpace": "Washington Square X/Z meters; identity root",
+      "mergedMeshes": 4,
+      "triangles": 204930,
+      "pathFootprintPolygons": 31,
+      "grades": {
+        "roads": 0.02,
+        "sidewalks": 0.16,
+        "curbs": 0.2,
+        "outsidePaths": 0.18,
+        "parkPaths": 0.76
+      },
+      "limitations": "Ground-level network only; inferred widths and 3m park-entry grade transitions; no traffic or lane markings"
+    },
+    "mapped-parks": {
+      "parkCount": 52,
+      "surfacePartCount": 558,
+      "surfaceCount": 0,
+      "polygons": 1925,
+      "coordinateSpace": "Washington Square meters; Y up",
+      "source": "OpenStreetMap snapshot; mapped coverage, not a survey"
+    },
+    "environmentSurfaces": {
+      "meshes": 10,
+      "triangles": 237493
+    },
+    "camera": {
+      "version": 1,
+      "projection": "perspective",
+      "position": [
+        89.6326847076416,
+        275,
+        275.08550262451166
+      ],
+      "target": [
+        89.6326847076416,
+        14.999999999999998,
+        205.08550262451172
+      ],
+      "fov": 43,
+      "near": 0.5,
+      "far": 6000,
+      "zoom": 1
+    },
+    "navigation": {
+      "mapExtent": {
+        "minX": -960,
+        "maxX": 960,
+        "minZ": -960,
+        "maxZ": 1152
+      },
+      "cameraLimits": {
+        "minDistance": 15,
+        "maxDistance": 434.2943200101229,
+        "minPolarAngle": 0.006885420692679254,
+        "maxPolarAngle": 0.8434529930137906,
+        "minCameraHeight": 1,
+        "targetBounds": {
+          "minX": -780,
+          "maxX": 780,
+          "minY": 1,
+          "maxY": 150,
+          "minZ": -780,
+          "maxZ": 970
+        }
+      },
+      "loadedTileCount": 110
+    },
+    "render": {
+      "calls": 150,
+      "triangles": 772945,
+      "logarithmicDepthBuffer": false
+    },
+    "landmarks": [
+      {
+        "id": "nyu-kimmel-center",
+        "bounds": {
+          "min": [
+            -77.52751922607422,
+            -0.11999999731779099,
+            81.26399993896484
+          ],
+          "max": [
+            -19.11124610900879,
+            51.463932037353516,
+            152.19158935546875
+          ]
+        },
+        "screen": {
+          "x": 98.88957294474409,
+          "y": 103.3686376415744,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 19316,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source CityGML massing with photo-informed facade approximation; not a survey or current entrance-access model.",
+          "architecture": {
+            "sourceTriangles": 200,
+            "windows": 229,
+            "crownPanels": 350,
+            "displayBays": 25,
+            "reference": "docs/kimmel-reference.md",
+            "preservedNeighbor": "Global Center for Academic and Spiritual Life, footprint11021"
+          },
+          "buildingId": "nyu-kimmel-center"
+        }
+      },
+      {
+        "id": "nyu-global-center",
+        "bounds": {
+          "min": [
+            -97.33972930908203,
+            -0.11999999731779099,
+            70.20575714111328
+          ],
+          "max": [
+            -48.60825729370117,
+            32.16127395629883,
+            136.21212768554688
+          ]
+        },
+        "screen": {
+          "x": 19.76244851940894,
+          "y": 75.22840988093776,
+          "visible": true
+        },
+        "meshes": 6,
+        "triangles": 12718,
+        "details": {
+          "buildingId": "nyu-global-center",
+          "coordinateSpace": "Washington Square map meters; identity transform",
+          "modelFidelity": "Source massing and architect-text-informed screen approximation; exterior photo and browser validation pending.",
+          "architecture": {
+            "sourceTriangles": 88,
+            "screenPanels": 680,
+            "foliageApertures": 1079,
+            "densityCounts": [
+              146,
+              152,
+              219,
+              163
+            ],
+            "mullions": 146,
+            "reference": "docs/global-center-reference.md"
+          }
+        }
+      },
+      {
+        "id": "nyu-silver-center",
+        "bounds": {
+          "min": [
+            116.27423095703125,
+            1.3041272163391113,
+            19.216636657714844
+          ],
+          "max": [
+            177.37234497070312,
+            58.22825241088867,
+            87.29178619384766
+          ]
+        },
+        "screen": {
+          "x": 966.5206578695738,
+          "y": -148.51407145852048,
+          "visible": false
+        },
+        "meshes": 7,
+        "triangles": 73892,
+        "details": {
+          "buildingId": "nyu-silver-center",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11667,
+          "sourceTriangles": 380,
+          "windowCount": 857
+        }
+      },
+      {
+        "id": "nyu-leslie-elab-building",
+        "bounds": {
+          "min": [
+            157.273681640625,
+            -0.09082202613353729,
+            129.48802185058594
+          ],
+          "max": [
+            200.84979248046875,
+            59.4202995300293,
+            166.80621337890625
+          ]
+        },
+        "screen": {
+          "x": 1140.5792909217641,
+          "y": 223.49995348393054,
+          "visible": true
+        },
+        "meshes": 7,
+        "triangles": 31772,
+        "details": {
+          "buildingId": "nyu-leslie-elab-building",
+          "modelFidelity": "Original CityGML massing; photo-informed facade approximation",
+          "coordinateSpace": "Baked Washington Square map meters; identity root",
+          "sourceFootprintIndex": 11174,
+          "sourceTriangles": 164,
+          "windowCount": 498,
+          "storefrontCount": 16
+        }
+      },
+      {
+        "id": "bobst-library",
+        "bounds": {
+          "min": [
+            -37.04813229862255,
+            2.68800003652754,
+            108.53189870264993
+          ],
+          "max": [
+            56.43214018266443,
+            53.77473711675113,
+            200.48407872263823
+          ]
+        },
+        "screen": {
+          "x": 343.6680570187152,
+          "y": 253.89282466570705,
+          "visible": true
+        },
+        "meshes": 10,
+        "triangles": 1856,
+        "details": {
+          "buildingId": "bobst-library"
+        }
+      },
+      {
+        "id": "washington-square-arch",
+        "bounds": {
+          "min": [
+            10.510046783447871,
+            0.68,
+            -53.33341635506916
+          ],
+          "max": [
+            27.87195321655213,
+            21.18,
+            -39.00058364493084
+          ]
+        },
+        "screen": {
+          "x": 455.85998884892854,
+          "y": -405.77639700876455,
+          "visible": false
+        },
+        "meshes": 1,
+        "triangles": 315,
+        "details": {
+          "buildingId": "washington-square-arch"
+        }
+      },
+      {
+        "id": "courant-institute",
+        "bounds": {
+          "min": [
+            115.60099792480469,
+            3.752000093460083,
+            207.3649139404297
+          ],
+          "max": [
+            165.12399291992188,
+            54.98899841308594,
+            270.4930114746094
+          ]
+        },
+        "screen": {
+          "x": 981.1390242673526,
+          "y": 648.9925422347136,
+          "visible": true
+        },
+        "meshes": 3,
+        "triangles": 31388,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "courant",
+            "sourceGlassComponents": 370,
+            "windows": 370,
+            "faces": 370,
+            "occludedFaces": 370,
+            "addedMeshes": 2,
+            "addedTriangles": 26640,
+            "sourcePalette": {
+              "trim": [
+                0.26635560393333435,
+                0.21952620148658752,
+                0.18116424977779388
+              ],
+              "mullion": [
+                0.12477181851863861,
+                0.08650045841932297,
+                0.07227185368537903
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "buildingId": "courant-institute"
+        }
+      },
+      {
+        "id": "nyu-john-a-paulson-center",
+        "bounds": {
+          "min": [
+            -65.42637634277344,
+            2.4856998920440674,
+            411.0456237792969
+          ],
+          "max": [
+            39.85437774658203,
+            93.48570251464844,
+            535.2313232421875
+          ]
+        },
+        "screen": {
+          "x": -55.1158925449824,
+          "y": 2394.001065283816,
+          "visible": false
+        },
+        "meshes": 8,
+        "triangles": 52440,
+        "details": {
+          "coordinateSpace": "Washington Square map meters; geometry baked; identity root",
+          "modelFidelity": "Photo-informed approximation; not surveyed geometry",
+          "architecture": {
+            "studentHeight": 69,
+            "facultyHeight": 91,
+            "podiumHeight": 25.48,
+            "reference": "docs/paulson-reference.md"
+          },
+          "buildingId": "nyu-john-a-paulson-center"
+        }
+      },
+      {
+        "id": "stern-school-of-business",
+        "bounds": {
+          "min": [
+            30.535999298095703,
+            -0.11999999731779099,
+            151.9720001220703
+          ],
+          "max": [
+            148.7293701171875,
+            55.499000549316406,
+            258.1990051269531
+          ]
+        },
+        "screen": {
+          "x": 720,
+          "y": 483.70687618160053,
+          "visible": true
+        },
+        "meshes": 14,
+        "triangles": 110248,
+        "details": {
+          "windowDetailing": {
+            "version": 1,
+            "building": "stern",
+            "sourceGlassComponents": 1098,
+            "windows": 1073,
+            "faces": 1095,
+            "occludedFaces": 1101,
+            "addedMeshes": 2,
+            "addedTriangles": 78288,
+            "sourcePalette": {
+              "trim": [
+                0.5457244515419006,
+                0.5271151065826416,
+                0.4793201684951782
+              ],
+              "mullion": [
+                0.2345505803823471,
+                0.24228112399578094,
+                0.22696587443351746
+              ]
+            },
+            "method": "Existing pane boundaries; original buffers/materials unchanged; no replacement glass"
+          },
+          "includesGouldPlaza": true,
+          "plaza": {
+            "coordinateSpace": "Washington Square map meters; identity transform",
+            "modelFidelity": "Photo-informed pre-renovation permanent plaza layout; not a survey of current access or 2026 works.",
+            "architecture": {
+              "pavers": 6466,
+              "skylights": 2,
+              "benches": 8,
+              "frontSteps": 6,
+              "mainCourtMeters": [
+                58.7,
+                36.8
+              ],
+              "reference": "docs/gould-plaza-reference.md"
+            },
+            "planting": {
+              "trees": 4,
+              "shrubPlanters": 3,
+              "provenance": "User-requested planting proposal, not surveyed existing vegetation"
+            }
+          },
+          "buildingId": "stern-school-of-business"
+        },
+        "parts": [
+          {
+            "name": "stern-school-of-business",
+            "bounds": {
+              "min": [
+                30.535999298095703,
+                2.890000104904175,
+                151.9720001220703
+              ],
+              "max": [
+                119.41000366210938,
+                55.499000549316406,
+                247.55499267578125
+              ]
+            }
+          },
+          {
+            "name": "nyu-gould-plaza",
+            "bounds": {
+              "min": [
+                78.45346069335938,
+                -0.11999999731779099,
+                171.71893310546875
+              ],
+              "max": [
+                148.7293701171875,
+                10.483983039855957,
+                258.1990051269531
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "pass": true
+}

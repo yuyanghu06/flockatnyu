@@ -1,0 +1,255 @@
+{
+  "pass": true,
+  "cases": [
+    {
+      "dpr": 1,
+      "occluderPixelsUnchanged": true,
+      "interiorPixelsUnchanged": true,
+      "whiteOuterExtentCss": 2.0,
+      "edgeSamples": [
+        {
+          "offsetCss": -4.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            24,
+            36,
+            49
+          ]
+        },
+        {
+          "offsetCss": -3.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            24,
+            33,
+            43
+          ]
+        },
+        {
+          "offsetCss": -2.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "offsetCss": -1.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "offsetCss": 0.0,
+          "before": [
+            183,
+            117,
+            77
+          ],
+          "after": [
+            183,
+            117,
+            77
+          ]
+        },
+        {
+          "offsetCss": 1.0,
+          "before": [
+            183,
+            117,
+            77
+          ],
+          "after": [
+            183,
+            117,
+            77
+          ]
+        }
+      ]
+    },
+    {
+      "dpr": 2,
+      "occluderPixelsUnchanged": true,
+      "interiorPixelsUnchanged": true,
+      "whiteOuterExtentCss": 2.0,
+      "edgeSamples": [
+        {
+          "offsetCss": -4.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            24,
+            36,
+            49
+          ]
+        },
+        {
+          "offsetCss": -3.5,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            24,
+            36,
+            49
+          ]
+        },
+        {
+          "offsetCss": -3.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            24,
+            34,
+            45
+          ]
+        },
+        {
+          "offsetCss": -2.5,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            24,
+            32,
+            41
+          ]
+        },
+        {
+          "offsetCss": -2.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "offsetCss": -1.5,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "offsetCss": -1.0,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "offsetCss": -0.5,
+          "before": [
+            24,
+            36,
+            49
+          ],
+          "after": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "offsetCss": 0.0,
+          "before": [
+            183,
+            117,
+            77
+          ],
+          "after": [
+            183,
+            117,
+            77
+          ]
+        },
+        {
+          "offsetCss": 0.5,
+          "before": [
+            183,
+            117,
+            77
+          ],
+          "after": [
+            183,
+            117,
+            77
+          ]
+        },
+        {
+          "offsetCss": 1.0,
+          "before": [
+            183,
+            117,
+            77
+          ],
+          "after": [
+            183,
+            117,
+            77
+          ]
+        },
+        {
+          "offsetCss": 1.5,
+          "before": [
+            183,
+            117,
+            77
+          ],
+          "after": [
+            183,
+            117,
+            77
+          ]
+        }
+      ]
+    }
+  ]
+}

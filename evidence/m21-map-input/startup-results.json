@@ -25,7 +25,7 @@
       "pass": true
     },
     {
-      "name": "Automatically enters once only after complete jobs, resources and scene preparation",
+      "name": "Ready holds input through ordered logo and white exits, then enters exactly once",
       "pass": true
     },
     {
@@ -33,7 +33,7 @@
       "pass": true
     },
     {
-      "name": "Removed visual loader and CTA; actual preparation and import fallback remain",
+      "name": "Branded loader is available in initial HTML without entry CTA; preparation and import fallback remain",
       "pass": true
     }
   ]

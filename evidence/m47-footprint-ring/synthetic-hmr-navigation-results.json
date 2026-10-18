@@ -1,0 +1,8 @@
+{
+  "checks": [],
+  "errors": [],
+  "limitations": [
+    "Synthetic fixed-camera WebGL pixels isolate outline behavior; actual campus appearance is separate."
+  ],
+  "failure": "page.evaluate: Execution context was destroyed, most likely because of a navigation.\n    at /Users/yuyang/Documents/techatnyu/techvisualized/evidence/m47-footprint-ring/synthetic.mjs:4:23"
+}

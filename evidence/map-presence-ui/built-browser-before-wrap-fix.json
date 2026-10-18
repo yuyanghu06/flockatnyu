@@ -1,0 +1,121 @@
+{
+  "url": "http://127.0.0.1:4188",
+  "browser": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Live database endpoint displays exactly five debug people at Bobst and loads every approved portrait",
+      "pass": true,
+      "detail": {
+        "loadMs": 11039,
+        "landmarks": 9,
+        "people": 5,
+        "loadedPortraits": 5,
+        "errors": 0,
+        "failedAssets": 0
+      }
+    },
+    {
+      "name": "Circular avatar ring, spacing and roof anchors remain readable on the unchanged desktop map",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000010464699503057166,
+        "anchor": {
+          "x": 925.2424926757812,
+          "y": 345.11749267578125
+        },
+        "diameter": 48,
+        "spacing": 58
+      }
+    },
+    {
+      "name": "Actual pointer orbit reprojects the same roof anchor without moving map geometry",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000005237578060820404,
+        "anchor": {
+          "x": 862.896484375,
+          "y": 286.5421447753906
+        }
+      }
+    },
+    {
+      "name": "Pointer avatar activation selects Bobst, runs camera focus, and exposes truthful test tooltip",
+      "pass": false,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button.map-presence__person').first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-expanded=\"false\" class=\"map-presence__person\" data-person-id=\"synthetic-0\" aria-label=\"Person 1 at Bobst Library · Test location\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    10 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not stable\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-expanded=\"false\" class=\"map-presence__person\" data-person-id=\"synthetic-0\" aria-label=\"Person 1 at Bobst Library · Test location\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    15 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not stable\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "name": "Keyboard avatar activation and Escape retain accessible selection",
+      "pass": true,
+      "detail": {
+        "keyboard": true
+      }
+    },
+    {
+      "name": "Unchanged poll refresh preserves keyboard focus and pinned person detail",
+      "pass": true,
+      "detail": {
+        "focusPreserved": true
+      }
+    },
+    {
+      "name": "Complete building hover lift moves both roof bounds and avatar anchor together",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000019499693143442373,
+        "anchor": {
+          "x": 926.5372314453125,
+          "y": 335.1451110839844
+        },
+        "lift": 4.02570348947161
+      }
+    },
+    {
+      "name": "Mobile resize keeps all five markers distinct and selectable with no horizontal overflow",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000015495205501010123,
+        "anchor": {
+          "x": 195.0281524658203,
+          "y": 357.8736267089844
+        },
+        "diameter": 40
+      }
+    },
+    {
+      "name": "Narrow viewport wraps the avatar fan; near-edge projection keeps circles inside the screen",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n\n1 !== 5\n"
+    },
+    {
+      "name": "Expired and future fixtures are omitted; active markers expire without another network request",
+      "pass": true,
+      "detail": {
+        "expiryRemoves": true
+      }
+    },
+    {
+      "name": "Presence failures clear stale markers, leave startup/map usable, and recover on refresh",
+      "pass": false,
+      "error": "Expected \"actual\" not to be strictly deep-equal to:\n\n{\n  far: 6000,\n  fov: 43,\n  near: 0.5,\n  position: [\n    28.85318060368872,\n    300.75691000588006,\n    -205.23631179446073\n  ],\n  projection: 'perspective',\n  target: [\n    74,\n    12,\n    116\n  ],\n  version: 1,\n  zoom: 1\n}\n"
+    },
+    {
+      "name": "Unknown avatar URLs remain initials and malformed payload cannot inject markup",
+      "pass": false,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button.map-presence__person').first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-expanded=\"false\" class=\"map-presence__person\" data-person-id=\"synthetic-0\" aria-label=\"<img src=x onerror=alert(1)> at Bobst Library · Test location\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    31 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" aria-expanded=\"false\" class=\"map-presence__person\" data-person-id=\"synthetic-0\" aria-label=\"<img src=x onerror=alert(1)> at Bobst Library · Test location\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    4 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n"
+    },
+    {
+      "name": "Normal synthetic browser run has no JavaScript errors or failed map assets",
+      "pass": true,
+      "detail": {
+        "errors": 0,
+        "failedAssets": 0,
+        "loadMs": 8247
+      }
+    }
+  ],
+  "limitations": [
+    "Headless Chrome using software WebGL; mobile viewport emulated, no physical device or touch gesture measurements.",
+    "Tracked screenshots use synthetic people/initials only; live names, IDs and portraits are excluded from tracked evidence.",
+    "No cloud writes, model requests, deployment or unrelated process changes."
+  ]
+}

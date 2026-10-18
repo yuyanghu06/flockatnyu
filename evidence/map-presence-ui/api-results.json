@@ -1,0 +1,41 @@
+{
+  "verifiedAt": "2026-10-17T20:18:00.285Z",
+  "command": "node --test tests/map-presence.test.mjs",
+  "exitCode": 0,
+  "passed": 13,
+  "failed": 0,
+  "checks": [
+    "safe presentation-only response",
+    "principal required before store I/O",
+    "exact local debug fixture exclusion in production and other identities",
+    "expiry/future/trackable/status/source validation",
+    "allowlist plus strict positive source authorization for normal authenticated production member",
+    "bounded store/policy timeout, error and pre-abort handling",
+    "avatar allowlist and duplicate person bounds",
+    "invalid collection and clock handling",
+    "fixed HTTPS Supabase origin and service-only minimal read fields",
+    "HTTP/body/stream/oversize timeout failures",
+    "trusted local socket GET auth; spoofed headers/remote/production denial",
+    "sanitized API service errors and no-store",
+    "authenticated production local identity still cannot expose debug fixture"
+  ],
+  "initialFinding": {
+    "status": "fixed-and-retested",
+    "description": "Pre-aborted request produced an unhandled cancellation rejection. Backend coder corrected boundedWork; independently rerun13tests exits0 without unhandled activity."
+  },
+  "regression": {
+    "command": "npm run test:assistant",
+    "exitCode": 0,
+    "passed": 20,
+    "failed": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "warning": "Existing main chunk size above500KB; build succeeded."
+  },
+  "apiBuild": {
+    "command": "npm run build:api",
+    "exitCode": 0
+  }
+}

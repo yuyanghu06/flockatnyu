@@ -1,0 +1,51 @@
+{
+  "url": "http://127.0.0.1:4198",
+  "browser": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Table label text is verbatim in badge, details and accessibility without status captions",
+      "pass": true,
+      "detail": {
+        "verbatim": true,
+        "htmlIsText": true,
+        "generatedCaptions": false
+      }
+    },
+    {
+      "name": "Blank labels hide both badge and detail context without synthesizing a caption",
+      "pass": true,
+      "detail": {
+        "badgeAbsent": true,
+        "contextAbsent": true
+      }
+    },
+    {
+      "name": "200-code-point labels stay within readable badge bounds with full detail text",
+      "pass": true,
+      "detail": {
+        "codePoints": 200,
+        "badgeDesktop": {
+          "width": 50,
+          "height": 15,
+          "overflow": "hidden",
+          "textOverflow": "ellipsis"
+        },
+        "mobileNoHorizontalOverflow": true
+      }
+    },
+    {
+      "name": "Normal synthetic browser run has no JavaScript errors or failed map assets",
+      "pass": true,
+      "detail": {
+        "errors": 0,
+        "failedAssets": 0,
+        "loadMs": 12113
+      }
+    }
+  ],
+  "limitations": [
+    "Headless Chrome using software WebGL; mobile viewport emulated, no physical device or touch gesture measurements.",
+    "Tracked screenshots use synthetic people/initials only; live names, IDs and portraits are excluded from tracked evidence.",
+    "No cloud writes, model requests, deployment or unrelated process changes."
+  ]
+}

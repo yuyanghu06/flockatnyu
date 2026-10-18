@@ -17,7 +17,7 @@
       "pass": true
     },
     {
-      "name": "Bobst distinct glow configuration is brighter than general buildings at fixed phase",
+      "name": "Bobst and other buildings use the same constant white highlight",
       "pass": true
     }
   ],

@@ -1,0 +1,23 @@
+{
+  "project_ref": "jssehnrmqhstcrtxulpa",
+  "local_migration": "202610170024_map_building_scheduled_events.sql",
+  "hosted_version": "20261018000104",
+  "name": "map_building_scheduled_events",
+  "transaction_assertions": [
+    "Existing building and person rows unchanged",
+    "Existing table ACL/RLS unchanged",
+    "Existing functions and grants unchanged",
+    "Nine empty event defaults",
+    "Runtime people_here-only write scope preserved"
+  ],
+  "verification": {
+    "buildings": 9,
+    "empty_events": 9,
+    "service_can_read": true,
+    "service_can_write_events": false,
+    "service_can_write_presence": true,
+    "rls_forced": true,
+    "validation_triggers": 1
+  },
+  "applied_at": "2026-10-18T00:01:05.241301+00:00"
+}

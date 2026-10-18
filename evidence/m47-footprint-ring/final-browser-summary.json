@@ -1,0 +1,147 @@
+{
+  "pass": true,
+  "phaseImages": [
+    {
+      "requestedMs": 0,
+      "actualMs": 2.547119140625,
+      "file": "entrance-0ms.jpg"
+    },
+    {
+      "requestedMs": 150,
+      "actualMs": 2.547119140625,
+      "file": "entrance-150ms.jpg"
+    },
+    {
+      "requestedMs": 700,
+      "actualMs": 805.578125,
+      "file": "entrance-700ms.jpg"
+    }
+  ],
+  "synchronizedBrowserSamples": 254,
+  "repeatSelectionNoReset": true,
+  "dpr1": {
+    "strength": 1,
+    "proxyCount": 10,
+    "targetSize": [
+      1440,
+      1000
+    ],
+    "samples": 4,
+    "widthCssPixels": 2
+  },
+  "dpr2": {
+    "strength": 1,
+    "proxyCount": 10,
+    "targetSize": [
+      2880,
+      2000
+    ],
+    "samples": 4,
+    "widthCssPixels": 2
+  },
+  "afterOutward": {
+    "activeId": null,
+    "selectionStrength": 0,
+    "selectedId": null,
+    "ringMeshes": 0,
+    "source": null,
+    "approximate": false,
+    "footprintSpace": "world",
+    "footprint": [],
+    "groundY": 0.8,
+    "whiteWidth": 1.15,
+    "strength": 0,
+    "outline": {
+      "strength": 0,
+      "proxyCount": 0,
+      "targetSize": [
+        2880,
+        2000
+      ],
+      "samples": 4,
+      "widthCssPixels": 2
+    }
+  },
+  "reduced": {
+    "activeId": "bobst-library",
+    "selectionStrength": 1,
+    "selectedId": "bobst-library",
+    "ringMeshes": 2,
+    "source": "lowest-band geometry hull; Gould excluded",
+    "approximate": true,
+    "footprintSpace": "world",
+    "footprint": [
+      [
+        -37.04812564871415,
+        162.78988010618676
+      ],
+      [
+        -15.585448846412532,
+        129.4531935430916
+      ],
+      [
+        -9.102420448400267,
+        119.38349498335728
+      ],
+      [
+        -2.1159941483217963,
+        108.53189870264993
+      ],
+      [
+        16.462559842104227,
+        120.493060439463
+      ],
+      [
+        36.91605550621862,
+        133.66133875906473
+      ],
+      [
+        56.43208698339722,
+        146.2260630685865
+      ],
+      [
+        52.93887383335799,
+        151.6518612089402
+      ],
+      [
+        41.95583648117408,
+        168.7111533509743
+      ],
+      [
+        24.993168633044107,
+        195.05824633176968
+      ],
+      [
+        21.49995548300487,
+        200.48404447212334
+      ],
+      [
+        7.551785911527613,
+        191.5039961721906
+      ],
+      [
+        -18.469578308196528,
+        174.7510375616855
+      ],
+      [
+        -30.542792906168614,
+        166.9781144071701
+      ]
+    ],
+    "groundY": 0.8,
+    "whiteWidth": 1.15,
+    "strength": 1,
+    "outline": {
+      "strength": 1,
+      "proxyCount": 10,
+      "targetSize": [
+        2880,
+        2000
+      ],
+      "samples": 4,
+      "widthCssPixels": 2
+    }
+  },
+  "errors": [],
+  "shaderErrors": []
+}

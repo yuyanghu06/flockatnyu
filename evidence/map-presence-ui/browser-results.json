@@ -1,0 +1,129 @@
+{
+  "url": "http://127.0.0.1:4188",
+  "browser": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Circular avatar ring, spacing and roof anchors remain readable on the unchanged desktop map",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000010464699503057166,
+        "anchor": {
+          "x": 925.2424926757812,
+          "y": 345.11749267578125
+        },
+        "diameter": 48,
+        "spacing": 58
+      }
+    },
+    {
+      "name": "Actual pointer orbit reprojects the same roof anchor without moving map geometry",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000005237578060820404,
+        "anchor": {
+          "x": 862.896484375,
+          "y": 286.5421447753906
+        }
+      }
+    },
+    {
+      "name": "Pointer avatar activation selects Bobst, runs camera focus, and exposes truthful test tooltip",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000013651583030761326,
+        "anchor": {
+          "x": 720.1856689453125,
+          "y": 373.1492919921875
+        }
+      }
+    },
+    {
+      "name": "Keyboard avatar activation and Escape retain accessible selection",
+      "pass": true,
+      "detail": {
+        "keyboard": true
+      }
+    },
+    {
+      "name": "Unchanged poll refresh preserves keyboard focus and pinned person detail",
+      "pass": true,
+      "detail": {
+        "focusPreserved": true
+      }
+    },
+    {
+      "name": "Complete building hover lift moves both roof bounds and avatar anchor together",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000019499693143442373,
+        "anchor": {
+          "x": 926.5372314453125,
+          "y": 335.1451110839844
+        },
+        "lift": 4.02570348947161
+      }
+    },
+    {
+      "name": "Mobile resize keeps all five markers distinct and selectable with no horizontal overflow",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.00000507338104209764,
+        "anchor": {
+          "x": 195.0205078125,
+          "y": 362.38909912109375
+        },
+        "diameter": 40
+      }
+    },
+    {
+      "name": "Narrow viewport wraps the avatar fan; near-edge projection keeps circles inside the screen",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000007208338289512731,
+        "anchor": {
+          "x": 45.00000762939453,
+          "y": 345.11749267578125
+        },
+        "narrowWidths": [
+          250,
+          240
+        ]
+      }
+    },
+    {
+      "name": "Expired and future fixtures are omitted; active markers expire without another network request",
+      "pass": true,
+      "detail": {
+        "expiryRemoves": true
+      }
+    },
+    {
+      "name": "Presence failures clear stale markers, leave startup/map usable, and recover on refresh",
+      "pass": true,
+      "detail": {
+        "recovered": true
+      }
+    },
+    {
+      "name": "Unknown avatar URLs remain initials and malformed payload cannot inject markup",
+      "pass": true,
+      "detail": {
+        "safeFallback": true
+      }
+    },
+    {
+      "name": "Normal synthetic browser run has no JavaScript errors or failed map assets",
+      "pass": true,
+      "detail": {
+        "errors": 0,
+        "failedAssets": 0,
+        "loadMs": 10480
+      }
+    }
+  ],
+  "limitations": [
+    "Headless Chrome using software WebGL; mobile viewport emulated, no physical device or touch gesture measurements.",
+    "Tracked screenshots use synthetic people/initials only; live names, IDs and portraits are excluded from tracked evidence.",
+    "No cloud writes, model requests, deployment or unrelated process changes."
+  ]
+}

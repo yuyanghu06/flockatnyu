@@ -1,0 +1,41 @@
+✔ shared contracts are deeply immutable and accepted by the actual tool-schema checker (2.047833ms)
+✔ approved current-presence policy is shared immutable data with source-time-only semantics (0.085875ms)
+✔ approved timed-event policy is distinct from presence freshness and preserves explicit ends (0.07225ms)
+✔ schemas reject malformed shapes, coercions, unknown/nested fields and bounds (0.407375ms)
+✔ examples preserve stable source identities and exclusive-end all-day dates (13.977958ms)
+✔ immutable applied migrations 021–024 retain the independently captured pre-pass hashes (6.392959ms)
+▶ actual 001–024 SQL accepts exported examples and independently rejects semantic invalidity
+  ✔ actual SQL rejects unknown fields, nested/stringified payloads and invalid identities/times/provenance (91.089292ms)
+  ✔ SQL title bound is trimmed, and schema delegates that semantic check explicitly (30.399875ms)
+  ✔ PostgreSQL counts Unicode code points; generic tool validator currently counts UTF-16 units (2.304792ms)
+  ✔ runtime retains people-only writes, without event or fixed-catalogue mutation (0.74ms)
+✔ actual 001–024 SQL accepts exported examples and independently rejects semantic invalidity (1625.366917ms)
+✔ real handler delivers structured contracts/examples to provider system prompt and preserves scoped wrapper/finish protocol (19.086625ms)
+✔ prompt policy coverage: exact existing storage names and flattened arrays (0.167167ms)
+✔ prompt policy coverage: activity labels come from explicit activity and unknown activity stays blank (0.1375ms)
+✔ prompt policy coverage: stable known identity and building lookup; no first-name inference (0.1565ms)
+✔ prompt policy coverage: person lookup applies to people records; events need stable source identity and known building (0.219417ms)
+✔ prompt policy coverage: fixed catalogue and people-only runtime write boundary (0.620958ms)
+✔ prompt policy coverage: events differ from presence, RSVP and deferred attendee schema (0.125417ms)
+✔ prompt policy coverage: future windows cannot create current presence early (0.214208ms)
+✔ prompt policy coverage: two-hour freshness applies to current self-reports using original provider time (0.199292ms)
+✔ prompt policy coverage: fresh explicit location refreshes; activity-only updates do not (0.188208ms)
+✔ prompt policy coverage: expired reports, unknown timestamps and ambiguous ends remain deferred (0.139125ms)
+✔ prompt policy coverage: policy examples demonstrate source14-to16, confirmed15-to17, activity15-keeps16 and delayed18-no-resurrection (0.134541ms)
+✔ prompt policy coverage: approved timed-event default applies only with supported start and missing end (0.122875ms)
+✔ prompt policy coverage: event partial edits preserve known end and all-day events keep exclusive date boundaries (0.165125ms)
+✔ prompt policy coverage: relative times source anchored and no invented duration or expiry (0.167791ms)
+✔ prompt policy coverage: stable event identity and explicit cancellation, preserving partial records (0.138416ms)
+✔ prompt policy coverage: untrusted source contents never grant permissions (0.081458ms)
+✔ prompt policy coverage: unsupported map writes cannot be claimed complete (0.133833ms)
+✔ unknown map-write tool is refused before execution or completion and preserves queued evidence (0.673916ms)
+✔ plain-text write-success claim does not finish an unsupported input (0.291167ms)
+✔ tool wrapper scope and single-call finish remain enforced independently of prompt prose (0.871084ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1786.008666

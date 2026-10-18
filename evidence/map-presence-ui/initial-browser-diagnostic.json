@@ -1,0 +1,93 @@
+{
+  "status": "invalidated-test-run",
+  "reason": "Development Vite reloaded the synthetic page while coder/test files were still being edited. Subsequent undefined window.__map results cannot establish application behavior. The CSS float equality assertion and fixed motion wait were corrected in the test. Final verification uses stable built preview.",
+  "url": "http://127.0.0.1:4187",
+  "browser": "155.0.8059.80",
+  "checks": [
+    {
+      "name": "Live database endpoint displays exactly five debug people at Bobst and loads every approved portrait",
+      "pass": true,
+      "detail": {
+        "loadMs": 11728,
+        "landmarks": 9,
+        "people": 5,
+        "loadedPortraits": 5,
+        "errors": 0,
+        "failedAssets": 0
+      }
+    },
+    {
+      "name": "Circular avatar ring, spacing and roof anchors remain readable on the unchanged desktop map",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 47.99993896484375\n- 48\n"
+    },
+    {
+      "name": "Actual pointer orbit reprojects the same roof anchor without moving map geometry",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000005237578060820404,
+        "anchor": {
+          "x": 862.896484375,
+          "y": 286.5421447753906
+        }
+      }
+    },
+    {
+      "name": "Pointer avatar activation selects Bobst, runs camera focus, and exposes truthful test tooltip",
+      "pass": true,
+      "detail": {
+        "errorPx": 0.000016537521790220712,
+        "anchor": {
+          "x": 720.3341674804688,
+          "y": 373.1102600097656
+        }
+      }
+    },
+    {
+      "name": "Keyboard avatar activation and Escape retain accessible selection",
+      "pass": true,
+      "detail": {
+        "keyboard": true
+      }
+    },
+    {
+      "name": "Complete building hover lift moves both roof bounds and avatar anchor together",
+      "pass": false,
+      "error": "The expression evaluated to a falsy value:\n\n  assert(lifted.min[1]-box.min[1]>4)\n"
+    },
+    {
+      "name": "Mobile resize keeps all five markers distinct and selectable with no horizontal overflow",
+      "pass": false,
+      "error": "Expected values to be strictly equal:\n\n1 !== 5\n"
+    },
+    {
+      "name": "Expired and future fixtures are omitted; active markers expire without another network request",
+      "pass": false,
+      "error": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'presence')\n    at eval (eval at evaluate (:370:30), <anonymous>:1:18)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "name": "Presence failures clear stale markers, leave startup/map usable, and recover on refresh",
+      "pass": false,
+      "error": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'presence')\n    at eval (eval at evaluate (:370:30), <anonymous>:1:18)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "name": "Unknown avatar URLs remain initials and malformed payload cannot inject markup",
+      "pass": false,
+      "error": "page.evaluate: TypeError: Cannot read properties of undefined (reading 'presence')\n    at eval (eval at evaluate (:370:30), <anonymous>:1:18)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "name": "Normal synthetic browser run has no JavaScript errors or failed map assets",
+      "pass": true,
+      "detail": {
+        "errors": 0,
+        "failedAssets": 0,
+        "loadMs": 7694
+      }
+    }
+  ],
+  "limitations": [
+    "Headless Chrome using software WebGL; mobile viewport emulated, no physical device or touch gesture measurements.",
+    "Tracked screenshots use synthetic people/initials only; live names, IDs and portraits are excluded from tracked evidence.",
+    "No cloud writes, model requests, deployment or unrelated process changes."
+  ]
+}

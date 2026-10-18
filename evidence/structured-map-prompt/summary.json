@@ -1,0 +1,76 @@
+{
+  "verifiedAt": "2026-10-18T00:11:15.573Z",
+  "verdict": "PASS",
+  "combined": {
+    "command": "node --test tests/map-contracts.test.mjs tests/update-agent-prompt.test.mjs tests/agent-input-cache-sql.test.mjs tests/agent-automation*.test.mjs tests/gmail-subscription.test.mjs tests/calendar-tools.test.mjs tests/update-agent-calendar.test.mjs tests/map-schema.test.mjs tests/map-roster.test.mjs tests/map-building-write-scope.test.mjs tests/map-presence-labels-sql.test.mjs tests/map-events-sql.test.mjs tests/map-presence.test.mjs",
+    "exitCode": 0,
+    "tests": 206,
+    "passed": 206,
+    "failed": 0,
+    "durationMs": 8486.628042,
+    "stage": "both approved two-hour policies; before final person/event lookup wording refinement"
+  },
+  "finalFocused": {
+    "command": "node --test tests/map-contracts.test.mjs tests/update-agent-prompt.test.mjs",
+    "exitCode": 0,
+    "tests": 32,
+    "passed": 32,
+    "failed": 0,
+    "durationMs": 1786.008666,
+    "stage": "final wording; person lookup scoped to people_here, event identity distinct"
+  },
+  "actualProviderSystemPromptBytes": 23897,
+  "promptBudgetBytes": 24576,
+  "presencePolicy": {
+    "seconds": 7200,
+    "appliesTo": "explicit_current_self_report_without_end",
+    "anchoredTo": "original_provider_report_timestamp",
+    "refreshRequires": "newer_explicit_current_location_confirmation",
+    "meaning": "freshness_cutoff_not_promised_departure",
+    "excludes": [
+      "future_plans",
+      "events",
+      "activity_only_edits",
+      "partial_edits_without_location_confirmation"
+    ]
+  },
+  "eventPolicy": {
+    "seconds": 7200,
+    "appliesTo": "timed_event_with_supported_start_and_missing_end",
+    "explicitEndOrDurationOverrides": true,
+    "preserveExistingEndOnPartialEdit": true,
+    "excludes": [
+      "all_day_events",
+      "unknown_or_ambiguous_start",
+      "future_person_location_plans"
+    ]
+  },
+  "migrationHashes": {
+    "202610170021_map_people_buildings.sql": "9627700ffabb38ccd95fdc435cb67fc923df7fa15fe097bebf01c807b1486cee",
+    "202610170022_map_buildings_people_here_only.sql": "235a3a1bec6c794cf1e6f7ce26811cf1e618d9c2926449f5030f4720bbe84dea",
+    "202610170023_map_presence_labels.sql": "a29b3aadf55f42f9368020c2a822d5d5802dada21f21b97c0454855f79d16705",
+    "202610170024_map_building_scheduled_events.sql": "7624f380d3dadeffc443eea6b9b16ecadf82c8eb46fd14c5c62ed332ca774459"
+  },
+  "actualSqlLoaded": "001–024",
+  "exportedExamplesAcceptedBySql": true,
+  "syntheticExamplePersonIdSubstitutedWithExistingLocalSeed": true,
+  "runtimePrivileges": {
+    "people_hereUpdate": true,
+    "scheduled_eventsUpdate": false,
+    "buildingNameUpdate": false
+  },
+  "unknownMapToolRefused": true,
+  "plainTextWriteSuccessCannotFinish": true,
+  "modelComplianceTested": false,
+  "browserChecks": false,
+  "cloudWrites": false,
+  "realModelCalls": false,
+  "unattendedExecutionVerified": false,
+  "limitations": [
+    "Storage schemas do not grant/register map tools or writes.",
+    "Generic validator UTF-16 bounds differ from PostgreSQL codepoint bounds.",
+    "Trimmed-title, identity/time/source/access semantics require SQL and trusted adapter enforcement.",
+    "All-day local-midnight and offset/timezone coherence are prompt/future-tool rules, not current SQL guarantees.",
+    "Synthetic provider tests prove prompt delivery/protocol enforcement, not LLM compliance."
+  ]
+}

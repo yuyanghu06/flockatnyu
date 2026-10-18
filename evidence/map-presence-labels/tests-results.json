@@ -1,0 +1,58 @@
+{
+  "role": "independent tester",
+  "commands": [
+    {
+      "command": "node --test tests/map-presence-labels-sql.test.mjs tests/map-presence.test.mjs tests/map-schema.test.mjs tests/map-roster.test.mjs tests/map-building-write-scope.test.mjs",
+      "exitCode": 0,
+      "tests": 62,
+      "passed": 62,
+      "failed": 0,
+      "breakdown": {
+        "labelsSql": 10,
+        "presenceApi": 15,
+        "historical021Sql": 12,
+        "roster": 14,
+        "fixedCatalogue022Sql": 11
+      }
+    },
+    {
+      "command": "npm run build && npm run build:api",
+      "exitCode": 0,
+      "warning": "Existing Vite large-chunk advisory; build and API dependency/syntax verification succeeded."
+    },
+    {
+      "command": "MAP_URL=http://127.0.0.1:4198 MAP_EVIDENCE=evidence/map-presence-labels MAP_SKIP_LIVE=true node tests/map-presence-browser.mjs",
+      "exitCode": 0,
+      "checks": 15,
+      "passed": 15,
+      "report": "browser-regressions.json",
+      "note": "Initial label build before final narrower badge geometry; includes all existing synthetic map regressions."
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "note": "Rebuilt once after final 50px desktop/40px mobile badge-width correction."
+    },
+    {
+      "command": "MAP_URL=http://127.0.0.1:4198 MAP_EVIDENCE=evidence/map-presence-labels MAP_SKIP_LIVE=true MAP_CHECK_PATTERN='Table label|Blank labels|200-code-point|Normal synthetic' node tests/map-presence-browser.mjs",
+      "exitCode": 0,
+      "checks": 4,
+      "passed": 4,
+      "report": "browser-labels-focused.json",
+      "note": "Final source; includes five neighboring long-label nonoverlap assertions."
+    },
+    {
+      "command": "MAP_URL=http://127.0.0.1:4187 MAP_EVIDENCE=/tmp/tech-map-labels-live-report MAP_CHECK_PATTERN='Live database' node tests/map-presence-browser.mjs",
+      "exitCode": 0,
+      "checks": 1,
+      "passed": 1,
+      "report": "browser-live.json",
+      "note": "Read-only after orchestrator applied hosted023 and explicitly populated five Test labels; five portraits loaded successfully. Private live screenshot excluded from tracked evidence."
+    }
+  ],
+  "cloudMutationsByTester": 0,
+  "limitations": [
+    "Local SQL uses PGlite with pgvector; hosted migration evidence is separately owned by the orchestrator.",
+    "Headless Chrome software WebGL; no physical mobile device tested."
+  ]
+}

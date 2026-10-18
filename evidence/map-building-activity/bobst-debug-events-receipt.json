@@ -1,0 +1,58 @@
+{
+  "project_ref": "jssehnrmqhstcrtxulpa",
+  "building": "bobst-library",
+  "verified_at": "2026-10-18T00:07:08.675Z",
+  "local_preview": "http://127.0.0.1:4192/",
+  "api_port": 3132,
+  "events": [
+    {
+      "id": "bobst-ui-debug-v1-ongoing",
+      "title": "[UI TEST] Study sprint",
+      "startsAt": "2026-10-17T23:36:02.000Z",
+      "endsAt": "2026-10-18T00:36:02.000Z",
+      "timeZone": "America/New_York",
+      "allDay": false,
+      "status": "confirmed",
+      "description": "UI DEBUG FIXTURE — fictional event for layout testing; not a real booking.",
+      "location": "Bobst · Test study room",
+      "url": null
+    },
+    {
+      "id": "bobst-ui-debug-v1-workshop",
+      "title": "[UI TEST] Build night: tiny projects and big ideas",
+      "startsAt": "2026-10-18T01:06:02.000Z",
+      "endsAt": "2026-10-18T02:06:02.000Z",
+      "timeZone": "America/New_York",
+      "allDay": false,
+      "status": "confirmed",
+      "description": "UI DEBUG FIXTURE — fictional event for layout testing; not a real booking.",
+      "location": "Bobst · Test collaboration space",
+      "url": null
+    },
+    {
+      "id": "bobst-ui-debug-v1-tentative",
+      "title": "[UI TEST] Portfolio feedback circle",
+      "startsAt": "2026-10-18T03:06:02.000Z",
+      "endsAt": "2026-10-18T04:06:02.000Z",
+      "timeZone": "America/New_York",
+      "allDay": false,
+      "status": "tentative",
+      "description": "UI DEBUG FIXTURE — fictional event for layout testing; not a real booking.",
+      "location": "Bobst · Test room 204",
+      "url": null
+    },
+    {
+      "id": "bobst-ui-debug-v1-allday",
+      "title": "[UI TEST] Open coworking day",
+      "startsAt": "2026-10-18T04:00:00.000Z",
+      "endsAt": "2026-10-19T04:00:00.000Z",
+      "timeZone": "America/New_York",
+      "allDay": true,
+      "status": "confirmed",
+      "description": "UI DEBUG FIXTURE — fictional event for layout testing; not a real booking.",
+      "location": "Bobst · Test common area",
+      "url": null
+    }
+  ],
+  "preservation": "Owner transaction asserted other buildings, all people and Bobst non-event fields unchanged; runtime event-write grant remains absent."
+}

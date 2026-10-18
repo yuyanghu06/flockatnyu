@@ -17,27 +17,27 @@
       "pass": true
     },
     {
-      "name": "Whole-root hover lift follows reference 4.5m/rate9/delta .05 cap and overlay tracks it",
+      "name": "White hover fades in without moving any complete building root",
       "pass": true
     },
     {
-      "name": "Hovered selected also floats with configured hue/pulse",
+      "name": "Selection retains the same white overlay through pointer leave with no pulse or reset",
       "pass": true
     },
     {
-      "name": "Leave immediately removes glow; selected without hover remains dark after updates",
+      "name": "Selected building takes priority over another hover, then clear crossfades to that hover",
       "pass": true
     },
     {
-      "name": "Switching hover while another landmark is selected glows and lifts only current hover",
+      "name": "Leave keeps outgoing view during280ms fade and fully idle clears views",
       "pass": true
     },
     {
-      "name": "Original colors/emission/geometry stay untouched; deactivation restores baseline",
+      "name": "Original root transforms, colors/emission and geometry stay untouched",
       "pass": true
     },
     {
-      "name": "Reduced motion has no lift or pulse; dispose restores and removes all overlays",
+      "name": "Reduced motion applies constant white immediately without lift; dispose removes views",
       "pass": true
     },
     {

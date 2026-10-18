@@ -1,0 +1,12 @@
+{
+  "chrome": "155.0.8059.80",
+  "checks": [],
+  "errors": [],
+  "cycles": [],
+  "limitations": [
+    "One isolated headless Chrome desktop Bobst case; no broad map/DPR/GPU performance acceptance.",
+    "API requests intercepted; no backend/model calls.",
+    "Screenshot timing includes browser capture latency; exact envelope timing is established by independent Node tests."
+  ],
+  "failure": "page.evaluate: Error: Camera tilt is outside the configured viewing range.\n    at validateCamera (http://127.0.0.1:5173/src/geometry.js:105:126)\n    at Object.restoreCamera (http://127.0.0.1:5173/src/main.js?t=1792271715394:94:3)\n    at eval (eval at evaluate (:370:30), <anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at /Users/yuyang/Documents/techatnyu/techvisualized/evidence/m46-smooth-glow/browser.mjs:13:164"
+}
