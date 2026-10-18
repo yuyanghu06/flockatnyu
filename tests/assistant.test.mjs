@@ -65,6 +65,40 @@ class Element {
 }
 function all(root){return [root,...root.children.flatMap(all)];}
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
+test('minimizing preserves an active reply, hidden completion and history; explicit stop still aborts', async () => {
+  const saved={document:globalThis.document,fetch:globalThis.fetch,matchMedia:globalThis.matchMedia};
+  const doc=new Element('document');doc.body=new Element('body');doc.createElement=tag=>new Element(tag);
+  globalThis.document=doc;globalThis.matchMedia=()=>({matches:true});
+  const requests=[];
+  globalThis.fetch=async(url,options)=>{
+    if(url==='/api/status')return Response.json({...status,chat:{...status.chat,configured:true}});
+    return new Response(new ReadableStream({start(controller){
+      requests.push({controller,signal:options.signal,messages:JSON.parse(options.body).messages});
+      options.signal.addEventListener('abort',()=>controller.error(new DOMException('Stopped','AbortError')));
+    }}),{headers:{'Content-Type':'application/x-ndjson'}});
+  };
+  let assistant;
+  try {
+    assistant=createAssistant();await doc.emit('campus-enter');await tick();assistant.open();
+    const root=doc.body.children[0],nodes=()=>all(root),input=nodes().find(n=>n.tagName==='textarea'),form=nodes().find(n=>n.className==='assistant-form'),panel=nodes().find(n=>n.tagName==='dialog');
+    input.value='continue while hidden';const pending=form.emit('submit');await tick();
+    const first=requests[0],send=event=>first.controller.enqueue(encode(JSON.stringify(event)+'\n'));
+    send({type:'tool',id:'tool-1',name:'search_discord',status:'running'});await tick();
+    await nodes().find(n=>n.attributes['aria-label']==='Close assistant').emit('click');
+    assert(panel.hidden);assert.equal(first.signal.aborted,false);assert.equal(form.attributes['aria-busy'],'true');
+    assistant.open();assert.equal(nodes().find(n=>n.attributes['aria-label']==='Stop generating').textContent,'■');
+    await panel.emit('cancel');assert(panel.hidden);assert.equal(first.signal.aborted,false);
+    send({type:'tool',id:'tool-1',name:'search_discord',status:'completed'});
+    send({type:'delta',text:'Finished while minimized.'});send({type:'done'});first.controller.close();await pending;
+    assert.equal(first.signal.aborted,false);assert.equal(form.attributes['aria-busy'],'false');
+    assert(nodes().some(n=>n.innerHTML?.includes('Finished while minimized.')));
+    assert(!nodes().some(n=>n.textContent==='Stopped. This reply is incomplete.'));
+    assistant.open();input.value='follow up';const next=form.emit('submit');await tick();
+    assert.deepEqual(requests[1].messages.slice(-3),[{role:'user',content:'continue while hidden'},{role:'assistant',content:'Finished while minimized.'},{role:'user',content:'follow up'}]);
+    await nodes().find(n=>n.attributes['aria-label']==='Stop generating').emit('click');await next;
+    assert.equal(requests[1].signal.aborted,true);
+  } finally {assistant?.dispose();Object.assign(globalThis,saved);}
+});
 test('offline fake DOM: gated entry, honest status, streaming safe text/sources, keyboard, integrated stop and failure abort', async () => {
   const oldDoc=globalThis.document,oldFetch=globalThis.fetch,oldMatchMedia=globalThis.matchMedia,doc=new Element('document');doc.body=new Element('body');doc.createElement=tag=>new Element(tag);globalThis.document=doc;globalThis.matchMedia=()=>({matches:true});
   let configured=false,calls=[],hangController;globalThis.fetch=async(url,options)=>{calls.push({url,options});if(url==='/api/status')return Response.json({...status,chat:{...status.chat,configured}});if(JSON.parse(options.body).messages.at(-1).content==='hang')return new Response(new ReadableStream({start(c){hangController=c;options.signal.addEventListener('abort',()=>c.error(new DOMException('Stopped','AbortError')));}}),{headers:{'Content-Type':'application/x-ndjson'}});return response(['{"type":"meta","sources":[{"url":"javascript:alert(1)","title":"bad"},{"url":"https://example.com/info","title":"<img>"}],"knowledgeStatus":"not_configured"}\n','{"type":"delta","text":"<script>fixture</script>"}\n','{"type":"done"}\n']);};

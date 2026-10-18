@@ -251,3 +251,9 @@ The chat stream client accepts bounded tool-1 through tool-8 progress for depend
 The assistant panel reserves18px of bottom padding outside its transcript scrollport whenever messages are visible. This keeps scrolled bubbles above the lower inset at every scroll position; content-end padding alone cannot provide that clearance.
 
 Assistant streaming coalesces Markdown/DOM work per animation frame with terminal flush/disposal guards. Map polls retain identical marker nodes; card presentation caches invalidate on semantic revision, selection and exact time boundaries while animation/positioning remains live.
+
+Spotlight dismissal hides the panel without cancelling active requests. Hidden
+updates set a pending latest-scroll flag consumed on reopen, with completed
+responses retained in history. Explicit Stop, loading failure and disposal still
+abort. Send/Stop hover/focus adds a subtle glow; color rotation is driven by active
+streaming rather than hover, and reduced motion remains static.

@@ -58,3 +58,8 @@ Password publication is complete: finalRailwayfa9079b3SUCCESS, hostedlogin/icons
 actualsign-in/protectedgate and direct @ startup pass. ExplicitEnter and mask
 script tested; syntheticChromeEnter→realbuiltlogo verified. Source pushed;
 release receipt under evidence/password-ui. Separate operations work unchanged.
+
+Spotlight updates continue through dismissal and reopen at latest hidden content;
+explicit Stop still cancels. Current button treatment uses hover/focus glow and
+streaming-only color rotation. Local checks pass; publication tracked in latest
+snapshot, separate from concurrent backend quota work.

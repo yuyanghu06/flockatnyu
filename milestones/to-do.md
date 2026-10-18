@@ -1,3 +1,10 @@
+## Spotlight background replies and streaming button
+
+- [x] Keep request/tool/history state alive through X/Escape/backdrop/shortcut dismissal.
+- [x] Follow latest hidden updates on reopening; explicit Stop/failure/disposal still cancel.
+- [x] Replace hover spin with subtle glow and streaming-only color animation; verify targeted/browser checks.
+- [ ] Push isolated change and deploy/verify Railway web.
+
 ## Current live operations
 
 - [x] Recover website/password gate, configure future deployment /healthz60 health check.

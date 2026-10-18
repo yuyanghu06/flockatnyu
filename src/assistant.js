@@ -9,6 +9,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   let closing = false, closeTimer;
   let resizeAnimation, resizeFrame = 0, resizeFrom;
   let followFrame = 0;
+  let pendingScroll = false;
   let building = getBuilding();
   const el = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -96,7 +97,10 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     followFrame = requestAnimationFrame(follow);
   }
   function queueResize(fromHeight, follow = false) {
-    if (follow) followLatest();
+    if (follow) {
+      if (!panel.open || closing) pendingScroll = true;
+      else followLatest();
+    }
     if (!panel.open || closing || typeof panel.animate !== 'function' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (resizeFrame) return;
     resizeFrom = fromHeight;
@@ -133,13 +137,17 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function open() {
     if (!entered || disposed) return;
-    if (closing) { clearTimeout(closeTimer); closing = false; panel.classList.remove('is-closing'); input.focus(); return; }
-    if (panel.open) return;
-    previousFocus = document.activeElement;
-    panel.hidden = false;
-    panel.showModal();
-    launcher.setAttribute('aria-expanded', 'true');
-    resizeInput(); input.focus();
+    if (closing) { clearTimeout(closeTimer); closing = false; panel.classList.remove('is-closing'); }
+    else {
+      if (panel.open) return;
+      previousFocus = document.activeElement;
+      panel.hidden = false;
+      panel.showModal();
+      launcher.setAttribute('aria-expanded', 'true');
+    }
+    resizeInput();
+    if (pendingScroll) { pendingScroll = false; followLatest(); }
+    input.focus();
   }
   function finishClose() {
     if (resizeFrame) cancelAnimationFrame(resizeFrame);
@@ -153,8 +161,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function close({ immediate = false } = {}) {
     if (!panel.open) return;
-    // Abort immediately, but retain the native backdrop during the exit motion.
-    stopRequest();
+    // Dismiss the panel without interrupting the active response.
     if (immediate || matchMedia('(prefers-reduced-motion: reduce)').matches) { finishClose(); return; }
     if (closing) return;
     closing = true; panel.classList.add('is-closing');

@@ -394,3 +394,9 @@ composition/ordinary keys. Actual Chrome native form flow is separately checked
 with an isolated synthetic session, never real credentials.
 
 Recovery coverage includes Discord metadata continuation lifecycle/real deadline shapes and Miro navigation outages through the actual handler/parser, including malformed/auth/write-authority negatives. planner-recovery-model.mjs runs five strict configured-model scenarios against synthetic sources/inert writes, preserving prior interrupted diagnostics separately from final frozen-build acceptance.
+
+The assistant fake-DOM regression verifies close/cancel preserve active request,
+hidden completion enters history and explicit Stop still aborts. The rapid UI
+browser check now expects hover glow without spin and nonhover streaming spin.
+Actual Chrome synthetic fixtures additionally cover X/Escape/backdrop/CmdK,
+hidden tool progress/completion, latest-scroll and retained followup history.

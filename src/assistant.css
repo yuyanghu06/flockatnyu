@@ -163,7 +163,8 @@
 .assistant-send:disabled { opacity: 1 !important; color: #000; box-shadow: inset 1px 1px 2px #fff8, inset -1px -2px 3px #20233b30; }
 .assistant-send:disabled::before { background: #efede4; }
 .assistant-send.is-stopping { font-size: 14px !important; }
-.assistant-send:hover:not(:disabled)::before, .assistant-send:focus-visible:not(:disabled)::before { animation: assistant-send-spin 1.4222222222s linear infinite; }
+.assistant-send:hover:not(:disabled), .assistant-send:focus-visible:not(:disabled) { box-shadow: inset 1px 1px 2px #fff8, inset -1px -2px 3px #20233b30, 0 0 10px 2px #ae91ec38; }
+.assistant-send.is-stopping::before { animation: assistant-send-spin 1.4222222222s linear infinite; }
 @keyframes assistant-send-spin { to { transform: rotate(360deg); } }
 .assistant-retry {
   padding: 3px 0;
@@ -254,7 +255,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .campus-assistant *, .assistant-panel[open], .assistant-panel[open].is-closing, .assistant-panel.is-closing::backdrop { animation: none; transition: none; scroll-behavior: auto; }
-  .assistant-send:hover:not(:disabled)::before, .assistant-send:focus-visible:not(:disabled)::before { animation: none; }
+  .assistant-send.is-stopping::before { animation: none; }
   .assistant-tool[data-status='running'] .assistant-tool-icon { animation: none; }
   .assistant-tool[data-status='running'] .assistant-tool-state, .assistant-message-text.is-thinking { animation: none; background: none; color: #000; }
 }

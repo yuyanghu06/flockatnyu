@@ -1,3 +1,9 @@
+## Spotlight: background continuation and streaming animation ready
+
+Closing/minimizing now hides the dialog without aborting its request. Hidden tool/reply updates continue and reopening follows latest; completed hidden answers remain in followup history. Explicit Stop/loading failure/dispose still cancel. Hover/focus adds subtle glow only; pastel rotation runs during streaming and stops when idle, respecting reduced motion.19targeted+2package checks, frontend/API builds and real Chrome X/Escape/backdrop/CmdK/background-completion/history/Stop/style checks pass. Revised CLI rapid browser script syntax checked only. Not deployed yet. Next: isolated committed-source web deployment; concurrent quota work remains separate.
+
+[Pass record](history/2026-10-18_18-54-49-713950-orchestrator-spotlight-background-and-streaming-button.md).
+
 ## Current: site and Discord/Calendar worker recovered; Miro explicitly deferred
 
 Websitefa9079b3-4e52-43d2-9f46-bc1da1350706, worker2aaf552e-75db-4a18-aee3-cfe8a9fd6ec7, Discord3aa66021-bda0-4c40-a85e-5f62af638069 and Gmail5244b48a-483e-4378-9b40-c821b66830ed all SUCCESS. Web health200 and protected login/API pass; existing password retained. Failed deploy08ddc22e built but rejected14character password under old minimum24; minimum now12, signing/origin/session safeguards retained. Actual future-deployment health gate /healthz/60seconds configured, website not restarted for that setting.
