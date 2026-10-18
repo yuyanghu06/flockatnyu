@@ -64,7 +64,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     const vertical = THREE.MathUtils.degToRad(camera.getEffectiveFOV ? camera.getEffectiveFOV() : camera.fov)/2;
     const halfFov = Math.min(vertical, Math.atan(Math.tan(vertical)*camera.aspect));
     if (!Number.isFinite(halfFov) || halfFov<=0 || halfFov>=Math.PI/2) return false;
-    const distance = radius/Math.sin(halfFov)*1.12*(view?.distanceScale ?? 1);
+    let distance = radius/Math.sin(halfFov)*1.12*(view?.distanceScale ?? 1)*1.25;
     if (!Number.isFinite(distance)) return false;
     const front = view?.front;
     const theta = front ? Math.atan2(front[0],front[1]) : current().sphere.theta;
@@ -72,6 +72,34 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     const verticalOffset = Math.cos(originalPolar) * (view?.heightScale ?? 1);
     const horizontalOffset = Math.sin(originalPolar);
     const phi = Math.atan2(horizontalOffset, verticalOffset);
+    // Fit complete bounds on the configured side, including multi-part footprints.
+    // Solve from projected bounds rather than assuming its configured anchor is
+    // the visual centre (important for Courant, Silver, GCASL and Paulson).
+    const framingCamera = camera.clone();
+    const rightAxis = new THREE.Vector3(Math.cos(theta), 0, -Math.sin(theta));
+    const originalTarget = target.clone();
+    const corners = [];
+    for (const x of [box.min.x,box.max.x]) for (const y of [box.min.y,box.max.y]) for (const z of [box.min.z,box.max.z]) corners.push(new THREE.Vector3(x,y,z));
+    let offset = 0;
+    for (let pass=0;pass<5;pass++) {
+      distance = clampDistance(distance);
+      target.copy(originalTarget).addScaledVector(rightAxis,-offset);
+      framingCamera.position.setFromSpherical(new THREE.Spherical(distance,phi,theta)).add(target);
+      framingCamera.lookAt(target);framingCamera.updateMatrixWorld();
+      const projected = corners.map(corner=>corner.clone().project(framingCamera));
+      const left = Math.min(...projected.map(point=>point.x));
+      const right = Math.max(...projected.map(point=>point.x));
+      const span = right-left;
+      if(span>.9 && distance<limits.maxDistance && pass<2) {
+        distance=Math.min(limits.maxDistance,distance*span/.9*1.03);
+        continue;
+      }
+      // Keep the right edge on-screen even when the hard distance cap prevents
+      // fitting the entire box into the right half on a narrow viewport.
+      const desiredCentre=view?.screenSide === 'left' ? Math.max(-.5,-.94+span/2) : Math.min(.5,.94-span/2);
+      offset+=(desiredCentre-(left+right)/2)*distance*Math.tan(vertical)*camera.aspect;
+    }
+    target.copy(originalTarget).addScaledVector(rightAxis,-offset);
     zoomGesture = null;
     if(!overviewSnapshot) {
       overviewSnapshot=current();

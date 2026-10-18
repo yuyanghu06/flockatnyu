@@ -50,6 +50,11 @@ class Element {
   close(){this.open=false;}
   getBoundingClientRect(){return {left:100,right:740,top:100,bottom:350};}
   get firstElementChild(){return this.children[0];}
+  get classList(){return {
+    add:(...tokens)=>{this.className=[...new Set([...this.className.split(/\s+/).filter(Boolean),...tokens])].join(' ');},
+    remove:(...tokens)=>{this.className=this.className.split(/\s+/).filter(token=>token&&!tokens.includes(token)).join(' ');},
+    contains:token=>this.className.split(/\s+/).includes(token),
+  };}
   setAttribute(k,v){this.attributes[k]=v;}
   addEventListener(k,f){(this.listeners[k]??=[]).push(f);}
   removeEventListener(k,f){this.listeners[k]=(this.listeners[k]??[]).filter(x=>x!==f);}

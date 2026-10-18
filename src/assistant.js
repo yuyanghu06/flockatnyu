@@ -1,4 +1,6 @@
 import { boundedMessages, getAssistantStatus, safeSourceUrl, streamAssistant } from './chat-client.js';
+const assistantLogoUrl = new URL('../assets/branding/tech-at-assistant.png', import.meta.url).href;
+const assistantHoverLogoUrl = new URL('../assets/branding/tech-at-assistant-hover.svg', import.meta.url).href;
 
 export function createAssistant({ container = document.body, getBuilding = () => null } = {}) {
   let entered = false, disposed = false, available = false, busy = false;
@@ -10,6 +12,13 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     if (text) node.textContent = text;
     return node;
   };
+  const logo = () => {
+    const image = el('img', 'assistant-logo');
+    image.src = assistantLogoUrl;
+    image.alt = '';
+    image.width = image.height = 28;
+    return image;
+  };
   const root = el('div', 'campus-assistant'); root.hidden = true;
   const launcher = el('button', 'assistant-launcher');
   launcher.type = 'button';
@@ -18,13 +27,37 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   launcher.setAttribute('aria-controls', 'campus-assistant-panel');
   launcher.setAttribute('aria-keyshortcuts', 'Meta+K Control+K');
   const shortcut = el('kbd', 'assistant-shortcut', '⌘ / Ctrl K');
-  launcher.append(el('span', 'assistant-spark', '✦'), el('span', '', 'Ask Tech@NYU'), shortcut);
+  const launcherLogo = el('span', 'assistant-logo assistant-launcher-logo');
+  launcherLogo.setAttribute('aria-hidden', 'true');
+  launcherLogo.append(logo());
+  let animatedLogo;
+  const stopLogoAnimation = () => {
+    animatedLogo?.remove(); animatedLogo = null;
+    launcherLogo.classList.remove('is-animated');
+  };
+  const startLogoAnimation = () => {
+    if (animatedLogo || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const image = logo();
+    image.classList.add('assistant-logo-motion');
+    image.addEventListener('load', () => {
+      if (animatedLogo === image) launcherLogo.classList.add('is-animated');
+    }, { once: true });
+    image.addEventListener('error', stopLogoAnimation, { once: true });
+    animatedLogo = image;
+    image.src = assistantHoverLogoUrl;
+    launcherLogo.append(image);
+  };
+  launcher.addEventListener('pointerenter', startLogoAnimation);
+  launcher.addEventListener('pointerleave', stopLogoAnimation);
+  launcher.addEventListener('focus', startLogoAnimation);
+  launcher.addEventListener('blur', stopLogoAnimation);
+  launcher.append(launcherLogo, el('span', '', 'Ask Tech@NYU'), shortcut);
   const panel = el('dialog', 'assistant-panel');
   panel.id = 'campus-assistant-panel'; panel.hidden = true;
   panel.setAttribute('aria-label', 'Campus assistant');
   const header = el('header', 'assistant-header');
   const identity = el('div', 'assistant-identity');
-  identity.append(el('span', 'assistant-spark', '✦'), el('span', '', 'Tech@NYU'), el('span', 'assistant-subtitle', 'Campus assistant'));
+  identity.append(logo(), el('span', '', 'Tech@NYU'), el('span', 'assistant-subtitle', 'Campus assistant'));
   const closeButton = el('button', 'assistant-icon-button', '×');
   closeButton.type = 'button'; closeButton.setAttribute('aria-label', 'Close assistant');
   header.append(identity, closeButton);
@@ -184,6 +217,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   document.addEventListener('campus-building-selected', onBuilding);
   updateContext(); controls();
   return Object.freeze({ open, close, dispose() {
+    stopLogoAnimation();
     disposed = true; onFailure();
     document.removeEventListener('keydown', onShortcut);
     document.removeEventListener('campus-enter', onEnter);

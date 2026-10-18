@@ -22,12 +22,12 @@ async function close(page){if(await page.getByRole('button',{name:'Close assista
 async function reset(page){await close(page);await page.evaluate(()=>window.__map.reset());await page.mouse.move(5,5);await page.waitForTimeout(300);}
 try{
  const {page,context,release}=await fixture();
- check('Loading has only a small status notice, no fullscreen screen or entry CTA',()=>{});
- assert.equal(await page.locator('#loading-screen,#loading-enter,.loading-gear-object').count(),0);assert(await page.locator('#startup-notice').isVisible());assert.equal(await page.locator('#app').evaluate(x=>x.inert),true);
- release();await page.waitForFunction(()=>window.__map?.snapshot().status==='ready',null,{timeout:90000});
+ check('Branded fullscreen startup overlay gates input with no entry CTA',()=>{});
+ assert.equal(await page.locator('#loading-enter,.loading-gear-object').count(),0);assert(await page.locator('#startup-notice').isVisible());const loader=await page.locator('#startup-notice').boundingBox();assert.deepEqual(loader,{x:0,y:0,width:1440,height:1000});assert.equal(await page.locator('#app').evaluate(x=>x.inert),true);
+ release();await page.waitForFunction(()=>document.querySelector('#app').dataset.state==='entered',null,{timeout:90000});
  assert.equal(await page.locator('#app').evaluate(x=>x.inert),false);assert(await page.locator('#startup-notice').isHidden());await close(page);
  check('Successful preparation automatically enables map and assistant without a click',()=>{});
- await page.screenshot({path:`${out}/overview-no-loader.png`});
+ await page.screenshot({path:`${out}/overview-after-loader.png`});
  for(const code of ['w','s','a','d']){
   await reset(page);const a=await camera(page);await page.keyboard.down(code);await page.waitForTimeout(450);await page.keyboard.up(code);await page.waitForTimeout(300);const b=await camera(page);
   const offset=a.position.map((n,i)=>n-a.target[i]),forward=new T.Vector3(-offset[0],0,-offset[2]).normalize(),right=new T.Vector3(-forward.z,0,forward.x),delta=new T.Vector3(...b.target).sub(new T.Vector3(...a.target));
@@ -38,7 +38,7 @@ try{
  check('WASD typing in the assistant never pans or consumes characters',()=>{});
  await close(page);await page.keyboard.down('w');await page.waitForTimeout(100);await page.evaluate(()=>window.dispatchEvent(new Event('blur')));const blur=await camera(page);await page.waitForTimeout(250);same(blur,await camera(page));await page.keyboard.up('w');check('Window blur clears held keys and prevents stuck travel',()=>{});
  await reset(page);let snapshot=await page.evaluate(()=>window.__map.snapshot());const stern=snapshot.landmarks.find(x=>x.id==='stern-school-of-business');
- check('Gould has one shared Stern root and no separate selectable entry',()=>{assert.equal(snapshot.landmarks.length,10);assert(!snapshot.landmarks.some(x=>x.id==='nyu-gould-plaza'));assert(stern.details.includesGouldPlaza);assert.equal(stern.parts.length,2);});
+ check('Gould has one shared Stern root and no separate selectable entry',()=>{assert.equal(snapshot.landmarks.length,9);assert(!snapshot.landmarks.some(x=>x.id==='nyu-gould-plaza'));assert(stern.details.includesGouldPlaza);assert.equal(stern.parts.length,2);});
  assert.equal(await page.locator('option[value="nyu-gould-plaza"]').count(),0);
  const old=JSON.parse(await fs.readFile('evidence/m19-building-views/restored-zoom/browser-results.json','utf8')).initial.landmarks;
  for(const part of stern.parts){const id=part.name==='nyu-gould-plaza'?'nyu-gould-plaza':'stern-school-of-business',prior=old.find(x=>x.id===id);part.bounds.min.concat(part.bounds.max).forEach((n,i)=>assert(Math.abs(n-prior.bounds.min.concat(prior.bounds.max)[i])<.002));}
@@ -59,5 +59,5 @@ try{
  await page.screenshot({path:`${out}/stern-with-gould-selected.png`});await context.close();
  const failed=await fixture(true);failed.release();await failed.page.waitForFunction(()=>document.querySelector('#app').dataset.state==='failed',null,{timeout:30000});assert(await failed.page.getByRole('button',{name:'Retry loading'}).isVisible());assert.equal(await failed.page.locator('#app').evaluate(x=>x.inert),true);await failed.page.screenshot({path:`${out}/startup-failure.png`});await failed.context.close();check('Actual asset failure denies automatic entry and keeps recoverable retry',()=>{});
  check('No uncaught JavaScript errors',()=>assert.deepEqual(errors,[]));
- await fs.writeFile(`${out}/map-input-browser-results.json`,JSON.stringify({checks,errors,plazaHit:hit,limitations:['Direct checks by primary agent, not independently delegated. Isolated installed Chrome; physical keyboard/touch not tested. API status mocked; no model/backend calls.']},null,2)+'\n');console.log(`${checks.length}/${checks.length} map startup/input/grouping Chrome checks passed`);
+ await fs.writeFile(`${out}/map-input-browser-results.json`,JSON.stringify({checks,errors,plazaHit:hit,limitations:['Independent tester checks of M41 loader and current map interaction. Isolated installed Chrome; physical keyboard/touch not tested. API status mocked; no model/backend calls.']},null,2)+'\n');console.log(`${checks.length}/${checks.length} map startup/input/grouping Chrome checks passed`);
 }finally{await browser.close();}

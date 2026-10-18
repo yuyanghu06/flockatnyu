@@ -1,5 +1,25 @@
 # Camera navigation
 
+## Selected-building framing
+
+Kimmel overrides the default with `screenSide: 'left'` in building-views.js. Its
+complete bounds use the mirrored left-side band (centre near -0.5 NDC), retaining
+the existing front angle/pullback. Other buildings retain right-side framing.
+
+Focus now requests 25% more distance than the prior fit, within the existing hard
+maximum. It projects all eight corners of the complete building bounds at the
+configured front/height angle, adjusts the orbit target to present those bounds
+on the right, and increases distance further where necessary/allowed. The target
+right-side horizontal span is 0.9 NDC, centred near +0.5 NDC. If the maximum
+prevents that fit, framing prioritizes retaining the right edge on-screen.
+
+This bounds-based solution also covers Courant, Silver, GCASL and Paulson rather
+than assuming their configured anchor is the visual centre. Focused portraits
+occupy the left 44% of the viewport, including person-click focus. Existing pan
+limits and overview return remain. Direct checks pass for all four requested
+profiles with synthetic complete-box bounds; actual model appearance remains for
+the user's browser review.
+
 ## Front views and unchanged limits
 
 `building-views.js` records camera offset directions in map X/Z: north

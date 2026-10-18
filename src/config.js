@@ -3,7 +3,7 @@ import extracted from '../assets/campus-assets/data/extracted-buildings.json';
 
 export { placements };
 export const paulson = extracted.buildings['nyu-john-a-paulson-center'];
-export const palette = { background: '#dce6e8', skyTop: '#94bdd7', skyHorizon: '#dce6e8', ground: '#c4c7c3', context: '#dedfdb', grass: '#9dbd7c', selected: '#ad85ca', hovered: '#c1ace9' };
+export const palette = { background: '#dce6e8', skyTop: '#94bdd7', skyHorizon: '#dce6e8', ground: '#c4c7c3', context: '#fdfaf0', grass: '#9dbd7c', selected: '#ad85ca', hovered: '#c1ace9' };
 // A/B constrain tilt; C supplies distance only. Default composition follows the
 // user's park-foreground screenshot, looking toward the south campus.
 export const cameraSamples = {

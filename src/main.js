@@ -12,6 +12,7 @@ import { createLandmarkEffects } from './landmark-effects.js';
 import { createCameraFocus } from './camera-focus.js';
 import { createMapInteractions } from './map-interactions.js';
 import { createKeyboardPan } from './keyboard-pan.js';
+import { createMapPresence } from './map-presence.js';
 import { compactContextGeometry, freezeStaticSubtree } from './map-resources.js';
 import { removeReplacedBuilding, trimDistantGrass, validateCamera, constrainPan } from './geometry.js';
 import { createPaulsonModel } from './paulson.js';
@@ -192,8 +193,10 @@ function setHovered(id) {
   renderer.domElement.style.cursor = id ? 'pointer' : 'grab';
 }
 const mapInteractions = createMapInteractions({ element: renderer.domElement, wheelEventTarget: window, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id),
-  isWheelEnabled: () => controls.enabled && !document.querySelector('dialog[open]') });
+  isWheelEnabled: () => controls.enabled && !document.querySelector('dialog[open]') && !document.querySelector('.map-presence__itinerary:hover') });
 createAssistant({ getBuilding: () => { const building = buildings.find(item => item.id === state.selected); return building ? { id: building.id, name: building.name } : null; } });
+const mapPresence = createMapPresence({ container: $('map'), camera, renderer, getRoot: id => roots.get(id), selectBuilding: select, focusBuilding: focusSelection, getFocusedBuilding: () => cameraNavigation.returning ? null : cameraNavigation.focusedId });
+if (import.meta.hot) import.meta.hot.dispose(() => mapPresence.dispose());
 
 $('camera-open').addEventListener('click', () => {
   $('camera-json').value = JSON.stringify(exportCamera(), null, 2);
@@ -392,6 +395,7 @@ function animate() {
   mapInteractions.update(delta);
   renderer.render(scene, camera);
   landmarkEffects.renderOutline(renderer, camera);
+  mapPresence.update();
   const sample = frameSamples++ % frameIntervals.length;
   frameIntervals[sample] = elapsedSeconds * 1000;
   frameCpu[sample] = performance.now() - now;
@@ -415,7 +419,6 @@ if (!state.failed.length && campusStartup.snapshot().status !== 'failed') {
   scene.updateMatrixWorld(true);
   await renderer.compileAsync(scene, camera);
   renderer.render(scene, camera);
-  landmarkEffects.renderOutline(renderer, camera);
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   campusStartup.sceneReady();
 }
@@ -447,6 +450,7 @@ function landmarkSnapshot(id, root) {
 Object.defineProperty(window, '__map', { value: Object.freeze({
   snapshot: () => ({ ...structuredClone(state), camera: exportCamera(), navigation: { mapExtent: { ...mapExtent }, cameraLimits: structuredClone(cameraLimits), loadedTileCount: tiles.length }, render: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, logarithmicDepthBuffer: renderer.capabilities.logarithmicDepthBuffer }, landmarks: [...roots].map(([id, root]) => landmarkSnapshot(id, root)) }),
   performance: performanceSnapshot,
+  presence: Object.freeze({ refresh: mapPresence.refresh, snapshot: mapPresence.snapshot }),
   project,
   select,
   focus: focusSelection,
