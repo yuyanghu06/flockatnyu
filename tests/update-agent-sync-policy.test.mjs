@@ -124,8 +124,8 @@ test('completion fence rejects skipped Calendar work, incomplete pages and unpro
  await f.tool('list_calendar_events')(required);assert.equal((await finish()).nextActions[0].arguments.pageToken,'more');
  await f.tool('list_calendar_events')({...required,pageToken:'more'});assert.equal((await finish()).status,'pending');
  await f.tool('read_map_events')({sourceId:calendarSource,sourceRecordId:eventId});
- const stale=projection();stale.event.reported_at='2026-10-17T16:00:00Z';assert.equal((await f.tool('upsert_map_event')(stale)).status,'forbidden_source');assert.equal((await finish()).status,'pending');assert.equal(f.writes.length,0);
- await f.tool('upsert_map_event')(projection());assert.equal((await finish()).status,'ready');
+ const unsupported=projection();unsupported.event.name='Unsupported title';assert.equal((await f.tool('upsert_map_event')(unsupported)).status,'forbidden_source');assert.equal((await finish()).status,'pending');assert.equal(f.writes.length,0);
+ const stale=projection();stale.event.reported_at='2026-10-17T16:00:00Z';assert.equal((await f.tool('upsert_map_event')(stale)).status,'ready');assert.equal(f.writes[0].event.reported_at,calendarEvent.updatedAt);assert.equal((await finish()).status,'ready');
 });
 
 test('Miro Calendar mutation requires exact returned eventId read before completion, never a Discord message ID',async()=>{

@@ -341,6 +341,11 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       &&Array.isArray(context.inputIds)&&context.inputIds.length&&context.inputIds.every(id=>batchInputs.has(id))
       &&await mapSourceAuthorizer({principal,sourceId:calendarSourceId,sourceUrl:observedCalendar.url,signal:context.signal})) {
       const prepared=structuredClone(args);prepared.event.source_url=observedCalendar.url;
+      // Calendar owns this fact timestamp; the map's updated_at is only the
+      // optimistic-write token. Sparse cancellations preserve prior known facts.
+      const reportedAt=observedCalendar.updatedAt||observedCalendar.createdAt;
+      if(!(observedCalendar.status==='cancelled'&&(!observedCalendar.start||!observedCalendar.end))
+        &&typeof reportedAt==='string'&&Number.isFinite(Date.parse(reportedAt)))prepared.event.reported_at=reportedAt;
       if(Object.hasOwn(prepared.event,'url'))prepared.event.url=observedCalendar.url;
       for(const fact of [observedCalendar.location,observedCalendar.managed?observedCalendar.sourceUrl:null])
         if(typeof fact==='string'&&fact&&!prepared.event.notes?.includes(fact))prepared.event.notes=[prepared.event.notes||'',fact].filter(Boolean).join('\n');

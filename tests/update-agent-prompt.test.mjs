@@ -55,6 +55,7 @@ const policies=[
  ['all-day dates preserve precision and DST',[/starts_on\/ends_on/,/EXCLUSIVE end/,/DST.crossing/,/Do not invent midnight arrival/]],
  ['read merge and optimistic updates',[/Read before upsert/,/expectedUpdatedAt/,/complete event\/building\/people snapshot/,/merge partial edits/,/conflict requires reread/,/No cross.event removal/]],
  ['approved planned event display without RSVP invention',[/Do not infer RSVP or attendance from organizing\/helping/,/going participation.*automatically supplies planned map visibility/,/Future windows stay upcoming/]],
+ ['queued originals and narrow current context',[/Queued Discord originals first, prioritizing eboard/,/Gateway queues updates/,/no routine history\/full.channel sweeps/,/catalogue once if needed/,/Before actionable changes read exact CURRENT messages/,/narrow reply\/reference\/explicit.event\/RSVP context only as needed/,/Miro invalid_request: inspect schema\/exact returned IDs/,/never repeat unchanged or invent IDs/]],
  ['source and completion boundaries',[/untrusted evidence/,/supporting inputIds/,/Configured, allowlisted Calendar originals may support event facts with exact occurrence IDs/,/do not claim success or finish_batch until successful tool results/]],
 ];
 for(const [scenario,patterns] of policies)test(`prompt policy coverage: ${scenario}`,()=>{

@@ -96,3 +96,27 @@ test('escaped Unicode fragments fit chat serialization budgets without losing ch
  while(true){assert(Buffer.byteLength(JSON.stringify(r.boardContext))<=26000);assert.equal(r.boardContext.format,'miro-mcp-json-fragment-v1');raw+=r.boardContext.data;parts++;if(r.boardContext.nextOffset===null)break;r=await f.item({offset:r.boardContext.nextOffset,expectedHash:r.boardContext.hash});assert(parts<100);}
  assert.equal(JSON.parse(raw).payload.svg,original);assert(parts>1);
 });
+
+test('canvas/table option mistakes return safe correction notices and never perform broader reads',async()=>{
+ for(const [type,invalid,reason,notice] of [
+  ['canvas',{limit:1},'canvas_options',/omit limit and cursor/],
+  ['canvas',{cursor:'opaque-private-cursor'},'canvas_options',/use itemIds and\/or scope/],
+  ['table',{scope:{x:0,y:0,width:100,height:100}},'table_options',/omit scope and itemIds/],
+  ['table',{itemIds:['private-native-item']},'table_options',/use limit and cursor/],
+ ]){
+  const f=fixture({payload:type==='canvas'?canvas():table()}),result=await f.item({type,...invalid});
+  assert.equal(result.status,'invalid_request');assert.equal(result.reason,reason);assert.match(result.notice,notice);assert.deepEqual(result.sources,[]);assert.equal(f.calls.length,0);assert(Buffer.byteLength(JSON.stringify(result))<1024);
+  assert(!JSON.stringify(result).includes('opaque-private-cursor'));assert(!JSON.stringify(result).includes('private-native-item'));
+  const corrected=await f.item({type});assert(['ready','partial'].includes(corrected.status));assert.equal(f.calls.length,1);assert.equal(f.calls[0].name,type==='canvas'?'canvas_read_as_svg':'table_list_rows');
+  if(type==='canvas')assert.deepEqual(f.calls[0].args.widget_ids,[itemId]);
+ }
+});
+test('native ID/schema feedback is fixed, never reflects input or bypasses board access',async()=>{
+ const f=fixture();let reference;
+ for(const invalid of [{itemId:'PRIVATE_SCHEMA_CANARY/../item'},{boardId:'https://PRIVATE_SCHEMA_CANARY.invalid/'},{type:'PRIVATE_SCHEMA_CANARY'},{unexpected:'PRIVATE_SCHEMA_CANARY'}]){
+  const result=await f.item(invalid);assert.equal(result.status,'invalid_request');assert.equal(result.reason,'schema');assert.match(result.notice,/declared tool schema and exact native boardId\/itemId/);assert(!JSON.stringify(result).includes('PRIVATE_SCHEMA_CANARY'));assert.deepEqual(result.sources,[]);
+  reference??=result;assert.deepEqual(result,reference);
+ }
+ assert.equal(f.calls.length,0);assert.equal((await f.item({boardId:'other'})).status,'forbidden');assert.equal(f.calls.length,0);
+ const definition=f.adapter.tools.find(t=>t.name==='read_miro_item');assert.match(definition.description,/type=canvas: omit limit\/cursor/);assert.match(definition.description,/type=table: omit scope\/itemIds; use limit\/cursor/);
+});

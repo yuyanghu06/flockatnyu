@@ -13,7 +13,7 @@ export const MIRO_MCP_TOOLS=Object.freeze([
   define('list_miro_boards','List only the server-authorized board catalogue. This is navigation metadata, not live content or Calendar write evidence.',{}),
   define('read_miro_board','Read live Miro MCP navigation: overview lists containers; mode=search finds related patterns (e.g. HP) together using resultMode=matches or areas. Search includes native grids/table content, but an empty date search does not mean no calendar events: dates may be separate day cells. For date questions, first search the exact month/year heading using patterns=["<requested month and year>"] and resultMode=areas (substitute the requested month/year), then verify the returned section and calendar grid with read_miro_item(type=canvas). Duplicate month labels can belong to different calendars; use live section headings and spatial bounds. Overview samples may omit required frames; repeated-title summaries have no IDs. Conflicting outer/inner years require corroboration; neither alone resolves the date. Search alone is not event evidence. Follow nextCursor and fragment continuations; no whole-board completeness claim.',
     {boardId:id,mode:{type:'string',enum:['overview','search']},patterns:{type:'array',items:{type:'string',minLength:1,maxLength:500},minItems:1,maxItems:10},resultMode:{type:'string',enum:['matches','areas']},targetId:id,cursor:integer(0,10000000),...fragment},['boardId']),
-  define('read_miro_item','Read actual Miro MCP content. type=canvas returns inert SVG containing the item plus surrounding calendar grid/date headings; itemIds can select several related notes together, or scope narrows a large frame. type=table reads native data-table columns and rows with stable rowId (use canvas for calendar grids). Follow table nextCursor or JSON fragment nextOffset/expectedHash without changing arguments. Only concrete content-backed sourceKey values authorize later writes; never use a frame/table identity for multiple events.',
+  define('read_miro_item','Read actual Miro MCP content. type=canvas: omit limit/cursor; returns inert SVG containing the item plus surrounding calendar grid/date headings; itemIds can select several related notes together, or scope narrows a large frame. type=table: omit scope/itemIds; use limit/cursor. Reads native data-table columns and rows with stable rowId (use canvas for calendar grids). Follow table nextCursor or JSON fragment nextOffset/expectedHash without changing arguments. Only concrete content-backed sourceKey values authorize later writes; never use a frame/table identity for multiple events.',
     {boardId:id,itemId:id,itemIds:{type:'array',items:id,minItems:1,maxItems:10},type:{type:'string',enum:['canvas','table']},scope,limit:integer(1,10),cursor:{type:'string',minLength:1,maxLength:8192},...fragment},['boardId','itemId','type']),
 ]);
 const urlFor=(board,item)=>`https://miro.com/app/board/${encodeURIComponent(board)}/${item?`?moveToWidget=${encodeURIComponent(item)}`:''}`;
@@ -21,6 +21,12 @@ const urlFor=(board,item)=>`https://miro.com/app/board/${encodeURIComponent(boar
 // canonical citation URL is valid. IDs have already passed a strict path charset.
 const upstreamUrl=(board,item)=>`https://miro.com/app/board/${board}/${item?`?moveToWidget=${item}`:''}`;
 const blocked=status=>({status,sources:[],coverage:{complete:false,reason:status}});
+const requestNotices=Object.freeze({
+  schema:'Use the declared tool schema and exact native boardId/itemId values returned by live Miro navigation. Do not guess IDs or repeat unchanged invalid arguments.',
+  canvas_options:'For type=canvas, omit limit and cursor; use itemIds and/or scope to narrow content. For JSON fragments use offset and expectedHash. Copy exact returned native IDs.',
+  table_options:'For type=table, omit scope and itemIds; use limit and cursor from nextCursor for rows. For JSON fragments use offset and expectedHash. Copy exact returned native IDs.',
+});
+const invalidRequest=reason=>({...blocked('invalid_request'),reason,notice:requestNotices[reason]});
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const digest=text=>createHash('sha256').update(text).digest('hex');
 function sameBoard(url,board,item) {
@@ -92,7 +98,7 @@ export function createMiroMcpTools({config=readMiroMcpConfig(),store,client=crea
   }
   async function execute({name,arguments:args,principal,signal}={}) {
     const tool=MIRO_MCP_TOOLS.find(t=>t.name===name);
-    if(!tool||!validateArguments(args,tool.parameters))return blocked('invalid_request');
+    if(!tool||!validateArguments(args,tool.parameters))return invalidRequest('schema');
     if(!Array.isArray(principal?.allowedSourceIds)||!principal.allowedSourceIds.length)return blocked('forbidden');
     if(!config.configured||!store?.configured||!client.configured)return blocked('not_configured');
     if(signal?.aborted)return blocked('aborted');
@@ -121,7 +127,7 @@ export function createMiroMcpTools({config=readMiroMcpConfig(),store,client=crea
         if(!Array.isArray(payload.results)||payload.total_results===0&&(payload.results.length>0||nextCursor!==null))throw new Error('invalid_mcp_result');
         reason=mode==='overview'?'navigation_overview_only':payload.total_results===0?'search_no_matches':'search_matches_only';format='miro-mcp-search-v1';
       } else if(args.type==='table') {
-        if(args.scope||args.itemIds)return blocked('invalid_request');
+        if(args.scope||args.itemIds)return invalidRequest('table_options');
         upstream='table_list_rows';payload=unpack(await client.callTool(upstream,{miro_url:upstreamUrl(args.boardId,args.itemId),limit:args.limit||5,...(args.cursor?{next_cursor:args.cursor}:{}),is_repository:false},{signal}));
         if(!sameBoard(payload.miro_url,args.boardId,args.itemId)||!Array.isArray(payload.rows)||payload.rows.length>(args.limit||5)
           ||!Number.isInteger(payload.total)||payload.total<payload.rows.length||payload.rows.some(r=>!validMiroId(r.rowId)||!Array.isArray(r.cells))
@@ -130,7 +136,7 @@ export function createMiroMcpTools({config=readMiroMcpConfig(),store,client=crea
         complete=!nextCursor&&!args.cursor&&payload.total===payload.rows.length;reason='table_rows_only';format='miro-mcp-table-v1';
         sources.push(...payload.rows.filter(r=>r.cells.length).map(r=>source(args.boardId,row,fetchedAt,args.itemId,true,`miro:${args.boardId}:${args.itemId}:row:${r.rowId}`)));
       } else {
-        if(args.cursor||args.limit)return blocked('invalid_request');
+        if(args.cursor||args.limit)return invalidRequest('canvas_options');
         upstream='canvas_read_as_svg';const ids=[...new Set([args.itemId,...args.itemIds||[]])];
         const query={miro_url:upstreamUrl(args.boardId),widget_ids:ids,is_repository:false};
         if(args.scope)Object.assign(query,{scope_x:args.scope.x,scope_y:args.scope.y,scope_width:args.scope.width,scope_height:args.scope.height});
