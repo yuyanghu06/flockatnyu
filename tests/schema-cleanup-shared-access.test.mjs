@@ -7,7 +7,7 @@ import {vector} from '@electric-sql/pglite-pgvector';
 import {SUMMARY_FIELDS} from '../server/discord/summary-provider.js';
 import {createDiscordStore} from '../server/discord/store.js';
 import {createDiscordLiveSummaryStore} from './fixtures/legacy-live-summary-store.mjs';
-import {createMiroStore} from '../server/miro/store.js';
+import {createMiroStore} from './fixtures/retired-miro-rest/store.js';
 const guild='1203562091500404776',otherGuild='123456789012345678',channel='1203562091982622814',source='22222222-2222-4222-8222-222222222222',otherSource='44444444-4444-4444-8444-444444444444';
 const legacyJob=randomUUID(),legacyResult=randomUUID(),legacyCertificate=randomUUID(),legacyOperation=randomUUID(),legacyReceipt=randomUUID(),messageId='1500000000000000001';
 const hash='a'.repeat(64),summary=Object.fromEntries(SUMMARY_FIELDS.map(k=>[k,k==='overview'?[{text:'Preserved fixture fact',messageIds:[messageId]}]:[]]));

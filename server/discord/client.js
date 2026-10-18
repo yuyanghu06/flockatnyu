@@ -1,33 +1,9 @@
+import {createPacedDiscordRequest} from './request-pacing.js';
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 export class DiscordError extends Error { constructor(code) { super(code); this.name = 'DiscordError'; this.code = code; } }
-const pause = (ms, signal) => new Promise((resolve, reject) => {
-  if (signal?.aborted) return reject(new DiscordError('aborted'));
-  const aborted = () => { clearTimeout(timer); reject(new DiscordError('aborted')); };
-  const timer = setTimeout(() => { signal?.removeEventListener('abort', aborted); resolve(); }, ms);
-  signal?.addEventListener('abort', aborted, {once:true});
-});
-export function createDiscordClient({config, fetchImpl = globalThis.fetch} = {}) {
+export function createDiscordClient({config, fetchImpl = globalThis.fetch, requestPacer} = {}) {
   const configured = Boolean(config?.configured && typeof fetchImpl === 'function');
-  async function request(path, signal) {
-    if (!configured) throw new DiscordError('not_configured');
-    for (let attempt = 0; attempt < 4; attempt++) {
-      try {
-        const timeout = AbortSignal.timeout(15000), combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
-        const response = await fetchImpl(`https://discord.com/api/v10${path}`, {headers:{Authorization:`Bot ${config.botToken}`},signal:combined,redirect:'error'});
-        if (response.status === 429) {
-          const data = await response.json();
-          const delay = Number(data.retry_after);
-          if (!Number.isFinite(delay) || delay < 0 || delay > 30 || attempt === 3) throw new DiscordError('rate_limited');
-          await pause(Math.max(10, delay * 1000), signal); continue;
-        }
-        if (!response.ok) throw new DiscordError(response.status === 401 ? 'invalid_token' : response.status === 403 ? 'permission_denied' : response.status === 404 ? 'not_found' : 'discord_unavailable');
-        const raw = await response.text();
-        if (raw.length > 3000000) throw new DiscordError('response_too_large');
-        return JSON.parse(raw);
-      } catch (error) { if (error instanceof DiscordError) throw error; throw new DiscordError(signal?.aborted ? 'aborted' : 'discord_unavailable'); }
-    }
-    throw new DiscordError('rate_limited');
-  }
+  const request=createPacedDiscordRequest({config:{...config,configured},fetchImpl,requestPacer,ErrorClass:DiscordError});
   let botId;
   const knownChannels = new Map();
   async function getCurrentApplication({signal} = {}) {

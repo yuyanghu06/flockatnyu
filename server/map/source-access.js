@@ -1,0 +1,65 @@
+// Source references are evidence, never grants. Reuse the existing source
+// services so map visibility follows their current server-owned access policy.
+const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+export function createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, gmailSourceId, calendarClient, calendarSourceId} = {}) {
+  return async function authorizeSource({principal, sourceId, sourceUrl, signal} = {}) {
+    if (signal?.aborted || typeof principal?.id !== 'string' || !principal.id || !uuid(sourceId)
+      || !Array.isArray(principal.allowedSourceIds) || !principal.allowedSourceIds.includes(sourceId)
+      || typeof sourceUrl !== 'string' || sourceUrl.length > 2048) return false;
+    try {
+      const url = new URL(sourceUrl);
+      if (url.protocol !== 'https:' || url.username || url.password) return false;
+      if (url.origin === 'https://calendar.google.com') {
+        if (!uuid(calendarSourceId) || sourceId !== calendarSourceId || !calendarClient?.configured
+          || typeof calendarClient.calendarId !== 'string' || !calendarClient.calendarId || calendarClient.calendarId === 'primary'
+          || !(principal.googleAccess === true || principal.calendarAccess === true && principal.calendarId === calendarClient.calendarId)
+          || url.pathname !== '/calendar/event' || url.hash || [...url.searchParams.keys()].join(',') !== 'eid') return false;
+        const encoded = url.searchParams.get('eid');
+        if (!encoded || !/^[A-Za-z0-9_-]+$/.test(encoded)) return false;
+        const decoded = Buffer.from(encoded, 'base64url').toString('utf8');
+        const suffix = ` ${calendarClient.calendarId}`;
+        if (!decoded.endsWith(suffix)) return false;
+        const eventId = decoded.slice(0, -suffix.length);
+        if (!/^[a-zA-Z0-9_-]{5,1024}$/.test(eventId)
+          || sourceUrl !== `https://calendar.google.com/calendar/event?eid=${Buffer.from(`${eventId}${suffix}`).toString('base64url')}`) return false;
+        const result = await calendarClient.readEvent({eventId, signal,
+          principal:{id:principal.id,calendarAccess:true,calendarId:calendarClient.calendarId}});
+        return !signal?.aborted && result?.status === 'ready' && result.events?.some(event =>
+          event.eventId === eventId && event.url === sourceUrl) === true;
+      }
+      if (url.origin === 'https://discord.com') {
+        const match = /^\/channels\/([0-9]{1,20})\/([0-9]{1,20})\/([0-9]{1,20})$/.exec(url.pathname);
+        if (!match || url.search || url.hash || sourceUrl !== `https://discord.com${url.pathname}`
+          || principal.liveDiscord?.guildId !== match[1] || !liveDiscordService?.configured) return false;
+        // The live service checks enabled catalogue entries, thread ancestry,
+        // bot access, exclusions and a final catalogue/policy recheck.
+        const result = await liveDiscordService.readMessages({principal, channelId:match[2], messageId:match[3], context:false, limit:1, signal});
+        return !signal?.aborted && result?.status === 'ready' && result.sources?.some(source =>
+          source.sourceId === sourceId && source.url === sourceUrl && source.guildId === match[1]
+          && source.channelId === match[2] && source.messageId === match[3]) === true;
+      }
+      if (url.origin === 'https://miro.com') {
+        const match = /^\/app\/board\/([A-Za-z0-9_=%-]+)\/$/.exec(url.pathname);
+        if (!match || url.hash || !miroStore?.configured) return false;
+        const boardId = decodeURIComponent(match[1]);
+        if (!/^[A-Za-z0-9_=-]{1,200}$/.test(boardId)) return false;
+        const itemId = url.searchParams.get('moveToWidget');
+        if (itemId !== null && !/^[A-Za-z0-9_=-]{1,200}$/.test(itemId)) return false;
+        const canonical = `https://miro.com/app/board/${encodeURIComponent(boardId)}/${itemId === null ? '' : `?moveToWidget=${encodeURIComponent(itemId)}`}`;
+        if (sourceUrl !== canonical) return false;
+        const result = await miroStore.authorizedBoard({principal, boardId, signal});
+        return !signal?.aborted && result?.status === 'ready' && result.data?.board_id === boardId && result.data.source_id === sourceId;
+      }
+      if (url.origin === 'https://mail.google.com') {
+        const match = /^#all\/([a-fA-F0-9]{1,64})$/.exec(url.hash);
+        if (!match || url.pathname !== '/mail/u/0/' || url.search || sourceId !== gmailSourceId
+          || !uuid(gmailSourceId) || principal.googleAccess !== true || !googleClient?.configured
+          || sourceUrl !== `https://mail.google.com/mail/u/0/#all/${match[1]}`) return false;
+        const result = await googleClient.readGmail({messageId:match[1], signal});
+        return !signal?.aborted && result?.status === 'ready' && result.sources?.some(source =>
+          source.kind === 'gmail' && source.externalId === match[1] && source.url === sourceUrl) === true;
+      }
+      return false;
+    } catch { return false; }
+  };
+}

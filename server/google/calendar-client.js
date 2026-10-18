@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { readCalendarConfig, CALENDAR_REQUIRED_SCOPES } from './calendar-config.js';
 import { boundedGoogleBody } from './client.js';
 import { createGoogleOAuth, GoogleError, googleError, verifyGoogleToken, waitForGoogleAuth } from './oauth.js';
+import { canonicalJson } from '../automation/validation.js';
 
 const ROOT = 'https://www.googleapis.com/calendar/v3';
 const MANAGER = 'tech-nyu-update-agent-v1';
@@ -35,15 +36,23 @@ function managedFields(event) {
 }
 const fingerprint = event => hash(JSON.stringify(managedFields(event)));
 
-// Only trusted runtime-owned Miro board/source pairs grant provenance. A model
-// supplied HTTPS URL alone is never enough. Gmail/Discord writes are not exposed.
+// Only trusted runtime-owned source receipts grant provenance. URLs and model
+// source claims alone never grant Calendar writes.
 function provenance(args, principal) {
-  const match = typeof args.sourceKey === 'string' && /^miro:([A-Za-z0-9_=-]{1,200}):([A-Za-z0-9_=-]{1,200})$/.exec(args.sourceKey);
+  if(typeof args.sourceKey==='string'&&args.sourceKey.startsWith('discord:')) {
+    const match=/^discord:([0-9]{1,20}):([0-9]{1,20}):([0-9]{1,20})$/.exec(args.sourceKey);
+    const expected=match?`https://discord.com/channels/${match[1]}/${match[2]}/${match[3]}`:null;
+    const scope=match&&principal?.calendarSources?.find(row=>row.provider==='discord'&&row.guildId===match[1]&&row.channelId===match[2]&&row.messageId===match[3]
+      &&principal.allowedSourceIds?.includes(row.sourceId));
+    if(!scope||args.sourceUrl!==expected)throw new GoogleError('forbidden_source');
+    return {sourceHash:hash(args.sourceKey),sourceUrl:expected,sourceTitle:'Discord source'};
+  }
+  const match = typeof args.sourceKey === 'string' && /^miro:([A-Za-z0-9_=-]{1,200}):([A-Za-z0-9_=-]{1,200})(?::row:([A-Za-z0-9_=-]{1,200}))?$/.exec(args.sourceKey);
   if (!match || !Array.isArray(principal?.calendarSources) || !Array.isArray(principal.allowedSourceIds)) throw new GoogleError('forbidden_source');
   const scope = principal.calendarSources.find(row => row?.boardId === match[1] && principal.allowedSourceIds.includes(row.sourceId));
   const expected = `https://miro.com/app/board/${encodeURIComponent(match[1])}/?moveToWidget=${encodeURIComponent(match[2])}`;
   if (!scope || args.sourceUrl !== expected) throw new GoogleError('forbidden_source');
-  return { sourceHash: hash(args.sourceKey), sourceUrl: expected };
+  return { sourceHash: hash(args.sourceKey), sourceUrl: expected, sourceTitle:'Miro source' };
 }
 
 function displayBoundary(value) {
@@ -58,6 +67,8 @@ function eventOutput(event, calendarId) {
     description: String(event.description || '').slice(0, 1800), location: String(event.location || '').slice(0, 500),
     start: displayBoundary(event.start), end: displayBoundary(event.end),
     status: event.status || 'confirmed', managed: event.extendedProperties?.private?.updateAgentManager === MANAGER,
+    createdAt: validCalendarInstant(event.created) ? new Date(event.created).toISOString() : null,
+    updatedAt: validCalendarInstant(event.updated) ? new Date(event.updated).toISOString() : null,
     url: `https://calendar.google.com/calendar/event?eid=${Buffer.from(`${event.id} ${calendarId}`).toString('base64url')}`,
     sourceUrl: typeof event.source?.url === 'string' ? event.source.url.slice(0, 1000) : '', partial: true };
 }
@@ -141,7 +152,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
   async function listEvents({timeMin,timeMax,pageToken,limit=5,principal,signal}={}) {
     if (!validCalendarInstant(timeMin) || !validCalendarInstant(timeMax) || Date.parse(timeMax)<=Date.parse(timeMin) || Date.parse(timeMax)-Date.parse(timeMin)>366*86400000 || !Number.isInteger(limit) || limit<1 || limit>5 || pageToken!==undefined&&!text(pageToken,2000,true)) return {status:'invalid_request',events:[]};
     return run(signal, async (token, active) => {
-      const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'false',fields:'items(id,summary,description,location,start,end,status,source,extendedProperties),nextPageToken'});
+      const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'false',fields:'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated),nextPageToken'});
       if(pageToken) params.set('pageToken',pageToken);
       const page = await request(`${target}?${params}`, token, active);
       const items=page.items===undefined?[]:page.items;
@@ -153,6 +164,108 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
     if(!eventIdValid(eventId)) return {status:'invalid_request',events:[]};
     return run(signal,async(token,active)=>{const event=await current(eventId,token,active);return {status:'ready',events:event?[eventOutput(event,config.calendarId)]:[]};},principal);
   }
+  const etagValid = value => typeof value==='string' && value.length>0 && value.length<=1000 && !/[\r\n]/.test(value);
+  const chatUnsupported = event => Boolean(event.attendees?.length || event.recurrence?.length || event.recurringEventId || event.eventType && event.eventType!=='default');
+  function chatGate(principal) {
+    gate(principal);
+    if (principal.calendarChatWrite!==true) throw new GoogleError('forbidden');
+  }
+  // Revision metadata is internal to the request wrapper, never a model-supplied
+  // grant. Lists do not confer edit authority; an exact live read is required.
+  async function readChatEvent({eventId,principal,signal}={}) {
+    if(!eventIdValid(eventId))return {status:'invalid_request',events:[]};
+    return run(signal,async(token,active)=>{
+      const event=await current(eventId,token,active);
+      return {status:'ready',events:event?[eventOutput(event,config.calendarId)]:[],
+        chatRevision:event?{eventId,etag:etagValid(event.etag)?event.etag:null,unsupported:chatUnsupported(event)}:null};
+    },principal);
+  }
+  function chatFields(args,create=false) {
+    const patch={};
+    if(create||Object.hasOwn(args,'title')){
+      if(!text(args.title,300,true))throw new GoogleError('invalid_request');
+      patch.summary=args.title;
+    }
+    for(const [key,max] of [['description',3000],['location',500]])if(Object.hasOwn(args,key)){
+      if(!text(args[key],max))throw new GoogleError('invalid_request');patch[key]=args[key];
+    }
+    for(const key of ['start','end'])if(create||Object.hasOwn(args,key))patch[key]=boundary(args[key]);
+    if(!Object.keys(patch).length)throw new GoogleError('invalid_request');
+    return patch;
+  }
+  function chatTimes(event) {
+    const start=displayBoundary(event.start),end=displayBoundary(event.end);
+    if(!start||!end||Boolean(start.date)!==Boolean(end.date)||Date.parse(end.date||end.dateTime)<=Date.parse(start.date||start.dateTime))throw new GoogleError('invalid_response');
+  }
+  function chatMatches(event,patch) {
+    return Object.entries(patch).every(([key,value])=>{
+      if(key==='start'||key==='end')return canonicalJson(displayBoundary(event[key]))===canonicalJson(displayBoundary(value));
+      return event[key]===value;
+    });
+  }
+  function chatReceipt(event,outcome) {
+    if(chatUnsupported(event))throw new GoogleError('unsupported_event');
+    chatTimes(event);
+    const output=eventOutput(event,config.calendarId);
+    return {status:'ready',outcome,eventId:output.eventId,url:output.url,...(output.updatedAt?{updatedAt:output.updatedAt}:{})};
+  }
+  async function createChatEvent(args={}) {
+    if(!object(args)||Object.keys(args).some(key=>!['title','description','location','start','end','operationId','principal','signal'].includes(key)))return {status:'invalid_request',events:[]};
+    const {principal,signal,operationId}=args;
+    try{chatGate(principal);}catch{return {status:'forbidden',events:[]};}
+    return run(signal,async(token,active)=>{
+      chatGate(principal);
+      if(!text(operationId,200,true))throw new GoogleError('invalid_request');
+      const desired={...chatFields(args,true),status:'confirmed'};
+      try{chatTimes(desired);}catch{throw new GoogleError('invalid_request');}
+      const identity=hash(canonicalJson(['chat-calendar-v1',config.calendarId,operationId,desired]));
+      const id=identity;
+      const matches=event=>!chatUnsupported(event)&&event.extendedProperties?.private?.chatRequestHash===identity&&chatMatches(event,desired);
+      const existing=await current(id,token,active);
+      if(existing){if(!matches(existing))throw new GoogleError('conflict');return chatReceipt(existing,'unchanged');}
+      chatGate(principal);await verify(token,active,true);
+      if(active.aborted)throw new GoogleError('aborted');
+      let response,outcome='created';
+      try{
+        response=await request(`${target}?sendUpdates=none`,token,active,{method:'POST',body:{id,...desired,reminders:{useDefault:false},extendedProperties:{private:{chatRequestHash:identity}}}});
+        if(response.id!==id||!matches(response))throw new GoogleError('invalid_response');
+        chatTimes(response);
+      }catch(error){
+        if(active.aborted||error instanceof GoogleError&&!['google_unavailable','conflict','invalid_response'].includes(error.code))throw error;
+        // Never repeat an ambiguous insert: inspect its deterministic identity.
+        response=await current(id,token,active);
+        if(!response)throw error;
+        if(!matches(response))throw new GoogleError('conflict');
+        outcome='reconciled';
+      }
+      return chatReceipt(response,outcome);
+    },principal,{write:true});
+  }
+  async function mutateChatEvent(args={},cancel=false) {
+    if(!object(args)||Object.keys(args).some(key=>!['eventId','expectedEtag','principal','signal',...(cancel?[]:['title','description','location','start','end'])].includes(key)))return {status:'invalid_request',events:[]};
+    const {eventId,expectedEtag,principal,signal}=args;
+    try{chatGate(principal);}catch{return {status:'forbidden',events:[]};}
+    return run(signal,async(token,active)=>{
+      chatGate(principal);
+      if(!eventIdValid(eventId)||!etagValid(expectedEtag))throw new GoogleError('invalid_request');
+      const existing=await current(eventId,token,active);
+      if(!existing)throw new GoogleError('not_found');
+      if(!etagValid(existing.etag))throw new GoogleError('invalid_response');
+      if(existing.etag!==expectedEtag)throw new GoogleError('conflict');
+      if(chatUnsupported(existing))throw new GoogleError('unsupported_event');
+      if(!cancel&&existing.status==='cancelled')throw new GoogleError('cancelled_event');
+      const patch=cancel?{status:'cancelled'}:chatFields(args);
+      try{chatTimes({...existing,...patch});}catch{throw new GoogleError('invalid_request');}
+      if(chatMatches(existing,patch))return chatReceipt(existing,'unchanged');
+      chatGate(principal);await verify(token,active,true);
+      if(active.aborted)throw new GoogleError('aborted');
+      // Patch only requested fields. In particular, never reseal autonomous
+      // updateAgentHash metadata: the worker must detect this explicit human edit.
+      const response=await request(`${target}/${encodeURIComponent(eventId)}?sendUpdates=none`,token,active,{method:'PATCH',body:patch,etag:expectedEtag});
+      if(response.id!==eventId||!chatMatches(response,patch))throw new GoogleError('invalid_response');
+      return chatReceipt(response,cancel?'cancelled':'updated');
+    },principal,{write:true});
+  }
   async function mutate(args, cancel) {
     const {principal,signal}=args||{};
     return run(signal,async(token,active)=>{
@@ -162,7 +275,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
         if (!text(args.title,300,true)||args.description!==undefined&&!text(args.description,3000)||args.location!==undefined&&!text(args.location,500)) throw new GoogleError('invalid_request');
         const start=boundary(args.start),end=boundary(args.end);
         if (Boolean(start.date)!==Boolean(end.date)||Date.parse(end.date||end.dateTime)<=Date.parse(start.date||start.dateTime)) throw new GoogleError('invalid_request');
-        desired={summary:args.title,description:args.description||'',location:args.location||'',start,end,status:'confirmed',source:{url:identity.sourceUrl,title:'Miro source'}};
+        desired={summary:args.title,description:args.description||'',location:args.location||'',start,end,status:'confirmed',source:{url:identity.sourceUrl,title:identity.sourceTitle}};
       }
       const existing=await current(id,token,active);
       if (!existing && cancel) return {status:'ready',outcome:'already_absent',eventId:id};
@@ -198,6 +311,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       return {status:'ready',outcome,eventId:id};
     },principal,{write:true});
   }
-  return Object.freeze({configured,calendarId:config.calendarId,status:()=>({configured,oauthVerified,status:lastStatus}),preflight,listCalendars,listEvents,readEvent,
+  return Object.freeze({configured,calendarId:config.calendarId,status:()=>({configured,oauthVerified,status:lastStatus}),preflight,listCalendars,listEvents,readEvent,readChatEvent,createChatEvent,
+    updateChatEvent:args=>mutateChatEvent(args,false),cancelChatEvent:args=>mutateChatEvent(args,true),
     upsertEvent:args=>mutate(args,false),cancelEvent:args=>mutate(args,true)});
 }

@@ -78,7 +78,7 @@ async function readConversation(request, timeoutMs) {
   return { messages, buildingId: value.buildingId, timeZone };
 }
 
-export function createApp({ config = readConfig(), provider = createProvider(config), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, mapPresenceService = null, auth = developmentAuth, now = () => new Date() } = {}) {
+export function createApp({ config = readConfig(), provider = createProvider(config), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
   app.get('/healthz', c => c.json({ ok: true, service: 'tech-nyu-api' }));
@@ -95,7 +95,7 @@ export function createApp({ config = readConfig(), provider = createProvider(con
   });
   const authorize = async c => { try { return await auth(c, config); } catch { return null; } };
   const apiError = (c, code, status) => c.json({ status: code, error: { message: errorMessages[code] || 'This operation is unavailable.' } }, status);
-  const resultStatus = status => ({ forbidden: 403, invalid_request: 400, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429 })[status] || 200;
+  const resultStatus = status => ({ forbidden: 403, forbidden_source:403, invalid_request: 400, invalid:400, conflict:409, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429 })[status] || 200;
   app.get('/api/map/presence', async c => {
     c.header('cache-control', 'no-store');
     c.header('x-content-type-options', 'nosniff');
@@ -111,7 +111,7 @@ export function createApp({ config = readConfig(), provider = createProvider(con
     const principal = await authorize(c);
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return apiError(c, 'access_denied', 403);
     c.header('cache-control', 'no-store');
-    return c.json({ tools: [...(liveDiscordTools?.tools || []), ...(googleTools?.tools || []), ...(miroTools?.tools || [])], policy: { discord: 'live_only' } });
+    return c.json({ tools: [...(liveDiscordTools?.tools || []), ...(googleTools?.tools || []), ...(miroTools?.tools || []), ...(bugReportTools?.tools || []), ...(memoryTools?.tools || []), ...(mapTools?.tools || [])], policy: { discord: 'live_only' } });
   });
   app.get('/api/admin/discord', async c => {
     const principal = await authorize(c);
@@ -137,10 +137,11 @@ export function createApp({ config = readConfig(), provider = createProvider(con
     let value;
     try { value = await readJSON(c.req.raw, config.timeoutMs, 8192); } catch { return apiError(c, 'invalid_request', 400); }
     const name = c.req.param('tool').replaceAll('-', '_');
-    const adapter = liveDiscordTools?.tools?.some(tool => tool.name === name) ? liveDiscordTools : googleTools?.tools?.some(tool => tool.name === name) ? googleTools : miroTools?.tools?.some(tool => tool.name === name) ? miroTools : null;
+    const adapter = liveDiscordTools?.tools?.some(tool => tool.name === name) ? liveDiscordTools : googleTools?.tools?.some(tool => tool.name === name) ? googleTools : miroTools?.tools?.some(tool => tool.name === name) ? miroTools : mapTools?.tools?.some(tool => tool.name === name) ? mapTools : null;
     if (!adapter) return apiError(c, 'not_configured', 503);
     const timeContext = createTimeContext({now:now()});
-    const result = await adapter.execute({ name, arguments: value, principal, signal: c.req.raw.signal, timeContext });
+    const result = await adapter.execute({ name, arguments: value, principal, signal: c.req.raw.signal, timeContext,
+      ...(adapter === liveDiscordTools ? {userMessage:''} : {}) });
     c.header('cache-control', 'no-store');
     return c.json(result, resultStatus(result.status));
   });
@@ -160,18 +161,19 @@ export function createApp({ config = readConfig(), provider = createProvider(con
       async start(controller) {
         const encode = new TextEncoder();
         const send = record => { if (!disconnected) controller.enqueue(encode.encode(JSON.stringify(record) + '\n')); };
-        const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, config.timeoutMs);
+        const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, config.requestTimeoutMs ?? config.timeoutMs);
         const aborted = new Promise((_, reject) => abort.signal.addEventListener('abort', () => reject(new ProviderError(timedOut ? 'timeout' : 'aborted')), { once: true }));
         // Each async boundary races cancellation, including injected adapters.
         const wait = promise => Promise.race([promise, aborted]);
         try {
           if (c.req.raw.signal.aborted) disconnect();
           const retrieval = await wait(retrieveAssistantContext({ messages: conversation.messages, principal, provider,
-            liveTools: liveDiscordTools, googleTools, miroTools, signal: abort.signal, timeContext, planning: config.retrievalToolsEnabled !== false }));
+            liveTools: liveDiscordTools, googleTools, miroTools, bugReportTools, memoryTools, mapTools, buildingId: conversation.buildingId, signal: abort.signal, timeContext, planning: config.retrievalToolsEnabled !== false,
+            onToolEvent: event => { if (!abort.signal.aborted) send(event); } }));
           const sources = retrieval.sources;
           send({ type: 'meta', sources, timeZone:timeContext.timeZone, now:timeContext.now, knowledgeStatus: retrieval.status, retrieval: retrieval.results.map(result => ({
             tool: result.tool, status: result.status, coverage: result.coverage })) });
-          const iterator = provider.stream({ messages: conversation.messages, system: assistantAnswerPrompt({ sources, results: retrieval.results, timeContext }), signal: abort.signal, timeContext })[Symbol.asyncIterator]();
+          const iterator = provider.stream({ messages: conversation.messages, system: assistantAnswerPrompt({ sources, results: retrieval.results, memory: retrieval.memory, timeContext }), signal: abort.signal, timeContext })[Symbol.asyncIterator]();
           let outputLength = 0;
           try {
             while (true) {

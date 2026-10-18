@@ -20,7 +20,7 @@ function fixture({email='club@example.com',scopes=CALENDAR_REQUIRED_SCOPES,role=
   assert.equal(url.origin,'https://www.googleapis.com');
   const match=/\/calendars\/([^/]+)\/events(?:\/([^/]+))?$/.exec(url.pathname);assert(match,url.href);assert.equal(decodeURIComponent(match[1]),target);
   const id=match[2]&&decodeURIComponent(match[2]);
-  if(options.method==='GET')return events.has(id)?Response.json(events.get(id)):Response.json({error:'missing'}, {status:404});
+  if(options.method==='GET')return id===undefined?Response.json({items:[...events.values()]}):events.has(id)?Response.json(events.get(id)):Response.json({error:'missing'}, {status:404});
   assert(['POST','PATCH'].includes(options.method));assert.equal(url.searchParams.get('sendUpdates'),'none');writes++;
   if(patchStatus&&options.method==='PATCH')return Response.json({error:'conflict'}, {status:patchStatus});
   const body=JSON.parse(options.body),key=id||body.id;
@@ -113,4 +113,47 @@ test('Calendar writer ACL is rechecked immediately before mutation and revocatio
 test('Cancelled requests use no network and normalized timed events remain idempotent',async()=>{
  const f=fixture(),controller=new AbortController();controller.abort();assert.equal((await f.client.preflight({signal:controller.signal})).status,'aborted');assert.equal(f.calls.length,0);
  const created=await f.write();const saved=f.events.get(created.eventId);assert.equal(saved.start.dateTime,'2026-10-20T22:00:00.000Z');assert.equal(saved.start.timeZone,'America/New_York');assert.equal((await f.write()).outcome,'unchanged');
+});
+
+test('Calendar list and exact reads retain provider timestamps, recurrence instance IDs and exclusive all-day boundaries',async()=>{
+ const event={id:'recurring_20261101',summary:'All-day campus event',start:{date:'2026-11-01'},end:{date:'2026-11-02'},
+  created:'2026-10-18T12:00:00-04:00',updated:'2026-10-18T14:30:00-04:00',status:'confirmed',location:'Unmapped room',
+  extendedProperties:{private:{secret:'not returned'}},attendees:[{email:'not-returned@example.com'}]};
+ const f=fixture({existing:event});
+ const listed=await f.client.listEvents({timeMin:'2026-10-31T00:00:00Z',timeMax:'2026-11-03T00:00:00Z',principal});
+ const read=await f.client.readEvent({eventId:event.id,principal});
+ assert.equal(listed.status,'ready');assert.equal(read.status,'ready');assert.deepEqual(listed.events,read.events);
+ const result=read.events[0];assert.equal(result.eventId,event.id);assert.equal(result.createdAt,'2026-10-18T16:00:00.000Z');assert.equal(result.updatedAt,'2026-10-18T18:30:00.000Z');
+ assert.deepEqual(result.start,event.start);assert.deepEqual(result.end,event.end);assert.equal(result.location,event.location);
+ assert.equal(result.attendees,undefined);assert.equal(result.extendedProperties,undefined);assert.equal(f.writes(),0);
+ const listCall=f.calls.find(c=>c.url.searchParams.has('singleEvents'));assert.equal(listCall.url.searchParams.get('singleEvents'),'true');
+ assert.match(listCall.url.searchParams.get('fields'),/created,updated/);
+});
+
+test('Missing or malformed Calendar original timestamps stay unknown rather than becoming the processing clock',async()=>{
+ for(const patch of [{},{created:'not-an-instant',updated:'2026-02-30T12:00:00Z'}]) {
+  const f=fixture({existing:{id:'meeting_123',summary:'Meeting',start:input.start,end:input.end,...patch}});
+  const result=await f.client.readEvent({eventId:'meeting_123',principal});assert.equal(result.status,'ready');
+  assert.equal(result.events[0].createdAt,null);assert.equal(result.events[0].updatedAt,null);assert.equal(f.writes(),0);
+ }
+});
+
+test('Discord managed Calendar identities stay stable across edits/cancellation and preserve human modifications',async()=>{
+ const discordKey='discord:100:200:300',discordUrl='https://discord.com/channels/100/200/300';
+ const actor={...principal,calendarSources:[{provider:'discord',guildId:'100',channelId:'200',messageId:'300',sourceId}]};
+ const f=fixture(),args={sourceKey:discordKey,sourceUrl:discordUrl,principal:actor};
+ const created=await f.write(args);assert.equal(created.status,'ready');assert.equal(created.eventId,calendarEventId(target,discordKey));
+ assert.equal(f.events.get(created.eventId).source.title,'Discord source');assert.equal((await f.write(args)).outcome,'unchanged');assert.equal(f.writes(),1);
+ assert.equal((await f.write({...args,title:'Supported edited title'})).outcome,'updated');assert.equal(f.events.size,1);
+ assert.equal((await f.client.cancelEvent(args)).outcome,'cancelled');assert.equal(f.events.get(created.eventId).status,'cancelled');
+ const before=f.writes();f.events.get(created.eventId).summary='Human override';
+ assert.equal((await f.write({...args,title:'Agent attempted overwrite'})).status,'human_modified');assert.equal(f.writes(),before);
+});
+
+test('Discord source keys and URLs cannot manufacture trusted source grants',async()=>{
+ const f=fixture(),args={sourceKey:'discord:100:200:300',sourceUrl:'https://discord.com/channels/100/200/300'};
+ const actor={...principal,calendarSources:[{provider:'discord',guildId:'100',channelId:'200',messageId:'300',sourceId}]};
+ for(const patch of [{principal},{principal:{...actor,allowedSourceIds:[]}},{principal:actor,sourceKey:'discord:999:200:300'},
+  {principal:actor,sourceKey:'discord:100:200:301'},{principal:actor,sourceUrl:args.sourceUrl+'?extra=1'}])assert.equal((await f.write({...args,...patch})).status,'forbidden_source');
+ assert.equal(f.writes(),0);
 });

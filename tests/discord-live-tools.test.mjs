@@ -9,7 +9,7 @@ const guildId='100', channelId='200', categoryId='300';
 const sourceId='22222222-2222-4222-8222-222222222222';
 const principal={allowedSourceIds:[sourceId],liveDiscord:{mode:'local-operator',guildId}};
 const from='2026-10-01T04:00:00.000Z',to='2026-10-08T04:00:00.000Z';
-const config={configured:true,guildId,botToken:'fixture-secret'};
+const config={configured:true,guildId,botToken:'fixture-secret',pacing:{minIntervalMs:0}};
 const message=(at, extra={})=>({id:discordSnowflakeAt(at),channel_id:channelId,guild_id:guildId,author:{id:'400',username:'Member'},timestamp:at,content:'hello',...extra});
 function fixture({policy={},details={},metadata,config:overrides={},getChannel,getMessages,getMessage,searchMessages,verifyRevision,listSyncChannels,applicationFlags=1<<18,continueShortPages=false}={}) {
   let policyCalls=0, reads=0;

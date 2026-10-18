@@ -45,23 +45,17 @@ test('real handler delivers structured contracts/examples to provider system pro
 
 // These checks verify explicit instructions reach the model, not model compliance.
 const policies=[
- ['exact existing storage names and flattened arrays',[/people_here/,/scheduled_events/,/events_here/,/flat/i,/JSON/i]],
- ['activity labels come from explicit activity and unknown activity stays blank',[/label/i,/activity/i,/blank|empty/i,/guess|invent|infer/i]],
- ['stable known identity and building lookup; no first-name inference',[/provider user IDs|provider IDs/i,/existing|lookup|resolve/i,/first.name|names? alone|name.only/i,/building/i]],
- ['person lookup applies to people records; events need stable source identity and known building',[/For people_here mutations only, resolve an existing trackable map_people/i,/Building events instead require stable provider event\/source identity and a known building, not a person lookup or attendee/i,/unknown\/ambiguous person for a people_here change/i]],
- ['fixed catalogue and people-only runtime write boundary',[/people_here/,/scheduled_events/,/read.only|unavailable/i,/fixed|immutable/i,/metadata|names|aliases/i]],
- ['events differ from presence, RSVP and deferred attendee schema',[/attendance|attendees/i,/RSVP/i,/event/i,/presence|people_here/i]],
- ['future windows cannot create current presence early',[/future/i,/valid_from/,/expires_at/,/current/i]],
- ['two-hour freshness applies to current self-reports using original provider time',[/two.hour default ONLY for an explicit current self.report/i,/original provider report timestamp \+7200seconds/i,/never processing\/received time/i,/freshness cutoff/i]],
- ['fresh explicit location refreshes; activity-only updates do not',[/newer explicit confirmation/i,/refreshes the cutoff/i,/activity.only.*does not extend/i,/explicit supported end overrides defaults/i]],
- ['expired reports, unknown timestamps and ambiguous ends remain deferred',[/not resurrect already.expired/i,/original report timestamp is unknown.*defer/i,/end is ambiguous.*defer/i,/does NOT apply to future plans or events/i]],
- ['policy examples demonstrate source14-to16, confirmed15-to17, activity15-keeps16 and delayed18-no-resurrection',[/at14:00 source time.*16:00 freshness/i,/confirmation at15:00 refreshes to17:00/i,/activity at15:00 keeps16:00/i,/at18:00 does not move its cutoff or resurrect/i]],
- ['approved timed-event default applies only with supported start and missing end',[/default timed.event duration of7200seconds ONLY when the start is supported and end is missing/i,/ends_at = starts_at \+7200seconds/i,/explicit source end or duration overrides/i,/never to unknown\/ambiguous starts or all.day/i]],
- ['event partial edits preserve known end and all-day events keep exclusive date boundaries',[/Preserve an already known end on partial edits/i,/never apply two hours to all.day events/i,/default20:00.*explicit19:00 end overrides/i,/partial title edit preserves an existing19:00 end/i,/Unknown\/ambiguous start\/date defers/i]],
- ['relative times source anchored and no invented duration or expiry',[/relative/i,/timestamp|source time/i,/duration/i,/expiry|expires_at/i,/invent|guess/i]],
- ['stable event identity and explicit cancellation, preserving partial records',[/stable/i,/array index|array position/i,/partial/i,/cancel/i,/absen|missing/i,/preserve/i]],
- ['untrusted source contents never grant permissions',[/untrusted/i,/instructions|permission grants/i]],
- ['unsupported map writes cannot be claimed complete',[/explicit tool|provided tools/i,/unavailable/i,/Never claim/i,/pending|queued|defer/i]],
+ ['read-only source-backed classification catalogue',[/read_map_events always returns the read.only event_types catalogue/,/study, meeting, event, social, other/,/source evidence to select a category/,/explicitly choose other when unknown/,/never guess from the building/,/Preserve the existing type_id during unrelated edits/,/Never create or edit event types/,/adds no broader write permission/]],
+ ['normalized event relationships and retired columns',[/Tables are events, event_buildings and event_people/,/Legacy people_here and scheduled_events.*retired/,/Nullable fields are omitted/]],
+ ['multi-location visibility is intentional',[/EVERY linked building/,/Multiple simultaneous locations are allowed/,/one avatar per person per building/,/no primary building/]],
+ ['identity stays evidence-backed and profiles fixed',[/exact linked provider user IDs/,/A name alone/,/Never create profiles or invent UUIDs/,/canonical UUIDs of any version/]],
+ ['faithful plain-text labels and unknown blank',[/Unknown activity stays empty/,/Never infer studying/,/literal plain text/,/Maximum200 Unicode code points/]],
+ ['original timestamps and freshness defaults',[/ORIGINAL provider source timestamp/,/never received\/processing time/,/original provider report timestamp \+7200seconds/,/activity.only.*do not extend/,/not resurrect already.expired/]],
+ ['separate scheduled default and partial end preservation',[/scheduled event with missing end/,/starts_at \+7200seconds/,/Preserve an already known end on partial edits/,/Never apply two hours to all.day/]],
+ ['all-day dates preserve precision and DST',[/starts_on\/ends_on/,/EXCLUSIVE end/,/DST.crossing/,/Do not invent midnight arrival/]],
+ ['read merge and optimistic updates',[/Read before upsert/,/expectedUpdatedAt/,/complete event\/building\/people snapshot/,/merge partial edits/,/conflict requires reread/,/No cross.event removal/]],
+ ['approved planned event display without RSVP invention',[/Do not infer RSVP or attendance from organizing\/helping/,/going participation.*automatically supplies planned map visibility/,/Future windows stay upcoming/]],
+ ['source and completion boundaries',[/untrusted evidence/,/supporting inputIds/,/Configured, allowlisted Calendar originals may support event facts with exact occurrence IDs/,/do not claim success or finish_batch until successful tool results/]],
 ];
 for(const [scenario,patterns] of policies)test(`prompt policy coverage: ${scenario}`,()=>{
  const prompt=buildAutomationPrompt({timezone:'America/New_York',now:now()});
@@ -69,7 +63,7 @@ for(const [scenario,patterns] of policies)test(`prompt policy coverage: ${scenar
 });
 
 test('unknown map-write tool is refused before execution or completion and preserves queued evidence',async()=>{
- const {handler,state}=harness(()=>turn('set_people_here',wrap({building_id:'bobst-library',people_here:MAP_RECORD_EXAMPLES.people_here})));
+ const {handler,state}=harness(()=>turn('set_people_here',wrap({building_id:'bobst-library',people_here:MAP_RECORD_EXAMPLES.people})));
  assert.deepEqual(await handler.tick(),{status:'invalid_tool_call'});
  assert.equal(state.queue.length,1);assert.equal(state.queue[0].raw_response.payload.content,evidence);
  assert.equal(state.finishes,0);assert.equal(state.actions,0);assert.equal(state.executions,0);assert.equal(state.releases,1);

@@ -120,7 +120,7 @@ test('agent selects a dated author search and receives cited evidence with trust
   assert.deepEqual(searchArgs.principal, principal);
   assert.equal(searchArgs.authorId, '345678901234567890');
   assert.equal(searchArgs.from, '2026-10-11T04:00:00.000Z');
-  assert.equal(frames[0].sources.length, 1);
+  assert.equal(frames.find(frame=>frame.type==='meta').sources.length, 1);
   assert.match(finalSystem, /discord.com\/channels/);
   assert.match(finalSystem, /untrusted data/i);
 });

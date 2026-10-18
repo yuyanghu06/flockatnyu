@@ -1,15 +1,8 @@
 import {createDiscordClient, DiscordError} from './client.js';
+import {createPacedDiscordRequest} from './request-pacing.js';
 
 const id = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const fail = code => { throw new DiscordError(code); };
-const wait = (ms, signal) => new Promise((resolve, reject) => {
-  if (signal?.aborted) return reject(new DiscordError('aborted'));
-  const done = () => { clearTimeout(timer); signal?.removeEventListener('abort', abort); resolve(); };
-  const abort = () => { clearTimeout(timer); signal?.removeEventListener('abort', abort); reject(new DiscordError('aborted')); };
-  const timer = setTimeout(done, ms);
-  signal?.addEventListener('abort', abort, {once:true});
-});
-
 /** First snowflake at an ISO instant; caller post-filters precise half-open dates. */
 export function discordSnowflakeAt(value) {
   const time = Date.parse(value);
@@ -17,38 +10,10 @@ export function discordSnowflakeAt(value) {
   return ((BigInt(time) - 1420070400000n) << 22n).toString();
 }
 
-export function createLiveDiscordClient({config, fetchImpl = globalThis.fetch} = {}) {
+export function createLiveDiscordClient({config, fetchImpl = globalThis.fetch, requestPacer} = {}) {
   const configured = Boolean(config?.configured && id(config.guildId) && config.botToken && typeof fetchImpl === 'function');
-  const base = createDiscordClient({config:{...config,configured}, fetchImpl});
-  async function request(path, signal) {
-    if (!configured) fail('not_configured');
-    for (let attempt = 0; attempt < 4; attempt++) {
-      try {
-        const combined = signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000);
-        const response = await fetchImpl(`https://discord.com/api/v10${path}`, {method:'GET', headers:{Authorization:`Bot ${config.botToken}`}, signal:combined, redirect:'error'});
-        // Access status is authoritative even when a proxy returns non-JSON.
-        // Never turn an access denial into a retryable fallback condition.
-        if (!response.ok && response.status !== 429) {
-          await response.body?.cancel();
-          fail(response.status === 401 ? 'invalid_token' : response.status === 403 ? 'permission_denied' : response.status === 404 ? 'not_found' : 'discord_unavailable');
-        }
-        const raw = await response.text();
-        if (raw.length > 3000000) fail('response_too_large');
-        let data; try { data = JSON.parse(raw); } catch { fail('invalid_response'); }
-        if (response.status === 429 || response.status === 202) {
-          const delay = Number(data?.retry_after);
-          if (!Number.isFinite(delay) || delay < 0 || delay > 30 || attempt === 3) fail(response.status === 202 ? 'indexing' : 'rate_limited');
-          await wait(Math.max(10, delay * 1000), signal); continue;
-        }
-        if (!response.ok) fail(response.status === 401 ? 'invalid_token' : response.status === 403 ? 'permission_denied' : response.status === 404 ? 'not_found' : 'discord_unavailable');
-        return data;
-      } catch (error) {
-        if (error instanceof DiscordError) throw error;
-        fail(signal?.aborted ? 'aborted' : 'discord_unavailable');
-      }
-    }
-    fail('discord_unavailable');
-  }
+  const base = createDiscordClient({config:{...config,configured}, fetchImpl, requestPacer});
+  const request=createPacedDiscordRequest({config:{...config,configured},fetchImpl,requestPacer,indexing:true,ErrorClass:DiscordError});
   async function getMessages({channelId, before, around, limit = 100, signal} = {}) {
     if (!id(channelId) || before != null && !id(before) || around != null && !id(around) || before && around || !Number.isInteger(limit) || limit < 1 || limit > 100) fail('invalid_request');
     const params = new URLSearchParams({limit:String(limit)});

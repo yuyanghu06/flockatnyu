@@ -10,7 +10,8 @@ export function readLiveDiscordConfig(env = process.env) {
     maxChannels: bounded(env.DISCORD_LIVE_MAX_CHANNELS, 16, 30),
     maxPages: bounded(env.DISCORD_LIVE_MAX_PAGES, 20, 100),
     maxMessages: bounded(env.DISCORD_LIVE_MAX_MESSAGES, 2000, 10000),
-    maxRuntimeMs: bounded(env.DISCORD_LIVE_MAX_RUNTIME_MS, 45000, 120000),
+    maxRuntimeMs: bounded(env.DISCORD_LIVE_MAX_RUNTIME_MS, 120000, 120000),
+    pacing:Object.freeze({minIntervalMs:Math.max(500,bounded(env.DISCORD_REQUEST_INTERVAL_MS,750,5000)),requestBudgetMs:90000}),
     maxInputChars: bounded(env.DISCORD_LIVE_MAX_INPUT_CHARS, 500000, 2000000),
   });
 }

@@ -60,13 +60,19 @@ test('UTF-8 bounded result fragments preserve original status, complete content,
 
 async function adapterFixture({calendarStatus='ready',items=[],miroFailure=false,scopeRevoked=false,discordPatch={},envPatch={}}={}) {
  const {createAutomationAdapters}=await import('../server/automation/adapters.js');
- const {createMiroTools}=await import('../tools/miro/index.js');
+ const {createMiroMcpTools}=await import('../tools/miro/mcp.js');
  const {createCalendarTools}=await import('../tools/calendar/index.js');
  const calls=[];let writes=0,boardReads=0;
- const miroConfig={configured:true,boardIds:['board_1']};
+ const miroConfig={configured:true,boardIds:['board_1'],teamId:'team_1'};
  const miroStore={configured:true,authorizedBoard:async()=>({status:scopeRevoked?'forbidden':'ready',data:{board_id:'board_1',source_id:sourceId,title:'Planning',team_id:'team_1'}})};
- const liveClient={readBoard:async()=>{calls.push('miro-board');boardReads++;if(miroFailure)throw Error('synthetic fetch failure');return {id:'board_1',name:'Planning',team:{id:'team_1'}};},listItems:async(_board,options)=>{calls.push({kind:'miro-items',...options});const selected=options.type?items.filter(item=>item.type===options.type):items;return {data:selected,total:selected.length};},readItem:async(_board,id)=>items.find(item=>item.id===id)||{id,type:'frame',data:{title:'October 2026'}}};
- const miroTools=createMiroTools({config:miroConfig,store:miroStore,clientFactory:()=>liveClient,now:clock});
+ const liveClient={configured:true,callTool:async(name,args)=>{
+  calls.push({kind:'miro-mcp',name,args});boardReads++;if(miroFailure)throw Error('synthetic fetch failure');
+  if(name==='canvas_search')return {structuredContent:{total_items:items.length,total_results:items.length,results:items.map(item=>({id:item.id,type:item.type,title:item.data?.title||'',sample:item.data?.content||''}))}};
+  const escape=value=>String(value||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+  const selected=items.filter(item=>args.widget_ids.includes(item.id));
+  return {structuredContent:{success:true,miro_url:'https://miro.com/app/board/board_1/',svg:'<svg>'+selected.map(item=>'<g data-miro-id="'+item.id+'" data-type="'+item.type+'"><text>'+escape(item.data?.content||item.data?.title)+'</text></g>').join('')+'</svg>',item_count:selected.length,skipped_count:0}};
+ }};
+ const miroTools=createMiroMcpTools({config:miroConfig,store:miroStore,client:liveClient,now:clock});
  const calendarClient={configured:true,calendarId:'fixture@group.calendar.google.com',preflight:async()=>{calls.push('calendar-preflight');return {status:calendarStatus,calendarId:'fixture@group.calendar.google.com',accessRole:'writer'};},upsertEvent:async args=>{writes++;calls.push({kind:'write',args});return {status:'ready',eventId:'fixture_event',outcome:'created'};},cancelEvent:async()=>{writes++;return {status:'ready'};},listEvents:async()=>({status:'ready',events:[]}),readEvent:async()=>({status:'ready',events:[]})};
  const policy={guildId:'100',revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]};
  const channel={id:'200',guild_id:'100',parent_id:null,type:0};
@@ -74,7 +80,7 @@ async function adapterFixture({calendarStatus='ready',items=[],miroFailure=false
  const discordStore={getPolicy:async()=>({status:'ready',policy:{...policy,...discordPatch.policy}}),listSyncChannels:async()=>({status:'ready',channels:[{enabled:true,guildId:'100',channelId:'200',sourceId,...discordPatch.channel}]})};
  const discordClient={getGuildChannels:async()=>[channel],getChannel:async()=>({...channel,...discordPatch.liveChannel})};
  const env={ASSISTANT_ALLOWED_SOURCE_IDS:sourceId,AGENT_GMAIL_SOURCE_ID:sourceId,...envPatch};
- const adapters=createAutomationAdapters({env,config:enabled(),now:clock,fetchImpl:async()=>{throw Error('No unmocked network allowed');},dependencies:{miroConfig,miroStore,miroTools,miroClientFactory:()=>liveClient,googleConfig:{configured:true},googleClient:{configured:true},calendarConfig:{configured:true,calendarId:calendarClient.calendarId},calendarClient,calendarTools:createCalendarTools({client:calendarClient}),discordConfig,discordStore,discordClient,discordTools:{tools:[],execute:async()=>({status:'ready'})}}});
+ const adapters=createAutomationAdapters({env,config:enabled(),now:clock,fetchImpl:async()=>{throw Error('No unmocked network allowed');},dependencies:{miroConfig,miroStore,miroTools,googleConfig:{configured:true},googleClient:{configured:true},calendarConfig:{configured:true,calendarId:calendarClient.calendarId},calendarClient,calendarTools:createCalendarTools({client:calendarClient}),discordConfig,discordStore,discordClient,discordTools:{tools:[],execute:async()=>({status:'ready'})}}});
  return {adapters,calls,writes:()=>writes,boardReads:()=>boardReads};
 }
 const named=(adapters,name)=>{const tool=adapters.tools.find(t=>t.name===name);assert(tool,name);return tool;};
@@ -82,10 +88,10 @@ const calendarArgs={sourceKey:'miro:board_1:item_1',sourceUrl:'https://miro.com/
 const toolCall=(name,args,input,id)=>({id,name,arguments:{inputIds:[input.uuid],arguments:args}});
 
 test('Real handler and bundled adapter prepare Miro before model; observed evidence gates Calendar writes and cleanup',async()=>{
- const f=await adapterFixture({items:[{id:'item_1',type:'frame',data:{title:'October 2026'}}]});let n=0;
+ const f=await adapterFixture({items:[{id:'item_1',type:'sticky_note',data:{title:'Meeting October20 2026'}}]});let n=0;
  const h=handlerHarness({adapters:f.adapters,providerTurn:(request,input)=>{
   n++;assert(f.boardReads()>0);assert(request.tools.some(t=>t.name==='upsert_calendar_event'));
-  if(n===1)return {stopReason:'tool_calls',toolCalls:[toolCall('read_miro_item',{boardId:'board_1',itemId:'item_1',type:'frame'},input,'read1')]};
+  if(n===1)return {stopReason:'tool_calls',toolCalls:[toolCall('read_miro_item',{boardId:'board_1',itemId:'item_1',type:'canvas'},input,'read1')]};
   if(n===2)return {stopReason:'tool_calls',toolCalls:[toolCall('upsert_calendar_event',calendarArgs,input,'write1')]};
   assert.equal(JSON.parse(request.messages.at(-1).content).outcome,'created');return {stopReason:'tool_calls',toolCalls:[{id:'done',name:'finish_batch',arguments:{handledInputIds:[input.uuid]}}]};
  }});
@@ -102,18 +108,18 @@ test('Bundled adapter fails Calendar or Miro preflight before any model action a
 test('Bundled adapter rejects unobserved or stale Miro source identity and supports truthful empty/partial reads',async()=>{
  const f=await adapterFixture();const a=f.adapters,c={principal:a.principal};await a.prepareBatch(c);
  assert.equal((await named(a,'upsert_calendar_event').execute(calendarArgs,c)).status,'forbidden_source');assert.equal(f.writes(),0);
- const empty=await named(a,'read_miro_board').execute({boardId:'board_1',mode:'items'},c);assert.equal(empty.status,'ready');assert.equal(empty.sourceStatus,'empty');assert.equal(empty.coverage.returnedCount,0);
- const unsupported=await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'table_1',type:'table'},c);assert.equal(unsupported.status,'ready');assert.equal(unsupported.sourceStatus,'unsupported_content');assert.equal(unsupported.coverage.complete,false);assert.match(unsupported.boardContext.notice,/unavailable/);
- const other=await named(a,'read_miro_board').execute({boardId:'other',mode:'items'},c);assert.equal(other.status,'forbidden');
+ const empty=await named(a,'read_miro_board').execute({boardId:'board_1',mode:'search',patterns:['Fixture']},c);assert.equal(empty.status,'ready');assert.equal(empty.coverage.returnedCount,0);
+ const unsupported=await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'table_1',type:'frame'},c);assert.equal(unsupported.status,'invalid_request');
+ const other=await named(a,'read_miro_board').execute({boardId:'other',mode:'overview'},c);assert.equal(other.status,'forbidden');
  a.cleanupBatch();assert.equal((await named(a,'read_miro_board').execute({boardId:'board_1'},c)).status,'forbidden');
 });
 
 test('Real Miro item reads wrapped for automation retain UTF-8 fragments within 16KiB with original coverage',async()=>{
  const f=await adapterFixture({items:[{id:'item_1',type:'text',data:{content:'界🗽'.repeat(8000)}}]});const a=f.adapters,c={principal:a.principal};await a.prepareBatch(c);
- let result=await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'item_1',type:'text'},c),serialized='';
+ let result=await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'item_1',type:'canvas'},c),serialized='';
  assert(Buffer.byteLength(JSON.stringify(result))<=16384);assert.equal(result.coverage.complete,false);
  while(result.fragment){serialized+=result.fragment.data;if(result.fragment.nextOffset===null)break;result=await named(a,'read_context_fragment').execute({id:result.fragment.id,offset:result.fragment.nextOffset},c);assert(Buffer.byteLength(JSON.stringify(result))<=16384);}
- const original=JSON.parse(serialized);assert.equal(original.boardContext.format,'miro-item-fragment-v1');assert(original.boardContext.nextOffset>0);assert.equal(original.coverage.complete,false);
+ const original=JSON.parse(serialized);assert.equal(original.boardContext.format,'miro-mcp-json-fragment-v1');assert(original.boardContext.nextOffset>0);assert.equal(original.coverage.complete,false);
 });
 
 test('Bundled authorizer enforces Gmail identity and current Discord guild/channel/source/enabled/exclusion policy',async()=>{
@@ -131,12 +137,12 @@ test('Bundled authorizer enforces Gmail identity and current Discord guild/chann
 test('Fresh batch exposes all 37 duplicate-month/future-year frame headings without assuming board completeness',async()=>{
  const items=Array.from({length:37},(_,i)=>({id:'frame_'+i,type:'frame',data:{title:i<36?'October 2026':'October 2027'},position:{x:i*100,y:0},geometry:{width:100,height:100}}));
  const f=await adapterFixture({items}),a=f.adapters,context=await a.prepareBatch({principal:a.principal});
- assert.equal(context.miro.boards[0].frameIndex.length,37);assert.deepEqual(context.miro.boards[0].frameIndex.map(item=>item.data.title),items.map(item=>item.data.title));assert.equal(context.miro.coverage.complete,false);assert.equal(context.miro.boards[0].result.coverage.wholeBoardComplete,false);assert.equal(f.calls.find(c=>c?.kind==='miro-items').limit,50);
+ assert.equal(context.miro.boards[0].contextSummary.payload.results.length,37);assert.deepEqual(context.miro.boards[0].contextSummary.payload.results.map(item=>item.title),items.map(item=>item.data.title));assert.equal(context.miro.coverage.complete,false);assert.equal(context.miro.boards[0].result.coverage.wholeBoardComplete,false);assert.equal(f.calls.find(c=>c?.kind==='miro-mcp').name,'canvas_search');
 });
 
 test('A new eligible batch invalidates previous live item evidence before any Calendar action',async()=>{
- const f=await adapterFixture({items:[{id:'item_1',type:'frame',data:{title:'Meeting'}}]}),a=f.adapters,c={principal:a.principal};
- await a.prepareBatch(c);await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'item_1',type:'frame'},c);
+ const f=await adapterFixture({items:[{id:'item_1',type:'sticky_note',data:{title:'Meeting'}}]}),a=f.adapters,c={principal:a.principal};
+ await a.prepareBatch(c);await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'item_1',type:'canvas'},c);
  assert.equal((await named(a,'upsert_calendar_event').execute(calendarArgs,c)).status,'ready');assert.equal(f.writes(),1);
  await a.prepareBatch(c);assert.equal((await named(a,'upsert_calendar_event').execute(calendarArgs,c)).status,'forbidden_source');assert.equal(f.writes(),1);
 });

@@ -12,7 +12,7 @@ const parentOf = channel => channel?.parentId ?? channel?.parent_id ?? null;
 const guildOf = channel => channel?.guildId ?? channel?.guild_id;
 export const DEFAULT_DISCORD_EXCLUSIONS = Object.freeze({
   excludedCategoryIds:Object.freeze(['1461311169586266165','1533053124606955600','1203562092213305371','1203562092376891445']),
-  excludedChannelIds:Object.freeze(['1203562091982622819']),
+  excludedChannelIds:Object.freeze(['1203562091982622819','1203562092213305365']),
 });
 
 /** Unknown/malformed ancestry is denied. Policy IDs do not need to be visible

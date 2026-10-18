@@ -1,12 +1,13 @@
 import {isDiscordChannelExcluded} from './discovery.js';
 import {discordSnowflakeAt} from './live-client.js';
+import {DISCORD_SCOPES,discordChannelScope,explicitlyRequestedTeam} from './channel-scope.js';
 
 const id = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const readable = new Set([0,5,10,11,12]);
 const thread = new Set([10,11,12]);
 const fail = code => { throw Object.assign(new Error(code), {code}); };
-const codes = new Set(['not_configured','forbidden','invalid_request','policy_unavailable','policy_changed','paused','channel_scope_denied','permission_denied','not_found','invalid_token','rate_limited','indexing','discord_unavailable','invalid_response','invalid_cursor','aborted','budget_exhausted']);
+const codes = new Set(['not_configured','forbidden','invalid_request','policy_unavailable','policy_changed','paused','channel_scope_denied','team_request_required','permission_denied','not_found','invalid_token','rate_limited','indexing','discord_unavailable','invalid_response','invalid_cursor','aborted','budget_exhausted']);
 const safe = error => codes.has(error?.code) ? error.code : 'discord_unavailable';
 const bounded = (value, fallback, max) => Number.isInteger(value) && value > 0 ? Math.min(value,max) : fallback;
 const iso = value => typeof value === 'string' && value.length <= 40 && /^\d{4}-\d\d-\d\dT.*(?:Z|[+-]\d\d:\d\d)$/.test(value) && Number.isFinite(Date.parse(value)) && Date.parse(value) >= 1420070400000 ? new Date(value).toISOString() : null;
@@ -43,7 +44,7 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
   const maxChannels = bounded(config?.maxChannels,16,30);
   const maxPages = bounded(config?.maxPages,20,100), maxMessages = bounded(config?.maxMessages,2000,10000);
   const maxRuntimeMs = bounded(config?.maxRuntimeMs,45000,120000), maxInputChars = bounded(config?.maxInputChars,500000,2000000);
-  async function context(principal, signal) {
+  async function context(principal, signal, userMessage) {
     if (principal?.liveDiscord?.mode !== 'local-operator' || principal.liveDiscord.guildId !== config?.guildId) fail('forbidden');
     const allowed = principal.allowedSourceIds;
     if (!Array.isArray(allowed) || !allowed.length || allowed.length > 500 || !allowed.every(uuid)) fail('forbidden');
@@ -79,6 +80,8 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
         channels.set(parent.id,{id:parent.id,guild_id:parent.guild_id,type:parent.type,parent_id:parent.parent_id ?? null,name:String(parent.name || '').slice(0,100),sourceId:registered.get(parent.id)?.sourceId ?? null});
       }
       if (isDiscordChannelExcluded({channel:channels.get(channelId),channels,policy})) fail('channel_scope_denied');
+      if (typeof userMessage === 'string' && discordChannelScope(channels.get(channelId),channels) === 'team'
+        && !explicitlyRequestedTeam(userMessage,channels.get(channelId),channels)) fail('team_request_required');
       checkedSources.set(channelId,registered.get(channelId).sourceId);
       return channels.get(channelId);
     }
@@ -98,7 +101,7 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
   async function run(args, operation) {
     const signal = args?.signal ? AbortSignal.any([args.signal,AbortSignal.timeout(maxRuntimeMs)]) : AbortSignal.timeout(maxRuntimeMs);
     try {
-      const ctx = await context(args?.principal,signal);
+      const ctx = await context(args?.principal,signal,args?.userMessage);
       const result = await operation(ctx,signal);
       await ctx.verify();
       return result;
@@ -108,26 +111,30 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     }
   }
   async function getCatalogue(args = {}) {
+    if (args.scope != null && !DISCORD_SCOPES.includes(args.scope)) return {status:'invalid_request',sources:[],channels:[]};
     if (args.query != null && (typeof args.query !== 'string' || args.query.length > 100)) return {status:'invalid_request',sources:[],channels:[]};
     return run(args, async (ctx,signal) => {
       const query = (args.query || '').trim().toLowerCase().replace(/^#/, '');
-      const matching = ctx.catalogue.filter(row => !query || String(ctx.channels.get(row.channelId)?.name || row.title || '').toLowerCase().includes(query));
-      const channels = [], candidates = matching.slice(0,maxChannels);
+      const matching = ctx.catalogue.filter(row => (!ctx.channels.has(row.channelId)||!isDiscordChannelExcluded({channel:ctx.channels.get(row.channelId),channels:ctx.channels,policy:ctx.policy}))
+        && (!args.scope || args.scope === 'all' || discordChannelScope(ctx.channels.get(row.channelId),ctx.channels) === args.scope)
+        && (!query || String(ctx.channels.get(row.channelId)?.name || row.title || '').toLowerCase().includes(query)));
+      const channels = [], candidates = matching.slice(0,maxChannels); let deniedCount=0, teamDenied=0;
       for (const row of candidates) {
-        try { const checked = await ctx.check(row.channelId); channels.push({channelId:checked.id,name:checked.name,sourceId:checked.sourceId}); }
-        catch (error) { if (!['permission_denied','channel_scope_denied','not_found'].includes(error.code)) throw error; }
+        try { const checked = await ctx.check(row.channelId); channels.push({channelId:checked.id,name:checked.name,sourceId:checked.sourceId,scope:discordChannelScope(checked,ctx.channels)}); }
+        catch (error) { if (!['permission_denied','channel_scope_denied','team_request_required','not_found'].includes(error.code)) throw error; deniedCount++; if(error.code==='team_request_required')teamDenied++; }
       }
-      return {status:'ready',sources:[],channels,complete:matching.length <= maxChannels,reason:matching.length > maxChannels ? 'channel_budget' : null};
+      return {status:!channels.length&&teamDenied?'team_request_required':'ready',sources:[],channels,complete:matching.length <= maxChannels&&deniedCount===0,reason:matching.length > maxChannels ? 'channel_budget' : deniedCount ? 'channel_access_limited' : null};
     });
   }
   async function search(args = {}) {
+    if (args.scope != null && !DISCORD_SCOPES.includes(args.scope)) return {status:'invalid_request',sources:[]};
     if (args.query != null && (typeof args.query !== 'string' || args.query.length > 500) || args.authorId != null && !id(args.authorId) || args.mode != null && !['latest','relevance'].includes(args.mode) || args.channelIds != null && (!Array.isArray(args.channelIds) || !args.channelIds.length || args.channelIds.length > maxChannels || args.channelIds.some(value => !id(value))) || args.from != null && !iso(args.from) || args.to != null && !iso(args.to) || args.from && args.to && iso(args.from) >= iso(args.to) || args.limit != null && (!Number.isInteger(args.limit) || args.limit < 1 || args.limit > 8)) return {status:'invalid_request',sources:[]};
     return run(args, async (ctx,signal) => {
-      const requested = args.channelIds ? [...new Set(args.channelIds)] : ctx.catalogue.map(row => row.channelId);
+      const requested = args.channelIds ? [...new Set(args.channelIds)] : ctx.catalogue.filter(row => !args.scope || args.scope === 'all' || discordChannelScope(ctx.channels.get(row.channelId),ctx.channels) === args.scope).map(row => row.channelId);
       const selected = requested.slice(0,maxChannels), checkedIds = [];
       for (const channelId of selected) {
         try { await ctx.check(channelId); checkedIds.push(channelId); }
-        catch (error) { if (args.channelIds || !['permission_denied','channel_scope_denied','not_found'].includes(error.code)) throw error; }
+        catch (error) { if (args.channelIds || !['permission_denied','channel_scope_denied','team_request_required','not_found'].includes(error.code)) throw error; }
       }
       if (!checkedIds.length) fail('channel_scope_denied');
       const result = await client.searchMessages({query:args.query || '',channelIds:checkedIds,authorId:args.authorId,from:args.from,to:args.to,mode:args.mode || (args.query ? 'relevance' : 'latest'),signal});

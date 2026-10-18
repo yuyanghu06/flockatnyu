@@ -3,14 +3,14 @@ import {buildAutomationPrompt} from './prompt.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Complete only explicitly handled cache inputs after their required actions succeed; call alone.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = code => { throw new Error(code); };
-export function createAutomationHandler({store,provider,tools=[],authorizeEvent,prepareBatch,cleanupBatch,principal,config,now=()=>new Date()} = {}) {
+export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,prepareBatch,cleanupBatch,validateCompletion,principal,config,now=()=>new Date()} = {}) {
   let running = false;
   let definitions;
   try {
     if (!Array.isArray(tools) || tools.length>24) throw new Error('invalid_tools');
     const names=new Set(['finish_batch']);
     definitions=tools.map(tool=>{
-      if (!validLabel(tool.name)||names.has(tool.name)||tool.readOnly!==true&&tool.idempotent!==true||typeof tool.execute!=='function'||typeof tool.description!=='string'||tool.description.length>4000||tool.parameters?.type!=='object') throw new Error('invalid_tools');
+      if (!validLabel(tool.name)||names.has(tool.name)||tool.readOnly!==true&&tool.idempotent!==true||typeof tool.execute!=='function'||tool.prepareArguments!==undefined&&typeof tool.prepareArguments!=='function'||typeof tool.description!=='string'||tool.description.length>4000||tool.parameters?.type!=='object') throw new Error('invalid_tools');
       checkSchema(tool.parameters);names.add(tool.name);
       return {name:tool.name,description:`${tool.readOnly===true?'Read-only context tool. ':'Idempotent action tool. '}${tool.description}`,parameters:{type:'object',properties:{
         inputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20},arguments:structuredClone(tool.parameters),
@@ -20,7 +20,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
   return {async tick({signal}={}) {
     if (!config?.enabled) return {status:'disabled'};
     if (running) return {status:'busy'};
-    if (!definitions || !tools.length || typeof authorizeEvent!=='function' || typeof provider?.toolTurn!=='function' || store?.configured===false) return {status:'not_configured'};
+    if (!definitions || !tools.length || (typeof authorizeEvent!=='function' && typeof authorizeEvents!=='function') || authorizeEvents!==undefined&&typeof authorizeEvents!=='function' || typeof provider?.toolTurn!=='function' || store?.configured===false) return {status:'not_configured'};
     running=true;
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),config.maxRunMs);timeout.unref?.();
@@ -45,6 +45,10 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         if (!validUuid(row.uuid)||!plainObject(e)||!validLabel(e.source)||!validSourceId(e.source_id)||!validLabel(e.event_type)||!validSourceId(e.event_id)||!validSourceId(e.revision)||!Number.isFinite(Date.parse(e.received_at))||!Object.hasOwn(e,'payload')) failure('invalid_batch');
       }
       const authorize=async()=>{
+        if(typeof authorizeEvents==='function') {
+          if(await guarded(()=>authorizeEvents({events:inputs.map(row=>structuredClone(row.raw_response)),principal,signal:combined}))!==true)failure('forbidden');
+          return;
+        }
         for(const row of inputs) if (await guarded(()=>authorizeEvent({event:structuredClone(row.raw_response),principal,signal:combined}))!==true) failure('forbidden');
       };
       const renew=async()=>{
@@ -80,7 +84,9 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||!plainObject(call.arguments)) failure('invalid_tool_call');
           callIds.add(call.id);
           const definition=call.name==='finish_batch'?finishTool:definitions.find(t=>t.name===call.name);
-          if(!definition||!validateArguments(call.arguments,definition.parameters)) failure('invalid_tool_call');
+          const emptyFinish=turn.toolCalls.length===1&&call.name==='finish_batch'&&Object.keys(call.arguments).length===1
+            &&Array.isArray(call.arguments.handledInputIds)&&call.arguments.handledInputIds.length===0;
+          if(!definition||!validateArguments(call.arguments,definition.parameters)&&!emptyFinish) failure('invalid_tool_call');
           if(call.name!=='finish_batch'&&(new Set(call.arguments.inputIds).size!==call.arguments.inputIds.length||!call.arguments.inputIds.every(id=>validUuid(id)&&inputIds.includes(id)))) failure('invalid_tool_call');
         }
         const finish=turn.toolCalls.find(c=>c.name==='finish_batch');
@@ -89,6 +95,23 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           const handledInputIds=finish.arguments.handledInputIds;
           if(new Set(handledInputIds).size!==handledInputIds.length||!handledInputIds.every(id=>validUuid(id)&&inputIds.includes(id))) failure('invalid_completion');
           await renew();await authorize();
+          let completion;
+          if(validateCompletion!==undefined) {
+            if(typeof validateCompletion!=='function')failure('not_configured');
+            completion=await guarded(()=>validateCompletion({handledInputIds,principal,signal:combined}));
+            if(!plainObject(completion)||!['ready','pending'].includes(completion.status)||Buffer.byteLength(canonicalJson(completion))>16384)failure('invalid_completion');
+          }
+          if(handledInputIds.length===0||completion?.status==='pending') {
+              const feedback=handledInputIds.length===0?{status:'pending',reason:'empty_handled_input_ids',queuedInputIds:[...inputIds],
+                notice:'No inputs were completed. Perform remaining required work, then call finish_batch alone with the actual queued UUIDs you successfully handled. An empty array never completes the batch.',
+                ...(completion?{completion:{status:completion.status},nextActions:Array.isArray(completion.nextActions)?completion.nextActions.slice(0,5):[]}:{nextActions:[]})}:completion;
+              if(handledInputIds.length===0)while(Buffer.byteLength(canonicalJson(feedback))>16384&&feedback.nextActions.length)feedback.nextActions.pop();
+              if(Buffer.byteLength(canonicalJson(feedback))>16384)failure('context_limit');
+              messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)},
+                {role:'tool',toolCallId:finish.id,content:JSON.stringify(feedback)});
+              if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+              continue;
+          }
           const result=await guarded(()=>store.finish({leaseToken,handledInputIds,signal:combined}));
           if(result.status!=='ready') failure('stale');
           leaseToken=null;
@@ -99,15 +122,20 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           await renew();await authorize();
           const tool=tools.find(t=>t.name===call.name);
           const scopedIds=[...call.arguments.inputIds].sort();
-          const actionKey=createHash('sha256').update(canonicalJson({inputIds:scopedIds,name:call.name,arguments:call.arguments.arguments})).digest('hex');
+          let executionArguments=structuredClone(call.arguments.arguments);
+          if(tool.prepareArguments) {
+            executionArguments=await guarded(()=>tool.prepareArguments(executionArguments,{principal,inputIds:scopedIds,signal:combined}));
+            if(!validateArguments(executionArguments,tool.parameters))failure('invalid_tool_call');
+          }
+          const actionKey=createHash('sha256').update(canonicalJson({inputIds:scopedIds,name:call.name,arguments:executionArguments})).digest('hex');
           const receipt=tool.readOnly===true?{status:'execute'}:await guarded(()=>store.action({leaseToken,actionKey,signal:combined}));
           let result;
           if(receipt.status==='completed') result={status:'already_succeeded'};
           else {
             if(receipt.status!=='execute') failure('stale');
             await authorize();
-            result=await guarded(()=>tool.execute(structuredClone(call.arguments.arguments),{principal,inputIds:scopedIds,idempotencyKey:actionKey,signal:combined}));
-            if (!plainObject(result)||!['ready','success','succeeded','completed','ok'].includes(result.status)||Buffer.byteLength(canonicalJson(result))>16384) failure('tool_failed');
+            result=await guarded(()=>tool.execute(executionArguments,{principal,inputIds:scopedIds,idempotencyKey:actionKey,signal:combined}));
+            if (!plainObject(result)||!['ready','success','succeeded','completed','ok',...(tool.readOnly===true?['invalid_request']:[])].includes(result.status)||Buffer.byteLength(canonicalJson(result))>16384) failure('tool_failed');
             if(tool.readOnly!==true) {
               const saved=await guarded(()=>store.action({leaseToken,actionKey,complete:true,signal:combined}));
               if(saved.status!=='completed') failure('stale');
