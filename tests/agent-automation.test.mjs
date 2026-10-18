@@ -17,9 +17,17 @@ test('automation defaults are disabled and trigger/run limits fail closed',()=>{
  const c=readAutomationConfig({});
  assert.equal(c.enabled,false);assert.equal(c.minEvents,30);assert.equal(c.maxAgeSeconds,1800);assert.equal(c.cooldownSeconds,60);assert.equal(c.pollMs,5000);assert.equal(c.maxInputs,20);
  assert.equal(c.maxRounds,16);assert.equal(c.maxCalls,32);assert.equal(c.maxRunMs,180000);
- for(const env of [{AGENT_AUTOMATION_MAX_ROUNDS:'17'},{AGENT_AUTOMATION_MAX_CALLS:'33'},{AGENT_AUTOMATION_MIN_EVENTS:'0'},{AGENT_AUTOMATION_MAX_INPUTS:'21'},{AGENT_AUTOMATION_MAX_RUN_MS:'180001'},{AGENT_AUTOMATION_COOLDOWN_SECONDS:'59'},{AGENT_AUTOMATION_TIMEZONE:'Not/AZone'}]){
+ for(const env of [{AGENT_AUTOMATION_MAX_ROUNDS:'17'},{AGENT_AUTOMATION_MAX_CALLS:'33'},{AGENT_AUTOMATION_MIN_EVENTS:'0'},{AGENT_AUTOMATION_MAX_INPUTS:'21'},{AGENT_AUTOMATION_MAX_RUN_MS:'600001'},{AGENT_AUTOMATION_COOLDOWN_SECONDS:'59'},{AGENT_AUTOMATION_TIMEZONE:'Not/AZone'}]){
   assert.throws(()=>readAutomationConfig(env),/invalid_automation_config/);
  }
+});
+
+test('production may configure a bounded ten-minute run without enlarging tool or input defaults',()=>{
+ const extended=readAutomationConfig({NODE_ENV:'production',AGENT_AUTOMATION_ENABLED:'true',AGENT_AUTOMATION_MAX_RUN_MS:'600000',AGENT_AUTOMATION_MAX_INPUTS:'5'});
+ assert.equal(extended.enabled,true);assert.equal(extended.maxRunMs,600000);assert.equal(extended.maxInputs,5);
+ assert.equal(extended.maxRounds,16);assert.equal(extended.maxCalls,32);assert.equal(extended.leaseSeconds,120);assert.equal(extended.cooldownSeconds,60);
+ assert.equal(readAutomationConfig({NODE_ENV:'production'}).maxRunMs,180000);
+ assert.throws(()=>readAutomationConfig({NODE_ENV:'production',AGENT_AUTOMATION_MAX_RUN_MS:'600001'}),/invalid_automation_config/);
 });
 
 test('source update UUID is deterministic and revisions/source boundaries remain distinct',()=>{

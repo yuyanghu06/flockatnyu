@@ -20,7 +20,9 @@ function fixture({channels=[channel('200')],metadata=channels,hook=()=>{},ready=
  return {adapters,state,calls,authorize:(events,signal)=>adapters.authorizeEvents({events,principal:adapters.principal,signal})};
 }
 
-test('20 same-channel inputs use six calls / two Discord requests per fresh boundary',async()=>{
+// Counts measure injected adapter methods, not nested production Discord HTTP.
+// Real getChannel also fetches current bot roles/member and thread permissions.
+test('20 same-channel inputs use six adapter calls / two Discord client methods per fresh boundary',async()=>{
  const f=fixture(),events=Array.from({length:20},()=>event());
  assert.equal(await f.authorize(events),true);
  assert.deepEqual(f.calls.reduce((a,k)=>(a[k]=(a[k]||0)+1,a),{}),{policy:2,catalogue:2,guild:1,channel:1});
@@ -33,7 +35,7 @@ test('batch preparation authorizes 20 queued originals together and preserves ea
  assert.equal(result.status,'ready');assert.equal(f.calls.length,6);assert.equal(f.calls.filter(c=>c==='guild'||c==='channel').length,2);assert.deepEqual(inputs,before);
  f.adapters.cleanupBatch();
 });
-test('20 distinct non-thread inputs use 25 calls / 21 Discord requests',async()=>{
+test('20 distinct non-thread inputs use 25 adapter calls / 21 Discord client methods',async()=>{
  const channels=Array.from({length:20},(_,i)=>channel(String(200+i))),f=fixture({channels});
  assert.equal(await f.authorize(channels.map(c=>event(c.id))),true);
  assert.equal(f.calls.length,25);assert.equal(f.calls.filter(c=>c==='guild'||c==='channel').length,21);
