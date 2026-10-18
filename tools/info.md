@@ -6,5 +6,6 @@ Existing tool schemas, argument validation and execution adapters live here by c
 - discord/live-summary.js: bounded request-memory summarization wrapper for live reads.
 - google/index.js: Gmail and Drive read tools using an injected source client.
 - miro/index.js: board/frame/item/relationship read tools.
+- calendar/index.js: fixed-target Calendar reads and managed Miro event upsert/cancellation for the update agent.
 
-Tools preserve existing source restrictions; adding a directory never grants a service access. Calendar/map writes and update_memory are future work. Development, deployment and asset utilities are in ../scripts/.
+Tools preserve existing source restrictions; adding a directory never grants a service access. Calendar writes require the update agent’s fixed target, trusted source scope and current-batch Miro evidence. Map writes and update_memory remain future work. Development, deployment and asset utilities are in ../scripts/.

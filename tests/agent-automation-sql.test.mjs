@@ -5,9 +5,12 @@ import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
 import {eventUuid} from '../server/automation/events.js';
+import {readAutomationConfig} from '../server/automation/config.js';
+import {createAutomationStore} from '../server/automation/store.js';
 
 async function migration(number){const dir=new URL('../supabase/migrations/',import.meta.url);const file=(await readdir(dir)).find(f=>f.endsWith('.sql')&&Number(f.slice(8,12))===number);assert(file);return readFile(new URL(file,dir),'utf8');}
 async function rpc(db,name,args={}){const keys=Object.keys(args);return(await db.query(`select public.${name}(${keys.map((key,i)=>key+' => $'+(i+1)).join(',')}) result`,keys.map(key=>args[key]!==null&&typeof args[key]==='object'&&!Array.isArray(args[key])?JSON.stringify(args[key]):args[key]))).rows[0].result;}
+// Historical migration fixtures keep explicit limits; current defaults are exercised below.
 const claimArgs={p_min_events:5,p_max_age_seconds:300,p_cooldown_seconds:60,p_lease_seconds:120,p_max_inputs:20,p_max_bytes:65536};
 const claim=(db,overrides={})=>rpc(db,'agent_automation_claim',{...claimArgs,...overrides});
 const envelope=(n,revision='r1')=>({source:'discord',source_id:'channel:123',event_type:'message_updated',event_id:'event'+n,revision,received_at:'1900-01-01T00:00:00Z',payload:{content:'Original raw body '+n,nested:{keep:true}}});
@@ -27,6 +30,13 @@ test('019 real SQL: durable hybrid trigger, lease fences, receipts and subscript
   const oldNames=(await db.query("select relname from pg_class where relnamespace='public'::regnamespace and relkind='r' order by relname")).rows.map(r=>r.relname);
   const before={};for(const name of oldNames)before[name]=(await db.query(`select to_jsonb(t) row from public.${name} t order by to_jsonb(t)::text`)).rows;
   await db.exec(await migration(19));
+  const config=readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'});
+  const store=createAutomationStore({env:{SUPABASE_URL:'https://db.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-key'},fetchImpl:async(url,options)=>{
+   const name=new URL(url).pathname.split('/').at(-1);
+   assert.equal(name,'agent_automation_claim');
+   return Response.json(await rpc(db,name,JSON.parse(options.body)));
+  }});
+  const defaultClaim=()=>store.claim({config});
 
   await t.test('019 adds only metadata state;018 remains two columns and existing populated rows survive',async()=>{
    const names=(await db.query("select relname from pg_class where relnamespace='public'::regnamespace and relkind='r' order by relname")).rows.map(r=>r.relname);
@@ -60,6 +70,42 @@ test('019 real SQL: durable hybrid trigger, lease fences, receipts and subscript
    await enqueue(db,4);const c=await claim(db);assert.equal(c.status,'ready');assert.equal(c.inputs.length,5);
    const metadata=(await db.query("select data from public.agent_automation_state where key like 'input:%'")).rows;
    for(const {data} of metadata)assert(!Object.hasOwn(data,'payload'),'No raw message bodies duplicated into metadata');
+  });
+
+  await t.test('current defaults combine Discord and Gmail:29 fresh inputs wait, duplicate waits,30th triggers a bounded20-input claim',async()=>{
+   await reset(db);assert.equal((await defaultClaim()).status,'empty');
+   const inputs=Array.from({length:30},(_,n)=>n<15?envelope(n):{...envelope(n),source:'gmail',source_id:'club@example.test',event_type:'email_received'});
+   for(const e of inputs.slice(0,29))assert.equal((await rpc(db,'agent_automation_enqueue',{p_input_id:inputId(e),p_envelope:e})).status,'queued');
+   assert.equal((await defaultClaim()).status,'waiting','Both sources combined remain below30');
+   const duplicate=inputs[15];
+   assert.equal((await rpc(db,'agent_automation_enqueue',{p_input_id:inputId(duplicate),p_envelope:duplicate})).status,'duplicate');
+   assert.equal((await defaultClaim()).status,'waiting','Email redelivery cannot become the30th input');
+   const last=inputs[29];await rpc(db,'agent_automation_enqueue',{p_input_id:inputId(last),p_envelope:last});
+   const c=await defaultClaim();assert.equal(c.status,'ready');assert.equal(c.inputs.length,20);
+   assert.deepEqual([...new Set(c.inputs.map(i=>i.raw_response.source))].sort(),['discord','gmail']);
+   assert.equal(await rpc(db,'agent_automation_finish',{p_token:c.leaseToken,p_handled_ids:c.inputs.map(i=>i.uuid)}),true);
+   assert.equal((await db.query('select count(*)::int n from public.agent_input_cache')).rows[0].n,10,'Trigger threshold does not enlarge or discard the unclaimed remainder');
+   assert.equal((await defaultClaim()).status,'cooldown');await ageRunner(db);
+   assert.equal((await defaultClaim()).status,'waiting','Remaining10 fresh inputs await the next threshold or age limit');
+  });
+
+  await t.test('current defaults wait until the oldest eligible input reaches30minutes',async()=>{
+   await reset(db);await enqueue(db,0);assert.equal((await defaultClaim()).status,'waiting');
+   await db.exec("update public.agent_automation_state set data=jsonb_set(data,'{received_at}',to_jsonb(clock_timestamp()-interval '1790 seconds')) where key like 'input:%'");
+   assert.equal((await defaultClaim()).status,'waiting','An input younger than30minutes cannot trigger');
+   await db.exec("update public.agent_automation_state set data=jsonb_set(data,'{received_at}',to_jsonb(clock_timestamp()-interval '1801 seconds')) where key like 'input:%'");
+   const c=await defaultClaim();assert.equal(c.status,'ready');assert.equal(c.inputs.length,1,'Age trigger does not require30 inputs');
+  });
+
+  await t.test('current defaults keep the one-minute cooldown even with30 fresh pending inputs',async()=>{
+   await reset(db);await enqueue(db,0);
+   await db.exec("update public.agent_automation_state set data=jsonb_set(data,'{received_at}',to_jsonb(clock_timestamp()-interval '1801 seconds')) where key like 'input:%'");
+   const first=await defaultClaim();assert.equal(first.status,'ready');
+   assert.equal(await rpc(db,'agent_automation_finish',{p_token:first.leaseToken,p_handled_ids:first.inputs.map(i=>i.uuid)}),true);
+   for(let n=1;n<=30;n++)await enqueue(db,n);
+   await db.exec("update public.agent_automation_state set data=jsonb_build_object('last_started',clock_timestamp()-interval '50 seconds') where key='runner'");
+   assert.equal((await defaultClaim()).status,'cooldown','A full queue cannot bypass the60second gap');
+   await ageRunner(db);const next=await defaultClaim();assert.equal(next.status,'ready');assert.equal(next.inputs.length,20);
   });
 
   await t.test('one old update triggers at five minutes; another worker cannot claim while lease active',async()=>{

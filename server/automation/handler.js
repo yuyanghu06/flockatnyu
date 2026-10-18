@@ -3,7 +3,7 @@ import {buildAutomationPrompt} from './prompt.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Complete only explicitly handled cache inputs after their required actions succeed; call alone.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = code => { throw new Error(code); };
-export function createAutomationHandler({store,provider,tools=[],authorizeEvent,principal,config,now=()=>new Date()} = {}) {
+export function createAutomationHandler({store,provider,tools=[],authorizeEvent,prepareBatch,cleanupBatch,principal,config,now=()=>new Date()} = {}) {
   let running = false;
   let definitions;
   try {
@@ -56,8 +56,18 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         renew().catch(()=>controller.abort()).finally(()=>{heartbeatBusy=false;});
       },20000);heartbeat.unref?.();
       await authorize();
+      // Trusted adapters run only for an authorized, leased processing batch.
+      // Their returned source context stays in the untrusted user message.
+      let batchContext;
+      if (prepareBatch !== undefined) {
+        if (typeof prepareBatch !== 'function') failure('not_configured');
+        batchContext=await guarded(()=>prepareBatch({inputs:structuredClone(inputs),principal,signal:combined}));
+        if (!plainObject(batchContext)||batchContext.status!=='ready') failure('preflight_failed');
+        if (Buffer.byteLength(canonicalJson(batchContext))>65536) failure('context_limit');
+        await renew();await authorize();
+      }
       const system=buildAutomationPrompt({timezone:config.timezone,now:now()});
-      const messages=[{role:'user',content:JSON.stringify({inputs})}];
+      const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{})})}];
       const inputIds=inputs.map(row=>row.uuid);
       const callIds=new Set();
       let calls=0;
@@ -109,11 +119,12 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       }
       return {status:'round_limit'};
     } catch(e) {
-      const allowed=new Set(['aborted','forbidden','stale','invalid_batch','incomplete_batch','call_limit','invalid_tool_call','invalid_completion','tool_failed','context_limit']);
+      const allowed=new Set(['aborted','forbidden','stale','invalid_batch','incomplete_batch','call_limit','invalid_tool_call','invalid_completion','tool_failed','context_limit','preflight_failed','not_configured']);
       return {status:allowed.has(e?.message)?e.message:'unavailable'};
     } finally {
       clearTimeout(timeout);clearInterval(heartbeat);
       if(leaseToken) { try { await store.release({leaseToken,signal:AbortSignal.timeout(15000)}); } catch { /* Expiring durable lease recovers after failures. */ } }
+      try { cleanupBatch?.()?.catch?.(()=>{}); } catch { /* Cleanup cannot change the leased outcome. */ }
       running=false;
     }
   }};

@@ -35,7 +35,13 @@
     "gmail:watch": "node --env-file-if-exists=.env --env-file-if-exists=.env.google server/google/subscription-cli.js watch",
     "gmail:sync": "node --env-file-if-exists=.env --env-file-if-exists=.env.google server/google/subscription-cli.js sync",
     "worker:gmail": "node --env-file-if-exists=.env --env-file-if-exists=.env.google server/google/subscription-cli.js serve",
-    "test:agent-automation": "node --test tests/agent-input-cache-sql.test.mjs tests/agent-automation*.test.mjs tests/gmail-subscription.test.mjs"
+    "test:agent-automation": "node --test tests/agent-input-cache-sql.test.mjs tests/agent-automation*.test.mjs tests/gmail-subscription.test.mjs tests/calendar-tools.test.mjs tests/update-agent-calendar.test.mjs tests/map-contracts.test.mjs tests/update-agent-prompt.test.mjs",
+    "test:map-roster": "node --test tests/map-schema.test.mjs tests/map-roster.test.mjs tests/map-building-write-scope.test.mjs tests/map-presence-labels-sql.test.mjs",
+    "map:roster": "node --env-file-if-exists=.env scripts/map-roster.mjs",
+    "test:map-presence": "node --test tests/map-presence.test.mjs",
+    "test:update-agent-prompt": "node --test tests/map-contracts.test.mjs tests/update-agent-prompt.test.mjs",
+    "test:map-events": "node --test tests/map-events-sql.test.mjs tests/map-presence.test.mjs",
+    "map:debug": "node --env-file-if-exists=.env scripts/map-debug-presence.mjs"
   },
   "dependencies": {
     "@discordjs/rest": "2.6.3",

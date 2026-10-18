@@ -13,16 +13,16 @@ export async function createAutomationRuntime({env=process.env,fetchImpl=globalT
   const config=readAutomationConfig(env);
   if(!config.enabled) return {status:'disabled',config};
   const modulePath=config.adapterModule;
-  if(!modulePath||(!isAbsolute(modulePath)&&!modulePath.startsWith('./')&&!modulePath.startsWith('../'))||! /\.(mjs|js)$/.test(modulePath)||modulePath.includes('\0')) return {status:'not_configured',config};
+  if(modulePath&&((!isAbsolute(modulePath)&&!modulePath.startsWith('./')&&!modulePath.startsWith('../'))||! /\.(mjs|js)$/.test(modulePath)||modulePath.includes('\0'))) return {status:'not_configured',config};
   const store=createAutomationStore({env,fetchImpl});
   const modelConfig=readConfig(env);
   if(!store.configured||!modelConfig.configured) return {status:'not_configured',config};
   const provider=createProvider(modelConfig,{fetchImpl});
   let adapters;
   try {
-    const module=await loadModule(pathToFileURL(resolve(modulePath)).href);
+    const module=modulePath?await loadModule(pathToFileURL(resolve(modulePath)).href):await import('./adapters.js');
     if(typeof module.createAutomationAdapters!=='function') return {status:'not_configured',config};
-    adapters=await module.createAutomationAdapters({env,config,store,provider});
+    adapters=await module.createAutomationAdapters({env,config,store,provider,fetchImpl,now});
   } catch { return {status:'not_configured',config}; }
   if(!adapters?.principal||!Array.isArray(adapters.tools)||!adapters.tools.length||typeof adapters.authorizeEvent!=='function') return {status:'not_configured',config};
   const handler=createAutomationHandler({store,provider,config,now,...adapters});

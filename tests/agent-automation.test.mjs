@@ -15,7 +15,7 @@ const enabled=()=>readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'});
 
 test('automation defaults are disabled and trigger/run limits fail closed',()=>{
  const c=readAutomationConfig({});
- assert.equal(c.enabled,false);assert.equal(c.minEvents,5);assert.equal(c.maxAgeSeconds,300);assert.equal(c.cooldownSeconds,60);
+ assert.equal(c.enabled,false);assert.equal(c.minEvents,30);assert.equal(c.maxAgeSeconds,1800);assert.equal(c.cooldownSeconds,60);assert.equal(c.pollMs,5000);assert.equal(c.maxInputs,20);
  for(const env of [{AGENT_AUTOMATION_MIN_EVENTS:'0'},{AGENT_AUTOMATION_MAX_INPUTS:'21'},{AGENT_AUTOMATION_MAX_RUN_MS:'90001'},{AGENT_AUTOMATION_COOLDOWN_SECONDS:'59'},{AGENT_AUTOMATION_TIMEZONE:'Not/AZone'}]){
   assert.throws(()=>readAutomationConfig(env),/invalid_automation_config/);
  }
@@ -204,7 +204,7 @@ test('automation store uses bounded service RPC transport and rejects bad endpoi
  assert.equal(requests,0);
  const store=createAutomationStore({env:{SUPABASE_URL:'https://db.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-secret'},fetchImpl:async(url,options)=>{
   requests++;assert.equal(url,'https://db.example.test/rest/v1/rpc/agent_automation_claim');assert.equal(options.redirect,'error');assert.equal(options.headers.authorization,'Bearer synthetic-secret');
-  assert.deepEqual(JSON.parse(options.body),{p_min_events:5,p_max_age_seconds:300,p_cooldown_seconds:60,p_lease_seconds:120,p_max_inputs:20,p_max_bytes:65536});return Response.json({status:'ready',leaseToken:'not-a-uuid',inputs:[]});
+  assert.deepEqual(JSON.parse(options.body),{p_min_events:30,p_max_age_seconds:1800,p_cooldown_seconds:60,p_lease_seconds:120,p_max_inputs:20,p_max_bytes:65536});return Response.json({status:'ready',leaseToken:'not-a-uuid',inputs:[]});
  }});
  assert.equal((await store.claim({config:enabled()})).status,'unavailable');assert.equal(requests,1);
  assert.equal((await store.finish({leaseToken:randomUUID(),handledInputIds:[]})).status,'invalid_request');

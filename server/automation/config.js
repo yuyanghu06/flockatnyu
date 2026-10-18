@@ -8,8 +8,8 @@ export function readAutomationConfig(env = process.env) {
   try { new Intl.DateTimeFormat('en', {timeZone: timezone}); } catch { throw new Error('invalid_automation_config'); }
   return Object.freeze({
     enabled: env.AGENT_AUTOMATION_ENABLED === 'true', timezone,
-    minEvents: integer(env.AGENT_AUTOMATION_MIN_EVENTS, 5, 1, 100),
-    maxAgeSeconds: integer(env.AGENT_AUTOMATION_MAX_AGE_SECONDS, 300, 1, 86400),
+    minEvents: integer(env.AGENT_AUTOMATION_MIN_EVENTS, 30, 1, 100),
+    maxAgeSeconds: integer(env.AGENT_AUTOMATION_MAX_AGE_SECONDS, 1800, 1, 86400),
     cooldownSeconds: integer(env.AGENT_AUTOMATION_COOLDOWN_SECONDS, 60, 60, 86400),
     leaseSeconds: 120,
     maxInputs: integer(env.AGENT_AUTOMATION_MAX_INPUTS, 20, 1, 20),

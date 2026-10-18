@@ -1,4 +1,6 @@
-# Cache-driven agent and Gmail events
+# Update agent and Gmail events
+
+The **update agent** is the backend autonomous processor. The user-facing conversational assistant is the **chat agent**. Existing automation module paths, commands and configuration keys retain their technical names.
 
 ## Local implementation and boundaries
 
@@ -18,30 +20,26 @@ New revisions are new immutable entries. It does not install a Discord Gateway
 listener. Existing Discord live-only read tools and policy enforcement are intact.
 
 `createAutomationHandler` in server/automation/handler.js claims a bounded batch,
-builds the sample prompt, executes registered tools and deletes only explicitly
+prepares fresh authorized Miro context, builds the update prompt, executes registered tools and deletes only explicitly
 finished snapshot UUIDs. Empty, young, cooldown and busy queues make no model
-request. The default trigger is five pending updates OR oldest age five minutes,
-a one-minute cooldown and one active leased run. `serve` checks every five seconds;
-this is a persistent worker, not a five-minute cron. Collection does not use an LLM.
+request. The default trigger is 30 eligible queued inputs OR oldest age 30 minutes,
+a one-minute cooldown and one active leased run. Discord messages/events and Gmail emails count together toward this threshold. The trigger count is separate from the existing per-claim cap of 20 inputs/64KiB. `serve` checks every five seconds.
+The 30-minute threshold is measured from the oldest eligible pending input, not from the last run or fixed clock times. An empty queue never triggers model processing. Collection does not use an LLM.
 
-`server/automation/prompt.js` is the initial sample prompt for later collaborative
-tuning. It treats source text as evidence, focuses on stated location plans/help
-responsibilities, preserves identities/time/provenance and defers unsupported work.
+`server/automation/prompt.js` defines source interpretation and Miro-to-Calendar reconciliation. It treats source text as evidence, preserves identities/time/provenance and defers unsupported work. Stated location plans/help responsibilities remain distinct from confirmed presence.
 No RSVP inference or claim of verified physical location is introduced.
 
-## Tools and running the agent
+## Tools and running the update agent
 
 Use the existing server-only LLM settings and opt-in environment variables in
-.env.example. A trusted local `.js`/`.mjs` module selected by
+.env.example. The bundled `server/automation/adapters.js` supplies trusted source checks, read tools, fixed-target Calendar tools and mandatory per-batch Miro preparation. An optional trusted local `.js`/`.mjs` override selected by
 `AGENT_AUTOMATION_ADAPTER_MODULE` exports
 `createAutomationAdapters({env,config,store,provider})`, returning a server-owned
 principal, current source-policy authorizer and tools. Each tool supplies name,
 description, an argument schema and its actual executor. See
 [the module guide](../server/automation/info.md) for exact contracts.
 
-The app currently has no map/Calendar write adapter. Missing adapters fail
-`not_configured`; the worker does not fabricate successful updates or clear
-unsupported inputs. Source IDs in cache JSON never grant access. Authorizers
+Calendar tools require GOOGLE_CALENDAR_ID, additional Google Calendar consent and verified writer/owner access. Map writes and durable memory remain unimplemented; unsupported work stays queued. Missing required runtime/source configuration fails closed. Source IDs in cache JSON never grant access. Authorizers
 must recheck current allowlists/provider policy. Keep credentials in ignored
 environment files or service secrets, never in adapter output or source payloads.
 
@@ -137,4 +135,14 @@ Discord and Gmail are independently deployed thin ingestion services sharing the
 
 Implemented: callable tools grouped by capability under tools/, development utilities under scripts/, and independent Gmail/Discord ingestion switches. GMAIL_EVENTS_ENABLED controls Gmail collection; AGENT_AUTOMATION_ENABLED controls model processing.
 
-Still planned: independently deployed interactive chat and scheduled automation processes sharing tool code; agent-owned short/long-term context through update_memory, with core instructions operator-controlled. No memory migration or memory tool has been implemented.
+Still planned: independently deployed chat agent and update agent processes sharing tool code; agent-owned short/long-term context through update_memory, with core instructions operator-controlled. No memory migration or memory tool has been implemented.
+
+## Per-batch Miro and Calendar behavior
+
+Each eligible claimed batch must perform trusted Miro preparation after authorization and lease acquisition, before the first model call. Empty/waiting/cooldown/busy polls do not fetch boards or invoke models. Preparation failure releases the lease and preserves pending inputs. Fresh board metadata/frame context is untrusted evidence; a frame catalogue or partial page never certifies full-board coverage. Relevant frames, headings, legends, items and relationships must establish event dates and meaning. Large boards may require follow-up batches; unsupported table content and duplicate month frames remain explicit.
+
+The bundled adapter reuses existing scoped source reads and bounds large results with ephemeral, batch-local continuation fragments. Successful partial/empty reads retain their original status/coverage. Calendar actions require actual Miro item evidence observed during the current batch, the authorized board/source pair and a canonical original link. Queue inputIds identify the triggering batch for Miro-only work; stable Miro sourceKey/sourceUrl record the actual evidence independently.
+
+Calendar writes target only the configured calendar and managed source-based events. Re-read relevant calendar state, preserve human changes, and defer ambiguous dates or unsupported times; a supported timed start with a missing end uses the approved two-hour default, while explicit and existing ends take priority. No absence-based cancellation, RSVP/presence inference, attendees, source writes or durable-memory claims are authorized by this wiring. Local implementation and consent do not themselves deploy or enable the worker.
+
+The runtime system prompt now imports structured people_here/scheduled_events contracts, synthetic examples and approved7200second current-presence/timed-event policies from server/map/contracts.js. See update-agent-prompt.md for exact limits, overrides, source-time semantics, label rules and test coverage. This does not register map tools, grant scheduled_events writes, remove Calendar preflight or activate the worker.
