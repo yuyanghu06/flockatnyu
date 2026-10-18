@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-18T22:03:38.956Z",
+  "origin": "https://web-production-e4edc.up.railway.app",
+  "deployment": "fa9079b3-4e52-43d2-9f46-bc1da1350706",
+  "deploymentStatus": "SUCCESS",
+  "sourceCommit": "694b1dc6377022f8a0afa7b1045a04648b6b5a3d",
+  "checks": {
+    "/healthz": {
+      "status": 200
+    },
+    "/login": {
+      "status": 200,
+      "terminalIconsAndExplicitEnter": true
+    },
+    "/": {
+      "status": 303
+    },
+    "/api/status": {
+      "status": 403
+    },
+    "/favicon.svg": {
+      "status": 200,
+      "type": "image/svg+xml",
+      "bytes": 31636,
+      "sha256": "1a02567cb3650a66eff28ae10c3b98a7b740ce8734c1ff826921217eb396d5ed"
+    },
+    "/favicon.ico": {
+      "status": 200,
+      "type": "image/x-icon",
+      "bytes": 15342,
+      "sha256": "b63ac4bd69baf57c59a498417d4470e1fbe2558f01625b6fc946078baa3837ae"
+    },
+    "loginPost": {
+      "status": 303,
+      "redirect": "/",
+      "secureHttpOnlyStrictCookie": true,
+      "authenticatedRoot": 200,
+      "immediateAnimatedLogo": true
+    }
+  },
+  "localVerification": {
+    "passwordAndAuth": 11,
+    "startupState": 9,
+    "startupVisual": 12,
+    "packaging": 2,
+    "frontendBuild": true,
+    "apiBuild": true,
+    "syntheticChromeEnterToLogo": true
+  }
+}

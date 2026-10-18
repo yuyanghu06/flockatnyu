@@ -14,7 +14,8 @@
 - [x] User approved publication; fix login favicon and pass build/access/package checks.
 - [x] Push UI/favicon commit and verify initial successful Railway release.
 - [x] Verify native Enter submission in Chrome and preserve direct @ startup.
-- [ ] Push/deploy final Enter followup and verify exact latest hosted release.
+- [x] Push/deploy final Enter followup and verify exact latest hosted release.
+- [x] Verify real hosted sign-in/icons/gate plus direct animated @ startup; archive sanitized receipt.
 
 ## Active: optimize, deploy live services, commit and push
 

@@ -1,3 +1,9 @@
+## Password UI: live on Railway and verified
+
+Final web deploymentfa9079b3-4e52-43d2-9f46-bc1da1350706 is SUCCESS at https://web-production-e4edc.up.railway.app. Terminal password UI, live clock, masked asterisks, gray block cursor/teal tilde and login favicons are published. Enter explicitly submits the native validated form; successful sign-in redirects directly into animated @ startup. UI/favicon sourcee6a43fc and keyboard694b1dc pushed, including separate auth recovery263626b. Hosted health/login/icons200, anonymousroot303/API403, actualpasswordPOST303and securestrictcookie/authenticatedroot200 pass. Icons match approved bytes; root has immediate animatedlogo markup. Actual syntheticChromeEnter→logo verified; final hosted screenshot unavailable after browser detach.11password/auth,21startup,2package checks and bothbuilds pass. Receipt:evidence/password-ui/hosted-release.json. No credentials persisted, no other services deployed by this pass. Next: normal user visual feedback; unrelated operational work below remains separate.
+
+[Pass record](history/2026-10-18_18-04-52-840912-orchestrator-password-ui-live-accepted.md).
+
 ## Password UI: Enter verified, final followup deploying
 
 Initial UI/favicon release850ab73b is SUCCESS; hosted page/icons and authenticated login/root checks pass. Explicit Enter keydown now uses native requestSubmit with validation and IME guard. Actual Chrome synthetic fixture completes Enter→POST→303→root.11/11currentpassword/auth checks pass. Existing root index starts directly with animated @ overlay; no extra entry step. Commit/push/final followup deployment pending; no final release claim yet.

@@ -6,7 +6,8 @@ and the assistant composer/launcher. Each requested change is complete when its
 behavior is implemented, checked at desktop/mobile sizes where relevant, and
 recorded in the rolling journal. Current requests pass direct build/targeted
 Node/browser checks; later requests continue this user-led iteration. No backend
-schema/data changes or deployment are part of this UI work. Read milestone.md
+schema/data changes are part of this UI work. The approved password-page release
+is deployed to Railway; latest snapshot links the release receipt. Read milestone.md
 and the linked pass records for current details and superseded experiments.
 
 The transcript cutoff now reserves a fixed18px strip outside scrolling messages, above the lower panel inset. Desktop/mobile/short-screen scroll offsets, live resize and manual scrolling pass browser checks; empty composer dimensions are unchanged.
@@ -52,3 +53,8 @@ Cursor now uses darker gray#62645f to stand apart from the muted#a19d93 placehol
 Publication is authorized. Login favicon declaration/root public icon delivery
 are fixed with safe-route tests; deployment/push acceptance is tracked in the
 latest snapshot and immutable release records.
+
+Password publication is complete: finalRailwayfa9079b3SUCCESS, hostedlogin/icons,
+actualsign-in/protectedgate and direct @ startup pass. ExplicitEnter and mask
+script tested; syntheticChromeEnter→realbuiltlogo verified. Source pushed;
+release receipt under evidence/password-ui. Separate operations work unchanged.

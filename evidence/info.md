@@ -145,3 +145,6 @@ miro-mcp/ contains aggregate hosted030preservation and live MCP verification rec
 chat-calendar/ records aggregate chat Calendar/Drive verification, including live read/ACL checks and configured-model tests with inert Calendar writes. No original Drive bodies or credentials.
 
 `optimization/` contains synthetic before/after metrics, independent browser/security checks, real private-site/chat verification and aggregate deployment/migration/worker receipts. Credentials and private source bodies are excluded.
+
+password-ui/ contains sanitized HTTP/session/icon and deployment acceptance for
+the terminal password page. It contains no credentials, cookies or source data.

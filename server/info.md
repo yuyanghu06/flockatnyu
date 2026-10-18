@@ -47,7 +47,8 @@ them. Input/change/pageshow refresh the mask without plaintext echo, persistence
 or extra requests. Clearing restores placeholder. Cursor blinks instantly over
 1.1s; reduced motion keeps it steady. Accessible native password input and Enter
 POST remain. Fixed-origin checks, login limits and session issuance stay unchanged
-in web.js/site-auth.js. UI refinements remain local until publication.
+in web.js/site-auth.js. The terminal UI/favicons are published; latest release receipts live under
+evidence/password-ui and the milestone journal.
 
 Login declares root SVG/ICO favicons. Only exact GET/HEAD /favicon.svg and
 /favicon.ico are public branding exceptions; existing static validation rejects
