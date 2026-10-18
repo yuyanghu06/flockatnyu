@@ -21,6 +21,8 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
     if (!config?.enabled) return {status:'disabled'};
     if (running) return {status:'busy'};
     if (!definitions || !tools.length || (typeof authorizeEvent!=='function' && typeof authorizeEvents!=='function') || authorizeEvents!==undefined&&typeof authorizeEvents!=='function' || typeof provider?.toolTurn!=='function' || store?.configured===false) return {status:'not_configured'};
+    if(store.requiresScopedClaims===true&&(!Array.isArray(principal?.allowedSourceIds)||!principal.allowedSourceIds.length||principal.allowedSourceIds.length>500
+      ||!principal.allowedSourceIds.every(validUuid)||new Set(principal.allowedSourceIds).size!==principal.allowedSourceIds.length))return {status:'not_configured'};
     running=true;
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),config.maxRunMs);timeout.unref?.();
@@ -35,7 +37,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
     };
     let leaseToken,heartbeat,heartbeatBusy=false;
     try {
-      const claim=await guarded(()=>store.claim({config,signal:combined}));
+      const claim=await guarded(()=>store.claim({config,allowedSourceIds:principal?.allowedSourceIds?[...principal.allowedSourceIds]:undefined,signal:combined}));
       if (claim.status!=='ready') return {status:claim.status};
       leaseToken=claim.leaseToken;
       const inputs=claim.inputs;

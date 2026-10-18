@@ -197,17 +197,17 @@ test('read-only context tools fetch fresh state on every retry without successfu
 });
 
 test('automation store uses bounded service RPC transport and rejects bad endpoints/claims',async()=>{
- let requests=0;
+ let requests=0;const allowedSourceIds=[randomUUID()];
  for(const url of ['https://user:pass@db.example.test','https://db.example.test/path','http://external.example.test']){
   const store=createAutomationStore({env:{SUPABASE_URL:url,SUPABASE_SERVICE_ROLE_KEY:'synthetic-secret'},fetchImpl:async()=>{requests++;throw Error();}});
   assert.equal(store.configured,false);assert.equal((await store.claim({config:enabled()})).status,'not_configured');
  }
  assert.equal(requests,0);
  const store=createAutomationStore({env:{SUPABASE_URL:'https://db.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-secret'},fetchImpl:async(url,options)=>{
-  requests++;assert.equal(url,'https://db.example.test/rest/v1/rpc/agent_automation_claim');assert.equal(options.redirect,'error');assert.equal(options.headers.authorization,'Bearer synthetic-secret');
-  assert.deepEqual(JSON.parse(options.body),{p_min_events:30,p_max_age_seconds:1800,p_cooldown_seconds:60,p_lease_seconds:120,p_max_inputs:20,p_max_bytes:65536});return Response.json({status:'ready',leaseToken:'not-a-uuid',inputs:[]});
+  requests++;assert.equal(url,'https://db.example.test/rest/v1/rpc/agent_automation_claim_scoped');assert.equal(options.redirect,'error');assert.equal(options.headers.authorization,'Bearer synthetic-secret');
+  assert.deepEqual(JSON.parse(options.body),{p_allowed_source_ids:allowedSourceIds,p_min_events:30,p_max_age_seconds:1800,p_cooldown_seconds:60,p_lease_seconds:120,p_max_inputs:20,p_max_bytes:65536});return Response.json({status:'ready',leaseToken:'not-a-uuid',inputs:[]});
  }});
- assert.equal((await store.claim({config:enabled()})).status,'unavailable');assert.equal(requests,1);
+ assert.equal((await store.claim({config:enabled(),allowedSourceIds})).status,'unavailable');assert.equal(requests,1);
  assert.equal((await store.finish({leaseToken:randomUUID(),handledInputIds:[]})).status,'invalid_request');
 });
 

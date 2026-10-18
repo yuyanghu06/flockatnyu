@@ -6,7 +6,6 @@ import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
 import {eventUuid} from '../server/automation/events.js';
 import {readAutomationConfig} from '../server/automation/config.js';
-import {createAutomationStore} from '../server/automation/store.js';
 
 async function migration(number){const dir=new URL('../supabase/migrations/',import.meta.url);const file=(await readdir(dir)).find(f=>f.endsWith('.sql')&&Number(f.slice(8,12))===number);assert(file);return readFile(new URL(file,dir),'utf8');}
 async function rpc(db,name,args={}){const keys=Object.keys(args);return(await db.query(`select public.${name}(${keys.map((key,i)=>key+' => $'+(i+1)).join(',')}) result`,keys.map(key=>args[key]!==null&&typeof args[key]==='object'&&!Array.isArray(args[key])?JSON.stringify(args[key]):args[key]))).rows[0].result;}
@@ -31,12 +30,9 @@ test('019 real SQL: durable hybrid trigger, lease fences, receipts and subscript
   const before={};for(const name of oldNames)before[name]=(await db.query(`select to_jsonb(t) row from public.${name} t order by to_jsonb(t)::text`)).rows;
   await db.exec(await migration(19));
   const config=readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'});
-  const store=createAutomationStore({env:{SUPABASE_URL:'https://db.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-key'},fetchImpl:async(url,options)=>{
-   const name=new URL(url).pathname.split('/').at(-1);
-   assert.equal(name,'agent_automation_claim');
-   return Response.json(await rpc(db,name,JSON.parse(options.body)));
-  }});
-  const defaultClaim=()=>store.claim({config});
+  // Historical019 fixture calls its original RPC directly;032 owns the current store wire.
+  const defaultClaim=()=>rpc(db,'agent_automation_claim',{p_min_events:config.minEvents,p_max_age_seconds:config.maxAgeSeconds,
+   p_cooldown_seconds:config.cooldownSeconds,p_lease_seconds:config.leaseSeconds,p_max_inputs:config.maxInputs,p_max_bytes:config.maxBytes});
 
   await t.test('019 adds only metadata state;018 remains two columns and existing populated rows survive',async()=>{
    const names=(await db.query("select relname from pg_class where relnamespace='public'::regnamespace and relkind='r' order by relname")).rows.map(r=>r.relname);

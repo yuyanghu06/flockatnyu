@@ -38,14 +38,17 @@ export function createAutomationStore({env = process.env,fetchImpl = globalThis.
     const result = await rpc(name,args,signal);
     return result.status==='ready' && plainObject(result.data) && typeof result.data.status==='string' ? result.data : result.status==='ready' ? {status:'unavailable'} : result;
   };
-  return Object.freeze({configured,
+  return Object.freeze({configured,requiresScopedClaims:true,
     enqueue({inputId,envelope,signal}={}) {
       if (!validUuid(inputId) || !plainObject(envelope)) return Promise.resolve({status:'invalid_request'});
       return objectCall('agent_automation_enqueue',{p_input_id:inputId,p_envelope:envelope},signal);
     },
-    async claim({config,signal}={}) {
+    async claim({config,allowedSourceIds,signal}={}) {
+      if (!configured) return {status:'not_configured'};
+      if (!Array.isArray(allowedSourceIds)||!allowedSourceIds.length||allowedSourceIds.length>500||!allowedSourceIds.every(validUuid)
+        ||new Set(allowedSourceIds).size!==allowedSourceIds.length) return {status:'not_configured'};
       if (!config) return {status:'invalid_request'};
-      const result=await objectCall('agent_automation_claim',{p_min_events:config.minEvents,p_max_age_seconds:config.maxAgeSeconds,
+      const result=await objectCall('agent_automation_claim_scoped',{p_allowed_source_ids:[...allowedSourceIds],p_min_events:config.minEvents,p_max_age_seconds:config.maxAgeSeconds,
         p_cooldown_seconds:config.cooldownSeconds,p_lease_seconds:config.leaseSeconds,p_max_inputs:config.maxInputs,p_max_bytes:config.maxBytes},signal);
       if (result.status==='ready' && (!validUuid(result.leaseToken) || !Array.isArray(result.inputs) || !result.inputs.length || result.inputs.length>20 || result.inputs.some(r=>!validUuid(r.uuid)||!plainObject(r.raw_response)))) return {status:'unavailable'};
       return result;
