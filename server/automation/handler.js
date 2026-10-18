@@ -136,7 +136,10 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           if(result.status!=='ready') failure('stale');
           leaseToken=null;
           progressDone('completed');
-          return {status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls};
+          const miro=completion?.miroReconciliation;
+          const deferred=miro?.status==='deferred'&&miro.syncComplete===false&&Array.isArray(miro.boardIds)&&miro.boardIds.length>=1&&miro.boardIds.length<=8
+            ?{miroReconciliation:{status:'deferred',boardCount:miro.boardIds.length,syncComplete:false}}:{};
+          return {status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls,...deferred};
         }
         messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)});
         for(const call of turn.toolCalls) {

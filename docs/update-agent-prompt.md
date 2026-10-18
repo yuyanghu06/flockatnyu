@@ -263,3 +263,7 @@ Miro boardId choices are restricted to configured boards; current authorization
 is independently rechecked.
 
 For authorized observed Calendar projections, trusted preparation sets reported_at from the exact original updatedAt/createdAt before receipt hashing. It preserves map optimistic revision tokens and participant timestamps; sparse cancellations retain known facts. Missing/invalid source timestamps never fall back to the processing clock.
+
+## Miro navigation outages
+
+After required configuration, catalogue and current source authorization succeed, recognized transient Miro navigation failures defer that board for the current batch. No source facts or empty-board inference follow. Supported Discord/Calendar work may finish only after the normal Calendar original-read/pagination/projection gates. Deferred Miro reads expose unavailable metadata after fresh access checks; completion logs include only deferred board count and syncComplete:false. The next batch retries Miro. Authentication, configuration, forbidden and malformed responses remain fatal. This preserves useful authorized updates without claiming all-three-source synchronization during a provider outage.

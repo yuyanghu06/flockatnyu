@@ -7,3 +7,5 @@ Empty search handling: verified zero matches with absent/null results are succes
 Calendar navigation verifies spatial section identity and actual grid headings; repeated months and conflicting copied years cannot be resolved from frame titles alone.
 
 Invalid request feedback uses fixed schema/canvas/table correction hints without echoing arguments. Canvas omits limit/cursor; table omits scope/itemIds. Strict rejection and zero upstream calls for incompatible options remain unchanged.
+
+MCP unpacking validates envelopes/content/text/object JSON before exposing source context. Malformed provider data becomes invalid_mcp_result, distinct from explicit upstream tool_result_error; this prevents transient-outage handling from masking malformed content.

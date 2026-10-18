@@ -177,3 +177,5 @@ Production claims use trusted principal.allowedSourceIds via scoped RPC032 befor
 Planner workload starts from queued originals, prioritizes eboard and fetches exact current messages before actionable changes. Extra reply/context reads are targeted; routine historical sweeps and repeated catalogue discovery are avoided. Calendar/Miro reconciliation and projection completion remain required.
 
 Calendar projection preparation binds reported_at to the observed Calendar timestamp before action hashing, after existing identity/access checks. This does not replace the map optimistic revision or participant timestamps; sparse cancellations preserve known facts.
+
+Optional Miro navigation outages are explicit per-batch deferrals after mandatory source checks, never empty-board evidence. Deferred reads recheck access and return only unavailable metadata. Calendar completion/projection remains mandatory; successful queue completion can include sanitized Miro deferred boardCount/syncComplete:false without source IDs. Auth/config/malformed failures remain fatal.

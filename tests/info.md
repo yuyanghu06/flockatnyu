@@ -392,3 +392,5 @@ objects to check length-only masks for typing/paste/clear/restored values, live
 clock formatting, one native requestSubmit on Enter and no submission for IME
 composition/ordinary keys. Actual Chrome native form flow is separately checked
 with an isolated synthetic session, never real credentials.
+
+Recovery coverage includes Discord metadata continuation lifecycle/real deadline shapes and Miro navigation outages through the actual handler/parser, including malformed/auth/write-authority negatives. planner-recovery-model.mjs runs five strict configured-model scenarios against synthetic sources/inert writes, preserving prior interrupted diagnostics separately from final frozen-build acceptance.

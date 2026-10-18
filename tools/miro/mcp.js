@@ -36,11 +36,17 @@ function sameBoard(url,board,item) {
   catch{return false;}
 }
 function unpack(result) {
-  if(result?.isError)throw new Error('tool_result_error');
-  if(plain(result?.structuredContent))return result.structuredContent;
-  const text=result?.content?.filter(block=>block.type==='text').map(block=>block.text).join('\n');
+  if(!plain(result)||Object.hasOwn(result,'isError')&&typeof result.isError!=='boolean')throw new Error('invalid_mcp_result');
+  if(result.isError)throw new Error('tool_result_error');
+  if(Object.hasOwn(result,'structuredContent')) {
+    if(!plain(result.structuredContent))throw new Error('invalid_mcp_result');
+    return result.structuredContent;
+  }
+  if(!Array.isArray(result.content)||result.content.some(block=>!plain(block)||typeof block.type!=='string'||block.type==='text'&&typeof block.text!=='string'))throw new Error('invalid_mcp_result');
+  const text=result.content.filter(block=>block.type==='text').map(block=>block.text).join('\n');
   if(!text)throw new Error('invalid_mcp_result');
-  const value=JSON.parse(text);if(!plain(value))throw new Error('invalid_mcp_result');return value;
+  let value;try{value=JSON.parse(text);}catch{throw new Error('invalid_mcp_result');}
+  if(!plain(value))throw new Error('invalid_mcp_result');return value;
 }
 // SVG remains inert evidence. Parse only original attribute identities/content;
 // never execute markup, resolve entities, render it, or fetch external resources.

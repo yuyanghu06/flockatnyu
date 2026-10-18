@@ -99,10 +99,16 @@ test('Real handler and bundled adapter prepare Miro before model; observed evide
  assert.equal((await named(f.adapters,'upsert_calendar_event').execute(calendarArgs,{principal:f.adapters.principal})).status,'forbidden');
 });
 
-test('Bundled adapter fails Calendar or Miro preflight before any model action and keeps queue pending',async()=>{
- for(const options of [{calendarStatus:'permission_denied'},{miroFailure:true},{scopeRevoked:true}]){
+test('Bundled adapter rejects Calendar permission denial or revoked Miro scope before model and keeps queue pending',async()=>{
+ for(const options of [{calendarStatus:'permission_denied'},{scopeRevoked:true}]){
   const f=await adapterFixture(options),h=handlerHarness({adapters:f.adapters});assert.notEqual((await h.handler.tick()).status,'completed');assert(!h.finished());assert(!h.events.includes('model'));assert.equal(f.writes(),0);
  }
+});
+
+test('Bundled adapter completes unrelated input while Miro navigation outage remains explicitly deferred',async()=>{
+ const f=await adapterFixture({miroFailure:true}),h=handlerHarness({adapters:f.adapters});
+ const result=await h.handler.tick();assert.equal(result.status,'completed');assert(h.finished());assert(h.events.includes('model'));
+ assert.deepEqual(result.miroReconciliation,{status:'deferred',boardCount:1,syncComplete:false});assert.equal(f.writes(),0);assert.equal(f.boardReads(),1);
 });
 
 test('Bundled adapter rejects unobserved or stale Miro source identity and supports truthful empty/partial reads',async()=>{

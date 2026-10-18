@@ -29,6 +29,9 @@ const itemId=value=>typeof value==='string'&&/^[A-Za-z0-9_=-]{1,200}$/.test(valu
 const miroUrl=(board,id)=>`https://miro.com/app/board/${encodeURIComponent(board)}/?moveToWidget=${encodeURIComponent(id)}`;
 const fail=code=>{throw new Error(code);};
 const success=new Set(['ready','empty','partial','unsupported_content']);
+// Only transient read-only navigation failures may defer one board. Access,
+// configuration and malformed-content failures remain fatal preflight errors.
+const navigationOutages=new Set(['tool_result_error','request_timeout','unavailable']);
 const evidenceKey=(sourceId,sourceUrl)=>canonicalJson([sourceId,sourceUrl]);
 export function discordCalendarIntent(content,{cancel=false}={}) {
   if(typeof content!=='string'||!content.trim())return false;
@@ -82,9 +85,10 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   const cancellationIntents=new Set(), fixedBuildings=new Map();
   const calendarWindows=new Map();
   const knownCalendarEvents=new Map();
+  const deferredMiro=new Map();
   let prepared=false,reconciliationWindow,windowComplete=false,nextCalendarPage,catalogueRead=false;
   const cleanupBatch=()=>{prepared=false;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();fragments.clear();
-    calendarOccurrences.clear();projected.clear();pendingCalendarReads.clear();unprojectableCalendar.clear();cancellationIntents.clear();fixedBuildings.clear();calendarWindows.clear();knownCalendarEvents.clear();reconciliationWindow=undefined;windowComplete=false;nextCalendarPage=undefined;catalogueRead=false;};
+    calendarOccurrences.clear();projected.clear();pendingCalendarReads.clear();unprojectableCalendar.clear();cancellationIntents.clear();fixedBuildings.clear();calendarWindows.clear();knownCalendarEvents.clear();deferredMiro.clear();reconciliationWindow=undefined;windowComplete=false;nextCalendarPage=undefined;catalogueRead=false;};
   function rememberDiscord(source) {
     if(source.guildId!==discordConfig.guildId||!snowflake(source.channelId)||!snowflake(source.messageId)
       ||!validUuid(source.sourceId)||!allowedSourceIds.includes(source.sourceId)
@@ -118,6 +122,13 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     }
   }
   async function readMiro(name,args,signal) {
+    if(deferredMiro.has(args?.boardId)) {
+      const scope=calendarSources.find(row=>row.boardId===args.boardId);
+      if(!scope||!await currentScope(scope,signal))return {status:'forbidden'};
+      return {status:'ready',sourceStatus:'unavailable',deferred:true,contentAvailable:false,reason:'miro_navigation_deferred',sources:[],
+        coverage:{complete:false,reason:'miro_navigation_deferred'},
+        notice:'This board is unavailable for this batch. Skip it until the next batch; only unrelated authorized Discord/Calendar work may proceed. No Miro facts or successful synchronization were established.'};
+    }
     const result=normalize(await miroTools.execute({name,arguments:args,principal,signal}));
     if(result.status==='ready')remember(result);
     return fragments.bound(result);
@@ -131,6 +142,12 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   async function boardOverview(scope,signal) {
     if(miroTools.transport!=='mcp'||typeof miroTools.prepareBoard!=='function')fail('preflight_failed');
     const overview=normalize(await miroTools.prepareBoard({boardId:scope.boardId,principal,signal}));
+    if(navigationOutages.has(overview.status)) {
+      deferredMiro.set(scope.boardId,overview.status);
+      return {result:{status:'unavailable',sourceStatus:overview.status,sources:[],coverage:{complete:false,reason:'miro_navigation_deferred'}},
+        contextSummary:{format:'miro-navigation-unavailable-v1',status:'unavailable',reason:overview.status,
+          notice:'Miro navigation failed; reconciliation is deferred until the next batch. This is not an empty board, source evidence or successful synchronization.'}};
+    }
     if(overview.status!=='ready'||!plainObject(overview.boardContext))fail('preflight_failed');
     return {result:fragments.bound(overview),contextSummary:overview.boardContext};
   }
@@ -163,10 +180,14 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     reconciliationWindow={timeMin:context.reconciliationWindow.timeMin,timeMax:context.reconciliationWindow.timeMax};
     for(const board of boards) {
       const {result,contextSummary}=await boardOverview(board,signal);
-      if(result.status!=='ready')fail('preflight_failed');
       context.miro.boards.push({boardId:board.boardId,sourceId:board.sourceId,
         contextSummary,result});
       if(Buffer.byteLength(canonicalJson(context))>65536)fail('context_limit');
+    }
+    if(deferredMiro.size) {
+      context.miro.deferredBoards=[...deferredMiro.keys()];
+      context.miro.reconciliationStatus='deferred';context.miro.syncComplete=false;
+      context.miro.coverage.reason='miro_navigation_deferred';
     }
     for(const scope of calendarSources)if(!await currentScope(scope,signal))fail('forbidden');
     if(signal?.aborted)fail('aborted');
@@ -321,15 +342,16 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   }
   async function validateCompletion({principal:actor,signal}={}) {
     if(!prepared||actor!==principal||signal?.aborted)return {status:'pending',reason:'batch_not_prepared'};
-    if(!calendarMapConfigured)return {status:'ready'};
+    const deferred=deferredMiro.size?{miroReconciliation:{status:'deferred',boardIds:[...deferredMiro.keys()],syncComplete:false}}:{};
+    if(!calendarMapConfigured)return {status:'ready',...deferred};
     const nextActions=[];
     for(const eventId of pendingCalendarReads)if(nextActions.length<5)nextActions.push({name:'read_calendar_event',arguments:{eventId}});
     if(!windowComplete&&nextActions.length<5)nextActions.push({name:'list_calendar_events',arguments:{...reconciliationWindow,...(nextCalendarPage?{pageToken:nextCalendarPage}:{})}});
     for(const [eventId,event] of calendarOccurrences)if(!projected.has(eventId)&&nextActions.length<5)
       nextActions.push({name:'read_map_events',arguments:{sourceId:calendarSourceId,sourceRecordId:eventId},
         requiredProjection:{name:event.title,kind:'scheduled_event',source_record_id:eventId,source_url:event.url,reported_at:event.updatedAt||event.createdAt||null,time_zone:event.start?.timeZone||config.timezone,location:event.location,start:event.start,end:event.end}});
-    return windowComplete&&!pendingCalendarReads.size&&!unprojectableCalendar.size&&[...calendarOccurrences.keys()].every(id=>projected.has(id))?{status:'ready'}:
-      {status:'pending',reason:'calendar_projection_incomplete',notice:'finish_batch did not complete. Perform these exact reads, then upsert missing/stale Calendar occurrences as complete scheduled_event map snapshots. Preserve source identity and original timestamps. Irrelevant triggering inputs do not waive this batch work.',nextActions,
+    return windowComplete&&!pendingCalendarReads.size&&!unprojectableCalendar.size&&[...calendarOccurrences.keys()].every(id=>projected.has(id))?{status:'ready',...deferred}:
+      {status:'pending',...deferred,reason:'calendar_projection_incomplete',notice:'finish_batch did not complete. Perform these exact reads, then upsert missing/stale Calendar occurrences as complete scheduled_event map snapshots. Preserve source identity and original timestamps. Irrelevant triggering inputs do not waive this batch work.',nextActions,
         blockedCount:unprojectableCalendar.size,outstandingCount:pendingCalendarReads.size+unprojectableCalendar.size+[...calendarOccurrences.keys()].filter(id=>!projected.has(id)).length+(windowComplete?0:1)};
   }
   const stripManaged=event=>Object.fromEntries(Object.entries(event).filter(([key,value])=>!['created_at','updated_at'].includes(key)&&value!==null));
