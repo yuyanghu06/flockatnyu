@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-18T22:57:04.860Z",
+  "knownUpstreamQuotaRecorded": true,
+  "retryAt": "2026-10-19T00:00:00.000Z",
+  "deniedLanes": [
+    "chat",
+    "background"
+  ],
+  "totalReserved": 0,
+  "backgroundReserved": 0,
+  "contentPersisted": false,
+  "sourceOrModelCalls": 0,
+  "scopeOrCredentialsChanged": false
+}

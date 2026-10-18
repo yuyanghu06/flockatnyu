@@ -401,5 +401,7 @@ browser check now expects hover glow without spin and nonhover streaming spin.
 Actual Chrome synthetic fixtures additionally cover X/Escape/backdrop/CmdK,
 hidden tool progress/completion, latest-scroll and retained followup history.
 
+Miro quota tests cover metadata-only shared UTC counters, background cadence, protected chat capacity and source authorization. Independent acceptance adds concurrent/restarted governors, cancellation, fragment refetches and broker/native OAuth retry accounting. Provider calls are synthetic; hosted receipts are separate.
+
 The rapid UI browser check waits for the hover glow transition to settle before
 reading its shadow; streaming animation is checked without hovering the button.

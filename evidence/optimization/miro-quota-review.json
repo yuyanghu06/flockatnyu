@@ -1,0 +1,67 @@
+{
+  "recordedAt": "2026-10-18T22:56:12.457Z",
+  "role": "independent tester/reviewer",
+  "verdict": "PASS for local acceptance; deployment verification separate",
+  "checks": [
+    {
+      "command": "node --test tests/miro-quota-acceptance.test.mjs tests/miro-quota.test.mjs tests/miro-mcp.test.mjs tests/miro-mcp-auth.test.mjs tests/miro-mcp-queue.test.mjs tests/miro-token-broker.test.mjs tests/update-agent-miro-outage.test.mjs tests/update-agent-mcp.test.mjs tests/update-agent-calendar.test.mjs tests/update-agent-map.test.mjs tests/update-agent-prompt.test.mjs",
+      "exitCode": 0,
+      "tests": 125,
+      "passed": 125,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "npm run build:api",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --check -- tests/miro-quota-acceptance.test.mjs",
+      "exitCode": 0
+    }
+  ],
+  "independentNewTests": 23,
+  "resolvedFinding": {
+    "problem": "A broker401 replay sent two physical MCP tool calls with one reservation. The last-slot replay could exceed the local budget.",
+    "reproduction": "node --test --test-name-pattern=broker401 tests/miro-quota-acceptance.test.mjs",
+    "before": {
+      "exitCode": 1,
+      "tests": 2,
+      "failed": 2
+    },
+    "after": "Broker and native OAuth SDK retries each reserve at the physical-send boundary; at79 prior reservations, the first401 consumes slot80 and the replay is blocked after only one physical send."
+  },
+  "coverage": [
+    "independent instances and restart persistence",
+    "concurrent total/session/cadence boundaries",
+    "80 total /48 background /32 chat remainder",
+    "12 calls per session /600 second session /six hour cadence",
+    "UTC midnight rollover and cooldown",
+    "malformed and future state fails closed",
+    "store failures, CAS contention and aborts fail closed",
+    "explicit error envelope classification and sanitized output",
+    "successful quota-like board text remains source content",
+    "free metadata and authorization denials",
+    "fragment refetch accounting",
+    "preflight and mid-batch deferral preserves Calendar/map work and revocation checks",
+    "broker and native OAuth replay accounting/cap enforcement"
+  ],
+  "limitations": [
+    "No cloud, model, or live-source calls were made.",
+    "Concurrency tests use a shared atomic in-memory CAS store; migration019 advisory-lock SQL was inspected but no real database concurrency test was executed.",
+    "Initialization and metadata/token exchanges may still occur before a budget denial, but no tools/call is sent.",
+    "Other applications can consume the organization Miro quota outside these local counters.",
+    "No claim of restored Miro content or successful live synchronization.",
+    "No complete repository test run in this tester pass."
+  ],
+  "sourceHashes": {
+    "server/miro/quota.js": "3903e727156635be8f8c0db4558b536423d5d7ea59134c4b20ab91df91c8a2b7",
+    "server/miro/mcp-config.js": "e9e12de3cbe30ffcf5ba5212f6330eb7ce41fdb7b43c9d49bc98629166dcdb05",
+    "server/miro/mcp-client.js": "13fd436175b94c0e48c8c76be4c97043e72f52651f110f00cc4bdd52e31aec44",
+    "server/automation/adapters.js": "900d7a83d3ecf74f33fd5f7c8ecbf7bb453af473c28c9ec72cdca6bc0e72266c",
+    "tools/miro/mcp.js": "83a18f83b7d8b550a2be1d4cbab8d7ab2c3de5f0ac5ef7468440b1e940168147",
+    "tests/miro-quota-acceptance.test.mjs": "1d02bc4d249353ae64ecbcf159d611ff1dbd078050743907ab58a0295a08e260",
+    "tests/miro-quota.test.mjs": "e3b3fa02f770e380de4f499ff0420c938d7796d54798cbfd8c3f76fdcc0ad583",
+    "tests/update-agent-miro-outage.test.mjs": "85b396869296ba40e3a0d535b4b80e2de78866bcc1805ede17f62cde4a16c998"
+  }
+}

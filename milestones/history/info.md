@@ -65,3 +65,9 @@ M27 mixed-page implementation records the real native-table compatibility findin
 
 The Cloud Shell handoff records user-owned Google setup after the separate
 Chrome-window boundary; prepared commands are distinct from executed resources.
+
+October 18 Miro quota diagnosis records the explicit upstream Free-plan daily limit, official UTC reset and proposed budget/cooldown changes; runtime behavior remains unchanged.
+
+Miro quota recovery passes track shared organization-wide operational counters, background cadence, independent acceptance and release checks; they never authorize board snapshots or a paid upgrade.
+
+Chat production fixes history records the reproduced report-retry conflict, authorized named-person attendance, separately saved future identity idea and subsequent upload extension, implementation and verification.

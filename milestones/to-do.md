@@ -1,3 +1,8 @@
+## Active: Miro quota recovery
+
+- [ ] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
+- [ ] Independently test/review, deploy web and worker, verify safe behavior and push logical commits.
+
 ## Building activity header live
 
 Decorative date removed;16px title/subtitle gap and light-gray Scheduled events deployed in Railway web e4abfba6. Event dates/times retained.28 focused tests, production build, Chrome DOM/visual check and hosted health/auth/byte-exact assets pass. Source41ecaaa pushed; receipt evidence/building-card-header/hosted-release.json. Refresh page for latest assets. Concurrent chat/backend changes remain separate.
@@ -10,6 +15,39 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 
 [Pass record](history/2026-10-18_19-04-08-724864-orchestrator-building-card-header-refinement.md).
 
+## Active: Miro quota recovery
+
+- [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
+- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+
+## Chat upload extension
+
+- [x] Verify official Luna/image/PDF contracts and assign bounded upload implementation.
+- [x] Complete image/PDF/text picker, draft/history handling, API validation and provider conversion; coder tests/browser/build pass.
+- [ ] Verify attachments in browser and production model; preserve background reply and map/source boundaries.
+- [ ] Deploy worker matching PUBLIC_ORIGIN/source-authorizer compatibility before live chat attendance.
+
+## Active: Miro quota recovery
+
+- [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
+- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+
+## Future user identity idea
+
+- [x] Save local-storage/Google OAuth alternatives for names and per-user memory.
+- [ ] Future discussion only: select browser-local versus account-backed identity/memory; no implementation in current production fix.
+
+## Active: production chat fixes
+
+- [x] Reproduce bug-report retries and confirm hosted schema readiness; accept bounded attendance plan.
+- [x] Implement once-per-message reporting and explicit named attendance on existing events; independent final review pending.
+- [ ] Independently verify ambiguity/source/concurrency boundaries, deploy isolated production fix and verify actual results.
+
+## Active: Miro quota recovery
+
+- [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
+- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+
 ## Spotlight background replies and streaming button
 
 - [x] Keep request/tool/history state alive through X/Escape/backdrop/shortcut dismissal.
@@ -17,12 +55,20 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 - [x] Replace hover spin with subtle glow and streaming-only color animation; verify targeted/browser checks.
 - [x] Push isolated change and deploy/verify Railway web; archived exact frontend byte/gate/session receipt.
 
+## Active: Miro quota recovery
+
+- [x] Implement shared UTC-day Miro counters, quota cooldown and background cadence with reserved chat capacity.
+- [x] Independently test/review, deploy web and worker, and verify hosted quota denial; final documentation push is the remaining integration step.
+
 ## Current live operations
 
 - [x] Recover website/password gate, configure future deployment /healthz60 health check.
 - [x] Recover Discord catalogue/collector continuation, complete real worker batch and verify cache cleanup.
 - [x] Final1038regressions/97collector+141Miroreview/5actualmodelcases; logical recovery commits and final publication verification.
-- [ ] External follow-up: official Miro navigation tool_result_error; explicitly deferred, retries next eligible batch. No full Miro synchronization claim.
+- [x] Diagnose Miro navigation failure: upstream explicitly reports exhausted Free-plan organization quota (100 MCP calls/day; reset 00:00 UTC).
+- [x] Deploy quota-specific cooldown and shared80/48/12call budget with six-hour background cadence; retain explicit incomplete Miro status. No paid upgrade.
+- [ ] Operational follow-up: observe an actual successful authorized Miro read after00UTC reset; current quota denial does not establish successful/full synchronization.
+- [ ] Separate operational follow-up:23:02Discord discovery is rebuilding its catalogue (archives0/191 at23:08UTC,0readable channels). Worker rejects pending inputs until source access is restored; retain queued payloads and current exclusions.
 
 ## Live operations: cleanup and cache status
 

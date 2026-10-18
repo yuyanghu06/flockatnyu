@@ -15,7 +15,7 @@ The [milestone snapshot](../milestones/milestone.md) and [to-do list](../milesto
 - [schema-cleanup-audit.md](schema-cleanup-audit.md): historical pre-cleanup assessment; follow the milestone and current table guide for applied state.
 - [supabase-mcp-setup.md](supabase-mcp-setup.md): developer connection setup history, separate from runtime credentials.
 
-Railway production contains continuous `discord-events`, active `gmail-events` and paused `miro-sync`. Discord creates and a real Gmail email have reached the shared temporary cache. No LLM service or Calendar write adapters are deployed. Live Discord edit/delete and blacklist probes remain pending. Integration owners maintain their own guides; shared workflow/journal changes belong to the orchestrator.
+Railway production contains the password-gated website/chat API, enabled update-agent worker, continuous Discord collector and Gmail collector. The old Miro sync service is retired; both agents read official MCP live. Actual processing and Calendar/map projection receipts, current releases and remaining source outages live in the rolling milestone. Integration owners maintain their own guides; shared workflow/journal changes belong to the orchestrator.
 
 ## Map, design and workflow
 
@@ -48,3 +48,5 @@ miro-sync.md now documents live MCP access shared by both agents, application OA
 chat-agent-prompt.md includes user-directed fixed Calendar writes and the existing authorized Drive search/read behavior; autonomous planner provenance remains separate.
 
 `deployment.md` describes the private Railway website, isolated collectors/worker, environment-only gate and sole persistent Miro OAuth owner. Actual launch receipts remain in the milestone journal.
+
+Miro quota recovery uses shared operational counters and cooldowns in existing service-only automation state, without storing board contents. See miro-sync.md for the UTC reset, protected chat budget and background cadence.

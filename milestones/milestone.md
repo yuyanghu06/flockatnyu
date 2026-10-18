@@ -1,8 +1,26 @@
+## Miro quota rollout verified; separate Discord discovery limitation recorded
+
+Quota web043c4da7 and workercab66107 deployed SUCCESS. Compatible later releases from concurrent work are current webe4abfba6 and worker578d0390, bothSUCCESS; production budgeting remains enabled. Fresh actual protected website login303/root200/API200/anonymous403/health200 and direct authorized Miro tool request verify quota_exhausted, retryAt00UTC, zero sources/incomplete coverage and unchanged0reservation counters. No manual model or Miro tools/call sent. Full1079regressions, APIbuild, independent125tester/94evaluator checks and secret scan pass. Shared80/48/12budget, six-hour cadence and metadata cooldown are live; actual post-reset Miro content/sync remains unverified. Separate current Discord metadata generation started23:02UTC and is in archives0/191 with0readable channels; worker startup showscooldown/forbidden and no new completion is claimed. Collector still receives events; no permission bypass, source expansion or queued-input deletion. Source commits40a2827/dfe7b44 complete; final documentation publication next. Concurrent chat/upload/visual work preserved.
+
+[Latest pass](history/2026-10-18_19-09-29-018090-orchestrator-quota-live-verified.md)
+
+## Chat fixes accepted; production compatibility rollout started
+
+Independent evaluator PASS146Nodechecks and realChrome desktop/mobile, including stale in-flight map poll refresh. Parent full1136/1136regressions and final101/101focusedchecks, builds/whitespace pass. ActualLuna synthetic report/attendance6requests and image/PDF/text1request pass. Source commits25cc4c0/dfca490 packaged without secrets (125textfiles/9patterns/0matches). Worker now has matching canonicalPUBLIC_ORIGIN; compatible worker578d0390deploying before web. Existing committed header/spotlight/Miroquota changes preserved. Hosted chat/attendance/upload verification pending.
+
+[Independent acceptance/release preparation](history/2026-10-18_19-07-58-658202-tester-chat-fixes-accepted-and-worker-deploying.md).
+
 ## Building activity header live
 
 Decorative date removed;16px title/subtitle gap and light-gray Scheduled events deployed in Railway web e4abfba6. Event dates/times retained.28 focused tests, production build, Chrome DOM/visual check and hosted health/auth/byte-exact assets pass. Source41ecaaa pushed; receipt evidence/building-card-header/hosted-release.json. Refresh page for latest assets. Concurrent chat/backend changes remain separate.
 
 [Pass record](history/2026-10-18_19-06-03-878103-orchestrator-building-card-header-live.md).
+
+## Attendance and uploads implemented; final acceptance running
+
+Attendance coder67/67focused checks pass, including exact actual event/person binding for chat provenance, current source revocation, snapshot/CAS preservation and conditional tool exposure. Upload coder54/54tests and actualChrome desktop/mobile fixture pass, including picker/paste/drop/history/backgroundcompletion/Stop/faileddraftrestore. Frontend/APIbuilds pass. Parent actualLuna synthetic report and attendance cases passed6requests; initial permissive synthetic stub was corrected to mirror runtime conditional tool exposure, without any real map/report writes. RealLuna image/PDF/text smoke and independent final review are running. No production release by this pass.
+
+[Attendance implementation](history/2026-10-18_19-05-45-565634-coder-attendance-row-binding-and-preservation.md) · [Uploads implementation](history/2026-10-18_19-05-45-565850-coder-uploads-implemented-and-browser-verified.md).
 
 ## Building activity header simplified
 
@@ -10,17 +28,119 @@ Removed the decorative current date; Scheduled events now sits16px below the tit
 
 [Pass record](history/2026-10-18_19-04-08-724864-orchestrator-building-card-header-refinement.md).
 
+## Quota web release passed health gate; worker rollout starting
+
+Web043c4da7-a8d5-4ce7-8ad7-1caee2c6911b is SUCCESS, preserving the exact182frontend artifacts from concurrent verified spotlight7d8598d1. Superseded own attempt1ed8 remainsREMOVED. Starting reviewed worker47file package rollout. Final1079regressions, APIbuild,125tester/94evaluator focused checks and2131textfile/11actualsecretpattern scan pass; no private matches. Shared quota cooldown is persisted until00UTC. Hosted login/tool denial, worker activation and final publication verification remain pending; no restored Miro read/sync claim.
+
+[Latest pass](history/2026-10-18_19-03-40-662278-orchestrator-quota-web-live-worker-rollout.md)
+
+## Chat orchestration implemented; independent review underway
+
+One report attempt per current message now prevents rewritten retry failures while preserving receipts and unrelated memory/attendance actions. Named-person attendance routes to dedicated target/write tools without requiring “map”; safe candidates/receipts and quote/fence/upload boundaries are implemented. Coder66/66 focused checks passed. Parent composed adapters and refreshed source/event/report/upload guides. Independent reviewer is exercising source/concurrency/intent boundaries; no release acceptance yet. Upload coder is finishing browser/API tests.
+
+[Coder integration](history/2026-10-18_19-03-12-090909-coder-chat-orchestration-integrated.md).
+
+## Quota web package refreshed to preserve concurrent live frontend
+
+Detected concurrent verified spotlight deployment7d8598d1 landed after this pass began. Canceled only our own still-DEPLOYING attempt1ed8e6c0 via the supported deploymentCancel operation before promoting the older frontend package. Rebuilt isolated244file web package using exact182frontend files from that verified live spotlight context; byte hashes match and final quota runtime hashes are unchanged. Worker package unchanged. No concurrent source edits overwritten, no source/model calls or credential output. Replacement web rollout starting; full1079/API/independent acceptance remains valid for unchanged quota runtime. Final hosted behavior and worker rollout pending.
+
+[Latest pass](history/2026-10-18_19-01-47-560999-orchestrator-preserve-concurrent-live-frontend.md)
+
+## Chat scope extended: uploads and runtime integration
+
+User requested file uploads alongside production reporting/attendance fixes. Third coder owns image/PDF/text attachment UI, bounded API validation and native provider conversion; text intent remains separate from untrusted upload content. Parent wired combined map/attendance adapters and immediate map refresh listener. No completed-build claim yet. Official docs confirm Luna image input and current Chat Completions PDF/image formats. Worker needs matching nonsecret PUBLIC_ORIGIN and authorizer compatibility deployment to preserve chat attendance under automatic merges. Future personal identity remains a saved idea.
+
+[Integration/plan pass](history/2026-10-18_19-01-18-774415-orchestrator-chat-uploads-plan-and-runtime-integration.md).
+
 ## Spotlight: background continuation and streaming button live
 
 Railway web7d8598d1-21b4-4208-a1e9-162b8ea5c271 SUCCESS; source29216db pushed. X/Escape/backdrop/CmdK now hide spotlight without cancelling agent; hidden updates/history continue and reopen at latest. Explicit Stop still cancels. Hover/focus gives subtle glow; colors rotate during streaming and stop when idle, with reduced motion retained.19targeted+2package checks, bothbuilds and realChrome synthetic lifecycle/style checks pass. Actual hosted health/login/icons/gate/session checks pass, and protected entry/mainJS/mainCSS match verified artifacts byte-for-byte. Receipt:evidence/spotlight-background/hosted-release.json. Isolated committed runtime excludes pending quota work; only web deployed. Next: refresh page to load new frontend, user visual feedback; concurrent quota work below remains separate.
 
 [Pass record](history/2026-10-18_18-59-52-329667-orchestrator-spotlight-background-live-accepted.md).
 
+## Final1079regressions passed; Miro quota rollout starting
+
+Final unchanged quota runtime source passed node --test --test-concurrency=4 tests/*.test.mjs:1079/1079, zero failures/skips,82550ms. APIbuild passes; independent125focused and evaluator94checks accepted. Sanitized web244/worker47 packages preserve previous hosted frontend and match final reviewed source hashes. Two logical runtime commits40a2827 anddfe7b44 created without staging unrelated UI/chat work. Existing hosted metadata cooldown denies both lanes until00UTC with zero tool/model calls. Starting web then worker rollout; hosted actualbehavior and final docs/evidence publication remain pending. No successful Miro content/sync claim before actual authorized read.
+
+[Latest pass](history/2026-10-18_18-59-35-965423-orchestrator-final-quota-release-gates-passed.md)
+
+## User note: future personal memory
+
+Saved Chrome/browser local storage or Google OAuth account creation as alternatives for remembering user names/preferences across chats. No identity implementation selected or authorized by this note. Current production chat fixes continue. [Note pass](history/2026-10-18_18-58-46-647156-orchestrator-personal-memory-idea-saved.md).
+
+## Active: production chat reports and named attendance
+
+Independent planning reproduced saved bug-report retries conflicting under the same request UUID. Hosted report schema/configuration is available. Two coders are implementing a once-per-message report guard and narrow current-chat named-person attendance with exact existing roster/event selection and distinct app provenance under original event source scope. Generic source identity gates remain intact. No new schema or provider writes planned; concurrent Miro/spotlight work is preserved. Implementation, independent verification and isolated deployment pending.
+
+[Planning pass](history/2026-10-18_18-58-20-608083-planner-chat-production-fixes-accepted.md).
+
+## Known Miro exhaustion recorded; reviewed runtime packages prepared
+
+Recorded the already-confirmed October18 upstream quota exhaustion in the existing hosted service-only metadata row, with retryAt2026-10-19T00:00:00Z. Independent governor instances for chat/background both deny quota_exhausted; zero tool/model calls and zero reserved-call counters. This metadata write adds no content, credentials or source grants. Receipt: evidence/optimization/miro-quota-hosted-state.json. Prepared sanitized web244file/worker47file packages using final reviewed module hashes and the previous stable deployed frontend; preserved concurrent local UI edits. Verified14module/hash comparisons across source/packages,291packagedfiles, no private credential filenames. Secret scan1988textfiles/8actualprivatepatterns found0matches. Initial full1079tests and APIbuild pass, but final exact-source full rerun is in progress after the last transport-signal adjustment. Deployment pending; existing runtime has not yet adopted the governor.
+
+[Latest pass](history/2026-10-18_18-58-06-547522-orchestrator-quota-cooldown-seeded-and-packaged.md)
+
+## Independent quota acceptance passed125 focused checks
+
+Tester added23adversarial tests and sanitized evidence/optimization/miro-quota-review.json with final source hashes. Final125/125focused tests, APIbuild and owned whitespace checks pass. Cross-instance80/48/12caps, six-hourcadence/600second sessions, UTC rollover/cooldown, malformed/unavailable/CAS/abort negatives, source access, fragments and preflight/mid-batch Calendar/map continuation verified. Broker/native OAuth retries now count and final-slot retries are blocked. Concurrency uses an atomic in-memory CAS fixture; actual SQL advisory-lock implementation inspected, not live-concurrency loaded. No provider/model calls, no restored live Miro claim. Parent release checks underway.
+
+[Latest pass](history/2026-10-18_18-57-04-978556-tester-final-independent-quota-acceptance.md)
+
+## Independent evaluator accepted final shared-quota source
+
+Read-only evaluator accepted final quota/config/client/tools/automation and SQL CAS permission boundaries. Final three-file quota/outage run47/47 plus six existing MCP/auth/queue/broker/navigation/empty-search files47/47 pass, zero skipped/failures. Physical replay blocker resolved; current authorization, sanitized quota errors, UTC/cadence/shared limits and mid-batch evidence removal verified. No REST, board cache, scope expansion or prompt edits. Denied requests may still initialize SDK but issue zero tools/call; other-client usage cannot be observed. Full regression, packaging and hosted configuration/cooldown checks remain pending; no restored Miro synchronization claim.
+
+[Latest pass](history/2026-10-18_18-56-14-698087-evaluator-final-shared-quota-source-accepted.md)
+
+## Miro quota counts every authenticated transport replay
+
+Core coder moved reservation to the physical HTTP tools/call send boundary after fixed-origin validation. Broker401 retries and native SDK OAuth replays now each reserve, normal sends are not double-charged, and transport/operation cancellation checks precede send. Independent native/broker last-slot negatives prevent an81st physical request. Forty-eight focused quota/auth/broker cases pass with syntax/whitespace checks; final source frozen. No cloud/provider/model calls. Parent full regression/build/package/deployment acceptance follows.
+
+[Latest pass](history/2026-10-18_18-56-14-607505-coder-transport-replay-counting-fixed.md)
+
 ## Spotlight: background continuation and streaming animation ready
 
 Closing/minimizing now hides the dialog without aborting its request. Hidden tool/reply updates continue and reopening follows latest; completed hidden answers remain in followup history. Explicit Stop/loading failure/dispose still cancel. Hover/focus adds subtle glow only; pastel rotation runs during streaming and stops when idle, respecting reduced motion.19targeted+2package checks, frontend/API builds and real Chrome X/Escape/backdrop/CmdK/background-completion/history/Stop/style checks pass. Revised CLI rapid browser script syntax checked only. Not deployed yet. Next: isolated committed-source web deployment; concurrent quota work remains separate.
 
 [Pass record](history/2026-10-18_18-54-49-713950-orchestrator-spotlight-background-and-streaming-button.md).
+
+## Independent review found authenticated replay undercount
+
+Independent quota acceptance covers19passing cases for cross-process concurrency, restarts, limits/cadence, UTC reset, malformed state, authorization and content-fragment accounting. Added physical broker401 replay reproducer fails: two actual tools/call HTTP attempts consume only one persisted reservation. Parent reproduced using node --test --test-name-pattern=broker401 tests/miro-quota-acceptance.test.mjs. Source is not accepted for release; core coder assigned fixed per-physical-send accounting including token refresh retries, with a last-slot replay negative test. No live provider/model calls or deployments. Existing denied operations may still perform non-tool MCP initialization; no tool allowance consumed by initialization.
+
+[Latest pass](history/2026-10-18_18-54-19-594798-tester-transport-replay-accounting-finding.md)
+
+## Quota deferral integrated into shared tools and update worker
+
+Integration coder changed server/automation/adapters.js, tools/miro/mcp.js, outage tests and owned guides. Background session starts once per batch; safe quota statuses/retryAt remain content-free. Fresh authorization gates denials; deferred boards do not repeat calls and mid-batch failures remove prior Miro mutation authority. Discord/Calendar processing and mandatory Calendar projection remain available. Fourteen outage cases and151focused combined checks passed, zero skipped; owned whitespace passes. Prompt unchanged, no model/cloud/deployment work. Parent full regression and independent transport review pending.
+
+[Latest pass](history/2026-10-18_18-53-55-857787-coder-quota-tool-worker-integration.md)
+
+## Shared Miro quota core implemented; review pending
+
+Core coder added server/miro/quota.js, production-enabled configuration, client integration, owned guide and core tests. Existing service-only CAS persists only organization counters, UTC reset/cooldown and bounded session timestamps. Limits80total/48background/12session/six-hourcadence/600seconds implemented; explicit daily errors safely classified and cooldown retained independently of batch cancellation. Core client/auth/broker24/24 and core+independentquota25/25 checks passed; syntax and owned whitespace pass. Denied calls currently may initialize MCP but issue zero tools/call requests. No cloud/model/source calls or deployment. Parent reviewing authenticated transport replay accounting before acceptance.
+
+[Latest pass](history/2026-10-18_18-53-55-783799-coder-quota-core-implemented.md)
+
+## Shared quota runtime prerequisites verified; code acceptance pending
+
+Read-only hosted preflight confirmed both production web and worker use NODE_ENV=production and can read the existing service-only subscription state RPC; quota key is absent before rollout. No cloud mutations or source reads performed. Updated .env.example and Miro/docs/journal guides for proposed shared metadata budget, UTC reset, cadence, protected chat capacity and actual prior rollout status. Implementation is underway in exclusively owned source/test scopes; independent tester is preparing adversarial coverage. Existing local frontend CSS/assistant/test edits remain outside this pass. Source builds, quota seeding and deployment remain pending; no restored Miro synchronization claim.
+
+[Latest pass](history/2026-10-18_18-53-02-410887-orchestrator-quota-runtime-preflight-and-guides.md)
+
+## Miro quota plan accepted; implementation underway
+
+Read-only planner inspected current client, broker, source tools, automation and migration019. Existing service-only subscription JSON CAS supports one organization-wide metadata budget without schema or broker changes. Accepted defaults: 80 local calls/day, 48 background/day, 12 per background session, six hours between sessions and 600-second sessions, leaving at least32 local chat capacity and20 external headroom. Actual other-client usage remains unknown. Every actual tools/call reserves before send; explicit daily quota sets shared cooldown until00UTC. Only counters, timestamps and opaque session identity persist. Two coders own separate governor/client versus tools/automation scopes; no runtime changes deployed. Next: implementation then independent tests/review; no new model/live-source load planned.
+
+[Latest pass](history/2026-10-18_18-51-05-274554-planner-shared-quota-plan-accepted.md)
+
+## Miro cause confirmed: daily MCP quota exhausted
+
+One bounded live read-only canvas_search returned the explicit Free-plan organization quota error: 100 MCP calls/day exhausted. Official Miro documentation confirms all MCP tool calls count and reset at 00:00 UTC (next reset October 18, 2026 at 8:00 PM America/New_York). Live canvas_search schema matches the current request; no argument mismatch found. OAuth/broker credentials and private response URLs remain private. No runtime/configuration/deployment changes in this diagnostic pass; full Miro reads are still deferred, not restored.
+
+Proposed follow-up: classify quota errors safely, retain metadata-only cooldown until reset, budget and batch live Miro reads across worker/chat, and reconcile Miro less frequently than every input batch. Preserve direct official MCP, existing source authorization, no durable board snapshots and continued Discord/Calendar processing. A paid plan is optional and has not been purchased. Current runtime still retries next eligible batch.
+
+[Diagnostic pass](history/2026-10-18_18-48-52-654386-orchestrator-miro-daily-quota-diagnosed.md) · [Official limits](https://developers.miro.com/docs/mcp-usage-and-daily-limits)
 
 ## Current: site and Discord/Calendar worker recovered; Miro explicitly deferred
 

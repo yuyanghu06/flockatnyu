@@ -125,3 +125,7 @@ miro-mcp-live-only/ tracks accepted live MCP access for both agents and removal 
 `agent-prompts/` tracks calm chat/source routing, leadership privacy and source-backed chat/autonomous map synchronization, including independent tests and configured-model behavioral evidence.
 
 agent-prompts/ is complete for bounded prompt/runtime policy and synthetic-source configured-model verification. Worker activation/live mutation pilots remain separate; milestone.md records precise acceptance and retained failures.
+
+miro-quota/ tracks quota-aware official MCP reads and protected chat capacity; runtime/test/release state remains in the rolling snapshot.
+
+chat-production-fixes tracks bounded report reliability, current-chat named attendance and file uploads with isolated release verification.
