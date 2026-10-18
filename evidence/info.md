@@ -148,3 +148,7 @@ chat-calendar/ records aggregate chat Calendar/Drive verification, including liv
 
 password-ui/ contains sanitized HTTP/session/icon and deployment acceptance for
 the terminal password page. It contains no credentials, cookies or source data.
+
+spotlight-background/ records the published background-reply/streaming-button
+release, exact delivered frontend hashes and private-gate/session status checks.
+No credentials, cookies or original source content are retained.

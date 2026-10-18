@@ -1,3 +1,9 @@
+## Spotlight: background continuation and streaming button live
+
+Railway web7d8598d1-21b4-4208-a1e9-162b8ea5c271 SUCCESS; source29216db pushed. X/Escape/backdrop/CmdK now hide spotlight without cancelling agent; hidden updates/history continue and reopen at latest. Explicit Stop still cancels. Hover/focus gives subtle glow; colors rotate during streaming and stop when idle, with reduced motion retained.19targeted+2package checks, bothbuilds and realChrome synthetic lifecycle/style checks pass. Actual hosted health/login/icons/gate/session checks pass, and protected entry/mainJS/mainCSS match verified artifacts byte-for-byte. Receipt:evidence/spotlight-background/hosted-release.json. Isolated committed runtime excludes pending quota work; only web deployed. Next: refresh page to load new frontend, user visual feedback; concurrent quota work below remains separate.
+
+[Pass record](history/2026-10-18_18-59-52-329667-orchestrator-spotlight-background-live-accepted.md).
+
 ## Spotlight: background continuation and streaming animation ready
 
 Closing/minimizing now hides the dialog without aborting its request. Hidden tool/reply updates continue and reopening follows latest; completed hidden answers remain in followup history. Explicit Stop/loading failure/dispose still cancel. Hover/focus adds subtle glow only; pastel rotation runs during streaming and stops when idle, respecting reduced motion.19targeted+2package checks, frontend/API builds and real Chrome X/Escape/backdrop/CmdK/background-completion/history/Stop/style checks pass. Revised CLI rapid browser script syntax checked only. Not deployed yet. Next: isolated committed-source web deployment; concurrent quota work remains separate.

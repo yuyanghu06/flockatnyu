@@ -3,7 +3,7 @@
 - [x] Keep request/tool/history state alive through X/Escape/backdrop/shortcut dismissal.
 - [x] Follow latest hidden updates on reopening; explicit Stop/failure/disposal still cancel.
 - [x] Replace hover spin with subtle glow and streaming-only color animation; verify targeted/browser checks.
-- [ ] Push isolated change and deploy/verify Railway web.
+- [x] Push isolated change and deploy/verify Railway web; archived exact frontend byte/gate/session receipt.
 
 ## Current live operations
 

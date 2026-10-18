@@ -400,3 +400,6 @@ hidden completion enters history and explicit Stop still aborts. The rapid UI
 browser check now expects hover glow without spin and nonhover streaming spin.
 Actual Chrome synthetic fixtures additionally cover X/Escape/backdrop/CmdK,
 hidden tool progress/completion, latest-scroll and retained followup history.
+
+The rapid UI browser check waits for the hover glow transition to settle before
+reading its shadow; streaming animation is checked without hovering the button.

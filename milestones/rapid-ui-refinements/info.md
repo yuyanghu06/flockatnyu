@@ -61,5 +61,5 @@ release receipt under evidence/password-ui. Separate operations work unchanged.
 
 Spotlight updates continue through dismissal and reopen at latest hidden content;
 explicit Stop still cancels. Current button treatment uses hover/focus glow and
-streaming-only color rotation. Local checks pass; publication tracked in latest
-snapshot, separate from concurrent backend quota work.
+streaming-only color rotation. Local and hosted checks pass; deployed web release is recorded in latest
+snapshot and evidence/spotlight-background, separate from backend quota work.
