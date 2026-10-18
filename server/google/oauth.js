@@ -20,8 +20,8 @@ export function googleError(error, signal) {
     ? 'reauthorization_required' : 'google_unavailable');
 }
 
-export function hasGoogleScopes(scopes) {
-  return Array.isArray(scopes) && GOOGLE_SCOPES.every(scope => scopes.includes(scope));
+export function hasGoogleScopes(scopes, requiredScopes = GOOGLE_SCOPES) {
+  return Array.isArray(scopes) && Array.isArray(requiredScopes) && requiredScopes.every(scope => scopes.includes(scope));
 }
 
 // Google getAccessToken/getTokenInfo do not accept AbortSignal. Bound their
@@ -38,9 +38,9 @@ export async function waitForGoogleAuth(operation, signal) {
   finally { signal?.removeEventListener('abort', abort); }
 }
 
-export async function verifyGoogleToken(oauth, accessToken, expectedEmail, readProfile, signal) {
+export async function verifyGoogleToken(oauth, accessToken, expectedEmail, readProfile, signal, requiredScopes = GOOGLE_SCOPES) {
   const info = await waitForGoogleAuth(() => oauth.getTokenInfo(accessToken), signal);
-  if (!hasGoogleScopes(info.scopes)) throw new GoogleError('reauthorization_required');
+  if (!hasGoogleScopes(info.scopes, requiredScopes)) throw new GoogleError('reauthorization_required');
   if (signal?.aborted) throw new GoogleError('aborted');
   const profile = await readProfile(accessToken);
   if (typeof profile?.emailAddress !== 'string' || profile.emailAddress.toLowerCase() !== expectedEmail.toLowerCase()) {

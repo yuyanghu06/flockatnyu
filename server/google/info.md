@@ -1,8 +1,8 @@
-# Google read connector
+# Google connectors
 
-This server-only folder connects one explicitly authorized club Google account to the Railway assistant. It uses Google OAuth refresh tokens and fixed Gmail/Drive REST origins. It does not depend on a desktop MCP session.
+This server-only folder connects one explicitly authorized club Google account to the Railway assistant. It uses Google OAuth refresh tokens and fixed Gmail/Drive/Calendar REST origins. It does not depend on a desktop MCP session.
 
-- `config.js`: secret configuration and the two read-only OAuth scopes.
+- `config.js`: secret configuration, default read-only scopes and optional Calendar scopes.
 - `oauth.js`: official Google auth library setup, scope/account verification and safe error codes.
 - `client.js`: bounded Gmail search/read and Drive search/text-export operations. No attachments, mail sending, file updates or arbitrary URLs.
 - `../../tools/google/index.js`: model tool definitions and an explicit server-owned `principal.googleAccess === true` gate. Bot/account credentials alone never grant a member access.
@@ -23,3 +23,9 @@ Cloud topic/IAM/authenticated push subscription creation and the public endpoint
 Signed Google notifications were observed reaching `notification_history_type` rejection after successful authentication/envelope/encoding validation. The diagnostic established a non-string value, without inspecting its value; numeric origin remained an inference pending live acceptance. Notification hints now accept positive safe-integer JSON numbers by exact conversion to decimal strings. Unsafe integers, fractional/zero/negative/nonfinite numbers and other types remain rejected. Existing decimal-string hints retain BigInt comparisons, and provider API cursors remain string-only. Notification hints never replace the persisted cursor.
 
 Gmail collection is independent of AGENT_AUTOMATION_ENABLED and other model-worker configuration. Disabling the model worker preserves ingestion; disabling GMAIL_EVENTS_ENABLED stops the collector.
+
+## Update agent Calendar connection
+
+`calendar-config.js` requires an explicit GOOGLE_CALENDAR_ID. `calendar-client.js` verifies account, Calendar scopes and the exact target’s writer/owner role before mutation; `../../tools/calendar/` exposes bounded event reads and Miro-sourced managed upsert/cancellation. Stable source-based IDs reconcile retries; ownership/hash markers and ETags protect human changes. Model arguments cannot choose another calendar. There are no attendees, invitations, recurrence or arbitrary deletes.
+
+The existing read connector and Gmail collector keep their read-only scope requirements. `google-connect.mjs --calendar` adds Calendar event and calendar-list access only when explicitly selected. Credentials remain in ignored local files/service secrets. Calendar connection does not enable the update agent or add Calendar writes to the chat agent.

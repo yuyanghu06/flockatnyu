@@ -3,6 +3,11 @@ export const GOOGLE_SCOPES = Object.freeze([
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/drive.readonly',
 ]);
+// Explicit opt-in only. The existing read connector keeps GOOGLE_SCOPES.
+export const GOOGLE_CALENDAR_SCOPES = Object.freeze([
+  'https://www.googleapis.com/auth/calendar.events',
+  'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
+]);
 export const GOOGLE_CALLBACK = 'http://127.0.0.1:8765/oauth2callback';
 
 export function readGoogleConfig(env = process.env) {
