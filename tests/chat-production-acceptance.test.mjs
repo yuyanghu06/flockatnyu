@@ -54,7 +54,7 @@ function fixture({rounds=[[find],[set],[]],reportStatus='ready',data=initial(),b
   }};
   const bugReportTools=createBugReportTools({store:{configured:true,record:async args=>{reports.push(args);if(reportStatus==='throw')throw Error('PRIVATE_FAILURE');return reportStatus==='ready'?{status:'ready',reportId:args.reportId,createdAt:now,outcome:'created'}:{status:reportStatus};}}});
   const memoryTools={tools:[{name:'update_memory'}],execute:async call=>{memory.push(call);return {status:'ready',outcome:'updated',memory:{updated_at:now}};}};
-  const provider=customProvider||{planTools:async()=>rounds[plans++]||[],async *stream({system}){answerSystem=system;yield 'Fixture complete.';}};
+  const provider=customProvider||{planTools:async context=>typeof rounds==='function'?rounds(context,plans++):rounds[plans++]||[],async *stream({system}){answerSystem=system;yield 'Fixture complete.';}};
   const mapPresenceService=createMapPresenceService({store,authorizeSource,production:true,now:()=>new Date(now)});
   const app=createApp({config,auth:()=>principal,provider,mapTools,mapPresenceService,bugReportTools,memoryTools,now:()=>new Date(now)});
   return {app,writes,reports,memory,requests,mapTools,authorizeSource,get state(){return state;},get answerSystem(){return answerSystem;},revoke(){allowed=false;},async chat(content=declaration,attachments){
@@ -161,11 +161,13 @@ for(const [title,phrase,query] of [
   ['AWS Hack Day2','AWS Hackday','AWS Hackday'],
   ['AWS Hack Day Beginner','AWS Hackday','AWS Hackday Beginner'],
   ['AWS','AWSHackday','AWS'],
-])test(`event formatting cannot authorize prefixes or invented narrowing: ${title} / ${phrase} / ${query}`,async()=>{
+])test(`nonexact prefixes return suggestions or ambiguity; invented query narrowing remains denied: ${title} / ${phrase} / ${query}`,async()=>{
   const data=initial();data.events[0].name=title;
-  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:query}}],[set],[]]});
+  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:query}}],[]]});
   const events=await f.chat(`Yuyang will be at ${phrase} on Tuesday`);
   assert.equal(f.writes.length,0);assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
+  if(['PAWS Hack Day','AWSHackday'].includes(title))assert.match(f.answerSystem,/"selection":"ambiguous"/);
+  if(title==='AWS Hack Day2')assert.match(f.answerSystem,/"selection":"candidates"/);
 });
 
 test('formatting-equivalent titles stay ambiguous and cannot persist through the full API',async()=>{
@@ -183,4 +185,119 @@ test('formatting matching still respects the declared Tuesday rather than anothe
   data.event_people=[];
   const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:'AWSHackday'}}],[set],[]]});
   await f.chat('Yuyang will be at AWS Hackday on Tuesday');assert.equal(f.writes.length,0);assert.match(f.answerSystem,/"selection":"not_found"/);
+});
+
+const candidateLookup=query=>({name:find.name,arguments:{personName:'Yuyang',eventQuery:query}});
+const previousResults=system=>JSON.parse(system.split('UNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n').at(-1));
+function extraEvent(data,index,patch={}) {
+  const row={...data.events[0],id:`20000000-0000-4000-8000-${String(index).padStart(12,'0')}`,...patch};
+  data.events.push(row);data.event_buildings.push({event_id:row.id,building_id:'bobst-library',location_notes:'Room 102'});return row;
+}
+
+test('full API misspelling returns a complete candidate, then a scripted model selects the actual returned event',async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';
+  const f=fixture({data,rounds:({system},round)=>{
+    if(round===0)return [candidateLookup('AWS Hckday')];
+    const targets=previousResults(system).find(row=>row.tool===find.name).attendanceTargets;
+    assert.equal(targets.selection,'candidates');assert.equal(targets.complete,true);assert.equal(targets.totalEvents,1);assert.equal(targets.truncated,false);
+    if(round===1)return [{name:set.name,arguments:{eventId:targets.events[0].id,personId:targets.people[0].id,expectedUpdatedAt:targets.events[0].updated_at}}];
+    return [];
+  }});
+  await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.state.events[0].name,'AWS Hack Day');
+  assert.equal(f.state.event_people.find(row=>row.person_id===ids.person).attendance_status,'going');
+});
+
+test('full API semantic alias exposes actual notes/location and permits a contextual nonfirst candidate choice',async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';data.events[0].notes='Cloud build sprint: the club AWS hands-on hackathon.';
+  const decoy=extraEvent(data,2,{name:'Cloud Build Planning',notes:'An unrelated administrative planning meeting.'});
+  const f=fixture({data,rounds:({system},round)=>{
+    if(round===0)return [candidateLookup('cloud build sprint')];
+    const targets=previousResults(system).find(row=>row.tool===find.name).attendanceTargets;
+    assert.equal(targets.selection,'candidates');assert.equal(targets.complete,true);assert.equal(targets.events[0].id,decoy.id,'Similarity ranks the decoy first, so model context must be available');
+    const chosen=targets.events.find(row=>row.notes==='Cloud build sprint: the club AWS hands-on hackathon.');
+    assert(chosen);assert.equal(chosen.location_notes,'Room 101');
+    if(round===1)return [{name:set.name,arguments:{eventId:chosen.id,personId:targets.people[0].id,expectedUpdatedAt:chosen.updated_at}}];
+    return [];
+  }});
+  await f.chat('Yuyang will be at cloud build sprint on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.writes[0].p_event.id,ids.event);
+});
+
+test('candidate lookup alone never writes or acknowledges attendance when the scripted model asks for clarification',async()=>{
+  const data=initial();data.events[0].name='Robotics social';
+  const f=fixture({data,rounds:[[candidateLookup('AWS Hckday')],[]]});
+  const events=await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);
+  assert.match(f.answerSystem,/"selection":"candidates"/);assert(!f.answerSystem.includes('"attendanceWrite":'));
+  assert(!events.some(row=>row.name===set.name));
+});
+
+for(const change of ['title','revision','source','sourceRecord','person'])test(`candidate selection cannot bypass changed ${change} between lookup and write`,async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';let f;
+  f=fixture({data,rounds:(_context,round)=>{
+    if(round===0)return [candidateLookup('AWS Hckday')];
+    if(round===1){
+      if(change==='title')f.state.events[0].name='Renamed unrelated event';
+      if(change==='revision')f.state.events[0].updated_at='2026-10-18T22:00:00.005Z';
+      if(change==='source')f.state.events[0].source_id='10000000-0000-4000-8000-000000000002';
+      if(change==='sourceRecord')f.state.events[0].source_record_id='different-provider-record';
+      return [{...set,arguments:{...set.arguments,...(change==='person'?{personId:ids.other}:{})}}];
+    }return [];
+  }});
+  const events=await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
+});
+
+test('a real event excluded from returned date-filtered candidates has no write receipt',async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';
+  const hidden=extraEvent(data,2,{name:'AWS Thursday',starts_at:'2026-10-22T22:00:00Z',ends_at:'2026-10-23T00:00:00Z'});
+  const f=fixture({data,rounds:[[candidateLookup('AWS Hckday')],[{...set,arguments:{...set.arguments,eventId:hidden.id}}],[]]});
+  await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);assert(!f.answerSystem.includes('"attendanceWrite":'));
+});
+
+test('more than20candidate events are explicitly incomplete and cannot grant any candidate write',async()=>{
+  const data=initial();data.events[0].name='Candidate Event 1';
+  for(let index=2;index<=21;index++)extraEvent(data,index,{name:`Candidate Event ${index}`});
+  const f=fixture({data,rounds:[[candidateLookup('AWS Hckday')],[set],[]]});
+  await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);
+  const context=JSON.parse(f.answerSystem.split('UNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n').at(-1));
+  const targets=context.results.find(row=>row.tool===find.name).attendanceTargets;
+  assert.equal(targets.events.length,20);assert.equal(targets.totalEvents,21);assert.equal(targets.complete,false);assert.equal(targets.truncated,true);
+});
+
+for(const contextField of ['notes','location'])for(const chooseSecond of [false,true])test(`generic workshop cannot authorize either candidate using full ${contextField} beyond display bounds: choose${chooseSecond?2:1}`,async()=>{
+  const data=initial();data.events[0].name='Cloud Lab';data.events[0].notes='Club event';
+  const second=extraEvent(data,2,{name:'AI Lab',notes:'Another club event'});
+  if(contextField==='notes')for(const event of data.events)event.notes='x'.repeat(510)+'\nA workshop on Tuesday';
+  else for(const link of data.event_buildings)link.location_notes='x'.repeat(210)+'\nWorkshop area';
+  const selectedId=chooseSecond?second.id:ids.event;
+  const f=fixture({data,rounds:[[candidateLookup('the workshop')],[{...set,arguments:{...set.arguments,eventId:selectedId}}],[]]});
+  const events=await f.chat('Yuyang will attend the workshop on Tuesday');assert.equal(f.writes.length,0);
+  const context=JSON.parse(f.answerSystem.split('UNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n').at(-1));
+  const targets=context.results.find(row=>row.tool===find.name).attendanceTargets;
+  assert.equal(targets.selection,'ambiguous');assert.equal(targets.complete,true);assert.equal(targets.events.length,2);
+  assert(targets.events.every(event=>!(contextField==='notes'?event.notes:event.location_notes).toLowerCase().includes('workshop')),'Ambiguity must use full stored context before display truncation');
+  assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
+});
+
+for(const excludedBy of ['date','source'])test(`generic context ambiguity only counts currently authorized date-eligible events: ${excludedBy}`,async()=>{
+  const data=initial();data.events[0].name='Cloud Lab';data.events[0].notes='A workshop about cloud tools';
+  extraEvent(data,2,{name:'AI Lab',notes:'A workshop about AI',...(excludedBy==='date'?{starts_at:'2026-10-22T22:00:00Z',ends_at:'2026-10-23T00:00:00Z'}:{source_id:'10000000-0000-4000-8000-000000000002'})});
+  const f=fixture({data,rounds:[[candidateLookup('the workshop')],[set],[]]});
+  await f.chat('Yuyang will attend the workshop on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.writes[0].p_event.id,ids.event);
+});
+
+for(const reference of ['PAWS','paws'])for(const chooseSecond of [false,true])test(`unsupported short reference ${reference} cannot authorize either similarity suggestion: choose${chooseSecond?2:1}`,async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';
+  const second=extraEvent(data,2,{name:'Product Demo',notes:'A club project showcase'});
+  const f=fixture({data,rounds:[[candidateLookup(reference)],[{...set,arguments:{...set.arguments,eventId:chooseSecond?second.id:ids.event}}],[]]});
+  const events=await f.chat(`Yuyang will attend ${reference} on Tuesday`);assert.equal(f.writes.length,0);
+  const context=JSON.parse(f.answerSystem.split('UNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n').at(-1));
+  const targets=context.results.find(row=>row.tool===find.name).attendanceTargets;
+  assert.equal(targets.selection,'ambiguous');assert.equal(targets.complete,true);assert.equal(targets.events.length,2);
+  assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
+});
+
+test('a short reference with a real authorized full-context anchor remains selectable',async()=>{
+  const data=initial();data.events[0].name='Cloud Lab';data.events[0].notes='PAWS is the name of this cloud learning session';
+  extraEvent(data,2,{name:'Product Demo',notes:'A club project showcase'});
+  const f=fixture({data,rounds:[[candidateLookup('PAWS')],[set],[]]});
+  await f.chat('Yuyang will attend PAWS on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.writes[0].p_event.id,ids.event);
 });

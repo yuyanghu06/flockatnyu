@@ -126,16 +126,137 @@ test('compound event matching normalizes casing, spacing, punctuation and NFKC i
   }
 });
 
-test('format matching never takes partial tokens, skips candidate words, accepts punctuation-only queries or invents user event words',async()=>{
+test('partial or noncontiguous title words are suggestions rather than direct matches, without an automatic write',async()=>{
   for(const [query,stored] of [['AWS','PAWS Hack Day'],['Hack','AWS Hackathon'],['AWS Hackday','AWS Hack Daylong'],
     ['AWS Hackday','AWS Club Hack Day'],['AWS Hackday','SuperAWS Hack Day']]) {
     const f=fixture({message:`Yuyang will attend ${query} on Tuesday`,data:snapshot({events:[event({name:stored})]})});
-    assert.equal((await f.find({eventQuery:query})).attendanceTargets.selection,'not_found',`${query} / ${stored}`);
-    assert.equal((await f.set()).status,'forbidden');assert.equal(f.writes.length,0);
+    const result=await f.find({eventQuery:query});assert.equal(result.attendanceTargets.selection,['AWS','Hack'].includes(query)?'ambiguous':'candidates',`${query} / ${stored}`);
+    assert.equal(result.attendanceTargets.events[0].name,stored);assert.equal(f.writes.length,0,'a ranked suggestion alone never writes');
+    assert.equal((await f.set({eventId:otherEid})).status,'forbidden','unreturned candidates never have receipts');
   }
   const f=fixture({message:'Yuyang will attend AWS Hackday on Tuesday',data:snapshot({events:[event({name:'AWS Hack Day'})]})});
   for(const eventQuery of ['---','!!!','AWS workshop','AWS Hackday kickoff','Hack'])assert.equal((await f.find({eventQuery})).reason,'use_current_declaration',eventQuery);
   assert.equal((await f.set()).status,'forbidden');assert.equal(f.writes.length,0);
+});
+
+test('typos return ranked real candidates and an explicitly selected returned event can save attendance',async()=>{
+  const f=fixture({message:'Yuyang will attend AWS hackdy on Tuesday',data:snapshot({events:[event({name:'Cooking social'}),event({id:otherEid,name:'AWS Hack Day',source_record_id:'aws-occurrence'})],
+    event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:'Social room'},{event_id:otherEid,building_id:'kimmel-center',location_notes:'AWS room'}]})});
+  const result=await f.find({eventQuery:'AWS hackdy'}),targets=result.attendanceTargets;
+  assert.equal(targets.selection,'candidates');assert.equal(targets.complete,true);assert.equal(targets.truncated,false);assert.equal(targets.totalEvents,2);
+  assert.equal(targets.events[0].id,otherEid);assert.equal(targets.events[0].name,'AWS Hack Day');assert.equal(targets.events[0].location_notes,'AWS room');
+  assert.equal(f.writes.length,0);assert(!JSON.stringify(targets).includes(providerUrl));assert(!JSON.stringify(targets).includes(providerId));
+  assert.equal((await f.set({eventId:otherEid})).attendanceWrite.outcome,'applied');
+  assert.equal(f.data.event_people.find(row=>row.event_id===otherEid&&row.person_id===pid).attendance_status,'going');
+});
+
+test('semantic aliases retain the whole eligible date-filtered list regardless of fuzzy score or storage order',async()=>{
+  const events=[event({name:'AWS Hack Day',notes:'Cloud learning '.repeat(100)}),event({id:otherEid,name:'Cooking social',source_record_id:'social-occurrence'}),
+    event({id:'33333333-3333-4333-8333-333333333335',name:'Different day',starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'})];
+  const options={message:'Yuyang will attend the cloud gathering on Tuesday',data:snapshot({events,event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:'Room '.repeat(100)}]})};
+  const f=fixture(options),result=await f.find({eventQuery:'cloud gathering'});
+  assert.equal(result.attendanceTargets.selection,'candidates');assert.equal(result.attendanceTargets.totalEvents,2);
+  assert.deepEqual(new Set(result.attendanceTargets.events.map(row=>row.id)),new Set([eid,otherEid]));
+  const aws=result.attendanceTargets.events.find(row=>row.id===eid);assert.equal(aws.notes.length,500);assert.equal(aws.location_notes.length,200);
+  const reverse=fixture({...options,data:{...options.data,events:[...events].reverse()}});
+  assert.deepEqual((await reverse.find({eventQuery:'cloud gathering'})).attendanceTargets.events.map(row=>row.id),result.attendanceTargets.events.map(row=>row.id));
+  assert.equal(f.writes.length,0);assert.equal((await f.set()).status,'ready','selected listed semantic candidate does not reapply the unsuccessful literal matcher');
+});
+
+test('more than twenty fallback candidates are explicitly incomplete and issue no receipts; twenty is complete',async()=>{
+  const events=Array.from({length:21},(_,index)=>event({id:`44444444-4444-4444-8444-${String(index).padStart(12,'0')}`,name:`Session ${index}`,source_record_id:`candidate-${index}`}));
+  const options={message:'Yuyang will attend cloud gathering on Tuesday',data:snapshot({events,event_buildings:events.map(row=>({event_id:row.id,building_id:'bobst-library',location_notes:''})),event_people:[]})};
+  const f=fixture(options),targets=(await f.find({eventQuery:'cloud gathering'})).attendanceTargets;
+  assert.equal(targets.selection,'candidates');assert.equal(targets.events.length,20);assert.equal(targets.totalEvents,21);assert.equal(targets.complete,false);assert.equal(targets.truncated,true);
+  assert.equal((await f.set({eventId:targets.events[0].id})).reason,'attendance_targets_not_resolved');assert.equal(f.writes.length,0);
+  const complete=fixture({...options,data:{...options.data,events:events.slice(0,20),event_buildings:options.data.event_buildings.slice(0,20)}});
+  const list=(await complete.find({eventQuery:'cloud gathering'})).attendanceTargets;assert.equal(list.complete,true);assert.equal(list.totalEvents,20);assert.equal(list.truncated,false);
+  assert.equal((await complete.set({eventId:list.events[0].id})).status,'ready');
+  const direct=fixture({...options,message:'Yuyang will attend Session 20 on Tuesday'});
+  const exact=(await direct.find({eventQuery:'Session 20'})).attendanceTargets;assert.equal(exact.selection,'unique');assert.equal(exact.totalEvents,1);assert.equal(exact.complete,true);
+});
+
+test('candidate receipts bind exact returned title, revision, source identity, date and current access',async()=>{
+  const options={message:'Yuyang will attend cloud gathering on Tuesday',data:snapshot({events:[event({name:'AWS Hack Day'})]})};
+  for(const [patch,status,reason] of [
+    [{name:'AWS-Hackday'},'forbidden','event_no_longer_matches'],
+    [{updated_at:'2026-10-18T16:01:00.000Z'},'conflict','reread_attendance_targets'],
+    [{source_record_id:'another-provider-occurrence'},'forbidden','event_source_changed'],
+    [{source_id:otherSid},'forbidden','event_source_changed'],
+    [{starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'},'forbidden','event_no_longer_matches'],
+  ]) {
+    const f=fixture(options);assert.equal((await f.find({eventQuery:'cloud gathering'})).attendanceTargets.selection,'candidates');
+    f.mutate(data=>({...data,events:[{...data.events[0],...patch}]}));const result=await f.set();assert.equal(result.status,status);assert.equal(result.reason,reason);assert.equal(f.writes.length,0);
+  }
+  const f=fixture(options);await f.find({eventQuery:'cloud gathering'});f.revoke();assert.equal((await f.set()).status,'forbidden');assert.equal(f.writes.length,0);
+});
+
+test('a later ambiguous direct lookup withdraws prior candidate receipts for the same roster target',async()=>{
+  const f=fixture({message:'Yuyang will attend AWS gathering on Tuesday',data:snapshot({events:[event({name:'Cloud day'}),event({id:otherEid,name:'Cloud social',source_record_id:'cloud-social'})]})});
+  assert.equal((await f.find({eventQuery:'AWS gathering'})).attendanceTargets.selection,'candidates');
+  f.mutate(data=>({...data,events:data.events.map(row=>({...row,name:'AWS gathering'}))}));
+  assert.equal((await f.find({eventQuery:'AWS gathering'})).attendanceTargets.selection,'ambiguous');
+  assert.equal((await f.set()).reason,'attendance_targets_not_resolved');assert.equal(f.writes.length,0);
+});
+
+test('multiple explicit description matches withhold all receipts for the workshop despite ranked candidate order',async()=>{
+  for(const phrase of ['workshop','the workshop','a workshop','an workshop']) {
+    const f=fixture({message:`Yuyang will attend ${phrase} on Tuesday`,data:snapshot({events:[event({name:'Cloud Lab',notes:'Cloud workshop'}),event({id:otherEid,name:'AI Lab',notes:'AI workshop',source_record_id:'ai-lab'})]})});
+    const targets=(await f.find({eventQuery:phrase})).attendanceTargets;
+    assert.equal(targets.selection,'ambiguous',phrase);assert.equal(targets.complete,true);assert.equal(targets.totalEvents,2);assert.equal(targets.events.length,2);
+    assert.deepEqual(new Set(targets.events.map(row=>row.name)),new Set(['Cloud Lab','AI Lab']));
+    for(const eventId of [eid,otherEid])assert.equal((await f.set({eventId})).reason,'attendance_targets_not_resolved');
+    assert.equal(f.writes.length,0,'neither rank nor complete list may resolve an explicitly ambiguous reference');
+    assert.equal((await f.find({eventQuery:'Cloud workshop'})).reason,'use_current_declaration','model cannot invent a more specific phrase');
+  }
+});
+
+test('context ambiguity includes authorized full descriptions and location notes beyond display truncation',async()=>{
+  const f=fixture({message:'Yuyang will attend the workshop on Tuesday',data:snapshot({
+    events:[event({name:'Cloud Lab',notes:'x '.repeat(300)+'Cloud workshop'}),event({id:otherEid,name:'AI Lab',notes:'AI instruction',source_record_id:'ai-lab'})],
+    event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:'Cloud room'},
+      {event_id:otherEid,building_id:'kimmel-center',location_notes:'x '.repeat(200)+'AI workshop'}]})});
+  const targets=(await f.find({eventQuery:'the workshop'})).attendanceTargets;assert.equal(targets.selection,'ambiguous');
+  assert.equal(targets.events.find(row=>row.id===eid).notes.length,500);assert.equal(targets.events.find(row=>row.id===otherEid).location_notes.length,200);
+  assert.equal((await f.set()).reason,'attendance_targets_not_resolved');assert.equal(f.writes.length,0);
+});
+
+test('zero or one contextual match retains complete candidates; another date or unauthorized context cannot introduce ambiguity',async()=>{
+  for(const otherPatch of [{notes:'AI instruction'},{notes:'AI workshop',starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'},
+    {notes:'AI workshop',source_id:otherSid}]) {
+    const f=fixture({message:'Yuyang will attend the workshop on Tuesday',data:snapshot({events:[event({name:'Cloud Lab',notes:'Cloud workshop'}),event({id:otherEid,name:'AI Lab',source_record_id:'ai-lab',...otherPatch})]})});
+    const targets=(await f.find({eventQuery:'the workshop'})).attendanceTargets;assert.equal(targets.selection,'candidates');assert.equal(targets.complete,true);
+    assert.equal((await f.set()).status,'ready');assert.equal(f.writes.length,1);
+  }
+  const typo=fixture({message:'Yuyang will attend AWS hackdy on Tuesday',data:snapshot({events:[event({name:'Cloud Lab',notes:'Cloud workshop'}),event({id:otherEid,name:'AI Lab',notes:'AI workshop',source_record_id:'ai-lab'})]})});
+  assert.equal((await typo.find({eventQuery:'AWS hackdy'})).attendanceTargets.selection,'candidates');assert.equal((await typo.set()).status,'ready');
+});
+
+test('unsupported short names retain suggestions but cannot guess PAWS means AWS for either returned event',async()=>{
+  for(const query of ['PAWS','paws']) {
+    const f=fixture({message:`Yuyang will attend ${query} on Tuesday`,data:snapshot({events:[event({name:'AWS Hack Day'}),event({id:otherEid,name:'AI Lab',source_record_id:'ai-lab'})]})});
+    const targets=(await f.find({eventQuery:query})).attendanceTargets;
+    assert.equal(targets.selection,'ambiguous');assert.equal(targets.complete,true);assert.equal(targets.totalEvents,2);assert.equal(targets.events.length,2);
+    for(const eventId of [eid,otherEid])assert.equal((await f.set({eventId})).reason,'attendance_targets_not_resolved');
+    assert.equal(f.writes.length,0);
+  }
+});
+
+test('short-name context must be authorized and on the declared date; a supported short alias can retain candidates',async()=>{
+  for(const patch of [{source_id:otherSid},{starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'}]) {
+    const f=fixture({message:'Yuyang will attend PAWS on Tuesday',data:snapshot({events:[event({name:'AWS Hack Day'}),
+      event({id:otherEid,name:'Club seminar',notes:'PAWS is the seminar alias',source_record_id:'seminar',...patch})]})});
+    const targets=(await f.find({eventQuery:'PAWS'})).attendanceTargets;assert.equal(targets.selection,'ambiguous');assert.equal(targets.events.length,1);
+    assert.equal((await f.set()).reason,'attendance_targets_not_resolved');assert.equal(f.writes.length,0);
+  }
+  const supported=fixture({message:'Yuyang will attend tech on Tuesday',data:snapshot({events:[event({name:'Cloud Lab',notes:'Tech training workshop'})]})});
+  assert.equal((await supported.find({eventQuery:'tech'})).attendanceTargets.selection,'candidates');assert.equal((await supported.set()).status,'ready');
+  const direct=fixture({message:'Yuyang will attend AWS on Tuesday',data:snapshot({events:[event({name:'AWS Hack Day'})]})});
+  assert.equal((await direct.find({eventQuery:'AWS'})).attendanceTargets.selection,'unique');assert.equal((await direct.set()).status,'ready');
+  for(const query of ['AWS hackdy','AmazonWebServiceshackathon']) {
+    const f=fixture({message:`Yuyang will attend ${query} on Tuesday`,data:snapshot({events:[event({name:'AWS Hack Day'})]})});
+    assert.equal((await f.find({eventQuery:query})).attendanceTargets.selection,'candidates');assert.equal((await f.set()).status,'ready');
+  }
 });
 
 test('format-equivalent titles remain ambiguous and explicit dates still select only their matching event',async()=>{
