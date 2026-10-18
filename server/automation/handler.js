@@ -3,7 +3,7 @@ import {buildAutomationPrompt} from './prompt.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Complete only explicitly handled cache inputs after their required actions succeed; call alone.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = code => { throw new Error(code); };
-export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,prepareBatch,cleanupBatch,validateCompletion,principal,config,now=()=>new Date()} = {}) {
+export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,prepareBatch,cleanupBatch,validateCompletion,principal,config,now=()=>new Date(),onProgress=()=>{}} = {}) {
   let running = false;
   let definitions;
   try {
@@ -24,6 +24,18 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
     if(store.requiresScopedClaims===true&&(!Array.isArray(principal?.allowedSourceIds)||!principal.allowedSourceIds.length||principal.allowedSourceIds.length>500
       ||!principal.allowedSourceIds.every(validUuid)||new Set(principal.allowedSourceIds).size!==principal.allowedSourceIds.length))return {status:'not_configured'};
     running=true;
+    const progressStarted=performance.now();
+    let progressCount=0,progressRound=0,progressCalls=0,activeProgress;
+    const registeredNames=new Set([...tools.map(tool=>tool.name),'finish_batch']);
+    const emitProgress=(phase,status,tool)=>{
+      if(typeof onProgress!=='function'||progressCount>=128)return;
+      progressCount++;
+      const event={phase,status,round:Math.min(16,progressRound),calls:Math.min(32,progressCalls),elapsedMs:Math.min(900000,Math.max(0,Math.round(performance.now()-progressStarted)))};
+      if(registeredNames.has(tool))event.tool=tool;
+      try{Promise.resolve(onProgress(Object.freeze(event))).catch(()=>{});}catch{/* Diagnostics never change execution. */}
+    };
+    const progressStart=(phase,tool)=>{activeProgress={phase,tool};emitProgress(`${phase}_start`,'started',tool);};
+    const progressDone=status=>{if(!activeProgress)return;const {phase,tool}=activeProgress;activeProgress=undefined;emitProgress(`${phase}_done`,status,tool);};
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),config.maxRunMs);timeout.unref?.();
     const combined=AbortSignal.any([signal,controller.signal].filter(Boolean));
@@ -67,10 +79,12 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       let batchContext;
       if (prepareBatch !== undefined) {
         if (typeof prepareBatch !== 'function') failure('not_configured');
+        progressStart('prepare');
         batchContext=await guarded(()=>prepareBatch({inputs:structuredClone(inputs),principal,signal:combined}));
         if (!plainObject(batchContext)||batchContext.status!=='ready') failure('preflight_failed');
         if (Buffer.byteLength(canonicalJson(batchContext))>65536) failure('context_limit');
         await renew();await authorize();
+        progressDone('ready');
       }
       const system=buildAutomationPrompt({timezone:config.timezone,now:now()});
       const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{})})}];
@@ -79,9 +93,10 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       let calls=0;
       for(let round=0;round<config.maxRounds;round++) {
         await renew();await authorize();
+        progressRound=round+1;progressCalls=calls;progressStart('model');
         const turn=await guarded(()=>provider.toolTurn({system,messages:structuredClone(messages),tools:[...definitions,finishTool],signal:combined}));
         if (!plainObject(turn)||!Array.isArray(turn.toolCalls)||!turn.toolCalls.length||turn.toolCalls.length>8||!['tool_calls','tool_use'].includes(turn.stopReason)) failure('incomplete_batch');
-        calls+=turn.toolCalls.length;if(calls>config.maxCalls) failure('call_limit');
+        calls+=turn.toolCalls.length;progressCalls=calls;if(calls>config.maxCalls) failure('call_limit');
         for(const call of turn.toolCalls) {
           if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||!plainObject(call.arguments)) failure('invalid_tool_call');
           callIds.add(call.id);
@@ -91,11 +106,13 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           if(!definition||!validateArguments(call.arguments,definition.parameters)&&!emptyFinish) failure('invalid_tool_call');
           if(call.name!=='finish_batch'&&(new Set(call.arguments.inputIds).size!==call.arguments.inputIds.length||!call.arguments.inputIds.every(id=>validUuid(id)&&inputIds.includes(id)))) failure('invalid_tool_call');
         }
+        progressDone('ready');
         const finish=turn.toolCalls.find(c=>c.name==='finish_batch');
         if(finish) {
           if(turn.toolCalls.length!==1) failure('invalid_completion');
           const handledInputIds=finish.arguments.handledInputIds;
           if(new Set(handledInputIds).size!==handledInputIds.length||!handledInputIds.every(id=>validUuid(id)&&inputIds.includes(id))) failure('invalid_completion');
+          progressStart('tool','finish_batch');
           await renew();await authorize();
           let completion;
           if(validateCompletion!==undefined) {
@@ -112,15 +129,18 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)},
                 {role:'tool',toolCallId:finish.id,content:JSON.stringify(feedback)});
               if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+              progressDone('pending');
               continue;
           }
           const result=await guarded(()=>store.finish({leaseToken,handledInputIds,signal:combined}));
           if(result.status!=='ready') failure('stale');
           leaseToken=null;
+          progressDone('completed');
           return {status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls};
         }
         messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)});
         for(const call of turn.toolCalls) {
+          progressStart('tool',call.name);
           await renew();await authorize();
           const tool=tools.find(t=>t.name===call.name);
           const scopedIds=[...call.arguments.inputIds].sort();
@@ -144,11 +164,13 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             }
           }
           messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(result)});
+          progressDone(result.status==='already_succeeded'?'already_succeeded':result.status==='invalid_request'?'invalid_request':'ready');
         }
         if(Buffer.byteLength(JSON.stringify(messages))>262144) failure('context_limit');
       }
       return {status:'round_limit'};
     } catch(e) {
+      progressDone(e?.message==='aborted'?'aborted':e?.message==='forbidden'?'forbidden':'failed');
       const allowed=new Set(['aborted','forbidden','stale','invalid_batch','incomplete_batch','call_limit','invalid_tool_call','invalid_completion','tool_failed','context_limit','preflight_failed','not_configured']);
       return {status:allowed.has(e?.message)?e.message:'unavailable'};
     } finally {

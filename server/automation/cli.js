@@ -9,7 +9,7 @@ import {createAutomationHandler} from './handler.js';
 import {createEventUpdater} from './events.js';
 
 // This explicit module is trusted server code, never an event-supplied URL.
-export async function createAutomationRuntime({env=process.env,fetchImpl=globalThis.fetch,loadModule=url=>import(url),now}={}) {
+export async function createAutomationRuntime({env=process.env,fetchImpl=globalThis.fetch,loadModule=url=>import(url),now,onProgress}={}) {
   const config=readAutomationConfig(env);
   if(!config.enabled) return {status:'disabled',config};
   const modulePath=config.adapterModule;
@@ -25,7 +25,7 @@ export async function createAutomationRuntime({env=process.env,fetchImpl=globalT
     adapters=await module.createAutomationAdapters({env,config,store,provider,fetchImpl,now});
   } catch { return {status:'not_configured',config}; }
   if(!adapters?.principal||!Array.isArray(adapters.tools)||!adapters.tools.length||typeof adapters.authorizeEvent!=='function') return {status:'not_configured',config};
-  const handler=createAutomationHandler({store,provider,config,now,...adapters});
+  const handler=createAutomationHandler({store,provider,config,now,...adapters,onProgress});
   const updater=createEventUpdater({store,config,now,...adapters,onEnqueued:()=>handler.tick()});
   return {status:'ready',config,store,handler,updater};
 }
@@ -33,7 +33,7 @@ export async function main({args=process.argv.slice(2),env=process.env,signal,wr
   const mode=args[0]||'once';
   if(!['once','serve'].includes(mode)||args.length>1) {write({status:'invalid_command'});return 1;}
   let runtime;
-  try {runtime=await createAutomationRuntime({env,...dependencies});} catch {write({status:'invalid_config'});return 1;}
+  try {runtime=await createAutomationRuntime({env,...dependencies,...(env.AGENT_AUTOMATION_LOG_PROGRESS==='true'?{onProgress:event=>write({kind:'agent_progress',...event})}:{})});} catch {write({status:'invalid_config'});return 1;}
   if(runtime.status!=='ready') {write({status:runtime.status});return runtime.status==='disabled'?0:1;}
   do {
     if(signal?.aborted) break;
