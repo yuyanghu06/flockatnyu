@@ -114,3 +114,71 @@ browser reads and denied runtime catalogue/event writes. Evidence lives in
 025_map_event_attendees.sql is an additive validator revision for optional attendee_ids arrays (<=500 unique existing map_people UUIDs), preserving legacy events and owner-only event writes. See rolling snapshot for actual hosted application status; do not assume a local file is applied.
 
 025 is now applied as hosted20261018001815_map_event_attendees. Owner verification confirmed exact validator body MD5 and absent runtime event-write grant; aggregate receipt lives in evidence/map-building-activity/attendee-migration-receipt.json.
+
+## Dedicated activities and relationship cutover (026–027)
+
+026 creates `events`, `event_buildings`, and `event_people` with forced RLS,
+service-role SELECT only, and two postgres-owned SECURITY DEFINER RPCs with an
+empty search_path. Discord source UUIDs remain independent of knowledge_sources.
+`map_read_events(p_at)` returns a complete service-only snapshot, including
+expired/cancelled records for reconciliation; display filtering and fresh source
+policy checks belong to the backend. It fails above 2,000 events, 20,000 of either
+relationship, 500 people, 100 buildings, or 16 MiB rather than truncating.
+`map_upsert_event` atomically replaces an event's relationships. A null expected
+timestamp is create-only; updates require an exact `updated_at`, and source
+identity is immutable. Conflicts use PostgreSQL code 40001. Application roles
+cannot write the new tables directly or execute the internal validation helpers.
+
+026 preserves old JSON columns and backfills deterministic source identities.
+Original start timestamps proxy for the previously absent reported_at; expiry
+and labels never reset to migration time. Scheduled copies merge only when all
+shared event fields and attendees agree; each building retains its location text.
+All-day legacy timestamps must be midnight in their declared timezone, including
+DST boundaries, so date conversion cannot silently discard time information.
+Fixture source IDs and source-record IDs remain distinguishable. Presence records
+use `legacy-presence:<hash(building/person/original start)>` identities.
+
+027 requires exact two-way equality for every migrated event and relationship;
+missing, changed, extra, or orphan converted records abort its transaction. Its
+NOTICE gives verified event/building/person relationship counts. Only then does
+it explicitly retire the old location RPCs, validator, and both `people_here` and
+`scheduled_events` columns, without CASCADE. The remaining buildings catalogue
+is runtime SELECT only. Profile guards use event_people and preserve identity,
+trackability, and foreign-key protections. Prepare the application cutover before
+applying 027, and do not resume old writers between the two phases. These files
+are local until the orchestrator records an actual hosted receipt. Do not replay
+older migrations. Real PGlite acceptance is in
+`tests/events-relationships-sql.test.mjs`.
+
+## Fixed event types (028)
+
+028 adds the service-readable, forced-RLS `event_types` catalogue with exactly
+five user-selected classifications: Study (`study`), Meeting (`meeting`), Event
+(`event`), Social (`social`), and Other (`other`). Each code maps to a bundled,
+whitelisted `icon_key`; the catalogue stores no SVG, remote icon URL, or attendance
+assumption. Application roles cannot add, edit, or delete types. Classification
+is independent of `events.kind` and does not change visibility rules.
+
+`events.type_id` is a required foreign key with `ON DELETE RESTRICT` and default
+`other`. Adding the column does not update existing events, fire their update
+triggers, infer classifications, or alter their timestamps/relationships. The
+existing snapshot RPC adds bounded `event_types` metadata and includes each
+event's type. Its prior complete-snapshot limits remain unchanged.
+
+The existing service-only, postgres-owned event-write RPC accepts an optional
+string `type_id`. New writes that omit it use `other`; updates that omit it retain
+the existing type. Unknown types fail the foreign key atomically, and explicit
+null is rejected. The same optimistic version checks, source identity protections,
+relationship replacement, fixed catalogues, and denied direct activity DML remain.
+No type-management RPC or broader agent permissions are introduced. Applied
+026/027 are unchanged. This local migration is not a hosted receipt; the
+orchestrator records any reviewed hosted application separately. Actual SQL tests
+are in `tests/event-types-sql.test.mjs`.
+
+030 retires Miro board snapshot storage and sync routines, preserving existing source identity/status plus exact metadata-only enabled/team configuration in knowledge_sources.miro_scope. Earlier migrations and their historical SQL fixture harness remain intact.
+
+029_bug_reports adds only bug_reports(uuid,created_at,report JSONB) and the service-only bug_report_record append RPC. Browser roles have no access and direct service DML is denied. Identical UUID/payload retries return a receipt; changed payloads conflict. Existing migrations remain unchanged. Hosted receipt: evidence/bug-reports/hosted-receipt.json.
+
+031_agent_memory adds one forced-RLS agent_memory(id,content,updated_at) row and service-only read/optimistic-write RPCs. id is fixed to shared, text is bounded16KB, browser access/direct service DML are denied, and an empty note is seeded. No provider archive, embedding or history schema is added. Hosted receipt lives in evidence/long-term-memory/.
+
+032 adds service-only scoped agent claims without modifying historical019functions or deletingpendinginputs; source-scope filters are identical for trigger/count/candidates.

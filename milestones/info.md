@@ -111,3 +111,17 @@ map-building-activity/ tracks the capped base-focus avatar layout, event card an
 structured-map-prompt/ tracks runtime shared JSON contracts, evidence-based map interpretation and approved two-hour defaults without tool/deployment activation.
 
 map-event-attendees/ tracks optional event attendee IDs and right-side portrait UI; hosted status is recorded in the rolling snapshot. Separate-table normalization and automatic map presence remain deferred.
+
+`events-relationships/` tracks normalized event/participation/location storage and the verified map cutover, superseding prior dedicated-table deferrals.
+
+Miro MCP integration passes track the shared chat/update-agent calendar reader, separate application OAuth and live table evidence acceptance.
+
+`bug-reports/` tracks the bounded structured chat bug-report table/tool and verified hosted schema.
+
+miro-mcp-live-only/ tracks accepted live MCP access for both agents and removal of REST/snapshot storage.
+
+`long-term-memory/` tracks the automatically maintained shared chat note and small hosted schema.
+
+`agent-prompts/` tracks calm chat/source routing, leadership privacy and source-backed chat/autonomous map synchronization, including independent tests and configured-model behavioral evidence.
+
+agent-prompts/ is complete for bounded prompt/runtime policy and synthetic-source configured-model verification. Worker activation/live mutation pilots remain separate; milestone.md records precise acceptance and retained failures.

@@ -1,0 +1,69 @@
+{
+  "verified_at": "2026-10-18T17:47:01.836159+00:00",
+  "chat": {
+    "live_model_and_official_mcp": true,
+    "completed": true,
+    "tool_calls": 3,
+    "date_cells_and_month_heading_read": true,
+    "event_date_correct": true,
+    "promotional_entries_distinguished": true,
+    "source_links_returned": true,
+    "whole_board_claimed": false
+  },
+  "update_agent": {
+    "isolated_live_prepare_status": "ready",
+    "boards": 1,
+    "transport": "mcp",
+    "model_calls": 0,
+    "calendar_writes": 0,
+    "stored_worker_enabled": false
+  },
+  "calendar": {
+    "read_only_preflight": "ready",
+    "access_role": "owner",
+    "events_changed": 0
+  },
+  "railway": {
+    "miro_sync_service_deleted": true,
+    "remaining_collectors": [
+      "discord-events",
+      "gmail-events"
+    ]
+  },
+  "oauth": {
+    "app_authenticated": true,
+    "refresh_rotated_and_persisted": true,
+    "requested_scopes": [
+      "boards:read",
+      "openid",
+      "email"
+    ],
+    "server_returned_scopes": [
+      "boards:read",
+      "boards:write",
+      "openid",
+      "email"
+    ],
+    "exposed_upstream_tools": [
+      "canvas_search",
+      "canvas_read_as_svg",
+      "table_list_rows"
+    ],
+    "miro_writes_exposed": false
+  },
+  "checks": {
+    "independent_retirement_cases": 119,
+    "independent_final_review_cases": 28,
+    "root_miro_cases": 36,
+    "automation_suite": "pass",
+    "assistant_suite": "pass",
+    "api_build": "pass",
+    "frontend_build": "pass",
+    "diff_check": "pass"
+  },
+  "limitations": [
+    "Update worker remains disabled/undeployed; no real Calendar mutation pilot",
+    "Scoped canvas may report skipped foreign content even when grid text is returned; coverage remains explicit",
+    "Raw source outputs and model transcript remain private temporary verification material, not durable board storage"
+  ]
+}

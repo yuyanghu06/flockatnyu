@@ -1,0 +1,8 @@
+# Dedicated events: events-types-display-integrated
+
+- Local timestamp / acting role / milestone: 2026-10-18T13:44:00.816757-04:00 / orchestrator / events-relationships.
+- Requested scope: implement normalized event relationships and all-linked-buildings map visibility.
+- Starting repository state: concurrent UI/docs and event implementation edits preserved.
+
+Complete requested normalized-events follow-up: all eligible building activities display; exact Study/Meeting/Event/Social/Other catalogue is applied as hosted028 with source-grounded agent selection; original event fields/times/relationships preserved. Both generated icon sets were rejected and category icons/assets/rendering are removed. Attendee portraits remain; weekday/date/time is boldgray, room has its own line without redundant recognized building prefix. Mobile longcard reserves launcher space; independent lastportrait hit test passes. Inspected final evidence:17/17browser,76map-events,25prompt,141automation, evaluator ACCEPT; frontend/API builds pass with existing frontend chunk-size advisory. Normal5173/API3001live Chrome confirms Stern1/Bobst3rows,0categoryicons/requests,4portraits,2thoughtbubbles,0errors. Aggregate receipts in evidence/events-relationships, private screenshot only/tmp. Updated architecture/events/map/database/sourceguides,notes,AGENTS,journal. No changes to existing ends: yesterday24hdebugfixtures remain until original ends; all-day participation until localmidnight. No worker enablement/deployment/model pilot or debug-data deletion. Later exact writable-field narrowing and larger-volume pagination remain separate. Preserve parallel Miro/chat/bug-report work and its independent journal status.
+

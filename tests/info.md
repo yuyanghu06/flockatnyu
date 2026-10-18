@@ -306,3 +306,77 @@ map-presence.test.mjs additionally verifies the exact Bobst event-fixture proven
 map-contracts.test.mjs verifies shared schema/example parity against actual001–024 SQL and existing privileges. update-agent-prompt.test.mjs captures actual handler-to-provider system instructions and tests policies, scoped completion and unavailable actions using synthetic providers. Both run under test:update-agent-prompt and test:agent-automation; no live model calls or behavioral-compliance claims.
 
 025 SQL/API checks cover optional/legacy attendees, UUID type/duplicate/unknown/bounds rejection, profile trackability, source authorization and no derived current presence.
+
+Assistant UI cleanup updates existing fake-DOM and spotlight assertions to expect
+no context/footer badge; selected-building forwarding remains tested. Direct
+isolated Chrome checks verify composer colors, repeated opening pop-in, reduced
+motion and offline retry; full spotlight rerun is not claimed by this pass.
+
+`map-source-access.test.mjs` independently checks the map authorizer's exact Discord/Miro/Gmail references, current source service checks, account/source denial, malformed URLs, withdrawal and cancellation. Event migration/projection/tool checks are collected by npm run test:map-events; historical021–025 SQL fixtures remain unchanged.
+
+`node tests/rapid-ui-browser.mjs` (running Vite at MAP_URL, default5173) verifies
+actual assistant controls with synthetic fetches and presence with a synthetic
+box/long label: desktop/mobile ivory/pastel states, visible hover color spin,
+reduced motion, square-stop cancellation without resubmit, preserved draft,
+Flock header/no Clear, and stable note dimensions across90first-focus frames.
+Assistant fake-DOM regressions also cover integrated stop/default prevention.
+
+`node tests/assistant-dismiss-browser.mjs` uses the running Vite server (MAP_URL,
+default5173) to test actual desktop/mobile dismissal, draft/focus retention,
+interrupted exit/reduced motion, white enabled send icon, streamed height growth
+with a fixed top, and clean event typography/spacing. Source data/models are
+synthetic and no live model calls are made.
+
+Map presence overlap-caption regression tests cover blank newer attendance masking stated activity, independent participant report chronology, stable ties, denied/expired/future exclusions, verbatim text and private ranking metadata.
+
+Live tool/Markdown coverage: `chat-tool-stream.test.mjs` verifies real early NDJSON
+start records before a deferred tool resolves, exact safe event projections,
+status/transition validation and interrupted streams. `assistant-markdown.test.mjs`
+checks formatting, source links, raw HTML/image handling and incomplete prefixes.
+`node tests/chat-tool-browser.mjs` uses real local Hono HTTP streaming with synthetic
+adapters and Vite UI (MAP_URL, default5173); it verifies desktop/mobile tool blocks,
+start/result/partial/failure/cancel, message bubbles, fixed send top, visible
+Thinking/status shimmer, static Done/Partial result, reduced motion and Markdown.
+No actual model/source calls are required.
+
+`chat-calendar.test.mjs` verifies chat-only Calendar reads, trusted Google access, fixed target, write rejection, pagination/full event context through planning and answers, error/empty coverage, and protected HTTP inventory/dispatch.
+
+Event-type SQL tests apply immutable028 after026/027 and verify fixed categories, default/preserved classifications, invalid-type atomic rejection and restricted grants. events-browser.mjs applies001–028 through the actual service and checks all activity kinds, dates/rooms/portraits, no category icons or category asset requests, and mobile last-portrait reachability above the assistant launcher. Synthetic evidence stays in evidence/events-relationships/.
+
+`bug-reports.test.mjs` covers real migration029 SQL, minimal schema/RLS/grants, idempotent append/conflict behavior, trusted current-user context, sanitized fixed RPC and actual Hono chat planning/receipt delivery.
+
+`node tests/assistant-scroll-browser.mjs` uses Vite (MAP_URL/default5173) and
+synthetic streamed tool/Markdown replies. Four turns at desktop/mobile/short
+viewports sample65frames, asserting a visible bottom gap, settled bottom-follow,
+long-composer resize retention and idle manual scrolling. No live model calls.
+
+Miro MCP tests cover official read schemas, OAuth/refresh/limits, inert calendar SVG, stable row provenance, both-agent scope rechecks and030live-only SQL. Historical SQL assertions use frozen retired-miro-rest test fixtures; no application path imports them.
+
+`memory.test.mjs` verifies real031SQL singleton/RLS/grants, stale update conflicts/no-ops/clearing, trusted chat context, automatic-use prompt policy, actual SQL→tool→Hono persistence/injection across chats, unavailable-memory behavior and bounded RPC output.
+
+`node --test tests/map-presence-drag.test.mjs` verifies complete portrait/note drop
+bounds, unchanged valid drops, blank labels and narrow/zero frames.
+`node tests/map-avatar-drag-browser.mjs` (MAP_URL/default5173) exercises actual
+mouse/touch capture, snap-back, selected-person Schedule, polling/cancel/overview
+and reduced motion at desktop/mobile sizes, then checks unchanged camera on the
+real campus. Synthetic people/data only; no database writes or live model calls.
+
+miro-empty-search.test.mjs and MCP regressions cover real omitted-results zero-match shape, malformed/continuation denial, no write authority, preserved date context and bounded follow-through to actual calendar content.
+
+miro-navigation.test.mjs checks shared guide delivery and scripted section/date/subject navigation, duplicate month/year ambiguity and explicit Miro versus Calendar fallback. Scripted planning is not real-model compliance evidence.
+
+Agent prompting acceptance includes chat-agent-policy, discord-agent-policy, calendar-map-provenance, update-agent-sync-policy and google-mailbox checks. These exercise actual Hono/service/adapters with inert source/model boundaries, explicit team/leadership access, request-local original evidence, exact Calendar occurrence identity and source-bound participant receipts. Connector/date stream tests select metadata records by type because tool progress precedes metadata. Historical shared-access SQL tests use frozen retired Miro adapters, never current runtime fallback. Configured-model behavior is separately measured by scripts/verify-agent-prompts.mjs, with synthetic sources/inert write stores and explicit --live-model opt-in.
+
+chat-calendar-write.test.mjs exercises real Calendar client/HTTP orchestration with synthetic Google responses, intent isolation, revision conflicts, conditional patches, retries and truthful receipts. chat-drive.test.mjs covers authorized Drive search/read, original links and partial/error boundaries without Calendar writes.
+
+`discord-calendar-sync.test.mjs` checks clear club-event create/edit/cancel, stable source identity, negative RSVP/personal/negation cases, stale or truncated live messages, all-day windows and safe cross-source deferral. The actual handler projection test verifies canonical applied arguments are hashed for receipts.
+
+assistant-scroll-browser.mjs also checks a fixed18px lower panel gutter at top/intermediate/bottom scroll positions on desktop, mobile and short screens. Cutoff screenshots show the non-scrolling ivory strip above the inset.
+
+`discord-rate-pacing.test.mjs` uses fake clocks/transports to verify shared serialization, cancellation ordering,429/header/JSONcooldowns includinglongwaits, retry/deadlinebounds and sequential truthful aggregate coverage without live Discord calls.
+
+Final bundled-handler protocol checks cover invented Calendar pagination, empty finish feedback, subsequent real map projection and exactly one valid completion/receipt, with foreign/unknown/mixed calls still failing closed. The model harness enforces exact fake Miro/Discord selectors and Calendar windows/tokens; previous permissive diagnostic passes are distinguished from strict-fixture reruns.
+
+Optimization checks include fresh batch authorization cost, exact answer-context compaction, bounded Miro queue/token owner, web volume bootstrap, production site sessions/static isolation and sanitized runtime deployment. Independent browser evidence lives in evidence/optimization.
+
+scoped-agent-claim.test.mjs runs realSQL mixed-scope trigger/lease/ACL/finish cases and productionstore/handler wiring, preserving historical019fixtures.

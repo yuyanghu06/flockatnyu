@@ -1,5 +1,60 @@
 # Project instructions
 
+## Live deployment authorization (2026-10-18)
+
+The user authorized an optimization pass followed by live Railway website/services deployment, autonomous agent activation, logical commits of the current working tree and push. This supersedes earlier workeractivation/deployment deferrals for this rollout. The frontend and chat API share a password-gated webservice, with worker/collectors separate. SITE_ACCESS_PASSWORD belongs only in private Railway environment variables; never hardcode, persist in database or commit it. Preserve existing source/identity/Calendar/Miro-read-only boundaries; no public development-auth bypass. Actual rollout status and limitations live in milestones/milestone.md.
+
+## Chat and autonomous planner prompting override (2026-10-18)
+
+The user's planner agent means the existing autonomous update agent, distinct from chat's internal tool-selection stage. Chat tone is calm and friendly. Broad Discord summaries default to authorized eboard channels; general non-team channels are secondary fallback. Individual team channels need an explicit current-user request; shared leadership-team and descendant threads are blacklisted. Weekly schedule questions use fixedGCal first, automatically reading actual Miro content if Calendar is empty/unavailable; failures/partial pages do not establish absence. Existing excluded categories remain excluded.
+
+Chat may update source-backed normalized map events through shared read/lookup/upsert tools with request-local original evidence and exact linked identities. An unverified chat assertion is not a provider identity. The update agent monitors authorized Discord originals with eboard priority. The user additionally authorized clear Discord club-event announcements and changes to reconcile into fixedGCal, alongside concrete Miro plans. Calendar is the canonical scheduled club-event view; map mirrors actualGCal instances plus separate informal study/co-working/presence/personal plans. RSVPs enrich attendance without creating a Calendar event. Preserve human edits and defer ambiguous cross-source matches. Implementation/verification status remains in milestones/milestone.md. Calendar map provenance uses its own configured allowed source UUID and exact instance eventId; source-bound successful identity lookups are required for changed participants. Miro remains read-only. Existing30input/oldest30minute queue trigger and worker activation/deployment boundaries remain. Luma API is a saved future idea only.
+
+## Event types and building activity display (2026-10-18)
+
+The user selected exactly study, meeting, event, social and other as fixed event
+categories. Hosted028 adds event_types and events.type_id; runtime may choose an
+existing category but cannot create/edit the catalogue. Existing records default
+other without guessed classifications or timestamp changes. This type is separate
+from presence/personal_plan/scheduled_event kind. Building cards show all known
+authorized current/future unexpired event kinds; personal activities need a visible
+eligible participant. This supersedes the earlier scheduled_event-only card filter.
+The user rejected both icon sets and cancelled event-type icons entirely. Keep
+the fixed type catalogue, but do not render/load category images;028icon_key
+metadata is reserved compatibility data. Dates/weekdays/times are bold;
+room/area notes omit repeated building names in display only. The exact later
+subset of agent-writable fields is still a separate decision.
+
+## Miro live MCP override (2026-10-18)
+
+The user retired the Miro REST tools and stored board snapshots. Chat and update
+agents read official Miro MCP directly; the update agent reconciles concrete live
+source evidence into the fixed Google Calendar using its existing Calendar API
+tools. No Miro writes are exposed. Migration030 removes miro_boards/sync RPCs,
+preserving exact source UUID/status and metadata-only enabled/team scope in
+knowledge_sources. The Miro sync Railway service is retired. Preserve applied
+migrations and historical SQL verification fixtures; frozen legacy JS under
+tests/fixtures/retired-miro-rest is solely historical test support, never runtime.
+App MCP OAuth and Codex MCP OAuth are separate; credentials remain private.
+Worker activation and Google access/Calendar sharing remain separate.
+
+## Normalized events override (2026-10-18)
+
+The user authorized and implemented events, event_buildings and event_people as
+activity storage, replacing map_buildings.people_here and scheduled_events through
+hosted026/027. All eligible participants display at every linked building during
+their active window; simultaneous locations are allowed, with one avatar per
+person/building. No primary-building flag or per-person building assignment.
+Buildings and profiles remain fixed catalogues for agent writes. Source-backed
+activity facts, labels, timing, attendance and citations live in events/relations;
+this does not restore durable Discord message archives or summaries. Shared map
+read/identity/upsert tools enforce current source access and scoped evidence,
+complete-snapshot optimistic writes and existing two-hour default policies.
+Worker activation/deployment and deferred Calendar sharing remain separate. This
+supersedes older people_here-only writes and dedicated-events deferrals. Preserve
+all applied migrations and historical SQL verification fixtures. Actual hosted
+receipts and acceptance live in milestones/milestone.md and docs/events.md.
+
 ## Collector cleanup and Discord pending events (2026-10-17)
 
 The user authorized independent slim Discord/Gmail ingestion services sharing

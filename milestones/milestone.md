@@ -1,3 +1,694 @@
+## Live rollout verification in progress
+
+Website and collectors deployed successfully on Railway. Domain https://web-production-e4edc.up.railway.app. Password/signing/broker secrets exist only in private Railway variables; anonymousAPI403 and signed-session API/static200 verified. Nativebrowser found Referrer-Policy:no-referrer causing Origin:null and403; changed to same-origin with strictOrigincheck retained,21focusedchecks pass, corrected web release accepted in real desktop/mobile Chrome: native sign-in,9landmarks,focus/assistant,logout/API denial and zero browser/asset errors. Independentsecurity23/23pass. Finalpre-headerfull995/995 passed, bothbuilds passed.
+
+Miro volume uploaded separately from image; hosted NodePID1 UID1000, /data0700 and authfile0600 owner1000 verified. OfficialMCP authenticated list exposes3readonlytools; broker200 onlyaccess-tokenfields. LocalAPI stopped to avoid independent refreshrotation. Temporary deploymentSSHkey to be revoked after verification.
+
+Worker deployed/enabled but realbatchescurrentlyforbidden:154pendinginputs include54outside assistantallowlist, mixedwith100eligibleDiscord. No sourceexpansion or deletion. Scopedclaim implemented120/120, independentlyaccepted64/64 andapplied ashosted20261018195417; serviceonlyACLverified. Correctedworkerreleasebuilding; no sourceexpansion/deletion. This is a launchblocker to realupdateacceptance. First5logicalcommits created; finalfix/docs/pushpending.
+
+- [Pass record](history/2026-10-18_15-51-54-446276-tester-native-browser-login-origin.md)
+
+- [Pass record](history/2026-10-18_15-51-54-447124-coder-native-form-origin-fixed.md)
+
+- [Pass record](history/2026-10-18_15-51-54-447471-orchestrator-live-services-and-private-auth.md)
+
+- [Pass record](history/2026-10-18_15-51-54-447780-planner-scoped-queue-starvation-diagnosed.md)
+
+- [Pass record](history/2026-10-18_15-53-20-289242-tester-hosted-desktop-mobile-accepted.md)
+
+- [Pass record](history/2026-10-18_15-55-02-708130-coder-scoped-agent-claim.md)
+- [Pass record](history/2026-10-18_15-55-02-708527-evaluator-scoped-agent-claim-accepted.md)
+- [Pass record](history/2026-10-18_15-55-02-708657-orchestrator-scoped-claim-applied.md)
+
+- [Pass record](history/2026-10-18_15-57-34-624310-orchestrator-final-regression-and-logical-commits.md)
+
+## Active: optimization, password-gated live site and autonomous deployment
+
+User explicitly authorized optimization then LIVE Railway website/services deployment and agent activation, logical commits and push. This supersedes older activationdeferrals for the rollout. Frontend Railwaywebservice servesbuiltstatic+chatAPI behind SITE_ACCESS_PASSWORD privateenv sessiongate; worker/collectorsseparate. No publicdevelopmentauth. ExistingGoogle/Miro/Discordsourceboundaries preserved.
+
+Implemented frontend stream/render/presentation optimization and backend freshboundaryauthorization/evidencecompaction. Preliminarymeasurements501→1streamrenders, unchangedmarkerDOM preserved,600→0stablecardderivations;20samechannel auth120→6calls/40→2Discord; answerfixture34.35%bytes saved. Frontend independent browser11/11 and50focused checks pass; backend241focused checks and independent75checks accepted. ExistingM12/M43geometry/startupoptimizationpreserved.
+
+Privateproductionentrypoint/sanitizedpackages and durableMirocredentials implemented; independent security22/22 accepted after two fixes. Volume bootstrap and explicit startcommand verified; latest39/39 runtimechecks pass. OneOAuthowner withpersistentvolume/access-tokenbroker avoidstwo-service refreshtokenrotation races. CLI confirmsTechNYUproductioncollectorshealthy; no newdeployment/activationyet. Prior937fullchecks remainpre-optimizationbaseline. Final fullregressions running; frontend/API builds pass. Railway web/update-agent services, public domain and private persistent volume provisioned; secret-free web/Discord/Gmail uploads launched; worker deployment waits for broker readiness. Local API stopped before OAuth ownership transfer.
+
+- [Pass record](history/2026-10-18_15-37-17-936047-planner-frontend-optimization-brief.md)
+- [Pass record](history/2026-10-18_15-37-17-936451-planner-backend-optimization-brief.md)
+- [Pass record](history/2026-10-18_15-37-17-936555-coder-frontend-optimization-implemented.md)
+- [Pass record](history/2026-10-18_15-37-17-936652-coder-backend-authorization-context-optimized.md)
+- [Pass record](history/2026-10-18_15-37-17-936739-orchestrator-live-deployment-authorized-and-password-gated.md)
+
+
+- [Pass record](history/2026-10-18_15-42-35-806527-tester-frontend-optimization-independent.md)
+- [Pass record](history/2026-10-18_15-42-35-807235-coder-private-production-runtime.md)
+- [Pass record](history/2026-10-18_15-42-35-807359-coder-durable-miro-and-bounded-queue.md)
+- [Pass record](history/2026-10-18_15-42-35-807464-tester-site-security-independent.md)
+- [Pass record](history/2026-10-18_15-42-35-807555-evaluator-backend-optimization-broker-accepted.md)
+
+
+- [Pass record](history/2026-10-18_15-44-13-945314-coder-web-volume-bootstrap.md)
+- [Pass record](history/2026-10-18_15-44-13-946096-evaluator-frontend-and-private-site-accepted.md)
+- [Pass record](history/2026-10-18_15-44-13-946285-orchestrator-release-regression-and-launch.md)
+
+## Agent prompts: complete, tested and independently accepted
+
+Chat now uses calm source-aware replies, authorized eboard-first summaries, general fallback and explicit team opt-in; leadership and descendants are blacklisted. Weekly schedule answers use Calendar first and actual Miro content when empty/unavailable. Luma API remains a saved future idea. Calendar holds scheduled club events from concrete Miro plans or fresh explicit Discord announcements; map mirrors its occurrences plus separate informal study/co-working/presence/personal plans. RSVPs enrich the same event. Stable native Discord edits preserve identity; ambiguous/cross-source changes defer. Miro remains read-only.
+
+Final full regression **937/937 passed**, zero skips; API/frontend builds and whitespace passed. Independent source/protocol/deadline/evidence reviews accepted. Real configured gpt-6-luna: earlier frozen14 diagnostic13/14, then strict final focused4/4 across identical **28-file hashes** (Calendar projection twice, Discord edit, Miro→Calendar→map/RSVP). Eight passing chat cases use unchanged current chat source. Latest-case14passes combines runs; no single final fourteen-case pass is claimed. Receipts: [model](../evidence/agent-prompts/live-model-results.json), [hosted policy](../evidence/agent-prompts/hosted-policy-receipt.json), [runtime settings](../evidence/agent-prompts/runtime-readiness.json).
+
+Discord HTTP and channel scans are serialized with default750ms request spacing/shared retry cooldowns,90s request and120s scan bounds. Chat overall timeout defaults300s/max600s, separate from model calls. Worker bounds16rounds/32calls/180s; original queued30input/oldest30min trigger retained. Worker remains disabled; no deployment or real Calendar/map writes. Pacing is process-local; long upstream cooldowns or summary-model429 can still yield partial coverage. No additional live Discord reads after the throttling report.
+
+Operational follow-ups remain separate: worker enablement/live pilot, empty-queue periodic sync, broader than now-24h/+8day Calendar window and ambiguous source-conflict decisions. Synthetic fixtures/inert writes and finite model scenarios establish bounded acceptance, not live throughput or reliability.
+
+- [Pass record](history/2026-10-18_15-23-41-888033-coder-bounded-completion-repair-final.md)
+- [Pass record](history/2026-10-18_15-23-41-888372-evaluator-bounded-completion-repair-accepted.md)
+- [Pass record](history/2026-10-18_15-23-41-888492-tester-strict-model-retests-passed.md)
+- [Pass record](history/2026-10-18_15-23-41-888590-evaluator-agent-prompts-final-evidence-accepted.md)
+- [Pass record](history/2026-10-18_15-23-41-888678-orchestrator-agent-prompts-verified-integrated.md)
+
+## Agent prompts: final narrow completion recovery under verification
+
+Frozen14modelrun13/14diagnosticpasses (83requests,29filesstable,>=1sdispatch), but Calendaroccurrence inventedpageToken andemptyfinish beforeprojection. Inputretained. Strictfixtureaudit tightenedselectors; onepreviouseditpass nowrequiresrerun. Coderimplementingboundedemptyfinishfeedback/tokenvalidation+configuredMiroboardenum; finaltargetCalendarrepeat2/edit/Miroflow andindependentreview next. Prior932/932fullregression/buildsremainpre-recoveryevidence. No liveDiscord/provider-sourcewrites oractivation.
+
+[Pass record](history/2026-10-18_15-19-24-536207-tester-frozen-model-diagnostics-and-selector-audit.md).
+
+## Agent prompts: final regression and deadline acceptance
+
+Finalfull932/932tests passed withzero skips, API/frontendbuilds passed, whitespacepassed. Independentdeadline40/40checks accepted300s/max600soverallrequesttimer separatefrommodelcalls. Finalfrozen14modelrun first9casespassed (all8chatplusautomaticpresence), remainingeventreconciliationcases running. No sourceeditsplanned, modelrequests gentlypaced, no liveDiscordreads.
+
+[Pass record](history/2026-10-18_15-15-21-908783-evaluator-paced-request-deadline-accepted.md).
+
+## Agent prompts: paced Discord reads and overall chat deadline ready
+
+Shared750msrequests andsequential120sscans implemented; coder233/233checks/evaluator108/108pass. Parent separate300s/max600schatdeadline preservesprovider-calltimeout;48targetedcheckspass. Worker16/32/180; prompt24535/24576. Sources frozen for final14syntheticsource/inertwrite realmodelcases, with improvedfactorytracing andgentlemodeltestpacing. Fullregressions/builds running. Screenshotcouldreflectbot429orsummarymodel429; no causalblameclaimed, no newliveDiscordreads.
+
+- [Pass record](history/2026-10-18_15-11-32-969917-coder-shared-discord-pacing.md)
+- [Pass record](history/2026-10-18_15-11-32-970226-evaluator-weekly-stop-budget-pacing-accepted.md)
+- [Pass record](history/2026-10-18_15-11-32-970333-orchestrator-paced-chat-deadline-and-provider-clarification.md)
+
+## Agent prompts: final model diagnostics and live Discord pacing follow-up
+
+Full920/920tests andbuilds passed before latestparent/ratechanges. Frozen14modeldiagnostics10/14: source-backed chatmap/self, allDiscordcreate/edit/presence/RSVP andCalendaroccurrence passed;3weeklyfailures were missing requestfactorytracing (fixed), Miroflow hit12turncap. Added completepositiveCalendar stop and production16round/32call/180s limits;67focusedchecks pass. Userreports429andacceptsslowerchecks; shared750mspacing/429backoff+sequential120sscans underindependentverification, no newlivebotcalls. Finalstable14rerunpending.
+
+[Pass record](history/2026-10-18_15-07-26-270025-orchestrator-model-window-stop-and-paced-run-budget.md).
+
+## Agent prompts: bounded planner code accepted
+
+Final coder118/118focusedchecks and independent evaluator105/105checks pass; no remaining material code blockers. Prompt24413/24576bytes. Sources frozen for final14configured-modelcase run. Final API/frontendbuilds passed; full regressions still running. Miro/read-only, currentpolicy, human-edit and pending-work boundaries preserved; no workeractivation or real eventwrites.
+
+- [Pass record](history/2026-10-18_15-01-28-078905-coder-final-discord-calendar-contracts.md)
+- [Pass record](history/2026-10-18_15-01-28-079267-evaluator-discord-calendar-final-source-review.md)
+
+## Rapid UI: transcript cutoff above the inset
+
+The assistant transcript now stops18px above the panel bottom, reserving a fixed ivory gutter outside the scrollport so mid-message scrolling cannot cover the inset. Empty composer keeps its compact layout. Desktop/mobile/short-screen browser checks pass at4scroll offsets and through streaming/composer resizing;7/7 assistant checks and frontend build pass. Desktop and short-mobile screenshots inspected. Direct implementation/verification; no backend/source/deployment changes. Next: user visual feedback; unrelated active work below remains unchanged.
+
+[Pass record](history/2026-10-18_15-01-08-358614-orchestrator-transcript-cutoff-above-inset.md).
+
+## Chat Calendar / Drive: Chat Calendar writes and Drive search ready locally
+
+Integrated request-bound Calendarcreate/update/softcancel, sharedchatprompt, canonicalreadyreceipts and existingDrive search/read. Current5173/API3001owneddevsession restartedhealthy. ActualprotectedDrive searchreturned2files; boundedSheetsreadreadyfirst-sheetpartial. FinalactualHTTPchat executedsearch_drive/read_drive,2Drivecitations,0failedtools/0mutations. CurrentCalendarread-onlypreflightready owner. Fourconfigured-modelscenarios withinertCalendarclient: create/update/cancel each exactly1expectedwrite andcanonicalreceiptURLinanswer, ordinarysummary0writes. Independent104tests/evaluator84/root40checks pass; APIbuilddependency/syntax/scopedwhitespacechecks pass. No realCalendarpilot,event/schema/authmutation, workeractivation,deployment orcommit. Statelesswriteendpoint503 andnoactionauthority; dynamicchattoolsavailableonlyforaffirmativeuseractions. Recurring/attendee/specialevents unsupported; conservativeEnglishintent andsameconversation+payload retrylimits documented. Other-sessionplanner/map/Discordprovenance changes preserved. Aggregateevidence evidence/chat-calendar/verification.json; private originals/fixturestranscripts remain/tmp. Implementationcomplete; realuser-directedchangescanusecurrentchat.
+
+[Pass record](history/2026-10-18_15-00-20-492320-orchestrator-chat-calendar-drive-integrated.md).
+
+## Chat Calendar / Drive: Calendar and Drive code accepted
+
+Read-only evaluator84/84 expandedchecks andscopedwhitespacepass; P1reported-sourceclass closed. Verifiedfirstdirective/reportcutoff/quotedtitlepositive, fixedtarget, hiddenrevision/IfMatch/currentACL, unsupportedstructures, preservedownershipfingerprints andboundedtruthfulreceipts. No materialremainingfindings. ConservativeEnglishintentgate andsameconversation/samepayload idempotency limits documented. Root actualmodeltests4scenarios useinertclients; liveDrive/CalendarACLready. No realGooglewrites reviewed/performed.
+
+[Pass record](history/2026-10-18_14-59-53-503627-evaluator-chat-calendar-final-accepted.md).
+
+## Chat Calendar / Drive: Intent regression red-to-green verified
+
+Independent tester confirmedinitial3reported/quotedHTTPvectors REDwith1syntheticmutationeach. Final6summary/email/forward/curlyquote hostileprovider vectors now0exposedwritetools/0POSTorPATCH/unchangedevents/nowritereceipt, includingattemptafterexactread. ASCII/curlyquotedtitle affirmativecommands succeed. Owned30/30 andexpanded104/104 pass zero skips, scopedwhitespacepass. No external/model/sourcecalls; rootconfiguredmodel/readreceipts separate.
+
+[Pass record](history/2026-10-18_14-59-53-503281-tester-chat-calendar-intent-red-green.md).
+
+## Chat Calendar / Drive: Reported-source instructions cannot authorize writes
+
+Finalintentguard requires firstmeaningfulunquoteduserdirective torequestCalendar action; quoted/reportedbody commands remainuntrusted, multiline reportedregions cut off, ordinaryASCII/curlyquotedtitles preserved. Clearoutercreate-from-email command retainscreateonly authority. Client/chatimplementation78targetedchecks+3syntaxchecks+whitespacepass. ConcurrentautonomousDiscordprovenance changes preserved. No externalcalls or actualCalendarwrites.
+
+[Pass record](history/2026-10-18_14-59-53-502311-coder-chat-calendar-reported-body-guard.md).
+
+## Agent prompts: Discord Calendar provenance implemented; model checks running
+
+Exact fresh Discord originals can support scheduled club-event Calendar create/native-edit/cancel, with conservative eligibility, complete Calendar window checks and current policy. Informal activity/RSVP stays separate. Cross-source conflicts defer. Trusted canonical Calendar projection now hashes actual applied arguments before receipts. Coder92focusedchecks pass; independent review and4actual-modelsync cases running. Final14case acceptance pending. Separately authorized concurrent chatCalendar changes preserved.
+
+[Pass record](history/2026-10-18_14-58-43-343739-coder-discord-calendar-provenance-and-canonical-map.md).
+
+## Chat Calendar / Drive: Intent review requires reported-body fix
+
+Read-only evaluator74checks pass but P1 reportedmultiline/typographicquote intentbypass reproduced: summarize-email userturn canexposecreate; reportedsourcedelete canexposecancel. Syntheticadapterwrite provedimpact; no externalwrites. Otherfixedtarget/revision/ACL/ownership/receiptboundaries sound. Coder assignedconservativequoted/reportedbodyfix andtester exacthostileHTTPregressions. Runtime not yet restarted withnewcapabilities.
+
+[Pass record](history/2026-10-18_14-55-47-078619-evaluator-chat-calendar-reported-instruction-finding.md).
+
+## Chat Calendar / Drive: Initial Calendar and Drive independent tests passed
+
+Independent tester22owned and94expanded checks pass, zero skips. ActualHono+realGoogleclientfixtures covercreate/edit/softcancel, exactread/ETags/ACL/unsupportedstructures, retries/lostreply, preservedends/fields/autonomoushash, deniedsummary/negation/statelesswrites and receipttruthfulness. Drivefixtures coversearch/export/originalURLs/first-sheet/metadata-only/empty/errors withzeroCalendarcalls. Providers scripted andGoogleOAuth/HTTPsynthetic. Evaluator subsequentlyfound reportedbody/curlyquote cases outside initialtestcoverage; acceptance suspended pendingfix.
+
+[Pass record](history/2026-10-18_14-55-47-078265-tester-chat-calendar-drive-initial-independent.md).
+
+## Chat Calendar / Drive: Separate Calendar chat write path implemented
+
+Coder added request-scoped create/update/softcancel tools and current-turn intent helper; client new chatmethods retain fixedaccount/calendar/ACL, hiddenexact-readrevision, ETag/If-Match and changed-fields-only patches. Autonomous Miro ownership/fingerprints unchanged. Deterministic conversation+desiredstate ID reconcileslostcreationreply withoutblindPOST. Existing34targetedchecks pass, independentnewchecks pending reviewclosure. No source/model/authcalls or runtime activation fromcoder.
+
+[Pass record](history/2026-10-18_14-55-47-077404-coder-chat-calendar-client-and-tools.md).
+
+## Chat Calendar / Drive: Chat request and prompt integration prepared
+
+Root added shared user-directed Calendar/Drive prompt, request-bound compositeGoogle adapter inserver/index.js and currentchat binding using a stable SHA256 of principal+validatedmessages (no rawhistorypersistence). ReadycalendarWrite receipts are sanitized into answercontext with exactoutcome/eventId/canonicalURL. Removed oldchatCalendar-unavailable statements while preservingMiroread-only/map/Discord/memory policies. Syntaxchecks for3rootfiles pass; coderimplementationpending before runtime restart. No currentGoogle/APIprocess interruption, source writes, workerpromptchanges or authchanges. Driveactualsearchready remainsverified.
+
+[Pass record](history/2026-10-18_14-51-32-061880-orchestrator-chat-calendar-request-integration.md).
+
+## Chat Calendar / Drive: Request-scoped Calendar write contract planned
+
+Read-only planner30existing Calendar/Google checks pass. Existing chat deliberately exposes reads only. Add separate fixed-calendar user-directed create/edit/soft-cancel methods with current-turn affirmative intent, request-local observed event revisions, changed-fields-only patches and optimistic If-Match. Preserve autonomous Miro provenance/fingerprints and unsupported attendee/recurrence boundaries. Stateless tool route grants no user action. Drive search/read already wired; no new Drive capability code needed. Root actual protected Drive search returns ready with2files and partial warning. Coder owns chat adapter/intent/client; root owns minimal index/context integration and docs; independent tester owns new tests. No source writes or configuration changes.
+
+[Pass record](history/2026-10-18_14-50-23-747112-planner-chat-calendar-write-contract.md).
+
+## Agent prompts: Calendar-centered synchronization scope clarified
+
+User added Discord-to-Calendar event reconciliation and clarified Calendar scheduled events versus map informal activity. Implementation/testing extension underway. Miro remains readonly. Full pre-extension886/886tests and bothbuilds passed; chat map/self model4/4passed. Miro model flow still needs reliable canonical projection guidance. Final acceptance not claimed.
+
+[Pass record](history/2026-10-18_14-49-52-261434-orchestrator-calendar-canonical-discord-event-scope.md).
+
+## Agent prompts: final behavioral corrections under test
+
+Source-bound chat identity, affirmative map intent, duplicate-creation stops and explicit current-presence timing are implemented. Worker now has deterministic Calendar coverage/projection completion and narrow canonical URL feedback. Focused parent checks56/56 and worker specialist110checks pass. Real-model tests use synthetic sources/inert writes; final stable-build acceptance remains pending. Full regressions/builds and independent review are running. Hosted leadership revision4 and read-only source receipts remain valid; worker disabled.
+
+- [Pass record](history/2026-10-18_14-47-41-989293-coder-worker-completion-and-calendar-url-feedback.md)
+- [Pass record](history/2026-10-18_14-47-41-992166-orchestrator-chat-identity-action-duplicate-timing-fences.md)
+- [Pass record](history/2026-10-18_14-47-41-993501-tester-actual-model-findings-and-controlled-rerun.md)
+
+## Miro structure pass: Planner Calendar readiness clarified
+
+Read-only follow-up verified current update adapter uses shared Miro MCP reader, exact live-content provenance gates Calendar writes and current prompt defers ambiguous/missing dates or starts. Local AGENT_AUTOMATION_ENABLED is false; no automation CLI process found. Existing receipts prove live MCP reads, Calendar owner preflight and simulated write contracts, not a real end-to-end Calendar mutation pilot. No code/source/config changes or activation. User asked whether planner can update GCal; answer distinguishes wired capability from unverified unattended end-to-end operation.
+
+[Pass record](history/2026-10-18_14-30-05-862945-orchestrator-miro-calendar-readiness-answer.md).
+
+## Agent prompts: real-model findings drive behavior fixes
+
+Full regression861/861passed, then authorized configured-model smoke exposed behavior that synthetic planners did not catch. Chat now retains exact Calendar windows, follows explicit named-team requests, receives empty/failedCalendar->Miro guidance and starts dependent map rounds immediately.7chatroutecases reran successfully; positive current-day team-content assertion added after manual review found an inferred stale window. Worker diagnostics exposed too-small6rounddefault and Calendarprojection skipped beforefinish; specialist is adding bounded12round/24call defaults and deterministic completion feedback. No worker activation or real source/event writes.
+
+[Behavior-fix pass](history/2026-10-18_14-25-01-011986-orchestrator-real-model-chat-behavior-fixes.md).
+
+## Miro structure pass: School Miro guide integrated and live checked
+
+Completed SchoolprofileChrome read-only inspection, sharedchatplanning/chatanswer/updateguide, documentation, independenttests/review and currentlocal5173/API3001restart. Finalpublicquery used6read-onlyMirocalls, actualpublic+internalcanvases and separatedpromotionaltasks, zero failedtoolstates/Calendarrescue. FinalnamedHPquery used5read-onlyMirocalls, actualcontent and distinguishedpromotions whilepreservingmissingtime. Earlierinternalquery readEBOARDcontent; applicationsquery flaggedouter/inner-yearconflict anddisclosedunreadfullcanvas. Providerpartialcoverage remains explicit; no wholeboard/modelguarantee claimed. Appstillonly1authorizedboardofthe3visibleNyuTeamboards; source scope notexpanded. No Miro/Calendar/source writes, credentials, schema or workeractivation. APIdependency/syntax and scopedwhitespacechecks passed. Aggregate receipts in evidence/miro-mcp/structure-verification.json; originaltranscripts remainprivate/tmp. Sharedpromptworker24531bytes/24576. No frontendcodechange required; currentpreview ready. Broaderboardonboarding remains separate.
+
+[Pass record](history/2026-10-18_14-22-10-338615-orchestrator-miro-structure-guidance-live-integrated.md).
+
+## Miro structure pass: Final spatial guide accepted
+
+Read-only reviewer accepted finalboard-scopedrelativepositions and spatialheaderhandling, uncertaincandidatereads, actualdaycells and Miro-onlypolicy. Navigation/prompt22/22passed before testerfinal3contracts; worker24531bytes within24KiB. No material findings or externalcalls. Root actualmodelreceipts complete independentintegration evidence.
+
+[Pass record](history/2026-10-18_14-22-10-338277-evaluator-miro-spatial-guide-final-review.md).
+
+## Miro structure pass: Final followthrough regressions passed
+
+Independent tester added3finalcontracts for Miro-only/noCalendarrescue/no navigationstop, bounded both-candidate/header/legend actualmonthreads, and verifiedrelativepositions/spatialheaders/noheader-targetIdscoping. Navigation now10tests; navigation+workerprompt+emptysearch28/28pass, zero skips. Worker24531bytes below24576. Only ownedtest changed. Prior expanded59/59 and automation146/146 remain valid for underlying unchangedengine; no external/model/source/auth calls.
+
+[Pass record](history/2026-10-18_14-22-10-337382-tester-miro-spatial-followthrough-regressions.md).
+
+## Miro structure pass: Verified layout hints integrated
+
+Shared guide now includes inspected relative layout for exactScheduleboard only, requires live checks, explains spatial headers are not parentfolders and forbids assuming header targetId scopes months. Prefer correctsection position; ambiguous candidates readtogether plus header/legend, never firstmatch/header alone. Miro-onlypreflight/provenance compacted withoutsemanticsloss. Coder62tests/3syntaxchecks/whitespace pass; worker24531bytes below24576. Root restarted owned5173/API3001 to finalguide. No source/auth/config changes; livepublic+namedHP tests running.
+
+[Pass record](history/2026-10-18_14-20-33-842856-coder-miro-relative-layout-hints.md).
+
+## Miro structure pass: Spatial header limitation verified
+
+Actual read-only MCP targetId searches for public October/application August under their section header IDs returned successful zero matches. UI places monthly calendars spatially beside section labels rather than usable API parent folders. Root retries reached EBOARD content and correctly disclosed partial board coverage; public retry read a month but could not verify section; applications retry flagged outer2028/inner2026 conflict and disclosed unreadfullcanvas. No source writes. These receipts motivate verified relative layout hints rather than assuming APIparenthood; fullpublicacceptance stillpending.
+
+[Pass record](history/2026-10-18_14-20-33-840982-orchestrator-miro-spatial-calendar-parent-finding.md).
+
+## Miro structure pass: Candidate canvas followthrough strengthened
+
+Shared guide now instructs reading ambiguous bounded month candidates together with returned section header/legend IDs, resolving actual grid/day context and reading month canvases before refusing. Chat explicitly prohibits Calendar rescue for Miro-only. Same source/provenance/write/fragment boundaries and8call8round engine. Coder62targetedchecks/3syntaxchecks pass; current worker24522bytes below24576. Root restarted owned5173/API3001 and live retry is running. No source/auth/config writes.
+
+[Pass record](history/2026-10-18_14-18-18-078438-coder-miro-candidate-followthrough.md).
+
+## Miro structure pass: Real model exposed premature navigation stop
+
+Initial actual localHTTP public-event question made two Miro navigation calls and an inappropriate Calendar read despite explicit Miro-only, then stopped with zero content sources. EBOARD question reached actual October canvas in4calls; APPLICATIONS question read section header content but did not inspect a month/year grid. No source mutations. Synthetic integration tests did not establish model compliance. Root required bounded candidate canvas followthrough and Miro-only source discipline; no success claim for initial public/year paths.
+
+[Pass record](history/2026-10-18_14-18-18-076844-orchestrator-miro-live-navigation-gap.md).
+
+## Agent prompts: independent local review accepted; model behavior test requested
+
+Final evaluator accepts bounded local contracts after5concrete identity/routing findings were fixed and independently regressed (102/102focused checks). User explicitly asked to test actual prompt behavior; tester is building/running configured-model cases against synthetic sources and inert write stores. Broader full suite/build and read-only hosted receipts are being finalized. No live club event mutations, worker activation or deployment.
+
+- [Independent review requested fixes](history/2026-10-18_14-17-45-607772-evaluator-initial-prompt-review.md)
+- [Source-bound participation and review fixes](history/2026-10-18_14-17-45-607773-coder-participant-identity-review-fixes.md)
+- [Independent final local acceptance](history/2026-10-18_14-17-45-607774-evaluator-prompt-contracts-final-acceptance.md)
+
+## Miro structure pass: Structure prompt code accepted
+
+Read-only evaluator41/41 checks pass. No material findings in shared guide delivery, Schedule-only hints, board+item provenance, subject/date/section navigation, neighboring geometry, local legends, copied year ambiguity, bounded coverage or unchanged access/write boundaries. Worker prompt budget passes. Actual model distinct-section receipts remain root responsibility.
+
+[Pass record](history/2026-10-18_14-16-14-569405-evaluator-miro-structure-code-accepted.md).
+
+## Miro structure pass: Independent navigation tests passed
+
+Added7tests in tests/miro-navigation.test.mjs. Initial test caught shared guide missing from answer prompt, now fixed. Expanded59/59 and automation146/146 pass, zero skipped. Scripted planner tests verify orchestration/content boundaries across section/date/subject/year ambiguity/Calendar fallback andDST, not real model compliance. No external/source/auth calls. Root live acceptance pending.
+
+[Pass record](history/2026-10-18_14-16-14-569078-tester-miro-structure-independent.md).
+
+## Miro structure pass: Shared section guidance implemented
+
+Added pure server/miro/navigation.js and integrated exact shared guide into chat planning, chat answer and update prompt. Replaced duplicated Miro wording; only Miro preflight/provenance compacted to preserve24KiB budget. Routes public events/internal bonding/deadlines/mentorship/resources, named subject/month search, neighboring geometry, local legend, copied year conflicts and bounded coverage. No source/auth/config expansion. Coder62targeted tests and3syntax checks pass; worker24481bytes/24576. Root additionally updated reader descriptions and docs to supersede outer-title-only date assumptions. Live acceptance pending.
+
+[Pass record](history/2026-10-18_14-16-14-568423-coder-miro-shared-section-guide.md).
+
+## Miro structure pass: School Chrome structure inspected
+
+School profile2 Nyu Team Browse visibly lists Tech@NYU Schedule, Adobe.NYU Schedule and IFA Fall2026 Schedule. App remains configured for Schedule only. Read-only accessible outline and visual canvas reveal separate spatial EBOARD, APPLICATIONS, Events + Marketing, Mentorship and ambiguous Copy of APPLICATIONS calendars, plus older2026 Calendar/Important Links. Duplicate month frames are semantically distinct; copied2027/2028 outer names conflict with inner2026 text. Events + Marketing has a local legend that differs from older board legend. Adjacent boards reuse template object IDs, so identity must remain board+item. No event contents persisted, board writes, source expansion or credentials changes. Shared-guide coder and independent tester assigned; UI investigation and implementation continue.
+
+[Pass record](history/2026-10-18_14-13-38-130825-orchestrator-miro-school-ui-structure.md).
+
+## Miro structure pass: Repository navigation contract planned
+
+Read-only planner identified existing bounded search/canvas/table capabilities and proposed one pure shared structural guide imported by both prompts. No implementation or external calls. Worker24KiB cap requires replacing old Miro paragraph; current chat8call budget and concurrent Calendar/map/memory work must be preserved. Only configured authorized boards are listed; prompting cannot expand source access. Acceptance needs actual canvas content, section-aware routing, year conflict handling and independent checks. Implementation pending root Chrome findings.
+
+[Pass record](history/2026-10-18_14-13-38-129781-planner-miro-structure-navigation.md).
+
+## Agent prompts: implementation and independent policy checks
+
+Chat and update-agent implementation passes are complete locally. Chat adds calm tone, eboard aggregate summaries, team explicit-request gating, Calendar-first/Miro fallback and request-local source-backed map writes. Update agent adds actual Calendar and live Discord provenance for normalized map reconciliation. Independent96Discord checks pass; chat73andupdate68focused checks pass. Broader tests/builds and final evaluator running. Worker remains disabled; no deployment or real-model sync pilot. Parent added exact leadership blacklist(revision4), refreshed metadata, and registered/configured a stable google_calendar source UUID without event mutations.
+
+- [Chat prompts and request-local map tool wiring](history/2026-10-18_14-12-45-442596-coder-chat-prompt-map-tools.md)
+- [Autonomous planner/update reconciliation](history/2026-10-18_14-12-45-442597-coder-update-prompt-calendar-map.md)
+- [Independent routing/privacy/bounded-summary verification](history/2026-10-18_14-12-45-442598-tester-discord-agent-policy-acceptance.md)
+
+## Miro fix pass: miro-date-search-fixed-and-live-verified
+
+Root reproduced exact omitted-results emptyshape through liveMCP and verified fixedHTTPready/search_no_matches. Final3realmodelphrasingstoday/date/week allreadcorrectOctober canvas, with zero failedtool states and explicit partialcoverage. ActualuserSchool? correction: userYuyangChromeprofile1tab84174551 at127.0.0.1:5173 wasrefreshed and retested viaChromeControl; finalcalendaranswerverified inAX/screenshot. Schoolprofile2notuseduntilnexttask. No source/schema/credential/service mutations. Scope is one configured scheduleboard; comprehensive cross-board retrieval remains unimplemented. Concurrentmap/memory/chat8callchanges preserved; newuserrequest now authorizes Schoolprofile inspection and structure-awareprompting.
+
+[Pass record](history/2026-10-18_14-09-11-961546-orchestrator-miro-date-search-fixed-and-live-verified.md).
+
+## Miro fix pass: miro-month-search-final-review
+
+Read-only final31checks passed including exactmontharea navigation, safe empty output, write evidence and24KiBupdateprompt budget. ACCEPT focusedfix. No evaluator livecalls or mutations.
+
+[Pass record](history/2026-10-18_14-09-11-961183-evaluator-miro-month-search-final-review.md).
+
+## Miro fix pass: miro-empty-search-independent
+
+Independent initial15focused/72expanded/142automation checks passed. Final16focused tests cover direct three-call month search and four-call sampled-overview fallback, IDless October title, misleading August ID/future-year stale text, no Calendar write authority. Concurrent shared retrieval cap increased to8calls; mock now stops explicitly after actual canvas, preserving four actual tool calls.
+
+[Pass record](history/2026-10-18_14-09-11-960786-tester-miro-empty-search-independent.md).
+
+## Miro fix pass: miro-empty-search-parser-and-navigation
+
+Three implementation files fixed verified-zero omitted/null result normalization, successful empty navigation and exact month/year areas-first guidance. Positive malformed results/cursor contradictions still fail. Initial direct-overview advice failed live because overview omits current month IDs; corrected advice searches month/year areas and matches frame title rather than stale sample years. Coder38targeted checks passed.
+
+[Pass record](history/2026-10-18_14-09-11-959645-coder-miro-empty-search-parser-and-navigation.md).
+
+## Agent prompt design: contract and implementation in progress
+
+Planner confirmed the user means the autonomous update agent. Work now covers calm chat tone; eboard default/general fallback/team explicit-only Discord routing; leadership shared blacklist; Calendar-first schedule answers with Miro empty/unavailable fallback; source-backed chat map tools and update-agent Calendar/Discord map reconciliation. Luma API saved as a future idea. Current cadence already matches30inputs/oldest30minutes and remains queue-triggered, disabled until separately enabled. Independent planner found missing Calendar map provenance and insufficient per-channel chat budget; bounded implementation underway with exclusive ownership. Existing uncommitted work preserved.
+
+[Planner pass](history/2026-10-18_14-07-20-021102-planner-chat-update-prompt-contract.md).
+
+## Latest UI: draggable focused avatars
+
+Focused portraits support mouse/touch dragging with grab cursors and pointer capture. Valid drops stay put through polling; outside drops ease inside the existing left-side frame including full portrait/thought-bubble clearance. Ordinary clicks still open Schedule, selected-person drags preserve it, and overview/camera behavior stays intact. Manual positions reset on leaving building focus and never write source/location data.5pure tests, build, desktop/mobile interaction/cancel/reduced-motion tests and real-campus unchanged-camera browser checks pass. [Pass record](history/2026-10-18_14-03-27-293143-orchestrator-focused-avatar-drag-and-return.md).
+
+## Active fix: valid empty Miro date searches were marked failed
+
+The repeated screenshot established that prior successful requests did not prove the failing date-search path worked. Fresh live MCP probes for ISO date text, long-form date text and relative-week text returned total_items=1226,total_results=0 with results omitted. Our wrapper required results to be an array and incorrectly classified this legitimate empty response as invalid_mcp_result. This is a concrete reproducible parser bug; it does not establish token expiry or an outdated frontend.
+
+The user’s existing Chrome tab was verified at http://127.0.0.1:5173/. It was refreshed and the same today question was submitted through the UI. That variation successfully reached actual calendar content, demonstrating query-dependent behavior rather than proving the screenshot obsolete. Coder owns only reader and both agent prompts; independent tester owns empty-search/continuation/orchestration regressions. Fix must treat empty search as navigation, never absence evidence, and continue to actual month calendar cells within the existing four-call budget. No source data, schema, credentials or service settings changed during investigation. Private original source responses remain temporary only.
+
+[Investigation pass](history/2026-10-18_14-00-23-004453-orchestrator-miro-empty-search-reproduced.md).
+
+## Agent prompt design: discussion started
+
+User requested actual chat and planner prompting work. Current code separates chat tool selection and answering (`server/assistant-context.js`) from autonomous update processing (`server/automation/prompt.js`). Clarification requested on whether planner means the internal tool-selection stage or the background update agent. Runtime prompts remain unchanged. Next: agree role purpose, judgment rules and examples, then make bounded prompt changes. Read-only inspection only; no tests/model calls/deployment. Existing work preserved.
+
+[Pass record](history/2026-10-18_13-59-55-158291-orchestrator-agent-prompt-design-start.md).
+
+## Chat Miro today runtime verified
+
+Verified the current server/index.js instantiates createMiroMcpTools and createMiroMcpClient, and the running /api/tools endpoint exposes MCP-only parameters (patterns/resultMode/itemIds/scope/expectedHash). The UI retains local wrapper names read_miro_board/read_miro_item; these no longer imply REST calls. A real current /api/chat request asking what is on the Miro board today completed catalogue, overview, search and actual canvas reads through MCP. The response reported no October18entry in the selected calendar section and explicitly limited coverage to that section. Partial statuses reflected bounded search/canvas coverage, not authentication loss. No implementation, credential, schema, service or source mutation was performed; only journal updated. Private transcript remains temporary under /tmp.
+
+[Pass record](history/2026-10-18_13-56-18-620773-orchestrator-chat-miro-today-runtime-check.md).
+
+## Automatic long-term club memory: implemented and hosted
+
+Implemented one shared agent_memory(id,content,updated_at) note, injected freshly before chat planning and into the answer prompt. read_memory/update_memory let the model maintain concise useful club facts proactively across any chat; explicit remember wording is not required. User correction is saved in notes.md and the prompt policy. Core instructions stay in code; memory is untrusted background, never a permission grant, provider archive or current-source proof. Whole-note optimistic updates preserve concurrent changes; stale writes conflict, identical content is a no-op and requested forgetting may clear text. No per-user schema, embeddings, history or scheduled job.
+
+Hosted031 at20261018175242 is applied to exact Tech NYU project; three columns, one empty shared row, forced RLS/browser denial and service-only read/write RPCs verified. Existing table ACL/RLS and function bodies/grants preserved. Service-role update succeeded inside a rolled-back transaction; no synthetic memory remains. Actual service read is ready. 50/50 focused SQL/memory/chat/bug/Calendar/context/provider/assistant checks pass; API syntax/dependency build and focused whitespace pass. Actual SQL-to-tool-to-Hono test saves useful club info supplied without a remember request and injects it into the next chat. Separate broader run with assistant-connectors-api tests was47/50: three pre-existing assertions assume tool events do not precede metadata; fixtures have no memory adapter, and tests were left unchanged. Direct verification only, no independent agents.
+
+Fresh isolated API3138exposes both memory tools and was stopped. Existing mainAPI3001still has no memory tools and was not interrupted; it needs its next normal restart. Existing bug_reports tool is now present on3001, resolving the older bug-tool restart handoff. No real-model pilot, production deployment, update-agent registration/activation, source mutation or commit/push.
+
+[Pass record](history/2026-10-18_13-55-32-718374-orchestrator-automatic-long-term-memory.md).
+
+## Miro follow-up: current access and automatic refresh verified
+
+Read-only follow-up to the failed weekly-events screenshot. Running API reports Miro configured. Three real protected HTTP reads (overview, October search and seven date patterns) all returned ready. A fresh real-model weekly-events planning request completed catalogue → overview → search → actual canvas within four calls; calendar content reached context with explicit partial coverage. The screenshot failure did not reproduce, and its original argument/error payload is unavailable, so no exact historical cause is claimed.
+
+Private app credentials contain access and refresh tokens plus registered client information. The returned access-token lifetime is3553seconds (approximately one hour); this is the grant lifetime, not a remaining-time estimate. Existing SDK transport refreshes after authentication expiry and atomically persists rotated credentials; actual rotation was proven in the prior cutover. No token values were printed. Official MCP FAQ confirms team-scoped OAuth/current permissions and possible authorization supersession across team/client changes. Public REST documentation's60day refresh lifetime was not assumed to establish the MCP grant's exact lifetime. No permanent-login guarantee is made.
+
+No implementation, credentials, source data, model configuration, schema or service settings changed in this pass. Only journal updated. Next: investigate exact safe tool failure code/arguments if the intermittent weekly search fails again; hourly access expiry should be handled automatically without user consent.
+
+[Pass record](history/2026-10-18_13-55-10-556819-orchestrator-miro-mcp-access-and-expiry-check.md).
+
+## Latest UI: only active work shimmers
+
+Failed and all terminal tool states stay static. Only Running and Thinking shimmer; reduced motion disables both. Build and Chrome state checks pass. [Pass record](history/2026-10-18_13-53-18-830706-orchestrator-static-terminal-tool-statuses.md).
+
+## Complete: live Miro MCP for both agents; snapshot storage retired
+
+Both chat and update agents now use the same official live Miro MCP search/canvas/table reader. Old REST tools/client/config/collector/CLI/deployer and Railwaymiro-sync service are removed. No production module imports historical fixtures. Frozen minimal JavaScript harness exists only under tests/fixtures/retired-miro-rest to preserve original applied-migration SQL assertions; obsolete runtime-only REST tests are removed.
+
+Hosted030receipt20261018174413 removes miro_boards,2triggers and9oldsync/cached-read functions, preserving exact source UUID/board/status/enabled/team metadata in knowledge_sources.miro_scope. Transactional hashes confirm every retained public table row, all original source fields/timestamps and retained table ACL/RLS flags unchanged. There are0legacyfunctions; browser execution remains denied and service-only registry reads work. Exact receipt/hash in evidence/miro-mcp/hosted-cutover.json. Concurrent028eventtypes/029bugreports and unrelated map/UI work preserved;030was uniquely reserved after an initial numbering collision.
+
+Codex developer connection is separately installed via shared config+sync/check and authenticated. App-owned OAuth consent, actual SDK refresh-token rotation and private0600atomic persistence verified; three upstream read tools hard-allowlisted. Miro returns boards:write despite requested read-only scopes; neither agent exposes Miro writes. Validated raw board IDs are used upstream because Miro rejects encoded equals; canonical citations remain encoded. Registry scope/team checks run before/after reads and before mutations, including the batch-frozen observed team. Search/frames/grids never grant individual event write identities. Actual canvas objects and native stable row IDs supply independent Calendar source keys. SVG remains inert; oversized JSON fragments use content hashes and cannot grant write evidence.
+
+Independent119retirement checks and final evaluator28checks pass; initial evaluator team-revocation finding fixed and regressed for upsert/cancel/map writes with zero writes. Root36Miro checks, automation suite,20assistant cases, API dependency/syntax and frontend build pass; existing chunk-size advisory remains. Final diff check passes. Actual postcutover local3001chat used3MCPtoolcalls and answered HP from its October25calendar cell, distinguishing promotional entries. Original board/model transcripts remain private /tmp; tracked aggregate evidence has no source bodies.
+
+Isolated real update-agent prepareBatch succeeds with1MCPboard and0modelcalls/0Calendarwrites; persisted worker flag remainsfalse. Exact configured Google Calendar read-only preflight now returnsowner, resolving the older sharing/preflight uncertainty. No Miro or Calendar objects were changed. No agentworker enablement/deployment, sends, commit or push. Current5173/API3001preview restarted and healthy. Railwayretirement leaves discord-events/gmail-events intact.
+
+Acceptance: requested MCP hook-up and snapshot retirement complete. Separate next work only if requested: deploy/enable updateworker and run a bounded Calendar mutation pilot with its full queue/model safeguards. No board snapshot collector or storage should be reintroduced.
+
+[Integration pass](history/2026-10-18_13-47-49-856328-orchestrator-miro-mcp-live-only-integrated.md).
+
+## Latest UI: aligned tool check and unclipped latest bubbles
+
+Completed checkmark now uses a centered CSS stroke. Transcript follows newest content through height animation and preserves24px desktop/22px mobile bottom spacing; composer resize follows only when already at bottom, and idle manual scroll stays usable.17Node cases, build and4-turn/65-frame browser traces at desktop/mobile/short viewport pass with0px bottom-follow gap and>=21.5px bubble clearance. [Pass record](history/2026-10-18_13-46-21-930607-orchestrator-tool-check-alignment-and-bubble-clipping.md).
+
+## Miro MCP pass: miro-mcp-final-acceptance
+
+Read-only final28checks passed, prior bypass reproductions now deny both Calendar upsert/cancel with zero writes in configured and observed-only team modes. ACCEPT implementation and exact030cloud readiness. No evaluator cloud/model/source writes.
+
+[Pass record](history/2026-10-18_13-45-22-852710-evaluator-miro-mcp-final-acceptance.md).
+
+## Miro MCP pass: miro-mcp-live-only-acceptance
+
+Independent119checks passed, zero skipped, covering exact030 after001–029, unrelated data/source identity/grant preservation, no snapshot/sync runtime, liveMCPonly preflight, concrete event/row evidence, Calendar and map team revocation, private OAuth/error/fragment behavior. Historical SQL assertions unchanged; minimal frozen JS harness moved under tests/fixtures/retired-miro-rest, obsolete REST runtime tests removed.
+
+[Pass record](history/2026-10-18_13-45-22-852402-tester-miro-mcp-live-only-acceptance.md).
+
+## Miro MCP pass: miro-mcp-initial-review
+
+Read-only47focused checks passed, REQUEST FIXES for duplicate migration029 and mutation-time team pin bypass; root renamed030 and froze/rechecked registry team. Findings retained as historical record.
+
+[Pass record](history/2026-10-18_13-45-22-851874-evaluator-miro-mcp-initial-review.md).
+
+## Miro MCP pass: miro-live-only-sql
+
+Implemented metadata-only source registry migration; independent per-board enabled/team and source UUID/status/timestamps preserved; snapshot table/triggers/RPCs explicitly dropped withoutCASCADE. Coder fullpriorSQL/anomaly/privacy/grant probes pass. Renamed local migration030to avoid concurrent029bug_reports.
+
+[Pass record](history/2026-10-18_13-45-22-851557-coder-miro-live-only-sql.md).
+
+## Miro MCP pass: miro-mcp-initial-integration
+
+Independent130checks passed across original/shared MCP integration, SDK/auth, chat/context, Calendar/map. Found undefined navigation source fields breaking strict batch JSON; root omitted them. Later retirement supersedes legacy runtime paths.
+
+[Pass record](history/2026-10-18_13-45-22-851250-tester-miro-mcp-initial-integration.md).
+
+## Miro MCP pass: miro-mcp-auth-socket-cleanup
+
+OAuth consent completion now closes browser preconnect sockets after response finish; syntax/diff checks pass, no further consent needed.
+
+[Pass record](history/2026-10-18_13-45-22-850868-coder-miro-mcp-auth-socket-cleanup.md).
+
+## Miro MCP pass: miro-live-only-retirement-plan
+
+Read-only plan defined metadata-only registry cutover, immutable historical SQL preservation, full REST/snapshot runtime retirement and exact-project migration requirements. Detected concurrent028 and recommended separate number; later029 collision resolved as030.
+
+[Pass record](history/2026-10-18_13-45-22-849460-planner-miro-live-only-retirement-plan.md).
+
+## Bug reports: hosted schema and chat tool implemented
+
+Implemented user-requested bug_reports table and chat tool. Hosted029 at20261018174146 adds exactly uuid,created_at,report JSONB, forced RLS/browser denial, service SELECT and service-only append RPC. Existing table permissions and function bodies/grants verified unchanged. Structured reports preserve summary, observed behavior, optional expectations/steps/context and server-owned original latest user message/building. UUID is server-owned per request; identical retries return existing receipt and changed payloads conflict. Chat automatically chooses bug_reports for actual user-reported product bugs and acknowledges only successful receipts. No report read/edit/delete tool or source-archive change.
+
+32/32 targeted real-SQL/tool/Hono-chat/Calendar/assistant checks pass. API build and focused whitespace checks pass. Hosted service-role write probe succeeded in a rolled-back transaction and left0reports. A fresh isolated API3138 exposed bug_reports; owned test server stopped. Existing main API3001 still had its old tool list and was deliberately not restarted from this side conversation. No real model calls, persistent synthetic bug report, production deployment, commits, worker activation or main-process interruption. Verification was direct, without independent agents.
+
+**Main-thread handoff:** restart the existing API at its next safe normal restart to load bug_reports; do not treat its old tool inventory as current source behavior. [Pass record](history/2026-10-18_13-44-44-229395-orchestrator-structured-bug-reports.md).
+
+## Events pass: events-types-display-integrated
+
+Complete requested normalized-events follow-up: all eligible building activities display; exact Study/Meeting/Event/Social/Other catalogue is applied as hosted028 with source-grounded agent selection; original event fields/times/relationships preserved. Both generated icon sets were rejected and category icons/assets/rendering are removed. Attendee portraits remain; weekday/date/time is boldgray, room has its own line without redundant recognized building prefix. Mobile longcard reserves launcher space; independent lastportrait hit test passes. Inspected final evidence:17/17browser,76map-events,25prompt,141automation, evaluator ACCEPT; frontend/API builds pass with existing frontend chunk-size advisory. Normal5173/API3001live Chrome confirms Stern1/Bobst3rows,0categoryicons/requests,4portraits,2thoughtbubbles,0errors. Aggregate receipts in evidence/events-relationships, private screenshot only/tmp. Updated architecture/events/map/database/sourceguides,notes,AGENTS,journal. No changes to existing ends: yesterday24hdebugfixtures remain until original ends; all-day participation until localmidnight. No worker enablement/deployment/model pilot or debug-data deletion. Later exact writable-field narrowing and larger-volume pagination remain separate. Preserve parallel Miro/chat/bug-report work and its independent journal status.
+
+
+[Pass record](history/2026-10-18_13-44-00-816757-orchestrator-events-types-display-integrated.md).
+
+## Events pass: events-mobile-launcher-clearance-accepted
+
+Read-only evaluator accepted root CSS mobile clearance fix after tester lastportrait regression. Independently checked actual map+assistant styles in Chrome at390x844and390x400: cardtop24px,bottomheightminus96px,launcherstartheightminus60px,36pxclearance,lastportraituncovered,nohorizontaloverflow. Reviewed fresh17/17browser evidence and hit-test assertion; whitespace clean. CSS-only scope preserves fixedtypes/sourcepermissions/icon removal. Emulated viewports only; no physical-device claim. No evaluator file/cloud edits. Ready for final integration.
+
+
+[Pass record](history/2026-10-18_13-44-00-790521-evaluator-events-mobile-launcher-clearance-accepted.md).
+
+## Events pass: events-types-icon-free-final-review
+
+Independent read-only evaluator accepted028/schema/runtime and final category-icon removal. IndependentSQL23/23andruntime76/76passed; hosted028receiptSHA matches, original9eventfields/timestamps/relationships/catalogues/profiles preserved, exact five fixedtypes and restricted/RLS permissions verified. Fresh17/17browserreport/synthetic screenshots show icon-free rows, bold weekday/time, separate room and retained portraits; staticgrep confirms no category render/import/CSS or assets. No code/cloud writes or material source/data findings. A subsequent mobile launcher-clearance fix receives its own bounded review before integration.
+
+
+[Pass record](history/2026-10-18_13-44-00-763983-evaluator-events-types-icon-free-final-review.md).
+
+## Events pass: events-types-icon-free-browser-accepted
+
+Independent tester updated tests/events-browser.mjs and evidence/events-relationships synthetic receipts/screenshots only. Actual migrations001–028 plus service/source-policy/API/frontend pass17/17browser checks; map-events76/76, update-agent-prompt25/25 and agent-automation141/141pass. Checks cover exact five types, all eligible activity kinds, multi-building visibility, future/expired/cancelled/source-denied filtering, captions, over200events, Tokyo all-day dates, bold weekday/time, separate room,0categoryimages/assetrequests/externalrequests/browsererrors. Visual review found launcher overlap after earlier17checks; tester added final-avatar elementFromPoint regression and fresh rerun passes after root CSS fix. Latest browser receipt ports50133/50134,45RPCcalls and998policychecks. Synthetic evidence is public-safe; hosted/private data, real models, production auth and physical devices are outside tester claims. Final review/integration follows.
+
+
+[Pass record](history/2026-10-18_13-44-00-737831-tester-events-types-icon-free-browser-accepted.md).
+
+## Events pass: events-card-format-and-icons-removed
+
+Integrated src/map-presence.js/css all-kind building rows, explicit weekday/date/time with650weight, separate room line and recognized repeated-building-prefix removal for presentation only. Preserved parallel gray-time request (#737373). Removed all category imports/rendering/CSS and generated event-icon assets following explicit user cancellation. Mobile details use full row width and portraits flow below. Tester found the fixed assistant launcher could obscure the final portrait in a long390px card; CSS now reserves24px above/96px below via max-height calc(100% - 120px) and translateY(calc(-50% - 36px)). Frontend/API builds pass. Normal5173/API3001 live Chrome receipt verifies Stern1row, Bobst3rows,0categoryicons/assets, roomprefix removal,650time,4portraits and2thoughtbubbles,0pageerrors; private screenshot retained only under/tmp. Source data/times untouched. Existing yesterday UI fixtures retain their original explicit24hour ends; current all-day attendance can last to local midnight. Final clean independent mobile/browser rerun and evaluation follow.
+
+
+[Pass record](history/2026-10-18_13-43-14-899152-orchestrator-events-card-format-and-icons-removed.md).
+
+## Events pass: events-types-hosted-preservation
+
+Applied immutable028_event_types as hosted20261018173407_event_types after SQL review. SHA256f22dcee2c388adbd4fe8f92df2c97128faca5056c558483fc5aff495eb04aa30 matches the local migration. Aggregate receipt evidence/events-relationships/event-types-hosted-verification.json verifies exact five categories, all nine original event fields/times and all relationship/catalogue/profile rows preserved, existing types defaultOther, forced RLS/service SELECT-only catalogue permissions and denied browser access. Read/upsert RPC signatures remain unchanged with validated classification. No legacy026/027 changes, fabricated events, worker activation or deployment. Applied icon_key stays reserved compatibility metadata unused by frontend after cancellation.
+
+
+[Pass record](history/2026-10-18_13-43-14-869869-orchestrator-events-types-hosted-preservation.md).
+
+## Events pass: events-icon-samples-revision-cancelled
+
+Image specialist produced a second, more literal book/meeting/calendar/social/ellipsis sample set after the first rejection. User rejected the revised icons too and explicitly requested deleting event logos altogether. Root removed category image imports, rendering, helper/CSS and all newly generated assets/event-icons files. Attendee portraits and building images remain. This dated correction supersedes every earlier icon approval or pending icon task; no further image generation is authorized by this scope.
+
+
+[Pass record](history/2026-10-18_13-43-14-841195-coder-events-icon-samples-revision-cancelled.md).
+
+## Events pass: events-icon-samples-initial
+
+Image specialist generated five warm faceted sample event-category images, following the imagegen skill and existing avatar/building references. Initial production completed and root reviewed visual samples. User rejected abstract designs as unclear. This pass was superseded by the literal-symbol revision, then by explicit icon cancellation. No generated event-category assets remain in the current repository; do not recreate or restore them. Fixed catalogue/classification work remains separate.
+
+
+[Pass record](history/2026-10-18_13-43-14-811235-coder-events-icon-samples-initial.md).
+
+## Events pass: events-fixed-type-runtime
+
+Runtime coder extended server/map contracts, trusted event storage/projection, shared tools and actual update-agent prompt for fixed study/meeting/event/social/other selection. Structural kind remains independent. Strict snapshots include the bounded catalogue; agent cannot mutate types/building/person catalogues. Missing existing type updates preserve it; unknown classification is Other when source does not support a known type. Targeted runtime/service/tool/presence/prompt tests76/76pass; root inspected actual code and SQL-boundary reports. Source authorization, CAS, time windows, all-location visibility and nonblank participant caption ranking remain. No worker activation, deployment or model pilot. Final independent browser/review integration follows.
+
+
+[Pass record](history/2026-10-18_13-43-14-780367-coder-events-fixed-type-runtime.md).
+
+## Latest UI: gray event date/time
+
+Event date/time now uses#737373gray with existing weight/spacing. Build and desktop/mobile Chrome color checks pass. [Pass record](history/2026-10-18_13-36-25-023292-orchestrator-gray-event-date-time.md).
+
+## Miro MCP pass: miro-mcp-reader-initial
+
+Implemented shared MCP navigation/canvas/table reader, inert SAX identity parsing, bounded hashed JSON continuations and board/source checks. Tested live Codex MCP HP calendar grid; actual day25+October2026 available. Initial HTTP uncovered encoded-board upstream parser failure and strict-canonical undefined navigation field failure; both corrected locally. Existing141automation/20assistant tests and API build pass; one old Miro stream-event assertion needs fixture repair. User subsequently requested removing legacy REST tools/snapshot table entirely; scope expanded, registry replacement planning underway. No source edits/Calendar writes/worker activation/deployment performed.
+
+[Pass record](history/2026-10-18_13-36-10-378587-orchestrator-miro-mcp-reader-initial.md).
+
+## Miro MCP pass: miro-mcp-agent-wiring
+
+Both production agents now instantiate shared MCP tools. Automation preflight uses prepareBoard rather than REST content. Live content-only observed source keys gate Calendar/map writes; stable table-row keys distinguish records. Existing fixed Calendar/human-edit protections retained. Six implementation files updated;64targeted checks pass plus context17. Root wrapper/live chat acceptance pending; legacy fixtures remain only explicit test injections.
+
+[Pass record](history/2026-10-18_13-36-10-378099-coder-miro-mcp-agent-wiring.md).
+
+## Miro MCP pass: miro-mcp-transport
+
+Official fixed-origin SDK MCP transport, three read-tool allowlist, private app OAuth PKCE/DCR and refresh rotation implemented. Live app schemas and canvas read passed, actual access/refresh rotation proven. Miro returns boards:write despite read-only request; no write tools exposed. Upstream encoded%3D board URLs fail; raw validated IDs succeed. CLI socket cleanup follows. Four new auth/transport files; syntax and inline mocked error/privacy/budget checks passed.
+
+[Pass record](history/2026-10-18_13-36-10-376013-coder-miro-mcp-transport.md).
+
+## Chat Calendar reads: connected and live-verified
+
+Chat now exposes list_calendar_events and read_calendar_event through its existing Google adapter. A dedicated read-only wrapper requires trusted googleAccess and pins the target to GOOGLE_CALENDAR_ID; Calendar writes remain unavailable to chat. Full bounded event fields, original links and nextPageToken survive chat serialization. User confirms Calendar sharing is resolved; live read access is now verified (writer access was not probed in this pass).
+
+23/23 targeted chat/Calendar/assistant tests pass, API syntax/dependency build passes, focused whitespace check passes. Live adapter read: ready, one event and next page. Running API /api/tools lists both read tools; actual POST /api/tools/list_calendar_events returns HTTP200/ready, one event, next page and citation. No model call, Calendar mutation, server restart, deployment or subprocess interruption. Checks were performed directly in this side conversation, without independent agents; concurrent main-thread changes were preserved. [Pass record](history/2026-10-18_13-35-05-090548-orchestrator-chat-calendar-read-tools.md).
+
+## Latest UI: final zero-outline verification
+
+Assistant focus outline width and offset are explicitly zero; keyboard focus uses subtle brightness. Desktop/mobile Chrome checks verify0px/none with global CSS loaded, and final build passes. This corrects the preceding record's prematurely reported computed-width check. [Verification correction](history/2026-10-18_13-30-38-225993-orchestrator-explicit-zero-focus-outline-verified.md).
+
+## Events pass: events-type-sql
+
+SQL coder implemented only new028_event_types.sql, event-types-sql.test.mjs and migration guide. Exactly five fixed categories/icons, forced RLS, service SELECT only and immutable catalogue. events.type_id foreign key defaults existing/new records to other without rewriting existing timestamps. Omitted updates preserve the current type. Same read/write RPC signatures, source/CAS guards, snapshot bounds and ACLs preserved; read snapshot includes bounded safe catalogue. Real SQL tests29/29pass across newtype+026/027+024/025 regressions; old026/027hashes unchanged and diffcheck clean. Root inspected file/status; independent evaluator reviewing before hosted apply. No coder cloud writes/deployment/model calls.
+
+
+[Pass record](history/2026-10-18_13-30-27-999335-coder-events-type-sql.md).
+
+## Events pass: events-fixed-type-catalogue
+
+Read-only planner inspected current normalized schema/runtime/tools/frontend and proposed immutable event_types catalogue, events.type_id foreign key, safe local icon keys, shared agent catalogue reads and additive028same-signature RPC updates. User finalized exactly five codes: study,meeting,event,social,other; supersedes provisional six-type suggestion. kind remains structural presence/personal_plan/scheduled_event; type is activity category. Existing records defaultother rather than infer classifications. Agent can select known codes but cannot create/edit catalogue. Later narrowing of writable event fields remains unresolved as user explicitly described it as later. Root owns frontend/docs/cloud, SQL coder028/tests, runtime coder contracts/services/tools, image coder faceted asset generation. No planner edits or cloud/model calls. Implementation and independent review ongoing.
+
+
+[Pass record](history/2026-10-18_13-30-27-961015-planner-events-fixed-type-catalogue.md).
+
+## Events pass: events-all-building-records
+
+User superseded the club-event-only building card: all known current/future unexpired normalized record kinds now display, including presence and personal_plan. Stored titles, time windows and safe attendee portraits are reused; no event data is fabricated. Non-scheduled personal activities require at least one authorized trackable nondeclined participant with unexpired participation before showing title/portraits. Scheduled events may still have no attendees. Unknown/expired/cancelled/superseded windows omitted. Avatar eligibility, newest nonblank participation caption, privacy, time unions and simultaneous locations preserved. Coder22/22presence checks and independent tester25/25presence/source plus14/14actual SQL→API→Chrome checks pass. All tester resources closed; no cloud/data/model writes. New immutable type/icon work follows in same user task before normal-preview integration.
+
+
+[Pass record](history/2026-10-18_13-30-27-921204-orchestrator-events-all-building-records.md).
+
+## Latest UI: assistant purple outline removed
+
+Assistant launcher/controls no longer show an outer focus outline. Keyboard-focused buttons use a subtle surface brightness cue; links use a thicker underline. Build and desktop/mobile Tab-focus computed-style checks pass. [Pass record](history/2026-10-18_13-29-45-055724-orchestrator-remove-purple-assistant-focus-outline.md).
+
+## Active: shared Miro MCP calendar reader
+
+Read-only specialist planner inspected shared tools, chat serialization, automation preflight and Calendar provenance. Plan: shared read-only official MCP adapter, replace hidden REST frame preflight, preserve board/source checks and fixed Google Calendar writes, accept only actual content as write evidence. Table-contained events need provider-stable individual identities; one table ID cannot represent several events. Live OAuth schemas and exact schedule acceptance remain required. Existing worker/Calendar access deferrals persist. Root installed official endpoint through shared Mac config, sync/check passed, and Codex read-only OAuth login succeeded. App OAuth remains separate. No live source content/model calls/writes verified.
+
+[Planner pass](history/2026-10-18_13-29-01-256068-planner-miro-mcp-integration.md).
+
+## Latest UI: live tool activity, Markdown and message bubbles
+
+FlockBot replies have black labels and their own left-aligned soft white bubbles; compact user bubbles sit right with inset edges and no visible You label. Send/stop remains top-aligned during multiline input. Actual registered retrieval calls stream running/result updates before answers; each appears in its own gray block. Thinking and statuses shimmer, except Done and Partial result; reduced motion stays static. Replies render safe Markdown while streaming.47Node cases, frontend/API builds and real HTTP desktop/mobile browser/pixel/cancel/Markdown checks pass. No live model/cloud actions by this pass; concurrent normalized-event work preserved. [Pass record](history/2026-10-18_13-28-09-201451-orchestrator-live-tools-markdown-message-bubbles.md).
+
+## Miro calendar read-gap diagnosis
+
+Inspected the screenshot and current tools/miro/index.js: unsupported table objects are preserved as metadata with contentAvailable:false, and their pages return partial. Frame overview can succeed while calendar cells remain unreadable. Current official Miro REST documentation marks Table read unsupported; official MCP documentation describes table-capable access. This explains the observed refusal but the exact failing tool payload/HP date was not retrieved in this pass. No runtime changes, source reads, credentials, deployments or model calls. Next: verify the exact calendar widget through read-only table/canvas access and integrate a supported reader before claiming schedule acceptance.
+
+[Pass record](history/2026-10-18_13-26-10-380552-orchestrator-miro-calendar-read-gap.md).
+
+## Events pass: events-thought-bubbles-restored
+
+Fixed the user's disappearing thought bubbles. Blank newer scheduled attendance had masked older supplied activity while labels remained intact in normalized records. Projection now chooses the newest authorized active NONBLANK participation label by that participant's reported_at; stable event order breaks ties. No label is inferred from event/building names. Blank-only records remain blank; authorization, timing unions, multiple locations and event state remain unchanged.
+
+Coder20/20presence checks and independent evaluator23/23presence/source checks pass. Actual Chrome on5173verified two visible Bobst thought bubbles with exact original labels and0page errors; screenshot private under /tmp. Final main5173/API3001reload picks up participant-time ranking; API label match confirmed. API syntax/runtime import check and final diff check pass. No SQL/data/model/source writes. Evidence: evidence/events-relationships/label-overlap-verification.json; code guide and docs/map-presence.md updated.
+
+User's Stern question answered from a read-only normalized snapshot: existing migrated personal_plan covers18October midnight-to-next-midnight NewYork and has a blank activity. It supplies planned map visibility; building Scheduled card intentionally lists scheduled_event kinds only. No new Stern plan was created. UI distinction remains a possible future product refinement, not an unauthorized content/schema edit. Concurrent chat/UI work preserved.
+
+
+[Pass record](history/2026-10-18_13-21-48-955280-orchestrator-events-thought-bubbles-restored.md).
+
+## Events pass: events-label-ranking-accepted
+
+Independent evaluator ACCEPTED final overlapping-caption fix. Presence/source suites23/23pass, exact older-event/newer-participation reproduction now passes, private rank/report fields do not leak. Authorization/time eligibility precede caption ranking; blanks stay blank if no eligible nonblank report, supplied wording stays verbatim. Reviewer made no edits or cloud writes. Root live browser verification follows separately.
+
+
+[Pass record](history/2026-10-18_13-21-18-402757-evaluator-events-label-ranking-accepted.md).
+
+## Events pass: events-label-participation-ranking
+
+Coder corrected independent participation chronology after evaluator reproduction: overlap captions rank by event_people.reported_at in a private request-local WeakMap, preserve wording, and retain stable event order for ties.20/20presence tests pass including event/participant timestamp disagreement, reverse ordering and no rank/provenance leaks. Root inspected final source. Event status, unioned time windows, per-building deduplication and simultaneous locations unchanged. No database/source writes. API reload and actual browser evidence recorded in integration pass.
+
+
+[Pass record](history/2026-10-18_13-21-18-352275-coder-events-label-participation-ranking.md).
+
+## Events pass: events-label-overlap-initial
+
+Investigated user's missing thought-bubble report after normalized event cutover. Actual local API showed newest blank event attendance masking older authorized active nonblank participant labels, while original labels remained intact in activities/hosted rows. Coder changed overlap caption fallback and added broad regression coverage;20/20map-presence tests pass. Root inspected implementation and restarted normal5173/API3001preview after API syntax/import check passed. No database changes or labels invented. Independent evaluator found a further chronology edge: participant reported_at can be newer than parent event reported_at, so candidate ranking must use the participation timestamp; follow-up fix/test assigned before final acceptance.
+
+User's Stern question investigated with a read-only normalized snapshot: an existing migrated personal_plan for18October's NewYork day produces the avatar; no new plan was invented. The Scheduled building card intentionally filters scheduled_event and therefore shows no scheduled club events for that personal plan. Blank labels at Stern remain blank.
+
+
+[Pass record](history/2026-10-18_13-20-07-882732-coder-events-label-overlap-initial.md).
+
+## Events pass: events-hosted-cutover-integrated
+
+Completed normalized event relationships and hosted cutover. Migration026 (20261018170616) and027 (20261018171006) are applied to the exact Tech NYU project. All5legacy presence/plan records and4scheduled events are preserved as9events/9building links/11participant links. Two-way semantic comparisons had0missing/0extra before old people_here/scheduled_events columns and obsolete RPCs were removed. Original catalogue fields/timestamps and26profiles are preserved. Hosted FORCE RLS/browser denial/RPC-only activity writes and immutable catalogue grants verified. A real service-role event+relationships write succeeded in a rolled-back transaction, leaving0probe records.
+
+Shared event/identity/upsert tools and actual worker prompt/adapter use the normalized service. All eligible participants display at all event buildings, simultaneous locations are allowed, and markers deduplicate per person/building. Future/same-building schedules, all-day source timezone dates, attendee portraits, original labels/windows/source access, deterministic new-record two-hour defaults and optimistic corrections verified. New source-access callback is wired into API; exact fixture scopes remain local-only.
+
+Independent checks:57/57map-event tests,138/138automation tests,12/12realSQL→Hono/Vite→Chrome synthetic browser checks; evaluator58/58focused checks and final ACCEPT. Both builds and final whitespace checks pass; existing chunk-size advisory remains. Fresh production-build live Chrome read9buildings/4active markers/1unexpired event/1upcoming relationship at verification time, Bobst1row/2attendee portraits and0page errors; screenshot private. Normal5173/API3001preview restarted and statusok after cutover; extra owned verification servers stopped.
+
+Current guides,AGENTSoverride,notes,tests/package scripts and debug fixture utility updated. Evidence: evidence/events-relationships/hosted-verification.json,test-report.md,browser-report.json plus five synthetic screenshots. Private backup/source/profile/screenshots remain untracked under /tmp. No credentials printed, no model calls, source sends/edits, Railway deployment, commit or push. Concurrent assistant/map UI edits preserved.
+
+Implementation milestone accepted complete. Separate follow-ups: disabled update-agent deployment/enablement and real-model pilot, pending Calendar owner sharing/preflight/Gmail configuration, chat tool registration, and scalable paged event reads before explicit snapshot bounds. Legacy reported_at is a documented start-time proxy rather than recovered provider chronology; no blanket monotonic source-time guard was invented.
+
+
+[Pass record](history/2026-10-18_13-14-46-226373-orchestrator-events-hosted-cutover-integrated.md).
+
+## Events pass: events-final-acceptance
+
+Independent read-only evaluator ACCEPTED local implementation and027cutover readiness after58focused checks plus review of final12/12actual SQL→API→Chrome evidence and hosted026preservation receipts. Evaluator independently reproduced obsolete frontend200event cap and foreign-zone all-day date bugs; root fixed both and tester added regressions. Root also preserved future returns to focused building after tester finding. Exact hosted026hash/semantic comparison and RLS/grants were reviewed; all material findings resolved. Original reported_at proxy limitation is documented; no fabricated source chronology. Guide mismatches (50000upcoming limit and chat registration deferred) corrected. Evaluator made no edits/cloud writes. Root performed authorized027after readiness acceptance; hosted postcutover verification follows in integration record.
+
+
+[Pass record](history/2026-10-18_13-13-12-530464-evaluator-events-final-acceptance.md).
+
+## Events pass: events-independent-integration
+
+Independent tester accepted normalized event implementation. npm run test:map-events passed57/57; npm run test:agent-automation passed138/138. tests/events-browser.mjs executes real001–027SQL through store/service/current-source authorizer/Hono/Vite/installed Chrome:12/12 checks pass, including all-linked-buildings visibility, simultaneous locations, overlap deduplication, current/future/same-building return schedules, event portraits, source revocation,201events and Tokyo all-day date. Browser/page/console/request errors are zero. Five tracked screenshots are synthetic; root inspected actual live private screenshot separately. Tester wrote only owned test/evidence files and closed own resources. Evidence in evidence/events-relationships/test-report.md and browser-report.json. No tester cloud writes/deployment/model calls.
+
+
+[Pass record](history/2026-10-18_13-13-12-494699-tester-events-independent-integration.md).
+
+## Latest UI: smooth assistant dismissal/expansion, event hierarchy and site name
+
+Assistant shrinks/fades out over180ms on dismissal and glides through message/input growth over280ms with fixed top edge. Drafts/focus survive, reopening can cancel dismissal, reduced motion is immediate. Event rows now use14px semibold titles, tightly grouped12px date/location and24px between events. Browser tab reads Flock@NYU; admin title/home link match.7/7 assistant tests, build, desktop/mobile dismissal/event checks,65-frame streamed height trace and served-title checks pass. [Pass record](history/2026-10-18_13-12-13-445089-orchestrator-smooth-assistant-event-rows-site-name.md).
+
+## Latest UI: white send arrow trial
+
+Enabled pastel send button now uses a white arrow (and white busy square); empty-input ivory state retains black. Build and direct Chrome computed-color checks pass. [Pass record](history/2026-10-18_13-08-11-457986-orchestrator-white-send-arrow.md).
+
+## Events pass: events-additive-hosted-preservation
+
+Independent evaluator accepted SQL026 additive readiness; root applied only026 to exact hosted project jssehnrmqhstcrtxulpa as20261018170616_events_relationships. Hosted9normalized events/9building links/11participant links preserve5legacy presence/plan entries and4scheduled events including6attendees. Explicit two-way event/building/person semantic comparisons show0missing/0extra. Original building rows including both legacy arrays and all26profiles are byte-semantically unchanged against private preflight backup. FORCE RLS/browser denial and service SELECT-only table grants verified; writes available only through service-only RPC. No old columns removed yet. Root API/frontend builds passed before final capacity UI tweaks; new owned4193/API3133preview returns normalized live API statusok. Evaluator58/58latest focused checks pass; root fixed frontend capacity and foreign-zone all-day date findings. Tester real-browser checks and final evaluator acceptance precede027cutover. No model calls/worker activation/deployment. Aggregate receipts remain /tmp until final evidence integration; raw backup/screenshots stay private.
+
+
+[Pass record](history/2026-10-18_13-07-42-917394-orchestrator-events-additive-hosted-preservation.md).
+
+## Events pass: events-runtime-and-projection
+
+Normalized event store/service and compatible map projection implemented in server/map/events.js and presence.js. All eligible people display at every linked building; overlapping avatars deduplicate per building with combined active windows and per-activity details. Future schedules, all-day timezone/DST boundaries, exact local-only fixture scopes and safe profiles remain. New timed scheduled records and explicit current reports receive approved deterministic two-hour defaults; no defaults for personal plans/all-day/unknown starts and no resetting existing ends. Source and replaced-participation authorization, CAS, exact email identity verification, request cancellation, snapshot/projected output bounds fail closed. Coder32/32 targeted tests passed. Root inspected actual files. No cloud writes/model calls/deployment by coder. Original legacy reported_at proxy is not a provider revision time; chronology remains source-evidence policy. Independent integration verification running.
+
+
+[Pass record](history/2026-10-18_13-07-42-827102-coder-events-runtime-and-projection.md).
+
+## Events pass: events-tools-and-prompt
+
+Shared map tools and actual update-agent prompt/adapter implemented. read_map_events, lookup_map_person and upsert_map_event use normalized contracts, original source evidence bound to selected input IDs or observed live Miro, exact identity resolution, fresh optimistic tokens and independently authorized participation. Agent event writes cannot edit catalogues or remove unrelated participants implicitly. Coder47/47 combined contract/tool/prompt/Calendar regressions passed; actual prompt20402bytes under24KiB. Root inspected tool definitions/adapter and corrected guide to say worker registered, chat registration deferred. No model calls, deployment or worker activation. Runtime and independent tester/evaluator acceptance remain separately recorded.
+
+
+[Pass record](history/2026-10-18_13-07-42-735360-coder-events-tools-and-prompt.md).
+
+## Latest UI: Flock composer and stable long thought bubbles
+
+Header reads Flock@NYU without subtitle. Clear chat is removed; the send button becomes an accessible square stop while busy, preserving drafts and preventing accidental resubmission. Empty input uses ivory; enabled button uses logo pastels with the same1.4222222222s rotating color loop on hover/focus, respecting reduced motion. Long thought bubbles wrap against final portrait size from the first focus frame instead of resizing with the avatar.7/7 assistant tests, frontend build and desktop/mobile actual-component browser/pixel/90-frame bubble checks pass. Concurrent backend/event work preserved. [Pass record](history/2026-10-18_13-04-29-283721-orchestrator-flock-composer-stable-thought-bubbles.md).
+
+## Events SQL implemented; independent review running
+
+026creates/backfills the three normalized tables and service-only snapshot/CAS RPCs;027checks exact migrated event/building/person relationships before removing legacy JSON/RPCs. Coder18/18 real SQL checks pass; root inspected source. Independent evaluator running; runtime and tools specialists finishing. No new hosted writes yet. [SQL pass](history/2026-10-18_13-03-46-537221-coder-events-sql-schema-and-cutover.md).
+
+## Active: normalized events and relationships
+
+User authorized implementing events/event_buildings/event_people, replacing people_here and scheduled_events after verified migration. No primary/per-person building assignment; participants can display at all linked buildings and multiple simultaneous events. Planner completed; SQL/backfill, normalized projection and shared agent-tool specialists are implementing independently. Root added current-source map authorization (3/3 focused tests); hosted read-only baseline is9buildings/26people/5presence/4events through025. Existing UI edits preserved. No new hosted writes/deployment/model calls yet. Next: finish implementations, independent SQL/runtime/tool checks, backfill and compare hosted semantics, then cut over/drop legacy columns and verify live browser. [Pass record](history/2026-10-18_12-59-53-308968-planner-events-relationship-contract.md) [Pass record](history/2026-10-18_12-59-53-309355-orchestrator-events-source-access.md)
+
+## Latest: stacked event metadata and borderless launcher
+
+Event date/time and location are separate lines again, grouped with2px spacing and consistent12px text; long text wraps. This supersedes the single-line trial. Assistant launcher white border removed while inset shading remains. Build and direct desktop/mobile Chrome layout/style checks pass. [Pass record](history/2026-10-18_12-57-15-474689-orchestrator-stacked-events-borderless-launcher.md).
+
+## Latest: assistant white border removed
+
+Assistant dialog now has no outer border; avatar-matched ivory/inset shading remains. Build and direct Chrome border/shadow checks pass. [Pass record](history/2026-10-18_12-56-19-846775-orchestrator-remove-assistant-white-border.md).
+
+## Superseded: single-line scheduled event metadata
+
+Building-event date/time and location now share one line separated by a middle dot. Long metadata truncates visually with full text retained in DOM/hover title. Build and desktop/mobile isolated CSS checks pass. [Pass record](history/2026-10-18_12-55-40-461911-orchestrator-single-line-event-metadata.md).
+
+## Latest: avatar-matched assistant edges and empty events alignment
+
+Assistant panel/launcher share avatar ivory #fdfaf0 and matching inset highlight/shadow colors. Empty building-event messages are centered. Production build and desktop/mobile headless Chrome computed-style/alignment checks pass; implemented directly. [Pass record](history/2026-10-18_12-54-59-821097-orchestrator-avatar-matched-assistant-surfaces.md).
+
+## Latest: assistant cleanup and opening animation
+
+Removed keyboard hint and context/ready footer; empty controls collapse. Send is black with white arrow when enabled and neutral gray when disabled. Assistant opens with380ms scale/opacity pop-in on every opening, disabled for reduced motion. Offline error/Retry appears inline only when needed.7/7 assistant tests, production build and isolated desktop/mobile Chrome opening/color/removal/retry checks pass. Work performed directly as requested. [Pass record](history/2026-10-18_12-51-54-409037-orchestrator-assistant-ui-cleanup-pop.md).
+
+## Latest: centered Scheduled events heading
+
+Building activity's Scheduled events heading is centered using its existing h3 rule. Production build and direct desktop/mobile Chrome alignment checks pass. Implemented personally without subagents. [Pass record](history/2026-10-18_12-46-13-833539-orchestrator-center-scheduled-events.md).
+
 ## Latest: requested working tree committed and pushed
 
 All original pending content was split into12topic commits and pushed normally to origin/codex/dev through9084c93; remote SHA equality, clean tree and100%original live-file coverage verified. Topics separate assets, Calendar, map data/API, automation, branding/loading, selection, avatar/event/assistant UI, evidence and documentation. This publication receipt is included in a final docs commit/push.714Node cases pass across full run plus repaired assistant suite, both builds pass,42map/startup assertions and actual logo hover pass; secret/size/final whitespace checks clean. Ignored credentials/config/caches remain local. No deployment or additional cloud data changes. [Publication record](history/2026-10-17_20-37-19-668542-orchestrator-logical-commits-pushed.md).

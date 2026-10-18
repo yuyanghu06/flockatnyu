@@ -34,3 +34,17 @@ Building reference guides record inspected sources, placement/geometry contracts
 `map-presence.md` documents the protected map read API, circular portrait overlay, temporary Bobst fixture commands, source-policy boundaries and debug/test handoff.
 
 update-agent-prompt.md describes the actual runtime prompt/shared JSON contracts, the approved two-hour presence/event policies, safe interpretation/completion rules and remaining tool/deployment boundaries.
+
+`events.md` describes the normalized events/event_buildings/event_people schema, multi-location visibility, source-authorized reads, optimistic RPC writes and staged legacy-column cutover. It supersedes older building-owned presence/event JSON descriptions once the rolling snapshot records hosted cutover.
+
+miro-sync.md now documents live MCP access shared by both agents, application OAuth refresh, metadata-only registry policy and fixed Google Calendar reconciliation; the former snapshot worker is retired.
+
+`bug-reports.md` describes the minimal hosted table, structured chat tool, write boundary and verification.
+
+`long-term-memory.md` describes automatic shared club memory, injection, optimistic updates and schema/live verification.
+
+`chat-agent-prompt.md` records calm chat, eboard/general/team routing, Calendar-first/Miro fallback and evidence-backed map tools. `update-agent-prompt.md` records the autonomous planner/update contract. Configured-model smoke evidence lives under evidence/agent-prompts; synthetic fixtures exercise behavior without writing club source events.
+
+chat-agent-prompt.md includes user-directed fixed Calendar writes and the existing authorized Drive search/read behavior; autonomous planner provenance remains separate.
+
+`deployment.md` describes the private Railway website, isolated collectors/worker, environment-only gate and sole persistent Miro OAuth owner. Actual launch receipts remain in the milestone journal.

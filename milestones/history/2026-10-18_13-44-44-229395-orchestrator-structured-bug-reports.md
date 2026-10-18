@@ -1,0 +1,10 @@
+# Structured bug reports
+
+- Local timestamp / acting role: 2026-10-18T13:44:44.229395-04:00 / orchestrator, bounded side conversation.
+- Scope: new minimal bug report table and structured automatic chat recording tool.
+- Starting state: active concurrent Miro/event/UI work preserved.
+- Work performed and decisions: Implemented user-requested bug_reports table and chat tool. Hosted029 at20261018174146 adds exactly uuid,created_at,report JSONB, forced RLS/browser denial, service SELECT and service-only append RPC. Existing table permissions and function bodies/grants verified unchanged. Structured reports preserve summary, observed behavior, optional expectations/steps/context and server-owned original latest user message/building. UUID is server-owned per request; identical retries return existing receipt and changed payloads conflict. Chat automatically chooses bug_reports for actual user-reported product bugs and acknowledges only successful receipts. No report read/edit/delete tool or source-archive change.
+- Files: migration029; server/bug-reports.js; tools/bug-reports/; server/index.js,app.js,assistant-context.js; tests/bug-reports.test.mjs; guides,journal and evidence/bug-reports/.
+- Checks/evidence: 32/32 targeted real-SQL/tool/Hono-chat/Calendar/assistant checks pass. API build and focused whitespace checks pass. Hosted service-role write probe succeeded in a rolled-back transaction and left0reports. A fresh isolated API3138 exposed bug_reports; owned test server stopped. Existing main API3001 still had its old tool list and was deliberately not restarted from this side conversation. No real model calls, persistent synthetic bug report, production deployment, commits, worker activation or main-process interruption. Verification was direct, without independent agents.
+- Result: schema and implementation ready; activation in the existing preview remains the next normal main API restart.
+- Handoff: main thread should restart its API when its active work permits and confirm bug_reports inventory. Details: docs/bug-reports.md and evidence/bug-reports/hosted-receipt.json.

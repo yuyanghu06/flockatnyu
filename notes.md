@@ -38,3 +38,46 @@ Persist user-requested notes here across sessions. Preserve the user’s intent,
 - **Activity-based labels:** when the map-write tool is wired, the agent should set `people_here[].label` to a short description of what the person is doing at that location, based on what they have shared (for example, “Studying” or “Working on a project”). Do not guess the activity from the building alone; leave the label blank when the activity is unknown. This is a saved behavior requirement, not a claim that the tool is implemented.
 
 - **Attendance implementation correction (2026-10-17):** the later request to add Yuyang/Khidir as sample event attendees authorizes the small optional attendee_ids JSON extension and portrait display now, superseding the earlier attendee-array deferral only for this scope. Dedicated events table and automatic map population remain future work.
+
+## 2026-10-18
+
+- **Approved normalized events implementation:** implement events, event_buildings and event_people to replace map_buildings.people_here and scheduled_events after verified migration. This supersedes the earlier dedicated-table and event-driven-map deferrals and people_here-only mutation boundary for activity storage. Building/person catalogue edits remain unavailable to the agent. Keep names, faithful per-person labels, timestamps, provenance, current source checks and approved two-hour defaults.
+- **Visibility across multiple locations:** no is_primary or per-person building assignment. An active eligible participant displays at every building linked to that event. The same person may appear at several buildings/events simultaneously; deduplicate avatars only within one building. Separate event records express different groups at different locations. Future records stay upcoming until active; this display does not verify physical presence.
+
+- **All building activities and fixed types (2026-10-18):** show all authorized unexpired event kinds at a building, including personal plans/current activities; this supersedes the earlier club-event-only filter. Use exactly Study, Meeting, Event, Social and Other as predefined categories. Agent selects an existing type; catalogue editing remains unavailable. Exact later writable fields remain a later decision. First abstract geometric icon set rejected as unclear; use familiar book/people/calendar/speech-bubble/ellipsis symbols with the warm avatar/building treatment. Show bold weekday/date/time, then room/area separately without repeating the building name.
+
+- **Event icons cancelled (2026-10-18):** the user rejected both generated sets as unclear and requested deleting the event logos altogether. Remove category icon rendering and new generated event-icon assets. Keep the five predefined data types and attendee portraits. This supersedes the earlier icon request/style suggestions, including the literal-symbol revision.
+
+- **2026-10-18 — Automatic long-term club memory:** the model should proactively update the shared memory document whenever it finds club information in any chat that it judges useful to remember. Users do not need to ask it to remember or update memory. This is approved implementation behavior, not merely a future idea; explicit corrections/forget requests still apply.
+
+- **Future Luma API (2026-10-18):** consider integrating Luma's API later. Saved idea only; focus current work on existing integrations.
+- **Chat behavior (2026-10-18):** use a calm, friendly tone. Broad Discord updates read all authorized eboard channels first and summarize notable events/decisions; other general channels are secondary fallback. Individual team channels require an explicit user request; leadership-team and descendants are blacklisted for shared reads. Existing excluded categories remain excluded. Weekly schedule questions use the configured Google Calendar first; empty/unavailable Calendar results automatically trigger a Miro content cross-check for potentially unsynced events, distinguishing absence from failure. Gmail and other existing sources remain available.
+- **Autonomous planner/update agent (2026-10-18):** planner in this discussion means the existing update agent, not chat's internal tool selector. Keep30eligible-input/oldest30minute trigger. Per run prioritize eboard Discord evidence for current activity, study/cowork plans and explicit attendance; reconcile supported Miro events into fixedGCal and actualGCal occurrences into timed map events. Preserve stable identities, source evidence and existing people/building catalogues. Chat may also update the map from supported user requests/evidence. Miro remains read-only; no reverse board writes requested. Prompt/tool implementation authorized; activation/deployment stays separate.
+
+## 2026-10-18 — Event synchronization clarification
+
+Calendar is the canonical scheduled club-event view. The planner should reconcile
+clear authorized Discord event announcements/changes as well as live Miro plans
+into that Calendar. The map mirrors scheduled Calendar events and separately
+shows informal study/co-working/presence and personal plans; these do not all
+belong on Calendar. Discord RSVPs enrich participation on the same event. Miro
+remains read-only under the existing authorization; full bidirectional board
+synchronization is not implemented or authorized by this preference. Preserve
+human edits and defer conflicting/ambiguous matches rather than duplicating.
+
+## 2026-10-18 — Prefer slower Discord checks to throttling
+
+The user accepts longer bot scans and asked to slow Discord checks after seeing
+rate-limited partial summaries. Model behavior tests use synthetic Discord data
+but share the configured AI service; avoid unnecessary live-source checks and
+pace test model requests too.
+
+## 2026-10-18 — Live rollout and publication
+
+After the optimization pass, deploy the live website and backend services on
+Railway and enable the autonomous agent so updates begin. The frontend and chat
+API share a web service; collectors and background agent remain separate. Add
+a password gate with SITE_ACCESS_PASSWORD in private Railway environment
+variables only. Split the current working tree into logical commits, then push.
+This supersedes the earlier activation/deployment deferral for this rollout;
+preserve all source permissions and avoid credentials in code/history/output.

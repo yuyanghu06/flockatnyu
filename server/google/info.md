@@ -29,3 +29,13 @@ Gmail collection is independent of AGENT_AUTOMATION_ENABLED and other model-work
 `calendar-config.js` requires an explicit GOOGLE_CALENDAR_ID. `calendar-client.js` verifies account, Calendar scopes and the exact target’s writer/owner role before mutation; `../../tools/calendar/` exposes bounded event reads and Miro-sourced managed upsert/cancellation. Stable source-based IDs reconcile retries; ownership/hash markers and ETags protect human changes. Model arguments cannot choose another calendar. There are no attendees, invitations, recurrence or arbitrary deletes.
 
 The existing read connector and Gmail collector keep their read-only scope requirements. `google-connect.mjs --calendar` adds Calendar event and calendar-list access only when explicitly selected. Credentials remain in ignored local files/service secrets. Calendar connection does not enable the update agent or add Calendar writes to the chat agent.
+
+The chat API now constructs a Calendar client for the read-only wrapper in tools/calendar/chat.js. Existing Google authorization permits reads of the single configured club calendar; chat cannot select another target or call Calendar mutation tools. Live chat-tool read access was verified after the user confirmed sharing was resolved.
+
+Calendar provenance also accepts stable native-table row keys miro:<board>:<table>:row:<rowId>, with original URLs pinned to the table. Rows retain independent deterministic managed event IDs.
+
+`calendar-config.js` also reads AGENT_CALENDAR_SOURCE_ID for separately scoped map projection. Calendar selected output preserves validated original createdAt/updatedAt. `mailbox.js` extracts a single actual From mailbox for identity checks; quoted display text never supplies a second identity and ambiguous headers defer.
+
+User-directed Calendar writes use separate createChatEvent/updateChatEvent/cancelChatEvent methods with fixed target/account/ACL checks. readChatEvent supplies a hidden revision to the request adapter; conditional patches preserve untouched fields and autonomous ownership fingerprints. calendar-chat-prompt.js documents explicit current-user action, safe dates, duplicate checks and truthful receipts for both chat stages. Drive search/read remains the existing authorized read-only client; no new Drive write scope.
+
+Autonomous Calendar provenance also accepts exact server-owned fresh Discord message grants under stable guild/channel/message keys. It uses the existing managed fingerprints and human-edit protection; this is separate from explicit chat write authority.

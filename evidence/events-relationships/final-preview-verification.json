@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "stern_rows": 1,
+  "bobst_rows": 3,
+  "category_icons": 0,
+  "category_asset_requests": 0,
+  "room_prefix_removed": true,
+  "room_on_own_line": true,
+  "time_font_weight": "650",
+  "attendee_portraits": 4,
+  "thought_bubbles": 2,
+  "page_errors": [],
+  "private_screenshot": true,
+  "preview": "local5173/API3001",
+  "scope": "Existing live authorized records; no schema/data writes or model calls in this browser check"
+}

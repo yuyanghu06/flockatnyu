@@ -2,6 +2,26 @@
 
 The **update agent** is the backend autonomous processor. The user-facing conversational assistant is the **chat agent**. Existing automation module paths, commands and configuration keys retain their technical names.
 
+## Current agent prompt behavior
+
+The user's autonomous planner is the existing update agent. Chat behavior and source routing are in [chat-agent-prompt.md](chat-agent-prompt.md); the autonomous prompt is in [update-agent-prompt.md](update-agent-prompt.md). Defaults now permit sixteen model rounds and thirty-two tool calls within a three-minute run bound, so required source reads, identity resolution, map writes and explicit completion can fit. The thirty-input/oldest-thirty-minute trigger, one-minute cooldown, five-second polls and disabled-by-default worker remain.
+
+A trusted completion check prevents finish_batch from clearing inputs while required Calendar window pagination or actual-occurrence map projection remains unfinished. Exact source/occurrence identity, original timestamps and linked participation still apply. Calendar-to-map requires its own allowed AGENT_CALENDAR_SOURCE_ID; Miro remains read-only, Calendar mutations remain scoped to supported managed Miro/Discord club-event originals, and direct personal chat assertions cannot invent identity. Configured-model verification uses synthetic sources and inert write adapters; operational activation is separate.
+
+## Synchronization contract
+
+Calendar is the scheduled club-event view. Clear authorized Discord event
+announcements or changes and concrete Miro plans feed reconciliation into the
+fixed Calendar. The map projects Calendar occurrences and separately holds
+informal studying, co-working, presence and personal plans. An RSVP changes
+participation on the matching event; it does not create a new Calendar event.
+
+Miro remains a read-only planning source. This is source-to-Calendar-to-map
+reconciliation, with separate Discord participation, rather than bidirectional
+Miro editing. Preserve human Calendar edits, stable provider identities and
+source links. Ambiguous matches or conflicting sources stay pending. Actual
+implementation and model acceptance are recorded in the milestone snapshot.
+
 ## Local implementation and boundaries
 
 Migration018 creates `public.agent_input_cache(uuid, raw_response)` only. The raw
@@ -39,7 +59,7 @@ principal, current source-policy authorizer and tools. Each tool supplies name,
 description, an argument schema and its actual executor. See
 [the module guide](../server/automation/info.md) for exact contracts.
 
-Calendar tools require GOOGLE_CALENDAR_ID, additional Google Calendar consent and verified writer/owner access. Map writes and durable memory remain unimplemented; unsupported work stays queued. Missing required runtime/source configuration fails closed. Source IDs in cache JSON never grant access. Authorizers
+Calendar tools require GOOGLE_CALENDAR_ID, additional Google Calendar consent and verified writer/owner access. Normalized map event writes are implemented; durable memory remains unavailable and unsupported work stays queued. Missing required runtime/source configuration fails closed. Source IDs in cache JSON never grant access. Authorizers
 must recheck current allowlists/provider policy. Keep credentials in ignored
 environment files or service secrets, never in adapter output or source payloads.
 
@@ -139,10 +159,22 @@ Still planned: independently deployed chat agent and update agent processes shar
 
 ## Per-batch Miro and Calendar behavior
 
-Each eligible claimed batch must perform trusted Miro preparation after authorization and lease acquisition, before the first model call. Empty/waiting/cooldown/busy polls do not fetch boards or invoke models. Preparation failure releases the lease and preserves pending inputs. Fresh board metadata/frame context is untrusted evidence; a frame catalogue or partial page never certifies full-board coverage. Relevant frames, headings, legends, items and relationships must establish event dates and meaning. Large boards may require follow-up batches; unsupported table content and duplicate month frames remain explicit.
+Each eligible claimed batch must perform trusted Miro preparation after authorization and lease acquisition, before the first model call. Empty/waiting/cooldown/busy polls do not fetch boards or invoke models. Preparation failure releases the lease and preserves pending inputs. Fresh MCP navigation context is untrusted evidence and never certifies full-board coverage. Use MCP search followed by actual canvas calendar cells/headings or native table rows to establish event dates and meaning. Partial/skipped content and duplicate month frames remain explicit. No board content is stored; the old REST reader and snapshot worker are removed.
 
-The bundled adapter reuses existing scoped source reads and bounds large results with ephemeral, batch-local continuation fragments. Successful partial/empty reads retain their original status/coverage. Calendar actions require actual Miro item evidence observed during the current batch, the authorized board/source pair and a canonical original link. Queue inputIds identify the triggering batch for Miro-only work; stable Miro sourceKey/sourceUrl record the actual evidence independently.
+The bundled adapter reuses existing scoped source reads and bounds large results with ephemeral, batch-local continuation fragments. Successful partial/empty reads retain their original status/coverage. Calendar actions require actual MCP item or stable native-table-row evidence observed during the current batch, the authorized board/source pair and a canonical original link. Queue inputIds identify the triggering batch for Miro-only work; stable Miro sourceKey/sourceUrl record the actual evidence independently.
 
 Calendar writes target only the configured calendar and managed source-based events. Re-read relevant calendar state, preserve human changes, and defer ambiguous dates or unsupported times; a supported timed start with a missing end uses the approved two-hour default, while explicit and existing ends take priority. No absence-based cancellation, RSVP/presence inference, attendees, source writes or durable-memory claims are authorized by this wiring. Local implementation and consent do not themselves deploy or enable the worker.
 
 The runtime system prompt now imports structured people_here/scheduled_events contracts, synthetic examples and approved7200second current-presence/timed-event policies from server/map/contracts.js. See update-agent-prompt.md for exact limits, overrides, source-time semantics, label rules and test coverage. This does not register map tools, grant scheduled_events writes, remove Calendar preflight or activate the worker.
+
+## Normalized map tools (2026-10-18; supersedes legacy map prompt/storage above)
+
+The bundled adapter now registers read_map_events, lookup_map_person and upsert_map_event from tools/map. They share server/map/events.js with the map read path. Identity resolution is exact linked provider identity; write scope must match selected eligible batch input IDs and original source URLs, or observed live Miro evidence. Each participant carries independently checked provenance; unchanged participants may be retained after an authorized read, while removals require explicit participation state/end updates. New records receive approved deterministic two-hour defaults only where applicable. Optimistic conflicts remain failed actions and leave inputs pending. Hosted026/027now provide events/event_buildings/event_people and remove old building JSON/RPCs. The system prompt describes these actual contracts. Worker enablement, Railway deployment, pending Calendar sharing/preflight and a bounded real model pilot remain separate unfinished work.
+
+Miro live-only cutover: both runtimes use the same official MCP reader. Migration030preserves only existing registry identity/status and enabled/team metadata, removing miro_boards and sync RPCs. Calendar writes retain their own fixed-target Google API tools and require current-batch concrete MCP evidence.
+
+## Chat memory implementation (2026-10-18)
+
+The previously planned long-term note is now implemented for the chat agent through agent_memory and read_memory/update_memory. It is proactively maintained from useful club context in any chat without explicit remember requests. This pass does not register memory tools in the update agent or activate its worker; its prior no-memory capability boundary remains until separately wired.
+
+Production worker claims only configured shared source UUIDs using scoped RPC032. Outside-scope ingestion remains independent and deferred; it cannot trigger/starve valid work. This never grants source access or replaces fresh policy/ancestry checks. Deferred input retention is unchanged.

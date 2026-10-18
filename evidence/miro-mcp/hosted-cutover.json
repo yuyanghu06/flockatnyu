@@ -1,0 +1,27 @@
+{
+  "project_ref": "jssehnrmqhstcrtxulpa",
+  "local_migration": "202610180030_miro_mcp_live_only.sql",
+  "hosted_version": "20261018174413",
+  "name": "miro_mcp_live_only",
+  "sha256": "cbd7e3473d115c25beb04735808ddf25157ce2378b8deefc3085911071b08380",
+  "verification": {
+    "snapshot_table_removed": true,
+    "legacy_functions": 0,
+    "registry_sources": 1,
+    "service_can_read": true,
+    "anon_can_read": false,
+    "authenticated_can_read": false,
+    "forced_rls": true,
+    "buildings": 9,
+    "people": 26,
+    "events": 9
+  },
+  "preservation_assertions": [
+    "Every existing non-snapshot public table data hash unchanged (knowledge_sources excludes only new miro_scope)",
+    "All retained table ACL/RLS flags unchanged",
+    "Exact existing Miro source UUID/board/team/enabled preserved; source fields/status/timestamps unchanged",
+    "No old snapshot table or sync/cached-content functions",
+    "Service-only registry read; browser execution denied"
+  ],
+  "applied_at": "2026-10-18T17:44:13.992990+00:00"
+}

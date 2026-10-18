@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-18T19:12:40.812Z",
+  "evidence": "configuration_only_no_provider_calls",
+  "chatRequestMs": 300000,
+  "modelCallMs": 120000,
+  "discordRequestGapMs": 750,
+  "discordScanMs": 120000,
+  "worker": {
+    "enabled": false,
+    "rounds": 16,
+    "calls": 32,
+    "runMs": 180000
+  },
+  "calendarMapSourceConfigured": true,
+  "noLiveEventWrites": true
+}

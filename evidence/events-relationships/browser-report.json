@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "name": "Real SQL001–028 applies and removes legacy building JSON",
+      "pass": true
+    },
+    {
+      "name": "Actual event service/store creates one event with two buildings and two people",
+      "pass": true
+    },
+    {
+      "name": "SQL→store→projection shows every linked building, overlaps deduplicate and future stays upcoming",
+      "pass": true
+    },
+    {
+      "name": "Trusted event reads expose exactly five fixed types and safe API event metadata",
+      "pass": true
+    },
+    {
+      "name": "Actual campus loads and renders six normalized person/building markers",
+      "pass": true
+    },
+    {
+      "name": "Bobst selection/focus displays scheduled events and actual attendee portraits",
+      "pass": true
+    },
+    {
+      "name": "Courant transition preserves complete geometry bounds and shows same participants",
+      "pass": true
+    },
+    {
+      "name": "Stern all-day personal plan appears in building card with blank-label participants",
+      "pass": true
+    },
+    {
+      "name": "Future Kimmel personal plan has a building card and portraits without current avatars",
+      "pass": true
+    },
+    {
+      "name": "Person schedule includes simultaneous locations and future plans without early avatars",
+      "pass": true
+    },
+    {
+      "name": "Person schedule retains a future return to the currently focused building",
+      "pass": true
+    },
+    {
+      "name": "390px actual map keeps scheduled cards/attendees usable without page overflow",
+      "pass": true
+    },
+    {
+      "name": "390px five-type cards have no category icons, full-width details and portraits below",
+      "pass": true
+    },
+    {
+      "name": "Missing, unknown and malicious unused type metadata never creates icons or asset requests",
+      "pass": true
+    },
+    {
+      "name": "Actual frontend accepts over 200 scheduled events and Tokyo all-day uses its local date",
+      "pass": true
+    },
+    {
+      "name": "Current source revocation removes event/participant data in actual UI on refresh",
+      "pass": true
+    },
+    {
+      "name": "No uncaught browser errors, category images or category asset requests",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "requestFailures": [],
+  "externalRequests": [],
+  "typeAssetRequests": [],
+  "runtime": {
+    "apiPort": 50133,
+    "webPort": 50134
+  },
+  "rpcCallCount": 45,
+  "currentPolicyChecks": 998,
+  "viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "limits": [
+    "Synthetic PGlite database and injected Discord message service, real SQL/RPC adapters and frontend.",
+    "Five-type mobile/untrusted-metadata cases inject synthetic authorized projections at the HTTP browser boundary; normal checks use real SQL/runtime responses.",
+    "No hosted migration, real member data, live bot/model, production authentication or deployment tested.",
+    "Chrome headless desktop/device-size emulation; no physical mobile/touch/GPU performance claim.",
+    "Unchanged geometry bounds and real camera transitions checked; no new geometry or full visual-coordinate survey."
+  ]
+}

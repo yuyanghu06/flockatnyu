@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-18T19:54:09.398Z",
+  "status": 200,
+  "eventTypes": [
+    "meta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "delta",
+    "done"
+  ],
+  "answerCharacters": 22,
+  "errorCodes": [],
+  "sourcePayloadSaved": false
+}

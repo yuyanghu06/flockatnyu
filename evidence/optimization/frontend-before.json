@@ -1,0 +1,27 @@
+{
+  "phase": "before",
+  "browser": "Installed Chrome, SwiftShader; CPU operation counts, not physical GPU/FPS",
+  "checks": [
+    "500 deltas/12,000 chars terminal completion exact",
+    "Measured focused 600 frames and unchanged presence refresh",
+    "New York midnight changes focused card date",
+    "Presence and scheduled event expire without network refresh"
+  ],
+  "metrics": {
+    "stream": {
+      "renders": 501,
+      "chars": 12000
+    },
+    "presence": {
+      "sameMarker": false,
+      "extraLayoutPrepares": 0,
+      "stable600Frames": {
+        "cardCalls": 600,
+        "cardDerivations": 600,
+        "itineraryCalls": 600,
+        "cpuMs": 6.5
+      }
+    }
+  },
+  "externalRequests": []
+}

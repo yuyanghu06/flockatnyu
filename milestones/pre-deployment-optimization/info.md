@@ -1,0 +1,5 @@
+# Optimization and live deployment
+
+Goal: review and improve frontend rendering, backend/integration/agent overhead, then deploy the live Railway website and autonomous services with a password gate, split current work into logical commits and push. User authorized activation/deployment after optimization on2026-10-18, superseding earlier deferredactivation boundaries for this rollout. Password is SITE_ACCESS_PASSWORD in private Railway environment variables.
+
+Status: implementation and independent verification accepted; live site/collectors pass, corrected worker is processing its first scoped batch. Final worker outcome and push remain. Preserve source permissions, current evidence, immutable migrations and existing dirty work. Acceptance requires measured before/after improvements, relevant/full regressions and browser evidence, private-gate tests, sanitized deployment contexts, hosted health/agent outcome evidence, logical commits and successful push. No credentials in code, commits, logs or artifacts.

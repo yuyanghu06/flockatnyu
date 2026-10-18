@@ -24,76 +24,100 @@ in that file are private operational data; do not commit it. Partial failures
 report successful, skipped and failed rows separately. This tool does not deploy
 anything, activate tracking, or assign a person's physical location.
 
-`presence.js` supplies the read-only `/api/map/presence` backend. It reads the
-minimal `map_buildings` and trackable-person selects
-with server-only credentials, fixed origins, response-size limits and a bounded
-request deadline. The service separates active occupants from future planned entries in an `upcoming` array, with identical validation and current-source policy checks. Future plans do not appear as current map avatars. Browser responses include only building identity and safe
-portrait/name/label/status/time fields; Discord IDs, email and source provenance remain
-server-side. Portrait URLs are restricted to this project's avatar directory.
+`events.js` supplies the shared trusted normalized-event store and service.
+`events` holds one activity occurrence, `event_buildings` links every applicable
+fixed building, and `event_people` links canonical trackable roster identities.
+The service-only `map_read_events` RPC returns all event states, including past
+and cancelled records needed for reconciliation. Limits are100buildings,
+500people,2000events,20000rows per relationship and16MiB total; overflow fails
+instead of truncating. Fixed HTTPS origin, private credentials, streamed response
+bounds, cancellation and a maximum15second deadline apply to all requests.
 
-The explicit Bobst debug fixture is shown only to the authenticated loopback
-`local-development` principal outside production. Its provenance is used only
-for authorization; no fixture flag or derived display text is sent to browsers.
-Each presence entry carries its own `label`, preserved verbatim (including blank
-labels) with at most 200 Unicode code points. Invalid/missing labels are hidden,
-not replaced with inferred text. Person/building names also come from tables.
-The fixture script explicitly writes `label: "Test"`; these are temporary planned
-test occupants, not verified physical presence.
-All other entries require both the principal source allowlist and a positive,
-current-policy `authorizeSource` callback. Without that callback they stay hidden.
-Production keeps the existing fail-closed member authentication. Responses are
-`no-store`, and unavailable/unconfigured data returns HTTP503 rather than a
-fabricated empty success. Store, fetch, clock and policy seams are injectable for
-independent tests. No map write endpoint or frontend database grant is added.
+The service exposes authorized event reads, exact linked Discord/email identity
+lookup and complete optimistic event replacement through `map_upsert_event`.
+Provider IDs are lookup inputs only; safe profiles are returned without email or
+Discord identity fields. Lookup requires authorized supporting provenance.
+Every event and participant source requires the principal's shared allowlist
+and a strictly positive current-policy callback, which defaults to denial.
+Replacement also authorizes removed/replaced old participation and repeats the
+checks immediately before the transaction. Source identity is immutable;
+concurrent changes yield a conflict, with no broad catalogue/profile write API.
+Read responses retain authorized provenance for trusted agent reconciliation;
+browser responses do not. Unknown people/buildings, extra keys, invalid time
+windows and duplicate relationships are rejected. Service writes accept optional
+new event UUIDs but require stable original source-record identity.
 
-Fixed location boundary: migration022 restricts runtime map_buildings mutations to people_here. IDs/names/aliases and building insert/delete are denied; updated_at is maintained internally by the validation trigger. Existing invoker moves and read API remain compatible. Future map agent tools must preserve this boundary; none are exposed yet.
+New timed scheduled events with known starts and missing ends use start+7200
+seconds. New explicit current presence reports may use report+7200 only when
+start equals the original report and is not future-dated; delayed processing
+never refreshes the expiry. Personal plans, all-day dates and unknown starts do
+not borrow this default. Explicit ends win. Complete updates missing a known
+end are rejected rather than resetting it. SQL optimistic tokens protect state
+concurrency; source chronology remains an evidence/prompt responsibility because
+migrated legacy event report times may be event-start proxies.
 
-Explicit owner-requested local plans have a separate exact provenance pair,
-one fixed existing person ID and only the three approved locations. This is
-available solely to the loopback local-development principal outside production;
-partial/forged provenance, other people/locations and non-planned statuses are
-rejected. It is not a general source-policy bypass or an agent write tool.
-Today/current map entries still require valid_from <= now < expires_at; future
-plans are returned only under upcoming. Applied SQL and catalogue stay unchanged.
+`presence.js` supplies the read-only `/api/map/presence` browser projection from
+these normalized relationships, with no legacy JSON fallback. An active confirmed
+event with going participation places each trackable person at every linked
+building. One person may appear at multiple buildings. Within one building,
+overlapping activities produce one avatar, a deterministic caption, the union
+of active time intervals and safe per-activity details. Participant-specific
+arrival/departure overrides inherit event boundaries and must remain inside the
+event. Future participation appears only in upcoming schedules. Named-timezone
+all-day dates use real local midnights, including daylight-saving changes;
+unknown/cancelled/superseded windows do not populate maps.
 
-Building reads now include scheduled_events. The service returns safe events
-per building after validating times, statuses, flat display fields, safe HTTPS
-links and timezone. Expired/cancelled events are omitted and results sort by start.
-Both the principal source allowlist and a positive authorizeSource check remain
-mandatory; local person/debug provenance never grants event access. The runtime
-callback is still default-deny/unwired. Source metadata is never returned.
-Migration024 is applied; this module adds no event-writing endpoint or adapter.
+Projected responses are bounded to50000upcoming entries,2000events and500people
+per building, and16MiB total; overflow returns unavailable rather than truncating.
 
-`contracts.js` exports deeply frozen entry/array schemas for `people_here` and
-`scheduled_events`, a shared `MAP_RECORD_CONTRACTS` catalogue, synthetic
-`MAP_RECORD_EXAMPLES`, and `buildMapRecordPrompt()`. The update-agent system
-prompt embeds these same objects and semantic decisions directly. Schemas use
-the existing tool-schema keyword subset; they are storage descriptions, not a
-second validation engine or registered map tools. Database/trusted tools still
-must enforce canonical UUIDs (any version/variant), known trackable identities,
-source policy, valid ordered times, timezone names, trimmed titles and uniqueness.
-String bounds describe PostgreSQL Unicode code points; generic tool argument
-validation counts UTF-16 units, so a future map adapter must address that mismatch.
-Example IDs and sources are illustrative only and must never become live data.
-People mutations require linked provider user identity; building events require
-stable provider event/source identity without a person/attendee lookup. The
-default bundled adapter has no map tools; actual trusted tool definitions govern
-callability, including custom adapters. No agent map writer, profile/catalogue
-permission or scheduled-event write grant
-is introduced. Current scheduled-event runtime access remains read-only.
+Building event lists include all normalized event kinds with known unexpired
+current or future windows, including personal_plan and presence activities.
+Personal activities require at least one authorized, trackable, nondeclined
+participant whose effective window has not ended before their stored title and
+portraits can be shown. Scheduled events may remain visible without attendees.
+Tentative events remain visible, while tentative/declined participation never places avatars.
+Attendee portraits require independent event and participation authorization.
+Only trackable roster names and safe local avatar paths reach browsers. Labels
+remain verbatim plain text, including blank labels and literal angle brackets,
+with200Unicode code points maximum. No provenance, private linked identities or
+inferred activity text is sent to the frontend. Unavailable/unconfigured data
+returns a bounded503 path rather than fabricated empty success; existing member
+authentication and no-store API behavior remain.
 
-Explicit Bobst event UI fixtures have a separate provenance pair from person fixtures. Only nonproduction local-development, Bobst, exact source UUID/URL and bobst-ui-debug-v1-/[UI TEST] prefixes qualify; ordinary events retain allowlist plus current-policy checks. No runtime event-write grant added.
+Three exact nonproduction local-development fixture scopes remain separate:
+Bobst planned-person fixtures, the owner's explicit three-building plans and
+Bobst events with original bobst-ui-debug-v1- source-record and [UI TEST] name
+prefixes. Each event and participant must qualify independently. These are not
+general runtime source grants, and production never uses them.
 
-`PRESENCE_DEFAULT_TTL_SECONDS` and the frozen `PRESENCE_DEFAULT_POLICY` document
-the user-approved two-hour freshness cutoff for explicit current self-reports
-without an end, anchored to the original provider timestamp. New explicit location
-confirmation refreshes it; activity-only edits do not. Explicit ends override it;
-future plans/events cannot use that presence freshness policy. These are prompt policy exports, not an active
-writer or automatic expiry application in a registered map tool.
-`EVENT_DEFAULT_DURATION_SECONDS` and frozen `EVENT_DEFAULT_POLICY` separately
-describe the approved two-hour duration for timed events with supported starts
-and missing ends. Explicit source ends/durations override it; partial edits
-preserve known ends, all-day dates use exclusive local-midnight ends, and unknown
-starts defer. These constants change no existing stored data or tool capabilities.
+`contracts.js` documents agent-facing structured records and policies; the shared
+map tools consume the trusted service. Tool registration, worker enablement and
+external deployment are distinct integration steps. This module never deploys,
+activates workers, edits the building catalogue or changes source permissions.
 
-Optional event attendee_ids are validated and resolved only after event authorization. Only trackable map_people names and safe local portraits reach attendees; no emails/provenance or automatic presence writes.
+Overlapping activity captions use the newest authorized active participation with
+a nonblank label. Newer blank or whitespace-only attendance labels do not hide an
+older supplied activity; all-blank records remain blank. Supplied nonblank wording
+is preserved verbatim, and denied, expired or future participation cannot supply
+a current caption. Caption recency uses each participant's reported_at independently
+of the event's report timestamp; equal participation timestamps retain stable event
+ordering. Ranking stays private to the projection. Event names are never used to
+infer activity labels.
+
+`event_types` is the immutable activity-classification catalogue, independent of
+presence/personal_plan/scheduled_event kind. The user-selected codes are study,
+meeting, event, social and other. Strict snapshots include at most100validated
+catalogue rows with unique codes/icons and known event.type_id references; a
+missing catalogue or unknown reference fails closed. Trusted reads always return
+the full safe catalogue even when event filters match nothing. Browser event
+types contain only code, name and iconKey from validated metadata, never icon
+URLs. New direct-service writes default an omitted type to other; updates preserve
+the existing classification when omitted. Agent tool arguments require an explicit
+existing type, grounded in evidence, other when unknown and preserved on unrelated
+edits. There is no catalogue mutation tool or additional building/profile authority.
+
+The user subsequently cancelled event icons. The five-type catalogue and required type_id remain;028icon_key/APIiconKey are reserved compatibility metadata and do not cause frontend images or remote requests. All current/future authorized event kinds remain in building cards, with private personal-plan participant gating.
+
+Calendar provenance now verifies the configured allowed Calendar source UUID and exact canonical event link against a current read of the fixed calendar. Source access is rechecked by the shared service. Both agent adapters bind Calendar record identity to the observed eventId; attendance uses separate authorized originals. Request-local chat and batch-local update identity receipts bind changed participants to exact original author/sender evidence. Building/profile/type catalogues stay fixed.
+
+`chat-intent.js` recognizes affirmative current-turn map action clauses and rejects negated actions for chat write authorization; source content cannot supply that intent.

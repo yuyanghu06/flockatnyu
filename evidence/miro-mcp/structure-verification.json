@@ -1,0 +1,65 @@
+{
+  "verifiedAt": "2026-10-18T14:21:47.761666-04:00",
+  "inspection": {
+    "browser": "Chrome School profile",
+    "teamBoardCount": 3,
+    "applicationAuthorizedBoardCount": 1,
+    "sectionLayoutVerified": true,
+    "duplicateMonthCalendars": true,
+    "copiedYearConflicts": true,
+    "headerTargetSearchesDoNotFindMonthCalendars": true,
+    "sourceChanges": 0
+  },
+  "implementation": {
+    "sharedChatPlanningAnswerAndUpdateGuide": true,
+    "freshLiveContentRequired": true,
+    "sourceScopeExpanded": false,
+    "workerEnabled": false,
+    "localFrontendPort": 5173,
+    "localApiPort": 3001
+  },
+  "liveChecks": [
+    {
+      "questionType": "internal bonding",
+      "actualCanvasRead": true,
+      "toolCalls": 4,
+      "contentSources": 11,
+      "coverageDisclosed": true
+    },
+    {
+      "questionType": "applications year consistency",
+      "actualContentRead": true,
+      "toolCalls": 5,
+      "yearConflictFlagged": true,
+      "unreadFullCanvasDisclosed": true
+    },
+    {
+      "questionType": "public event window",
+      "actualCanvasRead": true,
+      "toolCalls": 6,
+      "contentSources": 11,
+      "publicAndInternalSectionsDistinguished": true,
+      "marketingSeparated": true,
+      "failedToolStates": 0,
+      "calendarRescue": false,
+      "coverageDisclosed": true
+    },
+    {
+      "questionType": "named event versus promotion",
+      "actualCanvasRead": true,
+      "toolCalls": 5,
+      "contentSources": 11,
+      "marketingSeparated": true,
+      "missingTimePreserved": true,
+      "failedToolStates": 0
+    }
+  ],
+  "limitations": [
+    "Only one configured authorized board, not every OAuth-visible board.",
+    "Provider skipped content and bounded reads remain partial.",
+    "Copied year conflicts require live corroboration; guide does not resolve author intent.",
+    "Question routing is model-driven; successful representative questions do not guarantee whole-board coverage."
+  ],
+  "sourceWrites": 0,
+  "privateOriginalsPersistedInRepository": false
+}

@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-18T19:55:47.428Z",
+  "fullRegression": {
+    "command": "node --test tests/*.test.mjs",
+    "passed": 1004,
+    "failed": 0,
+    "skipped": 0
+  },
+  "builds": {
+    "frontend": "passed",
+    "api": "passed"
+  },
+  "frontend": {
+    "streamRendersBefore": 501,
+    "streamRendersAfter": 1,
+    "stableFrames": 600,
+    "cardDerivationsBefore": 600,
+    "cardDerivationsAfter": 0,
+    "unchangedMarkerIdentityPreserved": true
+  },
+  "backend": {
+    "sameChannelInputs": 20,
+    "authorizationAdapterCallsBefore": 120,
+    "authorizationAdapterCallsAfter": 6,
+    "discordHTTPBefore": 40,
+    "discordHTTPAfter": 2,
+    "answerFixtureBytesBefore": 37308,
+    "answerFixtureBytesAfter": 24492
+  },
+  "security": {
+    "independentCasesWithPackaging": 23,
+    "passed": 23,
+    "hostedDesktopAndMobile": "passed",
+    "hostedModelGreeting": "passed"
+  },
+  "limits": [
+    "Synthetic render/authorization measurements do not establish device FPS or live service throughput.",
+    "No billed-token savings measured.",
+    "Final full regression includes scoped claim migration and native origin fix.",
+    "Agent real batch outcome pending; outside-scope inputs stay deferred."
+  ]
+}

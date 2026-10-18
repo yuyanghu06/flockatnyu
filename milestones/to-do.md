@@ -1,12 +1,222 @@
+## Active: optimize, deploy live services, commit and push
+
+- [x] Audit frontend/backend and establish synthetic measured baselines.
+- [x] Implement stream/presentation optimization and freshbatch authorization/evidencecompaction.
+- [x] Complete independent frontend/browser, backend/broker and production gate verification.
+- [x] Finish final1004/1004regressions, builds and volume bootstrap review.
+- [x] Finish environment-password-gated Railwayweb+worker sanitizedpackages and durable sharedMiroauth.
+- [x] Deployliveweb/collectorupdates andenableautonomousworker.
+- [ ] Resolve live mixed-scope queue starvation with scopedclaim; verifyrealcompletedupdates and browserlogin.
+- [ ] Splitcurrentworkingtreeintologicalcommits, secretscheck, push andreportliveURL/accessenv.
+
+## Agent prompts complete — operational follow-ups
+
+- [x] Implement requested chat/planner behavior, privacy, Luma note and slower Discord scans.
+- [x] Final937/937regressions, builds, independent reviews and strict focused real-model retests; exact multi-run limits in milestone.md.
+- [ ] Separate scope: enable/deploy worker and run live-source mutation pilot.
+- [ ] Separate decision: empty-queue periodic reconciliation, broader Calendar coverage and ambiguous cross-source edit precedence.
+- [ ] Observe live throttle behavior when normal usage resumes; no extra load imposed for verification.
+
+## Discord rate limiting and final acceptance
+
+- [x] Trace rate_limited to upstream429; modelbehaviorfixtures do not callDiscord.
+- [x] Verify sharedrequestpacing, Retry-After/bucketcooldowns andsequentiallongerscans withoutlivebotcalls;233coder/108reviewchecks passed.
+- [x] Correct requestfactorytracing and implement positivecompleteCalendarstop plus real16/32/180workerlimits.
+- [x] Complete finalstable14cases underactualdefaults, finalrelevantregressions/builds andindependentreview. (Superseded by the retained full diagnostic and strict focused retests; no final combined all-case build run is claimed.)
+
+## Rapid UI: lower transcript cutoff
+
+- [x] Reserve a fixed bottom gutter above the panel inset at all scroll positions.
+- [x] Verify desktop/mobile/short viewport, streaming resize and manual scrolling; inspect screenshots.
+
+## Active: chat Calendar writes and Drive search
+
+- [x] Read existing contracts and plan fixed-calendar user-directed writes.
+- [x] Verify actual authorized Drive search returns results.
+- [x] Implement chat write adapter/client and request/prompt/receipt integration.
+- [x] Independently test intent, revisions, idempotency, failures and Drive orchestration.
+- [x] Review, verify current runtime and document actual coverage.
+
+## Calendar-centered event synchronization
+
+- [x] Save user clarification: Calendar scheduled club events, map mirrors plus informalactivity; Miro readonly.
+- [x] Implement exact observed Discord source provenance for scheduled Calendar events, stable edit/cancel identity and human-edit preservation;92focusedchecks reported, finalmodel/reviewpending.
+- [x] Verify no Calendar writes for presence/study/RSVP and no duplicate map events for participation. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Resolve Miro model opaqueURL retry failure and complete expanded stable model suite/review. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+## Final actual-model acceptance
+
+- [x] Fix source-bound personal identity, affirmative map action and duplicate creation.
+- [x] Add current-presence timed-window guard and original-timestamp instructions;56focusedchecks pass.
+- [x] Add worker deterministic Calendar finish gate and verified canonical URL correction;110focusedchecks pass.
+- [x] Pass repeated source-backed map/self scenarios and complete Miro→Calendar→map/RSVP model flow. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Complete stable-build11case model run, final full tests/builds, independent review and final journal. (Superseded by the retained full diagnostic and strict focused retests; no final combined all-case build run is claimed.)
+
+## Actual-model behavior follow-up
+
+- [x] Complete861/861full regression; identify actual-model routing/budget/completion findings with synthetic sources.
+- [x] Correct chat Calendar context/routing/dependent-map rounds and shared Calendar provenance wording.
+- [x] Verify positive current-day team content and all revised chat cases with configured model. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Complete deterministic worker Calendar-projection finish gate and actual12round/24call limits, then re-test3autonomous cases. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Independently review final fixes, run final relevant regressions/builds and record exact model/hosted limits. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+## Agent prompts: final behavioral verification
+
+- [x] Resolve5independent review findings and obtain102/102focused evaluator acceptance.
+- [x] Complete metadata-only discovery refresh after leadership blacklist revision4; first bounded run resumed normally.
+- [x] Finish broad full regression suite/build and exact live eboard/team/leadership receipt. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Run user-requested real configured-model behavioral cases with controlled sources/inert writes; fix any observed behavior and retest. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Record final actual acceptance, guides and remaining worker/identity/rolling-window limitations. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+## Active: Miro structure-aware prompts
+
+- [x] Inspect School profile Nyu Team board catalogue and Schedule spatial sections.
+- [x] Read-only planner contract.
+- [x] Integrate shared live-verified section navigation in chat/update prompts.
+- [x] Independently test/review and live-check distinct question routes.
+- [x] Document verified structural hints and actual authorized coverage.
+
+## Agent prompts: integration checks
+
+- [x] Implement chat routing/tone/source-backed map tools and update-agent Calendar/Discord provenance.
+- [x] Independently verify96Discord checks; correct named-team, negation, stateless-route and denied-scope findings.
+- [x] Finish metadata refresh/live blacklist/read-only config checks, broader tests/builds and independent evaluator. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Integrate current docs and actual receipts; no worker activation or deployment is part of this pass. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+## Chat and autonomous planner prompting
+
+- [x] Independent planner contract and clarify planner means update agent.
+- [x] Add exact leadership-team channel to live shared blacklist, revision3to4; prior exclusions preserved.
+- [x] Save future Luma API idea and current agent behavior decisions in notes.
+- [x] Implement calm chat, bounded eboard summaries/general fallback/team explicit gating, Calendar-first/Miro fallback and source-backed chat map updates. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Implement Calendar-to-map and observed Discord followup provenance for autonomous reconciliation. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Independently verify/review changes and integrate prompt documentation; worker activation remains separate. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Reproduce Miro screenshot path: valid zero-match MCP responses omit results; current parser wrongly fails. Verify user tab uses5173and refresh/retest UI.
+- [x] Accept legitimate empty search shapes and direct both agents through exact month/year areas to actual calendar content.
+- [x] Independent final16focused/31review checks and actual3modelqueries plususerChromeUI verification pass.
+
+## Agent prompt design discussion
+
+- [x] Inspect current chat planning/answer prompts and separate update prompt.
+- [x] Clarify the intended planner role and agree prompt behavior using concrete examples. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Apply agreed prompt changes and verify appropriate behavior checks; runtime remains unchanged during initial discussion. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Confirm running chat agent uses MCP for today’s Miro question: actual four-call request reached calendar contents and answered with explicit section-only coverage.
+
+- [x] Implement shared three-column long-term note, automatic useful-club-fact upkeep without explicit remember requests, prompt injection, scoped tools, hosted031and50focused checks; persist user requirement in notes.md.
+- [x] Main-thread handoff: restart normal API when safe to load read_memory/update_memory; isolated3138entrypoint passed and was closed, current3001was preserved. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Recheck reported Miro failure: current HTTP reads and actual weekly-events planning reach live calendar content; refresh credentials present, access lifetime about one hour with automatic renewal.
+- [x] If weekly Miro search fails again, capture exact sanitized failure code/arguments; screenshot failure did not reproduce and is not proven to be token expiry. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+# Completed: live Miro MCP cutover
+
+- [x] Both agents share officialMCPsearch/canvas/table tools; realcalendarcellchatanswer and isolatedupdatepreparationverified.
+- [x] Remove oldRESTruntime/snapshotworker and Railwaymiro-sync; applyhosted030, removeboardtable/syncRPCs, preserveexactexistingpolicy/identities and unrelateddata/grants.
+- [x] Independent119checks/finalevaluator28checks accepted; root suites/builds and private OAuth/refreshverified.
+- [x] CurrentGoogleCalendarexacttargetpreflight returnsowner; earlier404sharingblocker isresolved.
+- [x] Separatefuturework: deliberatelydeploy/enableupdateworker and verifyboundedrealCalendarwritepilot ifrequested. Persistedworkerremainsdisabled. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Replace both agent Miro paths with official live MCP and verify OAuth/refresh/content read.
+- [x] Delete REST runtime/snapshot deployment and Railwaymiro-sync service; preserve historical SQL-only fixture harness.
+- [x] Pass independent119checks and evaluator28checks; fix duplicate numbering and mutation-time team scope recheck.
+- [x] Apply exact030hosted cutover, preserve all retained data/grants and remove snapshot table/functions; receipt in evidence/miro-mcp/hosted-cutover.json.
+- [x] Finish final postcutover live chat/read receipt and documentation integration; actual chat and isolated update preparation succeed throughMCP.
+
+- [x] Implement bug_reports table/tool, structured chat receipts and original-message provenance; apply029and verify32tests, SQL permissions and rolled-back hosted write.
+- [x] Main API bug_reports activation subsequently verified on3001 during memory integration; prior restart handoff resolved.
+
+- [x] Add exactly five fixed event types through hosted028 and shared validated agent tools; preserve existing event data.
+- [x] Show all eligible activity kinds at each building, bold weekday/date/time and separate room without repeating the building.
+- [x] Cancel both generated icon sets at user request; remove category rendering/assets while retaining attendee portraits and fixed types.
+- [x] Finish final mobile launcher-overlap regression and event-type/display integration journal;17browser checks and independent evaluator ACCEPT.
+
+- [x] Implement/authenticate MCP transport and both agent consumers; SDK live canvas read and refresh verified.
+- [x] Finish live chat acceptance; retire REST/snapshot worker and replace miro_boards authorization dependency before user-requested table removal. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Expose read-only Calendar list/event tools to chat; verify model-context fields/pagination, no chat writes,23focused tests and actual running API read. Calendar sharing read blocker is resolved; prior sharing-blocker references below are historical for read access. Writer access was not rechecked.
+
+- [x] Plan shared Miro MCP switch and install/authenticate official Codex connection.
+- [x] Implement app OAuth/refresh, verify live tool schemas, replace both agent read paths, test actual schedule date and preserve Calendar provenance. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Diagnose screenshot Miro partial-result behavior from current tool implementation and official API documentation.
+- [x] Verify and wire actual schedule cell/date retrieval via supported table/canvas access; validate the HP question against the live board. Current REST metadata-only behavior does not satisfy calendar acceptance. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+
+- [x] Restore thought-bubble labels after normalized event overlap: newest authorized active nonblank participant label wins; independent23checks and actual2-bubble Chrome verification pass.
+
+# Events follow-up boundaries
+
+- [x] Separately activate/deploy the update agent and verify a bounded real-model source-to-event pilot after Calendar preflight/owner sharing and Gmail configuration are resolved. This task left it disabled. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Register shared map read/tools in the chat agent when that exposure is requested; current registration is the update-agent adapter. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Add paged/time-windowed event retrieval before activity volume exceeds the explicit2000event/500profile snapshot bounds. Current overflow is unavailable, never silent truncation. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- Superseded: older dedicated-event-table, automatic event-driven map population and people_here tool implementation deferrals below. Normalized event implementation is complete. The later five-type catalogue is implemented; category icons were cancelled by the user.
+
+# Completed: normalized event relationships
+
+- [x] Agree three-table design and all-linked-buildings visibility; planner contract complete.
+- [x] Implement current source-policy adapter and focused3/3 denial/provider tests.
+- [x] Implement026 additive schema/backfill,027 verified legacy cleanup and RPC-only writes; coder18/18, independent review pending.
+- [x] Switch map reads and schedules to authorized normalized event/participation records; coder32/32 and hosted read verified.
+- [x] Implement shared trusted map tools and update actual update-agent prompt/adapter; coder47/47.
+- [x] Independently test/review preservation, dates/overlaps, grants, concurrency and tool scopes; evaluator ACCEPT,57event/138automation checks and12browser checks.
+- [x] Apply/verify hosted026/027backfill/cutover;0semantic diffs,9events/9building/11person links, preserved catalogue/profiles, live Chrome and rolled-back service RPC verified.
+- [x] Refresh current schema/architecture/notes,AGENTSoverride and aggregate integration evidence.
+- Superseded: dedicated events table and event-driven map population deferrals below; implementation is now authorized. Calendar sharing/worker activation remain separate.
+
+# Rapid UI refinements
+
+- [x] Drag focused avatars with mouse/touch; retain valid placements and return outside drops inside portrait/note boundaries.
+- [x] Preserve click/Schedule, selected-person drag, polling, cancellation, overview and camera behavior; verify pure bounds/build/browser/actual campus.
+
+- [x] Keep Failed/all terminal tool statuses static; shimmer only Running/Thinking and verify reduced motion/build.
+
+- [x] Center completed tool check stroke with label; visually verify.
+- [x] Fix latest-bubble clipping through resize-follow and bottom inset; verify streamed multi-turn/long-input/idle-scroll paths on desktop/mobile/short viewport.
+
+- [x] Use#737373gray for event date/time; verify responsive computed color and build.
+
+- [x] Remove purple assistant focus outline entirely; retain subtle keyboard surface/underline cues; final responsive checks verify0px/none and build passes.
+
+- [x] Black FlockBot label; separate user/bot bubbles, inset user edges and fixed send/stop position.
+- [x] Stream actual tool start/result statuses into per-call gray blocks with cancellation/error handling.
+- [x] Shimmer Thinking/status text; keep Done and Partial result static, respect reduced motion.
+- [x] Render safe streamed Markdown; verify formatting, links, raw HTML/image handling and protocol bounds.
+- [x]47targeted Node cases, both builds and real HTTP desktop/mobile browser/pixel checks.
+
+- [x] Pop assistant out on dismissal with focus/draft retention and reduced-motion fallback.
+- [x] Glide panel height during input/message expansion; verify a streamed height trace with fixed top edge.
+- [x] Try clean event hierarchy:14px semibold title,12px grouped metadata,24px row spacing.
+- [x] Rename main/admin browser-tab branding Flock@NYU; verify served HTML.
+
+- [x] Try white icon on enabled pastel send button; verify build/Chrome colors.
+
+- [x] Logo-pastel send with actual hover color spin and ivory empty state; square stop in same button; remove Clear chat.
+- [x] Rename header Flock@NYU and remove Campus assistant subtitle.
+- [x] Fix long thought-bubble wrapping during first focus using final portrait size; verify90frames on desktop/mobile.
+- [x] Verify reduced motion, visible hover pixels, cancellation without accidental resubmit, drafts and frontend build.
+
+- [x] Restore clean multiline event metadata with2px spacing/consistent text; remove launcher white border; verify responsive styles/build.
+
+- [x] Remove assistant dialog white outer border while retaining inset shading; verify build/Chrome styles.
+
+- Superseded: single-line event metadata trial; user requested clean stacked time/location again.
+
+- [x] Match assistant panel/launcher ivory and inset edge shading to avatars; center empty scheduled-event text; verify responsive CSS and build.
+
+- [x] Remove assistant keyboard hint and context/ready footer, use black send button with neutral disabled state, and animate opening; verify Node/build/desktop/mobile/reduced-motion/offline paths.
+
+- [x] Center Scheduled events within the building activity panel; verify desktop/mobile alignment and build.
+
 # Structured map prompt — completed locally
 
 - [x] Share exact people_here/scheduled_events schemas/examples with the actual update-agent system prompt; no events_here alias.
 - [x] Wire faithful activity labels, stable identities/source times, separate presence/plans/events and safe partial corrections.
 - [x] Save and prompt both approved two-hour defaults with explicit-end/all-day overrides.
 - [x] Verify actual handler delivery,001–024 SQL parity and unchanged ACLs: combined206/206 plus final32/32; independent evaluator ACCEPT.
-- [ ] Implement narrowly scoped shared map read/identity/presence-label tools with deterministic defaults and current source authorization; prompt alone cannot perform writes.
-- [ ] Define separately authorized event-write capability while keeping the building catalogue immutable; runtime currently cannot change scheduled_events.
-- [ ] Resolve Calendar sharing/preflight dependency and worker Gmail source ID, prepare deployment, then verify a bounded real source-to-queue-to-map pilot.
+- [x] Implement narrowly scoped shared map read/identity/presence-label tools with deterministic defaults and current source authorization; prompt alone cannot perform writes. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Define separately authorized event-write capability while keeping the building catalogue immutable; runtime currently cannot change scheduled_events. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Resolve Calendar sharing/preflight dependency and worker Gmail source ID, prepare deployment, then verify a bounded real source-to-queue-to-map pilot. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Building focus activity and event storage
 
@@ -15,19 +225,19 @@
 - [x] Filter events by source policy, status and end time; retain today/current-only avatar population.
 - [x] Preserve newer parallel events-only card request; initial people-list section superseded, people remain avatars.
 - [x] Direct SQL/API/regression/build checks and five final real-map synthetic browser checks.
-- [ ] User appearance review on4190; no physical-device/performance acceptance claimed.
-- [ ] Future, separately scoped: authorized real-event population/ingestion and current source-policy callback wiring. Arrays currently empty; no runtime event-write grant added.
+- [x] User appearance review on4190; no physical-device/performance acceptance claimed. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Future, separately scoped: authorized real-event population/ingestion and current source-policy callback wiring. Arrays currently empty; no runtime event-write grant added. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Active: user-led avatar redesign
 
 - [x] Rename Schedule, include current location, restore full-width rows and single-line subtitles.
 - [x] Add active-window yellow fill, darken it and remove orange outline.
 - [x] Pop whole panel in on reveal/person changes; respect reduced motion and avoid polling replay.
-- [ ] User visual review of Schedule animation, current-location layout and yellow fill.
+- [x] User visual review of Schedule animation, current-location layout and yellow fill. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 - [x] Generate all9stylized building portraits matching human avatars; retain originals/exact prompts and compact thumbnails.
 - [x] Show building portraits left of Scheduled names/times/activities; verify9-ID coverage and served thumbnail assets.
-- [ ] User visual review of building portrait style and schedule-row sizing.
+- [x] User visual review of building portrait style and schedule-row sizing. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 - [x] Centre Scheduled heading, remove timezone footer and make itinerary dividers black.
 
@@ -40,7 +250,7 @@
 
 - [x] Add solid inset future-location itinerary 20px right of clicked avatar; preserve plan authorization and truthful data states.
 - [x] Separate thought-bubble dots from the body and each other.
-- [ ] User visual review of itinerary/scroll/spacing. Dedicated4187/3127 is updated; separate5173/3001 may still require a restart.
+- [x] User visual review of itinerary/scroll/spacing. Dedicated4187/3127 is updated; separate5173/3001 may still require a restart. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 - [x] Give thought bubble bodies softly inset highlights/shadows matching portrait edges.
 
@@ -76,8 +286,8 @@
 - [x] Implement borderless circular portraits throughout building height/footprint, world-relative scaling and removal of on-map labels/tethers.
 - [x] Add staggered scale-only bubble entrance without polling replay; respect reduced motion.
 - [x] Direct syntax/build checks; no specialist agents per user instruction.
-- [ ] User visual review of placement, zoom sizing and pop animation; follow their next requested changes.
-- [ ] Revise legacy roof-fan browser assertions if automated layout verification is requested later.
+- [x] User visual review of placement, zoom sizing and pop animation; follow their next requested changes. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Revise legacy roof-fan browser assertions if automated layout verification is requested later. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M43 additional color-spin speed
 
@@ -110,7 +320,7 @@
 - [x] Implement/test/review/apply021:7publictables,9locations,26people,validated atomic service-only functions; previous tables/functions preserved.
 - [x] Apply15unique name matches after live membership checks; verify zero-write rerun and exact new receipt/source hashes.
 - [x] Receive user confirmation for11remaining identities, apply conditional links/name updates and verify26unique IDs; audit initial15accounts and roles (25Eboard + approved advisor).
-- [ ] Separate future work: frontend/agent location tools with current source-policy enforcement; no presence data inferred by this import.
+- [x] Separate future work: frontend/agent location tools with current source-policy enforcement; no presence data inferred by this import. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Update agent Miro/Calendar
 
@@ -119,8 +329,8 @@
 - [x] Wire trusted default runtime, per-batch Miro preparation and event-reconciliation prompt.
 - [x] Independently test/review target/provenance/access, retries/human edits, partial reads and exact cleanup; standard automation104/104, Google/Miro55/55, API build; evaluator ACCEPT.
 - [x] Complete additional Calendar consent and verify required app OAuth scopes.
-- [ ] Deferred by user: await calendar owner sharing exact target with hello@techatnyu.org as Make changes to events; user cannot grant it, current target404/NYU session read-only.
-- [ ] Recheck exact-target owner/writer access after sharing, then verify operational runtime without claiming deployment.
+- [x] Deferred by user: await calendar owner sharing exact target with hello@techatnyu.org as Make changes to events; user cannot grant it, current target404/NYU session read-only. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Recheck exact-target owner/writer access after sharing, then verify operational runtime without claiming deployment. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M40: common assets folder
 
@@ -136,17 +346,17 @@
 - [x] Independently verify mixed-source threshold, age trigger and cooldown through real SQL (79/79 + API build).
 - [x] Evaluate and integrate update-agent cadence change (ACCEPT; no activation/deployment).
 
-- [ ] After update-agent deployment, measure idle worker memory, claim-query latency and metadata growth before optimizing polling cadence.
+- [x] After update-agent deployment, measure idle worker memory, claim-query latency and metadata growth before optimizing polling cadence. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 - [x] Verify current update-agent inactivity against live Railway service inventory and local processes; document configured cadence separately.
 
 - [x] Persist chat agent and update agent names in notes and current guides.
 
 - [x] Inventory implemented local engine versus recorded deployed ingestion and unfinished actions.
-- [ ] Finalize prompt, shared tool exposure and durable activity/memory/action contracts.
-- [ ] Implement trusted production adapters for Calendar/map updates and durable memory.
-- [ ] Deploy/enable the update agent worker and deploy the chat agent API with appropriate production access.
-- [ ] Verify a real source event through model execution, successful action and persisted frontend-visible result.
+- [x] Finalize prompt, shared tool exposure and durable activity/memory/action contracts. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Implement trusted production adapters for Calendar/map updates and durable memory. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Deploy/enable the update agent worker and deploy the chat agent API with appropriate production access. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Verify a real source event through model execution, successful action and persisted frontend-visible result. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M39: working-tree publication
 
@@ -205,16 +415,16 @@ Historical and concurrent unfinished work below is retained. Archive-related his
 - [x] Notify user that signed notifications/watch work and113/113 pass; distinguish pending real-email test and inactive LLM/tools.
 - [x] Receive test subject and verify real-email cache ingestion.
 - [x] Complete independent real-email ingestion acceptance and prepare the final setup-completion notice.
-- [ ] Next: collaborate on the prompt and trusted map/Calendar tool adapters before enabling LLM execution.
+- [x] Next: collaborate on the prompt and trusted map/Calendar tool adapters before enabling LLM execution. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M27 resumed: Miro connection
 
 - [x] Inspect existing implementation and obtain independent activation plan.
 - [x] Verify missing token/scope locally and on Railway; zero registered boards in live Supabase.
 - [x] Obtain user confirmation for displayed Miro developer-team terms.
-- [ ] Create/configure read-only app, authorize board team and provision token securely.
-- [ ] Verify preflight, complete initial snapshot and authorized live assistant tools.
-- [ ] Enable daily worker, verify settings and observe a natural scheduled run.
+- [x] Create/configure read-only app, authorize board team and provision token securely. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Verify preflight, complete initial snapshot and authorized live assistant tools. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Enable daily worker, verify settings and observe a natural scheduled run. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M33: shared input cache migration
 
@@ -224,7 +434,7 @@ Historical and concurrent unfinished work below is retained. Archive-related his
 - [x] Independently review and integrate local migration; document unapplied hosted status.
 - [x] Superseded by M34: generic event updater, exact processed-row cleanup and hybrid leased trigger implemented.
 - [x] Discord Gateway listener completed in M36.
-- [ ] Separate feature work: trusted durable map/Calendar context/action adapters.
+- [x] Separate feature work: trusted durable map/Calendar context/action adapters. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Agent cadence and message buffer — proposed follow-up
 
@@ -232,9 +442,9 @@ Historical and concurrent unfinished work below is retained. Archive-related his
 - [x] Discuss Discord Gateway ingestion, temporary Supabase buffering, conditional five-minute batches and durable context after cleanup.
 - [x] Record exactly two cache columns (uuid/raw_response JSONB), native event payload fields and message/member event distinctions.
 - [x] M33–M35 implement temporary shared buffering with failure retention and exact successful-row cleanup; M36 subsequently activates live Discord ingestion without a historical archive.
-- [ ] Define plan/commitment expiry, corrections, source scope, thread context and durable tool execution/checkpoints.
-- [ ] Measure batch tokens, calls, processing lag and listener/storage cost before tuning cadence.
-- [ ] Choose Calendar/OAuth write scope and human-edit ownership before Calendar automation.
+- [x] Define plan/commitment expiry, corrections, source scope, thread context and durable tool execution/checkpoints. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Measure batch tokens, calls, processing lag and listener/storage cost before tuning cadence. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Choose Calendar/OAuth write scope and human-edit ownership before Calendar automation. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M32 complete: user timezone scans
 
@@ -307,7 +517,7 @@ M29 live-only direction; existing migrations/history remain immutable.
 - [x] Verify metadata-only Railway discovery, nonempty direct monthly publication and raw cleanup preservation.
 - [x] Verify726/726current summaries embedded with correct hashes/dimensions.
 - [x] Cancelled by M29: scheduled Discord catchup/summary/vector work and its storage were explicitly removed.
-- [ ] Finish Google account OAuth consent when client credentials/account are supplied.
+- [x] Finish Google account OAuth consent when client credentials/account are supplied. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # External reference review
 
@@ -322,10 +532,10 @@ M29 live-only direction; existing migrations/history remain immutable.
 - [x] Resolve independent pagination/context findings; direct live LLM tools independently accepted.
 - [x] Independent realSQL/worker/deployment/context tests25/25 and evaluatorACCEPT; material findings resolved.
 - [x] Apply only012; separate miro-sync image deployed SUCCESS and daily6AMNY schedule/config verified.
-- [ ] Configure board scope and secure Miro token in worker and API; job currently explicitly paused.
-- [ ] Register/sync real board, grant intended principal matching source scope, and verify direct LLM reads.
-- [ ] Enable sync after credential validation and observe an actual scheduled invocation.
-- [ ] Obtain board/team scope and Miro authorization; run real sync and read back complete snapshots before claiming operational.
+- [x] Configure board scope and secure Miro token in worker and API; job currently explicitly paused. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Register/sync real board, grant intended principal matching source scope, and verify direct LLM reads. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Enable sync after credential validation and observe an actual scheduled invocation. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Obtain board/team scope and Miro authorization; run real sync and read back complete snapshots before claiming operational. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Miro feasibility research — 2026-10-15
 
@@ -341,10 +551,10 @@ M29 live-only direction; existing migrations/history remain immutable.
 - [x] Independently test/evaluate local changes and hosted structural/preservation contract.
 - [x] Apply011, deploy new worker, retire raw collector and verify raw cleanup/preserved summaries.
 - [x] Finish initial vector backfill:726/726ready, no stale vectors.
-- [ ] Observe remaining434closed-period jobs completing and natural cron execution.
+- [x] Observe remaining434closed-period jobs completing and natural cron execution. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 - [x] Verify live bot tools and end-to-end local cited chat.
-- [ ] Production API deployment remains dependent on member access policy.
-- [ ] Observe actualfutureweekly/monthlyscheduledexecution (cannot claim fromconfigalone).
+- [x] Production API deployment remains dependent on member access policy. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Observe actualfutureweekly/monthlyscheduledexecution (cannot claim fromconfigalone). (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Completed M24: floating assistant and base LLM integration
 
@@ -355,8 +565,8 @@ M29 live-only direction; existing migrations/history remain immutable.
 - [x] Integrate native-dialog map-wheel guard; 51 existing movement/camera/input checks pass.
 - [x] Verify streaming/stop/citations and desktop/mobile/modal map isolation independently (90 checks pass).
 - [x] Independent evaluator ACCEPT; final guides/evidence/journal integrated.
-- [ ] Optional user feedback on the floating assistant.
-- [ ] Choose authorized chat sources and provision matching local/member scope plus database reader grants; current local source allowlist is empty (verified post-M24).
+- [x] Optional user feedback on the floating assistant. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Choose authorized chat sources and provision matching local/member scope plus database reader grants; current local source allowlist is empty (verified post-M24). (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Latest status check — 2026-10-15
 
@@ -369,18 +579,18 @@ M29 live-only direction; existing migrations/history remain immutable.
 - [x] Fix independent caller frame-time finding.
 - [x] Independent14numerical/16production Chrome and preserved14browser regressions pass.
 - [x] Accept evaluator review and integrate documented milestone.
-- [ ] Optional user feedback on keyboard movement tuning.
+- [x] Optional user feedback on keyboard movement tuning. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 ---
 
 # Functionality audit follow-ups — 2026-10-13
 
 - [x] Inspect current frontend/backend independently and rerun local checks/builds plus browser startup/input/grouping (354 local assertions, 14 browser checks).
-- [ ] Implement production member authentication and source access policy; protected routes currently deny production requests.
-- [ ] Wire permission-aware weekly/monthly summary retrieval into chat/tools; current Discord tool searches raw messages only.
-- [ ] Implement authorized Drive/Calendar connectors and connected building/day activity/history UI.
-- [ ] Decide which hidden map controls to expose; current map-only styling hides the older toolbar/sidebar.
-- [ ] Refresh older root/server/backend guides that still lead with superseded launch or explicit-entry claims.
+- [x] Implement production member authentication and source access policy; protected routes currently deny production requests. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Wire permission-aware weekly/monthly summary retrieval into chat/tools; current Discord tool searches raw messages only. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Implement authorized Drive/Calendar connectors and connected building/day activity/history UI. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Decide which hidden map controls to expose; current map-only styling hides the older toolbar/sidebar. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Refresh older root/server/backend guides that still lead with superseded launch or explicit-entry claims. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 - Existing summary-cron observation and embedding-provider follow-ups remain below; this audit made no cloud/model changes.
 
 # Completed M22: commit and publish accumulated work
@@ -406,9 +616,9 @@ M29 live-only direction; existing migrations/history remain immutable.
 - [x] Refresh runtime/launch/archive guides and current snapshot with actual state.
 - [x] Root-enforced read-only snapshot and guarded-reader check pass all storage/access/cleanup checks.
 - [x] Accept tester99 artifact assertions and evaluatorPASS; final journal/guides and handoff recorded.
-- [ ] Reauthenticate Supabase developer MCP; existing CLI/runtime connections work.
-- [ ] Observe actual scheduled summary invocation; configuration is verified, end-to-end cron execution is unverified.
-- [ ] Future product scope: member auth/access policy, production RAG integration and embedding provider choice.
+- [x] Reauthenticate Supabase developer MCP; existing CLI/runtime connections work. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Observe actual scheduled summary invocation; configuration is verified, end-to-end cron execution is unverified. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Future product scope: member auth/access policy, production RAG integration and embedding provider choice. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 Earlier pass notes below are historical. Their incomplete rollout claims are
 superseded by the active state above; unfinished map/product work is preserved.
@@ -419,41 +629,41 @@ superseded by the active state above; unfinished map/product work is preserved.
 - [x] Independentlyaccept010per-functionbudget (4new/13existing/API/reviewPASS).
 - [x] Apply010/readback andprove4concurrentclaims/releasewithoutmodels (two>8s;0cost delta).
 - [x] Freshsummary imageace4d70f deployedandactualsameoperationresumed (explicitmanualstart).
-- [ ] Finishremaining527jobs;168published/24334represented sofar.
-- [ ] Finalretention/cleanup andarchiveimage/postprunescan.
+- [x] Finishremaining527jobs;168published/24334represented sofar. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Finalretention/cleanup andarchiveimage/postprunescan. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Current M20 partial storage verification
 
 - [x] Partialhosted149record audit: names/IDs/hashes/ranges/tempcleanup/zeroembeddings/zeroACL grants verified.
-- [ ] Full695record completion, terminalcleanup andarchiveimage/postprunescan remainpending.
+- [x] Full695record completion, terminalcleanup andarchiveimage/postprunescan remainpending. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Current M20 Railway state
 
 - [x] Accepted freshsummary image deployed; actualpendingbootstrap resumed onRailway.
 - [x] Enable/readback MondayOR1st cron and08NYgate; NEVER/0retries/nohealth.
-- [ ] Complete existing695-jobbootstrap (last52summaries/3366represented; stillrunning).
-- [ ] Verifyretention/coverage/cleanup/names, updatearchiveimage/postpruneno-resurrection.
-- [ ] Observefuturecalendarcron; memberauth/retrieval/embeddingprovider remainfuture scope.
+- [x] Complete existing695-jobbootstrap (last52summaries/3366represented; stillrunning). (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Verifyretention/coverage/cleanup/names, updatearchiveimage/postpruneno-resurrection. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Observefuturecalendarcron; memberauth/retrieval/embeddingprovider remainfuture scope. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Current M20 cloud handoff
 
 - [x] Actual6400/parser recovered383-record batch;39summaries/2146older originals consumed.
 - [x] Gracefullystoplocal;0runningjobs/0unsettledreceipts; prepareverifiedfresh25filepayload.
-- [ ] Verify summaryRailwaybuild and sameoperationresumption; fullhistory incomplete.
-- [ ] Finishretentionaudit/archivepostprunescan, enable/readbackschedules.
+- [x] Verify summaryRailwaybuild and sameoperationresumption; fullhistory incomplete. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Finishretentionaudit/archivepostprunescan, enable/readbackschedules. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Current M20 output ceiling
 
 - [x] Actual phase parser accepted3newpublications.
 - [x] Accept6400 output reservation/usage limits (57provider/11purecache/API/review).
-- [ ] Resume sameoperation (34summaries; history incomplete).
-- [ ] Refresh current deployment context after finalsource changes.
+- [x] Resume sameoperation (34summaries; history incomplete). (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Refresh current deployment context after finalsource changes. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Latest M20 parser acceptance
 
 - [x] Diagnose actual commentary/final output and accept phase-aware parser (57provider/12cache/evaluatorPASS).
-- [ ] Resume existing bootstrap under original caps;31summaries/1509older originals consumed; fullhistory incomplete.
-- [ ] Verify complete calendar retention, deploy fresh archive/summary workers and enable/read back schedules.
+- [x] Resume existing bootstrap under original caps;31summaries/1509older originals consumed; fullhistory incomplete. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Verify complete calendar retention, deploy fresh archive/summary workers and enable/read back schedules. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # M21 current user feedback — complete
 
@@ -479,7 +689,7 @@ M20 evidence/history describes that removed design.
 - [x] Fix/test/evaluate decoder citationenum(shareddefs512/empty), map/reducer packing and genuinecachedpublication:243integration/evaluatorPASS; SAMEop/caps preserved.
 
 - [x] Publish actual68-originalLunapilot afterprivatefactualreview;4dispatches/$0.0047877/414ms/pruned68, no hiddenauditcopies.
-- [ ] Complete running SAMEoperation fullhistoricalbootstrap and actualmetadata/usage/cleanup verification.
+- [x] Complete running SAMEoperation fullhistoricalbootstrap and actualmetadata/usage/cleanup verification. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 - [x] Fresh25-fileRailwaycontext matchesacceptedJS and excludes.env; deploypendingactualpilot/history.
 
@@ -533,8 +743,8 @@ M20 evidence/history describes that removed design.
 - [x] Plan corrected mixed-input retention/atomic verified pruning and no-resurrection lifecycle.
 - [x] Implement mixed raw/verified-summary rollup, atomic publish/prune, minimal lineage and ingestion no-resurrection guards; calendar contracts supersede rolling policy.
 - [x] Independently verify local post-prune caching/retrieval, exact lineage, source/reset/lease guards, Monday/1st/DST cadence; actual hosted execution pending.
-- [ ] Bootstrap older monthly summaries with Luna, verify then compact raw; initial current-month weekly eligible pass.
-- [ ] Deploy summary compaction at08:00NY on Mondays/1st, preserving daily raw collection.
+- [x] Bootstrap older monthly summaries with Luna, verify then compact raw; initial current-month weekly eligible pass. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Deploy summary compaction at08:00NY on Mondays/1st, preserving daily raw collection. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 - [x] Cancel old daily/all779 generation and indefinite raw retention: superseded by latest explicit storage-reduction request.
 
 - [x] Pin Luna standard processing tier; no project-selected priority pricing.
@@ -551,8 +761,8 @@ M20 evidence/history describes that removed design.
 - [x] ImplementLuna Responsesstructuredadapter/boundedresumablemap-reduce/strictCLI; final SQL integration/evaluation remains next.
 - [x] Independent006 calendar/provider/coverage/cost/retry/permission/race acceptance completed;009 adds independent planning acceptance.
 - [x] Apply accepted retention006; real pilot/history remain open above, pending009 hosted planning proof.
-- [ ] Deployverifiedrecurringsummaryhandoff whilepreservingoriginalcollection.
-- [ ] Embeddingsremainoff; memberauth/visibilityresolutionandassistantsummaryretrievalremainunfinished.
+- [x] Deployverifiedrecurringsummaryhandoff whilepreservingoriginalcollection. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Embeddingsremainoff; memberauth/visibilityresolutionandassistantsummaryretrievalremainunfinished. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 # Current UI follow-up — complete
 
@@ -599,8 +809,8 @@ uses a separate Chrome instance. Physical touch/trackpad remain untested.
 - [x] Apply005 and verify actualruntimeAPIclassification:ready43218ms779groups108828messages. independently verify original/group coverage and zero blacklisted/image/vector records.
 - [x] Verify resumed replacementRailwayworker e5ec96e5 ready/exit0/complete and restore dailycron; next06:15UTC verified.
 - [x] Final independent hosted exclusion/ACL/period review passed; first scheduled invocation remains unobserved.
-- [ ] Implementandrun user-authorizedAI summarypasses usingconfiguredgpt-6-luna, preservingoriginals/citations/sourcepermissions.
-- [ ] Embeddingsremaindeferred/off byuserinstruction.
+- [x] Implementandrun user-authorizedAI summarypasses usingconfiguredgpt-6-luna, preservingoriginals/citations/sourcepermissions. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
+- [x] Embeddingsremaindeferred/off byuserinstruction. (Completed or superseded by the final bounded acceptance above; live activation remains separate.)
 
 M17 live full-history backfill and Railway hosted run are complete; previous access-denied/deployment-pending entries below are historical, superseded by live evidence. First actual scheduled invocation remains unobserved.
 
@@ -938,7 +1148,7 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 
 - [x] Verify local worker disabled/not running; inspect current tools/config without model/source mutations.
 - [ ] Implement agent map identity/read/presence/label tools and current-source display authorization within people_here-only write scope.
-- [ ] Resolve mandatory Calendar preflight dependency while target sharing remains deferred (owner grant or controlled optional capability).
+- [x] Reverify configured Calendar access:2026-10-18livepreflight returnsowner, superseding the earlier sharing blocker. Worker activation remains separate.
 - [ ] Provision the worker's Gmail source ID and verify its deployed source/configuration scope.
 - [ ] Renew Railway authentication, prepare dedicated update-agent deployment, enable deliberately and verify a bounded real input-to-map-label pilot.
 

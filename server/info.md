@@ -8,10 +8,30 @@ The user-facing **chat agent** runs through the Hono Chat API. The autonomous **
 
 `google/` owns Gmail/Drive OAuth reads and the independent Gmail event receiver. `automation/` owns authorized enqueue, metadata leases/receipts and the inactive LLM/tool handler. Native Gmail and Discord events have reached the pending queue. Collectors do not invoke models; see the [automation guide](../docs/agent-automation.md).
 
-`miro/` owns isolated board ingestion/storage; `../tools/miro/` exposes bounded board/frame/item/relationship reads. Original objects/layout and explicit unsupported-object coverage reach model context. No Miro writes or automatic source expansion are provided. Its Railway worker is paused with `MIRO_SYNC_ENABLED=false`.
+`miro/` owns the official live MCP transport/auth and metadata-only source registry. `../tools/miro/` shares scoped search/canvas/table reads across chat and update agents. No REST reader, snapshot collector or Miro writes remain.
 
 Shared access uses trusted `ASSISTANT_ALLOWED_SOURCE_IDS` (`DEV_ALLOWED_SOURCE_IDS` alias), current source policies and backend administrator checks. No per-person membership tables remain. Production authentication is unfinished and protected routes remain closed by default. `time-zone.js` supplies strict timezone/calendar bounds with a shared request clock; legacy callers use UTC. This context does not grant source access.
 
-The three independent Railway services are running `discord-events`, running `gmail-events` and paused `miro-sync`, sharing Supabase. No LLM service or Calendar/map write adapter is active. Startup never applies SQL. Current service evidence and remaining native edit/delete/blacklist verification live in the [milestone](../milestones/milestone.md).
+The independent Railway collectors are running `discord-events` and `gmail-events`, sharing Supabase; `miro-sync` was deleted for live MCP access. No LLM service or Calendar/map write adapter is active. Startup never applies SQL. Current service evidence and remaining native edit/delete/blacklist verification live in the [milestone](../milestones/milestone.md).
 
 `map/` supplies bounded avatar-name/Discord roster matching and service-only conditional identity imports. `scripts/map-roster.mjs` defaults to proposals; `--apply` writes only unique name matches and preserves manual/concurrent identity fields. The map tables are hosted. The protected /api/map/presence endpoint projects safe display fields for the frontend overlay; only exact local debug entries are enabled until current source-policy authorization is wired. Agent location-write tools remain separate; importing a person never claims their location or grants source access.
+
+`assistant-context.js` reports actual registered tool execution start/result via
+an optional request-local callback. `app.js` forwards bounded NDJSON tool records
+before answer metadata/text: ID, name and running/completed/partial/failed only.
+No arguments or result contents enter progress records. Existing four-call limit,
+source authorization, adapter behavior and cancellation remain authoritative.
+
+`bug-reports.js` saves user-reported product bugs through a fixed service-only RPC. Chat receives the dedicated bug_reports write tool; other retrieval tools retain their read-only behavior.
+
+`memory.js` provides the bounded service store and shared-memory maintenance prompt. Chat loads one shared note before planning and injects it into planning/answers; successful model updates persist for later chats. Core instructions stay in code.
+
+Miro calendar navigation now accepts valid omitted-array empty searches and locates exact month/year areas before reading canvas. Bounded chat retrieval and explicitly configured boards remain limits; no full-workspace completeness is claimed.
+
+Chat prompting now includes calm tone and source routing; `assistant-context.js` supports8executedtools/8planningrounds for dependent Calendar/Miro/map workflows. `index.js` wires the same source-authorized map service into projection and request-local chat tools. Calendar originals need configured source identity; participation needs exact linked original author/sender evidence and successful lookup. Runtime UI tool progress matches the8callbound.
+
+Chat binds the composite Google adapter per request so explicit current-user Calendar actions receive isolated intent/revision state. Calendar write receipts reach planning/answer context; stateless tool execution and Drive/Gmail retrieval do not gain mutation grants.
+
+Chat has a separate overall requestTimeoutMs (ASSISTANT_REQUEST_TIMEOUT_MS, default300s/max600s) so paced source reads fit before final answer generation; provider LLM_TIMEOUT_MS remains an independent per-call limit.
+
+Production entrypoint `web.js` wraps the shared `runtime-app.js` factory with `site-auth.js` signed sessions, fixed-origin writes and protected static assets/API. Local `index.js` retains development authentication. Internal Miro token broker uses an independent server credential.

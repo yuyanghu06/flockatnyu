@@ -1,0 +1,10 @@
+# Complete Calendar answers stop and worker budgets fit reconciliation
+
+- Local timestamp / acting role / milestone: 2026-10-18T15:07:26.270025-04:00 / orchestrator / agent-prompts.
+- Requested scope: finish real-model behavior verification; user additionally reports Discord rate limiting and accepts slower bot scans.
+- Starting repository state:920/920fulltests andbothbuilds passed; frozen14modeldiagnostics10/14 (114requests), allDiscordcreate/edit/presence/RSVP paths passed.
+- Work performed / changed files: server/assistant-context.js, server/automation/config.js andprompt.js, .env.example, chat/automationtests. Separate coder owns sharedbotpacing, bothHTTPclients,120sscanbounds andrate tests.
+- Decisions: informational unsourced weekly schedule ends after a complete nonempty Calendar window, avoiding unnecessary Miro calls; explicit sources/actions and incomplete pagination remain available. Safe Calendar context separates window enumeration completeness from selected-field partiality. Production default/max limits now16rounds/32calls/180seconds with unchanged renewing120secondlease, disabledworker and queuecadence. Reserve turns for map/finish, reuse prepared context and batch independent reads.
+- Checks and evidence:67focusedchecks passed,24chatstopchecks included; previousfull920/920pass. Threeweeklydiagnostic failures were tracerfactoryloss, not actual Calendar-first violations; tester corrected instrumentation. Genuine Miro12round exhaustion motivates productionbudgetchange (not fixture-only widening). Earlier positiveCalendar read unnecessarily navigated Miro.
+- Resulting state / acceptance: parent runtime frozen, independent review pending; final14stable modelrerun afterratecoderfreeze. Screenshotrate_limited maps to actualupstream429; testmodelsourceadapterssynthetic, noDiscordnetworkcalls. Earlier read-only hostedchecks existed; exact429cause unproven.
+- Remaining work and handoff: finish pacedbot tests/review, run final actual-defaults model suite, required regressions/builds, journal exact results. No live eventwrites, activation or deployment.

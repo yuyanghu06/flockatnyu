@@ -131,3 +131,17 @@ M47 (`m47-footprint-ring/`) contains the selected silhouette/footprint implement
 map-building-activity/bobst-debug-events-receipt.json contains only the four explicitly fictional UI events and live API verification metadata. Current private map screenshots remain under /tmp.
 
 structured-map-prompt/ records independent shared-contract/SQL/handler prompt-delivery regressions, including the approved two-hour presence and timed-event policies. These are synthetic/in-memory checks, not a live-model pilot.
+
+`events-relationships/` contains independent normalized SQL/tool/API/browser acceptance with synthetic screenshots and aggregate hosted026/027cutover receipts. No live source content, private identity mappings, credentials or real roster screenshots belong there.
+
+`bug-reports/` contains non-secret hosted migration029 and rolled-back service-write verification.
+
+miro-mcp/ contains aggregate hosted030preservation and live MCP verification receipts, without source bodies or credentials.
+
+`long-term-memory/` records non-secret hosted031singleton-memory and rolled-back service-write verification.
+
+`agent-prompts/` contains aggregate prompt/model verification and hosted blacklist/source-identity receipts without credentials or private source bodies.
+
+chat-calendar/ records aggregate chat Calendar/Drive verification, including live read/ACL checks and configured-model tests with inert Calendar writes. No original Drive bodies or credentials.
+
+`optimization/` contains synthetic before/after metrics, independent browser/security checks, real private-site/chat verification and aggregate deployment/migration/worker receipts. Credentials and private source bodies are excluded.

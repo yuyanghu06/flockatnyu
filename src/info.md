@@ -177,3 +177,77 @@ parent-thread individual Schedule styling/animation are preserved.
 Building activity title now has a current New York weekday/month/day subtitle. Its render key includes the date so midnight changes update text without restarting the pop-in.
 
 Event rows support source-authorized attendee profiles from the map API, rendering right-side circular local portraits with name alternatives and initials fallback; current presence is independent.
+
+The building activity card centers its Scheduled events section heading.
+
+Assistant composer has no keyboard hint, context/ready footer or Clear chat.
+Offline error/Retry appears inline only when unavailable. Empty input uses an
+ivory send button; enabled send uses logo pastels with a white arrow (white square while busy). Hover/focus
+rotates a clipped color layer at the logo loop speed without rotating the arrow;
+reduced motion stays static. During generation the same button shows a square
+and stops the request, preserving the draft without triggering a new submit. The native dialog
+pops in over380ms on every opening; reduced motion removes animation. Selected
+building context remains part of requests even though its badge was removed.
+
+Assistant panel and launcher share #fdfaf0 ivory and two inset edge shadows using
+avatar highlight/shadow colors through --assistant-surface/--assistant-edge.
+Building activity empty-state paragraphs are centered with their section heading.
+
+Building-event time/location use separate lines in a metadata group, with2px
+spacing and consistent12px text. Long text wraps naturally.
+
+The assistant dialog and launcher have no outer border; inset shadows define their edges.
+
+The assistant header reads Flock@NYU without a subtitle. Long thought-bubble
+width constraints use --note-anchor-size from the final target portrait diameter,
+so text starts with settled wrapping while the avatar size/position eases.
+
+Normalized event projection preserves the map UI API. Parser capacity now matches100building/2000event bounds; all-day scheduled labels use the event timezone. Individual Schedule includes future returns to the currently focused building. Existing camera/geometry and concurrent user styling changes are preserved. Source provenance remains backend-only; notes/labels render as plain text.
+
+Assistant dismissal uses180ms scale/fade while retaining its native modal backdrop;
+Escape/close/outside click share it. Immediate failure/disposal bypasses motion,
+and reopening cancels an in-progress exit. Message/input/source/error changes
+batch a measured280ms height animation, rebasing from the visible size and keeping
+the top edge fixed. Reduced motion skips both effects. Event titles are14px
+semibold;12px date/location lines stay2px apart with24px between events.
+
+Conversation replies are labeled FlockBot in black inside a left-aligned soft white
+bubble. User messages have compact right-aligned inset ivory bubbles with an
+accessible You label, without a visible role caption. Send/stop stays at the input
+area’s top while text wraps. Per-call gray blocks show real tool lifecycle events;
+Only Running/Thinking shimmer; all terminal statuses and reduced motion stay static.
+`assistant-markdown.js` renders streamed assistant Markdown through markdown-it,
+with raw HTML disabled, credential-free HTTP(S) links and no remote image loading.
+User input remains plain text. Tool rows expose names/statuses, not arguments or
+source contents; pending rows stop on cancellation/error.
+
+Assistant controls have no exterior focus outline; keyboard focus uses a subtle
+button brightness change and thicker link underline instead.
+
+Building event rows now include all authorized known event kinds without category icons (the user cancelled them). Weekday/date/time are bold, room notes strip only a recognized repeated building prefix, and mobile attendee portraits flow below details, with tall cards reserving space above the fixed assistant launcher. Category metadata is not used to load images.
+
+Event date/time uses #737373 gray through the event-time class.
+
+Completed tool checks are centered CSS strokes, independent of check glyph font
+metrics. Transcript has24px desktop/22px mobile bottom padding and explicit
+scroll anchoring control. New content follows the bottom throughout measured
+height animations; idle manual scroll remains usable. Composer resizing follows
+only if already at the bottom. Animation-follow frames are cleaned on close.
+
+Tool status shimmer is restricted to Running; Done, Partial result, Failed, Stopped
+and Interrupted remain static. Thinking also shimmers unless reduced motion is set.
+
+Focused avatars are draggable with primary mouse/touch pointers after5px movement;
+ordinary clicks still toggle Schedule. Pointer capture tracks outside movement,
+and release clamps the complete portrait/thought bubble into the existing focused
+frame using `map-presence-drag.js`. Outside drops ease back faster; reduced motion
+clamps immediately. Valid targets persist through polls for a focus session and
+reset on leaving building focus. Selected people can move with their Schedule.
+Rebuild/cancel/blur/Escape/dispose clean active capture. These positions are purely
+client-local and never change source activity/location records or the camera.
+
+The chat stream client accepts bounded tool-1 through tool-8 progress for dependent source fallback and map update workflows; tool progress can precede metadata. Status metadata is selected by event type, not stream position.
+
+The assistant panel reserves18px of bottom padding outside its transcript scrollport whenever messages are visible. This keeps scrolled bubbles above the lower inset at every scroll position; content-end padding alone cannot provide that clearance.
+
+Assistant streaming coalesces Markdown/DOM work per animation frame with terminal flush/disposal guards. Map polls retain identical marker nodes; card presentation caches invalidate on semantic revision, selection and exact time boundaries while animation/positioning remains live.

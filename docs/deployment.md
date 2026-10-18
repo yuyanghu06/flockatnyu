@@ -66,3 +66,7 @@ source reconciliation without recording private messages, tokens or source
 payloads. A healthy process alone does not establish a completed update batch.
 Actual release IDs, verification and outstanding limitations belong in the
 rolling milestone and sanitized evidence/optimization deployment receipt.
+
+Live browser acceptance covers native desktop/mobile sign-in, protectedAPI, nine landmarks, focus/assistant controls and logout; see evidence/optimization/hosted-site.json. A fixed same-origin referrer policy preserves native form Origin while strict origin checks reject null/foreign values.
+
+Deployment migration032 adds service-only scoped queue claims. The worker sends its trusted shared source UUIDs; only those inputs count toward triggers or return in claimed batches. Other inputs remain deferred; no access expansion or implicit deletion occurs.

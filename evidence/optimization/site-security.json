@@ -1,0 +1,67 @@
+{
+  "scope": "Independent production website gate and sanitized upload QA",
+  "checks": [
+    {
+      "name": "Missing credentials and unsafe origin fail startup without exposing environment values",
+      "pass": true
+    },
+    {
+      "name": "Anonymous private HTML/assets/API are gated and login never reflects password query",
+      "pass": true
+    },
+    {
+      "name": "Login rejects absent/wrong/duplicate proof and cross-origin requests without issuing cookies",
+      "pass": true
+    },
+    {
+      "name": "Twenty bad guesses throttle, spoofed forwarded IP cannot reset it, correct password still works",
+      "pass": true
+    },
+    {
+      "name": "Oversized/malformed login body is bounded even if underlying cancellation never resolves",
+      "pass": true
+    },
+    {
+      "name": "Unfinished login stream returns bounded timeout without waiting for EOF",
+      "pass": true
+    },
+    {
+      "name": "Signed cookies use host-only secure flags, reject forgery/expiry/future issuance and duplicates",
+      "pass": true
+    },
+    {
+      "name": "Authenticated assets load with security headers; traversal, hidden auth, symlinks and source paths cannot disclose files",
+      "pass": true
+    },
+    {
+      "name": "Mutation CSRF and logout enforce exact origin; no GET logout or cross-site session grant",
+      "pass": true
+    },
+    {
+      "name": "Production API ignores injected identity/admin/allowlist and local-development bypass remains denied",
+      "pass": true
+    },
+    {
+      "name": "Actual runtime app uses the session auth while anonymous API remains closed",
+      "pass": true
+    },
+    {
+      "name": "Browser cookie cannot authorize internal Miro token route; separate broker proof is required",
+      "pass": true
+    },
+    {
+      "name": "Sanitized upload contains only reachable runtime and typed build assets, excluding private root files",
+      "pass": true
+    },
+    {
+      "name": "Sanitized upload fails closed on hidden auth, symlinked assets, source escape, dynamic loader and unreviewed dependency",
+      "pass": true
+    }
+  ],
+  "externalFetches": [],
+  "limitations": [
+    "Synthetic fixtures and in-memory HTTP requests; no Railway, real account, source or model calls.",
+    "Shared signed cookies expire; logout clears the browser cookie and does not revoke an already copied token.",
+    "Static assets are trusted build output; this pass tests exclusion boundaries rather than scanning arbitrary embedded secrets."
+  ]
+}

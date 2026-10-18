@@ -26,7 +26,7 @@ M24: dev.mjs supervises the local API and Vite, waits for identified API health,
 M26: google-connect.mjs performs one-time club-account OAuth consent using a fixed loopback callback, state and PKCE, writing ignored0600 .env.google only. Runtime tokens belong in Railway secrets after consent. No Gmail/Drive content is accessed during setup until the account is authorized.
 
 
-prepare-miro-deploy.mjs builds a fresh, symlink-rejecting allowlisted Miro-only deployment directory with no secrets or unrelated modules.
+The former Miro snapshot deployment preparer is retired; miro-connect.mjs sets up app-owned live MCP OAuth.
 
 Callable assistant tools live in ../tools/; these scripts are developer utilities and are not registered with the model.
 
@@ -49,3 +49,13 @@ The map fixture now stores label: Test explicitly inside each JSON entry. The UI
 `build-brand-loader-v6.mjs` reproduces vector assets for the rejected periwinkle/highlight trial. Its archived HTML preview captures that trial’s former runtime styling; neither the v6 artwork nor that preview is used by current startup.
 
 `build-brand-relief.mjs` derives a transparent static raised-edge/sheening overlay from the accepted v5 outline and captures a matching runtime-style loop-only preview. `build-brand-favicon.mjs` embeds those same relief filters with locally prefixed SVG IDs into its frozen mark, at scale 0.8 after the final 20% reduction. Generate relief before rebuilding favicon when authoring from scratch. No animated filters or runtime bitmap logo are introduced.
+
+The 2026-10-18 normalized-events revision replaces the legacy map fixture script's building JSON edits. `map-debug-presence.mjs --apply` creates explicit24-hour personal_plan event/people/building relationships; `--clear` cancels only the exact fixture source pair. Optimistic event versions preserve concurrent edits and unrelated events. This supersedes the earlier JSON-array fixture instructions above. The script is an explicit developer utility, not an agent tool, and is not run by migration.
+
+miro-connect.mjs performs app-owned Miro MCP OAuth consent with private refresh credentials. The old Miro REST snapshot deployment preparer is removed.
+
+`verify-agent-prompts.mjs` is an explicit --live-model behavioral harness: it calls the configured provider using production prompts and controlled synthetic sources/inert write adapters. It must not enable the worker, mutate club events or print credentials.
+
+The agent harness enforces exact synthetic provider selectors/window pagination and gently spaces actual model requests. Interrupted diagnostics and per-case hashes remain explicit; latestCases merges runs and must not be described as one all-case final-build run.
+
+`prepare-runtime-deploy.mjs` produces secret-free temporary web/worker contexts with reachable reviewed modules, pinned pruned dependencies and exact Docker inclusion. It never uploads repository environment/auth files.

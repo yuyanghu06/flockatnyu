@@ -1,0 +1,66 @@
+{
+  "phase": "after",
+  "browser": "Installed Chrome, SwiftShader; CPU operation counts, not physical GPU/FPS",
+  "checks": [
+    "500 deltas/12,000 chars terminal completion exact",
+    "pending flushes all buffered characters before RAF and stale callback is harmless",
+    "error flushes all buffered characters before RAF and stale callback is harmless",
+    "Measured focused 600 frames and unchanged presence refresh",
+    "Person itinerary cached while stable, future plan starts and expires at exact boundaries",
+    "Changed event card renders while marker identity retained",
+    "Failed refresh clears stale markers/content and successful refresh restores actual data",
+    "New York midnight changes focused card date",
+    "Presence and scheduled event expire without network refresh",
+    "Midnight invalidation on spring/fall DST transition days and wall-clock rollback",
+    "Real campus assets load, pointer hover/select, full-detail stable bounds/triangles, camera focus/outward return, mobile/reduced motion"
+  ],
+  "metrics": {
+    "stream": {
+      "renders": 1,
+      "chars": 12000
+    },
+    "pending": {
+      "chars": 12000,
+      "afterChars": 12000,
+      "renders": 1
+    },
+    "error": {
+      "chars": 12000,
+      "afterChars": 12000,
+      "renders": 1
+    },
+    "presence": {
+      "sameMarker": true,
+      "extraLayoutPrepares": 0,
+      "stable600Frames": {
+        "cardCalls": 600,
+        "cardDerivations": 0,
+        "itineraryCalls": 600,
+        "cpuMs": 4.5
+      }
+    },
+    "itinerary": {
+      "stable600Derivations": 0
+    },
+    "campus": {
+      "landmarks": 9,
+      "triangles": 705612,
+      "bobstTriangles": 1856,
+      "geometryBoundsStable": true,
+      "focusReturn": true
+    }
+  },
+  "externalRequests": [],
+  "sourceHashes": {
+    "src/assistant.js": "228b9f5e6ebf9259a0bb48923d0be2107995daccd76a5530bc8658708092ad1b",
+    "src/map-presence.js": "ebd5a8cc1d6651b43700a783d32746e7c3b146cff21a5ad4d1f121514ba448ad",
+    "src/assistant-markdown.js": "935c5f4ba0bcd297681060d0d5f7d7be1a6754c18f8ffdf0d2b2871b472d8d00",
+    "src/map-presence-drag.js": "aa018c732a844021842d51fc6720f93360a079a0c530366b9ef447e6b45bd5ea",
+    "src/map-presence-layout.js": "54e85528983025e40a7c6e631bf112f1d531b2c87e2a182d289131a9935a2b7c"
+  },
+  "measurementNotes": [
+    "Function entry calls remain 600; expensive derivations drop to zero after cache guard.",
+    "Baseline extra layout preparations already zero; only DOM retention improved on identical polls.",
+    "CPU loop 6.5ms before / 4.5ms final after is a single synthetic sample, not a device FPS claim."
+  ]
+}

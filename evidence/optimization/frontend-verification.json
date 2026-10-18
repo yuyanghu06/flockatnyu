@@ -1,0 +1,78 @@
+{
+  "status": "pass",
+  "checks": [
+    {
+      "command": "node --test tests/frontend-optimization.test.mjs tests/assistant.test.mjs tests/assistant-markdown.test.mjs tests/chat-tool-stream.test.mjs tests/map-presence.test.mjs tests/map-presence-drag.test.mjs",
+      "exitCode": 0,
+      "passed": 50,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "node --test tests/frontend-optimization.test.mjs",
+      "exitCode": 0,
+      "passed": 4,
+      "notes": "Final expanded tool/meta plus delta blocked-frame tests: all chars, source links, terminal statuses, stale callbacks and disposal."
+    },
+    {
+      "command": "node tests/map-avatar-drag-browser.mjs (launch intercepted to stub all /api and block external origins)",
+      "exitCode": 0,
+      "viewports": [
+        [
+          1280,
+          844
+        ],
+        [
+          390,
+          844
+        ]
+      ],
+      "checks": [
+        "Valid drops persist",
+        "Identical poll retains stable drops",
+        "Whole portrait and thought bubble snap inside bounds",
+        "Selected drag does not close itinerary",
+        "Pointer cancellation",
+        "Touch drag",
+        "Reduced motion",
+        "Overview portraits not draggable",
+        "Real campus drag keeps camera unchanged"
+      ]
+    },
+    {
+      "command": "node tests/assistant-scroll-browser.mjs",
+      "exitCode": 0,
+      "viewports": [
+        [
+          1280,
+          844
+        ],
+        [
+          390,
+          844
+        ],
+        [
+          390,
+          480
+        ]
+      ],
+      "turnCount": 12,
+      "maximumScrollGapPx": 0,
+      "minimumReplyClearancePx": 21.546875,
+      "manualScrollRetained": true
+    }
+  ],
+  "sourceHashes": {
+    "src/assistant.js": "228b9f5e6ebf9259a0bb48923d0be2107995daccd76a5530bc8658708092ad1b",
+    "src/map-presence.js": "ebd5a8cc1d6651b43700a783d32746e7c3b146cff21a5ad4d1f121514ba448ad",
+    "src/assistant-markdown.js": "935c5f4ba0bcd297681060d0d5f7d7be1a6754c18f8ffdf0d2b2871b472d8d00",
+    "src/map-presence-drag.js": "aa018c732a844021842d51fc6720f93360a079a0c530366b9ef447e6b45bd5ea",
+    "src/map-presence-layout.js": "54e85528983025e40a7c6e631bf112f1d531b2c87e2a182d289131a9935a2b7c"
+  },
+  "limitations": [
+    "Synthetic fixtures; no Discord, Google, Miro, Supabase or model calls.",
+    "Installed headless Chrome uses SwiftShader; CPU loop timings do not establish physical GPU/FPS or mobile hardware performance.",
+    "Baseline was captured before coder edits; later harness adds cancellation, upcoming-boundary, failure, DST and real-campus checks. Baseline screenshots included a fixture-only Unicode encoding issue corrected by adding UTF-8 metadata to the harness.",
+    "Actual pointer and reduced-motion desktop/mobile viewport checks ran; physical-device checks unavailable."
+  ]
+}

@@ -10,7 +10,7 @@ The Railway `tech-nyu` project production environment contains exactly three ser
 | --- | --- | --- |
 | `discord-events` | Receive native message creates, edits and deletions into the temporary queue; refresh channel metadata. | Active continuous collector, no cron/backfill/LLM. |
 | `gmail-events` | Validate notifications, reconcile history, renew watch and enqueue email payloads. | Active; signed notifications and real email enqueue observed. |
-| `miro-sync` | Preserve explicitly scoped board originals, layout, relationships and freshness. | Provisioned and paused with `MIRO_SYNC_ENABLED=false`. |
+| Miro MCP | Read exact scoped live calendar cells and original content within each agent. | Shared official MCP reader; old REST/snapshot service and table retired through030. |
 
 All share Supabase. The [five-table schema](database-tables.md) stores metadata, Miro records, temporary inputs and operational state. Discord and Gmail deploy independently with no model runtime. Discord ingestion covers eligible guild channels except blacklisted channels/categories and descendant threads; explicit manual disables survive metadata refresh through020. Assistant read allowlists remain independent. No LLM service or Calendar/map write adapter is deployed.
 

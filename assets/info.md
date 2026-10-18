@@ -16,3 +16,5 @@ paths, attribution and licenses intact. The optional `yuyang-site-3d-assets.zip`
 archive is absent. Historical evidence and journal records retain their original paths.
 
 [branding/](branding/info.md) contains requested raster logo explorations, exact generation prompts, and the native v5 SVG startup loader with a shareable GIF preview. Earlier drafts are retained.
+
+Event-type image generation was cancelled after both sample sets were rejected. The newly generated event-icons directory was deleted at user request; avatar/building/branding assets are preserved.

@@ -1,0 +1,109 @@
+{
+  "origin": "https://web-production-e4edc.up.railway.app",
+  "checkedAt": "2026-10-18T19:51:38.430Z",
+  "checks": [
+    {
+      "name": "desktop native password form login succeeds with secure session",
+      "pass": true
+    },
+    {
+      "name": "desktop campus loads all nine landmarks and protected nonadmin API succeeds",
+      "pass": true
+    },
+    {
+      "name": "desktop building focus and assistant open/close work within viewport",
+      "pass": true
+    },
+    {
+      "name": "desktop logout restores anonymous page and API denial",
+      "pass": true
+    },
+    {
+      "name": "mobile native password form login succeeds with secure session",
+      "pass": true
+    },
+    {
+      "name": "mobile campus loads all nine landmarks and protected nonadmin API succeeds",
+      "pass": true
+    },
+    {
+      "name": "mobile building focus and assistant open/close work within viewport",
+      "pass": true
+    },
+    {
+      "name": "mobile logout restores anonymous page and API denial",
+      "pass": true
+    },
+    {
+      "name": "No chat/model calls, unexpected mutations or uncaught browser errors",
+      "pass": true
+    }
+  ],
+  "requests": {
+    "chat": 0,
+    "unexpectedMutation": 0
+  },
+  "browserErrors": [],
+  "consoleErrorCount": 0,
+  "failedResponsePaths": [],
+  "limits": [
+    "No chat/model calls or administrator writes.",
+    "Connector readiness not assessed during Miro provisioning.",
+    "Source-derived overlays hidden only in screenshot to avoid preserving source content.",
+    "Installed headless Chrome with SwiftShader; no physical GPU/device performance claim."
+  ],
+  "desktop": {
+    "viewport": [
+      1280,
+      844
+    ],
+    "nativePostOrigin": "https://web-production-e4edc.up.railway.app",
+    "cookieFlags": {
+      "secure": true,
+      "httpOnly": true,
+      "sameSite": "Strict"
+    },
+    "map": {
+      "status": "ready",
+      "failedCount": 0,
+      "landmarkCount": 9,
+      "triangles": 705612
+    },
+    "protectedStatus": {
+      "http": 200,
+      "allowed": true,
+      "admin": false
+    }
+  },
+  "mobile": {
+    "viewport": [
+      390,
+      844
+    ],
+    "nativePostOrigin": "https://web-production-e4edc.up.railway.app",
+    "cookieFlags": {
+      "secure": true,
+      "httpOnly": true,
+      "sameSite": "Strict"
+    },
+    "map": {
+      "status": "ready",
+      "failedCount": 0,
+      "landmarkCount": 9,
+      "triangles": 602292
+    },
+    "protectedStatus": {
+      "http": 200,
+      "allowed": true,
+      "admin": false
+    }
+  },
+  "resolvedFinding": {
+    "initialReferrerPolicy": "no-referrer",
+    "initialNativeOrigin": "null",
+    "initialNativeStatus": 403,
+    "correctedReferrerPolicy": "same-origin",
+    "desktopAndMobileNativeLoginPassed": true
+  },
+  "status": "pass"
+}

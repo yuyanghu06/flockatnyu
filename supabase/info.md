@@ -1,6 +1,6 @@
 # Supabase schema
 
-This folder contains immutable applied SQL migrations and migration guidance. The current hosted schema retains seven service-only public tables:
+This folder contains immutable applied SQL migrations and migration guidance. The historical018–020 schema retained these seven service-only public tables; later map/event and Miro overrides below supersede this list:
 
 - `discord_view_policies`: Discord policy and channel/thread metadata catalogue.
 - `knowledge_sources`: Miro and other non-Discord source registry.
@@ -10,7 +10,7 @@ This folder contains immutable applied SQL migrations and migration guidance. Th
 - `map_buildings`: stable selectable map location catalogue and validated reported/planned-person JSON arrays.
 - `map_people`: avatar-backed person identities, first/last names and optional name-matched Discord identities; no source memberships.
 
-All force RLS and deny direct browser access. Backend source scope and administrator checks remain; per-person membership tables are retired. Source bodies belong only in the explicitly authorized Miro snapshot or temporary input buffer. Discord originals and summaries are read/generated live in request memory, with no durable archive/vector/fallback tables. The independent Discord Gateway collector writes scoped new events into the temporary cache, without restoring historical archiving.
+All force RLS and deny direct browser access. Backend source scope and administrator checks remain; per-person membership tables are retired. Current source bodies belong only in the temporary input buffer; Miro content is read live through MCP and never stored as a board snapshot. Discord originals and summaries are read/generated live in request memory, with no durable archive/vector/fallback tables. The independent Discord Gateway collector writes scoped new events into the temporary cache, without restoring historical archiving.
 
 Migrations013–017 record the historical storage/membership retirement and single Discord catalogue cutover. Migrations018/019 add shared temporary inputs and separate metadata state. Hosted018/019 versions are `20261017182014` and `20261017182143`; their definitions and service-only permissions have recorded independent verification. Earlier SQL must remain intact for audit and migration fixtures, even where later migrations remove its objects.
 
@@ -34,3 +34,13 @@ receipt and data/function/ACL/RLS preservation evidence is under
 evidence/map-building-activity/. No event ingestion or write adapter is activated.
 
 Hosted025 adds optional validated attendee_ids arrays within existing building event JSON; no separate event table or runtime write grant. Existing people/current presence preserved; see database guide and aggregate attendee receipt.
+
+Current event storage supersedes the earlier021–025JSON descriptions:026is hosted as20261018170616and027as20261018171006. Nine source-backed events, nine building links and eleven participant links preserve all prior activity/attendees; old building JSON and obsolete RPCs are removed after two-way equivalence checks. Ten public tables remain. Map catalogue/profile data is preserved, source-only backend checks remain mandatory, and writes to normalized activity use service-only guarded RPCs rather than direct table DML. See docs/events.md and evidence/events-relationships/.
+
+Current Miro override030 removes miro_boards and all snapshot/sync functions. Only metadata-only source identity/status/enabled/team scope remains in knowledge_sources; live content is fetched through MCP.
+
+Current event classification028 is hosted as20261018173407_event_types. It adds the fixed service-readable event_types catalogue (study, meeting, event, social, other) and events.type_id; all nine existing events default to Other while original fields, times and relationships remain unchanged. Catalogue mutation remains owner-only; event writes select an existing type through guarded RPCs. Applied icon_key metadata is reserved and unused after the user cancelled category images. See evidence/events-relationships/event-types-hosted-verification.json.
+
+Migration029 adds the service-only minimal bug_reports table and bounded append RPC for user-reported product bugs. Original chat report text lives only in its structured report JSON. No Discord archive/summary policy is changed.
+
+Migration031 adds the minimal shared plain-text agent_memory note and scoped RPCs. Chat may maintain useful long-term club facts; this does not restore provider archives or summaries.
