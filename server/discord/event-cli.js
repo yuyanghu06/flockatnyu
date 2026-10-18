@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {readDiscordEventConfig} from './event-config.js';
 import {createDiscordStore} from './store.js';
 import {createDiscordClient} from './client.js';
-import {runDiscordDiscovery} from './discovery.js';
+import {createDiscordMetadataRefresh} from './metadata-refresh.js';
 import {createAutomationStore} from '../automation/store.js';
 import {createDiscordEventState} from './event-state.js';
 import {createDiscordEventListener} from './event-listener.js';
@@ -20,13 +20,11 @@ export async function runDiscordEvents({args=process.argv.slice(2),env=process.e
   const port=Number(env.PORT||3003);
   if(!Number.isInteger(port)||port<1||port>65535)return {status:'not_configured'};
   const client=createDiscordClient({config}),state=createDiscordEventState({env}),controller=new AbortController();
-  let refreshing,stopped=false,timer,gateway,server;
-  const refreshMetadata=({signal=controller.signal}={})=>{
-    if(!refreshing)refreshing=runDiscordDiscovery({config,store,client,signal}).then(result=>{
-      if(result.status!=='ready'||!result.complete)throw new Error('metadata_refresh_failed');
-      write({status:'catalogue_refreshed',channels:result.channels});
-    }).finally(()=>{refreshing=null;});
-    return refreshing;
+  let stopped=false,timer,gateway,server;
+  const metadataRefresh=createDiscordMetadataRefresh({config,store,client,signal:controller.signal});
+  const refreshMetadata=async options=>{
+    const result=await metadataRefresh.refresh(options);
+    write({status:'catalogue_refreshed',channels:result.channels});
   };
   async function stop(failed=false){
     if(stopped)return;stopped=true;clearTimeout(timer);controller.abort();
@@ -46,8 +44,9 @@ export async function runDiscordEvents({args=process.argv.slice(2),env=process.e
   server.listen(port,'0.0.0.0');
   process.once('SIGTERM',onStop);process.once('SIGINT',onStop);
   try {await gateway.start();}catch{await stop(true);return {status:'unavailable'};}
-  const tick=async()=>{try{await refreshMetadata();}catch{write({status:'metadata_refresh_failed'});}finally{if(!stopped)timer=setTimeout(tick,config.metadataRefreshMs);}};
-  timer=setTimeout(tick,config.metadataRefreshMs);
+  const tick=async()=>{try{await refreshMetadata();}catch{write({status:'metadata_refresh_failed'});}finally{if(!stopped)timer=setTimeout(tick,metadataRefresh.nextDelayMs);}};
+  const firstRefreshDelay=await metadataRefresh.initialDelayMs();
+  if(!stopped)timer=setTimeout(tick,firstRefreshDelay);
   write({status:'listening'});return {status:'listening',stop};
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {

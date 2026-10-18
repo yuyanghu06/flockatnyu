@@ -32,3 +32,5 @@ production. This packaging pass performs no cloud writes; the rolling milestone
 records actual deployment and listener acceptance.
 
 M36 hosted cutover is verified: the separate Discord/Gmail services are running with their isolated images, no cron, /healthz60 and ON_FAILURE3 against the same expected Supabase. Exact revisions and operational limits live in ../../milestones/milestone.md. No model worker or prompt/memory schema was deployed.
+
+The reachable metadata-refresh.js helper resumes incomplete guarded discovery generations promptly; sanitized packaging includes it explicitly. Startup inspects the checkpoint to avoid unnecessary fresh scans when the catalogue is already complete. Existing complete-generation authorization and exclusions remain mandatory.

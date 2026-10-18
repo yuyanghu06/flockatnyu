@@ -150,7 +150,7 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
     'server/automation/events.js', 'server/automation/store.js', 'server/automation/validation.js',
     'server/discord/client.js', 'server/discord/config.js', 'server/discord/discovery.js',
     'server/discord/event-cli.js', 'server/discord/event-config.js', 'server/discord/event-listener.js',
-    'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/request-pacing.js', 'server/discord/store.js',
+    'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/metadata-refresh.js', 'server/discord/request-pacing.js', 'server/discord/store.js',
   ]);
   assert.deepEqual(await filesIn(result.directory), result.files);
   for (const name of result.modules) assert.deepEqual(await readFile(join(result.directory, name)), await readFile(join(repository, name)));
