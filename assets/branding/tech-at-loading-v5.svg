@@ -1,0 +1,252 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254" role="img" aria-label="Tech at symbol, colors following its strokes">
+  <title>Tech @ loading animation</title>
+  <desc>Stationary flat @. Pastel colors follow the outer spiral, stem and inner loop every 2.133 seconds. Reduced motion shows a static mark.</desc>
+  <style>
+    .flow-segment{fill:none;stroke-linecap:round;animation:tech-route-color 2.1333333333333333s linear infinite}
+    @keyframes tech-route-color{0%{stroke:#f0ba72}13%{stroke:#f3d578}27%{stroke:#f18fad}41%{stroke:#e78ce5}55.00000000000001%{stroke:#ae91ec}69%{stroke:#7eacf0}82%{stroke:#78d6db}92%{stroke:#91dcb2}100%{stroke:#f0ba72}}
+    @media(prefers-reduced-motion:reduce){.flow-segment{animation:none}}
+  </style>
+  <defs>
+    <clipPath id="tech-at-shape" transform="translate(0.000000,1254.000000) scale(0.100000,-0.100000)">
+<path d="M6465 10670 c-413 -33 -818 -103 -1188 -206 -727 -201 -1459 -591
+-2087 -1112 -156 -130 -481 -457 -615 -620 -569 -691 -890 -1429 -956 -2201
+-15 -177 -7 -593 15 -776 128 -1054 600 -2001 1307 -2621 556 -488 1181 -735
+2074 -820 208 -20 865 -31 920 -15 71 19 93 50 293 417 40 73 72 141 72 153 0
+31 -42 46 -170 60 -1283 139 -2244 782 -2786 1862 -233 467 -362 954 -380
+1439 -29 773 245 1492 805 2115 405 451 984 824 1609 1037 231 78 505 141 775
+179 194 27 613 37 820 20 615 -52 1201 -262 1630 -582 563 -422 919 -1039
+1054 -1828 25 -144 27 -178 27 -436 0 -264 -2 -288 -27 -418 -70 -353 -225
+-681 -428 -902 -233 -253 -476 -403 -778 -480 -55 -14 -114 -25 -131 -25 l-32
+0 2 1743 c2 958 -1 1749 -4 1759 -14 33 -57 39 -244 36 -163 -3 -182 -5 -202
+-23 -12 -11 -83 -94 -156 -185 -74 -91 -147 -181 -163 -200 l-30 -35 -28 21
+c-15 12 -28 26 -28 32 0 6 -4 14 -9 19 -5 5 -6 2 -2 -7 4 -8 -2 -4 -14 10 -12
+14 -19 19 -15 11 4 -7 -21 6 -56 29 -159 104 -397 197 -619 242 -99 20 -144
+23 -330 22 -195 0 -227 -3 -345 -28 -365 -76 -775 -275 -1094 -530 -376 -300
+-665 -725 -785 -1153 -56 -199 -71 -311 -71 -548 0 -186 4 -238 23 -340 126
+-671 529 -1241 1057 -1495 120 -58 285 -112 415 -136 137 -26 476 -26 615 0
+294 55 548 196 818 455 l87 84 0 -226 0 -225 30 -25 c26 -22 41 -26 152 -32
+221 -13 1058 1 1193 19 585 79 1071 272 1504 596 559 418 929 996 1080 1688
+46 211 63 377 63 612 -1 652 -201 1292 -581 1858 -302 450 -664 786 -1179
+1094 -505 302 -1182 518 -1877 599 -144 17 -255 21 -550 24 -203 2 -419 0
+-480 -5z m-54 -3225 c267 -22 540 -260 627 -545 39 -128 43 -223 40 -910 -3
+-598 -5 -658 -20 -682 -21 -32 -221 -135 -333 -171 -134 -44 -204 -57 -335
+-64 -203 -9 -353 29 -503 127 -79 51 -181 155 -232 234 -97 152 -179 368 -217
+574 -28 154 -31 439 -4 581 81 440 316 734 669 836 63 18 177 33 217 29 14 -2
+55 -6 91 -9z"/>
+</clipPath>
+    <linearGradient id="tech-pastels" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1254" y2="0" spreadMethod="repeat">
+      <stop offset="0" stop-color="#f0ba72"/>
+      <stop offset="0.13" stop-color="#f3d578"/>
+      <stop offset="0.27" stop-color="#f18fad"/>
+      <stop offset="0.41" stop-color="#e78ce5"/>
+      <stop offset="0.55" stop-color="#ae91ec"/>
+      <stop offset="0.69" stop-color="#7eacf0"/>
+      <stop offset="0.82" stop-color="#78d6db"/>
+      <stop offset="0.92" stop-color="#91dcb2"/>
+      <stop offset="1" stop-color="#f0ba72"/>
+    </linearGradient>
+    <filter id="tech-flow-soften" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+  <rect width="1254" height="1254" fill="#fff"/>
+  <g clip-path="url(#tech-at-shape)">
+    <rect width="1254" height="1254" fill="url(#tech-pastels)"/>
+    <g filter="url(#tech-flow-soften)">
+    <g data-route="outer" data-phase-offset="0.00000000" stroke-width="220">
+      <path class="flow-segment" data-route="outer" data-u="0.00390625" data-phase="0.99609375" d="M588.000 979.000 L568.048 976.506" stroke="#91dcb2" style="animation-delay:-2.12500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.01171875" data-phase="0.98828125" d="M568.048 976.506 L548.205 973.256" stroke="#91dcb2" style="animation-delay:-2.10833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.01953125" data-phase="0.98046875" d="M548.205 973.256 L528.505 969.231" stroke="#91dcb2" style="animation-delay:-2.09166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.02734375" data-phase="0.97265625" d="M528.505 969.231 L508.983 964.413" stroke="#91dcb2" style="animation-delay:-2.07500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.03515625" data-phase="0.96484375" d="M508.983 964.413 L489.679 958.789" stroke="#91dcb2" style="animation-delay:-2.05833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.04296875" data-phase="0.95703125" d="M489.679 958.789 L470.633 952.343" stroke="#91dcb2" style="animation-delay:-2.04166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.05078125" data-phase="0.94921875" d="M470.633 952.343 L451.890 945.063" stroke="#91dcb2" style="animation-delay:-2.02500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.05859375" data-phase="0.94140625" d="M451.890 945.063 L433.497 936.941" stroke="#91dcb2" style="animation-delay:-2.00833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.06640625" data-phase="0.93359375" d="M433.497 936.941 L415.503 927.968" stroke="#91dcb2" style="animation-delay:-1.99166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.07421875" data-phase="0.92578125" d="M415.503 927.968 L397.962 918.141" stroke="#91dcb2" style="animation-delay:-1.97500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.08203125" data-phase="0.91796875" d="M397.962 918.141 L380.926 907.462" stroke="#91dcb2" style="animation-delay:-1.95833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.08984375" data-phase="0.91015625" d="M380.926 907.462 L364.453 895.933" stroke="#91dcb2" style="animation-delay:-1.94166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.09765625" data-phase="0.90234375" d="M364.453 895.933 L348.601 883.565" stroke="#91dcb2" style="animation-delay:-1.92500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.10546875" data-phase="0.89453125" d="M348.601 883.565 L333.427 870.374" stroke="#91dcb2" style="animation-delay:-1.90833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.11328125" data-phase="0.88671875" d="M333.427 870.374 L318.991 856.380" stroke="#91dcb2" style="animation-delay:-1.89166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.12109375" data-phase="0.87890625" d="M318.991 856.380 L305.349 841.610" stroke="#91dcb2" style="animation-delay:-1.87500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.12890625" data-phase="0.87109375" d="M305.349 841.610 L292.557 826.098" stroke="#78d6db" style="animation-delay:-1.85833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.13671875" data-phase="0.86328125" d="M292.557 826.098 L280.668 809.884" stroke="#78d6db" style="animation-delay:-1.84166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.14453125" data-phase="0.85546875" d="M280.668 809.884 L269.728 793.015" stroke="#78d6db" style="animation-delay:-1.82500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.15234375" data-phase="0.84765625" d="M269.728 793.015 L259.781 775.543" stroke="#78d6db" style="animation-delay:-1.80833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.16015625" data-phase="0.83984375" d="M259.781 775.543 L250.861 757.524" stroke="#78d6db" style="animation-delay:-1.79166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.16796875" data-phase="0.83203125" d="M250.861 757.524 L242.996 739.020" stroke="#78d6db" style="animation-delay:-1.77500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.17578125" data-phase="0.82421875" d="M242.996 739.020 L236.207 720.095" stroke="#78d6db" style="animation-delay:-1.75833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.18359375" data-phase="0.81640625" d="M236.207 720.095 L230.504 700.815" stroke="#78d6db" style="animation-delay:-1.74166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.19140625" data-phase="0.80859375" d="M230.504 700.815 L225.890 681.246" stroke="#78d6db" style="animation-delay:-1.72500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.19921875" data-phase="0.80078125" d="M225.890 681.246 L222.362 661.452" stroke="#78d6db" style="animation-delay:-1.70833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.20703125" data-phase="0.79296875" d="M222.362 661.452 L219.720 641.520" stroke="#78d6db" style="animation-delay:-1.69166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.21484375" data-phase="0.78515625" d="M219.720 641.520 L218.337 621.463" stroke="#78d6db" style="animation-delay:-1.67500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.22265625" data-phase="0.77734375" d="M218.337 621.463 L218.270 601.358" stroke="#78d6db" style="animation-delay:-1.65833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.23046875" data-phase="0.76953125" d="M218.270 601.358 L219.526 581.292" stroke="#78d6db" style="animation-delay:-1.64166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.23828125" data-phase="0.76171875" d="M219.526 581.292 L222.089 561.351" stroke="#78d6db" style="animation-delay:-1.62500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.24609375" data-phase="0.75390625" d="M222.089 561.351 L225.937 541.618" stroke="#78d6db" style="animation-delay:-1.60833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.25390625" data-phase="0.74609375" d="M225.937 541.618 L231.030 522.168" stroke="#7eacf0" style="animation-delay:-1.59166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.26171875" data-phase="0.73828125" d="M231.030 522.168 L237.326 503.074" stroke="#7eacf0" style="animation-delay:-1.57500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.26953125" data-phase="0.73046875" d="M237.326 503.074 L244.770 484.397" stroke="#7eacf0" style="animation-delay:-1.55833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.27734375" data-phase="0.72265625" d="M244.770 484.397 L253.305 466.193" stroke="#7eacf0" style="animation-delay:-1.54166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.28515625" data-phase="0.71484375" d="M253.305 466.193 L262.871 448.509" stroke="#7eacf0" style="animation-delay:-1.52500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.29296875" data-phase="0.70703125" d="M262.871 448.509 L273.408 431.385" stroke="#7eacf0" style="animation-delay:-1.50833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.30078125" data-phase="0.69921875" d="M273.408 431.385 L284.855 414.856" stroke="#7eacf0" style="animation-delay:-1.49166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.30859375" data-phase="0.69140625" d="M284.855 414.856 L297.157 398.952" stroke="#7eacf0" style="animation-delay:-1.47500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.31640625" data-phase="0.68359375" d="M297.157 398.952 L310.257 383.699" stroke="#7eacf0" style="animation-delay:-1.45833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.32421875" data-phase="0.67578125" d="M310.257 383.699 L324.100 369.117" stroke="#7eacf0" style="animation-delay:-1.44166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.33203125" data-phase="0.66796875" d="M324.100 369.117 L338.638 355.227" stroke="#7eacf0" style="animation-delay:-1.42500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.33984375" data-phase="0.66015625" d="M338.638 355.227 L353.824 342.049" stroke="#7eacf0" style="animation-delay:-1.40833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.34765625" data-phase="0.65234375" d="M353.824 342.049 L369.611 329.597" stroke="#7eacf0" style="animation-delay:-1.39166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.35546875" data-phase="0.64453125" d="M369.611 329.597 L385.958 317.890" stroke="#7eacf0" style="animation-delay:-1.37500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.36328125" data-phase="0.63671875" d="M385.958 317.890 L402.824 306.943" stroke="#7eacf0" style="animation-delay:-1.35833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.37109375" data-phase="0.62890625" d="M402.824 306.943 L420.169 296.773" stroke="#7eacf0" style="animation-delay:-1.34166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.37890625" data-phase="0.62109375" d="M420.169 296.773 L437.956 287.396" stroke="#ae91ec" style="animation-delay:-1.32500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.38671875" data-phase="0.61328125" d="M437.956 287.396 L456.147 278.831" stroke="#ae91ec" style="animation-delay:-1.30833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.39453125" data-phase="0.60546875" d="M456.147 278.831 L474.706 271.096" stroke="#ae91ec" style="animation-delay:-1.29166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.40234375" data-phase="0.59765625" d="M474.706 271.096 L493.597 264.208" stroke="#ae91ec" style="animation-delay:-1.27500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.41015625" data-phase="0.58984375" d="M493.597 264.208 L512.778 258.177" stroke="#ae91ec" style="animation-delay:-1.25833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.41796875" data-phase="0.58203125" d="M512.778 258.177 L532.191 252.941" stroke="#ae91ec" style="animation-delay:-1.24166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.42578125" data-phase="0.57421875" d="M532.191 252.941 L551.816 248.565" stroke="#ae91ec" style="animation-delay:-1.22500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.43359375" data-phase="0.56640625" d="M551.816 248.565 L571.617 245.072" stroke="#ae91ec" style="animation-delay:-1.20833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.44140625" data-phase="0.55859375" d="M571.617 245.072 L591.556 242.481" stroke="#ae91ec" style="animation-delay:-1.19166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.44921875" data-phase="0.55078125" d="M591.556 242.481 L611.593 240.806" stroke="#ae91ec" style="animation-delay:-1.17500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.45703125" data-phase="0.54296875" d="M611.593 240.806 L631.686 240.060" stroke="#ae91ec" style="animation-delay:-1.15833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.46484375" data-phase="0.53515625" d="M631.686 240.060 L651.792 240.252" stroke="#ae91ec" style="animation-delay:-1.14166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.47265625" data-phase="0.52734375" d="M651.792 240.252 L671.867 241.381" stroke="#ae91ec" style="animation-delay:-1.12500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.48046875" data-phase="0.51953125" d="M671.867 241.381 L691.867 243.450" stroke="#ae91ec" style="animation-delay:-1.10833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.48828125" data-phase="0.51171875" d="M691.867 243.450 L711.748 246.453" stroke="#ae91ec" style="animation-delay:-1.09166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.49609375" data-phase="0.50390625" d="M711.748 246.453 L731.467 250.381" stroke="#ae91ec" style="animation-delay:-1.07500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.50390625" data-phase="0.49609375" d="M731.467 250.381 L750.982 255.225" stroke="#e78ce5" style="animation-delay:-1.05833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.51171875" data-phase="0.48828125" d="M750.982 255.225 L770.251 260.967" stroke="#e78ce5" style="animation-delay:-1.04166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.51953125" data-phase="0.48046875" d="M770.251 260.967 L789.236 267.591" stroke="#e78ce5" style="animation-delay:-1.02500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.52734375" data-phase="0.47265625" d="M789.236 267.591 L807.897 275.076" stroke="#e78ce5" style="animation-delay:-1.00833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.53515625" data-phase="0.46484375" d="M807.897 275.076 L826.199 283.402" stroke="#e78ce5" style="animation-delay:-0.99166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.54296875" data-phase="0.45703125" d="M826.199 283.402 L844.108 292.543" stroke="#e78ce5" style="animation-delay:-0.97500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.55078125" data-phase="0.44921875" d="M844.108 292.543 L861.591 302.474" stroke="#e78ce5" style="animation-delay:-0.95833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.55859375" data-phase="0.44140625" d="M861.591 302.474 L878.618 313.169" stroke="#e78ce5" style="animation-delay:-0.94166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.56640625" data-phase="0.43359375" d="M878.618 313.169 L895.160 324.600" stroke="#e78ce5" style="animation-delay:-0.92500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.57421875" data-phase="0.42578125" d="M895.160 324.600 L911.190 336.738" stroke="#e78ce5" style="animation-delay:-0.90833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.58203125" data-phase="0.41796875" d="M911.190 336.738 L926.682 349.555" stroke="#e78ce5" style="animation-delay:-0.89166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.58984375" data-phase="0.41015625" d="M926.682 349.555 L941.614 363.021" stroke="#e78ce5" style="animation-delay:-0.87500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.59765625" data-phase="0.40234375" d="M941.614 363.021 L955.964 377.105" stroke="#e78ce5" style="animation-delay:-0.85833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.60546875" data-phase="0.39453125" d="M955.964 377.105 L969.711 391.779" stroke="#e78ce5" style="animation-delay:-0.84166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.61328125" data-phase="0.38671875" d="M969.711 391.779 L982.832 407.015" stroke="#e78ce5" style="animation-delay:-0.82500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.62109375" data-phase="0.37890625" d="M982.832 407.015 L995.229 422.845" stroke="#e78ce5" style="animation-delay:-0.80833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.62890625" data-phase="0.37109375" d="M995.229 422.845 L1006.902 439.217" stroke="#f18fad" style="animation-delay:-0.79166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.63671875" data-phase="0.36328125" d="M1006.902 439.217 L1017.787 456.122" stroke="#f18fad" style="animation-delay:-0.77500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.64453125" data-phase="0.35546875" d="M1017.787 456.122 L1027.817 473.548" stroke="#f18fad" style="animation-delay:-0.75833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.65234375" data-phase="0.34765625" d="M1027.817 473.548 L1036.913 491.479" stroke="#f18fad" style="animation-delay:-0.74166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.66015625" data-phase="0.33984375" d="M1036.913 491.479 L1044.989 509.891" stroke="#f18fad" style="animation-delay:-0.72500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.66796875" data-phase="0.33203125" d="M1044.989 509.891 L1051.949 528.754" stroke="#f18fad" style="animation-delay:-0.70833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.67578125" data-phase="0.32421875" d="M1051.949 528.754 L1057.686 548.023" stroke="#f18fad" style="animation-delay:-0.69166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.68359375" data-phase="0.31640625" d="M1057.686 548.023 L1062.080 567.641" stroke="#f18fad" style="animation-delay:-0.67500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.69140625" data-phase="0.30859375" d="M1062.080 567.641 L1065.003 587.531" stroke="#f18fad" style="animation-delay:-0.65833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.69921875" data-phase="0.30078125" d="M1065.003 587.531 L1066.315 607.591" stroke="#f18fad" style="animation-delay:-0.64166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.70703125" data-phase="0.29296875" d="M1066.315 607.591 L1065.875 627.687" stroke="#f18fad" style="animation-delay:-0.62500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.71484375" data-phase="0.28515625" d="M1065.875 627.687 L1063.545 647.652" stroke="#f18fad" style="animation-delay:-0.60833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.72265625" data-phase="0.27734375" d="M1063.545 647.652 L1059.208 667.278" stroke="#f18fad" style="animation-delay:-0.59166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.73046875" data-phase="0.26953125" d="M1059.208 667.278 L1052.780 686.321" stroke="#f18fad" style="animation-delay:-0.57500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.73828125" data-phase="0.26171875" d="M1052.780 686.321 L1044.240 704.514" stroke="#f18fad" style="animation-delay:-0.55833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.74609375" data-phase="0.25390625" d="M1044.240 704.514 L1033.637 721.586" stroke="#f18fad" style="animation-delay:-0.54166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.75390625" data-phase="0.24609375" d="M1033.637 721.586 L1021.102 737.295" stroke="#f3d578" style="animation-delay:-0.52500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.76171875" data-phase="0.23828125" d="M1021.102 737.295 L1006.835 751.450" stroke="#f3d578" style="animation-delay:-0.50833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.76953125" data-phase="0.23046875" d="M1006.835 751.450 L991.084 763.934" stroke="#f3d578" style="animation-delay:-0.49166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.77734375" data-phase="0.22265625" d="M991.084 763.934 L974.139 774.748" stroke="#f3d578" style="animation-delay:-0.47500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.78515625" data-phase="0.21484375" d="M974.139 774.748 L956.260 783.935" stroke="#f3d578" style="animation-delay:-0.45833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.79296875" data-phase="0.20703125" d="M956.260 783.935 L937.636 791.503" stroke="#f3d578" style="animation-delay:-0.44166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.80078125" data-phase="0.19921875" d="M937.636 791.503 L918.472 797.577" stroke="#f3d578" style="animation-delay:-0.42500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.80859375" data-phase="0.19140625" d="M918.472 797.577 L898.938 802.335" stroke="#f3d578" style="animation-delay:-0.40833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.81640625" data-phase="0.18359375" d="M898.938 802.335 L879.162 805.968" stroke="#f3d578" style="animation-delay:-0.39166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.82421875" data-phase="0.17578125" d="M879.162 805.968 L859.236 808.661" stroke="#f3d578" style="animation-delay:-0.37500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.83203125" data-phase="0.16796875" d="M859.236 808.661 L839.220 810.577" stroke="#f3d578" style="animation-delay:-0.35833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.83984375" data-phase="0.16015625" d="M839.220 810.577 L819.153 811.857" stroke="#f3d578" style="animation-delay:-0.34166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.84765625" data-phase="0.15234375" d="M819.153 811.857 L799.060 812.620" stroke="#f3d578" style="animation-delay:-0.32500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.85546875" data-phase="0.14453125" d="M799.060 812.620 L778.954 812.961" stroke="#f3d578" style="animation-delay:-0.30833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.86328125" data-phase="0.13671875" d="M778.954 812.961 L769.000 802.846" stroke="#f3d578" style="animation-delay:-0.29166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.87109375" data-phase="0.12890625" d="M769.000 802.846 L769.000 782.737" stroke="#f3d578" style="animation-delay:-0.27500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.87890625" data-phase="0.12109375" d="M769.000 782.737 L769.000 762.629" stroke="#f0ba72" style="animation-delay:-0.25833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.88671875" data-phase="0.11328125" d="M769.000 762.629 L769.000 742.520" stroke="#f0ba72" style="animation-delay:-0.24166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.89453125" data-phase="0.10546875" d="M769.000 742.520 L769.000 722.411" stroke="#f0ba72" style="animation-delay:-0.22500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.90234375" data-phase="0.09765625" d="M769.000 722.411 L769.000 702.303" stroke="#f0ba72" style="animation-delay:-0.20833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.91015625" data-phase="0.08984375" d="M769.000 702.303 L769.000 682.194" stroke="#f0ba72" style="animation-delay:-0.19166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.91796875" data-phase="0.08203125" d="M769.000 682.194 L769.000 662.086" stroke="#f0ba72" style="animation-delay:-0.17500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.92578125" data-phase="0.07421875" d="M769.000 662.086 L769.000 641.977" stroke="#f0ba72" style="animation-delay:-0.15833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.93359375" data-phase="0.06640625" d="M769.000 641.977 L769.000 621.869" stroke="#f0ba72" style="animation-delay:-0.14166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.94140625" data-phase="0.05859375" d="M769.000 621.869 L769.000 601.760" stroke="#f0ba72" style="animation-delay:-0.12500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.94921875" data-phase="0.05078125" d="M769.000 601.760 L769.000 581.651" stroke="#f0ba72" style="animation-delay:-0.10833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.95703125" data-phase="0.04296875" d="M769.000 581.651 L769.000 561.543" stroke="#f0ba72" style="animation-delay:-0.09166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.96484375" data-phase="0.03515625" d="M769.000 561.543 L769.000 541.434" stroke="#f0ba72" style="animation-delay:-0.07500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.97265625" data-phase="0.02734375" d="M769.000 541.434 L769.000 521.326" stroke="#f0ba72" style="animation-delay:-0.05833333s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.98046875" data-phase="0.01953125" d="M769.000 521.326 L769.000 501.217" stroke="#f0ba72" style="animation-delay:-0.04166667s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.98828125" data-phase="0.01171875" d="M769.000 501.217 L769.000 481.109" stroke="#f0ba72" style="animation-delay:-0.02500000s"/>
+      <path class="flow-segment" data-route="outer" data-u="0.99609375" data-phase="0.00390625" d="M769.000 481.109 L769.000 461.000" stroke="#f0ba72" style="animation-delay:-0.00833333s"/>
+    </g>
+    <g data-route="inner" data-phase-offset="0.93503544" stroke-width="200">
+      <path class="flow-segment" data-route="inner" data-u="0.00781250" data-phase="0.05715206" d="M765.000 628.000 L764.530 612.184" stroke="#f0ba72" style="animation-delay:-0.12192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.02343750" data-phase="0.04152706" d="M764.530 612.184 L763.065 596.429" stroke="#f0ba72" style="animation-delay:-0.08859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.03906250" data-phase="0.02590206" d="M763.065 596.429 L760.517 580.813" stroke="#f0ba72" style="animation-delay:-0.05525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.05468750" data-phase="0.01027706" d="M760.517 580.813 L756.794 565.436" stroke="#f0ba72" style="animation-delay:-0.02192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.07031250" data-phase="0.99465206" d="M756.794 565.436 L751.809 550.421" stroke="#91dcb2" style="animation-delay:-2.12192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.08593750" data-phase="0.97902706" d="M751.809 550.421 L745.477 535.924" stroke="#91dcb2" style="animation-delay:-2.08859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.10156250" data-phase="0.96340206" d="M745.477 535.924 L737.734 522.130" stroke="#91dcb2" style="animation-delay:-2.05525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.11718750" data-phase="0.94777706" d="M737.734 522.130 L728.550 509.252" stroke="#91dcb2" style="animation-delay:-2.02192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.13281250" data-phase="0.93215206" d="M728.550 509.252 L717.941 497.523" stroke="#91dcb2" style="animation-delay:-1.98859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.14843750" data-phase="0.91652706" d="M717.941 497.523 L705.981 487.173" stroke="#91dcb2" style="animation-delay:-1.95525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.16406250" data-phase="0.90090206" d="M705.981 487.173 L692.817 478.410" stroke="#91dcb2" style="animation-delay:-1.92192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.17968750" data-phase="0.88527706" d="M692.817 478.410 L678.647 471.386" stroke="#91dcb2" style="animation-delay:-1.88859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.19531250" data-phase="0.86965206" d="M678.647 471.386 L663.712 466.181" stroke="#78d6db" style="animation-delay:-1.85525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.21093750" data-phase="0.85402706" d="M663.712 466.181 L648.261 462.801" stroke="#78d6db" style="animation-delay:-1.82192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.22656250" data-phase="0.83840206" d="M648.261 462.801 L632.526 461.183" stroke="#78d6db" style="animation-delay:-1.78859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.24218750" data-phase="0.82277706" d="M632.526 461.183 L616.707 461.196" stroke="#78d6db" style="animation-delay:-1.75525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.25781250" data-phase="0.80715206" d="M616.707 461.196 L600.956 462.675" stroke="#78d6db" style="animation-delay:-1.72192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.27343750" data-phase="0.79152706" d="M600.956 462.675 L585.415 465.629" stroke="#78d6db" style="animation-delay:-1.68859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.28906250" data-phase="0.77590206" d="M585.415 465.629 L570.230 470.065" stroke="#78d6db" style="animation-delay:-1.65525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.30468750" data-phase="0.76027706" d="M570.230 470.065 L555.552 475.963" stroke="#78d6db" style="animation-delay:-1.62192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.32031250" data-phase="0.74465206" d="M555.552 475.963 L541.526 483.280" stroke="#7eacf0" style="animation-delay:-1.58859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.33593750" data-phase="0.72902706" d="M541.526 483.280 L528.291 491.944" stroke="#7eacf0" style="animation-delay:-1.55525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.35156250" data-phase="0.71340206" d="M528.291 491.944 L515.972 501.868" stroke="#7eacf0" style="animation-delay:-1.52192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.36718750" data-phase="0.69777706" d="M515.972 501.868 L504.680 512.948" stroke="#7eacf0" style="animation-delay:-1.48859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.38281250" data-phase="0.68215206" d="M504.680 512.948 L494.510 525.065" stroke="#7eacf0" style="animation-delay:-1.45525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.39843750" data-phase="0.66652706" d="M494.510 525.065 L485.541 538.096" stroke="#7eacf0" style="animation-delay:-1.42192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.41406250" data-phase="0.65090206" d="M485.541 538.096 L477.831 551.910" stroke="#7eacf0" style="animation-delay:-1.38859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.42968750" data-phase="0.63527706" d="M477.831 551.910 L471.425 566.375" stroke="#7eacf0" style="animation-delay:-1.35525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.44531250" data-phase="0.61965206" d="M471.425 566.375 L466.347 581.359" stroke="#ae91ec" style="animation-delay:-1.32192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.46093750" data-phase="0.60402706" d="M466.347 581.359 L462.606 596.730" stroke="#ae91ec" style="animation-delay:-1.28859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.47656250" data-phase="0.58840206" d="M462.606 596.730 L460.194 612.366" stroke="#ae91ec" style="animation-delay:-1.25525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.49218750" data-phase="0.57277706" d="M460.194 612.366 L459.086 628.149" stroke="#ae91ec" style="animation-delay:-1.22192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.50781250" data-phase="0.55715206" d="M459.086 628.149 L459.229 643.970" stroke="#ae91ec" style="animation-delay:-1.18859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.52343750" data-phase="0.54152706" d="M459.229 643.970 L460.582 659.734" stroke="#ae91ec" style="animation-delay:-1.15525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.53906250" data-phase="0.52590206" d="M460.582 659.734 L463.242 675.329" stroke="#ae91ec" style="animation-delay:-1.12192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.55468750" data-phase="0.51027706" d="M463.242 675.329 L467.311 690.616" stroke="#ae91ec" style="animation-delay:-1.08859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.57031250" data-phase="0.49465206" d="M467.311 690.616 L472.866 705.427" stroke="#e78ce5" style="animation-delay:-1.05525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.58593750" data-phase="0.47902706" d="M472.866 705.427 L479.949 719.571" stroke="#e78ce5" style="animation-delay:-1.02192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.60156250" data-phase="0.46340206" d="M479.949 719.571 L488.554 732.843" stroke="#e78ce5" style="animation-delay:-0.98859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.61718750" data-phase="0.44777706" d="M488.554 732.843 L498.617 745.046" stroke="#e78ce5" style="animation-delay:-0.95525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.63281250" data-phase="0.43215206" d="M498.617 745.046 L510.018 756.008" stroke="#e78ce5" style="animation-delay:-0.92192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.64843750" data-phase="0.41652706" d="M510.018 756.008 L522.595 765.600" stroke="#e78ce5" style="animation-delay:-0.88859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.66406250" data-phase="0.40090206" d="M522.595 765.600 L536.157 773.741" stroke="#e78ce5" style="animation-delay:-0.85525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.67968750" data-phase="0.38527706" d="M536.157 773.741 L550.505 780.401" stroke="#e78ce5" style="animation-delay:-0.82192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.69531250" data-phase="0.36965206" d="M550.505 780.401 L565.448 785.593" stroke="#f18fad" style="animation-delay:-0.78859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.71093750" data-phase="0.35402706" d="M565.448 785.593 L580.813 789.361" stroke="#f18fad" style="animation-delay:-0.75525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.72656250" data-phase="0.33840206" d="M580.813 789.361 L596.450 791.768" stroke="#f18fad" style="animation-delay:-0.72192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.74218750" data-phase="0.32277706" d="M596.450 791.768 L612.231 792.891" stroke="#f18fad" style="animation-delay:-0.68859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.75781250" data-phase="0.30715206" d="M612.231 792.891 L628.050 792.726" stroke="#f18fad" style="animation-delay:-0.65525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.77343750" data-phase="0.29152706" d="M628.050 792.726 L643.764 790.913" stroke="#f18fad" style="animation-delay:-0.62192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.78906250" data-phase="0.27590206" d="M643.764 790.913 L659.179 787.368" stroke="#f18fad" style="animation-delay:-0.58859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.80468750" data-phase="0.26027706" d="M659.179 787.368 L674.090 782.093" stroke="#f18fad" style="animation-delay:-0.55525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.82031250" data-phase="0.24465206" d="M674.090 782.093 L688.293 775.134" stroke="#f3d578" style="animation-delay:-0.52192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.83593750" data-phase="0.22902706" d="M688.293 775.134 L701.596 766.578" stroke="#f3d578" style="animation-delay:-0.48859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.85156250" data-phase="0.21340206" d="M701.596 766.578 L713.831 756.553" stroke="#f3d578" style="animation-delay:-0.45525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.86718750" data-phase="0.19777706" d="M713.831 756.553 L724.862 745.217" stroke="#f3d578" style="animation-delay:-0.42192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.88281250" data-phase="0.18215206" d="M724.862 745.217 L734.590 732.744" stroke="#f3d578" style="animation-delay:-0.38859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.89843750" data-phase="0.16652706" d="M734.590 732.744 L742.955 719.318" stroke="#f3d578" style="animation-delay:-0.35525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.91406250" data-phase="0.15090206" d="M742.955 719.318 L749.932 705.121" stroke="#f3d578" style="animation-delay:-0.32192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.92968750" data-phase="0.13527706" d="M749.932 705.121 L755.529 690.324" stroke="#f3d578" style="animation-delay:-0.28859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.94531250" data-phase="0.11965206" d="M755.529 690.324 L759.777 675.085" stroke="#f0ba72" style="animation-delay:-0.25525773s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.96093750" data-phase="0.10402706" d="M759.777 675.085 L762.728 659.541" stroke="#f0ba72" style="animation-delay:-0.22192440s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.97656250" data-phase="0.08840206" d="M762.728 659.541 L764.444 643.813" stroke="#f0ba72" style="animation-delay:-0.18859106s"/>
+      <path class="flow-segment" data-route="inner" data-u="0.99218750" data-phase="0.07277706" d="M764.444 643.813 L765.000 628.000" stroke="#f0ba72" style="animation-delay:-0.15525773s"/>
+    </g>
+    </g>
+  </g>
+</svg>

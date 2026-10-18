@@ -1,7 +1,9 @@
 import { campusStartup } from './map-startup.js';
+import { paintStartup } from './startup-visual.js';
 
-// Report startup/import failures without introducing a full-screen entry gate.
+// Keep real startup/import failures in the same recoverable loading overlay.
 try {
+  await paintStartup();
   await import('./main.js');
 } catch (error) {
   console.error('Campus startup failed:', error);

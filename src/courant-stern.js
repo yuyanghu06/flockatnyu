@@ -19,7 +19,7 @@ const colorDistance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
  * position/index/color buffer and material. Call once before registration.
  * Returns the same root; all detail meshes inherit its building selection.
  */
-function enhanceWindows(root, name) {
+function* windowDetailSteps(root, name) {
   if(root.userData.windowDetailing)return root;
   const profile=profiles[name],triangles=[],samples=[];
   root.updateMatrixWorld(true);
@@ -63,6 +63,9 @@ function enhanceWindows(root, name) {
     const plain=g.toNonIndexed();g.dispose();plain.deleteAttribute('uv');batches[material].push(plain);
   }
   for(const component of components.values()) {
+    // Yield only between complete components; source geometry is unchanged and
+    // merged detail meshes are attached atomically after the final component.
+    yield;
     const planes=new Map();
     for(const points of component) {
       const [a,b,c]=points,cross=b.clone().sub(a).cross(c.clone().sub(a)),area=cross.length()*.5;
@@ -113,5 +116,28 @@ function enhanceWindows(root, name) {
   return root;
 }
 
+function enhanceWindows(model,name) {
+  const steps=windowDetailSteps(model,name);
+  let result;
+  do { result=steps.next(); } while(!result.done);
+  return result.value;
+}
+
+async function enhanceWindowsAsync(model,name) {
+  const steps=windowDetailSteps(model,name);
+  let deadline=performance.now()+8;
+  for(;;) {
+    const result=steps.next();
+    if(result.done)return result.value;
+    if(performance.now()>=deadline) {
+      if(globalThis.scheduler?.yield)await globalThis.scheduler.yield();
+      else await new Promise(resolve=>setTimeout(resolve,0));
+      deadline=performance.now()+8;
+    }
+  }
+}
+
 export const enhanceCourant=model=>enhanceWindows(model,'courant');
 export const enhanceStern=model=>enhanceWindows(model,'stern');
+export const enhanceCourantAsync=model=>enhanceWindowsAsync(model,'courant');
+export const enhanceSternAsync=model=>enhanceWindowsAsync(model,'stern');

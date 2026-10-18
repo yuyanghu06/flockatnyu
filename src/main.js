@@ -20,7 +20,7 @@ import { createGouldPlaza } from './gould-plaza.js';
 import { createKimmelModel, removeKimmelGeometry, kimmelReplacement } from './kimmel.js';
 import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from './global-center.js';
 import { createSilverCenterModel, silverCenterReplacement } from './silver-center.js';
-import { enhanceCourant, enhanceStern } from './courant-stern.js';
+import { enhanceCourantAsync, enhanceSternAsync } from './courant-stern.js';
 import streetParkMetadata from '../assets/campus-assets/data/streets-parks-render.json';
 import './style.css';
 
@@ -340,8 +340,8 @@ async function loadJob(job) {
       if (job.name === 'park-grass') {
         state.removedDistantGrassTriangles = trimDistantGrass(model);
       }
-      if (job.name === 'courant-institute') enhanceCourant(model);
-      if (job.name === 'stern-school-of-business') enhanceStern(model);
+      if (job.name === 'courant-institute') await enhanceCourantAsync(model);
+      if (job.name === 'stern-school-of-business') await enhanceSternAsync(model);
       if (job.name === 'stern-school-of-business') sternBuilding = model;
       else if (job.name === 'nyu-gould-plaza') sternPlaza = model;
       else if (buildings.some(b => b.id === job.name)) {

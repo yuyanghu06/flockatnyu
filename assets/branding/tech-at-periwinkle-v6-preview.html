@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Tech @ — periwinkle highlight</title><style>
+      body{margin:0;background:#fff}
+      #app[aria-busy="true"] #map canvas{visibility:hidden}
+      #startup-notice{position:fixed;inset:0;z-index:1000;display:grid;align-content:center;justify-items:center;gap:18px;box-sizing:border-box;padding:24px;background:#fff;color:#62666d;text-align:center;font:13px/1.5 system-ui,sans-serif}
+      #startup-notice[hidden],#startup-notice [hidden]{display:none}
+      #startup-brand{position:relative;width:clamp(320px,32vw,440px);max-width:100%;aspect-ratio:1;transform:scale(1);opacity:1}
+      #startup-logo{display:block;width:100%;height:100%;object-fit:contain}
+      .startup-motion{position:absolute;inset:0;pointer-events:none;mask-size:100% 100%;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat}
+      #startup-outer-motion{mask-image:url('/assets/branding/tech-at-loading-outer-v6-mask.svg');-webkit-mask-image:url('/assets/branding/tech-at-loading-outer-v6-mask.svg')}
+      #startup-inner-motion{mask-image:url('/assets/branding/tech-at-loading-inner-v6-mask.svg');-webkit-mask-image:url('/assets/branding/tech-at-loading-inner-v6-mask.svg')}
+      .startup-color-disc{position:absolute;width:200%;height:200%;left:48.4848484848%;top:49.1228070175%;background:conic-gradient(from 0deg,#b4a1e000 0% 57%,#b4a1e080 68%,#c6aae8 75%,#e1b6d1 81%,#efc5a2 84%,#d3b1ddbd 88%,#b4a1e000 98% 100%);transform:translate(-50%,-50%) rotate(0deg);transform-origin:50% 50%;animation:startup-color-rotation 1.4222222222s linear infinite;will-change:transform}
+      #startup-inner-motion .startup-color-disc{left:46.6507177033%;top:51.8341307815%;background:conic-gradient(from 193.6504191348deg,#b4a1e000 0% 2%,#d3b1ddbd 12%,#efc5a2 16%,#e1b6d1 19%,#c6aae8 25%,#b4a1e080 32%,#b4a1e000 43% 100%);animation-direction:reverse}
+      @keyframes startup-color-rotation{to{transform:translate(-50%,-50%) rotate(360deg)}}
+      #startup-brand[data-static="true"] .startup-motion{display:none}
+      #startup-brand[data-static="true"] .startup-color-disc{animation-play-state:paused}
+      @supports not ((mask-image:url('')) or (-webkit-mask-image:url(''))){.startup-motion{display:none}}
+      #startup-notice[data-phase="logo-exit"] #startup-brand,#startup-notice[data-phase="backdrop-exit"] #startup-brand{transform:scale(3);opacity:0}
+      #startup-notice[data-phase="logo-exit"] #startup-brand{transition:transform var(--startup-logo-duration,1100ms) cubic-bezier(.22,.61,.36,1),opacity var(--startup-logo-duration,1100ms) ease}
+      #startup-notice[data-phase="logo-exit"] #startup-status,#startup-notice[data-phase="backdrop-exit"] #startup-status{opacity:0;transition:opacity 200ms ease}
+      #startup-notice[data-phase="backdrop-exit"]{opacity:0;transition:opacity var(--startup-backdrop-duration,1000ms) ease}
+      @media(prefers-reduced-motion:reduce){.startup-motion{display:none}.startup-color-disc{animation:none}#startup-notice,#startup-notice #startup-brand,#startup-notice #startup-status{transition:none!important}}
+      #startup-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+      #startup-notice[data-state="failed"] #startup-status{position:static;width:auto;height:auto;max-width:36ch;margin:0;overflow:visible;clip-path:none;white-space:normal}
+      #startup-retry{padding:9px 16px;border:1px solid #d4d3dc;border-radius:7px;background:#fff;color:#45424f;font:inherit;cursor:pointer}
+      #startup-retry:focus-visible{outline:2px solid #827694;outline-offset:4px}
+      @media(max-width:600px){#startup-brand{width:min(78vw,360px)}}
+    </style></head><body><aside id="startup-notice"><div id="startup-brand" aria-hidden="true">
+        <img id="startup-logo" src="/assets/branding/tech-at-periwinkle-v6.svg" width="1254" height="1254" alt="" onerror="this.hidden=true" />
+        <div id="startup-outer-motion" class="startup-motion"><div class="startup-color-disc"></div></div>
+        <div id="startup-inner-motion" class="startup-motion"><div class="startup-color-disc"></div></div>
+        <img id="startup-mask-outer" src="/assets/branding/tech-at-loading-outer-v6-mask.svg" alt="" hidden onerror="this.parentElement.dataset.assetsFailed='true';this.parentElement.dataset.static='true'" />
+        <img id="startup-mask-inner" src="/assets/branding/tech-at-loading-inner-v6-mask.svg" alt="" hidden onerror="this.parentElement.dataset.assetsFailed='true';this.parentElement.dataset.static='true'" />
+      </div></aside></body></html>
