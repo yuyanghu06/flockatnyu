@@ -106,6 +106,62 @@ test('multiple events remain ambiguous and the model cannot invent narrowing eve
   assert.equal((await f.find({date:'2026-10-21'})).reason,'date_not_in_current_declaration');assert.equal(f.writes.length,0);
 });
 
+test('AWS Hackday resolves the actual-style AWS Hack Day event and saves going with all original details preserved',async()=>{
+  const f=fixture({message:'yuyang will be going to help with AWS Hackday on tuesday',data:snapshot({events:[event({name:'AWS Hack Day'})]})});
+  const found=await f.find({eventQuery:'AWS Hackday'});assert.equal(found.status,'ready');assert.equal(found.attendanceTargets.selection,'unique');
+  assert.equal(found.attendanceTargets.events[0].name,'AWS Hack Day');assert.equal((await f.set()).attendanceWrite.outcome,'applied');
+  assert.equal(f.data.events[0].name,'AWS Hack Day');assert.equal(f.data.events[0].notes,'Keep original notes');
+  assert.equal(f.data.event_people.find(row=>row.person_id===pid).attendance_status,'going');assert.equal(f.data.event_people.length,2);
+});
+
+test('compound event matching normalizes casing, spacing, punctuation and NFKC in either direction at every phrase-binding site',async()=>{
+  for(const [stated,query,stored] of [
+    ['AWS Hack Day','aws hackday','AWSHackday'],['AWSHackday','AWS Hack Day','AWS Hack Day'],
+    ['aws-hackday','AWS Hack Day','AWS: Hack-Day'],['AWS Hackday','ＡＷＳ Ｈａｃｋ Ｄａｙ','AWS-Hack-Day'],
+    ['ＡＷＳ Ｈａｃｋｄａｙ','AWS Hack Day','ＡＷＳ Ｈａｃｋ Ｄａｙ'],
+  ]) {
+    const f=fixture({message:`Yuyang will attend ${stated} on Tuesday`,data:snapshot({events:[event({name:stored})]})});
+    const found=await f.find({eventQuery:query});assert.equal(found.attendanceTargets.selection,'unique',`${stated} / ${query} / ${stored}`);
+    assert.equal((await f.set()).status,'ready');assert.equal(f.data.events[0].name,stored);assert.equal(f.writes.length,1);
+  }
+});
+
+test('format matching never takes partial tokens, skips candidate words, accepts punctuation-only queries or invents user event words',async()=>{
+  for(const [query,stored] of [['AWS','PAWS Hack Day'],['Hack','AWS Hackathon'],['AWS Hackday','AWS Hack Daylong'],
+    ['AWS Hackday','AWS Club Hack Day'],['AWS Hackday','SuperAWS Hack Day']]) {
+    const f=fixture({message:`Yuyang will attend ${query} on Tuesday`,data:snapshot({events:[event({name:stored})]})});
+    assert.equal((await f.find({eventQuery:query})).attendanceTargets.selection,'not_found',`${query} / ${stored}`);
+    assert.equal((await f.set()).status,'forbidden');assert.equal(f.writes.length,0);
+  }
+  const f=fixture({message:'Yuyang will attend AWS Hackday on Tuesday',data:snapshot({events:[event({name:'AWS Hack Day'})]})});
+  for(const eventQuery of ['---','!!!','AWS workshop','AWS Hackday kickoff','Hack'])assert.equal((await f.find({eventQuery})).reason,'use_current_declaration',eventQuery);
+  assert.equal((await f.set()).status,'forbidden');assert.equal(f.writes.length,0);
+});
+
+test('format-equivalent titles remain ambiguous and explicit dates still select only their matching event',async()=>{
+  const message='Yuyang will attend AWS Hackday on Tuesday';
+  const f=fixture({message,data:snapshot({events:[event({name:'AWS Hack Day'}),event({id:otherEid,name:'AWS-Hackday',source_record_id:'second-instance'})]})});
+  const ambiguous=await f.find({eventQuery:'AWS Hack Day'});assert.equal(ambiguous.attendanceTargets.selection,'ambiguous');assert.equal(ambiguous.attendanceTargets.events.length,2);
+  assert.equal((await f.set()).status,'forbidden');assert.equal(f.writes.length,0);
+  const dated=fixture({message,data:snapshot({events:[event({name:'AWS Hack Day'}),event({id:otherEid,name:'AWS-Hackday',source_record_id:'wednesday-instance',starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'})]})});
+  const unique=await dated.find({eventQuery:'AWS Hack Day',date:'2026-10-20'});assert.equal(unique.attendanceTargets.selection,'unique');assert.equal(unique.attendanceTargets.events[0].id,eid);
+  assert.equal((await dated.set()).status,'ready');assert.equal((await dated.find({eventQuery:'AWS Hack Day',date:'2026-10-21'})).reason,'date_not_in_current_declaration');
+});
+
+test('set rechecks normalized event words while retaining date and optimistic-concurrency fences',async()=>{
+  const options={message:'Yuyang will attend AWS Hackday on Tuesday',data:snapshot({events:[event({name:'AWS Hack Day'})]})};
+  const equivalent=fixture(options);await equivalent.find({eventQuery:'AWS Hackday'});
+  equivalent.mutate(data=>({...data,events:[{...data.events[0],name:'AWS-Hackday'}]}));
+  assert.equal((await equivalent.set()).status,'ready');assert.equal(equivalent.data.events[0].name,'AWS-Hackday','fresh event spelling is preserved');
+  for(const patch of [{name:'AWS Hackathon'},{starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'}]) {
+    const f=fixture(options);await f.find({eventQuery:'AWS Hackday'});f.mutate(data=>({...data,events:[{...data.events[0],...patch}]}));
+    assert.equal((await f.set()).reason,'event_no_longer_matches');assert.equal(f.writes.length,0);
+  }
+  const stale=fixture(options);await stale.find({eventQuery:'AWS Hackday'});
+  stale.mutate(data=>({...data,events:[{...data.events[0],name:'AWS-Hackday',updated_at:'2026-10-18T16:01:00.000Z'}]}));
+  assert.equal((await stale.set()).status,'conflict');assert.equal(stale.writes.length,0);
+});
+
 test('stated Tuesday is enforced even when the model omits date; explicit ISO, today and tomorrow are supported',async()=>{
   const f=fixture({data:snapshot({events:[event(),event({id:otherEid,starts_at:'2026-10-21T18:00:00Z',ends_at:'2026-10-21T20:00:00Z'})]})});
   const found=await f.find();assert.equal(found.attendanceTargets.selection,'unique');assert.equal(found.attendanceTargets.events[0].id,eid);

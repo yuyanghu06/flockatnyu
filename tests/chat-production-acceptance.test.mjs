@@ -134,3 +134,53 @@ test('map projection rejects a chat provenance marker copied to another existing
   const f=fixture({data});const response=await f.app.request('/api/map/presence');const body=await response.json();
   assert(!body.buildings[0].events[0].attendees.some(person=>person.id===ids.other),'A marker naming Yuyang must not authorize Alex attendance');
 });
+
+for(const [title,phrase,query] of [
+  ['AWS Hack Day','AWS Hackday','AWS Hackday'],
+  ['AWS Hackday','AWS Hack Day','AWS Hack Day'],
+  ['AWS—Hack-Day','AWSHackday','AWSHackday'],
+  ['AWSHackday','AWS Hack-Day','AWS Hack-Day'],
+  ['ＡＷＳ Hack Day','aws hackday','AWS Hack Day'],
+])test(`formatting-equivalent attendance resolves and persists through service and API: ${title} / ${phrase}`,async()=>{
+  const data=initial();data.events[0].name=title;
+  const content=`Yuyang will be at ${phrase} on Tuesday`;
+  const lookup={name:find.name,arguments:{personName:'Yuyang',eventQuery:query}};
+  const serviceFixture=fixture({data});
+  const request=serviceFixture.mapTools.createRequest({userMessage:content,principal});
+  const targets=await request.execute({...lookup,principal});assert.equal(targets.attendanceTargets?.selection,'unique');
+  assert.equal((await request.execute({...set,principal})).attendanceWrite?.outcome,'applied');
+  const apiFixture=fixture({data,rounds:[[lookup],[set],[]]});
+  const events=await apiFixture.chat(content);assert.equal(apiFixture.writes.length,1);
+  assert.equal(events.find(row=>row.name===set.name&&row.status!=='running')?.status,'completed');
+  assert.equal(apiFixture.state.event_people.find(row=>row.person_id===ids.person)?.attendance_status,'going');
+});
+
+for(const [title,phrase,query] of [
+  ['PAWS Hack Day','AWS','AWS'],
+  ['AWSHackday','AWS','AWS'],
+  ['AWS Hack Day2','AWS Hackday','AWS Hackday'],
+  ['AWS Hack Day Beginner','AWS Hackday','AWS Hackday Beginner'],
+  ['AWS','AWSHackday','AWS'],
+])test(`event formatting cannot authorize prefixes or invented narrowing: ${title} / ${phrase} / ${query}`,async()=>{
+  const data=initial();data.events[0].name=title;
+  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:query}}],[set],[]]});
+  const events=await f.chat(`Yuyang will be at ${phrase} on Tuesday`);
+  assert.equal(f.writes.length,0);assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
+});
+
+test('formatting-equivalent titles stay ambiguous and cannot persist through the full API',async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';
+  data.events.push({...data.events[0],id:'20000000-0000-4000-8000-000000000002',name:'AWS-Hackday'});
+  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:'AWSHackday'}}],[set],[]]});
+  const events=await f.chat('Yuyang will attend AWS Hackday on Tuesday');
+  assert.equal(f.writes.length,0);assert.match(f.answerSystem,/"selection":"ambiguous"/);
+  assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
+});
+
+test('formatting matching still respects the declared Tuesday rather than another matching day',async()=>{
+  const data=initial();data.events[0].name='AWS Hack Day';
+  data.events[0].starts_at='2026-10-22T22:00:00Z';data.events[0].ends_at='2026-10-23T00:00:00Z';
+  data.event_people=[];
+  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:'AWSHackday'}}],[set],[]]});
+  await f.chat('Yuyang will be at AWS Hackday on Tuesday');assert.equal(f.writes.length,0);assert.match(f.answerSystem,/"selection":"not_found"/);
+});

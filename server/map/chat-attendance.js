@@ -22,6 +22,22 @@ export function chatAttendanceReference(sourceUrl,origin) {
 const normalize=value=>value.normalize('NFC').trim().replace(/\s+/gu,' ').toLowerCase();
 const escape=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const literal=(message,value)=>new RegExp(`(?<![\\p{L}\\p{N}])${escape(value)}(?![\\p{L}\\p{N}])`,'iu').test(message);
+const eventTokens=value=>value.normalize('NFKC').toLowerCase().match(/[\p{L}\p{N}]+/gu)||[];
+function eventPhraseMatches(candidate,query) {
+  const compact=eventTokens(query).join('');
+  if(!compact)return false;
+  const tokens=eventTokens(candidate);
+  // Formatting may split or join words, but a match cannot take part of a
+  // candidate token or skip a word: AWS is never PAWS, Hack never Hackathon.
+  for(let start=0;start<tokens.length;start++) {
+    let joined='';
+    for(let end=start;end<tokens.length&&joined.length<compact.length;end++) {
+      joined+=tokens[end];
+      if(joined===compact)return true;
+    }
+  }
+  return false;
+}
 const dates=value=>/^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(`${value}T00:00:00Z`)) && new Date(`${value}T00:00:00Z`).toISOString().slice(0,10)===value;
 const dayAt=(at,zone)=>new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(at);
 const addDays=(date,days)=>new Date(Date.parse(`${date}T00:00:00Z`)+days*86400000).toISOString().slice(0,10);
@@ -67,11 +83,11 @@ export function createChatAttendanceService({env=process.env,store=createMapEven
       async find(args={}) {return run(args,async signal=>{
         if(!text(args.personName,200,1)||!text(args.eventQuery,200,1)||(args.date!==undefined&&!dates(args.date)))return {status:'invalid_request'};
         const personName=normalize(args.personName),query=normalize(args.eventQuery);
-        if(!personName||!query||!literal(userMessage,personName)||!literal(userMessage,query))return forbidden('use_current_declaration');
+        if(!personName||!query||!literal(userMessage,personName)||!eventPhraseMatches(userMessage,query))return forbidden('use_current_declaration');
         const data=await readRaw(signal),roster=data.people.filter(person=>uuid(person.id)&&person.is_trackable===true&&text(person.display_name,200,1));
         let matches=roster.filter(person=>normalize(person.display_name)===personName);
         if(!matches.length&&!/\s/u.test(personName))matches=roster.filter(person=>normalize(person.display_name).split(' ')[0]===personName);
-        const declarationClauses=chatAttendanceDeclarations(userMessage).filter(clause=>literal(clause,query)
+        const declarationClauses=chatAttendanceDeclarations(userMessage).filter(clause=>eventPhraseMatches(clause,query)
           && new RegExp(`^${escape(personName)}\\s+(?:will|is|plans)\\b`,'iu').test(clause));
         if(!declarationClauses.length)return forbidden('person_attendance_not_declared');
         const constraints=declarationClauses.map(clause=>declarationDate(clause,reportedAt));
@@ -80,7 +96,7 @@ export function createChatAttendanceService({env=process.env,store=createMapEven
         if(args.date!==undefined&&args.date!==date)return forbidden('date_not_in_current_declaration');
         const result=await service.read({principal:args.principal,signal});
         if(result.status!=='ok')return result;
-        const events=result.events.filter(event=>eligible(event,Date.parse(reportedAt))&&eventOnDate(event,date)&&literal(event.name,query));
+        const events=result.events.filter(event=>eligible(event,Date.parse(reportedAt))&&eventOnDate(event,date)&&eventPhraseMatches(event.name,query));
         const unique=matches.length===1&&events.length===1;
         if(unique) {
           const event=events[0],person=matches[0];
@@ -106,7 +122,7 @@ export function createChatAttendanceService({env=process.env,store=createMapEven
         const event=result.events.find(row=>row.id===args.eventId);
         if(!event||event.source_id!==selection.sourceId||event.source_url!==selection.sourceUrl)return forbidden('event_source_changed');
         if(event.updated_at!==args.expectedUpdatedAt)return {status:'conflict',reason:'reread_attendance_targets'};
-        if(!eligible(event,new Date(now()).getTime())||!literal(event.name,selection.query)||!eventOnDate(event,selection.date))return forbidden('event_no_longer_matches');
+        if(!eligible(event,new Date(now()).getTime())||!eventPhraseMatches(event.name,selection.query)||!eventOnDate(event,selection.date))return forbidden('event_no_longer_matches');
         // A filtered read must never turn into an accidental participant removal.
         if(raw.event_people.filter(row=>row.event_id===event.id).length!==result.event_people.length
           ||raw.event_buildings.filter(row=>row.event_id===event.id).length!==result.event_buildings.length)return forbidden('incomplete_event_snapshot');
