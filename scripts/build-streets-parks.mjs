@@ -4,7 +4,7 @@ import { prepareStreetSurfaces, createStreets } from '../src/streets.js';
 import { createParks } from '../src/parks.js';
 
 const started=performance.now();
-const data=JSON.parse(await fs.readFile('campus-assets/data/streets-parks.json','utf8'));
+const data=JSON.parse(await fs.readFile('assets/campus-assets/data/streets-parks.json','utf8'));
 console.log('Preparing mapped surface polygons');
 const prepared=prepareStreetSurfaces(data);
 console.log('Building street mesh',Math.round(performance.now()-started));
@@ -37,7 +37,7 @@ for(const root of groups) {
 }
 const metadata={source:'OpenStreetMap contributors',attributionUrl:data.metadata.attributionUrl,fetchedAt:data.metadata.fetchedAt,osmTimestamp:data.metadata.osmTimestamp,extent:data.metadata.extent,streets:groups[0].userData,parks:groups[1].userData,meshes,triangles};
 scene.setExtras(metadata);
-await fs.mkdir('campus-assets/models/environment',{recursive:true});
-await new NodeIO().write('campus-assets/models/environment/streets-parks.glb',doc);
-await fs.writeFile('campus-assets/data/streets-parks-render.json',JSON.stringify(metadata,null,2)+'\n');
+await fs.mkdir('assets/campus-assets/models/environment',{recursive:true});
+await new NodeIO().write('assets/campus-assets/models/environment/streets-parks.glb',doc);
+await fs.writeFile('assets/campus-assets/data/streets-parks-render.json',JSON.stringify(metadata,null,2)+'\n');
 console.log(JSON.stringify({...metadata,bakeMilliseconds:Math.round(performance.now()-started)},null,2));

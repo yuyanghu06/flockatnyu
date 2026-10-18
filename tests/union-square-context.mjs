@@ -7,8 +7,8 @@ import {MeshoptDecoder} from 'meshoptimizer';
 import {insideFootprint} from '../src/geometry.js';
 
 // Source-only audit: no browser, server, network, or source-asset writes.
-const base='yuyang-site-3d-assets/models/buildings/';
-const runtimePath='yuyang-site-3d-assets/data/building-runtime.json';
+const base='assets/yuyang-site-3d-assets/models/buildings/';
+const runtimePath='assets/yuyang-site-3d-assets/data/building-runtime.json';
 const runtime=JSON.parse(fs.readFileSync(runtimePath));
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 const paths=[runtimePath,...['25-union-square-west.glb','235-park-avenue-south.glb','city-tiles/tile-2_-4.glb','city-tiles/tile-2_-3.glb','city-tiles/tile-4_-4.glb','city-tiles/tile-4_-5.glb'].map(x=>base+x)];

@@ -1,11 +1,11 @@
 {
-  "coordinateSystem": "Washington Square origin; Y up; meters (matches yuyang-site-3d-assets).",
+  "coordinateSystem": "Washington Square origin; Y up; meters (matches assets/yuyang-site-3d-assets).",
   "buildings": {
     "nyu-john-a-paulson-center": {
       "name": "John A. Paulson Center",
       "address": "181 Mercer Street, New York, NY",
       "identityConfirmedBy": "User confirmation on 2026-10-09 that spoken 'Halcyon Center' means NYU's John A. Paulson Center.",
-      "file": "campus-assets/models/buildings/john-a-paulson-center.glb",
+      "file": "assets/campus-assets/models/buildings/john-a-paulson-center.glb",
       "placement": {
         "position": [
           -11.5632,

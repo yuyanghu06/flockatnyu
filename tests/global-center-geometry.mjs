@@ -8,7 +8,7 @@ import { createKimmelModel, removeKimmelGeometry } from '../src/kimmel.js';
 import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from '../src/global-center.js';
 
 // Filesystem-only acceptance: never opens a browser or contacts a server.
-const file='yuyang-site-3d-assets/models/buildings/city-tiles/tile--1_0.glb';
+const file='assets/yuyang-site-3d-assets/models/buildings/city-tiles/tile--1_0.glb';
 const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const initialHash=digest(fs.readFileSync(file));
 await MeshoptDecoder.ready;

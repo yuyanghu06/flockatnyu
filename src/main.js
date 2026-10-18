@@ -21,7 +21,7 @@ import { createKimmelModel, removeKimmelGeometry, kimmelReplacement } from './ki
 import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from './global-center.js';
 import { createSilverCenterModel, silverCenterReplacement } from './silver-center.js';
 import { enhanceCourant, enhanceStern } from './courant-stern.js';
-import streetParkMetadata from '../campus-assets/data/streets-parks-render.json';
+import streetParkMetadata from '../assets/campus-assets/data/streets-parks-render.json';
 import './style.css';
 
 const $ = id => document.getElementById(id);
@@ -235,8 +235,8 @@ const jobs = [
   ...tiles.map(tile => ({ name: tile.file, url: tile.url, tile: true })),
   ...Object.entries(assets).filter(([name]) => !['gould-plaza','park-grass'].includes(name)).map(([name, url]) => ({ name, url, tile: false })),
   { name: 'nyu-gould-plaza', create: createGouldPlaza },
-  { name: 'mapped-streets-parks', url: new URL('../campus-assets/models/environment/streets-parks.glb', import.meta.url).href },
-  { name: 'mapped-park-vegetation', url: new URL('../campus-assets/models/environment/park-vegetation.glb', import.meta.url).href },
+  { name: 'mapped-streets-parks', url: new URL('../assets/campus-assets/models/environment/streets-parks.glb', import.meta.url).href },
+  { name: 'mapped-park-vegetation', url: new URL('../assets/campus-assets/models/environment/park-vegetation.glb', import.meta.url).href },
 ];
 campusStartup.start(jobs.length);
 function recordError(name, error) {

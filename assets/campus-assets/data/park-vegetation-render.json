@@ -19,1724 +19,1724 @@
     "maxZ": 1152
   },
   "sourceHashes": {
-    "campus-assets/data/streets-parks.json": "1d798acc97f8d326df2e32c78cf66e59a7176b7313277c67768675291378f6c7",
+    "assets/campus-assets/data/streets-parks.json": "00429850f078b84fd0dea2e7c6eab0e1030a900039d580170d798a98fcdda9d0",
     "src/gould-plaza.js": "7141d496de0d87db32991e32887a934fe89db054661863133189da2b8843173a",
-    "yuyang-site-3d-assets/models/environment/washington-square-trees.glb": "a21462774aee209de3ed454e870efd0e3736837abe51fde04d9d0d362b40da1a",
-    "yuyang-site-3d-assets/models/environment/courant-garden.glb": "8fef0fea5cfb36bec59315a4d7c771bc0f85ff2ace05c18ca3bd4d658d8b75b5",
-    "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb": "e7b41396e8fb2a18f7de509e70971dfeb3f30cf3eaaf255f2dde8eb491aecfc3"
+    "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb": "a21462774aee209de3ed454e870efd0e3736837abe51fde04d9d0d362b40da1a",
+    "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb": "8fef0fea5cfb36bec59315a4d7c771bc0f85ff2ace05c18ca3bd4d658d8b75b5",
+    "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb": "e7b41396e8fb2a18f7de509e70971dfeb3f30cf3eaaf255f2dde8eb491aecfc3"
   },
   "existingExclusionCount": 246,
   "existingExclusions": [
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -125.41796380555743,
       "maxX": -124.28117865049725,
       "minZ": -16.892156067300874,
       "maxZ": -15.783872457225726
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 32.795959957996374,
       "maxX": 33.89218854053878,
       "minZ": -24.504063771600443,
       "maxZ": -23.43531989724596
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 23.68171163006007,
       "maxX": 25.29205851154149,
       "minZ": 69.1155269695308,
       "maxZ": 70.68549913827101
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 84.39892715796977,
       "maxX": 86.00861983910055,
       "minZ": 36.50523736712904,
       "maxZ": 38.07457173766869
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -4.363275496570672,
       "maxX": -2.792242558391486,
       "minZ": 38.845629694161886,
       "maxZ": 40.37727360112339
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -78.29267434525067,
       "maxX": -76.76457663131183,
       "minZ": -64.23434280238959,
       "maxZ": -62.744557645173956
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 43.78370311501237,
       "maxX": 45.041339609597,
       "minZ": -13.26630089299988,
       "maxZ": -12.040195935368956
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 24.675833474596256,
       "maxX": 25.88241313795257,
       "minZ": 53.20649154143523,
       "maxZ": 54.38281976774552
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -97.74511003284579,
       "maxX": -96.15340376109953,
       "minZ": 3.270091020886781,
       "maxZ": 4.821889938367207
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -28.48565902282374,
       "maxX": -27.24422607849462,
       "minZ": -61.95093237142248,
       "maxZ": -60.74062470767183
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -83.65050842709219,
       "maxX": -82.4612316852125,
       "minZ": -17.911568070161465,
       "maxZ": -16.75210894545195
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -75.07626901635749,
       "maxX": -73.9055882834472,
       "minZ": 31.039567608106353,
       "maxZ": 32.18089696408882
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -126.90415977942949,
       "maxX": -125.29055762779707,
       "minZ": -59.497396869239935,
       "maxZ": -57.924251046675465
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 49.30151864673121,
       "maxX": 50.519503386960196,
       "minZ": -36.72684083564623,
       "maxZ": -35.5393934812286
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -49.63562208620823,
       "maxX": -48.481290755588645,
       "minZ": -6.780028176674207,
       "maxZ": -5.6546383097963115
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -19.217847841917656,
       "maxX": -18.046495419801094,
       "minZ": 42.220834923508804,
       "maxZ": 43.36281912806582
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -82.18253163715453,
       "maxX": -80.75943918804079,
       "minZ": -79.12380753920053,
       "maxZ": -77.73639494856815
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -13.602046658107184,
       "maxX": -12.411415408543206,
       "minZ": -52.2296358871514,
       "maxZ": -51.06885621505478
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -55.986602527559775,
       "maxX": -54.373756664334756,
       "minZ": -87.60166166924958,
       "maxZ": -86.0292531733846
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -67.34238557732385,
       "maxX": -65.74999113166052,
       "minZ": -22.3831147844854,
       "maxZ": -20.830644947025263
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -83.91391641758716,
       "maxX": -82.30457418299878,
       "minZ": -33.296148706364306,
       "maxZ": -31.72715599595051
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 76.10953180100189,
       "maxX": 77.66762884352936,
       "minZ": 10.844812047435028,
       "maxZ": 12.363844388289579
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 60.63148305779066,
       "maxX": 62.20958902472887,
       "minZ": 32.245964063429255,
       "maxZ": 33.784503663752275
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 45.9600615607111,
       "maxX": 47.47883461848812,
       "minZ": 12.542535493150808,
       "maxZ": 14.023229782538237
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -6.986464987614632,
       "maxX": -5.885128487727165,
       "minZ": -73.51691249452293,
       "maxZ": -72.44318876883071
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -21.50662317804902,
       "maxX": -19.88809117741973,
       "minZ": -43.340231900467444,
       "maxZ": -41.76227983037322
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -49.893453903099335,
       "maxX": -48.729295425513946,
       "minZ": 15.15387990443,
       "maxZ": 16.28885053146078
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -56.6713113587891,
       "maxX": -55.07615568222653,
       "minZ": -59.61771090126001,
       "maxZ": -58.06254906264587
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 58.20766468911097,
       "maxX": 59.48159770102575,
       "minZ": 8.63439308929405,
       "maxZ": 9.876385977003864
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -108.82148472890893,
       "maxX": -107.2716854371067,
       "minZ": -26.432215669626856,
       "maxZ": -24.9212730377981
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 62.226617361476386,
       "maxX": 63.48235175473455,
       "minZ": 53.953164931692314,
       "maxZ": 55.177415477594295
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -78.39089954417958,
       "maxX": -77.10501110035167,
       "minZ": -8.556607931036183,
       "maxZ": -7.302959358712883
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -119.81590870992096,
       "maxX": -118.5715577207431,
       "minZ": -84.46759290575778,
       "maxZ": -83.2544403585523
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -54.30953445253837,
       "maxX": -52.981328584571,
       "minZ": -42.6860538901755,
       "maxZ": -41.391148878686366
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -26.98068255016169,
       "maxX": -25.36870175769964,
       "minZ": 49.647967484713774,
       "maxZ": 51.219532598921376
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -63.84811844693263,
       "maxX": -62.49744734896581,
       "minZ": 18.726523986355957,
       "maxZ": 20.043330978262546
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -1.7296129479951432,
       "maxX": -0.16136550754837486,
       "minZ": 65.47710477597505,
       "maxZ": 67.00603302336887
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -4.873247657648662,
       "maxX": -3.513595070012471,
       "minZ": -45.02272038536074,
       "maxZ": -43.6971570882277
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -60.78008034796407,
       "maxX": -59.365656346371864,
       "minZ": -6.216144200819542,
       "maxZ": -4.837182721877127
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 22.715458778060572,
       "maxX": 24.33506688722263,
       "minZ": -18.21531142804369,
       "maxZ": -16.636310229673796
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 119.02557062916219,
       "maxX": 120.23466801829875,
       "minZ": 25.72371501797447,
       "maxZ": 26.90249784549458
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -5.486482205374202,
       "maxX": -3.969426569955388,
       "minZ": 23.384961904650993,
       "maxZ": 24.86398183099567
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -95.4436026796662,
       "maxX": -94.11729514748224,
       "minZ": -12.230445739568964,
       "maxZ": -10.937391468675614
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -109.68553990200033,
       "maxX": -108.4374154202653,
       "minZ": -11.269412052565784,
       "maxZ": -10.052580622032835
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -109.66537788886066,
       "maxX": -108.23240348320965,
       "minZ": -47.7628150656046,
       "maxZ": -46.36576827943671
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -87.07275391210675,
       "maxX": -85.67553710351825,
       "minZ": -103.10434387081872,
       "maxZ": -101.74215816511415
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 23.536170701544552,
       "maxX": 24.883137007195682,
       "minZ": 85.18987144747179,
       "maxZ": 86.50306653383585
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -98.79311577871687,
       "maxX": -97.19312079354876,
       "minZ": -76.5301261363295,
       "maxZ": -74.97024632054286
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 40.560168648477756,
       "maxX": 42.14566478658084,
       "minZ": 60.499762883296796,
       "maxZ": 62.045507367973926
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -114.3387462682685,
       "maxX": -112.85247687626276,
       "minZ": 4.800876818031924,
       "maxZ": 6.249882375488511
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -111.66509171805481,
       "maxX": -110.17623213448425,
       "minZ": -130.49966313960851,
       "maxZ": -129.048132332024
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -134.73789230393754,
       "maxX": -133.43242629957808,
       "minZ": -67.91203864985305,
       "maxZ": -66.63930336675965
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 29.524076441607253,
       "maxX": 30.912485142865403,
       "minZ": -4.8761046588053745,
       "maxZ": -3.522506223040537
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -83.8119475018838,
       "maxX": -82.41861280085058,
       "minZ": 7.834780178632471,
       "maxZ": 9.193181109213171
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -26.14437900741394,
       "maxX": -24.88486827652161,
       "minZ": -81.43841154170187,
       "maxZ": -80.21047933872737
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 59.07134590413247,
       "maxX": 60.36195792887534,
       "minZ": -4.100335944769242,
       "maxZ": -2.8420822214324772
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -34.80042872290424,
       "maxX": -33.57629552025982,
       "minZ": -3.487558487170361,
       "maxZ": -2.294116824952482
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 64.7254034529924,
       "maxX": 66.08958372962479,
       "minZ": 71.00172635654599,
       "maxZ": 72.33170382418757
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -95.9943548507805,
       "maxX": -94.87866150664138,
       "minZ": -65.80835928154924,
       "maxZ": -64.72063866725792
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 93.10450301722662,
       "maxX": 94.25871719761713,
       "minZ": 13.32875817838378,
       "maxZ": 14.45403383223011
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -64.38046954076421,
       "maxX": -62.869675417731884,
       "minZ": 6.5984002215392366,
       "maxZ": 8.071315624508202
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -161.9391749338571,
       "maxX": -160.38754625754916,
       "minZ": -42.90847334117689,
       "maxZ": -41.3957471912795
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -58.683135374560706,
       "maxX": -57.27742065571273,
       "minZ": -71.70863518098366,
       "maxZ": -70.33816462513079
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -102.90839444347877,
       "maxX": -101.55367220691186,
       "minZ": -87.93045732673073,
       "maxZ": -86.60970076661187
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -81.37112292485216,
       "maxX": -80.25309887690565,
       "minZ": -90.41672077458011,
       "maxZ": -89.32672789202579
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -39.39796386116167,
       "maxX": -38.103348394697704,
       "minZ": -60.064957228775995,
       "maxZ": -58.80280043824695
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -68.943722354866,
       "maxX": -67.7617219810715,
       "minZ": -83.95493401658659,
       "maxZ": -82.8025688264291
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 4.578119360740537,
       "maxX": 6.161056435768252,
       "minZ": 18.87058379127413,
       "maxZ": 20.413833373857443
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -11.716687361563736,
       "maxX": -10.167887528572983,
       "minZ": 49.496043467306805,
       "maxZ": 51.00601169881483
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -94.13576792109139,
       "maxX": -92.83031179082268,
       "minZ": -27.99766641155567,
       "maxZ": -26.72494075498922
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 42.18298090046282,
       "maxX": 43.51083623820905,
       "minZ": 89.65380305595357,
       "maxZ": 90.94836632573612
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -141.42992529238185,
       "maxX": -140.23001733457127,
       "minZ": -52.13794840254489,
       "maxZ": -50.96812460838227
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -159.10644463452402,
       "maxX": -157.60736151781973,
       "minZ": -55.82101462484718,
       "maxZ": -54.359516609159414
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -43.65348163446904,
       "maxX": -42.161970941214555,
       "minZ": -79.51998451103438,
       "maxZ": -78.06586906254554
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -121.34883891558775,
       "maxX": -120.16045368695131,
       "minZ": -111.51636357232424,
       "maxZ": -110.35777360878494
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -33.27879268902579,
       "maxX": -32.09285037738046,
       "minZ": -90.20197946484403,
       "maxZ": -89.04577116933582
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -35.06632254943388,
       "maxX": -33.55464913025362,
       "minZ": -37.99464838166972,
       "maxZ": -36.52087572831812
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 14.372245748985986,
       "maxX": 15.539997140418311,
       "minZ": -4.506350799488999,
       "maxZ": -3.3678773403608346
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 103.16831873992122,
       "maxX": 104.5771951760944,
       "minZ": -2.665258639290016,
       "maxZ": -1.2917056368766566
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 6.131637737174444,
       "maxX": 7.484034374336787,
       "minZ": 50.23242527572887,
       "maxZ": 51.550914544009686
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 32.68963655501414,
       "maxX": 34.09828153580617,
       "minZ": 10.756454849861115,
       "maxZ": 12.129782199956395
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 77.4007637043512,
       "maxX": 78.56307296557067,
       "minZ": 0.5077644564669157,
       "maxZ": 1.6409322307944336
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 18.892391736767664,
       "maxX": 20.34476036284171,
       "minZ": 35.11288989962014,
       "maxZ": 36.52884465316373
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 73.83013602330757,
       "maxX": 74.9895356075518,
       "minZ": 63.4988608644441,
       "maxZ": 64.62919191339047
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -130.9795958844747,
       "maxX": -129.44603277763468,
       "minZ": -46.91473226843715,
       "maxZ": -45.41961874697603
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 41.122204828336415,
       "maxX": 42.5261868952964,
       "minZ": 72.71803059793993,
       "maxZ": 74.08681194305595
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -92.69739686618887,
       "maxX": -91.2503722988502,
       "minZ": 15.521742740548177,
       "maxZ": 16.932487421914686
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -66.37446306769081,
       "maxX": -64.92973615105919,
       "minZ": -55.02444061078356,
       "maxZ": -53.615935973289
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -128.15884707621188,
       "maxX": -121.5402953798428,
       "minZ": -19.807194701280537,
       "maxZ": -12.926569947156963
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 29.695369847052376,
       "maxX": 36.99277865148278,
       "minZ": -27.317621314785157,
       "maxZ": -20.67743865225586
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 20.36292966659954,
       "maxX": 28.61084047500202,
       "minZ": 65.80993956806438,
       "maxZ": 73.90929871318562
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 81.8277567575854,
       "maxX": 88.57979023948491,
       "minZ": 33.380925703615134,
       "maxZ": 41.1171288007794
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -8.529439918257992,
       "maxX": 1.373921863295834,
       "minZ": 34.80961108555317,
       "maxZ": 44.333501097064016
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -80.89664101515129,
       "maxX": -74.16060996141121,
       "minZ": -67.54036566819539,
       "maxZ": -59.51614525709758
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 39.036834043135,
       "maxX": 49.78820868147437,
       "minZ": -18.003944165968107,
       "maxZ": -7.366426698900057
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 21.581768658332237,
       "maxX": 28.97647795421659,
       "minZ": 49.79816423342521,
       "maxZ": 57.7298661620826
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -100.78232035661759,
       "maxX": -93.11619343732772,
       "minZ": -0.6226581927455754,
       "maxZ": 8.633798062435517
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -32.94294540991427,
       "maxX": -22.786939691404086,
       "minZ": -66.27199235498176,
       "maxZ": -56.48261579931511
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -86.86862683964341,
       "maxX": -79.24311327266128,
       "minZ": -20.902197153477374,
       "maxZ": -13.821881978602704
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -79.30221378340872,
       "maxX": -69.67964351639597,
       "minZ": 26.92608865596992,
       "maxZ": 36.234918271520314
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -130.47681776827233,
       "maxX": -121.71789963895424,
       "minZ": -63.333669961211285,
       "maxZ": -54.169931113007465
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 46.88803791877638,
       "maxX": 52.93298411491503,
       "minZ": -39.07541927479832,
       "maxZ": -33.252675207623554
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -51.81270788461984,
       "maxX": -46.304204957177035,
       "minZ": -9.099910222681245,
       "maxZ": -3.393383539525786
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -23.280980872263342,
       "maxX": -13.983362389455408,
       "minZ": 38.60049381399358,
       "maxZ": 46.92366847848689
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -87.4638510144544,
       "maxX": -75.4781198107409,
       "minZ": -83.45099703399711,
       "maxZ": -73.48148282440133
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -17.163726483449807,
       "maxX": -8.849735583200584,
       "minZ": -55.846990631440576,
       "maxZ": -47.511972381254736
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -58.33581312111218,
       "maxX": -52.02454607078235,
       "minZ": -89.71224827084114,
       "maxZ": -84.0005813190026
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -70.56194298463322,
       "maxX": -62.530433724351155,
       "minZ": -26.144639494714,
       "maxZ": -17.14999627799108
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -88.31760824724842,
       "maxX": -77.90088235333752,
       "minZ": -36.98027351332286,
       "maxZ": -28.124767990583393
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 70.86835990842309,
       "maxX": 82.90880073610816,
       "minZ": 6.57978069456567,
       "maxZ": 16.549741629042728
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 56.63174844198198,
       "maxX": 66.20932364053755,
       "minZ": 28.90671691821126,
       "maxZ": 37.04360046460124
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 43.60025514467037,
       "maxX": 49.83864103452885,
       "minZ": 10.173667144674141,
       "maxZ": 16.31496124277703
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -9.256110453569278,
       "maxX": -3.615483021772519,
       "minZ": -75.8613187364648,
       "maxZ": -70.15471825083989
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -25.142243842208984,
       "maxX": -16.252470513259766,
       "minZ": -46.61278479284363,
       "maxZ": -38.57193047815247
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -52.64757570612835,
       "maxX": -45.97517362248493,
       "minZ": 11.55860518294304,
       "maxZ": 19.824998866739577
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -59.95485954328569,
       "maxX": -51.79260749772993,
       "minZ": -62.706539565739945,
       "maxZ": -55.05473667937724
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 55.74091648526226,
       "maxX": 61.94834590487446,
       "minZ": 5.521982171792672,
       "maxZ": 12.924095175009086
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -112.03281310465329,
       "maxX": -104.06035706136234,
       "minZ": -28.929703125113917,
       "maxZ": -22.50249826038413
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 59.40095200823069,
       "maxX": 66.30801710798025,
       "minZ": 51.51839637020751,
       "maxZ": 57.54840660830811
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -81.54294183963714,
       "maxX": -73.95296880489411,
       "minZ": -11.066060196687602,
       "maxZ": -4.858816016386129
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -124.30660798577856,
       "maxX": -114.08085844488551,
       "minZ": -89.08314981308138,
       "maxZ": -78.70208273086394
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -59.24223299121155,
       "maxX": -48.04863004589782,
       "minZ": -47.7899074893445,
       "maxZ": -36.35475346036253
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -31.61874304267718,
       "maxX": -20.730641265184147,
       "minZ": 45.409223219443334,
       "maxZ": 55.376406053017604
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -67.4432005246577,
       "maxX": -58.90236527124074,
       "minZ": 14.821129391646934,
       "maxZ": 23.88012640669291
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -5.1216958028233535,
       "maxX": 3.2307173472798354,
       "minZ": 62.571398652596486,
       "maxZ": 69.8320895065832
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -9.323185658344073,
       "maxX": 0.9363429306829403,
       "minZ": -49.70039083536835,
       "maxZ": -39.088541964924616
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -64.87770773917083,
       "maxX": -55.26802895516511,
       "minZ": -10.0349891814393,
       "maxZ": -1.0901748505431215
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 20.561644027026546,
       "maxX": 26.488881638256657,
       "minZ": -20.68238277704674,
       "maxZ": -14.251497075248182
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 114.65126152890736,
       "maxX": 124.60897711855358,
       "minZ": 21.19092265289538,
       "maxZ": 31.373881424253057
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -7.2612415022492485,
       "maxX": -2.1946672730803414,
       "minZ": 21.51044246584624,
       "maxZ": 26.66145160764009
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -99.36492977207507,
       "maxX": -90.19596805507337,
       "minZ": -17.01264016000141,
       "maxZ": -6.2225588146079645
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -112.6581420359864,
       "maxX": -105.46481328627922,
       "minZ": -14.323435567803642,
       "maxZ": -7.061948038153389
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -112.47673499126913,
       "maxX": -105.42104638080119,
       "minZ": -51.383235772178125,
       "maxZ": -42.818126837685156
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -91.46485070069929,
       "maxX": -81.28344031492571,
       "minZ": -107.30770196364637,
       "maxZ": -97.60976324631457
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 18.71262941033723,
       "maxX": 29.706678298403006,
       "minZ": 79.85210068976386,
       "maxZ": 91.7724262877752
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -100.76805594665393,
       "maxX": -95.2181806256117,
       "minZ": -79.01384368194542,
       "maxZ": -72.56779083953896
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 36.561436061253914,
       "maxX": 46.14439737380468,
       "minZ": 56.2351401180112,
       "maxZ": 66.22960444985989
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -117.05047354410655,
       "maxX": -110.1407496004247,
       "minZ": 1.5951230179685183,
       "maxZ": 9.3801501143557
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -115.38044251558767,
       "maxX": -106.46088133695139,
       "minZ": -134.1647418797764,
       "maxZ": -125.45867120616111
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -138.55017204627728,
       "maxX": -129.62014655723834,
       "minZ": -72.15036873284674,
       "maxZ": -62.46727653082513
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 25.29931443450431,
       "maxX": 35.137247149968346,
       "minZ": -8.381020199171928,
       "maxZ": -0.08810650218305227
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -87.82818610434634,
       "maxX": -78.40237419838803,
       "minZ": 2.7769541397709645,
       "maxZ": 14.180241142211457
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -31.120996464022824,
       "maxX": -19.908250819912723,
       "minZ": -86.0285291064751,
       "maxZ": -75.68433100094677
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 53.59463639194246,
       "maxX": 65.83866744106535,
       "minZ": -8.23818512871901,
       "maxZ": 1.2302181334797524
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -37.502749890481255,
       "maxX": -30.873974352682808,
       "minZ": -6.04520919210654,
       "maxZ": 0.20136144048910865
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 60.48373642691769,
       "maxX": 70.3312507556995,
       "minZ": 66.16625227528829,
       "maxZ": 77.09789262217265
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -100.43449400958815,
       "maxX": -90.43852234783373,
       "minZ": -69.92837234681895,
       "maxZ": -60.65729049497793
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 89.94355242006506,
       "maxX": 97.41966779477869,
       "minZ": 10.630001500922504,
       "maxZ": 17.09416918389195
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -68.77944378784525,
       "maxX": -58.47070117065084,
       "minZ": 2.6980948325691543,
       "maxZ": 11.894889366954772
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -164.51329647259163,
       "maxX": -157.81342471881462,
       "minZ": -46.20673127967629,
       "maxZ": -38.176294843370584
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -62.43250680342584,
       "maxX": -53.5280492268476,
       "minZ": -75.44515947630202,
       "maxZ": -66.6730351037761
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -107.23793361461685,
       "maxX": -97.22413303577378,
       "minZ": -91.81625764604252,
       "maxZ": -82.7927053666528
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -86.13717119228409,
       "maxX": -75.48705060947373,
       "minZ": -94.80577490839937,
       "maxZ": -84.99445702519438
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -41.72042839771893,
       "maxX": -35.78088385814044,
       "minZ": -62.259307903660726,
       "maxZ": -56.67420192299943
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -71.33855331747517,
       "maxX": -65.36689101846233,
       "minZ": -86.55672332474765,
       "maxZ": -80.26081207564297
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 1.8488379164905098,
       "maxX": 8.89033788001828,
       "minZ": 16.29251762577948,
       "maxZ": 22.91150382807794
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -16.07608643749751,
       "maxX": -5.80848845263921,
       "minZ": 45.24208417769438,
       "maxZ": 55.18130907181734
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -98.32715486941419,
       "maxX": -88.63892484249988,
       "minZ": -32.61535552517029,
       "maxZ": -22.173554386939088
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 38.89034571910051,
       "maxX": 46.803471419571366,
       "minZ": 85.96725677717274,
       "maxZ": 94.56747222673351
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -146.70687515178764,
       "maxX": -134.95306747516548,
       "minZ": -56.70151671187449,
       "maxZ": -46.465498363809104
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -163.77899015450856,
       "maxX": -152.9348159978352,
       "minZ": -60.77100253093141,
       "maxZ": -49.4856655598889
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -47.59676862777053,
       "maxX": -38.218683947913064,
       "minZ": -83.28320277109611,
       "maxZ": -74.37840306386482
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -125.73272110565523,
       "maxX": -115.77657149688383,
       "minZ": -115.49314288102369,
       "maxZ": -106.441351137531
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -36.14940710355978,
       "maxX": -29.22223596284647,
       "minZ": -93.58173639578948,
       "maxZ": -85.72624700264802
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -38.6162792873198,
       "maxX": -30.0046923923677,
       "minZ": -41.532532188104256,
       "maxZ": -33.05976822693481
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 11.758425155155749,
       "maxX": 18.15381773424855,
       "minZ": -6.975431253068905,
       "maxZ": -0.958105753309269
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 100.17067528633564,
       "maxX": 107.57483862967999,
       "minZ": -5.906806843337847,
       "maxZ": 1.8782872129057182
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 2.0579746159079377,
       "maxX": 11.557697495603293,
       "minZ": 46.75666042567849,
       "maxZ": 54.95799258945823
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 30.237629773124354,
       "maxX": 36.55028831769596,
       "minZ": 8.350623172096476,
       "maxZ": 14.464070278831258
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 72.2727284090505,
       "maxX": 83.69110826087137,
       "minZ": -3.8301860986682073,
       "maxZ": 5.919850319478144
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 15.61436759606707,
       "maxX": 23.622784503542306,
       "minZ": 31.46746051815137,
       "maxZ": 40.10050975772754
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 69.22001683862777,
       "maxX": 79.5996547922316,
       "minZ": 59.02676440204806,
       "maxZ": 69.04240368877225
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -134.16693216901598,
       "maxX": -126.2586964930934,
       "minZ": -49.88132611309129,
       "maxZ": -42.53091296161574
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": 37.95093522736528,
       "maxX": 45.697456496267534,
       "minZ": 69.70494936877503,
       "maxZ": 77.02858639782653
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -95.71271206384571,
       "maxX": -88.23505710119335,
       "minZ": 13.003202411161197,
       "maxZ": 19.377534893526303
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb",
       "minX": -69.12358839781717,
       "maxX": -62.18061082093283,
       "minZ": -57.43104272486718,
       "maxZ": -51.28271002171485
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 153.18434886250594,
       "maxX": 178.81565113749406,
       "minZ": 220.3498741723926,
       "maxZ": 251.6501258276074
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 165.3331493073934,
       "maxX": 166.6668506926066,
       "minZ": 220.88373727379678,
       "maxZ": 222.18400001859663
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 170.21381811760926,
       "maxX": 171.78618188239074,
       "minZ": 225.2734586684766,
       "maxZ": 226.80640003547668
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 163.2840129449739,
       "maxX": 164.7159870550261,
       "minZ": 229.83832844540973,
       "maxZ": 231.23440001544952
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 169.17170127139772,
       "maxX": 170.82829872860228,
       "minZ": 233.73453684871518,
       "maxZ": 235.34959999599457
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 161.32612983302482,
       "maxX": 162.67387016697518,
       "minZ": 238.37725030383655,
       "maxZ": 239.69120001201628
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 167.24189601508363,
       "maxX": 168.75810398491637,
       "minZ": 242.29940654831753,
       "maxZ": 243.7776000617981
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 159.36824672107574,
       "maxX": 160.63175327892426,
       "minZ": 246.91617216226334,
       "maxZ": 248.14800000858307
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 162.10500013947487,
       "maxX": 169.89499986052513,
       "minZ": 217.60500013947487,
       "maxZ": 225.39499986052513
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 165.8569600586319,
       "maxX": 176.1430399413681,
       "minZ": 221.4080000872612,
       "maxZ": 230.5919999127388
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 159.81800017547607,
       "maxX": 168.18199982452393,
       "minZ": 226.31800017547607,
       "maxZ": 234.68199982452393
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 164.58144028869629,
       "maxX": 175.41855971130371,
       "minZ": 229.66200032758712,
       "maxZ": 239.33799967241288
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 158.0640001795292,
       "maxX": 165.9359998204708,
       "minZ": 235.0640001795292,
       "maxZ": 242.9359998204708
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 163.04064023109436,
       "maxX": 172.95935976890564,
       "minZ": 238.57199992704392,
       "maxZ": 247.42800007295608
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/courant-garden.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb",
       "minX": 156.3100001835823,
       "maxX": 163.6899998164177,
       "minZ": 243.8100001835823,
       "maxZ": 251.1899998164177
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -22.652952609252928,
       "maxX": 1.4625526092529295,
       "minZ": -12.84807260925293,
       "maxZ": 11.26743260925293
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -19.726313052368162,
       "maxX": -1.464086947631836,
       "minZ": -9.921433052368164,
       "maxZ": 8.340793052368165
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -22.36028808135986,
       "maxX": 1.169888081359863,
       "minZ": -12.555408081359863,
       "maxZ": 10.974768081359864
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -12.117052254867554,
       "maxX": -9.073347745132446,
       "minZ": -2.3121722548675536,
       "maxZ": 0.7315322548675539
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -13.521838841629028,
       "maxX": -7.668561158370972,
       "minZ": -3.7169588416290282,
       "maxZ": 2.1363188416290284
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -9.827709911060333,
       "maxX": -2.938123641204834,
       "minZ": -1.020320004172325,
       "maxZ": -0.5603199958276747
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.13259270567894,
       "maxX": -5.0863084175109865,
       "minZ": -0.34140076333999614,
       "maxZ": 4.70593587463379
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.825200004172325,
       "maxX": -10.365199995827675,
       "minZ": -0.022829911060333052,
       "maxZ": 6.8667563587951665
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -16.104091582489012,
       "maxX": -11.05780729432106,
       "minZ": -0.34140076333999614,
       "maxZ": 4.70593587463379
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -18.252276358795164,
       "maxX": -11.362690088939667,
       "minZ": -1.020320004172325,
       "maxZ": -0.5603199958276747
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -16.104091582489012,
       "maxX": -11.05780729432106,
       "minZ": -6.2865758746337885,
       "maxZ": -1.2392392366600036
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.825200004172325,
       "maxX": -10.365199995827675,
       "minZ": -8.447396358795165,
       "maxZ": -1.5578100889396667
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.13259270567894,
       "maxX": -5.0863084175109865,
       "minZ": -6.2865758746337885,
       "maxZ": -1.2392392366600036
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -11.096211848449707,
       "maxX": -10.094188151550293,
       "minZ": -1.3171150296401977,
       "maxZ": -0.26352497035980205
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
+      "source": "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb",
       "minX": -10.851985273551941,
       "maxX": -10.33841472644806,
       "minZ": -1.0127025603723525,

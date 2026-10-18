@@ -4,7 +4,7 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { MeshoptDecoder } from 'meshoptimizer';
 await MeshoptDecoder.ready;
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'meshopt.decoder': MeshoptDecoder});
-const metadata = JSON.parse(fs.readFileSync('campus-assets/data/extracted-buildings.json','utf8')).buildings['nyu-john-a-paulson-center'];
+const metadata = JSON.parse(fs.readFileSync('assets/campus-assets/data/extracted-buildings.json','utf8')).buildings['nyu-john-a-paulson-center'];
 function inPolygon(x,z,polygon) {
   let inside=false;
   for(let i=0,j=polygon.length-1;i<polygon.length;j=i++) {
@@ -13,7 +13,7 @@ function inPolygon(x,z,polygon) {
   }
   return inside;
 }
-const doc=await io.read('yuyang-site-3d-assets/models/buildings/city-tiles/'+metadata.replaces.tile);
+const doc=await io.read('assets/yuyang-site-3d-assets/models/buildings/city-tiles/'+metadata.replaces.tile);
 const result={tile:metadata.replaces.tile,totalTriangles:0,centroidsInside:0,insideHeightRange:[Infinity,-Infinity]};
 const triangles=[];
 for(const node of doc.getRoot().listNodes()) {

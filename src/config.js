@@ -1,5 +1,5 @@
-import placements from '../yuyang-site-3d-assets/data/landmark-placements.json';
-import extracted from '../campus-assets/data/extracted-buildings.json';
+import placements from '../assets/yuyang-site-3d-assets/data/landmark-placements.json';
+import extracted from '../assets/campus-assets/data/extracted-buildings.json';
 
 export { placements };
 export const paulson = extracted.buildings['nyu-john-a-paulson-center'];

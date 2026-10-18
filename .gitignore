@@ -11,6 +11,7 @@ __pycache__/
 !.env.example
 *.log
 yuyang-site-3d-assets.zip
+/assets/yuyang-site-3d-assets.zip
 supabase/.temp/
 
 # Local MCP connections only; keep .codex agent configuration tracked.
