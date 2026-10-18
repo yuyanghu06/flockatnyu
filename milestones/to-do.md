@@ -1,3 +1,9 @@
+## Building activity header simplified
+
+Removed the decorative current date; Scheduled events now sits16px below the title in light gray. Event time metadata retained.28 focused tests, isolated frontend build and Chrome synthetic DOM/visual checks pass. Web-only sanitized deployment underway; concurrent backend/chat edits excluded.
+
+[Pass record](history/2026-10-18_19-04-08-724864-orchestrator-building-card-header-refinement.md).
+
 ## Spotlight background replies and streaming button
 
 - [x] Keep request/tool/history state alive through X/Escape/backdrop/shortcut dismissal.

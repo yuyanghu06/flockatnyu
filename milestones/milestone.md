@@ -1,3 +1,9 @@
+## Building activity header simplified
+
+Removed the decorative current date; Scheduled events now sits16px below the title in light gray. Event time metadata retained.28 focused tests, isolated frontend build and Chrome synthetic DOM/visual checks pass. Web-only sanitized deployment underway; concurrent backend/chat edits excluded.
+
+[Pass record](history/2026-10-18_19-04-08-724864-orchestrator-building-card-header-refinement.md).
+
 ## Spotlight: background continuation and streaming button live
 
 Railway web7d8598d1-21b4-4208-a1e9-162b8ea5c271 SUCCESS; source29216db pushed. X/Escape/backdrop/CmdK now hide spotlight without cancelling agent; hidden updates/history continue and reopen at latest. Explicit Stop still cancels. Hover/focus gives subtle glow; colors rotate during streaming and stop when idle, with reduced motion retained.19targeted+2package checks, bothbuilds and realChrome synthetic lifecycle/style checks pass. Actual hosted health/login/icons/gate/session checks pass, and protected entry/mainJS/mainCSS match verified artifacts byte-for-byte. Receipt:evidence/spotlight-background/hosted-release.json. Isolated committed runtime excludes pending quota work; only web deployed. Next: refresh page to load new frontend, user visual feedback; concurrent quota work below remains separate.

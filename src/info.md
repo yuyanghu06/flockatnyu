@@ -174,7 +174,7 @@ focused avatar frame is capped at480×640CSS pixels inside the left44%, keeping
 seeded positions independent of camera movement. Existing overview layout and
 parent-thread individual Schedule styling/animation are preserved.
 
-Building activity title now has a current New York weekday/month/day subtitle. Its render key includes the date so midnight changes update text without restarting the pop-in.
+Building activity omits the decorative current-date subtitle. The centered Scheduled events heading sits16px below the building name in light gray (#8a8a8a); individual event date/time metadata remains visible.
 
 Event rows support source-authorized attendee profiles from the map API, rendering right-side circular local portraits with name alternatives and initials fallback; current presence is independent.
 
@@ -257,3 +257,5 @@ updates set a pending latest-scroll flag consumed on reopen, with completed
 responses retained in history. Explicit Stop, loading failure and disposal still
 abort. Send/Stop hover/focus adds a subtle glow; color rotation is driven by active
 streaming rather than hover, and reduced motion remains static.
+
+The assistant supports a file picker, removable attachment chips/image previews, image paste and file drop using chat-attachments.js and the browser-safe server contract. PNG/JPEG/WebP, PDF and small UTF8 text/code are retained only in in-memory conversation/draft state; current attachments survive send failure. A successful map/attendance tool completion emits campus-map-updated so map-presence.js refreshes immediately. Closing the dialog still preserves in-flight streaming.

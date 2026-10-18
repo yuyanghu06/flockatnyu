@@ -127,7 +127,6 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
   const planDateOnly = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric' });
   const planDay = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', dateStyle: 'short' });
   const planEnd = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit' });
-  const buildingDate = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'long', month: 'long', day: 'numeric' });
   const midnightParts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', hourCycle: 'h23' });
   function nextMidnight(now) {
     const parts = Object.fromEntries(midnightParts.formatToParts(now).map(part => [part.type, part.value]));
@@ -178,13 +177,9 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
     }
     const events = building?.events.filter(event => event.ends > Date.now()) ?? [];
     const available = status === 'ok' && Boolean(building);
-    const dateLabel = buildingDate.format(Date.now());
     const heading = document.createElement('h2');
     heading.textContent = building?.name ?? fallback.name;
-    const date = document.createElement('p');
-    date.className = 'map-presence__building-date';
-    date.textContent = dateLabel;
-    buildingCard.replaceChildren(heading, date);
+    buildingCard.replaceChildren(heading);
     const section = title => {
       const element = document.createElement('section');
       const label = document.createElement('h3'); label.textContent = title;
@@ -196,6 +191,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
       text.textContent = message; parent.append(text);
     };
     const scheduled = section('Scheduled events');
+    scheduled.className = 'map-presence__scheduled-events';
     if (!events.length) empty(scheduled, available ? 'No scheduled events recorded.' : 'Events are unavailable right now.');
     else {
       const list = document.createElement('ol');

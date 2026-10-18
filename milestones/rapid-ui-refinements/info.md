@@ -63,3 +63,5 @@ Spotlight updates continue through dismissal and reopen at latest hidden content
 explicit Stop still cancels. Current button treatment uses hover/focus glow and
 streaming-only color rotation. Local and hosted checks pass; deployed web release is recorded in latest
 snapshot and evidence/spotlight-background, separate from backend quota work.
+
+Building-card refinement removes the decorative current date, tightens title-to-section spacing to16px and makes Scheduled events light gray while retaining event times.
