@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {SaxesParser} from 'saxes';
 import {validateArguments} from '../../server/automation/validation.js';
 import {readMiroMcpConfig,validMiroId} from '../../server/miro/mcp-config.js';
-import {createMiroMcpClient} from '../../server/miro/mcp-client.js';
+import {createMiroMcpClient,classifyMiroToolError} from '../../server/miro/mcp-client.js';
 
 const id={type:'string',minLength:1,maxLength:200,pattern:'^[A-Za-z0-9_=-]+$'};
 const integer=(minimum,maximum)=>({type:'integer',minimum,maximum});
@@ -21,6 +21,16 @@ const urlFor=(board,item)=>`https://miro.com/app/board/${encodeURIComponent(boar
 // canonical citation URL is valid. IDs have already passed a strict path charset.
 const upstreamUrl=(board,item)=>`https://miro.com/app/board/${board}/${item?`?moveToWidget=${item}`:''}`;
 const blocked=status=>({status,sources:[],coverage:{complete:false,reason:status}});
+const quotaNotices=Object.freeze({
+  quota_exhausted:'Miro has reached its daily tool-call allowance. Live content is unavailable until the daily reset; honor retryAt when present and do not retry in this request.',
+  budget_exhausted:'The shared Miro read budget is exhausted. Honor retryAt when present and do not retry in this request.',
+  reconciliation_deferred:'Background Miro reconciliation is deferred by its read schedule. Honor retryAt when present; this does not establish board contents or synchronization.',
+  quota_state_unavailable:'The shared Miro read budget cannot currently be checked. Live content is unavailable; do not retry in this request.',
+});
+const safeRetryAt=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)
+  &&Number.isFinite(Date.parse(value))&&new Date(value).toISOString()===value?value:undefined;
+const quotaFailure=(code,error)=>({...blocked(code),contentAvailable:false,notice:quotaNotices[code],
+  ...(safeRetryAt(error?.retryAt)?{retryAt:error.retryAt}:{})});
 const requestNotices=Object.freeze({
   schema:'Use the declared tool schema and exact native boardId/itemId values returned by live Miro navigation. Do not guess IDs or repeat unchanged invalid arguments.',
   canvas_options:'For type=canvas, omit limit and cursor; use itemIds and/or scope to narrow content. For JSON fragments use offset and expectedHash. Copy exact returned native IDs.',
@@ -37,7 +47,7 @@ function sameBoard(url,board,item) {
 }
 function unpack(result) {
   if(!plain(result)||Object.hasOwn(result,'isError')&&typeof result.isError!=='boolean')throw new Error('invalid_mcp_result');
-  if(result.isError)throw new Error('tool_result_error');
+  if(result.isError)throw new Error(classifyMiroToolError(result));
   if(Object.hasOwn(result,'structuredContent')) {
     if(!plain(result.structuredContent))throw new Error('invalid_mcp_result');
     return result.structuredContent;
@@ -108,6 +118,7 @@ export function createMiroMcpTools({config=readMiroMcpConfig(),store,client=crea
     if(!Array.isArray(principal?.allowedSourceIds)||!principal.allowedSourceIds.length)return blocked('forbidden');
     if(!config.configured||!store?.configured||!client.configured)return blocked('not_configured');
     if(signal?.aborted)return blocked('aborted');
+    let retrievalScope;
     try {
       const fetchedAt=now().toISOString();
       if(name==='list_miro_boards') {
@@ -116,6 +127,7 @@ export function createMiroMcpTools({config=readMiroMcpConfig(),store,client=crea
           boardContext:{format:'miro-catalogue-v1',boards},coverage:{complete:true,reason:'authorized_catalogue_only',returnedCount:boards.length}};
       }
       const row=await authorized(args.boardId,principal,signal);if(!row)return blocked('forbidden');
+      retrievalScope=row;
       let upstream,payload,nextCursor=null,complete=false,sources=[source(args.boardId,row,fetchedAt)],reason,format;
       if(name==='read_miro_board') {
         const mode=args.mode||'overview';
@@ -165,6 +177,13 @@ export function createMiroMcpTools({config=readMiroMcpConfig(),store,client=crea
       return bounded(result,args);
     } catch(error) {
       const code=signal?.aborted?'aborted':error?.code||error?.message;
+      if(Object.hasOwn(quotaNotices,code)) {
+        // Quota is no substitute for current source access, even when the
+        // provider failed before its normal successful-response recheck.
+        let latest;try{latest=await authorized(args.boardId,principal,signal);}catch{return blocked('forbidden');}
+        if(!retrievalScope||!latest||latest.source_id!==retrievalScope.source_id||latest.team_id!==retrievalScope.team_id)return blocked('forbidden');
+        return quotaFailure(code,error);
+      }
       return blocked(['forbidden','auth_required','request_timeout','response_byte_limit','tool_result_error','content_changed','invalid_mcp_result','invalid_svg'].includes(code)?code:'unavailable');
     }
   }

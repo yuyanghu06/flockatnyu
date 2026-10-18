@@ -179,3 +179,13 @@ Planner workload starts from queued originals, prioritizes eboard and fetches ex
 Calendar projection preparation binds reported_at to the observed Calendar timestamp before action hashing, after existing identity/access checks. This does not replace the map optimistic revision or participant timestamps; sparse cancellations preserve known facts.
 
 Optional Miro navigation outages are explicit per-batch deferrals after mandatory source checks, never empty-board evidence. Deferred reads recheck access and return only unavailable metadata. Calendar completion/projection remains mandatory; successful queue completion can include sanitized Miro deferred boardCount/syncComplete:false without source IDs. Auth/config/malformed failures remain fatal.
+
+The retained Miro client uses the background quota lane and starts one opaque
+session before each batch's board navigation. Quota, budget, cadence and shared
+quota-state failures explicitly defer the affected board. Follow-up reads recheck
+current access and return no content without calling Miro again in that batch;
+retryAt remains available when validated. A mid-batch deferral removes that
+board's previously observed mutation evidence. Deferred boards remain incomplete
+in completion reports while mandatory Calendar projection and unrelated authorized
+Discord work proceed. Authentication, configuration and malformed content still
+fail closed. No provider error bodies or durable board snapshots are retained.

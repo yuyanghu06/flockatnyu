@@ -31,7 +31,10 @@ const fail=code=>{throw new Error(code);};
 const success=new Set(['ready','empty','partial','unsupported_content']);
 // Only transient read-only navigation failures may defer one board. Access,
 // configuration and malformed-content failures remain fatal preflight errors.
-const navigationOutages=new Set(['tool_result_error','request_timeout','unavailable']);
+const navigationOutages=new Set(['tool_result_error','request_timeout','unavailable',
+  'quota_exhausted','budget_exhausted','reconciliation_deferred','quota_state_unavailable']);
+const safeRetryAt=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)
+  &&Number.isFinite(Date.parse(value))&&new Date(value).toISOString()===value?value:undefined;
 const evidenceKey=(sourceId,sourceUrl)=>canonicalJson([sourceId,sourceUrl]);
 export function discordCalendarIntent(content,{cancel=false}={}) {
   if(typeof content!=='string'||!content.trim())return false;
@@ -65,8 +68,8 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   const calendarTools=d.calendarTools||createCalendarTools({client:calendarClient});
   const miroConfig=d.miroConfig||readMiroMcpConfig(env);
   const miroStore=d.miroStore||createMiroStore({env,fetchImpl});
-  const miroTools=d.miroTools||createMiroMcpTools({config:miroConfig,store:miroStore,
-    client:d.miroClient||createMiroMcpClient({config:miroConfig,fetchImpl}),now});
+  const miroClient=d.miroClient||(!d.miroTools?createMiroMcpClient({config:miroConfig,fetchImpl,env,now,lane:'background'}):undefined);
+  const miroTools=d.miroTools||createMiroMcpTools({config:miroConfig,store:miroStore,client:miroClient,now});
   const discordConfig=d.discordConfig||readLiveDiscordConfig(env);
   const discordStore=d.discordStore||createDiscordStore({env,fetchImpl});
   const discordClient=d.discordClient||createLiveDiscordClient({config:discordConfig,fetchImpl});
@@ -121,15 +124,31 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       observed.set(source.sourceKey,{provider:'miro',sourceUrl:source.url,...scope});
     }
   }
+  function deferMiro(boardId,result) {
+    const retryAt=safeRetryAt(result.retryAt);
+    const deferred={status:result.status,...(retryAt?{retryAt}:{})};
+    deferredMiro.set(boardId,deferred);
+    // Incomplete reconciliation cannot authorize later mutations from this board,
+    // including observations made before a mid-batch quota response.
+    for(const [key,scope] of observed)if(scope.provider==='miro'&&scope.boardId===boardId)observed.delete(key);
+    return deferred;
+  }
+  function deferredRead(deferred) {
+    return {status:'ready',sourceStatus:['tool_result_error','request_timeout','unavailable'].includes(deferred.status)?'unavailable':deferred.status,deferred:true,contentAvailable:false,reason:'miro_navigation_deferred',sources:[],
+      ...(deferred.retryAt?{retryAt:deferred.retryAt}:{}),coverage:{complete:false,reason:'miro_navigation_deferred'},
+      notice:'Miro reconciliation is deferred. Skip this board for the rest of this batch and until the governor allows another read; honor retryAt when present. Only unrelated authorized Discord/Calendar work may proceed. No Miro facts or successful synchronization were established.'};
+  }
   async function readMiro(name,args,signal) {
+    const scope=calendarSources.find(row=>row.boardId===args?.boardId);
     if(deferredMiro.has(args?.boardId)) {
-      const scope=calendarSources.find(row=>row.boardId===args.boardId);
       if(!scope||!await currentScope(scope,signal))return {status:'forbidden'};
-      return {status:'ready',sourceStatus:'unavailable',deferred:true,contentAvailable:false,reason:'miro_navigation_deferred',sources:[],
-        coverage:{complete:false,reason:'miro_navigation_deferred'},
-        notice:'This board is unavailable for this batch. Skip it until the next batch; only unrelated authorized Discord/Calendar work may proceed. No Miro facts or successful synchronization were established.'};
+      return deferredRead(deferredMiro.get(args.boardId));
     }
     const result=normalize(await miroTools.execute({name,arguments:args,principal,signal}));
+    if(scope&&navigationOutages.has(result.status)) {
+      if(!await currentScope(scope,signal))return {status:'forbidden'};
+      return deferredRead(deferMiro(args.boardId,result));
+    }
     if(result.status==='ready')remember(result);
     return fragments.bound(result);
   }
@@ -143,10 +162,12 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     if(miroTools.transport!=='mcp'||typeof miroTools.prepareBoard!=='function')fail('preflight_failed');
     const overview=normalize(await miroTools.prepareBoard({boardId:scope.boardId,principal,signal}));
     if(navigationOutages.has(overview.status)) {
-      deferredMiro.set(scope.boardId,overview.status);
-      return {result:{status:'unavailable',sourceStatus:overview.status,sources:[],coverage:{complete:false,reason:'miro_navigation_deferred'}},
+      if(!await currentScope(scope,signal))fail('forbidden');
+      const deferred=deferMiro(scope.boardId,overview);
+      return {result:{...deferredRead(deferred),status:'unavailable'},
         contextSummary:{format:'miro-navigation-unavailable-v1',status:'unavailable',reason:overview.status,
-          notice:'Miro navigation failed; reconciliation is deferred until the next batch. This is not an empty board, source evidence or successful synchronization.'}};
+          ...(deferred.retryAt?{retryAt:deferred.retryAt}:{}),
+          notice:'Miro reconciliation is deferred until the governor allows another read; honor retryAt when present. This is not an empty board, source evidence or successful synchronization.'}};
     }
     if(overview.status!=='ready'||!plainObject(overview.boardContext))fail('preflight_failed');
     return {result:fragments.bound(overview),contextSummary:overview.boardContext};
@@ -178,6 +199,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       miro:{boards:[],coverage:{complete:false,
       reason:'live_mcp_context_per_authorized_board',notice:'Fresh bounded board navigation only. Search relevant content, then read canvas items or native table rows. Follow continuations; this is not a full-board scan or evidence of event absence.'}}};
     reconciliationWindow={timeMin:context.reconciliationWindow.timeMin,timeMax:context.reconciliationWindow.timeMax};
+    miroClient?.beginBackgroundBatch?.();
     for(const board of boards) {
       const {result,contextSummary}=await boardOverview(board,signal);
       context.miro.boards.push({boardId:board.boardId,sourceId:board.sourceId,

@@ -9,3 +9,10 @@ Calendar navigation verifies spatial section identity and actual grid headings; 
 Invalid request feedback uses fixed schema/canvas/table correction hints without echoing arguments. Canvas omits limit/cursor; table omits scope/itemIds. Strict rejection and zero upstream calls for incompatible options remain unchanged.
 
 MCP unpacking validates envelopes/content/text/object JSON before exposing source context. Malformed provider data becomes invalid_mcp_result, distinct from explicit upstream tool_result_error; this prevents transient-outage handling from masking malformed content.
+
+Quota and governor failures retain only the fixed quota_exhausted,
+budget_exhausted, reconciliation_deferred or quota_state_unavailable status,
+a canonical UTC retryAt when present, and fixed explanatory notices. They carry
+no source facts or board content and cannot establish absence or synchronization.
+Current registry/source access is rechecked even on these failed provider reads;
+private upstream text and upgrade links never reach the agents.
