@@ -1,7 +1,7 @@
 ## Chat release publication
 
 - [x] Verify liveweb/worker, once-only realreport, requestedYuyangAWSattendance and uploadedimage/text; localrealLunaPDFverified.
-- [ ] Publish final sanitized guides/history/evidence and verify matching remoteHEAD.
+- [x] Publish final sanitized guides/history/evidence and verify matching remote HEAD; f0c24b7 matched with a clean tree.
 
 ## Active: Miro quota recovery
 
