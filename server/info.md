@@ -30,7 +30,7 @@ Miro calendar navigation now accepts valid omitted-array empty searches and loca
 
 Chat prompting now includes calm tone and source routing; `assistant-context.js` supports8executedtools/8planningrounds for dependent Calendar/Miro/map workflows. `index.js` wires the same source-authorized map service into projection and request-local chat tools. Calendar originals need configured source identity; participation needs exact linked original author/sender evidence and successful lookup. Runtime UI tool progress matches the8callbound.
 
-Chat binds the composite Google adapter per request so explicit current-user Calendar actions receive isolated intent/revision state. Calendar write receipts reach planning/answer context; stateless tool execution and Drive/Gmail retrieval do not gain mutation grants.
+Chat binds the composite Google adapter per request so explicit current-user Calendar actions receive isolated intent/revision state. The last three conversation messages supply bounded confirmation context: a current affirmative reply can confirm the user’s own preceding explicit action only when the immediately preceding assistant asks that action’s confirmation. This never promotes retrieved source text, shared channel context or assistant suggestions into authority. Calendar write receipts reach planning/answer context; stateless tool execution and Drive/Gmail retrieval do not gain mutation grants.
 
 Chat has a separate overall requestTimeoutMs (ASSISTANT_REQUEST_TIMEOUT_MS, default300s/max600s) so paced source reads fit before final answer generation; provider LLM_TIMEOUT_MS remains an independent per-call limit.
 
@@ -77,3 +77,5 @@ Discord and website share `chat-runner.js`; `chat-request-context.js` validates 
 Password website sessions default to30days and persist across browser restarts. site-auth.js sets matching signed expiry, Max-Age and Expires; logout clears the host-only Secure/HttpOnly/Strict cookie. SITE_SESSION_TTL_SECONDS supports300–2592000seconds; exact-lifetime validation means changing TTL invalidates older cookies.
 
 `skills/` contains shared server-owned domain guidance. Chat and the autonomous planner selectively load the same Tech@NYU Drive skill before Drive execution; the runtime Google account remains separate from desktop MCP connections and private research files.
+
+Calendar planning includes a trusted operation-progress record derived from the server intent gate and successful Calendar receipts. It keeps an authorized create pending after a combined cancellation succeeds, without promoting source text into authority or treating one receipt as completion of every requested event in that operation family.

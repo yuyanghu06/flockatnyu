@@ -52,8 +52,8 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
         reason: name === 'list_calendar_events' ? 'requested_window_only' : 'single_event_only' },
     };
   }
-  function createRequest({userMessage,principal,operationId}={}) {
-    const actions=new Set(calendarChatIntent(userMessage)),revisions=new Map();
+  function createRequest({userMessage,messages,principal,operationId}={}) {
+    const actions=new Set(calendarChatIntent(userMessage,{messages})),revisions=new Map();
     // Capture only trusted authorization fields. Model arguments cannot select
     // a target, grant access, choose a revision or replace the current user.
     const actor={id:principal?.id,googleAccess:principal?.googleAccess,allowedSourceIds:Array.isArray(principal?.allowedSourceIds)?[...principal.allowedSourceIds]:[]};

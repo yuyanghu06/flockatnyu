@@ -1,3 +1,19 @@
+## Calendar conversational followups
+
+`chat-calendar-followup.test.mjs` runs actual website and Discord chat runners,
+the request-local Calendar adapter and the production Calendar client against
+synthetic OAuth/HTTP storage. It verifies the colloquial first add request,
+immediate same-user confirmation, combined add/cancel actions across planning
+rounds, exact current-request cancellation reads, human-field preservation and
+truthful partial-failure receipts. Cancellation-first checks inspect the trusted
+planning action/progress record and choose the remaining create only after a
+successful cancellation receipt; failed writes remain pending. Negative checks cover unrelated/stale history,
+quoted/reported/negated instructions, source injection, action scope and revoked
+Google/writer access. An actual Discord adapter chain verifies retained same-user
+reply history and isolation from another member. No live model, Calendar write or
+Discord post occurs; final generated language and hosted rollout need separate
+evidence.
+
 ## Discord discovery availability
 
 `discord-discovery-availability.test.mjs` runs the full001–035migration chain in PGlite and actual discovery/store/chat/live-read adapters. It reproduces the previous eBoard outage and checks same-policy refresh continuity, immediate observed revocations, descendants, withheld new sources, stable identities/manual disables, initial and legacy incomplete upgrades, malformed proof, policy changes, CAS and completion cursors, service-only ACLs and no stored message bodies. Historical017/020fixtures remain unchanged. Local tests do not establish hosted migration or real Discord delivery.
