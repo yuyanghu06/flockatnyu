@@ -1,0 +1,6 @@
+# Native refusal history model accepted
+
+- Role / scope: orchestrator; final native Calendar refusal repair.
+- Actual evidence: Configuredrealmodel, full26registeredtooldefinitions, refusalfilledhistory+recentbotrefusal and productionCalendarclientwithsyntheticOAuth/HTTP pass final3cases. Add-onlyretry:1creation andexactCalendarlink/completedack; explicitcombinedretry:1creation+1cancellation andconfirmationlinks; readonly:0mutations. No falsecapabilityrefusal orfuturechecking afterwrites. One post-success planningturn truncated at providerlength afterboth receipts; completedactions were retained and finalreply correctlyreportedthem. Full1610passed/1existingoptionalMiro-schema skip/0failed; bothbuilds and diffcheckpass. Source1f07fcecommitted; guarded258filewebuploadstarted. Native protocol tests cover realprivatebridge; hostednativecanary and accesschecks pending.
+- Boundaries: no productionCalendar mutation orDiscordpost. Other adapters in configured-model tests use synthetic/inert services; no rawsourcebody/prompt/credential is committed.
+- Handoff: verify promotedweb, currentcatalogue and actual hostednativeprovider operation with read-onlyprivatebridgecanary, then publishsource/journal and close actualacceptance.

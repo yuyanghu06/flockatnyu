@@ -1,3 +1,12 @@
+## Live Calendar refusal: native continuation
+
+- [x] Match exact screenshot answer to private audit; establish no Calendar write was attempted or denied.
+- [x] Implement native tool-call/result history and truthful current capability/attempt status; preserve uploads, budgets, source gates and matched IDs.
+- [x] Independently verify full26tool path, refusal history, Drive preflight, cancellation/context/budget and backend checks;115tester/158evaluatorchecks pass.
+- [x] Verify finalreply reports actual savedreceipt rather than futurechecking; final3actual-model/full26tool syntheticcases pass.
+- [x] Run configured-model full-catalogue synthetic retry scenarios, final regressions/builds and review;1610passed/1optional skip,122tester/101finalreviewpass.
+- [x] Deploy, verify promoted catalogue/access and publish actual acceptance; web5089195aSUCCESS, liveprivatebridge/nativeauditcanary passes witholdrefusalhistory and noedits/posts.
+
 ## Stable chat tool catalogues
 
 - [x] Inspect wording-based catalogue filters and semantic Calendar orchestration dependencies.

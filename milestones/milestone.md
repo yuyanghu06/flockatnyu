@@ -1,3 +1,23 @@
+## Live: exact Calendar refusal repaired with native continuation
+
+Web5089195a-7000-434b-a133-44295e9d3475isSUCCESS; source1f07fcepublished to main/codex/dev. Exactauditrace proved the screenshot request exhausted planningreads withoutattempting aCalendarwrite; noGooglewritewasdenied. Native matchedtoolresults, currentcapability/attemptfacts and a finalcompleted-receiptphase now replace that failure path. Uploadcompatibility and actualbackend/source/revisionboundaries remain.
+
+Final1610fullchecks pass with1existingoptionalMiro-schema skip;14newnative/122affected/101finalreviewchecks and bothbuilds pass. Actual-provider/full26catalogue/productionCalendarclient syntheticretrycases createonce, create+cancelonce, and readonly0writes; savedreplies includeCalendarlinks and nofuturechecking/refusal.
+
+Promotedsitehealth/login/access and5Calendar/2attendanceinventory pass. ActualprivateDiscordbridge readonlycanary witholdrefusalhistory returnsTOOLREADY with0toolcalls/errors; auditconfirms live succeededtoolTurn, run5fc432af. NoDiscordpost orrealCalendar/sourcebusinessmutation; earlierrequests not replayed. Nativecontext/roundlimits and occasional post-success providertruncation remain explicit. [Live verification](history/2026-10-19_18-09-23-190451-orchestrator-native-calendar-repair-live.md).
+
+## Native refusal-history tests accepted; rollout in progress
+
+Source1f07fceusesnative matchedtoolresults and explicitfinalsaved-outcome reporting. Final configured-model/full26catalogue/productionCalendarclient syntheticcases pass add-only, combined andreadonly retries through oldrefusalhistory; successfulreplies includeexactCalendarlinks and nofuturechecking. Independent122tester/101finalreviewchecks and full1610passed/1existingoptional skip/bothbuilds pass. Guarded258filewebrelease is rolling out; hostednativeoperation/accessverification pending. [tester](history/2026-10-19_18-05-49-045961-tester-native-final-reporting-verified.md) · [evaluator](history/2026-10-19_18-05-49-046449-evaluator-native-final-reporting-accepted.md) · [orchestrator](history/2026-10-19_18-05-49-046571-orchestrator-native-refusal-history-model-accepted.md).
+
+## Native continuation works; final saved-outcome reporting under retest
+
+Native planning with the full26toolcatalogue now executes requested writes through refusal-filled history in actual-provider/production-Calendar-client synthetic tests. Independent158review/115testchecks pass. One add-only test saved theevent but the final reply announced futurechecking, so an explicit finalreporting phase was added; exactreceipt-link/no-future-promise model assertions and final fullregressions are running. Prior expandedfull1609passed/1optional skip on the preceding nativecode. No realCalendarwrite ornewdeployment yet. [coder](history/2026-10-19_18-01-52-844173-coder-native-chat-continuation.md) · [tester](history/2026-10-19_18-01-52-845801-tester-native-chat-protocol-tested.md) · [evaluator](history/2026-10-19_18-01-52-846627-evaluator-native-chat-locally-accepted.md) · [orchestrator](history/2026-10-19_18-01-52-847458-orchestrator-native-model-outcome-reporting-found.md) · [coder](history/2026-10-19_18-01-52-847947-coder-native-final-answer-phase.md).
+
+## Active: live refusal is an unattempted Calendar write
+
+The screenshot is matched to private operational run1305f95d:8planningrounds read/re-read Discord and Calendar and recorded a bug, but proposed/attempted no Calendar mutation. Calendar reads succeeded and no Calendar write was denied. Stable tool visibility is live; the remaining failure is planning continuation plus false capability reporting. Native tool/result history and trusted current-capability/attempt facts are being added, with original user/source authority and backend gates preserved. [Exact trace and contract](history/2026-10-19_17-55-02-897883-planner-live-calendar-refusal-native-contract.md).
+
 ## Live: stable Calendar and attendance catalogues
 
 Webb495b1fc-3ab2-4f1d-8d25-6d23504005e6isSUCCESS, sourceef19398published to main/codex/dev. Calendar's wording parser is deleted. All5Calendar and configured attendance definitions remain visible; the model interprets the request/conversation. Backend Google permissions, fixed target, argument/revision/idempotency and service source/identity checks remain. Progress reports attempts/receipts; global limits and mechanical stalls bound planning.
