@@ -259,7 +259,17 @@ export function assistantAnswerPrompt({ sources = [], results = [], memory, time
     + 'In tool results, {"sourceRef":N} refers to the unchanged source at zero-based index N in the top-level sources array. Resolve these references when reading evidence and citing URLs. '
     + '\nUNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n' + JSON.stringify(answerReferenceData(results,sources));
 }
-export async function retrieveAssistantContext({ messages, principal, provider, liveTools, googleTools, miroTools, bugReportTools, memoryTools, mapTools, buildingId, signal, planning = true, now, timeZone, timeContext, onToolEvent = () => {} }) {
+export async function retrieveAssistantContext({ messages, principal, provider, liveTools, googleTools, miroTools, bugReportTools, memoryTools, mapTools, buildingId, signal, planning = true, now, timeZone, timeContext, onToolEvent = () => {}, auditContext, onAuditEvent = async () => {} }) {
+  let auditRound=0;
+  const auditEvent=async event=>{try{await onAuditEvent({...event,...(auditContext?{context:{...auditContext,round:auditRound}}:{})});}catch{/* Audit sink failures do not fabricate tool outcomes. */}};
+  const waitForTool=async work=>{
+    if(signal?.aborted)throw new DOMException('Stopped','AbortError');
+    let onAbort;
+    try{return await Promise.race([Promise.resolve().then(work),new Promise((_,reject)=>{
+      onAbort=()=>reject(new DOMException('Stopped','AbortError'));
+      signal?.addEventListener('abort',onAbort,{once:true});
+    })]);}finally{if(onAbort)signal?.removeEventListener('abort',onAbort);}
+  };
   const requestTime = createTimeContext(timeContext ?? {timeZone,now});
   if (!requestTime) throw new Error('Invalid request time context');
   const currentMessage = messages.at(-1);
@@ -275,8 +285,11 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
   const liveList = liveTools?.tools || [], googleList = googleTools?.tools || [], miroList = miroTools?.tools || [], bugList = bugReportTools?.tools || [], memoryList = memoryTools?.tools || [], mapList = mapTools?.tools || [];
   let snapshot;
   if (memoryTools?.read) {
-    try { snapshot = await memoryTools.read({principal,signal}); }
+    const started=performance.now();
+    await auditEvent({kind:'tool_started',tool:'read_memory',status:'started'});
+    try { snapshot = await waitForTool(()=>memoryTools.read({principal,signal})); }
     catch { snapshot = {status:'unavailable'}; }
+    await auditEvent({kind:'tool_finished',tool:'read_memory',status:signal?.aborted?'aborted':snapshot?.status||'unavailable',durationMs:Math.round(performance.now()-started)});
   }
   if (signal?.aborted) throw new DOMException('Stopped','AbortError');
   const memoryContext = {snapshot,userMessage:currentMessage?.role === 'user' ? currentMessage.content : ''};
@@ -293,17 +306,23 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
     if (call.name === 'bug_reports') bugReportAttempted = true;
     signatures.add(signature); callsUsed++;
     const event = { type: 'tool', id: `tool-${callsUsed}`, name: call.name };
+    const toolStarted=performance.now();
+    await auditEvent({kind:'tool_started',tool:call.name,status:'started',counts:{sequence:callsUsed}});
     onToolEvent({ ...event, status: 'running' });
     let result;
     try {
-      result = await adapter.execute({ name: call.name, arguments: call.arguments, principal, signal, timeContext:requestTime,
+      result = await waitForTool(()=>adapter.execute({ name: call.name, arguments: call.arguments, principal, signal, timeContext:requestTime,
         ...(adapter === liveTools ? {userMessage:currentMessage?.role === 'user' ? currentMessage.content : ''} : {}),
-        ...(adapter === bugReportTools ? {bugReportContext} : {}), ...(adapter === memoryTools ? {memoryContext} : {}) });
-    } catch { if (signal?.aborted) throw new DOMException('Stopped', 'AbortError'); result = { status: 'unavailable', sources: [] }; }
-    if (signal?.aborted) throw new DOMException('Stopped', 'AbortError');
+        ...(adapter === bugReportTools ? {bugReportContext} : {}), ...(adapter === memoryTools ? {memoryContext} : {}) }));
+    } catch { result = { status: signal?.aborted?'aborted':'unavailable', sources: [] }; }
+    if (signal?.aborted) {
+      await auditEvent({kind:'tool_finished',tool:call.name,status:'aborted',durationMs:Math.round(performance.now()-toolStarted),counts:{sequence:callsUsed}});
+      throw new DOMException('Stopped', 'AbortError');
+    }
     if ([liveTools,googleTools,miroTools].includes(adapter)) result = mapTools?.observe?.(call.name,result) || result;
     const status = ['ready', 'ok'].includes(result?.status) ? 'completed' : ['partial', 'metadata_only'].includes(result?.status) ? 'partial' : 'failed';
     onToolEvent({ ...event, status });
+    await auditEvent({kind:'tool_finished',tool:call.name,status:result?.status||'unavailable',durationMs:Math.round(performance.now()-toolStarted),counts:{sequence:callsUsed}});
     const visible = publicResult(call.name, call.arguments, result); results.push(visible); rows.push(...visible.sources);
     if (liveList.some(tool => tool.name === call.name) && denied.has(result?.status)) accessDenied = true;
   };
@@ -326,7 +345,8 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
       if (mapUpdateApplied() || calendarChangeApplied() || weeklyScheduleSatisfied()) break;
       if (round >= 2 && !mapWorkflow && !results.some(result => ['list_calendar_events','read_calendar_event',...miroList.map(t=>t.name),...memoryList.map(t=>t.name),...mapList.map(t=>t.name)].includes(result.tool))) break;
       let calls;
-      try { calls = await provider.planTools({ messages, system: assistantPlanningPrompt({ timeContext:requestTime, results, memory:memoryContext.snapshot, mapUpdateRequested, attendanceRequested, calendarChangeRequested:calendarActions.length>0 }), tools:bugReportAttempted?tools.filter(tool=>tool.name!=='bug_reports'):tools, signal, timeContext:requestTime }); }
+      auditRound=round+1;
+      try { calls = await provider.planTools({ messages, system: assistantPlanningPrompt({ timeContext:requestTime, results, memory:memoryContext.snapshot, mapUpdateRequested, attendanceRequested, calendarChangeRequested:calendarActions.length>0 }), tools:bugReportAttempted?tools.filter(tool=>tool.name!=='bug_reports'):tools, signal, timeContext:requestTime, auditContext:auditContext?{...auditContext,round:round+1}:undefined }); }
       catch { if (signal?.aborted) throw new DOMException('Stopped', 'AbortError'); results.push({ tool: 'planning', status: 'unavailable', sources: [] }); break; }
       if (!Array.isArray(calls) || !calls.length) break;
       const before = callsUsed;

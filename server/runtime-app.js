@@ -1,4 +1,6 @@
 import { createApp } from './app.js';
+import {createAuditLogger} from './model-audit.js';
+import {startAuditMaintenance} from './audit-lifecycle.js';
 import { readConfig } from './config.js';
 import { createDiscordStore } from './discord/store.js';
 import { readDiscordConfig } from './discord/config.js';
@@ -30,6 +32,8 @@ import {createMemoryStore} from './memory.js';
 import {createMemoryTools} from '../tools/memory/index.js';
 
 export function createRuntimeApp({ config = readConfig(), auth } = {}) {
+const audit=createAuditLogger();
+startAuditMaintenance(audit);
 const discordConfig = readDiscordConfig();
 const discordStore = createDiscordStore(), liveConfig = readLiveDiscordConfig();
 const liveDiscordService = createLiveDiscordRetrieval({ config: liveConfig, store: discordStore, client: createLiveDiscordClient({ config: liveConfig }) });
@@ -79,6 +83,6 @@ const mapTools = {
 };
 const bugReportTools = createBugReportTools({store: createBugReportStore()});
 const memoryTools = createMemoryTools({store: createMemoryStore()});
-const app = createApp({ ...(auth ? {auth} : {}), config, mapPresenceService, mapTools, discordStore, discordConfig, liveDiscordService, liveDiscordTools, googleTools, googleClient, miroTools, bugReportTools, memoryTools });
+const app = createApp({ ...(auth ? {auth} : {}), config, audit, mapPresenceService, mapTools, discordStore, discordConfig, liveDiscordService, liveDiscordTools, googleTools, googleClient, miroTools, bugReportTools, memoryTools });
 return app;
 }

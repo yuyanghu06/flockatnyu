@@ -1,5 +1,18 @@
 # Project instructions
 
+## Private model audit authorization (2026-10-19)
+
+The user requested model-call and agent-output logging for both chat and the
+autonomous planner/update agent. Use service-only operational audit storage with
+seven-day default retention, durable pre-dispatch model records, returned model
+text/proposals and nullable usage/IDs/cost estimates, plus content-free run/tool
+outcomes. This narrowly permits retained model outputs for debugging/accounting;
+it does not restore Discord summaries/source archives as assistant knowledge.
+Never log prompts, uploads, raw source-tool responses or credentials. No public
+or assistant-facing audit retrieval. Historical usage cannot be reconstructed.
+Actual schema/release verification lives in milestones/milestone.md and
+docs/model-audit.md.
+
 ## Live deployment authorization (2026-10-18)
 
 The user authorized an optimization pass followed by live Railway website/services deployment, autonomous agent activation, logical commits of the current working tree and push. This supersedes earlier workeractivation/deployment deferrals for this rollout. The frontend and chat API share a password-gated webservice, with worker/collectors separate. SITE_ACCESS_PASSWORD belongs only in private Railway environment variables; never hardcode, persist in database or commit it. Preserve existing source/identity/Calendar/Miro-read-only boundaries; no public development-auth bypass. Actual rollout status and limitations live in milestones/milestone.md.

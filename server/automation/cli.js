@@ -3,13 +3,15 @@ import {resolve,isAbsolute} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {readConfig} from '../config.js';
 import {createProvider} from '../providers/index.js';
+import {createAuditLogger} from '../model-audit.js';
+import {startAuditMaintenance} from '../audit-lifecycle.js';
 import {readAutomationConfig} from './config.js';
 import {createAutomationStore} from './store.js';
 import {createAutomationHandler} from './handler.js';
 import {createEventUpdater} from './events.js';
 
 // This explicit module is trusted server code, never an event-supplied URL.
-export async function createAutomationRuntime({env=process.env,fetchImpl=globalThis.fetch,loadModule=url=>import(url),now,onProgress}={}) {
+export async function createAutomationRuntime({env=process.env,fetchImpl=globalThis.fetch,loadModule=url=>import(url),now,onProgress,audit=createAuditLogger({env,fetchImpl})}={}) {
   const config=readAutomationConfig(env);
   if(!config.enabled) return {status:'disabled',config};
   const modulePath=config.adapterModule;
@@ -17,7 +19,7 @@ export async function createAutomationRuntime({env=process.env,fetchImpl=globalT
   const store=createAutomationStore({env,fetchImpl});
   const modelConfig=readConfig(env);
   if(!store.configured||!modelConfig.configured) return {status:'not_configured',config};
-  const provider=createProvider(modelConfig,{fetchImpl});
+  const provider=createProvider(modelConfig,{fetchImpl,audit});
   let adapters;
   try {
     const module=modulePath?await loadModule(pathToFileURL(resolve(modulePath)).href):await import('./adapters.js');
@@ -25,9 +27,10 @@ export async function createAutomationRuntime({env=process.env,fetchImpl=globalT
     adapters=await module.createAutomationAdapters({env,config,store,provider,fetchImpl,now});
   } catch { return {status:'not_configured',config}; }
   if(!adapters?.principal||!Array.isArray(adapters.tools)||!adapters.tools.length||typeof adapters.authorizeEvent!=='function') return {status:'not_configured',config};
-  const handler=createAutomationHandler({store,provider,config,now,...adapters,onProgress});
+  const handler=createAutomationHandler({store,provider,config,now,...adapters,onProgress,audit});
   const updater=createEventUpdater({store,config,now,...adapters,onEnqueued:()=>handler.tick()});
-  return {status:'ready',config,store,handler,updater};
+  startAuditMaintenance(audit);
+  return {status:'ready',config,store,handler,updater,audit};
 }
 export async function main({args=process.argv.slice(2),env=process.env,signal,write=value=>process.stdout.write(`${JSON.stringify(value)}\n`),...dependencies}={}) {
   const mode=args[0]||'once';
