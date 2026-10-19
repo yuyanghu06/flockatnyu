@@ -96,7 +96,7 @@ test('changed report arguments cannot create duplicate attempts or progress rows
    const round=rounds++;
    const retry={name:'bug_reports',arguments:{...args,summary:`Reworded report ${round}`}};
    if(round===0)return[{name:'bug_reports',arguments:args},retry];
-   assert(!tools.some(tool=>tool.name==='bug_reports'));assert.match(system,/BUG REPORT ATTEMPT COMPLETE/);
+   assert(tools.some(tool=>tool.name==='bug_reports'),'catalogue stays stable after the once-only backend attempt');assert.match(system,/BUG REPORT ATTEMPT COMPLETE/);
    if(round===1)return[retry,{name:'update_memory',arguments:{content:'Supplied club preference'}}];
    if(round<5)return[retry];return[];
   }}});

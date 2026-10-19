@@ -76,7 +76,7 @@ export function createChatRunner({config,provider,audit,liveDiscordTools,googleT
       send({type:'meta',sources,timeZone:timeContext.timeZone,now:timeContext.now,knowledgeStatus:retrieval.status,
         retrieval:retrieval.results.map(result=>({tool:result.tool,status:result.status,coverage:result.coverage}))});
       const iterator = provider.stream({messages:conversation.messages,
-        system:assistantAnswerPrompt({sources,results:retrieval.results,memory:retrieval.memory,timeContext,requestContext,discordContext,discordUsers}),
+        system:assistantAnswerPrompt({sources,results:retrieval.results,toolCapabilities:retrieval.toolCapabilities,memory:retrieval.memory,timeContext,requestContext,discordContext,discordUsers}),
         signal:abort.signal,timeContext,auditContext})[Symbol.asyncIterator]();
       let outputLength = 0;
       try {

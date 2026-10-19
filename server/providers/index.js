@@ -155,7 +155,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
     async toolTurn({messages,system,tools,signal,auditContext}) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic=config.provider==='anthropic';
-      if (!Array.isArray(messages)||!Array.isArray(tools)||tools.length>25||typeof system!=='string') throw new ProviderError('invalid_provider_request');
+      if (!Array.isArray(messages)||!Array.isArray(tools)||tools.length>32||typeof system!=='string') throw new ProviderError('invalid_provider_request');
       const native=[];let pending=new Set();const seen=new Set();
       for(const message of messages) {
         if(message.role==='tool') {

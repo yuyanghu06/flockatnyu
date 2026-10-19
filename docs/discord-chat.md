@@ -54,3 +54,5 @@ Private seven-day model audit still records returned model text/usage and conten
 ## Verification
 
 Synthetic tests cover shared execution, actor spoofing, access/ACL/blacklists/threads, source-profile changes, private bridge authentication, rate/admission/dedup/history bounds, cancellation, safe delivery, ignored slash interactions and nonblocking Gateway behavior. Source and deployment checks are distinct from a real member invocation. Actual rollout and live acceptance belong in `milestones/milestone.md`.
+
+Text-only production chats now carry native assistant tool-call IDs and matched tool responses between planning turns, preserving causal evidence through retries. Planning and answer prompts receive registered tool names, the trusted Google grant and actual Calendar attempts/receipts. An earlier assistant claim that editing was unavailable is historical; no attempted write is not a permission denial. Attachment conversations retain the existing multimodal planning path. Native result context is bounded and omitted content is explicitly incomplete; successful receipts survive. This does not change source access or force a mutation.

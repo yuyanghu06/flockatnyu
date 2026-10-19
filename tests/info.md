@@ -1,3 +1,20 @@
+## Native chat tool execution
+
+`chat-native-tools.test.mjs` runs the production provider against synthetic HTTP
+responses through the real chat runner and private Discord bridge. It verifies
+assistant/tool call-ID pairing, stable catalogues, historical refusals alongside
+current capability/attempt/receipt facts, unknown/invalid/deferred/duplicate calls,
+global execution caps, cancellation and actual execution audit counts. Drive
+skill activation resolves every skipped native call before replanning. The actual
+attendance declaration gate still ignores instructions in source results.
+Full26-tool native requests, the33-tool bound and existing image/PDF multimodal
+fallback are checked. These scripted provider responses verify protocol and
+backend behavior; actual-model semantic decisions require separate evidence.
+Final-answer tests verify execution has ended, successful receipts and exact
+Calendar URLs reach the answer request, saved outcomes require confirmation
+instead of future-work promises, and failed/unattempted actions remain distinct.
+Both phases focus on the latest user request rather than replaying old complaints.
+
 ## Calendar conversational followups
 
 `chat-calendar-followup.test.mjs` runs actual website and Discord chat runners,

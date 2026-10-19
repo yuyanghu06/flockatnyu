@@ -11,8 +11,7 @@ assistant knowledge, authorize new source access, or expose logs to members.
 must first persist a unique call record. If that write fails, the model request is
 blocked. A terminal write records success, failure, cancellation or abort,
 provider response/request IDs, HTTP/finish/error codes, available input/output and
-cache/reasoning token counts, and sanitized model text/tool proposals. Chat tool
-planning and answer streaming share one chat run UUID; each claimed planner batch
+cache/reasoning token counts, and sanitized model text/tool proposals. Chat native toolTurn planning (or planTools for uploads/legacy providers) and answer streaming share one chat run UUID; each claimed planner batch
 has a separate run UUID and round numbers, independent of queue leases.
 
 Run and tool lifecycle events record names, actual status codes, numeric counts
