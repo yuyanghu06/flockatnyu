@@ -1,3 +1,7 @@
+## Persistent password login locally accepted; web rollout next
+
+Password sign-in now issues a30daypersistenthost-onlycookie with matching signed expiry, Max-Age and Expires. Parent and independent evaluator each passed30/30auth/password/securitychecks. Shorter configured lifetimes, logout and existing security/source boundaries remain. Older12hourcookies require one re-login. Prepared257fileauth-onlyoverlay preserves all256otheracceptedwebfiles; Railway TTL is unset. No deployment/hosted claim yet. [Release preparation](history/2026-10-19_13-03-27-891337-orchestrator-persistent-auth-release-prepared.md).
+
 ## README refreshed; renamed repository and main synchronized
 
 The README now describes live Flock@NYU, its four services, current access/source boundaries and private seven-day model audit. Origin is `https://github.com/yuyanghu06/flockatnyu.git`. User clarified that main should receive dev; atomic fast-forward publication advanced both remote branches to `2bf0b67`, preserving the73newer development commits. Working branch remains `codex/dev`; concurrent Discord implementation is untouched.

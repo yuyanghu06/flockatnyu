@@ -75,3 +75,5 @@ Chat routing preserves Calendar-first unnamed-source schedules with Miro cross-c
 Discord and website share `chat-runner.js`; `chat-request-context.js` validates trusted transport identity. `runtime-app.js` constructs a separate live-Discord-only runner for eboard replies, excluding website memory/private account tools. The web service exposes a separately authenticated internal Discord bridge. See `../docs/discord-chat.md`.
 
 `chat-discord-context.js` validates the request-local previous-hour message envelope and the explicitly approved Discord ID/name directory; both are serialized as source/label data in both model phases.
+
+Password website sessions default to30days and persist across browser restarts. site-auth.js sets matching signed expiry, Max-Age and Expires; logout clears the host-only Secure/HttpOnly/Strict cookie. SITE_SESSION_TTL_SECONDS supports300–2592000seconds; exact-lifetime validation means changing TTL invalidates older cookies.

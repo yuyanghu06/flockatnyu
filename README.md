@@ -2,7 +2,7 @@
 
 Tech@NYU's shared club assistant, with an interactive 3D map of NYU's Washington Square campus. Ask about club updates, schedules and resources, or select a building to see its upcoming activities and participants.
 
-The [live site](https://flock.techatnyu.org) requires the shared site password. The frontend and Hono chat API run together on Railway; independent collectors and an autonomous planner share Supabase. Current verification, operational limitations and unfinished work live in the [milestone snapshot](milestones/milestone.md).
+The [live site](https://flock.techatnyu.org) requires the shared site password. Signing in remembers that browser for 30 days, including across restarts; logout clears the cookie. The frontend and Hono chat API run together on Railway; independent collectors and an autonomous planner share Supabase. Current verification, operational limitations and unfinished work live in the [milestone snapshot](milestones/milestone.md).
 
 ## What it does
 

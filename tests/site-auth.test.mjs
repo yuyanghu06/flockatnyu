@@ -11,7 +11,7 @@ const apiConfig = {production:true, allowedSourceIds:['source-allowed'], discord
 const request = (path = '/', init = {}) => new Request(`https://club.example${path}`, init);
 
 test('production access config requires fixed HTTPS origin and strong server secrets', () => {
-  for (const override of [{PUBLIC_ORIGIN:'http://club.example'}, {PUBLIC_ORIGIN:'https://user:pass@club.example'}, {PUBLIC_ORIGIN:'https://club.example/path'}, {SITE_ACCESS_PASSWORD:'weak'}, {SITE_SESSION_SECRET:'short'}, {SITE_SESSION_TTL_SECONDS:'999999'}]) {
+  for (const override of [{PUBLIC_ORIGIN:'http://club.example'}, {PUBLIC_ORIGIN:'https://user:pass@club.example'}, {PUBLIC_ORIGIN:'https://club.example/path'}, {SITE_ACCESS_PASSWORD:'weak'}, {SITE_SESSION_SECRET:'short'}, {SITE_SESSION_TTL_SECONDS:'2592001'}]) {
     assert.throws(() => readSiteAuthConfig({...env, ...override}));
   }
   assert.equal(readSiteAuthConfig(env).origin, 'https://club.example');
@@ -73,7 +73,7 @@ test('domain alias configuration rejects broad, malformed and insecure values', 
 
 test('signed session resists forgery, expires, excludes secrets, and grants only configured nonadmin access', () => {
   let time = 1000000000000;
-  const auth = createSiteAuth({config:readSiteAuthConfig(env), apiConfig, now:() => time});
+  const auth = createSiteAuth({config:readSiteAuthConfig({...env, SITE_SESSION_TTL_SECONDS:'43200'}), apiConfig, now:() => time});
   assert.equal(auth.issue('wrong'), null);
   const setCookie = auth.issue(env.SITE_ACCESS_PASSWORD), cookie = setCookie.split(';')[0];
   for (const flag of ['HttpOnly', 'Secure', 'SameSite=Strict', 'Path=/']) assert.ok(setCookie.includes(flag));
@@ -200,4 +200,38 @@ test('internal Miro token route delegates exclusively to its separate server bea
   assert.equal(response.headers.get('cache-control'), 'no-store');
   const unavailable = createWebsite({siteAuth});
   assert.equal((await unavailable.fetch(request('/internal/miro/token', {method:'POST'}))).status, 503);
+});
+
+test('session duration defaults to thirty days and preserves explicitly configured shorter durations within bounds',()=>{
+ assert.equal(readSiteAuthConfig(env).ttlSeconds,2592000);
+ for(const duration of [300,43200,86400,2592000])assert.equal(readSiteAuthConfig({...env,SITE_SESSION_TTL_SECONDS:String(duration)}).ttlSeconds,duration);
+ for(const duration of ['299','2592001','43200.5','NaN','Infinity','-1','0'])assert.throws(()=>readSiteAuthConfig({...env,SITE_SESSION_TTL_SECONDS:duration}),/site_session_duration_invalid/);
+});
+
+test('password login issues a persistent thirty-day host-only cookie and server rejects it at the matching expiry',async()=>{
+ let time=Date.parse('2026-10-19T16:30:00.000Z');
+ const config=readSiteAuthConfig(env),siteAuth=createSiteAuth({config,apiConfig,now:()=>time});
+ const app=createWebsite({siteAuth});
+ const login=await app.fetch(request('/login',{method:'POST',headers:{origin:env.PUBLIC_ORIGIN,'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({password:env.SITE_ACCESS_PASSWORD})}));
+ assert.equal(login.status,303);
+ const setCookie=login.headers.get('set-cookie'),cookie=setCookie.split(';')[0];
+ assert.match(setCookie,/^__Host-tech_session=/);assert.match(setCookie,/(?:^|; )Max-Age=2592000(?:;|$)/);
+ assert.match(setCookie,/(?:^|; )Expires=Wed, 18 Nov 2026 16:30:00 GMT(?:;|$)/);
+ for(const flag of ['HttpOnly','Secure','SameSite=Strict','Path=/'])assert.ok(setCookie.includes(flag));assert.ok(!/Domain=/i.test(setCookie));
+ const payload=JSON.parse(Buffer.from(cookie.split('=')[1].split('.')[0],'base64url').toString('utf8'));
+ assert.equal(payload.exp-payload.iat,2592000);assert.equal(payload.exp*1000,Date.parse('2026-11-18T16:30:00.000Z'));
+ // A fresh server instance accepts the persisted browser cookie without an in-memory session.
+ const restarted=createSiteAuth({config,apiConfig,now:()=>time});time=payload.exp*1000-1000;
+ assert.equal(restarted.session(request('/',{headers:{cookie}})),true);assert.equal(restarted.principal(request('/',{headers:{cookie}})).isAdmin,false);
+ time=payload.exp*1000;assert.equal(restarted.session(request('/',{headers:{cookie}})),false);
+});
+
+test('logout removes the persistent host cookie with matching flags, zero max-age and a past expiry',async()=>{
+ const siteAuth=createSiteAuth({config:readSiteAuthConfig(env),apiConfig});const app=createWebsite({siteAuth});
+ const cookie=siteAuth.issue(env.SITE_ACCESS_PASSWORD).split(';')[0];
+ const denied=await app.fetch(request('/logout',{method:'POST',headers:{cookie,origin:'https://foreign.example'}}));assert.equal(denied.status,403);assert.equal(denied.headers.get('set-cookie'),null);
+ const logout=await app.fetch(request('/logout',{method:'POST',headers:{cookie,origin:env.PUBLIC_ORIGIN}}));assert.equal(logout.status,303);
+ const cleared=logout.headers.get('set-cookie');assert.match(cleared,/^__Host-tech_session=;/);assert.match(cleared,/Max-Age=0(?:;|$)/);assert.match(cleared,/Expires=Thu, 01 Jan 1970 00:00:00 GMT/);
+ for(const flag of ['HttpOnly','Secure','SameSite=Strict','Path=/'])assert.ok(cleared.includes(flag));assert.ok(!/Domain=/i.test(cleared));
+ assert.equal(siteAuth.session(request('/',{headers:{cookie:cleared.split(';')[0]}})),false);
 });

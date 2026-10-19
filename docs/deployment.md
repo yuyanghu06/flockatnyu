@@ -13,7 +13,11 @@ No password is checked into code or written to a local deployment credential fil
 The shared operator session is nonadmin and gets only server-configured source
 scope. `SITE_GOOGLE_ENABLED` and `SITE_DISCORD_ENABLED` explicitly enable those
 capabilities. Browser sessions use signed Secure/HttpOnly/SameSite cookies,
-expire after12hours by default, and require the configured origin for mutations.
+persist across browser restarts for30days by default, and require the configured origin for mutations.
+`SITE_SESSION_TTL_SECONDS` can shorten that lifetime (300–2592000seconds).
+Both the signed token expiry and cookie Max-Age enforce the configured duration;
+logout immediately clears the browser cookie. Cookies remain specific to the
+browser profile and site hostname; private browsing and clearing cookies remove them.
 For a custom domain, add its exact HTTPS origin to web-only
 `SITE_ALLOWED_ORIGINS` (comma-separated) and redeploy web. `PUBLIC_ORIGIN` stays
 accepted automatically. Keep it stable on web and worker because existing

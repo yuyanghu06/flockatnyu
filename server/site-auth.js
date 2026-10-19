@@ -31,8 +31,8 @@ export function readSiteAuthConfig(env = process.env) {
   }
   const password = env.SITE_ACCESS_PASSWORD || '', signingSecret = env.SITE_SESSION_SECRET || '';
   if (password.length < 12 || password.length > 1024 || signingSecret.length < 32 || signingSecret.length > 1024 || /[\r\n\0]/.test(password + signingSecret)) throw new Error('site_credentials_invalid');
-  const ttlSeconds = Number(env.SITE_SESSION_TTL_SECONDS || 43200);
-  if (!Number.isInteger(ttlSeconds) || ttlSeconds < 300 || ttlSeconds > 86400) throw new Error('site_session_duration_invalid');
+  const ttlSeconds = Number(env.SITE_SESSION_TTL_SECONDS || 2592000);
+  if (!Number.isInteger(ttlSeconds) || ttlSeconds < 300 || ttlSeconds > 2592000) throw new Error('site_session_duration_invalid');
   return Object.freeze({origin, allowedOrigins:Object.freeze(allowedOrigins), password, signingSecret, ttlSeconds,
     googleEnabled: env.SITE_GOOGLE_ENABLED === 'true', discordEnabled: env.SITE_DISCORD_ENABLED === 'true'});
 }
@@ -43,7 +43,7 @@ export function readSiteAuthConfig(env = process.env) {
 export function createSiteAuth({config = readSiteAuthConfig(), apiConfig, now = Date.now} = {}) {
   const allowsOrigin = origin => (config.allowedOrigins || [config.origin]).includes(origin);
   const sign = body => createHmac('sha256', config.signingSecret).update(body).digest('base64url');
-  const cookie = (token, maxAge) => `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+  const cookie = (token, maxAge, expiresAt) => `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}; Expires=${new Date(expiresAt).toUTCString()}`;
   function session(request) {
     if (unsafe(request.method) && !allowsOrigin(request.headers.get('origin'))) return false;
     if (request.headers.get('sec-fetch-site') === 'cross-site') return false;
@@ -64,7 +64,7 @@ export function createSiteAuth({config = readSiteAuthConfig(), apiConfig, now = 
     if (typeof password !== 'string' || !equal(password, config.password)) return null;
     const iat = Math.floor(now() / 1000);
     const body = Buffer.from(JSON.stringify({v:1, iat, exp:iat + config.ttlSeconds, nonce:randomBytes(16).toString('hex')})).toString('base64url');
-    return cookie(`${body}.${sign(body)}`, config.ttlSeconds);
+    return cookie(`${body}.${sign(body)}`, config.ttlSeconds, (iat + config.ttlSeconds) * 1000);
   }
   function principal(request) {
     if (!session(request)) return null;
@@ -72,6 +72,6 @@ export function createSiteAuth({config = readSiteAuthConfig(), apiConfig, now = 
       ...(config.googleEnabled ? {googleAccess:true} : {}),
       ...(config.discordEnabled && /^[0-9]{1,20}$/.test(apiConfig?.discordGuildId) ? {liveDiscord:{mode:'local-operator', guildId:apiConfig.discordGuildId}} : {})};
   }
-  return Object.freeze({config, allowsOrigin, session, issue, principal, clearCookie:() => cookie('', 0),
+  return Object.freeze({config, allowsOrigin, session, issue, principal, clearCookie:() => cookie('', 0, 0),
     auth: c => principal(c.req.raw)});
 }

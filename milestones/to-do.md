@@ -1,3 +1,9 @@
+## Persistent password login
+
+- [x] Implement30daypersistentcookie with matching signed/browser expiry, logout and configurable shorterTTL.
+- [x] Independently pass30/30focusedsecuritychecks; prepare private-value-scannedauth-onlywebcontext.
+- [ ] Deploy and verify actual live cookie/protected access/logout; publish both branches.
+
 ## Repository README and publication — complete
 
 - [x] Refresh README for live Flock services, access controls, source boundaries and private seven-day audit.
