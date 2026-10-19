@@ -16,10 +16,10 @@ import {PGlite} from '@electric-sql/pglite';
 const env={NODE_ENV:'production',MODEL_AUDIT_ENABLED:'false',LLM_PROVIDER:'openai-compatible',LLM_MODEL:'gpt-6-luna',LLM_API_KEY:'synthetic-provider-private',SUPABASE_URL:'https://database.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-service-private',SITE_ACCESS_PASSWORD:'synthetic-site-private'};
 const config=readConfig(env);
 const principal={id:'synthetic-reader',allowedSourceIds:[]};
-const usage={prompt_tokens:1000,completion_tokens:200,prompt_tokens_details:{cached_tokens:500},completion_tokens_details:{reasoning_tokens:30}};
+const usage={prompt_tokens:1000,completion_tokens:200,prompt_tokens_details:{cached_tokens:500,cache_write_tokens:0},completion_tokens_details:{reasoning_tokens:30}};
 const generatedCall=(name,args,id='call_1')=>({id,type:'function',function:{name,arguments:JSON.stringify(args)}});
 const completion=(calls=[],text='Synthetic generated output',extra={})=>Response.json({id:'completion_id',service_tier:'default',usage,choices:[{index:0,finish_reason:calls.length?'tool_calls':'stop',message:{role:'assistant',content:text,tool_calls:calls}}],...extra},{headers:{'x-request-id':'fixture_request_id'}});
-const sse=(text='Synthetic answer')=>new Response(`data: ${JSON.stringify({id:'stream_id',choices:[{index:0,delta:{content:text},finish_reason:'stop'}]})}\n\ndata: ${JSON.stringify({choices:[],usage,service_tier:'default'})}\n\ndata: [DONE]\n\n`,{headers:{'content-type':'text/event-stream'}});
+const sse=(text='Synthetic answer',responseUsage=usage)=>new Response(`data: ${JSON.stringify({id:'stream_id',choices:[{index:0,delta:{content:text},finish_reason:'stop'}]})}\n\ndata: ${JSON.stringify({choices:[],usage:responseUsage,service_tier:'default'})}\n\ndata: [DONE]\n\n`,{headers:{'content-type':'text/event-stream'}});
 const toolDefinition={name:'read_discord_window',description:'Synthetic reader',parameters:{type:'object',properties:{},additionalProperties:false}};
 function fixture(modelResponse,options={}){
  const rows=[],diagnostics=[],dispatches=[];
@@ -188,6 +188,7 @@ test('actual chat-to-provider-to-logger payloads persist through service-role mi
  try{
   await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');
   await db.exec(await readFile(new URL('../supabase/migrations/202610190033_agent_model_audit.sql',import.meta.url),'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610190034_agent_audit_cache_write_cost.sql',import.meta.url),'utf8'));
   await db.exec('set role service_role');
   const audit=createAuditLogger({env,writeDiagnostic:()=>{},fetchImpl:async(url,init)=>{
    const name=new URL(url).pathname.split('/').at(-1);assert.match(name,/^agent_audit_(start_model|finish_model|record_event|prune)$/);
@@ -199,5 +200,53 @@ test('actual chat-to-provider-to-logger payloads persist through service-role mi
   assert.equal(calls.length,1);assert.equal(calls[0].agent,'chat');assert.equal(calls[0].status,'succeeded');assert.equal(Number(calls[0].estimated_cost_usd),0.000155);assert.equal(calls[0].output.value.text,'Persisted synthetic answer');
   const events=(await db.query('select run_id,kind,status from public.agent_audit_events order by created_at')).rows;
   assert.deepEqual(events.map(x=>x.status),['started','succeeded']);assert.ok(events.every(x=>x.run_id===calls[0].run_id));assert.equal(JSON.stringify(calls).includes('PRIVATE_USER_INPUT'),false);
+ }finally{await db.close();}
+});
+
+test('cache-write cost follows actual inclusive provider usage through additive 034 and preserves unknowns',async()=>{
+ const db=new PGlite(),diagnostics=[],payloads=[];
+ try{
+  await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');
+  await db.exec(await readFile(new URL('../supabase/migrations/202610190033_agent_model_audit.sql',import.meta.url),'utf8'));
+  const oldCall=randomUUID(),oldRun=randomUUID();
+  await db.query('select public.agent_audit_start_model($1::jsonb)',[JSON.stringify({callId:oldCall,runId:oldRun,agent:'chat',provider:'openai-compatible',model:'gpt-6-luna',operation:'stream',stream:true,providerBaseHost:'api.openai.com',serviceTier:'default'})]);
+  await db.query('select public.agent_audit_finish_model($1::jsonb)',[JSON.stringify({callId:oldCall,runId:oldRun,agent:'chat',round:null,status:'succeeded',usage:{inputTokens:7949,outputTokens:200,cacheReadTokens:0,cacheWriteTokens:7946,reasoningTokens:null},output:{value:{text:'Preserved legacy output'},truncated:false,redacted:false},estimatedCostUsd:null,pricingBasis:null})]);
+  const before=(await db.query('select * from public.agent_model_calls where call_id=$1',[oldCall])).rows[0];
+  await db.exec(await readFile(new URL('../supabase/migrations/202610190034_agent_audit_cache_write_cost.sql',import.meta.url),'utf8'));
+  assert.deepEqual((await db.query('select * from public.agent_model_calls where call_id=$1',[oldCall])).rows[0],before);
+  for(const role of ['anon','authenticated'])assert.equal((await db.query("select has_function_privilege($1,'public.agent_audit_finish_model(jsonb)','EXECUTE') allowed",[role])).rows[0].allowed,false);
+  await db.exec('set role service_role');
+  const audit=createAuditLogger({env,writeDiagnostic:x=>diagnostics.push(x),fetchImpl:async(url,init)=>{
+   const name=new URL(url).pathname.split('/').at(-1),payload=JSON.parse(init.body).p_payload;
+   assert.match(name,/^agent_audit_(start_model|finish_model|record_event|prune)$/);payloads.push({rpc:name,payload});
+   return Response.json((await db.query(`select public.${name}($1::jsonb) result`,[JSON.stringify(payload)])).rows[0].result);
+  }});
+  const scenarios=[
+   {input:7949,read:0,write:7946,cost:0.00109355},
+   {input:2673,read:0,write:2670,cost:0.00043405},
+   {input:1000,read:500,write:200,cost:0.00016},
+   {input:272000,read:0,write:272000,cost:0.0341},
+   {input:272001,read:0,write:272001,cost:null},
+   {input:1000,read:500,write:undefined,cost:null},
+   {input:1000,read:undefined,write:200,cost:null},
+   {input:1000,read:500,write:501,cost:null},
+  ];
+  for(const [index,scenario] of scenarios.entries()){
+   const responseUsage={prompt_tokens:scenario.input,completion_tokens:200,prompt_tokens_details:{cached_tokens:scenario.read,cache_write_tokens:scenario.write}};
+   const provider=createProvider(config,{audit,fetchImpl:async()=>sse(`Cache-write fixture ${index}`,responseUsage)});
+   const app=createApp({config,audit,provider,auth:()=>principal});assert.ok((await records(await post(app))).some(x=>x.type==='done'));
+   const payload=payloads.findLast(x=>x.rpc==='agent_audit_finish_model').payload;
+   const row=(await db.query('select status,usage,estimated_cost_usd,pricing_basis from public.agent_model_calls where call_id=$1',[payload.callId])).rows[0];
+   assert.equal(row.status,'succeeded');assert.equal(row.usage.inputTokens,scenario.input);assert.equal(row.usage.cacheReadTokens,scenario.read??null);assert.equal(row.usage.cacheWriteTokens,scenario.write??null);
+   if(scenario.cost===null){assert.equal(row.estimated_cost_usd,null);assert.equal(row.pricing_basis,null);}else{assert.ok(Math.abs(Number(row.estimated_cost_usd)-scenario.cost)<1e-12);assert.equal(row.pricing_basis.cacheWrite,0.125);}
+  }
+  assert.deepEqual(diagnostics,[]);assertPrivate({rows:payloads});
+  // An older non-inclusive formula must not create a terminal row under 034.
+  const valid=payloads.find(x=>x.rpc==='agent_audit_finish_model').payload,badId=randomUUID();
+  const identity={...payloads.find(x=>x.rpc==='agent_audit_start_model').payload,callId:badId};
+  await db.query('select public.agent_audit_start_model($1::jsonb)',[JSON.stringify(identity)]);
+  const bad={...valid,callId:badId,estimatedCostUsd:0.0008949};
+  await assert.rejects(db.query('select public.agent_audit_finish_model($1::jsonb)',[JSON.stringify(bad)]),error=>error.code==='23514');
+  assert.equal((await db.query('select status from public.agent_model_calls where call_id=$1',[badId])).rows[0].status,'started');
  }finally{await db.close();}
 });

@@ -34,8 +34,9 @@ failures emit content-free diagnostics and preserve the original provider result
 
 Cost values are estimates with a versioned price basis, not invoices. Known
 direct OpenAI GPT-6 Luna standard/default pricing uses the October 19 official
-rate card; unknown models, hosts, tiers, incomplete usage or unsupported cache
-accounting leave cost null. [Official pricing](https://developers.openai.com/api/docs/models/gpt-6-luna).
+rate card; unknown models, hosts, tiers, incomplete usage or input over272,000tokens
+leave cost null. Cache reads/writes are exclusive subsets of total input and
+use their own rates rather than an added write fee. [Official pricing](https://developers.openai.com/api/docs/models/gpt-6-luna).
 OpenAI streaming requests the final usage frame, which may be absent after an
 interruption. [Streaming usage](https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events).
 Historical spending before this feature cannot be reconstructed from it.

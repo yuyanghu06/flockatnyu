@@ -4,7 +4,7 @@ import {createAuditLogger,estimateAuditCost} from '../server/model-audit.js';
 const callId='11111111-1111-4111-8111-111111111111',runId='22222222-2222-4222-8222-222222222222';
 const start={callId,context:{agent:'planner',runId,round:2},provider:'openai',model:'gpt-6-luna',operation:'toolTurn',stream:false,providerBaseHost:'api.openai.com'};
 const env={NODE_ENV:'production',SUPABASE_URL:'https://private.example.com',SUPABASE_SERVICE_ROLE_KEY:'service-private-secret',GOOGLE_CLIENT_SECRET:'google-private-secret',GOOGLE_CREDENTIALS:JSON.stringify({access_token:'json-private-token',refresh_token:'json-private-refresh'})};
-const usage={inputTokens:1000,outputTokens:200,cacheReadTokens:500,cacheWriteTokens:null,reasoningTokens:30};
+const usage={inputTokens:1000,outputTokens:200,cacheReadTokens:500,cacheWriteTokens:0,reasoningTokens:30};
 function fixture(options={}){const requests=[],diagnostics=[];const logger=createAuditLogger({env,fetchImpl:async(url,init)=>{requests.push({url,init,payload:JSON.parse(init.body).p_payload});return Response.json({status:'ready'});},writeDiagnostic:x=>diagnostics.push(x),...options});return{logger,requests,diagnostics};}
 
 test('durable start and terminal preserve identity/nullable usage/output, never other arguments',async()=>{
@@ -56,8 +56,10 @@ test('tool/run events discard arguments/results/text and retain numeric counts o
 test('known pricing distinguishes cached input and leaves unknown model/host/tier/usage unknown',()=>{
  const identity={provider:'openai',model:'gpt-6-luna',providerBaseHost:'api.openai.com',serviceTier:'default'};
  assert.equal(estimateAuditCost(identity,usage).estimatedCostUsd,0.000155);
+ assert.ok(estimateAuditCost(identity,{...usage,inputTokens:272000}));
+ assert.equal(estimateAuditCost(identity,{...usage,inputTokens:272001}),null);
  for(const changed of [{provider:'anthropic'},{model:'gpt-6-luna-2026-10-01'},{providerBaseHost:'proxy.example.com'},{serviceTier:'priority'}])assert.equal(estimateAuditCost({...identity,...changed},usage),null);
- for(const changed of [{inputTokens:null},{outputTokens:null},{cacheReadTokens:null},{cacheReadTokens:2000},{cacheWriteTokens:1}])assert.equal(estimateAuditCost(identity,{...usage,...changed}),null);
+ for(const changed of [{inputTokens:null},{outputTokens:null},{cacheReadTokens:null},{cacheReadTokens:2000},{cacheWriteTokens:null},{cacheWriteTokens:501}])assert.equal(estimateAuditCost(identity,{...usage,...changed}),null);
 });
 
 test('dev configured database requires explicit opt-in, and metadata secrets/encoded tool JSON are redacted',async()=>{

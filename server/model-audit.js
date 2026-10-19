@@ -55,9 +55,8 @@ function serializer(secretValues){return output=>{
 };}
 export function estimateAuditCost({provider,model,providerBaseHost,serviceTier},usage){
  if(!['openai','openai-compatible'].includes(provider)||model!=='gpt-6-luna'||providerBaseHost!=='api.openai.com'||!['default','standard'].includes(serviceTier??'default')||
-  token(usage?.inputTokens)===null||token(usage?.outputTokens)===null||token(usage?.cacheReadTokens)===null||usage.cacheReadTokens>usage.inputTokens||
-  (usage.cacheWriteTokens!==null&&usage.cacheWriteTokens!==undefined&&usage.cacheWriteTokens!==0))return null;
- return {estimatedCostUsd:((usage.inputTokens-usage.cacheReadTokens)*0.10+usage.cacheReadTokens*0.01+usage.outputTokens*0.50)/1e6,
+  token(usage?.inputTokens)===null||usage.inputTokens>272000||token(usage?.outputTokens)===null||token(usage?.cacheReadTokens)===null||token(usage?.cacheWriteTokens)===null||usage.cacheReadTokens+usage.cacheWriteTokens>usage.inputTokens)return null;
+ return {estimatedCostUsd:((usage.inputTokens-usage.cacheReadTokens-usage.cacheWriteTokens)*0.10+usage.cacheReadTokens*0.01+usage.cacheWriteTokens*0.125+usage.outputTokens*0.50)/1e6,
   pricingBasis:{version:'2026-10-19',currency:'USD',perTokens:1000000,input:0.10,cacheRead:0.01,cacheWrite:0.125,output:0.50,source:'https://developers.openai.com/api/docs/models/gpt-6-luna'}};
 }
 export function createAuditLogger({env=process.env,fetchImpl=globalThis.fetch,now=()=>Date.now(),writeDiagnostic=entry=>console.error(JSON.stringify(entry))}={}){
