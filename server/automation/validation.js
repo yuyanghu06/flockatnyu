@@ -1,3 +1,12 @@
+// Drive page tokens are opaque strings, not base64. Printable ASCII excludes
+// whitespace/control bytes while preserving provider punctuation exactly.
+// The terminal lookahead closes JavaScript's trailing-newline `$` exception.
+export const DRIVE_PAGE_TOKEN_MAX_LENGTH=2048;
+export const DRIVE_PAGE_TOKEN_PATTERN='^[!-~]+$(?![\\s\\S])';
+const tokenPattern=new RegExp(DRIVE_PAGE_TOKEN_PATTERN,'u');
+export const validDrivePageToken=value=>typeof value==='string'&&value.length>=1
+  &&value.length<=DRIVE_PAGE_TOKEN_MAX_LENGTH&&tokenPattern.test(value);
+
 export const validUuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 export const validSourceId = value => typeof value === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9_:@./=-]{0,199}$/.test(value);
 export const validLabel = value => typeof value === 'string' && /^[a-zA-Z][a-zA-Z0-9_.:-]{0,63}$/.test(value);
@@ -19,9 +28,12 @@ export function checkSchema(schema, depth = 0) {
   if (schema.pattern !== undefined) {
     // Restricted regex subset: no groups/alternation/backreferences and at most
     // one repeated atom, preventing combinatorial backtracking over source text.
-    if (typeof schema.pattern !== 'string' || schema.pattern.length > 200 || /[()|\\]/.test(schema.pattern)
+    // The exact shared Drive cursor pattern adds only a fixed terminal assertion
+    // to one printable-ASCII repetition; arbitrary lookaheads remain forbidden.
+    const approvedCursorPattern=schema.pattern===DRIVE_PAGE_TOKEN_PATTERN;
+    if (typeof schema.pattern !== 'string' || schema.pattern.length > 200 || !approvedCursorPattern && (/[()|\\]/.test(schema.pattern)
       || (schema.pattern.replace(/\[[^\]]*\]/g,'x').match(/[+*?{]/g)||[]).length>1
-      || [...schema.pattern.matchAll(/\d+/g)].some(m=>Number(m[0])>65536)) throw new Error('invalid_tool_schema');
+      || [...schema.pattern.matchAll(/\d+/g)].some(m=>Number(m[0])>65536))) throw new Error('invalid_tool_schema');
     try { new RegExp(schema.pattern, 'u'); } catch { throw new Error('invalid_tool_schema'); }
   }
   if (schema.type === 'object') {

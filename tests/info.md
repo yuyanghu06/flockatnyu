@@ -1,3 +1,15 @@
+## Opaque Drive pagination cursors
+
+`google-connector.test.mjs` reproduces a successful five-file provider response
+rejected solely because its528-character cursor contains tilde/exclamation.
+Search/list tests cover every printable ASCII punctuation byte, the2048-character
+boundary, exact URLSearchParams continuation and shared schema/backend rejection
+of whitespace, controls, malformed types and oversize before OAuth. Malformed
+provider cursors retain incomplete coverage. Narrow schema tests preserve regex
+safety. `chat-drive.test.mjs` follows real native provider turns through both
+top-level search and nested directory cursor normalization into exact continued
+Google requests. All provider/Google responses are synthetic; no live data is read.
+
 ## Native chat tool execution
 
 `chat-native-tools.test.mjs` runs the production provider against synthetic HTTP

@@ -1,7 +1,8 @@
+import {DRIVE_PAGE_TOKEN_MAX_LENGTH,DRIVE_PAGE_TOKEN_PATTERN} from '../../server/automation/validation.js';
 const query = { type: 'string', minLength: 1, maxLength: 500 };
 const limit = { type: 'integer', minimum: 1, maximum: 5 };
 const driveId = { type: 'string', pattern: '^[A-Za-z0-9_-]{1,200}$' };
-const pageToken = { type: 'string', minLength: 1, maxLength: 2048, pattern: '^[A-Za-z0-9_+/=-]+$' };
+const pageToken = { type: 'string', minLength: 1, maxLength: DRIVE_PAGE_TOKEN_MAX_LENGTH, pattern: DRIVE_PAGE_TOKEN_PATTERN };
 const definition = (name, description, properties, required) => Object.freeze({ name, description,
   parameters: { type: 'object', additionalProperties: false, properties, required } });
 export const GOOGLE_TOOLS = Object.freeze([

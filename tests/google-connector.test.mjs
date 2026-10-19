@@ -7,7 +7,7 @@ import {executeGoogleTool,GOOGLE_TOOLS} from '../tools/google/index.js';
 import {verifyGoogleToken,waitForGoogleAuth} from '../server/google/oauth.js';
 import {createAutomationAdapters} from '../server/automation/adapters.js';
 import {readAutomationConfig} from '../server/automation/config.js';
-import {checkSchema} from '../server/automation/validation.js';
+import {checkSchema,validateArguments} from '../server/automation/validation.js';
 const env={GOOGLE_CLIENT_ID:'fixture-client',GOOGLE_CLIENT_SECRET:'fixture-secret',GOOGLE_REFRESH_TOKEN:'fixture-refresh',GOOGLE_EXPECTED_ACCOUNT_EMAIL:'club@example.com'};
 const config=readGoogleConfig(env);
 const json=value=>Response.json(value);
@@ -68,10 +68,76 @@ test('Drive folder continuations and provider-incomplete searches never claim co
   const last=await f.client.listDriveFolder({folderId:'parent',limit:1,pageToken:first.nextPageToken});assert.equal(last.nextPageToken,null);assert.equal(last.coverage.complete,false);assert.equal(last.coverage.continuation,true);
   const empty=fixture({handler:()=>json({files:[]})});assert.equal((await empty.client.listDriveFolder({folderId:'parent'})).coverage.complete,true);
 });
+test('Drive search and folder pages accept opaque punctuation cursors and preserve exact encoded continuation bytes',async()=>{
+  const punctuation=Array.from({length:94},(_,index)=>String.fromCharCode(33+index)).join('');
+  const cursors=['A'.repeat(526)+'~!',punctuation,'a?x','~!'.repeat(1024)];
+  for(const method of ['searchDrive','listDriveFolder'])for(const cursor of cursors){
+    let pages=0;
+    const f=fixture({handler:url=>{
+      assert.equal(url.origin,'https://www.googleapis.com');assert.equal(url.pathname,'/drive/v3/files');
+      assert.equal(url.hash,'');assert.equal(url.searchParams.get('pageToken'),pages?cursor:null);
+      assert.equal(url.searchParams.getAll('q').length,1,'cursor punctuation cannot introduce query parameters');
+      if(pages)assert.equal(url.searchParams.getAll('pageToken').length,1);
+      return json(pages++?{files:[{id:'continued_doc',name:'Continued document'}]}:{files:[{id:'first_doc',name:'First document'}],nextPageToken:cursor});
+    }});
+    const args=method==='searchDrive'?{query:'Synthetic workshop',folderId:'parent',limit:1}:{folderId:'parent',limit:1};
+    const schema=GOOGLE_TOOLS.find(tool=>tool.name===(method==='searchDrive'?'search_drive':'list_drive_folder')).parameters;
+    assert.equal(validateArguments({...args,pageToken:cursor},schema),true,'declared schema accepts provider opaque cursor');
+    const first=await f.client[method](args);
+    assert.equal(first.status,'ready');assert.equal(first.nextPageToken,cursor);assert.equal(first.coverage.complete,false);
+    assert.equal(first.partial,true);assert.equal(first.possiblyTruncated,true);
+    if(method==='listDriveFolder')assert.equal(first.driveContext.nextPageToken,cursor);
+    const next=await f.client[method]({...args,pageToken:first.nextPageToken});
+    assert.equal(next.status,'ready');assert.equal(next.nextPageToken,null);assert.equal(next.coverage.continuation,true);assert.equal(next.coverage.complete,false);
+    if(method==='listDriveFolder')assert.equal(next.driveContext.entries[0].id,'continued_doc');else assert.equal(next.sources[0].externalId,'continued_doc');
+    assert.equal(pages,2);
+  }
+});
+
+test('successful Google Drive response with five valid files and a 528-character tilde/exclamation cursor remains readable',async()=>{
+  const cursor='opaque'.repeat(87)+'ABCD~!';assert.equal(cursor.length,528);
+  const f=fixture({handler:()=>json({files:Array.from({length:5},(_,index)=>({id:'doc_'+index,name:'Synthetic file '+index})),nextPageToken:cursor})});
+  const result=await f.client.searchDrive({query:'Synthetic',limit:5});
+  assert.equal(result.status,'ready');assert.equal(result.sources.length,5);assert.equal(result.nextPageToken,cursor);assert.equal(result.coverage.complete,false);
+});
+
+test('Drive cursor backend and tool schema reject whitespace, controls, malformed types and oversize before OAuth',async()=>{
+  const malformed=['','x\n','x\r','x\r\n','x\t',' x','x ','x\u0000','x\u001f','x\u007f','x\u0085','x\u00a0','x\u2028',null,{},[],1,'x'.repeat(2049)];
+  for(const method of ['searchDrive','listDriveFolder']) {
+    const f=fixture();let tokens=0;f.oauth.getAccessToken=async()=>{tokens++;throw Error('must reject before OAuth');};
+    const args=method==='searchDrive'?{query:'Synthetic'}:{folderId:'parent'};
+    const schema=GOOGLE_TOOLS.find(tool=>tool.name===(method==='searchDrive'?'search_drive':'list_drive_folder')).parameters;
+    assert.equal(validateArguments(args,schema),true,'cursor omission remains valid');
+    for(const pageToken of malformed){assert.equal(validateArguments({...args,pageToken},schema),false,JSON.stringify(pageToken));assert.equal((await f.client[method]({...args,pageToken})).status,'invalid_request',JSON.stringify(pageToken));}
+    assert.equal(tokens,0);assert.equal(f.calls.length,0);
+  }
+});
+
+test('strict printable cursor schemas remain accepted without enabling arbitrary regex groups or lookarounds',()=>{
+  for(const name of ['search_drive','list_drive_folder']) {
+    const schema=GOOGLE_TOOLS.find(tool=>tool.name===name).parameters;
+    assert.equal(checkSchema(schema),true);assert.equal(schema.properties.pageToken.maxLength,2048);
+    const base=name==='search_drive'?{query:'Synthetic'}:{folderId:'parent'};
+    assert.equal(validateArguments({...base,pageToken:'~!'},schema),true);
+    assert.equal(validateArguments({...base,pageToken:'~!\n'},schema),false,'strict terminal assertion cannot accept a trailing newline');
+  }
+  for(const pattern of ['^(a+)+$','^(?:[!-~]+)$','^[!-~]+(?=x)$','^[!-~]+(?!.)$','^[!-~]+(?![a])','^[!-~]+(?![\\s\\S])|x','^[!-~]+(?![\\s\\S])$']) {
+    assert.throws(()=>checkSchema({type:'string',minLength:1,maxLength:2048,pattern}),{message:'invalid_tool_schema'},pattern);
+  }
+});
+
+test('malformed provider cursors fail search and folder pages with incomplete coverage and no partial originals',async()=>{
+  for(const method of ['searchDrive','listDriveFolder'])for(const cursor of ['',null,{},[],1,'bad\n','bad\u0000','bad token','x'.repeat(2049)]) {
+    const f=fixture({handler:()=>json({files:[{id:'valid_doc',name:'Valid file beside malformed cursor'}],nextPageToken:cursor})});
+    const result=await f.client[method](method==='searchDrive'?{query:'Synthetic'}:{folderId:'parent'});
+    assert.equal(result.status,'invalid_response');assert.deepEqual(result.sources,[]);assert.equal(result.coverage.complete,false);assert.equal(result.partial,true);assert.equal(result.possiblyTruncated,true);
+    assert.equal(result.driveContext,undefined);
+  }
+});
 test('Drive IDs, cursors and page sizes are validated before OAuth or HTTP',async()=>{
   const f=fixture();let tokens=0;f.oauth.getAccessToken=async()=>{tokens++;throw Error('must stay unused');};
   for(const args of [{},{folderId:"x' or trashed=true"},{folderId:'https://evil.invalid'},{folderId:'x',pageToken:''},{folderId:'x',pageToken:'x\n'},{folderId:'x',pageToken:'x'.repeat(2049)},{folderId:'x',pageToken:1},{folderId:'x',limit:0},{folderId:'x',limit:51},{folderId:'x',limit:1.1}])assert.equal((await f.client.listDriveFolder(args)).status,'invalid_request');
-  for(const args of [{query:'x',folderId:"x'"},{query:'x',limit:6},{query:'x',pageToken:'a?x'},{query:'x',pageToken:null}])assert.equal((await f.client.searchDrive(args)).status,'invalid_request');
+  for(const args of [{query:'x',folderId:"x'"},{query:'x',limit:6},{query:'x',pageToken:'a x'},{query:'x',pageToken:null}])assert.equal((await f.client.searchDrive(args)).status,'invalid_request');
   assert.equal(tokens,0);assert.equal(f.calls.length,0);
 });
 test('Drive denied, incomplete and malformed provider responses preserve unknown coverage',async()=>{

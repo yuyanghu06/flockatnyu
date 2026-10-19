@@ -6,6 +6,7 @@ import {chatCalendarWritePrompt} from './google/calendar-chat-prompt.js';
 import {memoryPrompt} from './memory.js';
 import {miroNavigationPrompt} from './miro/navigation.js';
 import {driveSkillPrompt,isDriveTool} from './skills/drive.js';
+import {validDrivePageToken} from './automation/validation.js';
 import {PRESENCE_DEFAULT_POLICY,EVENT_DEFAULT_POLICY} from './map/contracts.js';
 import {requestsMapUpdate,requestsChatAttendance} from './map/chat-intent.js';
 // Server-owned read orchestration. Discord evidence comes only from live bot reads.
@@ -64,8 +65,7 @@ function publicResult(name, args, result) {
     } catch { /* Invalid URLs never add normalized Discord scope. */ }
   }
   const data = { tool: name, arguments: safeArgs, status: String(result?.status || 'unavailable').slice(0, 80), sources: boundedSources(result?.sources || []) };
-  if (isDriveTool(name) && typeof result?.nextPageToken === 'string'
-    && /^[A-Za-z0-9_+/=-]{1,2048}$/.test(result.nextPageToken)) data.nextPageToken=result.nextPageToken;
+  if (isDriveTool(name) && validDrivePageToken(result?.nextPageToken)) data.nextPageToken=result.nextPageToken;
   if (name==='list_drive_folder' && result?.driveContext && ['ready','empty'].includes(result.status)) {
     const directory=result.driveContext;
     const id=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,200}$/.test(value);

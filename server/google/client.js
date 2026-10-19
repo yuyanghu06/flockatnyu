@@ -1,4 +1,5 @@
 import { readGoogleConfig } from './config.js';
+import {validDrivePageToken} from '../automation/validation.js';
 import { createGoogleOAuth, GoogleError, googleError, verifyGoogleToken, waitForGoogleAuth } from './oauth.js';
 
 const GMAIL = 'https://gmail.googleapis.com/gmail/v1/users/me';
@@ -8,7 +9,7 @@ const mailId = value => typeof value === 'string' && /^[a-fA-F0-9]{1,64}$/.test(
 const clean = (value, max = 500) => typeof value === 'string' ? value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, max) : '';
 const limitOf = value => value === undefined ? 5 : Number.isInteger(value) && value >= 1 && value <= 5 ? value : null;
 const folderLimitOf = value => value === undefined ? 50 : Number.isInteger(value) && value >= 1 && value <= 50 ? value : null;
-const pageTokenValid = value => value === undefined || typeof value === 'string' && /^[A-Za-z0-9_+/=-]{1,2048}$/.test(value);
+const pageTokenValid = value => value === undefined || validDrivePageToken(value);
 const FIELD = 'id,name,mimeType,description,modifiedTime,size,webViewLink,parents';
 
 export async function boundedGoogleBody(response, { maxBytes = 1500000, signal } = {}) {

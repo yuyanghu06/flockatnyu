@@ -1,3 +1,23 @@
+## Drive cursor repair accepted locally
+
+Independent final review and collector checks pass. Parent final 97 focused checks and both builds pass; the full rerun is underway after fixing the two packaging failures found by the initial broad run. Guarded web/update-agent packages match source and pass private-value scans. Real failed queries and continuations return results. Hosted rollout and final verification are next. [Review](history/2026-10-19_18-17-00-190487-evaluator-drive-cursors-locally-accepted.md).
+
+## Drive packaging correction verified
+
+Shared cursor exports now live in the existing pure validation module. Both real collector closures pass with their original package boundaries and expected module lists; coder 39 affected checks pass. Final independent review, broader result collection and refreshed release checks are underway. [Correction](history/2026-10-19_18-16-22-547050-coder-drive-collector-closure-preserved.md).
+
+## Drive cursor tests pass; packaging correction under review
+
+Independent 43 focused checks pass, including the failing response regression and native chat continuation. Parent broader checks caught a collector packaging dependency introduced by the shared helper. Release is held while the helper moves into an already shared validation module; collector boundaries will stay intact. [Tester](history/2026-10-19_18-15-56-336557-tester-drive-cursor-regressions.md) · [Integration finding](history/2026-10-19_18-15-56-336988-orchestrator-drive-collector-packaging-finding.md).
+
+## Drive cursor fix implemented; live reads pass
+
+The shared cursor contract now preserves opaque punctuation across the Google client, tool schema and chat projection. Four previously failing queries across two audited runs each return five files and a successful five-file continuation. Coder 63 focused checks and both parent builds pass. Independent review, full regressions and guarded release preparation are underway; no new deployment yet. [Implementation](history/2026-10-19_18-15-04-845122-coder-drive-opaque-cursors-implemented.md).
+
+## Active: Drive search pagination repair
+
+Live searches return valid files, but the application rejects Google cursors containing `~` and `!`, discards the page and reports failure. The same restriction exists in the client, tool schema and chat result projection. A coordinated bounded opaque-cursor fix and independent regressions are underway. OAuth and source permissions remain enforced. [Diagnosis](history/2026-10-19_18-13-06-825548-planner-drive-cursor-failure-diagnosed.md).
+
 ## Live: exact Calendar refusal repaired with native continuation
 
 Web5089195a-7000-434b-a133-44295e9d3475isSUCCESS; source1f07fcepublished to main/codex/dev. Exactauditrace proved the screenshot request exhausted planningreads withoutattempting aCalendarwrite; noGooglewritewasdenied. Native matchedtoolresults, currentcapability/attemptfacts and a finalcompleted-receiptphase now replace that failure path. Uploadcompatibility and actualbackend/source/revisionboundaries remain.

@@ -195,3 +195,5 @@ Each claimed planner batch now has an independent audit run UUID and per-round m
 ## Tech@NYU Drive skill
 
 The bundled adapter also exposes read-only Drive search, folder listing and bounded file reads under its existing prepared-batch and Google access gates. These reads do not register Calendar/map write provenance. `handler.js` activates the shared `server/skills/techatnyu-drive/SKILL.md` after a valid first Drive proposal, replans before execution and retains it for that batch. Activation consumes a model round, without executing or charging a source-tool call. Other workflows keep the existing prompt.
+
+The shared schema validator retains its restricted regular-expression rules. Its sole reviewed group/assertion exception is the exact opaque Drive cursor pattern exported by this folder’s pure validation.js module, which rejects terminal newlines while permitting printable ASCII punctuation. Other lookaheads, groups and near-match patterns remain rejected.

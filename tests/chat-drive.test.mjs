@@ -4,6 +4,7 @@ import {createApp} from '../server/app.js';
 import {createGoogleClient} from '../server/google/client.js';
 import {readGoogleConfig,GOOGLE_SCOPES} from '../server/google/config.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';
+import {createProvider} from '../server/providers/index.js';
 
 const principal={id:'synthetic_reader',googleAccess:true,allowedSourceIds:[]};
 const file={id:'synthetic_budget',name:'Synthetic budget',mimeType:'application/vnd.google-apps.document',description:'Search metadata only',webViewLink:'https://docs.google.com/document/d/synthetic_budget/edit'};
@@ -80,4 +81,43 @@ for(const [name,options,expected] of [['empty',{files:[]},'empty'],['upstream de
  assert.equal(meta.retrieval.length,1);assert.equal(meta.retrieval[0].status,expected);assert.equal(f.calendarCalls(),0);
  assert(!f.calls.some(call=>call.url.pathname.endsWith('/export')));
  assert(!f.answerInputs[0].system.includes(file.webViewLink));assert(!JSON.stringify(events).includes('PRIVATE_UPSTREAM_ERROR'));
+});
+
+test('native chat preserves opaque search and nested folder cursors into exact continuation requests',async()=>{
+ for(const name of ['search_drive','list_drive_folder']) {
+  const token='~!%+&=?#[]{}(),;:/|'.repeat(30).slice(0,528);assert.equal(token.length,528);
+  const driveCalls=[],modelCalls=[];let pages=0;
+  const client=createGoogleClient({config:readGoogleConfig({GOOGLE_CLIENT_ID:'synthetic',GOOGLE_CLIENT_SECRET:'synthetic',GOOGLE_REFRESH_TOKEN:'synthetic',GOOGLE_EXPECTED_ACCOUNT_EMAIL:'club@example.com'}),
+   oauthClient:{setCredentials(){},getAccessToken:async()=>({token:'synthetic'}),getTokenInfo:async()=>({scopes:GOOGLE_SCOPES})},fetchImpl:async value=>{
+    const url=new URL(value);if(url.pathname.endsWith('/profile'))return Response.json({emailAddress:'club@example.com'});
+    driveCalls.push(url);assert.equal(url.pathname,'/drive/v3/files');assert.equal(url.searchParams.get('pageToken'),pages?token:null);assert.equal(url.hash,'');
+    return Response.json(pages++?{files:[]}:{files:[file],nextPageToken:token});
+   }});
+  const config={configured:true,production:false,provider:'openai-compatible',model:'synthetic',baseUrl:'https://synthetic.example/v1',apiKey:'synthetic',timeoutMs:3000};
+  const args=name==='search_drive'?{query:'Synthetic'}:{folderId:'parent'};
+  const provider=createProvider(config,{audit:{required:false,startModel:async()=>({status:'ready'}),finishModel:async()=>({status:'ready'})},fetchImpl:async(_,init)=>{
+   const body=JSON.parse(init.body);if(body.stream)return new Response('data: {"choices":[{"index":0,"delta":{"content":"Synthetic result"},"finish_reason":null}]}\n\ndata: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
+   modelCalls.push(body);const round=modelCalls.length;
+   let callArgs=args;
+   if(round===3) {
+    const results=body.messages.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content));
+    const first=results.find(row=>row.tool===name&&row.status==='ready');assert(first,'successful first page reaches native model context');
+    assert.equal(first.nextPageToken,token,'top-level normalization must preserve opaque cursor');
+    if(name==='list_drive_folder')assert.equal(first.driveContext.nextPageToken,token,'nested directory cursor must agree');
+    assert.equal(first.coverage.complete,false);callArgs={...args,pageToken:first.nextPageToken};
+   }
+   if(round===4) {
+    const results=body.messages.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content));
+    const last=results.findLast(row=>row.tool===name&&row.status==='empty');assert.equal(last.arguments.pageToken,token);assert.equal(last.coverage.complete,false);
+    if(name==='list_drive_folder')assert.equal(last.driveContext.nextPageToken,null);
+   }
+   const calls=round<4?[{id:'opaque_'+round,type:'function',function:{name,arguments:JSON.stringify(callArgs)}}]:[];
+   return Response.json({choices:[{index:0,finish_reason:calls.length?'tool_calls':'stop',message:{role:'assistant',content:null,...(calls.length?{tool_calls:calls}:{})}}]});
+  }});
+  const googleTools={tools:GOOGLE_TOOLS,execute:options=>executeGoogleTool({...options,client})};
+  const app=createApp({config,provider,googleTools,auth:()=>principal});
+  const response=await post(app,'Find the next page of the requested Drive resources.');
+  const output=await records(response);assert.equal(output.at(-1).type,'done');assert.equal(pages,2);assert.equal(driveCalls.length,2);assert.equal(modelCalls.length,4);
+  assert.deepEqual(output.find(row=>row.type==='meta').retrieval.map(row=>row.status),['ready','empty']);
+ }
 });
