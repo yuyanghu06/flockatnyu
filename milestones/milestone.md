@@ -1,3 +1,10 @@
+## Planner Gmail and Drive access restored
+
+The user authorized hello@techatnyu.org for Gmail and Drive. All Google services already used that account; the planner simply omitted its existing native Gmail source from its shared Google allowlist. That exact source is now included (221 sources, all220 prior entries preserved), without credential, source-code, collector or write-authority changes.
+
+Worker7eb3e6c8 is SUCCESS with the same reviewed image. Live account/scopes verified; a real adapter using deployed credentials searched Gmail and listed all30 root entries. Actual new-worker logs also show a successful organic read_gmail. No remote Drive call is claimed; its read test ran locally with deployed Google configuration and isolated unrelated preflight services. Parent42 and independent42/60 focused tests pass. [Final access receipt](history/2026-10-19_13-38-13-441538-orchestrator-google-access-live-restored.md).
+
+
 ## Live: team channel pings repaired
 
 - Team destinations were rejected by the old backend. Fixed source 9739672 is deployed on web 84d6cf12-b864-4bb7-93af-7233bebbc6eb, now SUCCESS. The existing mention-only collector remains compatible and active. Current Drive integration and persistent login are preserved.
@@ -13,7 +20,7 @@ Chat and the autonomous planner automatically load the same maintained skill bef
 
 Web8fe2f730 and update-agentcee0928f are SUCCESS. Hosted chat login/catalogue/root-read/logout pass; all30 root entries are readable and anonymous tools remain403. Final full suite1485/1485, API build and independent tester/evaluator acceptance pass. Exact sanitized packages contain the skill; remote file hashing was unavailable because SSH requires a registered key. No key or source allowlist was changed, and no model canary/source write was triggered for verification.
 
-**Planner access remains blocked:** its deployed Google OAuth is configured, but the existing Google source gate is false because the configured Gmail source is outside the shared allowlist. Drive tools and automatic guidance are deployed; successful planner Drive reads are not claimed. Next action is resolve that separate source policy while preserving read/write boundaries. [Live verification](history/2026-10-19_13-20-50-100452-orchestrator-drive-skill-live-verified.md) · [Guide](../docs/drive-skill.md).
+Planner Google access is now restored under the user's explicit Gmail/Drive authorization: its existing native source is allowlisted, the same reviewed worker image is running, real Google reads pass and an organic remote Gmail read succeeded. [Access restored](history/2026-10-19_13-38-13-441538-orchestrator-google-access-live-restored.md).
 
 ## Live: normal Flockbot pings
 

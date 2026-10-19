@@ -1,3 +1,11 @@
+## Restore planner Google reads
+
+- [x] Confirm hello account and exact existing source identity; independently plan configuration-only grant.
+- [x] Verify OAuth and add existing source only to worker allowlist; preserve other settings.
+- [x] Verify successful same-image worker release, real Gmail/Drive reads and independent review; observe organic remote Gmail success.
+- Superseded: Drive-only separate-gate proposal; user additionally authorized Gmail through the same account.
+
+
 ## Live: team channel pings repaired
 
 - [x] Repair team destination access and exact invoking-channel automatic context.
@@ -12,7 +20,7 @@
 - [x] Add read-only folder navigation, preserve source/write gates and package exact skill asset.
 - [x] Independently test/review; pass1485 full regressions and verify live web/worker releases.
 - [x] Verify authenticated chat root access and anonymous denial without model/source writes.
-- [ ] Separate access policy: resolve planner Google source allowlisting; current deployed gate denies Drive reads. No new source grant is implied by the skill.
+- [x] User separately authorized hello Gmail/Drive access; restored existing worker Google source grant and verified reads.
 - Superseded: earlier prompt deferral; user explicitly authorized the implemented skill.
 
 ## Persistent password login

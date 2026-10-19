@@ -95,3 +95,7 @@ preserve all source permissions and avoid credentials in code/history/output.
 ## 2026-10-19 — Drive skill implementation authorized
 
 The user approved a new Tech@NYU Drive access skill, automatically injected for chat and autonomous planner Drive tool calls. This supersedes the earlier prompt-change deferral for this bounded read-only integration. Private research inventory stays outside Git; use current runtime account permissions and live metadata.
+
+## 2026-10-19 — Planner Google access authorization
+
+The user authorized allowing planner Google reads and specified hello@techatnyu.org for Gmail because it can access the club Drive. This account is already configured across Google services. Restore the existing native Gmail source grant on the worker, covering its read-only Gmail/Drive tools, while preserving current source/write and collector boundaries. This supersedes the earlier separate pending source-policy decision.
