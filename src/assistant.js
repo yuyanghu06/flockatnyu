@@ -1,6 +1,7 @@
 import { ATTACHMENT_ACCEPT, ATTACHMENT_ONLY_CONTENT, readAttachmentFiles } from './chat-attachments.js';
 import { boundedMessages, getAssistantStatus, safeSourceUrl, streamAssistant } from './chat-client.js';
 import { renderAssistantMarkdown } from './assistant-markdown.js';
+import { assistantShortcut, sourceLabel } from './assistant-presentation.js';
 const assistantLogoUrl = new URL('../assets/branding/tech-at-assistant.png', import.meta.url).href;
 const assistantHoverLogoUrl = new URL('../assets/branding/tech-at-assistant-hover.svg', import.meta.url).href;
 
@@ -32,8 +33,9 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   launcher.setAttribute('aria-label', 'Open campus assistant');
   launcher.setAttribute('aria-expanded', 'false');
   launcher.setAttribute('aria-controls', 'campus-assistant-panel');
-  launcher.setAttribute('aria-keyshortcuts', 'Meta+K Control+K');
-  const shortcut = el('kbd', 'assistant-shortcut', '⌘ / Ctrl K');
+  const keyboard = assistantShortcut(globalThis.navigator);
+  if (!keyboard.mobile) launcher.setAttribute('aria-keyshortcuts', keyboard.key);
+  const shortcut = el('kbd', 'assistant-shortcut', keyboard.label); shortcut.hidden = keyboard.mobile;
   const launcherLogo = el('span', 'assistant-logo assistant-launcher-logo');
   launcherLogo.setAttribute('aria-hidden', 'true');
   launcherLogo.append(logo());
@@ -94,7 +96,15 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   transcript.setAttribute('role', 'log'); transcript.setAttribute('aria-label', 'Conversation'); transcript.setAttribute('aria-live', 'off');
   const announcement = el('p', 'assistant-announcement');
   announcement.setAttribute('role', 'status'); announcement.setAttribute('aria-live', 'polite');
-  panel.append(header, form, transcript, announcement); root.append(launcher, panel); container.append(root);
+  panel.append(header, transcript, form, announcement); root.append(launcher, panel); container.append(root);
+
+  const atLatest = () => transcript.scrollHeight - transcript.clientHeight - transcript.scrollTop < 2;
+  function pauseFollow() {
+    if (followFrame) cancelAnimationFrame(followFrame);
+    followFrame = 0;
+  }
+  transcript.addEventListener('wheel', event => { if (event.deltaY < 0) pauseFollow(); }, { passive: true });
+  transcript.addEventListener('pointerdown', pauseFollow);
 
   function followLatest() {
     transcript.scrollTop = transcript.scrollHeight;
@@ -108,6 +118,8 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     followFrame = requestAnimationFrame(follow);
   }
   function queueResize(fromHeight, follow = false) {
+    // A height tween may shrink the transcript, but must always fit the footer.
+    if (panel.open) panel.style.minHeight = `min(${Math.ceil(header.getBoundingClientRect().height + form.getBoundingClientRect().height)}px, var(--assistant-max-height))`;
     if (follow) {
       if (!panel.open || closing) pendingScroll = true;
       else followLatest();
@@ -126,7 +138,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function resizeInput() {
     const height = panel.getBoundingClientRect().height;
-    const follow = transcript.scrollHeight - transcript.clientHeight - transcript.scrollTop < 2;
+    const follow = atLatest();
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight || 34, 132) + 'px';
     queueResize(height, follow);
@@ -144,6 +156,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function renderDraftFiles() {
     const height = panel.getBoundingClientRect().height;
+    const follow = atLatest();
     draftFiles.replaceChildren(); draftFiles.hidden = !draftAttachments.length;
     for (const [index, file] of draftAttachments.entries()) {
       const chip = el('div', 'assistant-attachment');
@@ -159,7 +172,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       });
       chip.append(name, remove); draftFiles.append(chip);
     }
-    queueResize(height);
+    queueResize(height, follow);
   }
   function fileError(error) {
     attachmentError.textContent = error.message; attachmentError.hidden = false;
@@ -231,13 +244,14 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function sources(parent, entries, resize = true) {
     const height = resize ? panel.getBoundingClientRect().height : 0;
+    const follow = atLatest();
     const list = el('ul', 'assistant-sources');
     for (const source of Array.isArray(entries) ? entries.slice(0, 12) : []) {
       const href = safeSourceUrl(source?.url); if (!href) continue;
-      const li = el('li'), link = el('a', '', String(source.title || source.name || new URL(href).hostname));
+      const li = el('li'), link = el('a', '', sourceLabel(source, href));
       link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer'; li.append(link); list.append(li);
     }
-    if (list.children.length) { parent.append(list); if (resize) queueResize(height, true); }
+    if (list.children.length) { parent.append(list); if (resize) queueResize(height, follow); }
   }
   function bubble(role, text) {
     const height = panel.getBoundingClientRect().height;
@@ -253,6 +267,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function updateTool(reply, event, resize = true) {
     const height = resize ? panel.getBoundingClientRect().height : 0;
+    const follow = atLatest();
     let record = reply.toolRows.get(event.id);
     if (!record) {
       const row = el('li', 'assistant-tool'); row.title = event.name;
@@ -266,7 +281,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     record.state.textContent = { running: 'Running…', completed: 'Done', partial: 'Partial result', failed: 'Failed', cancelled: 'Stopped', interrupted: 'Interrupted' }[event.status];
     reply.tools.hidden = false;
     if (reply.content.textContent === 'Thinking…') { reply.content.textContent = ''; reply.content.classList.remove('is-thinking'); }
-    if (resize) queueResize(height, true);
+    if (resize) queueResize(height, follow);
   }
   function settleTools(reply, status) {
     for (const [id, record] of reply.toolRows) if (record.status === 'running') updateTool(reply, { id, status });
@@ -306,6 +321,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       const text = finalText ?? partial;
       if (!events.length && text === renderedPartial) return;
       const height = panel.getBoundingClientRect().height;
+      const follow = atLatest();
       for (const event of events) {
         if (event.type === 'tool') updateTool(reply, event, false);
         if (event.type === 'meta') sources(reply.box, event.sources, false);
@@ -313,7 +329,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       events = [];
       if (text || finalText !== undefined) renderReply(reply, text);
       renderedPartial = text;
-      queueResize(height, true);
+      queueResize(height, follow);
     };
     const rendering = { flush, cancel: cancelRender }; replyRender = rendering;
     try {
@@ -338,10 +354,11 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       flush();
       settleTools(reply, error.name === 'AbortError' ? 'cancelled' : 'failed');
       const height = panel.getBoundingClientRect().height;
+      const follow = atLatest();
       reply.content.classList.remove('is-thinking');
       if (!partial) reply.content.textContent = '';
       reply.box.append(el('p', 'assistant-message-error', error.name === 'AbortError' ? 'Stopped. This reply is incomplete.' : error.message));
-      queueResize(height, true);
+      queueResize(height, follow);
       announcement.textContent = error.name === 'AbortError' ? 'Reply stopped.' : 'The reply could not finish.';
       if (!input.value.trim() && !draftAttachments.length && !readingFiles) {
         input.value = text; draftAttachments = attachments; renderDraftFiles(); resizeInput();
@@ -361,9 +378,14 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     close({ immediate: true }); root.hidden = true; panel.hidden = true; launcher.setAttribute('aria-expanded', 'false');
   }
   function onBuilding(event) { building = event.detail?.id ? { id: event.detail.id, name: event.detail.name || event.detail.id } : null; }
+  function onViewportResize() {
+    if (!panel.open || closing || disposed) return;
+    resizeAnimation?.cancel();
+    resizeInput();
+  }
   function preventMap(event) { event.stopPropagation(); }
   function onShortcut(event) {
-    if (!entered || disposed || event.isComposing || event.repeat || event.altKey || !(event.metaKey || event.ctrlKey) || event.key?.toLowerCase() !== 'k') return;
+    if (!entered || disposed || keyboard.mobile || event.defaultPrevented || event.isComposing || event.repeat || event.altKey || event.shiftKey || !event[keyboard.modifier] || event.key?.toLowerCase() !== 'k') return;
     event.preventDefault(); event.stopPropagation(); panel.open ? close() : open();
   }
   ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'wheel', 'click', 'dblclick', 'touchstart', 'touchmove', 'touchend'].forEach(name => root.addEventListener(name, preventMap));
@@ -398,6 +420,8 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   closeButton.addEventListener('click', close); retry.addEventListener('click', () => void status()); form.addEventListener('submit', submit);
   send.addEventListener('click', event => { if (busy) { event.preventDefault(); stopRequest(); } });
   document.addEventListener('keydown', onShortcut);
+  globalThis.addEventListener?.('resize', onViewportResize);
+  globalThis.visualViewport?.addEventListener('resize', onViewportResize);
   document.addEventListener('campus-enter', onEnter);
   document.addEventListener('campus-loading-failed', onFailure);
   document.addEventListener('campus-building-selected', onBuilding);
@@ -406,6 +430,8 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     stopLogoAnimation();
     disposed = true; draftAttachments = []; conversation = []; onFailure();
     document.removeEventListener('keydown', onShortcut);
+    globalThis.removeEventListener?.('resize', onViewportResize);
+    globalThis.visualViewport?.removeEventListener('resize', onViewportResize);
     document.removeEventListener('campus-enter', onEnter);
     document.removeEventListener('campus-loading-failed', onFailure);
     document.removeEventListener('campus-building-selected', onBuilding); root.remove();

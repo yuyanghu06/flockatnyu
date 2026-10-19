@@ -1,0 +1,1992 @@
+{
+  "synthetic": true,
+  "command": "node tests/feedback-browser.mjs",
+  "scenarios": [
+    {
+      "size": {
+        "width": 1280,
+        "height": 844
+      },
+      "stages": [
+        {
+          "stage": "initial-multiline-growth",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 358.90625,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 207
+            },
+            "transcript": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            },
+            "form": {
+              "top": 200.90625,
+              "bottom": 358.90625,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 158
+            },
+            "input": {
+              "top": 210.90625,
+              "bottom": 342.90625,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 132
+            },
+            "send": {
+              "top": 210.90625,
+              "bottom": 244.90625,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": false,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -16,
+            "maxSendOverflow": -114
+          }
+        },
+        {
+          "stage": "stream-0",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 265.90625,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 114
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 200.90625,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 0
+            },
+            "form": {
+              "top": 200.90625,
+              "bottom": 265.90625,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 211.90625,
+              "bottom": 249.90625,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 211.90625,
+              "bottom": 245.90625,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 178,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -16,
+            "maxSendOverflow": -20
+          }
+        },
+        {
+          "stage": "done-0",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 493.796875
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 580.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 580.703125,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 591.703125,
+              "bottom": 629.703125,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 591.703125,
+              "bottom": 625.703125,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "stream-1",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 493.796875
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 580.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 580.703125,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 591.703125,
+              "bottom": 629.703125,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 591.703125,
+              "bottom": 625.703125,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -16,
+            "maxSendOverflow": -20
+          }
+        },
+        {
+          "stage": "done-1",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 493.796875
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 580.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 580.703125,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 591.703125,
+              "bottom": 629.703125,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 591.703125,
+              "bottom": 625.703125,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "stream-2",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 493.796875
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 580.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 580.703125,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 591.703125,
+              "bottom": 629.703125,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 591.703125,
+              "bottom": 625.703125,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -16,
+            "maxSendOverflow": -20
+          }
+        },
+        {
+          "stage": "done-2",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 493.796875
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 580.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 580.703125,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 591.703125,
+              "bottom": 629.703125,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 591.703125,
+              "bottom": 625.703125,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "multiline-four-uploads-validation-error",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 819.984375,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 668.078125
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 528.984375,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 328.078125
+            },
+            "form": {
+              "top": 528.984375,
+              "bottom": 819.984375,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 291
+            },
+            "input": {
+              "top": 539.984375,
+              "bottom": 671.984375,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 132
+            },
+            "send": {
+              "top": 539.984375,
+              "bottom": 573.984375,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "dynamic-shrink-480",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 456
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 183.40625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 130.40625
+            },
+            "form": {
+              "top": 183.40625,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 284.59375
+            },
+            "input": {
+              "top": 188.40625,
+              "bottom": 294,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 105.59375
+            },
+            "send": {
+              "top": 188.40625,
+              "bottom": 222.40625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 1787,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "dynamic-shrink-300",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 288,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 276
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 85,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 32
+            },
+            "form": {
+              "top": 85,
+              "bottom": 288,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 203
+            },
+            "input": {
+              "top": 90,
+              "bottom": 156,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 66
+            },
+            "send": {
+              "top": 90,
+              "bottom": 124,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 1885,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 300
+            }
+          }
+        },
+        {
+          "stage": "failed-draft-restored",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 819.984375,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 668.078125
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 572.984375,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 372.078125
+            },
+            "form": {
+              "top": 572.984375,
+              "bottom": 819.984375,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 247
+            },
+            "input": {
+              "top": 583.984375,
+              "bottom": 715.984375,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 132
+            },
+            "send": {
+              "top": 583.984375,
+              "bottom": 617.984375,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "hidden-completed-reopened",
+          "metrics": {
+            "panel": {
+              "top": 151.90625,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 493.796875
+            },
+            "transcript": {
+              "top": 200.90625,
+              "bottom": 580.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 580.703125,
+              "bottom": 645.703125,
+              "left": 320,
+              "right": 960,
+              "width": 640,
+              "height": 65
+            },
+            "input": {
+              "top": 591.703125,
+              "bottom": 629.703125,
+              "left": 390,
+              "right": 888,
+              "width": 498,
+              "height": 38
+            },
+            "send": {
+              "top": 591.703125,
+              "bottom": 625.703125,
+              "left": 902,
+              "right": 936,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 1280,
+              "height": 844
+            }
+          }
+        }
+      ],
+      "sourceLinks": [
+        {
+          "text": "Miro board",
+          "href": "https://miro.com/app/board/uXjVSyntheticBoard=/",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        },
+        {
+          "text": "Miro board",
+          "href": "https://miro.com/app/board/uXjVSyntheticBoard%3D/?moveToWidget=synthetic",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        },
+        {
+          "text": "Fall planning board",
+          "href": "https://miro.com/app/board/uXjVNamedSynthetic=/",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        }
+      ],
+      "manualScroll": true,
+      "animatedStop": true,
+      "abort": true,
+      "hiddenCompletion": true,
+      "draftRetention": true
+    },
+    {
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "stages": [
+        {
+          "stage": "initial-multiline-growth",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 301.265625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 200
+            },
+            "transcript": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            },
+            "form": {
+              "top": 147.265625,
+              "bottom": 301.265625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 154
+            },
+            "input": {
+              "top": 158.265625,
+              "bottom": 290.265625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 132
+            },
+            "send": {
+              "top": 158.265625,
+              "bottom": 192.265625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": false,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -11,
+            "maxSendOverflow": -109
+          }
+        },
+        {
+          "stage": "stream-0",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 360.859375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 259.59375
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 301.859375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 154.59375
+            },
+            "form": {
+              "top": 301.859375,
+              "bottom": 360.859375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 59
+            },
+            "input": {
+              "top": 313.859375,
+              "bottom": 349.859375,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 313.859375,
+              "bottom": 347.859375,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": false,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -11,
+            "maxSendOverflow": -13
+          }
+        },
+        {
+          "stage": "done-0",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 484.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 59
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 575.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "stream-1",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 484.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 59
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 575.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -11,
+            "maxSendOverflow": -13
+          }
+        },
+        {
+          "stage": "done-1",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 484.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 59
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 575.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "stream-2",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 484.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 59
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 575.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -11,
+            "maxSendOverflow": -13
+          }
+        },
+        {
+          "stage": "done-2",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 484.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 586.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 59
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 575.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "multiline-four-uploads-validation-error",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 827.984375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 726.71875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 504.984375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 357.71875
+            },
+            "form": {
+              "top": 504.984375,
+              "bottom": 827.984375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 323
+            },
+            "input": {
+              "top": 516.984375,
+              "bottom": 648.984375,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 132
+            },
+            "send": {
+              "top": 516.984375,
+              "bottom": 550.984375,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "dynamic-shrink-480",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 456
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 183.40625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 130.40625
+            },
+            "form": {
+              "top": 183.40625,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 284.59375
+            },
+            "input": {
+              "top": 188.40625,
+              "bottom": 294,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 105.59375
+            },
+            "send": {
+              "top": 188.40625,
+              "bottom": 222.40625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 228,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "dynamic-shrink-300",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 288,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 276
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 85,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 32
+            },
+            "form": {
+              "top": 85,
+              "bottom": 288,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 203
+            },
+            "input": {
+              "top": 90,
+              "bottom": 156,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 66
+            },
+            "send": {
+              "top": 90,
+              "bottom": 124,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 326,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 300
+            }
+          }
+        },
+        {
+          "stage": "failed-draft-restored",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 788.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 686.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 788.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 261
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 671.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 132
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          }
+        },
+        {
+          "stage": "hidden-completed-reopened",
+          "metrics": {
+            "panel": {
+              "top": 101.265625,
+              "bottom": 612.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 510.796875
+            },
+            "transcript": {
+              "top": 147.265625,
+              "bottom": 527.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 379.796875
+            },
+            "form": {
+              "top": 527.0625,
+              "bottom": 612.0625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 85
+            },
+            "input": {
+              "top": 539.0625,
+              "bottom": 601.0625,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 62
+            },
+            "send": {
+              "top": 539.0625,
+              "bottom": 573.0625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 844
+            }
+          }
+        }
+      ],
+      "sourceLinks": [
+        {
+          "text": "Miro board",
+          "href": "https://miro.com/app/board/uXjVSyntheticBoard=/",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        },
+        {
+          "text": "Miro board",
+          "href": "https://miro.com/app/board/uXjVSyntheticBoard%3D/?moveToWidget=synthetic",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        },
+        {
+          "text": "Fall planning board",
+          "href": "https://miro.com/app/board/uXjVNamedSynthetic=/",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        }
+      ],
+      "manualScroll": true,
+      "animatedStop": true,
+      "abort": true,
+      "hiddenCompletion": true,
+      "draftRetention": true
+    },
+    {
+      "size": {
+        "width": 390,
+        "height": 480
+      },
+      "stages": [
+        {
+          "stage": "initial-multiline-growth",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 169,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 157
+            },
+            "transcript": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            },
+            "form": {
+              "top": 53,
+              "bottom": 168.59375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 115.59375
+            },
+            "input": {
+              "top": 57,
+              "bottom": 162.59375,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 105.59375
+            },
+            "send": {
+              "top": 57,
+              "bottom": 91,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": false,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -6.40625,
+            "maxSendOverflow": -78
+          }
+        },
+        {
+          "stage": "stream-0",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 254.59375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 242.59375
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 207.59375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 154.59375
+            },
+            "form": {
+              "top": 207.59375,
+              "bottom": 254.59375,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 47
+            },
+            "input": {
+              "top": 212.59375,
+              "bottom": 248.59375,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 212.59375,
+              "bottom": 246.59375,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": false,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -6,
+            "maxSendOverflow": -8
+          }
+        },
+        {
+          "stage": "done-0",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 304
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 269,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 216
+            },
+            "form": {
+              "top": 269,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 47
+            },
+            "input": {
+              "top": 274,
+              "bottom": 310,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 274,
+              "bottom": 308,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "stream-1",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 304
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 269,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 216
+            },
+            "form": {
+              "top": 269,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 47
+            },
+            "input": {
+              "top": 274,
+              "bottom": 310,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 274,
+              "bottom": 308,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -6,
+            "maxSendOverflow": -8
+          }
+        },
+        {
+          "stage": "done-1",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 304
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 269,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 216
+            },
+            "form": {
+              "top": 269,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 47
+            },
+            "input": {
+              "top": 274,
+              "bottom": 310,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 274,
+              "bottom": 308,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "stream-2",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 304
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 269,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 216
+            },
+            "form": {
+              "top": 269,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 47
+            },
+            "input": {
+              "top": 274,
+              "bottom": 310,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 274,
+              "bottom": 308,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          },
+          "animation": {
+            "frames": 24,
+            "maxInputOverflow": -6,
+            "maxSendOverflow": -8
+          }
+        },
+        {
+          "stage": "done-2",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 304
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 269,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 216
+            },
+            "form": {
+              "top": 269,
+              "bottom": 316,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 47
+            },
+            "input": {
+              "top": 274,
+              "bottom": 310,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 36
+            },
+            "send": {
+              "top": 274,
+              "bottom": 308,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "multiline-four-uploads-validation-error",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 456
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 183.40625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 130.40625
+            },
+            "form": {
+              "top": 183.40625,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 284.59375
+            },
+            "input": {
+              "top": 188.40625,
+              "bottom": 294,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 105.59375
+            },
+            "send": {
+              "top": 188.40625,
+              "bottom": 222.40625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "failed-draft-restored",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 456
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 245.40625,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 192.40625
+            },
+            "form": {
+              "top": 245.40625,
+              "bottom": 468,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 222.59375
+            },
+            "input": {
+              "top": 250.40625,
+              "bottom": 356,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 105.59375
+            },
+            "send": {
+              "top": 250.40625,
+              "bottom": 284.40625,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        },
+        {
+          "stage": "hidden-completed-reopened",
+          "metrics": {
+            "panel": {
+              "top": 12,
+              "bottom": 342,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 330
+            },
+            "transcript": {
+              "top": 53,
+              "bottom": 269,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 216
+            },
+            "form": {
+              "top": 269,
+              "bottom": 342,
+              "left": 12,
+              "right": 378,
+              "width": 366,
+              "height": 73
+            },
+            "input": {
+              "top": 274,
+              "bottom": 336,
+              "left": 77,
+              "right": 311,
+              "width": 234,
+              "height": 62
+            },
+            "send": {
+              "top": 274,
+              "bottom": 308,
+              "left": 325,
+              "right": 359,
+              "width": 34,
+              "height": 34
+            },
+            "clickable": true,
+            "scrollable": true,
+            "scrollGap": 0,
+            "panelOverflow": 0,
+            "viewport": {
+              "width": 390,
+              "height": 480
+            }
+          }
+        }
+      ],
+      "sourceLinks": [
+        {
+          "text": "Miro board",
+          "href": "https://miro.com/app/board/uXjVSyntheticBoard=/",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        },
+        {
+          "text": "Miro board",
+          "href": "https://miro.com/app/board/uXjVSyntheticBoard%3D/?moveToWidget=synthetic",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        },
+        {
+          "text": "Fall planning board",
+          "href": "https://miro.com/app/board/uXjVNamedSynthetic=/",
+          "rel": "noopener noreferrer",
+          "target": "_blank"
+        }
+      ],
+      "manualScroll": true,
+      "animatedStop": true,
+      "abort": true,
+      "hiddenCompletion": true,
+      "draftRetention": true
+    },
+    {
+      "platform": "macOS",
+      "label": "⌘ K",
+      "aria": "Meta+K",
+      "shortcutOpensAndFocuses": true,
+      "modalEventsIsolated": true
+    },
+    {
+      "platform": "Windows",
+      "label": "Ctrl K",
+      "aria": "Control+K",
+      "shortcutOpensAndFocuses": true,
+      "modalEventsIsolated": true
+    },
+    {
+      "platform": "Linux",
+      "label": "Ctrl K",
+      "aria": "Control+K",
+      "shortcutOpensAndFocuses": true,
+      "modalEventsIsolated": true
+    }
+  ],
+  "errors": [],
+  "findings": [],
+  "port": 53536,
+  "pass": true
+}

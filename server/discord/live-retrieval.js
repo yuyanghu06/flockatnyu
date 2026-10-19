@@ -114,10 +114,21 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     if (args.scope != null && !DISCORD_SCOPES.includes(args.scope)) return {status:'invalid_request',sources:[],channels:[]};
     if (args.query != null && (typeof args.query !== 'string' || args.query.length > 100)) return {status:'invalid_request',sources:[],channels:[]};
     return run(args, async (ctx,signal) => {
-      const query = (args.query || '').trim().toLowerCase().replace(/^#/, '');
+      const normalize = value => String(value || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+      const query = normalize(args.query);
+      const matchesQuery = row => {
+        if (!query || normalize(row.title).includes(query)) return true;
+        let channel = ctx.channels.get(row.channelId); const seen = new Set();
+        while (channel && !seen.has(channel.id)) {
+          seen.add(channel.id);
+          if (normalize(channel.name).includes(query)) return true;
+          channel = ctx.channels.get(channel.parent_id);
+        }
+        return false;
+      };
       const matching = ctx.catalogue.filter(row => (!ctx.channels.has(row.channelId)||!isDiscordChannelExcluded({channel:ctx.channels.get(row.channelId),channels:ctx.channels,policy:ctx.policy}))
         && (!args.scope || args.scope === 'all' || discordChannelScope(ctx.channels.get(row.channelId),ctx.channels) === args.scope)
-        && (!query || String(ctx.channels.get(row.channelId)?.name || row.title || '').toLowerCase().includes(query)));
+        && matchesQuery(row));
       const channels = [], candidates = matching.slice(0,maxChannels); let deniedCount=0, teamDenied=0;
       for (const row of candidates) {
         try { const checked = await ctx.check(row.channelId); channels.push({channelId:checked.id,name:checked.name,sourceId:checked.sourceId,scope:discordChannelScope(checked,ctx.channels)}); }

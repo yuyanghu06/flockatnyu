@@ -24,7 +24,7 @@ export function explicitlyRequestedTeam(userMessage, channel, channels) {
   // second team without giving the first one access.
   const requests = String(userMessage || '').split(/[.;!?\n]/u).map(words)
     .filter(clause => !/\b(do not|don t|dont|never|avoid|skip|exclud\w*|except|without|not|other than|leave out|omit\w*|ignor\w*|instead of|rather than|shouldn t)\b/.test(clause))
-    .filter(clause => /\b(read|show|summari[sz]e|check|tell|what|how|news|updates?|anything|find|search|look|give|brief|review|recap|latest)\b/.test(clause))
+    .filter(clause => /\b(read|show|summari[sz]e|check|tell|what|when|where|how|news|updates?|anything|find|search|look|give|brief|review|recap|latest)\b/.test(clause))
     .filter(clause => !(/\beboard\b/.test(clause)&&/\b(about|regarding|mentioning|discussing|related to|for|with|on)\b/.test(clause)));
   if (!requests.length) return false;
   const names = []; let row = channel; const seen = new Set();
@@ -36,9 +36,15 @@ export function explicitlyRequestedTeam(userMessage, channel, channels) {
     if (/\beboard\b/.test(request)&&!/\b(and|plus|also|then)\b/.test(request)) return false;
     return names.some(name => {
     if (!name || ['eboard teams','team','teams'].includes(name)) return false;
+    const distinctive = name.split(' ').filter(word => word.length >= 3 && !['team','teams','general','events','program','and','content','announcements','random','pictures','website','members','the','meeting','meetings','chat','discussion','discussions','update','updates'].includes(word));
+    // A full team name remains explicit even when its subject is generic
+    // (content/events/website team). A bare “meetings” channel is not a team.
+    if (!distinctive.length) return /\bteam\b/.test(name)
+      && (' ' + request + ' ').includes(' ' + name + ' ');
     if ((' ' + request + ' ').includes(' ' + name + ' ')) return true;
-    const distinctive = name.split(' ').filter(word => word.length >= 3 && !['team','teams','general','events','program','and','content','announcements','random','pictures','website','members','the'].includes(word));
-    return distinctive.some(word => (' ' + request + ' ').includes(' ' + word + ' '));
+    // Multiword team names must match together: “tech treks” cannot opt in to
+    // another “tech …” team or to any channel whose name includes “meetings”.
+    return (' ' + request + ' ').includes(' ' + distinctive.join(' ') + ' ');
     });
   });
 }

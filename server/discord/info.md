@@ -25,3 +25,7 @@ The policy table forces RLS and remains service-only. Assistant reads require ba
 Shared request-pacing.js serializes bot metadata/content per process and bot/fetch transport, with default750ms spacing,429Retry-After/JSON/headercooldowns and proactive exhausted-bucket waits. Channel summary workers are sequential; request90s/scan120s bounds preserve truthful partials and existing access/content/cost caps. Independent service processes remain separately paced.
 
 Metadata refresh continuation lives in metadata-refresh.js: coalesced refresh promises resume only the same current policy/generation after bounded slices. Three attempts use cancelable5second gaps; unfinished generations schedule another5second invocation, terminal failures60seconds and verified completion the normal hourly cadence. Startup resumes pending work; existing completeDiscovery remains the sole publisher of readable channels.
+
+Named-team when/where questions now authorize only a full distinctive team name; generic meeting/chat words and shared tokens cannot opt into unrelated teams. Exact scope=team summaries use the existing single-channel authorization path, including current user intent, source allowlist and leadership exclusions.
+
+Catalogue name queries normalize punctuation/separators and inspect ancestor names, so a natural team name resolves slugged channels and generic child channels. Metadata matching never grants access: current source, team intent, exclusions and final catalogue checks still run.

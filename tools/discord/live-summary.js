@@ -9,16 +9,20 @@ export function createLiveChatTools({ service, guildId, config, provider } = {})
   const reads = createLiveRetrievalTools({ service, guildId });
   const summaryProvider = provider || createDiscordSummaryProvider({ config });
   const requestBudgets = new WeakMap();
-  const summaryTool = Object.freeze({name:'read_discord_summary',description:'Summarize all authorized eboard channels over a requested window in one bounded live scan. FIRST choice for broad Discord updates. Default scope=eboard; general is secondary fallback and excludes teams; team requires an explicit user request. Defaults to last seven local calendar dates when from/to omitted. Inspect per-channel coverage; no claim of complete server or thread coverage.',parameters:{type:'object',additionalProperties:false,properties:{scope:{type:'string',enum:['eboard','general','team']},from:{type:'string'},to:{type:'string'},timeZone:{type:'string',maxLength:100}}}});
+  const summaryTool = Object.freeze({name:'read_discord_summary',description:'Summarize all authorized eboard channels over a requested window in one bounded live scan. FIRST choice for broad Discord updates. Default scope=eboard; general is secondary fallback and excludes teams; team requires an explicit user request. For one requested team channel, supply scope=team and the exact channelId resolved from list_discord_channels; only that channel is read. Defaults to last seven local calendar dates when from/to omitted. Inspect per-channel coverage; no claim of complete server or thread coverage.',parameters:{type:'object',additionalProperties:false,properties:{scope:{type:'string',enum:['eboard','general','team']},channelId:{type:'string',pattern:'^[0-9]{1,20}$',description:'Optional exact channel ID from the live catalogue; allowed only with scope=team. Never guess IDs.'},from:{type:'string'},to:{type:'string'},timeZone:{type:'string',maxLength:100}}}});
   async function summarizeScope(options) {
     const args=options.arguments;
-    if(!args||typeof args!=='object'||Array.isArray(args)||Object.keys(args).some(key=>!['scope','from','to','timeZone'].includes(key))||args.scope!==undefined&&!['eboard','general','team'].includes(args.scope))return {status:'invalid_request',sources:[]};
+    if(!args||typeof args!=='object'||Array.isArray(args)||Object.keys(args).some(key=>!['scope','channelId','from','to','timeZone'].includes(key))||args.scope!==undefined&&!['eboard','general','team'].includes(args.scope))return {status:'invalid_request',sources:[]};
+    if(args.channelId!==undefined&&(args.scope!=='team'||typeof args.channelId!=='string'||!/^[0-9]{1,20}$/.test(args.channelId)))return {status:'invalid_request',sources:[]};
     const time=createTimeContext(options.timeContext);
     if(!time)return {status:'invalid_request',sources:[]};
     const localStart=new Date(`${time.localDate}T00:00:00Z`);localStart.setUTCDate(localStart.getUTCDate()-6);
-    const windowArgs={channelId:'1',from:args.from??localStart.toISOString().slice(0,10),to:args.to??time.now,...(args.timeZone?{timeZone:args.timeZone}:{})};
+    const windowArgs={channelId:args.channelId??'1',from:args.from??localStart.toISOString().slice(0,10),to:args.to??time.now,...(args.timeZone?{timeZone:args.timeZone}:{})};
     const validated=validateLiveDiscordArguments('read_discord_window',windowArgs,guildId,time);
     if(!validated)return {status:'invalid_request',sources:[]};
+    // An exact team channel reuses the window reader's current-source, explicit
+    // user-intent and exclusion checks without scanning other team channels.
+    if(args.channelId!==undefined)return execute({...options,name:'read_discord_window',arguments:windowArgs});
     const signal=options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(120000)]):AbortSignal.timeout(120000);
     const scope=args.scope||'eboard';
     const catalogue=await service.getCatalogue({scope,principal:options.principal,signal,...(typeof options.userMessage==='string'?{userMessage:options.userMessage}:{})});

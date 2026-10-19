@@ -119,7 +119,7 @@ app inert through READY while startup-visual.js sequences logo zoom/fade, then
 white fade, and only then enters. Failures/new pending resources cancel stale
 reveal work. Reduced motion uses static artwork and skips reveal.
 
-- assistant.js / assistant.css provide the M24 floating Spotlight assistant after automatic campus readiness: native modal, query-first compact layout, Cmd/Ctrl+K, focus restoration, editable offline drafts, streaming/cancellation and safe sources. chat-client.js owns the bounded HTTP/NDJSON transport and truthful connection failures. Closing stops unfinished replies; see docs/assistant-backend.md for server setup and boundaries.
+- assistant.js / assistant.css provide the floating Spotlight assistant after automatic campus readiness: native modal, conversation above the composer footer, platform-specific Command/Control+K, focus restoration, editable offline drafts, streaming/cancellation and safe sources. chat-client.js owns the bounded HTTP/NDJSON transport and truthful connection failures. Closing preserves unfinished replies; see docs/assistant-backend.md for server setup and boundaries.
 
 M16: discord-admin.js/css and discord-admin-client.js power the standalone /admin.html channel settings page without loading the map. API authorization stays on the server; no credentials or grant management are exposed in the browser. chat-client.js enforces aggregate history/UTF-8 budgets.
 
@@ -248,7 +248,8 @@ client-local and never change source activity/location records or the camera.
 
 The chat stream client accepts bounded tool-1 through tool-8 progress for dependent source fallback and map update workflows; tool progress can precede metadata. Status metadata is selected by event type, not stream position.
 
-The assistant panel reserves18px of bottom padding outside its transcript scrollport whenever messages are visible. This keeps scrolled bubbles above the lower inset at every scroll position; content-end padding alone cannot provide that clearance.
+The composer footer remains outside the transcript scrollport, keeping scrolled
+bubbles above the footer and the panel’s lower inset at every scroll position.
 
 Assistant streaming coalesces Markdown/DOM work per animation frame with terminal flush/disposal guards. Map polls retain identical marker nodes; card presentation caches invalidate on semantic revision, selection and exact time boundaries while animation/positioning remains live.
 
@@ -259,5 +260,17 @@ abort. Send/Stop hover/focus adds a subtle glow; color rotation is driven by act
 streaming rather than hover, and reduced motion remains static.
 
 The assistant supports a file picker, removable attachment chips/image previews, image paste and file drop using chat-attachments.js and the browser-safe server contract. PNG/JPEG/WebP, PDF and small UTF8 text/code are retained only in in-memory conversation/draft state; current attachments survive send failure. A successful map/attendance tool completion emits campus-map-updated so map-presence.js refreshes immediately. Closing the dialog still preserves in-flight streaming.
+
+The assistant transcript appears above its composer footer. Only the transcript
+scrolls through long conversations; input, upload chips and errors have bounded
+heights on short viewports. Streaming follows readers already at the bottom;
+scrolling back pauses following. Existing send/stop colors, loading animation,
+dismissal and background completion remain. `assistant-presentation.js` selects
+the Mac Command or Windows/Linux Control shortcut, suppresses desktop shortcuts
+on mobile platforms, and replaces opaque Miro board citation IDs/paths with
+supplied human titles or “Miro board” without changing source URLs.
+Composer animation clearance is capped by the current viewport; browser and
+visual-viewport resizing remeasure the footer so a retained multiline/upload
+draft stays accessible when the available height changes.
 
 Map refreshes coalesce agent write notifications behind an older pending read, guaranteeing a subsequent read begun after the saves. Transient read failures recover with at most two consecutive retries after1/3seconds; authentication denials do not retry. Failed reads still clear stale activity, and disposal cancels retries. Ordinary polling/visibility recovery remain.
