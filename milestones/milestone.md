@@ -1,3 +1,9 @@
+## Live: website feedback implemented and verified
+
+Protected web deployment 1bea2c28 is successful. The composer stays below the conversation, Miro citations use readable names, shortcut hints match the platform, and named-team navigation/summary calls work with existing access checks. The loading animation is preserved.
+
+Hosted Chrome verified custom-domain login, byte-exact reviewed assets, the live tool schema, and visible desktop/mobile conversations above the composer with no page errors. Two chat replies used intercepted synthetic fixtures, with no real model calls or source writes. The earlier full suite passed 1,285 tests; final affected checks passed 120, independent review passed 112, and six browser scenarios passed. Accepted audit commit 8249119 and migration 034 remain preserved. Source commits 7a7e04f/a40735d are pushed. The legacy dismissal script retains an unrelated map-gap assertion. [Hosted receipt](../evidence/site-feedback/hosted-release.json) · [Final pass](history/2026-10-19_12-29-19-470916-orchestrator-site-feedback-live-verified.md).
+
 ## Private planner and chat audit is live
 
 Both agents now persist model-call starts, returned outputs/proposals, provider IDs, available tokens/cache accounting and estimated costs, plus run/tool statuses and timing. The user confirmed private seven-day retention. Prompts, uploads, raw source-tool responses and credentials are excluded; unknown usage stays unknown. Hosted033/034 and forcedRLS/service-only access are verified.

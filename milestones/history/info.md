@@ -83,3 +83,5 @@ Website feedback passes track translated product requirements only; private corr
 October 19 favicon export records the verified 1080 × 1080 Downloads PNG; source artwork is unchanged.
 
 The subsequent favicon export revision records square opaque backgrounds, tighter raised edges and verified 1080/4320 Downloads files.
+
+October 19 custom-domain and website feedback passes preserve stable attendance provenance and record translated product requirements only. Private correspondence/reference screenshots are excluded. The final hosted feedback receipt identifies the reviewed release and preserved audit baseline.

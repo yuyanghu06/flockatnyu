@@ -425,3 +425,5 @@ feedback-discord.test.mjs exercises affirmative named-team meeting questions and
 assistant-presentation.test.mjs verifies readable citation labels and safe platform detection. feedback-browser.mjs uses only synthetic responses on an isolated local Vite server to check footer geometry, streaming/history, source safety, uploads/errors, shortcuts, viewport shrink and retained animated Stop. Evidence lives in evidence/site-feedback; no private reference screenshots are retained.
 
 model-audit-cache-cost.test.mjs applies034incrementally after033 and tests existing-row/ACL preservation, actual-shaped cache writes, impossible counts and unknown/long-context pricing.
+
+assistant-presentation.test.mjs covers readable Miro citation labels and platform shortcut detection. feedback-discord.test.mjs exercises natural team catalogue navigation through returned-ID summaries with current intent/source/leadership guards. feedback-browser.mjs runs isolated synthetic desktop/mobile, streaming/history, upload/error, footer/viewport and shortcut checks; evidence lives in evidence/site-feedback. Site-auth tests cover explicit HTTPS aliases and fail-closed configuration.

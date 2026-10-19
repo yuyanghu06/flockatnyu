@@ -1,3 +1,10 @@
+## Completed: website feedback and custom-domain access
+
+- [x] Implement readable citations, bottom composer, platform shortcuts and named-team navigation/summary fixes.
+- [x] Independently verify source, desktop/mobile browser, streaming/uploads and authorization boundaries.
+- [x] Deploy protected web 1bea2c28; verify login, exact assets, live tool schema and actual-campus UI.
+- [x] Preserve accepted audit 8249119/034, existing attendance provenance and loading animation.
+
 ## Private model audit — complete and live
 
 - [x] Persist every production model dispatch and returned output for planner and chat, with nullable usage/IDs/costs and private run/tool lifecycle metadata.

@@ -69,3 +69,5 @@ Chat production fixes add once-per-message report orchestration and a narrow req
 model-audit.js and audit-lifecycle.js add private model-return/output accounting and bounded seven-day cleanup for both chat and planner. Provider dispatch must durably start before production network requests. No prompts/source tool payloads or frontend log endpoint. See docs/model-audit.md.
 
 Chat routing preserves Calendar-first unnamed-source schedules with Miro cross-check, then exact explicitly named-team Discord originals for unresolved details. Selected-channel summaries carry the returned channelId; failed reads/invalid calls never establish absence.
+
+`SITE_ALLOWED_ORIGINS` adds explicit HTTPS login/mutation aliases while preserving the stable PUBLIC_ORIGIN used for saved attendance references. Cookies remain host-only; cross-site requests remain denied. Chat meeting routing preserves Calendar-first unnamed-source schedules and Miro fallback, then exact explicitly named-team originals for unresolved details. Selected-channel summaries carry the returned channelId; failed reads never establish absence.

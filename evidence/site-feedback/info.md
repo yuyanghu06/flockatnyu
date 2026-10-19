@@ -52,3 +52,7 @@ this report in the shared milestone journal.
 Handoff: independent acceptance complete. Review the final diff and production
 rollout separately; do not infer live source/model behavior from synthetic UI
 fixtures. Other specialists' implementation/test files were not modified.
+
+## Hosted verification
+
+Protected web1bea2c28isSUCCESS. hosted-release.json confirms native custom-domain login, anonymous denial, exact reviewed frontend bytes, selected-channel tool schema and actual-campus desktop/mobile UI with visible transcript above composer/readable citations. Chat responses were intercepted synthetic fixtures; no real model call or source write was needed. The accepted audit8249119logger is preserved.
