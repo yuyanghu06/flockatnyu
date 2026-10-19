@@ -24,12 +24,6 @@ accepted automatically. Keep it stable on web and worker because existing
 chat-attendance citations use that origin; login aliases preserve those records.
 Aliases never accept wildcards, HTTP, credentials, paths, query strings or fragments.
 Cookies remain host-only, so each domain requires its own login.
-For a custom domain, add its exact HTTPS origin to web-only
-`SITE_ALLOWED_ORIGINS` (comma-separated) and redeploy web. `PUBLIC_ORIGIN` stays
-accepted automatically. Keep it stable on web and worker because existing
-chat-attendance citations use that origin; login aliases preserve those records.
-Aliases never accept wildcards, HTTP, credentials, paths, query strings or fragments.
-Cookies remain host-only, so each domain requires its own login.
 Rotate `SITE_SESSION_SECRET` to revoke all issued sessions; changing the password
 alone changes future sign-ins. Logout clears the current browser cookie.
 
