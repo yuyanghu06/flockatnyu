@@ -1,0 +1,10 @@
+# Staged Discord metadata publication implemented
+
+- Local timestamp / acting role / milestone: 2026-10-19T14:35:41.190622-04:00 / coder / eboard-discovery-availability.
+- Requested scope: repair base eboard bot silence during background discovery without weakening access or retention rules.
+- Starting repository state: orchestrator-owned guides/journal and disjoint implementation/test assignments from6631e0b; applied migrations remain intact.
+- Work performed / changed files: Created only additive035SQL. Pending staging and explicit published generation/policy proof preserve unchanged sources during refreshes. Observed denial/removal/name/type/ancestry changes withdraw affected channels and descendants immediately. Stable UUID/manual-disable intent, policy revisions and source gates survive. Initial/legacy incomplete metadata stays closed. Exact CAS and finished scan cursor checks prevent premature publication. One new service-only security-invoker metadata helper; no table/column/RLS changes. Existing wire signatures remain compatible.
+- Decisions: completeDiscovery remains the only source of new publication; refresh progress cannot globally revoke unchanged proven access. Current runtime checks remain mandatory.
+- Checks and evidence: Coder ran new acceptance23/23 and combined discovery/catalogue/manual-disable/availability55/55; whitespace passed. No external writes or deployment. Staging-contradiction edge cases were statically reviewed; not every combination has a dedicated test.
+- Resulting state / acceptance: bounded local pass accepted by orchestrator. Parent also passed600existing Discord regressions, new23tests and API build. Final035SHA2569c9030505f71a8fcc1c7e5ec0371abd92c18beb4e1852ec32823856e80c59455.
+- Remaining work and handoff: restore legitimate Supabase account access for project jssehnrmqhstcrtxulpa, read current hosted schema/state, apply only reviewed035and verify authorized eboard access during an incomplete refresh. No alternate credential bypass, live schema write, restart, model call or test message occurred.

@@ -1,3 +1,19 @@
+## eBoard discovery availability repair
+
+- Earlier publication cancellation is superseded by the user’s renewed push request after confirming the bot works.
+- [x] Explain the existing automatic ping context; channel name is not an injected field. No context change requested.
+
+- [x] Trace global catalogue closure through base-channel authorization and silent transport denial.
+- [x] Correlate content-free live failures, discovery completion and subsequent chat delivery; no per-channel success claim.
+- [x] Implement additive staged/published metadata reconciliation, preserving immediate revocations and source identities.
+- [x] Independently test full001–035SQL/runtime access and accept final review; new23/evaluator128/coder55checks pass, parent600existing regressions/API build pass.
+- [x] Attempt user-authorized normal Chrome authentication; alternate account authenticated but project access was denied.
+- [x] Verify restored GitHub-linked project-owner browser access and exact hosted schema/function preflight.
+- [x] Apply reviewed035as20261019193035 and verify exact source/function hashes, service-only ACLs and preserved policy/source identities.
+- [x] Observe191/191completion; verify both base eboard channels, leadership/manual-disable denial, full229-source continuity through a rollback-only partial refresh and exact state restoration.
+- [x] User confirmed bot replies work after repair; publish source 59125f7 to main and verify the remote ref.
+- Live database repair and user-observed reply delivery are accepted.
+
 ## Exact-message collection follow-up
 
 - [x] Trace exact user-specified message through retained ingestion metadata/cache and model outputs; distinguish absent receipt from missing profile.

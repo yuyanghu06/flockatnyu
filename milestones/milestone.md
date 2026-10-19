@@ -1,3 +1,15 @@
+## Live: eBoard discovery availability repaired
+
+Migration035 is applied as20261019193035 through the restored GitHub project-owner dashboard. Exact SQL/function hashes and service-only ACLs are verified. The existing scan completed191/191by15:36ET;229sources are readable, including eboard-chat and eboard-announcements. Leadership and manually disabled sources remain denied.
+
+A bounded service-role canary started an incomplete same-policy refresh inside a transaction and preserved the entire229-source readable catalogue. Rollback restored the exact full policy-row hash and completed discovery state. Independent evaluator accepts the hosted repair. No restart/redeploy, model call or Discord test post occurred during verification. The user subsequently confirmed that normal bot replies work after the repair.
+
+The user renewed publication authorization after confirming bot replies. Repair source 59125f7 is pushed to main and the remote ref was verified. The MCP account still lacks project access, but the legitimate owner browser session successfully applied and verified the fix. No credential extraction or permission expansion was used.
+
+[Publication and user confirmation](history/2026-10-19_15-43-57-968215-orchestrator-eboard-repair-published.md) · [Live verification](history/2026-10-19_15-38-30-984558-orchestrator-eboard-repair-live-verified.md) · [Independent acceptance](history/2026-10-19_15-38-30-984558-evaluator-eboard-hosted-accepted.md) · [Migration application](history/2026-10-19_15-33-44-440076-orchestrator-eboard-migration-applied.md) · [Local acceptance](history/2026-10-19_14-36-07-906350-orchestrator-eboard-repair-local-integration.md) · [Push cancellation](history/2026-10-19_14-49-08-170981-orchestrator-eboard-push-cancelled.md)
+
+Local evidence remains: parent600existing Discord regressions/new23checks/APIbuild; independent evaluator128,coder55,tester23checks passed. Applied historical migrations were preserved. [Ping context inspection](history/2026-10-19_14-45-39-222356-orchestrator-discord-ping-context-explained.md) found caller IDs/names and destination IDs, but no injected channel name; no context change requested.
+
 ## Exact-message trace: no retained ingestion receipt
 
 The user-specified message ID has no exact metadata/cache receipt or retained planner-output reference. Normal completion preserves metadata, and ingestion does not consult people profiles. This narrows the finding to an unconfirmed collection/coverage gap rather than a proven missing-profile rejection. Earlier author-level failed batches concerned different messages. Historical collector logs queued other events nearby but cannot identify this message or explain the absence.

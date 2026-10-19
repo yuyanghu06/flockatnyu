@@ -1,0 +1,10 @@
+# Authorized browser project access and hosted preflight verified
+
+- Local timestamp / acting role / milestone: 2026-10-19T15:30:22.540041-04:00 / orchestrator / eboard-discovery-availability.
+- Requested scope: user reports Supabase access fixed and asks to retry the live repair. Earlier Git push cancellation remains in effect.
+- Starting repository state: tested035 remains unchanged at SHA2569c9030505f71a8fcc1c7e5ec0371abd92c18beb4e1852ec32823856e80c59455; no commit/push.
+- Work performed / changed files: retried the exact project through MCP; existing connector still denies its account. The user's restored normal GitHub browser session legitimately opens techatnyu / tech-visualized / main PRODUCTION at jssehnrmqhstcrtxulpa. SQL editor readback confirmed existing table fields, latest migration20261019162300 and absent035helper.
+- Decisions: use the authenticated owner dashboard for the authorized repair; no token extraction or permission changes. Match deployed function bodies before modifying them.
+- Checks and evidence: deployed body hashes exactly match tested017channel_allowed/persist_discovery and020complete_discovery; all are SECURITY INVOKER and executable only by postgres/service_role. Current revision4 has273channel metadata rows and0readable while archive task48/191 is incomplete. Source-identity/manual hash7c512c987d5aab703f5b60a2c9c78420; policy-scope hash9cfa49799cf784d97a5f4c9e614ee3f4. Dashboard request/advisor counters show no errors/issues, despite a separate Unhealthy overview status. Initial query editor replacement caused a read-only syntax error; corrected using full selection/paste and exact clipboard comparison before successful execution.
+- Resulting state / acceptance: legitimate hosted preflight passed, migration not yet applied. No credential or source-body retention.
+- Remaining work and handoff: apply exact reviewed035, verify function bodies/ACLs/receipt and preserved policy/source identities; allow current legacy scan to complete before expecting replies; validate available base channels and unchanged exclusions.
