@@ -1,0 +1,10 @@
+# Registry limitation and actual planner failures distinguished
+
+- Local timestamp / acting role / milestone: 2026-10-19T14:07:32.855279-04:00 / orchestrator / planner operational diagnosis.
+- Requested scope: distinguish an unregistered person from a failed planner run for a reported Bobst plan.
+- Starting repository state: existing planner live, private audit enabled, separate source/tool operational issues remain; concurrent docs changes preserved.
+- Work performed / changed files: Parent read current hosted profile/queue/audit state using private service credentials kept in memory. A known Discord author has zero exact linked profile rows; 13 of that author’s received messages remain pending and in worker source scope. Model proposals correlate several of those input IDs with repeated attempted runs. A 13:56 ET correlated run successfully read Discord and Calendar, then read_map_events returned unavailable; run finished tool_failed with zero handled and two retained inputs. An earlier correlated run had forbidden map reads; another had an invalid Calendar request/abort. These are processing failures independent of the missing registry identity.
+- Decisions: report both confirmed limitations; do not claim the exact pasted exchange was processed or the identity lookup caused an observed tool failure. Do not add a person or fabricate location/timing.
+- Checks and evidence: No message bodies, names, provider user IDs or credentials retained in this journal. The user-pasted exchange was not uniquely identified: no pending exact-phrase candidates; live scoped original reads/search returned channel_scope_denied, which was respected. One local Railway request transiently failed with an OS connection error and the next attempt succeeded. No model calls, remote writes, profile additions, tests, schema/runtime changes or deployment.
+- Resulting state / acceptance: diagnosis complete with explicit exact-message limitation; journals only.
+- Remaining work and handoff: repair recurring planner map-read failures and queue progress separately. Adding/linking a new profile is a separate authorized action; ambiguous return times remain uncertain.

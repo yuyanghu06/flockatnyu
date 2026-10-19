@@ -1,3 +1,9 @@
+## Planner diagnosis: registry limitation plus processing failures
+
+Read-only hosted audit confirms an unregistered Discord author has no exact linked profile and multiple received, authorized inputs still pending. Fixed profiles cannot be created by the planner; a missing person lookup is a successful empty result and cannot authorize attendance. Separately, correlated attempts actually failed: a 13:56 ET run read Discord and Calendar successfully, then map reads returned unavailable and both inputs remained pending. Earlier attempts also had forbidden map reads / invalid Calendar arguments. This is not solely a registry limitation.
+
+The user-pasted exchange was not uniquely matched to an original, so no exact-message detection or location interpretation is claimed. Live scoped reads denied access and that boundary was respected. No source bodies/private identities were retained, no remote writes/model calls or runtime changes occurred. [Contract review](history/2026-10-19_14-07-32-855278-planner-missing-person-map-contract-reviewed.md) · [Hosted diagnosis](history/2026-10-19_14-07-32-855279-orchestrator-person-registry-and-planner-failures-audited.md).
+
 ## Discord full chat-tool parity
 
 - Complete website tool parity is live on web 44718830-c32f-4e31-837c-3b2ce3c786b2 (SUCCESS), source 6a0cf8b. All six shared adapter groups and existing action/evidence gates are present; Google follows the website flag. Existing collector, source allowlists and worker were preserved.

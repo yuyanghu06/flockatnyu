@@ -1,3 +1,9 @@
+## Planner operational diagnosis
+
+- [x] Distinguish absent linked profiles from actual failed processing using source contracts and hosted queue/model/tool audits.
+- [ ] Repair recurring read_map_events unavailable/forbidden failures and verify queued source-backed personal plans complete without bypassing access or identity checks.
+- Exact pasted Bobst exchange remains unidentified; profile creation/linking is a separate action, and vague future return times must remain uncertain.
+
 ## Discord full chat-tool parity
 
 - [x] Plan and implement all website adapters with existing source/action checks.
