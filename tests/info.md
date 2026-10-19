@@ -427,3 +427,7 @@ assistant-presentation.test.mjs verifies readable citation labels and safe platf
 model-audit-cache-cost.test.mjs applies034incrementally after033 and tests existing-row/ACL preservation, actual-shaped cache writes, impossible counts and unknown/long-context pricing.
 
 assistant-presentation.test.mjs covers readable Miro citation labels and platform shortcut detection. feedback-discord.test.mjs exercises natural team catalogue navigation through returned-ID summaries with current intent/source/leadership guards. feedback-browser.mjs runs isolated synthetic desktop/mobile, streaming/history, upload/error, footer/viewport and shortcut checks; evidence lives in evidence/site-feedback. Site-auth tests cover explicit HTTPS aliases and fail-closed configuration.
+
+Discord interaction tests cover shared runner/trusted context, adapter/client/delivery/config, independent access/bridge and Gateway failure paths using synthetic clients. They distinguish process-local replay prevention from durable delivery, and verify that channel replies cannot load website memory/private tools.
+
+Automatic context tests exercise live-service pagination with synthetic originals, the exact one-hour boundary, full-text/partial coverage and two-column identity-directory selection; no live messages or credentials appear in evidence.

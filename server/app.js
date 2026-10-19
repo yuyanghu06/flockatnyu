@@ -2,9 +2,9 @@ import { AttachmentError, attachmentErrors, attachmentBudget, normalizeAttachmen
 import { Hono } from 'hono';
 import {canonicalTimeZone, createTimeContext} from './time-zone.js';
 import { readConfig } from './config.js';
-import { createProvider, ProviderError } from './providers/index.js';
+import { createProvider } from './providers/index.js';
 import { createAuditLogger } from './model-audit.js';
-import { retrieveAssistantContext, assistantAnswerPrompt } from './assistant-context.js';
+import { createChatRunner } from './chat-runner.js';
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
@@ -89,6 +89,7 @@ async function readConversation(request, timeoutMs) {
 
 export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
+  const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,now});
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
   app.get('/healthz', c => c.json({ ok: true, service: 'tech-nyu-api' }));
   app.get('/api/status', async c => {
@@ -161,55 +162,19 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     let conversation;
     try { conversation = await readConversation(c.req.raw, config.timeoutMs); } catch (error) { return deny(c, error instanceof AttachmentError ? error.code : 'invalid_request', 400); }
     if (config.provider === 'anthropic' && conversation.messages.some(message => message.attachments?.length)) return deny(c, 'attachments_provider_unsupported', 400);
-    const timeContext = createTimeContext({timeZone:conversation.timeZone,now:now()});
-    if (!timeContext) return deny(c, 'invalid_request', 400);
     if (!config.configured) return deny(c, 'not_configured', 503);
-    const auditContext={agent:'chat',runId:crypto.randomUUID()};
-    const auditStarted=performance.now();
-    const auditEvent=async event=>{
-      try { await audit.recordEvent({eventId:crypto.randomUUID(),context:auditContext,...event}); } catch { /* Provider dispatch independently enforces durable logging. */ }
-    };
-    const abort = new AbortController(); let disconnected = false, timedOut = false;
+    const abort = new AbortController(); let disconnected = false;
     const disconnect = () => { disconnected = true; abort.abort(); };
     c.req.raw.signal.addEventListener('abort', disconnect, { once: true });
     const stream = new ReadableStream({
       async start(controller) {
-        let runStatus='failed';
         const encode = new TextEncoder();
-        const send = record => { if (!disconnected) controller.enqueue(encode.encode(JSON.stringify(record) + '\n')); };
-        const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, config.requestTimeoutMs ?? config.timeoutMs);
-        const aborted = new Promise((_, reject) => abort.signal.addEventListener('abort', () => reject(new ProviderError(timedOut ? 'timeout' : 'aborted')), { once: true }));
-        // Each async boundary races cancellation, including injected adapters.
-        const wait = promise => Promise.race([promise, aborted]);
         try {
-          await auditEvent({kind:'run_started',status:'started',counts:{messages:conversation.messages.length}});
           if (c.req.raw.signal.aborted) disconnect();
-          const retrieval = await wait(retrieveAssistantContext({ messages: conversation.messages, principal, provider,
-            liveTools: liveDiscordTools, googleTools, miroTools, bugReportTools, memoryTools, mapTools, buildingId: conversation.buildingId, signal: abort.signal, timeContext, planning: config.retrievalToolsEnabled !== false,
-            auditContext,onAuditEvent:auditEvent,
-            onToolEvent: event => { if (!abort.signal.aborted) send(event); } }));
-          const sources = retrieval.sources;
-          send({ type: 'meta', sources, timeZone:timeContext.timeZone, now:timeContext.now, knowledgeStatus: retrieval.status, retrieval: retrieval.results.map(result => ({
-            tool: result.tool, status: result.status, coverage: result.coverage })) });
-          const iterator = provider.stream({ messages: conversation.messages, system: assistantAnswerPrompt({ sources, results: retrieval.results, memory: retrieval.memory, timeContext }), signal: abort.signal, timeContext, auditContext })[Symbol.asyncIterator]();
-          let outputLength = 0;
-          try {
-            while (true) {
-              const { value, done } = await wait(iterator.next());
-              if (done) break;
-              if (typeof value !== 'string' || (outputLength += value.length) > 100000) throw new ProviderError('invalid_provider_response');
-              if (value) send({ type: 'delta', text: value });
-            }
-          } finally { abort.abort(); void iterator.return?.().catch(() => {}); }
-          send({ type: 'done' });
-          runStatus='succeeded';
-        } catch (error) {
-          runStatus=timedOut?'timeout':disconnected?'aborted':'failed';
-          const code = timedOut ? 'timeout' : (error instanceof ProviderError && errorMessages[error.code] ? error.code : 'provider_unavailable');
-          send(errorRecord(code));
+          await chatRunner.run({ conversation, principal, signal:abort.signal,
+            onRecord:record => { if (!disconnected) controller.enqueue(encode.encode(JSON.stringify(record) + '\n')); } });
         } finally {
-          clearTimeout(timeout); abort.abort(); c.req.raw.signal.removeEventListener('abort', disconnect);
-          await auditEvent({kind:'run_finished',status:runStatus,durationMs:Math.round(performance.now()-auditStarted)});
+          c.req.raw.signal.removeEventListener('abort', disconnect);
           if (!disconnected) controller.close();
         }
       },

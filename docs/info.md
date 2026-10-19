@@ -52,3 +52,5 @@ chat-agent-prompt.md includes user-directed fixed Calendar writes and the existi
 Miro quota recovery uses shared operational counters and cooldowns in existing service-only automation state, without storing board contents. See miro-sync.md for the UTC reset, protected chat budget and background cadence.
 
 model-audit.md explains private planner/chat model-call and output accounting, null usage/cost limits, credential redaction, service-only access and seven-day retention.
+
+`discord-chat.md` documents shared assistant execution, verified caller context, eboard source/audience rules, private bridge setup and transient interaction limits.

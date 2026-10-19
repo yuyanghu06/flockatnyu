@@ -9,6 +9,7 @@ import {createAutomationStore} from '../automation/store.js';
 import {createDiscordEventState} from './event-state.js';
 import {createDiscordEventListener} from './event-listener.js';
 import {createDiscordGateway} from './gateway.js';
+import {createDiscordChatTransport} from './chat-runtime.js';
 
 export async function runDiscordEvents({args=process.argv.slice(2),env=process.env,
   write=value=>process.stdout.write(`${JSON.stringify(value)}\n`),createGateway=createDiscordGateway}={}) {
@@ -20,7 +21,7 @@ export async function runDiscordEvents({args=process.argv.slice(2),env=process.e
   const port=Number(env.PORT||3003);
   if(!Number.isInteger(port)||port<1||port>65535)return {status:'not_configured'};
   const client=createDiscordClient({config}),state=createDiscordEventState({env}),controller=new AbortController();
-  let stopped=false,timer,gateway,server;
+  let stopped=false,timer,gateway,server,chat;
   const metadataRefresh=createDiscordMetadataRefresh({config,store,client,signal:controller.signal});
   const refreshMetadata=async options=>{
     const result=await metadataRefresh.refresh(options);
@@ -29,12 +30,16 @@ export async function runDiscordEvents({args=process.argv.slice(2),env=process.e
   async function stop(failed=false){
     if(stopped)return;stopped=true;clearTimeout(timer);controller.abort();
     process.removeListener('SIGTERM',onStop);process.removeListener('SIGINT',onStop);
+    await Promise.resolve(chat?.stop()).catch(()=>{});
     await gateway?.stop().catch(()=>{});server?.close();server?.closeAllConnections?.();
     if(failed)process.exitCode=1;
   }
   const onStop=()=>{void stop();};
-  const listener=createDiscordEventListener({config,store,inputStore,client,refreshMetadata});
-  gateway=await createGateway({config,listener,state,refreshMetadata,signal:controller.signal,log:write,onFailure:()=>{void stop(true);}});
+  try {chat=await createDiscordChatTransport({env,log:write,signal:controller.signal});}
+  catch {write({status:'discord_chat_unavailable'});}
+  const listener=createDiscordEventListener({config:{...config,ignoredAuthorIds:chat?[chat.botUserId]:[]},store,inputStore,client,refreshMetadata});
+  gateway=await createGateway({config,listener,state,refreshMetadata,signal:controller.signal,log:write,
+    ...(chat?{onDispatch:event=>chat.handle(event)}:{}),onFailure:()=>{void stop(true);}});
   server=createServer((request,response)=>{
     if(request.method!=='GET'||request.url!=='/healthz'){response.writeHead(404);response.end();return;}
     const health=gateway.status();response.writeHead(health.status==='ready'?200:503,{'content-type':'application/json'});

@@ -7,7 +7,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const native = new Set(builtinModules.map(name => `node:${name.replace(/^node:/, '')}`));
-const approvedDependencies = new Set(['@hono/node-server', 'hono', '@modelcontextprotocol/sdk', 'saxes', 'google-auth-library']);
+const approvedDependencies = new Set(['@hono/node-server', 'hono', '@modelcontextprotocol/sdk', 'saxes', 'google-auth-library', '@discordjs/rest']);
 const parseImports = `import {SourceTextModule} from 'node:vm'; let text=''; for await (const part of process.stdin) text+=part; process.stdout.write(JSON.stringify(new SourceTextModule(text).dependencySpecifiers));`;
 const dynamicLoader = /\b(?:import|require)\s*(?:(?:\/\*[\s\S]*?\*\/|\/\/[^\n]*\n)\s*)*\(/u;
 const assets = new Set(['.html', '.js', '.css', '.json', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.ico', '.glb', '.gltf', '.bin', '.ktx2', '.woff', '.woff2', '.md']);

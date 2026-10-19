@@ -36,6 +36,9 @@ export function createDiscordEventListener({config, store, inputStore, client, r
   async function handle({t,d,signal}={}) {
     if(!config.enabled)return {status:'disabled'};
     if(!types[t]||!d||d.guild_id!==config.guildId)return {status:'ignored'};
+    // Interactive assistant output must not become new autonomous-agent input.
+    if(['MESSAGE_CREATE','MESSAGE_UPDATE'].includes(t) && Array.isArray(config.ignoredAuthorIds)
+      && config.ignoredAuthorIds.includes(d.author?.id))return {status:'ignored'};
     if(!id(d.channel_id)||(t==='MESSAGE_DELETE_BULK'
       ? !Array.isArray(d.ids)||!d.ids.length||d.ids.length>100||!d.ids.every(id):!id(d.id)))fail('invalid_event');
     const p=await policy(signal);

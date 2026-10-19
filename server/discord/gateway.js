@@ -10,7 +10,7 @@ function validSession(value) {
 
 /** Gateway SDK owns heartbeat/reconnect; we persist only the sequence whose
  * queued events have reached Supabase. Restart replay is deduplicated by UUID. */
-export async function createDiscordGateway({config,listener,state,refreshMetadata,signal,
+export async function createDiscordGateway({config,listener,state,refreshMetadata,signal,onDispatch,
   createManager=options=>new WebSocketManager(options),createRest=token=>new REST({version:'10',timeout:15000,retries:2}).setToken(token),
   log=()=>{},onFailure=()=>{}}={}) {
   let checkpoint=await state.load(signal), latest=null, connected=false, failed=false, stopping=false, pending=0;
@@ -32,6 +32,11 @@ export async function createDiscordGateway({config,listener,state,refreshMetadat
   manager.on(WebSocketShardEvents.Resumed,()=>{connected=true;log({status:'gateway_resumed'});});
   manager.on(WebSocketShardEvents.Dispatch,(event,shardId)=>{
     if(failed||stopping||shardId!==0)return;
+    // Interaction work has its own limits/cancellation and cannot hold the
+    // durable ingestion frontier behind model or delivery latency.
+    if(onDispatch && ['MESSAGE_CREATE','INTERACTION_CREATE'].includes(event.t)) {
+      void Promise.resolve().then(()=>onDispatch(event)).catch(()=>log({status:'discord_chat_dispatch_failed'}));
+    }
     if(++pending>config.maxPending){fatal();return;}
     const session=sessions.get(0), snapshot=session?{...session,sequence:event.s}:null;
     work=work.then(async()=>{

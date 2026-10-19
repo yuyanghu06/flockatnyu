@@ -1,4 +1,11 @@
 import { createApp } from './app.js';
+import {createProvider} from './providers/index.js';
+import {createChatRunner} from './chat-runner.js';
+import {readDiscordChatConfig} from './discord/chat-config.js';
+import {createDiscordChatAccess} from './discord/chat-access.js';
+import {createDiscordChatClient} from './discord/chat-client.js';
+import {createDiscordChatBridge} from './discord/chat-bridge.js';
+import {createDiscordChatContextLoader,createDiscordUserDirectory} from './discord/chat-context.js';
 import {createAuditLogger} from './model-audit.js';
 import {startAuditMaintenance} from './audit-lifecycle.js';
 import { readConfig } from './config.js';
@@ -31,12 +38,13 @@ import {createBugReportTools} from '../tools/bug-reports/index.js';
 import {createMemoryStore} from './memory.js';
 import {createMemoryTools} from '../tools/memory/index.js';
 
-export function createRuntimeApp({ config = readConfig(), auth } = {}) {
+export function createRuntimeServices({ config = readConfig() } = {}) {
 const audit=createAuditLogger();
 startAuditMaintenance(audit);
 const discordConfig = readDiscordConfig();
 const discordStore = createDiscordStore(), liveConfig = readLiveDiscordConfig();
-const liveDiscordService = createLiveDiscordRetrieval({ config: liveConfig, store: discordStore, client: createLiveDiscordClient({ config: liveConfig }) });
+const discordClient = createLiveDiscordClient({config:liveConfig});
+const liveDiscordService = createLiveDiscordRetrieval({ config: liveConfig, store: discordStore, client: discordClient });
 const summaryConfig = readDiscordLiveSummaryConfig();
 const liveDiscordTools = createLiveChatTools({ service: liveDiscordService, guildId: liveConfig.guildId, config: summaryConfig });
 const googleClient = createGoogleClient({ config: readGoogleConfig() });
@@ -83,6 +91,29 @@ const mapTools = {
 };
 const bugReportTools = createBugReportTools({store: createBugReportStore()});
 const memoryTools = createMemoryTools({store: createMemoryStore()});
-const app = createApp({ ...(auth ? {auth} : {}), config, audit, mapPresenceService, mapTools, discordStore, discordConfig, liveDiscordService, liveDiscordTools, googleTools, googleClient, miroTools, bugReportTools, memoryTools });
-return app;
+return {config,audit,provider:createProvider(config,{audit}),mapPresenceService,mapTools,discordStore,discordConfig,discordClient,
+  liveDiscordService,liveDiscordTools,googleTools,googleClient,miroTools,bugReportTools,memoryTools};
+}
+
+export function createRuntimeApp({config=readConfig(),auth,services} = {}) {
+  return createApp({...services || createRuntimeServices({config}),...(auth?{auth}:{})});
+}
+
+export function createRuntimeDiscordChatBridge({services,env=process.env} = {}) {
+  const chatConfig=readDiscordChatConfig(env);
+  if(!chatConfig.enabled) return createDiscordChatBridge();
+  const access=createDiscordChatAccess({config:{...chatConfig,allowedSourceIds:services.config.allowedSourceIds},
+    store:services.discordStore,client:services.discordClient,memberClient:createDiscordChatClient({config:chatConfig})});
+  // The channel audience is approved for eboard Discord originals only. Shared
+  // website memory and private Google/Miro/map tools never enter this runner.
+  const runner=createDiscordChatRunner({services,chatConfig});
+  const contextLoader=createDiscordChatContextLoader({liveDiscordService:services.liveDiscordService,
+    directory:createDiscordUserDirectory({env})});
+  return createDiscordChatBridge({enabled:true,secret:env.DISCORD_CHAT_BRIDGE_SECRET,access,runner,contextLoader,
+    maxConcurrent:chatConfig.maxConcurrent,timeoutMs:chatConfig.requestTimeoutMs});
+}
+
+export function createDiscordChatRunner({services,chatConfig} = {}) {
+  return createChatRunner({config:{...services.config,requestTimeoutMs:chatConfig.requestTimeoutMs},
+    audit:services.audit,provider:services.provider,liveDiscordTools:services.liveDiscordTools});
 }

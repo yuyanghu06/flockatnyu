@@ -41,7 +41,9 @@
     "miro:connect": "node --env-file-if-exists=.env scripts/miro-connect.mjs",
     "start:web": "node server/web.js",
     "deploy:web:prepare": "node scripts/prepare-runtime-deploy.mjs web",
-    "deploy:agent:prepare": "node scripts/prepare-runtime-deploy.mjs agent-worker"
+    "deploy:agent:prepare": "node scripts/prepare-runtime-deploy.mjs agent-worker",
+    "discord:chat:register": "node --env-file-if-exists=.env server/discord/chat-cli.js register",
+    "test:discord:chat": "node --test tests/discord-chat*.test.mjs tests/chat-runner.test.mjs tests/chat-request-context.test.mjs"
   },
   "dependencies": {
     "@discordjs/rest": "2.6.3",

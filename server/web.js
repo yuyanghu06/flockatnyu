@@ -5,7 +5,7 @@ import {Readable} from 'node:stream';
 import {fileURLToPath} from 'node:url';
 import {serve} from '@hono/node-server';
 import {readConfig} from './config.js';
-import {createRuntimeApp} from './runtime-app.js';
+import {createRuntimeApp,createRuntimeServices,createRuntimeDiscordChatBridge} from './runtime-app.js';
 import {createSiteAuth} from './site-auth.js';
 import {createMiroTokenBroker} from './miro/token-broker.js';
 
@@ -75,7 +75,7 @@ const page = `<!doctype html>
 </body>
 </html>`;
 
-export function createWebsite({apiApp, siteAuth, miroTokenBroker, distRoot = resolve('dist'), now = Date.now} = {}) {
+export function createWebsite({apiApp, siteAuth, miroTokenBroker, discordChatBridge, distRoot = resolve('dist'), now = Date.now} = {}) {
   const root = resolve(distRoot);
   // Bounded process-wide login throttle. It trusts no caller-supplied IP header.
   let attempts = 0, reset = now() + 900000;
@@ -85,6 +85,8 @@ export function createWebsite({apiApp, siteAuth, miroTokenBroker, distRoot = res
     if (url.pathname === '/healthz' && request.method === 'GET') return reply('{"ok":true}', 200, {'content-type':'application/json'});
     // This server-to-server route owns a separate bearer check. Browser
     // sessions never authorize it and its secret never enters the browser.
+    if (url.pathname.startsWith('/internal/discord/')) return discordChatBridge?.handle
+      ? discordChatBridge.handle(request) : reply('{"status":"unavailable"}',503,{'content-type':'application/json'});
     if (url.pathname === '/internal/miro/token') return miroTokenBroker?.handle
       ? miroTokenBroker.handle(request) : reply('{"status":"unavailable"}', 503, {'content-type':'application/json'});
     if (url.pathname === '/login') {
@@ -157,7 +159,9 @@ export function startWebsite() {
   const config = readConfig();
   if (!config.production) throw new Error('site_requires_production');
   const siteAuth = createSiteAuth({apiConfig:config});
-  const app = createWebsite({siteAuth, miroTokenBroker:createMiroTokenBroker(), apiApp:createRuntimeApp({config, auth:siteAuth.auth})});
+  const services=createRuntimeServices({config});
+  const app = createWebsite({siteAuth, miroTokenBroker:createMiroTokenBroker(),
+    discordChatBridge:createRuntimeDiscordChatBridge({services}), apiApp:createRuntimeApp({config, auth:siteAuth.auth,services})});
   return serve({fetch:app.fetch, hostname:config.host, port:config.port});
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {

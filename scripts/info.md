@@ -59,3 +59,5 @@ miro-connect.mjs performs app-owned Miro MCP OAuth consent with private refresh 
 The agent harness enforces exact synthetic provider selectors/window pagination and gently spaces actual model requests. Interrupted diagnostics and per-case hashes remain explicit; latestCases merges runs and must not be described as one all-case final-build run.
 
 `prepare-runtime-deploy.mjs` produces secret-free temporary web/worker contexts with reachable reviewed modules, pinned pruned dependencies and exact Docker inclusion. It never uploads repository environment/auth files.
+
+Runtime web packaging permits the existing @discordjs/rest dependency for the authenticated Discord bridge’s metadata checks. Collector packaging follows the optional chat transport imports without adding a model provider or account connectors to that service.
