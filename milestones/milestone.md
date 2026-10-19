@@ -1,3 +1,9 @@
+## Exact-message trace: no retained ingestion receipt
+
+The user-specified message ID has no exact metadata/cache receipt or retained planner-output reference. Normal completion preserves metadata, and ingestion does not consult people profiles. This narrows the finding to an unconfirmed collection/coverage gap rather than a proven missing-profile rejection. Earlier author-level failed batches concerned different messages. Historical collector logs queued other events nearby but cannot identify this message or explain the absence.
+
+At inspection, a separate archives-phase discovery generation temporarily disabled all 273 metadata records and exposed zero readable channels. This accounts for current denied re-reads; it does not establish discovery state at the message's 12:17:33 ET timestamp. No remote writes, model calls, permission bypass, source bodies or runtime changes. [Receipt contract](history/2026-10-19_14-11-29-864067-planner-exact-message-receipt-contract.md) · [Exact-ID trace](history/2026-10-19_14-11-29-864068-orchestrator-exact-message-ingestion-trace.md).
+
 ## Planner diagnosis: registry limitation plus processing failures
 
 Read-only hosted audit confirms an unregistered Discord author has no exact linked profile and multiple received, authorized inputs still pending. Fixed profiles cannot be created by the planner; a missing person lookup is a successful empty result and cannot authorize attendance. Separately, correlated attempts actually failed: a 13:56 ET run read Discord and Calendar successfully, then map reads returned unavailable and both inputs remained pending. Earlier attempts also had forbidden map reads / invalid Calendar arguments. This is not solely a registry limitation.

@@ -1,3 +1,8 @@
+## Exact-message collection follow-up
+
+- [x] Trace exact user-specified message through retained ingestion metadata/cache and model outputs; distinguish absent receipt from missing profile.
+- [ ] Investigate collection/coverage gaps and long discovery generations closing channel access; preserve fail-closed policy and live-only retention. Current empty catalogue does not prove historical cause.
+
 ## Planner operational diagnosis
 
 - [x] Distinguish absent linked profiles from actual failed processing using source contracts and hosted queue/model/tool audits.
