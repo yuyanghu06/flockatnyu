@@ -1,6 +1,6 @@
 # Discord conversations
 
-Flockbot supports `/ask question:…`, explicit bot mentions and replies to its own messages in the currently enabled, nonblacklisted eboard channels and eligible descendant threads. Ordinary messages, other guilds, DMs, bot/webhook authors and blacklisted leadership channels do not trigger chat. Implementation is independent of Morpheus source code; no archive or index is added.
+Flockbot responds automatically to explicit bot mentions and replies to its own messages in the currently enabled, nonblacklisted eboard channels and eligible descendant threads. Ordinary messages, other guilds, DMs, bot/webhook authors and blacklisted leadership channels do not trigger chat. Implementation is independent of Morpheus source code; no archive or index is added.
 
 ## Shared assistant and caller identity
 
@@ -24,7 +24,7 @@ The initial Discord runner exposes only live Discord read/summary tools. It omit
 
 ## Services and configuration
 
-The existing `discord-events` service owns the only Gateway connection. A bounded, detached chat hook handles native message and interaction events; model latency does not delay pending-input ingestion/checkpoints. Chat-generated create/update messages are excluded from autonomous input collection while chat is active. Other collector behavior is preserved.
+The existing `discord-events` service owns the only Gateway connection. A bounded, detached chat hook handles native message events; model latency does not delay pending-input ingestion/checkpoints. Chat-generated create/update messages are excluded from autonomous input collection while chat is active. Other collector behavior is preserved.
 
 The collector calls the web service's `/internal/discord/authorize` and `/internal/discord/chat` endpoints. They require a separate private bearer secret, reject browser Origin headers, and cannot be authorized by the site password/cookie. Body-supplied principals/actor labels are rejected; the web service constructs them. No secret belongs in browser variables, committed files or model context.
 
@@ -35,11 +35,11 @@ Set private Railway variables on both web and discord-events:
 
 On discord-events additionally set `DISCORD_CHAT_API_ORIGIN` to the protected web origin, such as `https://flock.techatnyu.org`. Existing bot, guild, shared-source and service settings remain authoritative. Chat defaults disabled. The web service needs its existing Discord read configuration and source allowlist; enabling chat does not expand them.
 
-Register the command explicitly with `npm run discord:chat:register` in a credentialed operator environment. Registration creates or patches only the application's existing `/ask` command and preserves every unrelated guild command; it never bulk-replaces the catalogue or registers on startup. Discord's applications-command install capability and bot send/thread permissions must exist. An existing external interaction endpoint must be assessed before relying on Gateway slash delivery.
+No slash command is registered or handled. A normal `@Flockbot` mention invokes the assistant automatically; a bare mention uses the recent conversation as its question context. Existing unrelated application commands remain untouched. Bot send/thread permissions must exist.
 
 ## Limits, history and failures
 
-Default limits are 3 concurrent transport requests, 1 per member and 20 requests/member/hour. Slots are reserved before slash acknowledgements; overload returns without further network allocation, so an overloaded slash invocation may show Discord's standard timeout. Accepted slash requests are deferred before slow authorization. Mentions show bounded typing pulses. `/ask` allows 6000 characters, ordinary requests 8000, and generated output is capped at 8000 then split into at most 2000-character messages. Every delivery suppresses automatic mentions and preserves the actual channel/thread. Missing reply targets do not fall back to channel announcements.
+Default limits are 3 concurrent transport requests, 1 per member and 20 requests/member/hour. Slots are reserved before authorization or other network work; overload returns without further allocation. Mentions show bounded typing pulses. Requests allow 8000 characters, and generated output is capped at 8000 then split into at most 2000-character messages. Every delivery suppresses automatic mentions and preserves the actual channel/thread. Missing reply targets do not fall back to channel announcements.
 
 Histories are RAM-only, expire after 30 minutes, and are isolated by member, destination/thread and current source profile. Default maximum 100 histories; conversation count/characters/UTF8 bytes retain the shared API bounds. No tool-result history is retained. Default deduplication lasts 1 hour with 2000 entries; active requests also remain deduplicated independently of cache eviction. Histories and replay protection reset on process restart. Automatic source contexts are rebuilt for every request and are not stored in conversation history. There is no durable job queue or guaranteed exactly-once delivery across crashes. Partial or ambiguous sends are not automatically replayed. Website and Discord histories remain separate.
 
@@ -47,4 +47,4 @@ Private seven-day model audit still records returned model text/usage and conten
 
 ## Verification
 
-Synthetic tests cover shared execution, actor spoofing, access/ACL/blacklists/threads, source-profile changes, private bridge authentication, rate/ACK/dedup/history bounds, cancellation, safe delivery, command preservation and nonblocking Gateway behavior. Source and deployment checks are distinct from a real member invocation. Actual rollout and live acceptance belong in `milestones/milestone.md`.
+Synthetic tests cover shared execution, actor spoofing, access/ACL/blacklists/threads, source-profile changes, private bridge authentication, rate/admission/dedup/history bounds, cancellation, safe delivery, ignored slash interactions and nonblocking Gateway behavior. Source and deployment checks are distinct from a real member invocation. Actual rollout and live acceptance belong in `milestones/milestone.md`.

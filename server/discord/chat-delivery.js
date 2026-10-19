@@ -13,16 +13,13 @@ export function splitDiscordChatText(text, limit = 2000) {
   return chunks;
 }
 
-export async function deliverDiscordChat({client, channelId, replyTo, interaction, text, signal} = {}) {
+export async function deliverDiscordChat({client, channelId, replyTo, text, signal} = {}) {
   const chunks = splitDiscordChatText(text);
   let sent = 0;
   for (const content of chunks) {
     if (signal?.aborted) return {status: sent ? 'partial' : 'aborted', sent};
     try {
-      if (interaction) {
-        const method = sent === 0 ? 'editInteraction' : 'sendInteractionFollowup';
-        await client[method]({...interaction, content, signal});
-      } else await client.sendMessage({channelId, replyTo, content, signal});
+      await client.sendMessage({channelId, replyTo, content, signal});
       sent++;
     } catch { return {status: sent ? 'partial' : 'failed', sent}; }
   }

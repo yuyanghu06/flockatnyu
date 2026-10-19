@@ -1,12 +1,8 @@
 import {REST} from '@discordjs/rest';
 
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
-const validToken = value => typeof value === 'string' && /^[A-Za-z0-9_.-]{1,2048}$/.test(value);
 const fail = code => Object.assign(new Error(code), {code});
 export const discordNoMentions = Object.freeze({parse: Object.freeze([]), users: Object.freeze([]), roles: Object.freeze([]), replied_user: false});
-export const discordAskCommand = Object.freeze({name: 'ask', type: 1,
-  description: 'Ask Flock about club activities and resources.',
-  options: [{name: 'question', description: 'What would you like to ask Flock?', type: 3, required: true, max_length: 6000}]});
 
 /** Discord SDK handles bucket limits. Mutations disable transport retries: an
  * ambiguous network failure must not silently duplicate a public response. */
@@ -23,7 +19,6 @@ export function createDiscordChatClient({config, rest} = {}) {
     }
   }
   const channel = channelId => {if (!snowflake(channelId)) throw fail('invalid_channel');};
-  const interaction = (applicationId, token) => {if (!snowflake(applicationId) || !validToken(token)) throw fail('invalid_interaction');};
   const contentBody = content => {
     if (typeof content !== 'string' || !content.trim() || content.length > 2000) throw fail('invalid_message');
     return {content, allowed_mentions: discordNoMentions};
@@ -39,18 +34,6 @@ export function createDiscordChatClient({config, rest} = {}) {
     async getMessage({channelId, messageId, signal} = {}) {
       channel(channelId); if (!snowflake(messageId)) throw fail('invalid_reference');
       return request('get', `/channels/${channelId}/messages/${messageId}`, {signal});
-    },
-    async ackInteraction({interactionId, token, signal} = {}) {
-      interaction(interactionId, token);
-      return request('post', `/interactions/${interactionId}/${token}/callback`, {signal, auth: false, body: {type: 5}});
-    },
-    async editInteraction({applicationId, token, content, signal} = {}) {
-      interaction(applicationId, token);
-      return request('patch', `/webhooks/${applicationId}/${token}/messages/@original`, {signal, auth: false, body: contentBody(content)});
-    },
-    async sendInteractionFollowup({applicationId, token, content, signal} = {}) {
-      interaction(applicationId, token);
-      return request('post', `/webhooks/${applicationId}/${token}`, {signal, auth: false, body: contentBody(content)});
     },
     async getCurrentUser({signal} = {}) {return request('get', '/users/@me', {signal});},
     async getGuildMember({guildId, userId, signal} = {}) {
@@ -74,16 +57,6 @@ export function createDiscordChatClient({config, rest} = {}) {
     async getThreadMember({channelId,userId,signal} = {}) {
       channel(channelId); if (!snowflake(userId)) throw fail('invalid_member');
       return request('get', `/channels/${channelId}/thread-members/${userId}`, {signal});
-    },
-    async registerAskCommand({applicationId, guildId = config?.guildId, signal} = {}) {
-      if (!snowflake(applicationId) || !snowflake(guildId) || guildId !== config.guildId) throw fail('invalid_command_scope');
-      const path = `/applications/${applicationId}/guilds/${guildId}/commands`;
-      const commands = await request('get', path, {signal});
-      if (!Array.isArray(commands)) throw fail('invalid_response');
-      const ask = commands.find(command => command.name === 'ask' && command.type === 1);
-      if (ask && !snowflake(ask.id)) throw fail('invalid_response');
-      // Never bulk replace the guild command catalogue.
-      return request(ask ? 'patch' : 'post', ask ? `${path}/${ask.id}` : path, {signal, body: discordAskCommand});
     },
   });
 }

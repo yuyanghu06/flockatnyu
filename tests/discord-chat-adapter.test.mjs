@@ -4,13 +4,11 @@ import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
 import {validateChatRequestContext} from '../server/chat-request-context.js';
 
 const message=(id='10',extra={})=>({t:'MESSAGE_CREATE',d:{id,guild_id:'1',channel_id:'2',type:0,content:'<@99> hello',author:{id:'5',username:'verified-user',global_name:'Discord Name'},member:{nick:'Server Nick'},...extra}});
-const slash=(id='10',extra={})=>({t:'INTERACTION_CREATE',d:{id,guild_id:'1',channel_id:'2',application_id:'99',token:'synthetic_token',type:2,
-  member:{user:{id:'5',username:'verified-user'},nick:'Server Nick'},data:{name:'ask',type:1,options:[{name:'question',type:3,value:'hello'}]},...extra}});
 function fixture(options={}) {
-  const calls={authorize:[],run:[],send:[],ack:[],edit:[],typing:[],logs:[],get:[]};
+  const calls={authorize:[],run:[],send:[],typing:[],logs:[],get:[]};
   const client={sendMessage:async value=>{calls.send.push(value);return{id:'500'};},sendTyping:async value=>calls.typing.push(value),
     getMessage:async value=>{calls.get.push(value);return{id:value.messageId,channel_id:value.channelId,author:{id:'99',bot:true}};},
-    ackInteraction:async value=>calls.ack.push(value),editInteraction:async value=>{calls.edit.push(value);return{id:'500'};},sendInteractionFollowup:async value=>calls.edit.push(value),...options.client};
+    ...options.client};
   const authorize=options.authorize??(async value=>{calls.authorize.push(value);return{principal:{id:'discord:5',allowedSourceIds:['source']},sourceProfileId:'profile',threadId:null};});
   const runChat=options.runChat??(async value=>{calls.run.push(value);value.onRecord({type:'delta',text:'answer'});value.onRecord({type:'done'});});
   const adapter=createDiscordChatAdapter({config:{enabled:true,configured:true,guildId:'1',...options.config},client,authorize,runChat,botUserId:options.botUserId??'99',now:options.now,log:value=>calls.logs.push(value)});
@@ -49,15 +47,19 @@ test('authorization denial makes no model or message call in blacklisted channel
   assert.equal(calls.run.length,0);assert.equal(calls.send.length,0);adapter.stop();
 });
 
-test('slash ACK precedes authorization, denial edits only a generic original response',async()=>{
-  const ordering=[];const {adapter,calls}=fixture({client:{ackInteraction:async()=>ordering.push('ack')},authorize:async()=>{ordering.push('auth');return null;}});
-  assert.equal((await adapter.handle(slash())).status,'denied');assert.deepEqual(ordering,['ack','auth']);
-  assert.equal(calls.edit.length,1);assert.equal(calls.edit[0].content,'Flock is not available for this request.');assert.equal(calls.run.length,0);adapter.stop();
+test('interaction events are ignored without network or model work',async()=>{
+  const {adapter,calls}=fixture();
+  const event={t:'INTERACTION_CREATE',d:{id:'10',guild_id:'1',channel_id:'2',application_id:'99',token:'synthetic_token',type:2,
+    member:{user:{id:'5',username:'verified-user'}},data:{name:'ask',type:1,options:[{name:'question',type:3,value:'hello'}]}}};
+  assert.equal((await adapter.handle(event)).status,'ignored');
+  assert.ok(Object.values(calls).every(values=>values.length===0));adapter.stop();
 });
 
-test('slash question uses the same assistant and unknown options are rejected',async()=>{
-  const {adapter,calls}=fixture();assert.equal((await adapter.handle(slash())).status,'sent');assert.equal(calls.run.length,1);assert.equal(calls.edit[0].content,'answer');assert.equal(calls.send.length,0);
-  assert.equal((await adapter.handle(slash('11',{data:{name:'ask',type:1,options:[{name:'something',type:3,value:'hello'}]}}))).status,'invalid_question');assert.equal(calls.run.length,1);adapter.stop();
+test('a bare bot ping calls the assistant using the recent conversation',async()=>{
+  const {adapter,calls}=fixture();
+  assert.equal((await adapter.handle(message('10',{content:'<@99>'}))).status,'sent');
+  assert.equal(calls.run[0].conversation.messages[0].content,'Respond to this mention using the recent channel conversation.');
+  assert.equal(calls.run[0].requestContext.requestId,'10');assert.equal(calls.send[0].replyTo,'10');adapter.stop();
 });
 
 test('reply follows only an actual bot message and fetches missing reference data',async()=>{
@@ -130,21 +132,21 @@ test('async iterable records are supported without a separate chat implementatio
   assert.equal((await adapter.handle(message())).status,'sent');assert.equal(calls.send[0].content,'iterated');adapter.stop();
 });
 
-test('unresolved slash acknowledgements reserve bounded transport slots before fanout',async()=>{
-  const {adapter,calls}=fixture({config:{maxConcurrent:1},client:{ackInteraction:async value=>{calls.ack.push(value);await new Promise(()=>{});}}});
-  const first=adapter.handle(slash('100'));
-  const overflow=await Promise.all(Array.from({length:50},(_,index)=>adapter.handle(slash(String(index+101),{member:{user:{id:String(index+200),username:'another-user'}}}))));
+test('unresolved authorization reserves bounded transport slots before fanout',async()=>{
+  const {adapter,calls}=fixture({config:{maxConcurrent:1},authorize:async value=>{calls.authorize.push(value);await new Promise(()=>{});}});
+  const first=adapter.handle(message('100'));
+  const overflow=await Promise.all(Array.from({length:50},(_,index)=>adapter.handle(message(String(index+101),{author:{id:String(index+200),username:'another-user'}}))));
   assert.ok(overflow.every(value=>value.status==='busy'));
-  assert.equal(calls.ack.length,1);assert.equal(calls.authorize.length,0);assert.equal(calls.run.length,0);
-  assert.equal((await adapter.handle(slash('100'))).status,'duplicate');
-  adapter.stop();assert.equal((await first).status,'aborted');assert.equal(calls.edit.length,0);
+  assert.equal(calls.authorize.length,1);assert.equal(calls.run.length,0);assert.equal(calls.send.length,0);
+  assert.equal((await adapter.handle(message('100'))).status,'duplicate');
+  adapter.stop();assert.equal((await first).status,'aborted');
 });
 
 test('active request dedup survives eviction from the completed replay cache',async()=>{
-  const {adapter,calls}=fixture({config:{maxConcurrent:2,maxDedupEntries:1},client:{ackInteraction:async value=>{calls.ack.push(value);await new Promise(()=>{});}}});
-  const first=adapter.handle(slash('100'));
-  const second=adapter.handle(slash('101',{member:{user:{id:'6',username:'different'}}}));
-  assert.equal(calls.ack.length,2);
-  assert.equal((await adapter.handle(slash('100'))).status,'duplicate');
+  const {adapter,calls}=fixture({config:{maxConcurrent:2,maxDedupEntries:1},authorize:async value=>{calls.authorize.push(value);await new Promise(()=>{});}});
+  const first=adapter.handle(message('100'));
+  const second=adapter.handle(message('101',{author:{id:'6',username:'different'}}));
+  assert.equal(calls.authorize.length,2);
+  assert.equal((await adapter.handle(message('100'))).status,'duplicate');
   adapter.stop();assert.deepEqual((await Promise.all([first,second])).map(value=>value.status),['aborted','aborted']);
 });

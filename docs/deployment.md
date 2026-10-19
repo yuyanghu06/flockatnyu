@@ -98,4 +98,4 @@ Model audit rollout requires additive migration033 before deploying the compatib
 
 ## Discord interactions
 
-The existing discord-events collector can forward eboard /ask and mention/reply requests through the protected web service’s separately authenticated internal bridge. Both services require private `DISCORD_CHAT_ENABLED` and `DISCORD_CHAT_BRIDGE_SECRET`; the collector also needs `DISCORD_CHAT_API_ORIGIN`. Register /ask explicitly, preserving other commands. No second Gateway, archive or schema is introduced. Follow [Discord conversations](discord-chat.md) for source/audience restrictions and limits; actual release verification lives in the milestone snapshot.
+The existing discord-events collector can forward eboard mention/reply requests through the protected web service’s separately authenticated internal bridge. Both services require private `DISCORD_CHAT_ENABLED` and `DISCORD_CHAT_BRIDGE_SECRET`; the collector also needs `DISCORD_CHAT_API_ORIGIN`. No second Gateway, archive or schema is introduced. Follow [Discord conversations](discord-chat.md) for source/audience restrictions and limits; actual release verification lives in the milestone snapshot.

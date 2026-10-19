@@ -30,6 +30,6 @@ Named-team when/where questions now authorize only a full distinctive team name;
 
 Catalogue name queries normalize punctuation/separators and inspect ancestor names, so a natural team name resolves slugged channels and generic child channels. Metadata matching never grants access: current source, team intent, exclusions and final catalogue checks still run.
 
-`chat-*` implements eboard /ask, mention/reply and thread conversations: current member/destination/source access, private service bridge, REST delivery and bounded RAM transport state. Existing Gateway dispatches chat independently of ingestion checkpoint work. Self-generated create/update events do not enter autonomous input. `chat-cli.js register` upserts /ask only; all source blacklists and live-only retention remain authoritative. See `../../docs/discord-chat.md`.
+`chat-*` implements eboard mention/reply and thread conversations: current member/destination/source access, private service bridge, REST delivery and bounded RAM transport state. Existing Gateway dispatches chat independently of ingestion checkpoint work. Self-generated create/update events do not enter autonomous input. Source blacklists and live-only retention remain authoritative. See `../../docs/discord-chat.md`.
 
 `chat-context.js` loads the previous hour from the exact invoking channel/thread through authorized live-window reads and reads only Discord ID/display-name pairs from Supabase. Coverage is bounded and explicit, data stays request-local, and the bridge enforces an overall deadline.

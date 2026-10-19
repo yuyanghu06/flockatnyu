@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createDiscordChatBridge,createDiscordChatRemote} from '../server/discord/chat-bridge.js';
 import {createDiscordChatRunner} from '../server/runtime-app.js';
 import {createApp} from '../server/app.js';
+import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
 import {createDiscordChatContextLoader,createDiscordUserDirectory} from '../server/discord/chat-context.js';
 
 const secret='synthetic-bridge-secret-00000000000000000000';
@@ -156,4 +157,30 @@ test('caller cancellation ends an uncooperative context loader without model dis
  const f=setup({maxConcurrent:1,contextLoader:{load:async({signal})=>{loaderSignal=signal;if(++loads===1){began();return new Promise(()=>{});}return {};}}});
  const pending=f.bridge.handle(request(payload(),{signal:controller.signal}));await started;controller.abort();const response=await withinSixtyMs(pending);
  assert.equal(response.status,503);assert.deepEqual(await response.json(),{status:'aborted'});assert.equal(loaderSignal.aborted,true);assert.equal(f.runs.length,0);assert.equal((await f.bridge.handle(request())).status,200);
+});
+
+function fullMentionFixture() {
+ const f=realRunnerFixture(),requests=[],sends=[],typing=[],contextLoads=[];
+ const contextLoader={load:async args=>{contextLoads.push(args);return {discordContext:recentContext(),discordUsers:discordDirectory()};}};
+ const bridge=setup({runner:f.runner,contextLoader});
+ const remote=createDiscordChatRemote({baseUrl:'https://flock.invalid',secret,fetchImpl:async(url,options)=>{requests.push(JSON.parse(options.body));return bridge.bridge.handle(new Request(url,options));}});
+ const client={sendTyping:async args=>typing.push(args),sendMessage:async args=>{sends.push(args);return{id:'600'};},getMessage:async args=>({id:args.messageId,channel_id:args.channelId,guild_id:'100',author:{id:'99',bot:true}})};
+ const adapter=createDiscordChatAdapter({config:{enabled:true,configured:true,guildId:'100'},client,authorize:remote.authorize,runChat:remote.runChat,botUserId:'99'});
+ const event=content=>({t:'MESSAGE_CREATE',d:{id:'1551603926630400000',guild_id:'100',channel_id:'200',type:0,content,author:{id:'300',username:'UNTRUSTED_GATEWAY_NAME'},member:{nick:'UNTRUSTED_GATEWAY_NICK'}}});
+ return {...f,requests,sends,typing,contextLoads,adapter,event};
+}
+for(const mention of ['<@99>','<@!99>'])test(`normal bare ${mention} ping receives actor, automatic hour and directory through actual transport chain`,async()=>{
+ const f=fullMentionFixture();try{
+  assert.equal((await f.adapter.handle(f.event(mention))).status,'sent');assert.equal(f.contextLoads.length,1);assert.equal(f.contextLoads[0].channelId,'200');assert.deepEqual(f.contextLoads[0].principal,principal);
+  assert.equal(f.plans.length,1);assert.equal(f.streams.length,1);for(const req of [...f.plans,...f.streams]){assert.deepEqual(JSON.parse(req.system.match(/SERVER-VERIFIED DISCORD REQUEST CONTEXT \(JSON\):\n([^\n]+)/)[1]).actor,actor);assert.ok(req.system.includes('PRIVATE_SYNTHETIC_CONTEXT'));assert.ok(req.system.includes('PRIVATE_SYNTHETIC_DIRECTORY'));assert.doesNotMatch(req.system,/UNTRUSTED_GATEWAY_NAME|UNTRUSTED_GATEWAY_NICK/);assert.equal(req.messages.at(-1).role,'user');assert.ok(req.messages.at(-1).content.trim());}
+  assert.equal(f.sends.length,1);assert.equal(f.sends[0].channelId,'200');assert.equal(f.sends[0].replyTo,'1551603926630400000');assert.equal(f.sends[0].content,'Scoped response');assert.equal(f.requests.length,2);assert.ok(f.typing.length>=1);
+ }finally{f.adapter.stop();}
+});
+test('reply to actual bot message uses normal transport and preserves trusted actor plus automatic context',async()=>{
+ const f=fullMentionFixture(),event=f.event('What do you think?');event.d.message_reference={message_id:'400',channel_id:'200',guild_id:'100'};
+ try{assert.equal((await f.adapter.handle(event)).status,'sent');assert.equal(f.contextLoads.length,1);assert.equal(f.streams.length,1);assert.deepEqual(JSON.parse(f.streams[0].system.match(/SERVER-VERIFIED DISCORD REQUEST CONTEXT \(JSON\):\n([^\n]+)/)[1]).actor,actor);assert.equal(f.streams[0].messages.at(-1).content,'What do you think?');assert.equal(f.sends[0].replyTo,event.d.id);}finally{f.adapter.stop();}
+});
+test('unexpected slash invocation is ignored before REST, source authorization, context or model work',async()=>{
+ const f=fullMentionFixture(),event={t:'INTERACTION_CREATE',d:{id:'1551603926630400000',guild_id:'100',channel_id:'200',application_id:'99',token:'synthetic-only',type:2,member:{user:{id:'300',username:'member'}},data:{name:'ask',type:1,options:[{name:'question',type:3,value:'hello'}]}}};
+ try{assert.equal((await f.adapter.handle(event)).status,'ignored');assert.deepEqual(f.requests,[]);assert.deepEqual(f.contextLoads,[]);assert.deepEqual(f.plans,[]);assert.deepEqual(f.streams,[]);assert.deepEqual(f.sends,[]);assert.deepEqual(f.typing,[]);}finally{f.adapter.stop();}
 });

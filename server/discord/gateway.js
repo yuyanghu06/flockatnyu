@@ -34,7 +34,7 @@ export async function createDiscordGateway({config,listener,state,refreshMetadat
     if(failed||stopping||shardId!==0)return;
     // Interaction work has its own limits/cancellation and cannot hold the
     // durable ingestion frontier behind model or delivery latency.
-    if(onDispatch && ['MESSAGE_CREATE','INTERACTION_CREATE'].includes(event.t)) {
+    if(onDispatch && event.t==='MESSAGE_CREATE') {
       void Promise.resolve().then(()=>onDispatch(event)).catch(()=>log({status:'discord_chat_dispatch_failed'}));
     }
     if(++pending>config.maxPending){fatal();return;}

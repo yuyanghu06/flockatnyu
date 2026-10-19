@@ -7,6 +7,7 @@ const failureText = 'Flock could not complete that request. Please try again.';
 const deniedText = 'Flock is not available for this request.';
 const busyText = 'Flock is busy or your request limit has been reached. Please try again later.';
 const inputText = 'Please include a question of no more than 8,000 characters.';
+const bareMentionText = 'Respond to this mention using the recent channel conversation.';
 const abortError = () => Object.assign(new Error('aborted'), {code: 'aborted'});
 
 /** Process-local transport. It stores only a bounded, expiring conversation per
@@ -36,22 +37,20 @@ export function createDiscordChatAdapter({config = {}, client, authorize, runCha
   }
   async function handle(event) {
     if (stopped || !settings.enabled || !settings.configured) return {status: 'disabled'};
-    const data = event?.d, slash = event?.t === 'INTERACTION_CREATE';
-    if (!data || !['MESSAGE_CREATE', 'INTERACTION_CREATE'].includes(event.t) || data.guild_id !== settings.guildId || !snowflake(data.channel_id) || !snowflake(data.id)) return {status: 'ignored'};
-    if (slash && (data.type !== 2 || data.data?.name !== 'ask' || data.data?.type !== 1 || !snowflake(data.application_id) || typeof data.token !== 'string')) return {status: 'ignored'};
-    const user = slash ? data.member?.user : data.author;
+    const data = event?.d;
+    if (!data || event?.t !== 'MESSAGE_CREATE' || data.guild_id !== settings.guildId || !snowflake(data.channel_id) || !snowflake(data.id)) return {status: 'ignored'};
+    const user = data.author;
     const botId = typeof botUserId === 'function' ? botUserId() : botUserId;
-    if (!snowflake(botId) || !snowflake(user?.id) || user.bot || user.system || user.id === botId || data.webhook_id || !slash && ![0, 19].includes(data.type ?? 0)) return {status: 'ignored'};
-    const explicitMention = !slash && typeof data.content === 'string' && new RegExp(`<@!?${botId}>`).test(data.content);
-    const reference = !slash ? data.message_reference : null;
-    if (!slash && !explicitMention && !snowflake(reference?.message_id)) return {status: 'ignored'};
+    if (!snowflake(botId) || !snowflake(user?.id) || user.bot || user.system || user.id === botId || data.webhook_id || ![0, 19].includes(data.type ?? 0)) return {status: 'ignored'};
+    const explicitMention = typeof data.content === 'string' && new RegExp(`<@!?${botId}>`).test(data.content);
+    const reference = data.message_reference;
+    if (!explicitMention && !snowflake(reference?.message_id)) return {status: 'ignored'};
     const time = clock(); prune(time);
-    const dedupKey = `${slash ? 'interaction' : 'message'}:${data.id}`;
+    const dedupKey = `message:${data.id}`;
     if (activeIds.has(dedupKey) || seen.has(dedupKey)) return {status: 'duplicate'};
     const actorKey = `${data.guild_id}:${user.id}`;
-    // Reserve all transport work synchronously, including acknowledgement.
-    // Saturated slash requests receive no network response and may time out in
-    // Discord; spawning an unbounded set of rejection ACKs defeats this cap.
+    // Reserve transport work before any asynchronous authorization or delivery.
+    // Saturated requests return without starting further network operations.
     if (active.size >= settings.maxConcurrent || (userActive.get(actorKey) ?? 0) >= settings.perUserConcurrent) return {status: 'busy'};
     remember(seen, dedupKey, time + settings.dedupTtlMs, settings.maxDedupEntries);
     const controller = new AbortController(), signal = controller.signal;
@@ -68,33 +67,26 @@ export function createDiscordChatAdapter({config = {}, client, authorize, runCha
     // An already-aborted event never starts network/model work.
     if (signal.aborted) rejectAbort();
     const wait = promise => Promise.race([promise, aborted]);
-    let acknowledged = false, authorized = false, stopTyping = () => {};
-    const interaction = slash ? {applicationId: data.application_id, token: data.token} : null;
-    const deliver = text => wait(deliverDiscordChat({client, channelId: data.channel_id, replyTo: slash ? null : data.id, interaction, text, signal}));
+    let authorized = false, stopTyping = () => {};
+    const deliver = text => wait(deliverDiscordChat({client, channelId: data.channel_id, replyTo: data.id, text, signal}));
     async function rejectRequest(text, status) {
-      if (slash && acknowledged || authorized) await deliver(text);
+      if (authorized) await deliver(text);
       return {status};
     }
     try {
       if (signal.aborted) throw abortError();
-      // Discord requires acknowledgement within three seconds. Defer before
-      // source/member lookups, with a separate response on denial or failure.
-      if (slash) {await wait(client.ackInteraction({interactionId: data.id, token: data.token, signal})); acknowledged = true;}
       if (stopped || signal.aborted) throw abortError();
       const access = await wait(authorize({guildId: data.guild_id, channelId: data.channel_id, userId: user.id, signal}));
       if (!access?.principal?.id || typeof access.sourceProfileId !== 'string' || !/^[A-Za-z0-9:_-]{1,100}$/.test(access.sourceProfileId) || !(access.threadId === null || access.threadId === data.channel_id)) return await rejectRequest(deniedText, 'denied');
       authorized = true;
-      if (!slash && !explicitMention) {
+      if (!explicitMention) {
         if (reference.guild_id != null && reference.guild_id !== settings.guildId || reference.channel_id != null && reference.channel_id !== data.channel_id) return {status: 'ignored'};
         let original = data.referenced_message;
         if (!original) original = await wait(client.getMessage({channelId: data.channel_id, messageId: reference.message_id, signal}));
         if (original?.id !== reference.message_id || original?.channel_id !== data.channel_id || original.guild_id != null && original.guild_id !== settings.guildId || original.author?.id !== botId || original.author?.bot !== true || original.webhook_id) return {status: 'ignored'};
       }
-      let question;
-      if (slash) {
-        const options = data.data.options;
-        question = Array.isArray(options) && options.length === 1 && options[0]?.name === 'question' && options[0]?.type === 3 ? options[0].value : null;
-      } else question = typeof data.content === 'string' ? data.content.replace(new RegExp(`<@!?${botId}>`, 'g'), '').trim() : null;
+      let question = typeof data.content === 'string' ? data.content.replace(new RegExp(`<@!?${botId}>`, 'g'), '').trim() : null;
+      if (explicitMention && question === '') question = bareMentionText;
       if (typeof question !== 'string' || !question.trim() || question.length > 8000) return await rejectRequest(inputText, 'invalid_question');
       question = question.trim();
       const rate = rates.get(actorKey) ?? {count: 0, expires: clock() + 3600000};
@@ -117,7 +109,7 @@ export function createDiscordChatAdapter({config = {}, client, authorize, runCha
         else if (record?.type === 'done') done = true;
         else if (record?.type === 'error') failed = true;
       };
-      if (!slash) stopTyping = startDiscordChatTyping({client, channelId: data.channel_id, signal, intervalMs: settings.typingIntervalMs});
+      stopTyping = startDiscordChatTyping({client, channelId: data.channel_id, signal, intervalMs: settings.typingIntervalMs});
       const result = await wait(runChat({conversation: {messages, timeZone: settings.timezone}, principal: access.principal, requestContext, signal, onRecord}));
       if (result?.[Symbol.asyncIterator]) {
         const iterator = result[Symbol.asyncIterator]();
@@ -133,11 +125,10 @@ export function createDiscordChatAdapter({config = {}, client, authorize, runCha
       report(signal.aborted ? 'chat_aborted' : 'chat_failed');
       // A failed partial delivery is never retried by this adapter. Errors here
       // precede answer delivery, so a generic response is safe when authorized.
-      if (!signal.aborted && (authorized || acknowledged)) {try {await deliver(failureText);} catch {}}
-      else if (signal.aborted && !stopped && !event.signal?.aborted && (authorized || acknowledged)) {
-        // The generation timeout must also clear a deferred slash response.
-        // This cleanup gets its own short deadline and contains no model text.
-        await deliverDiscordChat({client, channelId: data.channel_id, replyTo: slash ? null : data.id, interaction,
+      if (!signal.aborted && authorized) {try {await deliver(failureText);} catch {}}
+      else if (signal.aborted && !stopped && !event.signal?.aborted && authorized) {
+        // Timeout cleanup gets its own short deadline and no model text.
+        await deliverDiscordChat({client, channelId: data.channel_id, replyTo: data.id,
           text: 'Flock took too long to answer. Please try again.', signal: AbortSignal.timeout(5000)});
       }
       return {status: signal.aborted ? 'aborted' : 'failed'};
