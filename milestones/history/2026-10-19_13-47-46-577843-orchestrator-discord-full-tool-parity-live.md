@@ -1,0 +1,9 @@
+# All chat tools deployed to Discord and verified
+
+- Role / milestone: orchestrator / Discord full chat-tool parity.
+- Local time: 2026-10-19T13:47:46.577843-04:00
+- Complete website tool parity is live on web 44718830-c32f-4e31-837c-3b2ce3c786b2 (SUCCESS), source 6a0cf8b. All six shared adapter groups and existing action/evidence gates are present; Google follows the website flag. Existing collector, source allowlists and worker were preserved.
+- Actual private Discord-bridge model requests both completed with HTTP 200: the weekly schedule used list_calendar_events/ready and returned four Calendar sources; Miro catalogue used list_miro_boards/ready and returned MIRO_READY. Duplicate Miro planning proposals were skipped; only one catalogue tool execution occurred. No Discord test post or source write was made.
+- Live target verification: the Google account is hello@techatnyu.org and the selected calendar is Tech@NYU FA’26 with owner access; no personal or primary calendar is selected. Live Calendar, normal Drive root (30 entries) and memory reads pass. Hosted Miro catalogue is ready, but an actual content overview reports quota_exhausted; retain that provider limit. One-entry Drive pagination returned invalid_response while the normal page passed; follow-up is separate from tool parity.
+- Verification: full 1535/1535 tests, independent tester 273/evaluator 183, coder 64, API build, exact 259-file source guard and private-value scan pass. Raw source bodies/prompts/credentials were not retained in receipts. Aggregate canaries remain local under evidence/discord-chat/.
+- Acceptance: requested full tool parity is implemented and deployed. User-provided screenshot already established organic Discord delivery; new Calendar/Miro tool execution is verified through the actual hosted bridge. Miro content quota and the existing small-page Drive cursor path remain explicit operational follow-ups.

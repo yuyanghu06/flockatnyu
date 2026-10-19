@@ -433,3 +433,5 @@ Automatic context tests exercise live-service pagination with synthetic original
 Drive skill acceptance covers selective pre-execution activation in both chat and the autonomous planner, request/batch isolation, live directory pagination, access denial and exact deployment asset inclusion. Connector fixtures retain bounded exports and prevent Drive reads from granting Calendar/map write provenance.
 
 `discord-chat-team.test.mjs` exercises team text/thread bare-ping chains, exact invoking-channel capabilities, preceding-hour context, member/source blacklists, website intent isolation and final publication revocation.
+
+`discord-chat-tool-parity.test.mjs` compares real website/Discord planning catalogues and exercises shared adapters, Google grants, Drive skill activation, memory concurrency, bug receipts and map/Calendar action guards. Access tests separately verify the required nested Discord audience subset.

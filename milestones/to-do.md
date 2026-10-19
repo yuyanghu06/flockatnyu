@@ -1,3 +1,12 @@
+## Discord full chat-tool parity
+
+- [x] Plan and implement all website adapters with existing source/action checks.
+- [x] Preserve global shared scope plus required nested Discord audience scope.
+- [x] Pass full1535 tests and independent273/183 acceptance; deploy reviewed web.
+- [x] Verify hosted Discord Calendar/Miro calls, response generation and exact hello/FA26 Calendar target.
+- Deferred operational limit: Miro live content quota is exhausted; retain provider limits.
+- [ ] Separate follow-up: investigate one-entry Drive pagination invalid_response; normal50-entry root listing succeeds.
+
 ## Restore planner Google reads
 
 - [x] Confirm hello account and exact existing source identity; independently plan configuration-only grant.
@@ -5,13 +14,12 @@
 - [x] Verify successful same-image worker release, real Gmail/Drive reads and independent review; observe organic remote Gmail success.
 - Superseded: Drive-only separate-gate proposal; user additionally authorized Gmail through the same account.
 
-
 ## Live: team channel pings repaired
 
 - [x] Repair team destination access and exact invoking-channel automatic context.
 - [x] Pass independent tests/review, preserve current runtime and deploy web.
 - [x] Verify live team 200, leadership 403, complete hour/name context and successful hosted model response.
-- [ ] Observe an organic member-triggered Discord reply; private generation and synthetic delivery chains pass.
+- [x] Organic Discord reply observed in user-provided screenshot; new shared tools verified through hosted bridge.
 
 ## Drive skill runtime integration
 
