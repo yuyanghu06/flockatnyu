@@ -1,3 +1,7 @@
+## Discord discovery availability
+
+`discord-discovery-availability.test.mjs` runs the full001–035migration chain in PGlite and actual discovery/store/chat/live-read adapters. It reproduces the previous eBoard outage and checks same-policy refresh continuity, immediate observed revocations, descendants, withheld new sources, stable identities/manual disables, initial and legacy incomplete upgrades, malformed proof, policy changes, CAS and completion cursors, service-only ACLs and no stored message bodies. Historical017/020fixtures remain unchanged. Local tests do not establish hosted migration or real Discord delivery.
+
 ## Map current/upcoming read verification
 
 `tests/map-presence.test.mjs` now has 17 checks, including minimal service-only building/people reads, current versus future-planned separation, identical source allowlist/current-policy checks for future plans, invalid-time/status exclusion, no provenance/private identity disclosure unchanged route authentication, exact local-owner-plan boundaries and clock advancement proving future-day plans do not populate the current map. The old roof-fan/hover browser layout fixture remains superseded; current visual review is user-led.

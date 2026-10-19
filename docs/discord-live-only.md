@@ -28,6 +28,8 @@ Parent-channel searches can return registered child-thread hits. Each accepted t
 
 Metadata discovery uses optimistic generation/state checks. Partial generations cannot publish unverified channels as active; complete generations reconcile disappearance. Changed policy invalidates in-flight work and requires fresh discovery. Service-only RPCs support policy, channel configuration and discovery. RLS denies browser table access, and HTTP administration still requires a backend admin context. There are no per-person membership tables.
 
+The forward035 repair stages pending metadata separately from an explicitly proven completed catalogue. Same-policy refreshes preserve unchanged published sources while observed denials, removals and metadata changes withdraw affected entries and descendants. New sources wait for atomic completion. Existing incomplete generations cannot be treated as a trustworthy previous publication. Source UUIDs and manual-disable intent remain stable. Hosted application20261019193035 and exact function/ACL readback are verified; service-role base-channel recovery and rollback-only refresh continuity are verified in the milestone snapshot. Applied017/020 fixtures retain their historical behavior.
+
 ## Current operations and evidence
 
 Current production runs `node server/discord/event-cli.js serve` continuously with no cron. The old service was renamed `discord-events`; the stored-summary service and content workers remain retired. Supported local metadata operations are preflight, registration, policy and discovery. Worker startup never applies SQL.

@@ -26,6 +26,8 @@ Shared request-pacing.js serializes bot metadata/content per process and bot/fet
 
 Metadata refresh continuation lives in metadata-refresh.js: coalesced refresh promises resume only the same current policy/generation after bounded slices. Three attempts use cancelable5second gaps; unfinished generations schedule another5second invocation, terminal failures60seconds and verified completion the normal hourly cadence. Startup resumes pending work; existing completeDiscovery remains the sole publisher of readable channels.
 
+Forward migration035 repairs refresh-induced bot outages without changing these RPC interfaces. Pending metadata is staged separately; unchanged sources from a proven completed same-policy catalogue remain readable during a refresh. Observed revocations withdraw affected channels immediately, and completion alone grants new access. Initial/legacy incomplete generations and policy changes stay closed. Hosted20261019193035and actual service-role base-channel/rollback-only refresh checks passed; see the milestone snapshot. No runtime redeploy was required; the user subsequently confirmed that normal bot replies work.
+
 Named-team when/where questions now authorize only a full distinctive team name; generic meeting/chat words and shared tokens cannot opt into unrelated teams. Exact scope=team summaries use the existing single-channel authorization path, including current user intent, source allowlist and leadership exclusions.
 
 Catalogue name queries normalize punctuation/separators and inspect ancestor names, so a natural team name resolves slugged channels and generic child channels. Metadata matching never grants access: current source, team intent, exclusions and final catalogue checks still run.

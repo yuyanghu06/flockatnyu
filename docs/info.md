@@ -2,6 +2,8 @@
 
 The [milestone snapshot](../milestones/milestone.md) and [to-do list](../milestones/to-do.md) hold current implementation/evidence and unfinished work. [Immutable history](../milestones/history/info.md) preserves previous decisions. Guides describe current contracts; historical commands are not operational instructions.
 
+The Discord chat and live-only guides describe the035discovery availability repair, applied as20261019193035 with verified base-channel recovery and refresh continuity. Follow the milestone receipt before treating that repair as live.
+
 ## Backend and integrations
 
 - [assistant-backend.md](assistant-backend.md): chat agent, local API, streaming, source scope and runtime boundaries.
