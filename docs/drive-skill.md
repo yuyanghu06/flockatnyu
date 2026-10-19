@@ -1,0 +1,13 @@
+# Tech@NYU Drive access skill
+
+The maintained source is `server/skills/techatnyu-drive/SKILL.md`. It describes the club's programs, operations and monodrive navigation. `server/skills/drive.js` loads only this fixed server asset. The same skill is installed locally at `~/.codex/skills/techatnyu-drive` with implicit invocation enabled; desktop discovery and the website runtime are separate mechanisms.
+
+Chat and the autonomous planner initially offer brief Drive tool descriptions. When a model first proposes an available Drive call, the orchestrator loads the full skill and requests a new plan before executing any proposed operation. This costs one additional model round on the first Drive selection, without consuming a source-tool call. Subsequent planning retains the skill; chat answer generation also receives it when a Drive tool executed. Activation is local to one request or claimed batch. Unrelated requests do not receive the full skill prompt.
+
+Drive is read-only through the existing account-verified Google REST connector, rather than a desktop MCP connection. Both agents offer `search_drive`, `list_drive_folder` and `read_drive`. The planner retains its existing configured Google / allowlisted Gmail-source gate and batch authorization; this change does not provision credentials, change OAuth scopes or grant source-write provenance. Calendar/map mutation checks remain independent.
+
+Folder listing returns up to50 direct children per page, including folders, forms and shortcuts, with exact IDs, names, parent IDs, MIME type, modified time and original link. `driveContext` preserves a whole bounded folder page separately from the generic source-excerpt limit. Literal search accepts optional folderId filtering for direct children and a continuation token; it is not recursive. Follow returned cursors with the same folder/query. Continuations and provider-incomplete searches retain partial coverage. Existing bounded text, unsupported binary and first-sheet-only limitations remain.
+
+The private research inventory stays outside Git and deployment packages. No private file tree, document body or credential catalogue is embedded in the skill. The skill uses public program context and the user-supplied root; actual filenames and folder IDs come from current authorized live reads. The school-account snapshot is historical navigation research and never substitutes runtime permissions. Both sanitized release packages explicitly include the reviewed Markdown skill asset.
+
+Verification and actual hosted release status are recorded in the rolling milestone, not inferred from this guide.

@@ -4,10 +4,12 @@ This server-only folder connects one explicitly authorized club Google account t
 
 - `config.js`: secret configuration, default read-only scopes and optional Calendar scopes.
 - `oauth.js`: official Google auth library setup, scope/account verification and safe error codes.
-- `client.js`: bounded Gmail search/read and Drive search/text-export operations. No attachments, mail sending, file updates or arbitrary URLs.
+- `client.js`: bounded Gmail search/read, literal Drive search, direct-child folder listing and supported text exports. Search/list return exact pagination cursors, explicit nonrecursive coverage and allowlisted metadata (including real parent IDs); folder listings include native folders, forms and shortcuts without following shortcut targets. Search accepts an optional direct-parent folder filter. IDs, cursors and page sizes are checked before OAuth. No attachments, mail sending, file updates or arbitrary URLs.
 - `../../tools/google/index.js`: model tool definitions and an explicit server-owned `principal.googleAccess === true` gate. Bot/account credentials alone never grant a member access.
 
 Configuration status, successful OAuth verification, and principal access are separate. Status inspection performs no Google request. Revoked tokens require consent again. Search excerpts and read results are untrusted source content, with original links and partial-content labels. Sheets export reads only the first sheet; unsupported binary files return metadata. Setup is in [the connector guide](../../docs/google-connector.md).
+
+The shared Tech@NYU Drive skill supplies program/semester navigation to chat and the autonomous planner when Drive tools are selected. The planner exposes the same read-only Drive tools under its existing prepared-batch and Google-access gates; Drive reads do not grant Calendar or map write evidence. A school-account research snapshot does not grant the runtime account access. A failed listing, incomplete search, continuation page or unexpanded shortcut is never a complete filesystem view.
 
 ## Gmail source-event subscription
 

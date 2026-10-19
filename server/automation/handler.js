@@ -1,5 +1,6 @@
 import {createHash,randomUUID} from 'node:crypto';
 import {buildAutomationPrompt} from './prompt.js';
+import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Complete only explicitly handled cache inputs after their required actions succeed; call alone.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = code => { throw new Error(code); };
@@ -103,6 +104,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         await progressDone('ready');
       }
       const system=buildAutomationPrompt({timezone:config.timezone,now:now()});
+      let driveSkillActive=false;
       const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{})})}];
       const inputIds=inputs.map(row=>row.uuid);
       const callIds=new Set();
@@ -110,12 +112,12 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       for(let round=0;round<config.maxRounds;round++) {
         await renew();await authorize();
         progressRound=round+1;progressCalls=calls;await progressStart('model');
-        const turn=await guarded(()=>provider.toolTurn({system,messages:structuredClone(messages),tools:[...definitions,finishTool],signal:combined,auditContext:{...auditContext,round:round+1}}));
+        const turn=await guarded(()=>provider.toolTurn({system:system+driveSkillPrompt(driveSkillActive),messages:structuredClone(messages),tools:[...definitions,finishTool],signal:combined,auditContext:{...auditContext,round:round+1}}));
         if (!plainObject(turn)||!Array.isArray(turn.toolCalls)||!turn.toolCalls.length||turn.toolCalls.length>8||!['tool_calls','tool_use'].includes(turn.stopReason)) failure('incomplete_batch');
-        calls+=turn.toolCalls.length;progressCalls=calls;if(calls>config.maxCalls) failure('call_limit');
+        const turnIds=new Set();
         for(const call of turn.toolCalls) {
-          if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||!plainObject(call.arguments)) failure('invalid_tool_call');
-          callIds.add(call.id);
+          if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||turnIds.has(call.id)||!plainObject(call.arguments)) failure('invalid_tool_call');
+          turnIds.add(call.id);
           const definition=call.name==='finish_batch'?finishTool:definitions.find(t=>t.name===call.name);
           const emptyFinish=turn.toolCalls.length===1&&call.name==='finish_batch'&&Object.keys(call.arguments).length===1
             &&Array.isArray(call.arguments.handledInputIds)&&call.arguments.handledInputIds.length===0;
@@ -123,6 +125,14 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           if(call.name!=='finish_batch'&&(new Set(call.arguments.inputIds).size!==call.arguments.inputIds.length||!call.arguments.inputIds.every(id=>validUuid(id)&&inputIds.includes(id)))) failure('invalid_tool_call');
         }
         await progressDone('ready');
+        // Validate first, then load the reviewed skill and ask for a fresh plan.
+        // No action, receipt, call ID or tool budget is consumed by activation.
+        if(!driveSkillActive&&turn.toolCalls.some(call=>isDriveTool(call.name))) {
+          driveSkillActive=true;
+          continue;
+        }
+        calls+=turn.toolCalls.length;progressCalls=calls;if(calls>config.maxCalls) failure('call_limit');
+        for(const id of turnIds)callIds.add(id);
         const finish=turn.toolCalls.find(c=>c.name==='finish_batch');
         if(finish) {
           if(turn.toolCalls.length!==1) failure('invalid_completion');

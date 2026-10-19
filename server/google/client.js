@@ -7,7 +7,9 @@ const fileId = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,200}$/.te
 const mailId = value => typeof value === 'string' && /^[a-fA-F0-9]{1,64}$/.test(value);
 const clean = (value, max = 500) => typeof value === 'string' ? value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, max) : '';
 const limitOf = value => value === undefined ? 5 : Number.isInteger(value) && value >= 1 && value <= 5 ? value : null;
-const FIELD = 'id,name,mimeType,description,modifiedTime,size,webViewLink';
+const folderLimitOf = value => value === undefined ? 50 : Number.isInteger(value) && value >= 1 && value <= 50 ? value : null;
+const pageTokenValid = value => value === undefined || typeof value === 'string' && /^[A-Za-z0-9_+/=-]{1,2048}$/.test(value);
+const FIELD = 'id,name,mimeType,description,modifiedTime,size,webViewLink,parents';
 
 export async function boundedGoogleBody(response, { maxBytes = 1500000, signal } = {}) {
   if (!response.body || Number(response.headers.get('content-length')) > maxBytes) {
@@ -67,12 +69,13 @@ function gmailSource(message, includeBody = false) {
 
 function driveSource(file) {
   if (!fileId(file?.id)) throw new GoogleError('invalid_response');
-  let link = `https://drive.google.com/file/d/${file.id}/view`;
+  if (file.parents !== undefined && (!Array.isArray(file.parents) || file.parents.length > 100 || !file.parents.every(fileId))) throw new GoogleError('invalid_response');
+  let link = file.mimeType === 'application/vnd.google-apps.folder' ? `https://drive.google.com/drive/folders/${file.id}` : `https://drive.google.com/file/d/${file.id}/view`;
   try { const url = new URL(file.webViewLink); if (url.protocol === 'https:' && ['drive.google.com', 'docs.google.com'].includes(url.hostname) && !url.username && !url.password) link = url.href; } catch {}
   const title = clean(file.name, 300) || '(Untitled file)';
   return { id: `drive:${file.id}`, externalId: file.id, kind: 'google_drive', title, url: link,
     excerpt: clean(file.description, 1500) || `${title} (${clean(file.mimeType, 100)})`,
-    mimeType: clean(file.mimeType, 100), sourceUpdatedAt: clean(file.modifiedTime, 50), partial: true, contentStatus: 'metadata_only' };
+    mimeType: clean(file.mimeType, 100), sourceUpdatedAt: clean(file.modifiedTime, 50), parents: [...(file.parents || [])], partial: true, contentStatus: 'metadata_only' };
 }
 
 export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = globalThis.fetch, oauthClient } = {}) {
@@ -109,9 +112,10 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
           token => request(`${GMAIL}/profile`, token, combined), combined);
         verifiedToken = accessToken; oauthVerified = true;
       }
-      const sources = await operation(accessToken, combined);
+      const output = await operation(accessToken, combined);
+      const sources = Array.isArray(output) ? output : output.sources;
       lastStatus = 'ready';
-      return { status: sources.length ? 'ready' : 'empty', sources };
+      return { ...(Array.isArray(output) ? {} : output), status: sources.length ? 'ready' : 'empty', sources };
     } catch (error) {
       const safe = timeout.aborted && !signal?.aborted ? new GoogleError('timeout') : googleError(error, signal);
       lastStatus = safe.code;
@@ -150,18 +154,49 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
     });
   }
 
-  async function searchDrive({ query, limit, signal } = {}) {
-    const count = limitOf(limit);
-    if (typeof query !== 'string' || !query.trim() || query.length > 500 || !count) return { status: 'invalid_request', sources: [] };
-    const literal = query.trim().replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-    const params = new URLSearchParams({ q: `trashed = false and (fullText contains '${literal}')`, pageSize: String(count),
-      fields: `nextPageToken,files(${FIELD})`, orderBy: 'modifiedTime desc', spaces: 'drive', supportsAllDrives: 'true', includeItemsFromAllDrives: 'true' });
+  async function drivePage({ params, count, pageToken, folderId, signal, scope }) {
     const result = await run(signal, async (token, active) => {
       const data = await request(`${DRIVE}/files?${params}`, token, active);
-      if (!Array.isArray(data.files)) throw new GoogleError('invalid_response');
-      return data.files.slice(0, count).map(driveSource);
+      if (!Array.isArray(data.files) || data.files.length > count || !pageTokenValid(data.nextPageToken)
+        || data.incompleteSearch !== undefined && typeof data.incompleteSearch !== 'boolean') throw new GoogleError('invalid_response');
+      const nextPageToken = data.nextPageToken ?? null;
+      const complete = !pageToken && !nextPageToken && data.incompleteSearch !== true;
+      return { sources: data.files.map(driveSource), nextPageToken, partial: !complete, possiblyTruncated: !complete,
+        coverage: { scope, ...(folderId ? { folderId } : {}), complete, recursive: false, pageOnly: true,
+          continuation: pageToken !== undefined, incompleteSearch: data.incompleteSearch === true } };
     });
-    return { ...result, possiblyTruncated: result.sources.length === count };
+    // A failed/unauthorized listing does not establish an empty directory or a
+    // complete search, and an opaque cursor never establishes recursive coverage.
+    if (!['ready', 'empty'].includes(result.status)) return { ...result, partial: true, possiblyTruncated: true,
+      coverage: { scope, ...(folderId ? { folderId } : {}), complete: false, recursive: false, pageOnly: true } };
+    return result;
+  }
+
+  function driveListParams(q, count, pageToken) {
+    const params = new URLSearchParams({ q, pageSize: String(count), fields: `nextPageToken,incompleteSearch,files(${FIELD})`,
+      orderBy: 'modifiedTime desc', spaces: 'drive', supportsAllDrives: 'true', includeItemsFromAllDrives: 'true' });
+    if (pageToken !== undefined) params.set('pageToken', pageToken);
+    return params;
+  }
+
+  async function searchDrive({ query, limit, folderId, pageToken, signal } = {}) {
+    const count = limitOf(limit);
+    if (typeof query !== 'string' || !query.trim() || query.length > 500 || !count
+      || folderId !== undefined && !fileId(folderId) || !pageTokenValid(pageToken)) return { status: 'invalid_request', sources: [] };
+    const literal = query.trim().replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const q = `trashed = false and (fullText contains '${literal}')${folderId ? ` and '${folderId}' in parents` : ''}`;
+    return drivePage({ params: driveListParams(q, count, pageToken), count, pageToken, folderId, signal, scope: folderId ? 'direct_child_search' : 'authorized_drive_search' });
+  }
+
+  async function listDriveFolder({ folderId, pageToken, limit, signal } = {}) {
+    const count = folderLimitOf(limit);
+    if (!fileId(folderId) || !count || !pageTokenValid(pageToken)) return { status: 'invalid_request', sources: [] };
+    const result = await drivePage({ params: driveListParams(`trashed = false and '${folderId}' in parents`, count, pageToken), count, pageToken, folderId, signal, scope: 'direct_children' });
+    if (!['ready', 'empty'].includes(result.status)) return { ...result, coverage: { ...result.coverage, navigationOnly: true } };
+    return { ...result, sources: [], coverage: { ...result.coverage, navigationOnly: true },
+      driveContext: { folderId, entries: result.sources.map(source => ({ id: source.externalId, name: source.title,
+        mimeType: source.mimeType, parentIds: source.parents, modifiedTime: source.sourceUpdatedAt, url: source.url })),
+        nextPageToken: result.nextPageToken, complete: result.coverage.complete } };
   }
 
   async function readDrive({ fileId: id, signal } = {}) {
@@ -185,5 +220,5 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
     });
   }
 
-  return Object.freeze({ configured, status: () => ({ configured, oauthVerified, status: lastStatus }), searchGmail, readGmail, searchDrive, readDrive });
+  return Object.freeze({ configured, status: () => ({ configured, oauthVerified, status: lastStatus }), searchGmail, readGmail, searchDrive, listDriveFolder, readDrive });
 }

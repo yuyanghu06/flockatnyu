@@ -12,7 +12,7 @@ const post=(app,question)=>app.request('/api/chat',{method:'POST',headers:{'cont
 const records=async response=>(await response.text()).trim().split('\n').map(JSON.parse);
 
 function fixture({actor=principal,searchStatus=200,files=[file],body='Approved equipment budget is 450 dollars.',mime=file.mimeType,readContents=true}={}) {
- const calls=[],answerInputs=[];let calendarCalls=0,round=0;
+ const calls=[],answerInputs=[];let calendarCalls=0;
  const client=createGoogleClient({config:readGoogleConfig({GOOGLE_CLIENT_ID:'synthetic-client',GOOGLE_CLIENT_SECRET:'synthetic-secret',GOOGLE_REFRESH_TOKEN:'synthetic-refresh',GOOGLE_EXPECTED_ACCOUNT_EMAIL:'club@example.com'}),
   oauthClient:{setCredentials(){},getAccessToken:async()=>({token:'synthetic-access'}),getTokenInfo:async()=>({scopes:GOOGLE_SCOPES})},
   fetchImpl:async(value,options)=>{
@@ -31,8 +31,8 @@ function fixture({actor=principal,searchStatus=200,files=[file],body='Approved e
   execute:options=>options.name==='list_calendar_events'?(calendarCalls++,assert.fail('Drive question must stay on Drive')):executeGoogleTool({...options,client})};
  const app=createApp({config:{configured:true,production:false,timeoutMs:3000},googleTools:adapter,googleClient:client,auth:()=>actor,
   provider:{planTools:async({system})=>{
-   if(round++===0)return [{name:'search_drive',arguments:{query}}];
    const previous=JSON.parse(system.split('\nUNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n')[1]);
+   if(previous.length===0)return [{name:'search_drive',arguments:{query}}];
    if(readContents&&previous.length===1&&previous[0].status==='ready')return [{name:'read_drive',arguments:{fileId:previous[0].sources[0].externalId}}];
    return [];
   },async *stream(input){answerInputs.push(input);yield 'Synthetic answer based on supplied evidence.';}}});

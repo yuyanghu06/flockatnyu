@@ -440,7 +440,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       parameters.properties.boardId={...parameters.properties.boardId,enum:[...miroConfig.boardIds]};
     return {...tool,parameters,readOnly:true,execute:async(args,context)=>requirePrepared(context)?readMiro(tool.name,args,context.signal):{status:'forbidden'}};
   }),
-    ...GOOGLE_TOOLS.filter(tool=>['search_gmail','read_gmail'].includes(tool.name)).map(tool=>({...tool,readOnly:true,
+    ...GOOGLE_TOOLS.map(tool=>({...tool,readOnly:true,
       execute:async(args,context)=>{
         if(!requirePrepared(context)||!googleAccess)return {status:'forbidden'};
         const result=normalize(await executeGoogleTool({name:tool.name,arguments:args,principal,client:googleClient,signal:context.signal}));

@@ -36,10 +36,10 @@ test('partial/truncated sources carry coverage warnings through context and answ
   const h=harness({status:'ready',sources:[source('m1',{excerpt:'x'.repeat(3000)})],coverage:{complete:true,textTruncated:true,fetchedComplete:true,contentScope:'top_level_text_only'}});const r=await h.run();assert(r.results[0].coverage.textTruncated===true || r.results[0].coverage.complete===false || r.results[0].possiblyTruncated===true);assert(r.sources[0].excerpt.length<=1800);
 });
 test('orchestrator does not lose Google external ID or partial-content notice before read follow-up',async()=>{
-  let step=0;const seen=[];
-  const provider={planTools:async({system})=>{seen.push(system);if(step++===0)return [{name:'search_drive',arguments:{query:'budget'}}];const data=JSON.parse(system.split('UNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n')[1]);assert.equal(data[0].sources[0].externalId,'file_123');assert.equal(data[0].sources[0].contentStatus,'metadata_only');assert.equal(data[0].sources[0].partial,true);return [{name:'read_drive',arguments:{fileId:data[0].sources[0].externalId}}];}};
+  const seen=[];
+  const provider={planTools:async({system})=>{seen.push(system);const data=JSON.parse(system.split('UNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n')[1]);if(!data.length)return [{name:'search_drive',arguments:{query:'budget'}}];if(data.some(row=>row.tool==='read_drive'))return [];assert.equal(data[0].sources[0].externalId,'file_123');assert.equal(data[0].sources[0].contentStatus,'metadata_only');assert.equal(data[0].sources[0].partial,true);return [{name:'read_drive',arguments:{fileId:data[0].sources[0].externalId}}];}};
   const googleTools={tools:[{name:'search_drive'},{name:'read_drive'}],execute:async({name})=>({status:'ready',sources:[source('drive:file_123',{externalId:'file_123',contentStatus:name==='search_drive'?'metadata_only':'first_sheet_only',partial:true})]})};
-  const r=await retrieveAssistantContext({messages,provider,googleTools});assert.equal(r.results.filter(v=>v.tool==='read_drive').length,1);assert.equal(seen.length,2);
+  const r=await retrieveAssistantContext({messages,provider,googleTools});assert.equal(r.results.filter(v=>v.tool==='read_drive').length,1);assert.equal(seen.length,4);
 });
 test('catalogue truncation remains visible to model before it chooses a channel',async()=>{
   const h=harness({status:'ready',sources:[],channels:[{channelId:'200',name:'general'}],complete:false,reason:'channel_budget'},{plans:[[{name:'list_discord_channels',arguments:{}}],[]]});await h.run();assert(h.prompts[1].includes('channel_budget'));

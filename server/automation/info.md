@@ -191,3 +191,7 @@ Discord work proceed. Authentication, configuration and malformed content still
 fail closed. No provider error bodies or durable board snapshots are retained.
 
 Each claimed planner batch now has an independent audit run UUID and per-round model context. Run/tool events preserve actual safe failure codes and counts without source bodies; prepare_batch is separately visible. The shared audit logger runs before every production model dispatch and prunes seven-day private records hourly. No lease tokens enter logs. See ../../docs/model-audit.md.
+
+## Tech@NYU Drive skill
+
+The bundled adapter also exposes read-only Drive search, folder listing and bounded file reads under its existing prepared-batch and Google access gates. These reads do not register Calendar/map write provenance. `handler.js` activates the shared `server/skills/techatnyu-drive/SKILL.md` after a valid first Drive proposal, replans before execution and retains it for that batch. Activation consumes a model round, without executing or charging a source-tool call. Other workflows keep the existing prompt.

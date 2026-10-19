@@ -54,3 +54,5 @@ Miro quota recovery uses shared operational counters and cooldowns in existing s
 model-audit.md explains private planner/chat model-call and output accounting, null usage/cost limits, credential redaction, service-only access and seven-day retention.
 
 `discord-chat.md` documents shared assistant execution, verified caller context, eboard source/audience rules, private bridge setup and transient interaction limits.
+
+[drive-skill.md](drive-skill.md) describes shared Tech@NYU Drive guidance, selective runtime activation, read-only folder navigation and private research boundaries.

@@ -55,6 +55,12 @@ export async function prepareRuntimeDeployment({root = repository, temporaryRoot
   }
   await visit(service === 'web' ? 'server/web.js' : 'server/automation/cli.js');
   if (service === 'agent-worker') await visit('server/automation/adapters.js');
+  // Fixed domain guidance is an explicit asset, never a model-selected path or
+  // an unreviewed private inventory from the developer's computer.
+  if(files.has('server/skills/drive.js')) {
+    const name='server/skills/techatnyu-drive/SKILL.md';
+    files.set(name,await input(root,name));
+  }
   if (service === 'web') {
     async function scan(directory) {
       // Refuse symlinked directories before traversing them.
