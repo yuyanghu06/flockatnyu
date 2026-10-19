@@ -4,7 +4,7 @@
 - [x] Implement explicit-request prompting, bounded batch creation with per-item receipts/duplicate handling and supported Drive text context.
 - [x] Independently test >8 rows, overlap, blanks, exact dates/year/title, duplicates, partial failure, interruption and access boundaries; tester final 101/evaluator final 44 (earlier 136) pass, including exact total-page cap.
 - [x] Verify actual configured-model full-catalogue source-copy/follow-up workflows: 14 exact creates each; existing retry and read-only source injection zero writes; final single timed duplicate check and combined create/cancel pass.
-- [ ] Review, run final regressions/builds, deploy and verify promoted services, publish actual source/journal receipts.
+- [x] Review, run final regressions/builds, deploy and verify promoted services, publish source/journal. Both services SUCCESS; hosted source, batch catalogue/model capability and access checks pass. Full 1633 passed/one existing optional skip/zero failures.
 
 ## Drive search pagination repair
 

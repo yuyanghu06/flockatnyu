@@ -1,3 +1,9 @@
+## Live: explicit requests complete without renewed approval
+
+Source cd8a8b0 is live on web 3ddb2eeb-6354-4848-910e-a8eae3d757db and update-agent c3980e04-9805-40f7-920b-42dee089ec5b. Chat keeps settled source/title/date/year/skip choices through follow-ups and completes clear rows before reporting exceptions. Its new chat-only all-day batch tool handles up to 50 entries with internal bounded duplicate checks, existing skips and per-item receipts. Backend permissions and source/target/revision boundaries remain.
+
+Final full suite: 1633 passed, one existing optional Miro-schema skip, zero failures; independent final 101/44 checks and both builds pass. Actual configured-model 27-tool initial/follow-up tests each create 14 exact synthetic rows without approval questions or semester scans; existing retry/read-only injection create none. Promoted source-text, six-Calendar-tool inventory, access gates and current-tool model canary pass. Actual sheet is 1342 characters and not truncated; its original failure was prompting/pagination-budget exhaustion. Longer-sheet source-tail support is separately verified. No original Calendar request replay or verification business-source writes. [Live acceptance](history/2026-10-19_18-39-40-497620-orchestrator-explicit-action-repair-live.md).
+
 ## Explicit action repair accepted for release
 
 Final full suite passes 1633 tests with one existing optional Miro-schema skip and zero failures; both builds pass. Actual-model workflows and independent final review pass. Sanitized web 259/shared-worker 54 file packages match the reviewed source and pass private-value scans. Guarded deployment is next. [Final checks](history/2026-10-19_18-36-51-346657-orchestrator-explicit-action-release-verified.md).
