@@ -71,3 +71,15 @@ October 18 Miro quota diagnosis records the explicit upstream Free-plan daily li
 Miro quota recovery passes track shared organization-wide operational counters, background cadence, independent acceptance and release checks; they never authorize board snapshots or a paid upgrade.
 
 Chat production fixes history records the reproduced report-retry conflict, authorized named-person attendance, separately saved future identity idea and subsequent upload extension, implementation and verification.
+
+October19 planner health/cost audits record fresh deployment and aggregate queue/log evidence, repeated map-read failures, scope-deferred inputs, Miro cooldown and unavailable billing; no runtime fix or spending estimate is claimed.
+
+October19 custom-domain access entries record exact login alias validation while keeping stored attendance provenance stable; concurrent private model audit is separate.
+
+October19 model audit passes record schema/provider/runtime implementation, independently reproduced nested-credential/abort/progress issues and their fixes, with service-only logging rollout tracked separately from tool reliability.
+
+Website feedback passes track translated product requirements only; private correspondence and original screenshots are excluded from Git.
+
+October 19 favicon export records the verified 1080 × 1080 Downloads PNG; source artwork is unchanged.
+
+The subsequent favicon export revision records square opaque backgrounds, tighter raised edges and verified 1080/4320 Downloads files.

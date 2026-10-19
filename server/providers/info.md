@@ -16,3 +16,7 @@ this addition. Protocol references: [OpenAI function calling](https://developers
 and [Anthropic tool-call handling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls).
 
 Chat planning and answer streaming convert validated user attachments into native OpenAI Chat Completions image_url, PDF file_data or quoted text blocks. Worker toolTurn remains text-only. The implemented Anthropic path rejects attachments before network dispatch rather than sending an incompatible schema. No Files API resource or durable upload is created.
+
+All three dispatch paths now write private model audit starts/results with run/round context, sanitized returned text/proposals and nullable usage/IDs. OpenAI streaming requests usage and reads its trailer; abort/early-return preserves partial output. Audit failure before production dispatch blocks the call; terminal-write failure preserves the provider result and leaves unresolved start. See ../../docs/model-audit.md.
+
+Actual provider cache_write_tokens is retained separately from cached reads; known direct Luna pricing partitions total input across uncached/read/write categories. Missing counts or inputs above272K remain unpriced.

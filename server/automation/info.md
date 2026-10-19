@@ -189,3 +189,5 @@ board's previously observed mutation evidence. Deferred boards remain incomplete
 in completion reports while mandatory Calendar projection and unrelated authorized
 Discord work proceed. Authentication, configuration and malformed content still
 fail closed. No provider error bodies or durable board snapshots are retained.
+
+Each claimed planner batch now has an independent audit run UUID and per-round model context. Run/tool events preserve actual safe failure codes and counts without source bodies; prepare_batch is separately visible. The shared audit logger runs before every production model dispatch and prunes seven-day private records hourly. No lease tokens enter logs. See ../../docs/model-audit.md.

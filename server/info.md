@@ -36,6 +36,11 @@ Chat has a separate overall requestTimeoutMs (ASSISTANT_REQUEST_TIMEOUT_MS, defa
 
 Production entrypoint `web.js` wraps the shared `runtime-app.js` factory with `site-auth.js` signed sessions, fixed-origin writes and protected static assets/API. Local `index.js` retains development authentication. Internal Miro token broker uses an independent server credential.
 
+`SITE_ALLOWED_ORIGINS` adds explicit HTTPS login/mutation aliases to `PUBLIC_ORIGIN`.
+Only exact configured origins pass; cross-site requests remain denied. This lets a
+custom domain sign in without changing existing chat-attendance provenance or
+worker configuration. Cookies remain host-only and private.
+
 The web login template is a white terminal-style screen with a muted teal tilde,
 dark gray#62645f block cursor and muted#a19d93 enter password placeholder. Current local weekday,
 date and time appear above using an inline Intl clock. Group is centered at46%
@@ -60,3 +65,7 @@ remain. Successful login redirects straight to / and its animated @ startup
 screen; automatic map reveal remains in the existing startup modules.
 
 Chat production fixes add once-per-message report orchestration and a narrow request-local named-person attendance adapter, composed with existing provider-backed map tools in runtime-app.js. Attendance retains source scope and current access under distinct app provenance, with optimistic preservation. chat-attachments.js is a browser-safe, I/O-free validation/conversion contract for bounded in-memory image/PDF/UTF8 text attachments; the API retains string message text as the only action-intent channel.
+
+model-audit.js and audit-lifecycle.js add private model-return/output accounting and bounded seven-day cleanup for both chat and planner. Provider dispatch must durably start before production network requests. No prompts/source tool payloads or frontend log endpoint. See docs/model-audit.md.
+
+Chat routing preserves Calendar-first unnamed-source schedules with Miro cross-check, then exact explicitly named-team Discord originals for unresolved details. Selected-channel summaries carry the returned channelId; failed reads/invalid calls never establish absence.

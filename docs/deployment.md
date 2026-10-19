@@ -14,6 +14,12 @@ The shared operator session is nonadmin and gets only server-configured source
 scope. `SITE_GOOGLE_ENABLED` and `SITE_DISCORD_ENABLED` explicitly enable those
 capabilities. Browser sessions use signed Secure/HttpOnly/SameSite cookies,
 expire after12hours by default, and require the configured origin for mutations.
+For a custom domain, add its exact HTTPS origin to web-only
+`SITE_ALLOWED_ORIGINS` (comma-separated) and redeploy web. `PUBLIC_ORIGIN` stays
+accepted automatically. Keep it stable on web and worker because existing
+chat-attendance citations use that origin; login aliases preserve those records.
+Aliases never accept wildcards, HTTP, credentials, paths, query strings or fragments.
+Cookies remain host-only, so each domain requires its own login.
 Rotate `SITE_SESSION_SECRET` to revoke all issued sessions; changing the password
 alone changes future sign-ins. Logout clears the current browser cookie.
 
@@ -81,3 +87,5 @@ Final service activation and protected-site HTTP smoke receipts are hosted-final
 The2026-10-18 outage follow-up verified that the actual web service-instance health fields were unset despite the manifest. They are now explicitly /healthz with60second timeout, read back through the supported service API. This gates future rollout promotion; it is not continuous uptime monitoring. Environment-config dot-path editing did not apply these fields. See [Railway health checks](https://docs.railway.com/deployments/healthchecks).
 
 The recovery worker completed a real five-input batch in569325ms with12tools/4rounds and explicitMirodeferred status. Subsequent batches were tuned to2inputs under the same600second deadline for edit headroom; the tuned release has the same image digest and a verified active2input lease. Successful finish deletes only the handled original cache rows;15completed inputs had0payloads remaining at final verification. Optional Miro navigation outages are deferred with no source facts or full-sync claim. See hosted-worker-recovery.json and hosted-recovery.json.
+
+Model audit rollout requires additive migration033 before deploying the compatible web/update-agent runtimes. Production model dispatch is blocked if its private start record cannot persist. Runtime startup/hourly pruning enforces bounded seven-day retention; no audit endpoint is public. Both services must roll out before claiming planner and chat coverage. See model-audit.md.

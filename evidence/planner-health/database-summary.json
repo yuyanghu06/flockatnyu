@@ -1,0 +1,57 @@
+{
+  "checkedAt": "2026-10-19T15:47:29.072Z",
+  "workerConfig": {
+    "AGENT_AUTOMATION_ENABLED": "true",
+    "AGENT_AUTOMATION_LOG_PROGRESS": "true",
+    "AGENT_AUTOMATION_MAX_CALLS": "32",
+    "AGENT_AUTOMATION_MAX_INPUTS": "2",
+    "AGENT_AUTOMATION_MAX_ROUNDS": "16",
+    "AGENT_AUTOMATION_MAX_RUN_MS": "600000"
+  },
+  "model": "gpt-6-luna",
+  "allowedSourceCount": 220,
+  "pendingGroups": {
+    "gmail:outside_scope": {
+      "count": 24,
+      "olderThan30m": 20,
+      "oldest": "2026-10-17T18:34:20.688488+00:00"
+    },
+    "discord:outside_scope": {
+      "count": 54,
+      "olderThan30m": 54,
+      "oldest": "2026-10-17T20:46:10.749929+00:00"
+    },
+    "discord:allowed": {
+      "count": 2,
+      "olderThan30m": 1,
+      "oldest": "2026-10-19T15:01:35.710815+00:00"
+    }
+  },
+  "discord": [
+    {
+      "paused": false,
+      "discoveryEnabled": true,
+      "lastDiscoveryAt": "2026-10-19T15:42:23.968625+00:00",
+      "phase": "complete",
+      "completedAt": "2026-10-19T15:41:42.539Z",
+      "channelContainerType": "array",
+      "channelCounts": {
+        "total": 273,
+        "enabled": 229
+      }
+    }
+  ],
+  "inputTotals": {
+    "done": 277,
+    "pending": 80,
+    "doneSinceHandoff": 246,
+    "doneSinceMidnightNY": 162
+  },
+  "miroBudget": {
+    "day": "2026-10-19",
+    "total": 1,
+    "background": 1,
+    "blockedUntil": "2026-10-20T00:00:00.000Z",
+    "lastBackgroundAt": "2026-10-19T00:00:45.927Z"
+  }
+}

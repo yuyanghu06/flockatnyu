@@ -383,7 +383,9 @@ scoped-agent-claim.test.mjs runs realSQL mixed-scope trigger/lease/ACL/finish ca
 
 planner-workload-model.mjs reuses strict configured-model scenarios with synthetic sources/inert writes and the actual Miro adapter/parser to catch incompatible canvas/table arguments. Its aggregate receipt is evidence/optimization/planner-workload-model.json; this is not a live-source mutation test.
 
-site-auth.test.mjs includes login-favicon boundary checks: exact anonymous
+site-auth.test.mjs covers explicit custom-domain login aliases and authenticated
+writes, malformed/insecure alias rejection, foreign/cross-site denial and stable
+canonical provenance. It also includes login-favicon boundary checks: exact anonymous
 GET/HEAD routes serve correctly typed icons, while writes, aliases, other assets,
 APIs and symlinked files retain their original denial behavior.
 
@@ -415,3 +417,11 @@ Candidate resolution acceptance also tests model-selected returned events, catal
 Map presence/source-access regressions cover projection-local provider reuse, exact attendance marker bindings, fresh request revocation, unchanged general-write authorization, bounded concurrency and cancellation under the total read deadline.
 
 map-refresh-browser.mjs runs an isolated actual-campus Chrome regression with synthetic native HTTP tool streams and map responses. It verifies avatars before reply completion, minimized attendance, stale-read coalescing, transient retries, access denial, foreground/disposal cleanup and unchanged camera/model geometry. Evidence uses synthetic people only.
+
+model-audit-store/sql/provider/integration tests exercise private audit ACL/TTL/idempotence, recursive credential redaction, every provider dispatch/stream failure mode, usage/pricing and real chat/worker runtime correlation through inert service-role PGlite RPCs. No live models or private source payloads.
+
+feedback-discord.test.mjs exercises affirmative named-team meeting questions and exact-channel summaries with the real policy/retrieval path and inert providers: timing, budget, cancellation, source access, leadership exclusions and failure versus absence.
+
+assistant-presentation.test.mjs verifies readable citation labels and safe platform detection. feedback-browser.mjs uses only synthetic responses on an isolated local Vite server to check footer geometry, streaming/history, source safety, uploads/errors, shortcuts, viewport shrink and retained animated Stop. Evidence lives in evidence/site-feedback; no private reference screenshots are retained.
+
+model-audit-cache-cost.test.mjs applies034incrementally after033 and tests existing-row/ACL preservation, actual-shaped cache writes, impossible counts and unknown/long-context pricing.

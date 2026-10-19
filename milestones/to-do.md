@@ -1,3 +1,70 @@
+## Private model audit — complete and live
+
+- [x] Persist every production model dispatch and returned output for planner and chat, with nullable usage/IDs/costs and private run/tool lifecycle metadata.
+- [x] Confirm user-selected seven-day retention; verify schema033/034, forced RLS, service-only RPCs and credential/input exclusion.
+- [x] Complete independent privacy/cancellation/SQL/cache-cost checks, builds, sanitized releases and actual live chat plus normal planner records.
+- [x] Preserve concurrent domain login and feedback releases, including the final audit logger.
+- [ ] Separate operations: investigate recurring planner tool failures and observe authorized Miro recovery; no blanket reliability fix claimed.
+
+Earlier audit rollout checklist entries are superseded by the completed live receipt, rather than additional unfinished logging work.
+
+## Favicon export revision
+
+- [x] Remove rounded corners, sharpen the mark and save verified 1080/4320 square PNG exports in Downloads.
+
+## Favicon export
+
+- [x] Save and visually verify the current favicon as a 1080 × 1080 PNG in Downloads.
+
+## Final private audit rollout
+
+- [x] Verify realchatplanning/stream outputs+usage/IDs/privateACL/168hexpiry; initialplannerprovidercanaryverified.
+- [x] Price actualcachewriteformat via034andstrictcompletecounters;188independent+61evaluatorchecksaccepted.
+- [ ] Verify finalweb3869477b/worker d72bf3d7andactualcostrecords; observe naturalplannerbatchwhenits30mintriggerfires.
+- [ ] Publish sanitized guides/evidence/journal with audit source commits; preserve concurrent feedback/domain work.
+
+## Website feedback
+
+- [x] Read requested feedback and independently diagnose four product issues without retaining personal correspondence.
+- [x] Implement frontend and named-team/summary schema corrections; align source-routing instructions and normalize natural catalogue queries.
+- [x] Independently verify desktop/mobile/browser/security behavior and focused regressions; six browser scenarios and120final affected checks pass.
+- [ ] Deploy bounded web release and verify new domain; preserve concurrent model audit.
+
+## Model audit release gates
+
+- [x] Resolve credential/privacy, abort and progress findings; final1271full/184independentchecks and builds pass.
+- [x] Confirm user7dayretention; apply additive033hosted schema and register receipt.
+- [ ] Verify hosted ACL/RPCs, scan refreshed web package and deploy bothservices preserving concurrent domainfix.
+- [ ] Verify actual chat/planner records and nullable usage/cost, then publish sanitized evidence/journal.
+
+## Model audit acceptance follow-up
+
+- [x] Implement storage/provider/runtime logging and bounded retention.
+- [x] Resolve stalled-tool abort recording and fixed-progress status compatibility.
+- [ ] Fix independently reproduced nested JSON authorization/cookie/private-key redaction.
+- [ ] Final independent acceptance, full suite/build, additive033schema and both service releases.
+
+## Custom-domain login repair
+
+- [x] Diagnose old configured origin and independently verify explicit HTTPS alias fix.
+- [x] Deploy web-only alias and verify production login, protected reads and foreign-origin rejection; webfa99fb35SUCCESS, both domains accepted in Chrome.
+
+## Private planner and chat audit
+
+- [x] Independently plan shared dispatch/output audit and source/privacy boundaries.
+- [ ] Implement logger/schema, all provider modes and chat/worker run/tool correlation.
+- [ ] Independently test privacy, usage, failures, cancellation, SQL ACL/expiry and runtime correlation.
+- [ ] Apply additive schema and deploy/verify web and worker logging; preserve concurrent map fix.
+
+## Planner operational audit — October19
+
+- [x] Check deployed worker, live completion/pending metadata, source scope, structured logs and Miro cooldown; record aggregate evidence.
+- [x] Independently audit cost accounting:57/57tests and inert usage-loss reproduction; provider usage dashboard authentication failed.
+- [ ] Diagnose repeated read_map_events failures (81observed) and intermittent catalogue authorization rejections; no fix claimed by status audit.
+- [ ] Obtain provider billing with worker attribution; exact spend unavailable because current worker drops usage/response IDs. Any future accounting implementation is separate work.
+- [ ] Observe successful authorized Miro recovery after8pmEastern reset; current metadata remains blocked.
+- [ ] Preserve78out-of-scope pending inputs; these are intentionally deferred, not permission-expansion authorization.
+
 ## Production map auto-refresh repair
 
 - [x] Diagnose current hosted unavailable card and existing tool-triggered refresh.
@@ -1333,3 +1400,7 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 - [x] Create logical implementation/evidence commits; repair assistant asset imports exposed by full test run.
 - [x] Verify714Node cases across full run/focused fix, both builds, map/startup assertions and actual logo hover.
 - [x] Commit shared documentation/history; push12topic commits through9084c93 and verify matching remote SHA/clean tree. Final publication receipt follows in docs commit/push.
+
+## Domain HTTPS follow-up
+
+- [x] Verify live TLS/certificate/DNS, HTTP redirect and fresh Chrome login/app security; current setup is secure. User-browser warning remains unreproduced.

@@ -182,3 +182,7 @@ are in `tests/event-types-sql.test.mjs`.
 031_agent_memory adds one forced-RLS agent_memory(id,content,updated_at) row and service-only read/optimistic-write RPCs. id is fixed to shared, text is bounded16KB, browser access/direct service DML are denied, and an empty note is seeded. No provider archive, embedding or history schema is added. Hosted receipt lives in evidence/long-term-memory/.
 
 032 adds service-only scoped agent claims without modifying historical019functions or deletingpendinginputs; source-scope filters are identical for trigger/count/candidates.
+
+Migration033 adds service-only agent_model_calls/agent_audit_events and fixed start/finish/event/prune RPCs. Model output retention is bounded to seven days, with no raw prompts/source tool response storage and no assistant retrieval. Existing migrations/data remain unchanged.
+
+Migration034 changes only terminal audit pricing validation for complete short-context cache-write accounting. Applied033 and existing terminal records remain unchanged.

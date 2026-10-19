@@ -1,3 +1,79 @@
+## Private planner and chat audit is live
+
+Both agents now persist model-call starts, returned outputs/proposals, provider IDs, available tokens/cache accounting and estimated costs, plus run/tool statuses and timing. The user confirmed private seven-day retention. Prompts, uploads, raw source-tool responses and credentials are excluded; unknown usage stays unknown. Hosted033/034 and forcedRLS/service-only access are verified.
+
+Worker d72bf3d7 and compatible latest web1bea2c28 are SUCCESS. Real chat planning/streaming records and a normal autonomous batch's first two model calls have saved outputs/usage/costs. Final chat test cost about$0.00133; historical941request spending remains only a roughly$1–4assumption-based estimate. Full1271regressions plus final188tester/61evaluator focused checks, builds and private scans passed. Logging does not establish that all planner tool failures are fixed; Miro cooldown and tool reliability remain separate follow-up.
+
+[Final audit pass](history/2026-10-19_12-27-45-419903-orchestrator-private-model-audit-live-verified.md) · [Hosted receipt](../evidence/model-audit/hosted-release.json) · [Guide](../docs/model-audit.md). Earlier audit rollout checklists below are superseded by this live verification.
+
+## Square sharper favicon export complete
+
+Replaced the Downloads 1080 × 1080 PNG with an opaque white square and sharper raised edges, rendered from vectors at 4× scale. Added a 4320 × 4320 master alongside it. Dimensions, white corners and appearance verified directly; application artwork unchanged. [Pass](history/2026-10-19_12-27-32-261637-orchestrator-square-sharp-favicon-export.md).
+
+## Favicon exported to Downloads
+
+Saved the current vector favicon as a verified 1080 × 1080 PNG at `/Users/yuyang/Downloads/Flock-NYU-favicon-1080.png`, retaining the approved raised pastel mark and rounded badge. Visual inspection passed. Export complete; existing runtime/release work remains unchanged. [Pass](history/2026-10-19_12-26-38-002206-orchestrator-favicon-download-export.md).
+
+## Feedback web deploying; latest audit preserved
+
+Web1bea2c28BUILDINGafteraudit3869477bSUCCESS. Package explicitly preserves8249119loggerSHA1891d6905392369dff51a77fb237159cb644787ca2d04f11d81b7f3e99568b2dand reviewedauth/feedbackoverlays. Logicaldomain7a7e04f/feedbacka40735dsource pushed. Hosted UI/artifact/schema verification pending; no worker/model/source writes. [Deployment](history/2026-10-19_12-24-35-184765-orchestrator-feedback-web-deploying.md).
+
+## Cache-write audit accounting accepted; final rollout
+
+Additive034registered20261019162300; applied033preserved. Independent188tester/61evaluatorchecks and parent61focusedchecks pass; preceding full1271passed. Reviewedlogger-onlyoverlay preserves106otherpackagedruntimefiles. Workerd72bf3d7SUCCESS; web3869477bdeploying. Laterfeedbackreleasesmustpreserve8249119logger. Finalactualchatcost/naturalworkerrecords remain. [Pass](history/2026-10-19_12-23-38-398945-orchestrator-audit-cache-pricing-rollout.md).
+
+## Feedback package ready; preserving concurrent audit release
+
+Sanitized248filecontext passes exact runtime comparisons/private-value scan and isolated frontend/APIbuilds. Source7a7e04f/a40735dcommitted. A pre-upload guard detected newer audit web3869477bbuilding, so no replacement was uploaded; package now preserves accepted8249119logger. Deploy feedback after that release completes, then verify hosted UI/artifacts. [Pass](history/2026-10-19_12-22-48-991652-orchestrator-feedback-release-prepared.md).
+
+## Release coordination: preserve audit cost patch in concurrent web releases
+
+Audit source8249119and additive034are now accepted; final logger SHA2561891d6905392369dff51a77fb237159cb644787ca2d04f11d81b7f3e99568b2d. Applied033mustremainunchanged. Audit web3869477b/worker d72bf3d7aredeployingthisloggeronpreviouslyverifiedcontexts; they exclude in-progress feedbacksource. Any later feedback web package based on37bec69mustinclude this one reviewed logger file (034applied20261019162300) to retain cache-write cost estimates. Preserve latest approved frontend/auth/feedback overlays. No audit source grants or raw inputs are added.
+
+## Website feedback accepted; publishing protected web
+
+Independent evaluator ACCEPT after112finalchecks and six synthetic browser scenarios. All material findings resolved; final120affected checks and prior1285fullsuite pass. Isolated frontend/runtime package is based on accepted audit37bec69with reviewed auth/feedback overlays, excluding uncommitted audit-cost followup. Live frontend/schema/artifact verification remains. [Review](history/2026-10-19_12-21-28-134703-evaluator-site-feedback-accepted.md).
+
+## Website feedback browser accepted; final release gates
+
+Independent six-scenario browser acceptance passes including dynamic viewport shrink, actual manual history scrolling, uploads/errors, source links and shortcuts. Parent1285fullregressions and final120affected checks/APIbuild pass. Natural team-name navigation and exact generic-team matching were corrected during review, preserving source authorization. Old dismiss script retains unrelated mapgap4pxvs2pxfailure after all assistant checks pass. [Frontend](history/2026-10-19_12-20-25-395437-coder-assistant-feedback-implemented.md) · [Viewport](history/2026-10-19_12-20-25-395437-coder-assistant-viewport-repaired.md) · [Browser](history/2026-10-19_12-20-25-395437-tester-assistant-feedback-browser-accepted.md) · [Integration](history/2026-10-19_12-20-25-395437-orchestrator-feedback-navigation-integrated.md). Final source review/isolated live release remain.
+
+## Model audit live; actual cache-cost follow-up
+
+Worker335f5781andweb8fa379a9areSUCCESS; realchatplanning+streamoutput/usage/IDsand7dayexpiryareverified. Plannerprovidercanarypassedwithoutsource/queuewrites;nativeworkerawaitsnormaltrigger. HostedRLS/ACLverified. ActualAPIreturnsnonzerocachewrites; existingloggerleavescostnull, so additive034+knownratefollowupisbeingtested. Concurrentnewfeedbacksourceisexcludedfromretainedreleasecontexts. [Livecheck](history/2026-10-19_12-19-34-684609-orchestrator-model-audit-live-output-and-cache-cost-followup.md).
+
+## Feedback retrieval fixes implemented; browser acceptance underway
+
+Named-team when/where questions and exact selected-channel summary calls now pass94Discordregressions. Source instructions retain Calendar-first/Miro fallback and distinguish failure from absence; parent67policy/navigation tests pass. Independent browser testing found transient footer clipping during panel growth; frontend correction is underway before acceptance/deployment. Concurrent audit commit37bec69is now locally accepted and its independent rollout must be preserved. [Backend pass](history/2026-10-19_12-16-06-394173-coder-named-team-summary-fixed.md) · [Routing pass](history/2026-10-19_12-16-06-394173-orchestrator-meeting-source-routing-aligned.md).
+
+## Active: website feedback implementation
+
+User-authorized feedback read through personal Gmail and translated into four fixes: meaningful Miro citation titles, bottom composer, named-team meeting retrieval and platform-specific shortcut hints. Loading-square animation retained. Independent planner59checks and inert reproductions confirm authorization/schema gaps. Frontend/backend coders and independent browser tester assigned; concurrent model-audit changes excluded. [Plan](history/2026-10-19_12-13-45-571897-planner-site-feedback-brief.md).
+
+## Model audit locally accepted; private schema applied
+
+Final1271/1271regressions, bothbuilds, independent184tester/57evaluatorchecks and whitespace pass. Encoded credential leak, abort and progress findings are resolved. User confirmed7days. Hosted033isregistered20261019161000and service-role reads both new empty tables200. Web package refreshed to preserve concurrent verified custom-domain login overlays; source/siteauthownershipremainsseparate. Live ACL, service rollout and actual audit-record verification remain. [Release gates](history/2026-10-19_12-12-24-257455-orchestrator-model-audit-schema-and-release-gates.md) · [Independent acceptance](history/2026-10-19_12-12-24-257455-tester-model-audit-independent-accepted.md).
+
+## Domain HTTPS verified healthy
+
+Railway confirms valid/complete certificate and propagated DNS for flock.techatnyu.org. Fresh Chrome login and app report secure/no security issues, with zero insecure resource requests; HTTP redirects to HTTPS and HSTS is present. User-reported unsecured indicator was not reproduced; browser-specific cause remains unconfirmed. No runtime/config changes. [Verification](history/2026-10-19_12-09-32-031241-orchestrator-domain-https-verified.md).
+
+## Live: custom-domain password login repaired
+
+Railway webfa99fb35SUCCESS. flock.techatnyu.org now accepted through explicit SITE_ALLOWED_ORIGINS; PUBLIC_ORIGIN and existing attendance citations preserved. Native Chrome login/protected reads/logout pass on both domains; foreign/cross-site requests remain403. Parent67tests and independent review pass. Sanitized247filepackage changes only two auth modules; frontend/model-audit work excluded. [Hosted receipt](../evidence/domain-login/hosted-release.json) · [Pass](history/2026-10-19_12-08-08-212184-orchestrator-domain-login-live-verified.md).
+
+## Model audit implemented; privacy acceptance pending
+
+Storage/provider/runtime instrumentation is integrated; coder16/116checks and parent52/18checks passed. Independent testing found encoded JSON credential-key leakage in model output; storage correction is underway. Full suite and builds running. No cloud schema/deployment yet, and no live logging claim. [Storage pass](history/2026-10-19_12-07-18-637452-coder-audit-storage-implemented.md) · [Provider pass](history/2026-10-19_12-07-18-637452-coder-provider-model-audit-implemented.md) · [Runtime pass](history/2026-10-19_12-07-18-637452-orchestrator-audit-runtime-integrated.md).
+
+## Custom-domain login fix accepted; rollout pending
+
+New flock.techatnyu.org failed strict origin validation before password check. Explicit web-only SITE_ALLOWED_ORIGINS alias implemented; stable PUBLIC_ORIGIN and attendance provenance preserved. Parent67checks and independent evaluator accept. Sanitized web deployment/live verification pending; concurrent model-audit work excluded. [Review](history/2026-10-19_12-05-53-334854-evaluator-domain-login-alias-accepted.md).
+
+## Active: private planner and chat model audit
+
+User requested model-call/output logging for both agents. Accepted shared service-only audit with7day default retention, durable pre-dispatch records, available tokens/IDs/cost estimates and bounded sanitized output. Two coders own storage/schema versus provider instrumentation; parent wires run/tool correlation. Prompts/uploads/raw source responses/credentials are excluded. Independent verification and rollout remain; no live logging claim. [Plan](history/2026-10-19_12-02-00-424620-planner-chat-and-update-model-audit-plan.md).
+
 ## Live: map refresh repaired and verified
 
 Web9be6ab23isSUCCESS. Production presence reads now return200in1.7–2.3seconds across5consecutive checks, replacing repeated503at5seconds. Bobst card is available in actual protected Chrome with9landmarks/0pageerrors. Shipped frontend bytes match the tested build.
@@ -29,6 +105,14 @@ Projection-local source-check reuse and bounded4waychecks reduce actual-data run
 Actual-data read-only probe succeeded at10.5seconds with7serial source checks, exceeding the5second projection deadline. Browser now coalesces writes behind a pending poll and retries temporary read failures twice without retaining stale authorized activity. Independent browser tests and backend optimization are in progress; no deployment yet.
 
 [Implementation](history/2026-10-19_11-49-45-490394-orchestrator-map-refresh-recovery.md)
+
+## Planner operational audit — October19
+
+Read-only live check at11:47amEastern: all4Railway servicesSUCCESS; update worker active. Database shows277completedDiscord inputs (246since last handoff;162today),80pending, of which78are outside configured worker scope and2eligibleDiscord. Discord discovery completed11:41am;229channels enabled. Current Miro cooldown persists until8pmEastern tonight; successful Miro sync remains unverified.
+
+Current-deployment bounded logs show141completed batches,95tool failures (81atread_map_events),217authorization rejections (206before model progress),14invalid tool calls and941model-request starts. Counts are observations, not a complete cost ledger or failure-rate calculation. Independent57/57checks and inert reproduction confirm provider usage/response IDs are discarded. Billing dashboard failed authentication, so exact dollars are unavailable. No runtime/service/source-scope changes by this audit; concurrent map-refresh work preserved.
+
+[Operational audit](history/2026-10-19_11-49-19-139395-orchestrator-planner-production-health-and-spend-audit.md) · [Independent cost audit](history/2026-10-19_11-49-19-139395-evaluator-planner-cost-accounting-audit.md) · [Evidence](../evidence/planner-health/info.md). Next: diagnose map-read failures, retain scope boundaries, and obtain attributable provider billing before quoting spending.
 
 ## Active: production map auto-refresh repair
 

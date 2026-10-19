@@ -154,3 +154,7 @@ release, exact delivered frontend hashes and private-gate/session status checks.
 No credentials, cookies or original source content are retained.
 
 production-map-refresh/ contains synthetic actual-campus tool-stream/avatar/retry browser evidence, independent reports, regression totals and protected hosted release receipts. Private production screenshots remain outside the repository.
+
+planner-health contains aggregate October19 live worker/source-scope observations and cost-accounting limits. model-audit contains independent source-hashed logging acceptance and sanitized deployment/hosted receipts; model output contents and credentials must never be committed.
+
+site-feedback/ contains synthetic browser receipts/screenshots and bounded hosted-release evidence for readable citations, bottom composer, named-team retrieval and platform shortcuts. Personal correspondence/reference screenshots are excluded.
