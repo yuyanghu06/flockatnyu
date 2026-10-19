@@ -48,7 +48,15 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     if (principal?.liveDiscord?.mode !== 'local-operator' || principal.liveDiscord.guildId !== config?.guildId) fail('forbidden');
     const allowed = principal.allowedSourceIds;
     if (!Array.isArray(allowed) || !allowed.length || allowed.length > 500 || !allowed.every(uuid)) fail('forbidden');
-    const allowedSources = new Set(allowed);
+    let allowedSources = new Set(allowed);
+    if (principal.liveDiscord.transport === 'discord-chat') {
+      const scoped = principal.liveDiscord.allowedSourceIds;
+      if (!Array.isArray(scoped) || !scoped.length || scoped.length > 500 || !scoped.every(uuid)) fail('forbidden');
+      // Full shared sources authorize the other assistant adapters. Discord
+      // reads additionally require the current destination's audience subset.
+      allowedSources = new Set(scoped.filter(sourceId => allowedSources.has(sourceId)));
+      if (!allowedSources.size) fail('forbidden');
+    }
     if (!configured) fail('not_configured');
     if (signal?.aborted) fail('aborted');
     const [policyResult,catalogueResult,metadata,application] = await Promise.all([

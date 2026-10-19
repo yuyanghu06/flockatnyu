@@ -18,7 +18,9 @@ Recent text is capped at 2000 messages / 120000 characters and 4000 characters p
 
 ## Source and audience boundary
 
-The initial Discord runner exposes only live Discord read/summary tools. It omits the website's shared memory, Gmail/Drive, Miro, map and Calendar tools. These omissions keep source material from a broader website conversation out of channel replies. Extending this profile is a separate source/audience decision.
+Discord uses the same shared chat runner and all website assistant adapters: live Discord reads/summaries, Google mail and Drive, Calendar, read-only Miro, map/event tools and attendance, shared memory and bug reports. Tools remain subject to their current configuration, source permissions and action/evidence checks. Google access uses the same explicit `SITE_GOOGLE_ENABLED=true` grant as the website. Miro remains read-only. This parity does not turn a Discord ID or display name into a linked roster identity, original source evidence or permission to bypass a write guard.
+
+The server constructs the principal with the full configured shared-source UUID allowlist for these adapters. It separately puts the audience-safe Discord UUID subset in `principal.liveDiscord.allowedSourceIds`; every Discord read from this transport requires a valid nonempty bounded subset and intersects it with the full allowlist before catalogue or source access. Missing/malformed subsets fail closed. Other adapters retain their existing source gates. The conversation profile binds both lists, the Google grant and exact invoking destination, so a revocation invalidates retained history and prevents publication after the final authorization check.
 
 `chat-access.js` intersects the server source UUID allowlist with the currently enabled eboard/team catalogue and current exclusion/ancestry policy. The invoking destination must be registered and eligible; a disabled parent cannot be bypassed through a thread. Eboard source channels/public threads must have equivalent View Channel and Read Message History overwrite rules to the destination; privately restricted threads are available only as their own destination. Team sources are limited to the exact invoking destination and its registered parent for thread readiness. Equal audience permissions do not add sibling team channels. Missing permission metadata narrows to the invoking channel and eligible parent. All source tools retain their own final policy checks. Source mapping/names/ancestry, policy and invoking-destination changes invalidate transient conversation profiles.
 
@@ -28,7 +30,7 @@ The server-built Discord principal carries a trusted transport marker and the ex
 
 The existing `discord-events` service owns the only Gateway connection. A bounded, detached chat hook handles native message events; model latency does not delay pending-input ingestion/checkpoints. Chat-generated create/update messages are excluded from autonomous input collection while chat is active. Other collector behavior is preserved.
 
-The collector calls the web service's `/internal/discord/authorize` and `/internal/discord/chat` endpoints. They require a separate private bearer secret, reject browser Origin headers, and cannot be authorized by the site password/cookie. Body-supplied principals/actor labels are rejected; the web service constructs them. No secret belongs in browser variables, committed files or model context.
+The collector calls the web service's `/internal/discord/authorize` and `/internal/discord/chat` endpoints. They require a separate private bearer secret, reject browser Origin headers, and cannot be authorized by the site password/cookie. Body-supplied principals/actor labels are rejected; the web service constructs them, including source lists and the Google grant. No secret belongs in browser variables, committed files or model context.
 
 Set private Railway variables on both web and discord-events:
 

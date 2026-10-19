@@ -102,10 +102,11 @@ export function createRuntimeApp({config=readConfig(),auth,services} = {}) {
 export function createRuntimeDiscordChatBridge({services,env=process.env} = {}) {
   const chatConfig=readDiscordChatConfig(env);
   if(!chatConfig.enabled) return createDiscordChatBridge();
-  const access=createDiscordChatAccess({config:{...chatConfig,allowedSourceIds:services.config.allowedSourceIds},
+  const access=createDiscordChatAccess({config:{...chatConfig,allowedSourceIds:services.config.allowedSourceIds,
+    googleEnabled:env.SITE_GOOGLE_ENABLED==='true'},
     store:services.discordStore,client:services.discordClient,memberClient:createDiscordChatClient({config:chatConfig})});
-  // The channel audience is approved for eboard Discord originals only. Shared
-  // website memory and private Google/Miro/map tools never enter this runner.
+  // Discord uses the same assistant adapters and action gates as the website.
+  // Its live Discord source subset remains scoped to the reply destination.
   const runner=createDiscordChatRunner({services,chatConfig});
   const contextLoader=createDiscordChatContextLoader({liveDiscordService:services.liveDiscordService,
     directory:createDiscordUserDirectory({env})});
@@ -114,6 +115,5 @@ export function createRuntimeDiscordChatBridge({services,env=process.env} = {}) 
 }
 
 export function createDiscordChatRunner({services,chatConfig} = {}) {
-  return createChatRunner({config:{...services.config,requestTimeoutMs:chatConfig.requestTimeoutMs},
-    audit:services.audit,provider:services.provider,liveDiscordTools:services.liveDiscordTools});
+  return createChatRunner({...services,config:{...services.config,requestTimeoutMs:chatConfig.requestTimeoutMs}});
 }

@@ -25,7 +25,8 @@ async function readBody(request,maxBytes=48000) {
 }
 
 /** Private bearer-authenticated service transport. Browser sessions and request
- * body principals cannot authorize it. Model execution uses only eboard tools. */
+ * body principals cannot authorize it. Server-owned principals gate the same
+ * assistant adapters as the website, with a separate Discord source subset. */
 export function createDiscordChatBridge({enabled=false,secret='',access,runner,contextLoader,maxConcurrent=3,timeoutMs=180000} = {}) {
   let active=0;
   const configured = enabled && typeof secret === 'string' && secret.length >= 32 && !/[\r\n]/.test(secret);

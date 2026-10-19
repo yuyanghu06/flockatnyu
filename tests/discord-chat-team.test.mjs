@@ -15,13 +15,13 @@ const to='2026-10-19T16:00:00.000Z',from='2026-10-19T15:00:00.000Z',requestId=di
 const permissions=String(1024n|65536n|2048n|(1n<<38n));
 const channel=(id,parent_id,type=0,name=`channel-${id}`)=>({id,guild_id:guildId,parent_id,type,name,permission_overwrites:[],botPermissions:permissions});
 function fixture({thread=false,privateThread=false}={}) {
- const f={destination:thread?ownThread:own,reads:[],plans:[],streams:[],sends:[],audit:[],
+ const f={destination:thread?ownThread:own,catalogueReads:0,reads:[],plans:[],streams:[],sends:[],audit:[],
   policy:{guildId,revision:1,paused:false,excludedChannelIds:[],excludedCategoryIds:[]},
   member:{user:{id:userId,username:'fresh',global_name:'Fresh Member'},roles:[]},roles:[{id:guildId,permissions}],
   metadata:[channel(teamCategory,null,4,'engineering team'),channel(otherTeamCategory,null,4,'marketing team'),channel(EBOARD_CATEGORY_ID,null,4,'eboard'),channel(own,teamCategory),channel(sibling,teamCategory),channel(unrelated,otherTeamCategory),channel(eboard,EBOARD_CATEGORY_ID),channel(LEADERSHIP_CHANNEL_ID,EBOARD_CATEGORY_ID),channel(ownThread,own,privateThread?12:11)],
   catalogue:[{channelId:own,sourceId:source(1)},{channelId:sibling,sourceId:source(2)},{channelId:unrelated,sourceId:source(3)},{channelId:eboard,sourceId:source(4)},{channelId:ownThread,sourceId:source(5)},{channelId:LEADERSHIP_CHANNEL_ID,sourceId:source(6)}].map(r=>({...r,guildId,enabled:true}))};
  f.config={enabled:true,guildId,allowedSourceIds:f.catalogue.map(r=>r.sourceId)};
- f.store={getPolicy:async()=>({status:'ready',policy:structuredClone(f.policy)}),listSyncChannels:async()=>({status:'ready',channels:structuredClone(f.catalogue)})};
+ f.store={getPolicy:async()=>{f.catalogueReads++;return {status:'ready',policy:structuredClone(f.policy)};},listSyncChannels:async()=>{f.catalogueReads++;return {status:'ready',channels:structuredClone(f.catalogue)};}};
  f.client={configured:true,getCurrentApplication:async()=>({flags:1<<18}),getGuildChannels:async()=>f.metadata.filter(r=>r.type<10),getActiveThreads:async()=>({threads:f.metadata.filter(r=>r.type>=10)}),getChannel:async({channelId})=>structuredClone(f.metadata.find(r=>r.id===channelId)),
   getMessages:async args=>{f.reads.push(args);if(args.before!==requestId)return[];return[{id:discordSnowflakeAt('2026-10-19T15:30:00.000Z'),channel_id:args.channelId,guild_id:guildId,author:{id:'301',username:'Another Member'},timestamp:'2026-10-19T15:30:00.000Z',content:'TEAM_ORIGINAL_SYNTHETIC'}];}};
  f.memberClient={getGuildMember:async()=>f.member,getGuildChannelsMetadata:async()=>f.metadata.filter(r=>r.type<10),getGuildRoles:async()=>f.roles,getGuildMetadata:async()=>({id:guildId,owner_id:'999'}),getThreadMember:async()=>({id:ownThread,user_id:userId})};
@@ -32,14 +32,14 @@ function fixture({thread=false,privateThread=false}={}) {
  return f;
 }
 test('own team destination authorizes without sibling or unrelated team source leakage despite identical ACLs',async()=>{
- const f=fixture(),result=await f.authorize();assert.deepEqual(result.principal.allowedSourceIds,[source(1),source(4)]);
+ const f=fixture(),result=await f.authorize();assert.deepEqual(result.principal.liveDiscord.allowedSourceIds,[source(1),source(4)]);
  assert.equal(result.principal.liveDiscord.transport,'discord-chat');assert.equal(result.principal.liveDiscord.invokingChannelId,own);assert.equal(result.actor.userId,userId);
 });
 test('team thread profile includes own thread and parent without sibling team leakage',async()=>{
- const f=fixture({thread:true}),result=await f.authorize();assert.equal(result.threadId,ownThread);assert.deepEqual(result.principal.allowedSourceIds,[source(1),source(4),source(5)]);assert.equal(result.principal.liveDiscord.invokingChannelId,ownThread);
+ const f=fixture({thread:true}),result=await f.authorize();assert.equal(result.threadId,ownThread);assert.deepEqual(result.principal.liveDiscord.allowedSourceIds,[source(1),source(4),source(5)]);assert.equal(result.principal.liveDiscord.invokingChannelId,ownThread);
 });
 test('trusted exact team marker permits preceding-hour live retrieval without model/user team-selection text',async()=>{
- const f=fixture(),principal={id:'trusted',allowedSourceIds:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own}};
+ const f=fixture(),principal={id:'trusted',allowedSourceIds:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own,allowedSourceIds:[source(1),source(4)]}};
  assert.equal((await f.window(principal)).status,'ready');assert.ok(f.reads.length>0);
 });
 test('automatic loader injects the complete previous hour of the invoking team thread',async()=>{
@@ -72,8 +72,8 @@ test('leadership destination remains denied independently of configured blacklis
 for(const [name,marker] of [
  ['website principal',{mode:'local-operator',guildId}],
  ['invoking ID without transport marker',{mode:'local-operator',guildId,invokingChannelId:own}],
- ['transport marker without invoking ID',{mode:'local-operator',guildId,transport:'discord-chat'}],
- ['marker for another destination',{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:sibling}],
+ ['transport marker without invoking ID',{mode:'local-operator',guildId,transport:'discord-chat',allowedSourceIds:[source(1),source(4)]}],
+ ['marker for another destination',{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:sibling,allowedSourceIds:[source(1),source(4)]}],
 ])test(`${name} still needs an explicit current-user team request`,async()=>{
  const f=fixture(),principal={id:'shared',allowedSourceIds:f.config.allowedSourceIds,liveDiscord:marker};
  assert.equal((await f.window(principal)).status,'team_request_required');assert.deepEqual(f.reads,[]);
@@ -88,7 +88,7 @@ test('own-team source profile cannot read sibling or unrelated team even if curr
 });
 test('trusted exact marker cannot bypass current source or exclusion checks',async()=>{
  for(const mode of ['source missing','category excluded']){
-  const f=fixture(),principal={id:'trusted',allowedSourceIds:mode==='source missing'?[source(4)]:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own}};
+  const f=fixture(),principal={id:'trusted',allowedSourceIds:mode==='source missing'?[source(4)]:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own,allowedSourceIds:[source(1),source(4)]}};
   if(mode==='category excluded')f.policy.excludedCategoryIds=[teamCategory];assert.equal((await f.window(principal)).status,'channel_scope_denied');assert.deepEqual(f.reads,[]);
  }
 });
@@ -115,16 +115,28 @@ for(const thread of [false,true])test(`bare ping in own team ${thread?'thread':'
 });
 test('bridge body cannot forge invoking-channel transport marker or a source principal',async()=>{
  const f=fixture(),{bridge,secret,adapter}=teamTransport(f),base={guildId,channelId:own,userId,requestId,sourceProfileId:'forged',conversation:{messages:[{role:'user',content:'hello'}]}};
- try{for(const extra of [{principal:{id:'forged',allowedSourceIds:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own}}},{liveDiscord:{transport:'discord-chat',invokingChannelId:own}},{invokingChannelId:own}]){
+ try{for(const extra of [{principal:{id:'forged',allowedSourceIds:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own,allowedSourceIds:[source(1),source(4)]}}},{liveDiscord:{transport:'discord-chat',invokingChannelId:own,allowedSourceIds:[source(1),source(4)]}},{invokingChannelId:own}]){
   const response=await bridge.handle(new Request('https://synthetic.invalid/internal/discord/chat',{method:'POST',headers:{authorization:`Bearer ${secret}`,'content-type':'application/json'},body:JSON.stringify({...base,...extra})}));assert.equal(response.status,400);
  }assert.deepEqual(f.reads,[]);assert.deepEqual(f.plans,[]);}finally{adapter.stop();}
 });
 test('source profile hash binds destinations even when their eboard source UUID sets are identical',async()=>{
  const f=fixture();f.metadata.push(channel('204',EBOARD_CATEGORY_ID));f.catalogue.push({channelId:'204',sourceId:source(7),guildId,enabled:true});f.config.allowedSourceIds.push(source(7));f.destination=eboard;const first=await f.authorize();f.destination='204';const second=await f.authorize();
- assert.deepEqual(first.principal.allowedSourceIds,second.principal.allowedSourceIds);assert.notEqual(first.sourceProfileId,second.sourceProfileId);
+ assert.deepEqual(first.principal.liveDiscord.allowedSourceIds,second.principal.liveDiscord.allowedSourceIds);assert.notEqual(first.sourceProfileId,second.sourceProfileId);
 });
 test('team member permission revocation after inference prevents answer publication',async()=>{
  const f=fixture(),approved=await f.authorize(),secret='synthetic-team-secret-00000000000000000000000';
  const bridge=createDiscordChatBridge({enabled:true,secret,access:f.access,runner:{run:async({onRecord})=>{onRecord({type:'delta',text:'NEVER_PUBLISH_THIS'});onRecord({type:'done'});f.roles[0].permissions='0';}}});
  const response=await bridge.handle(new Request('https://synthetic.invalid/internal/discord/chat',{method:'POST',headers:{authorization:`Bearer ${secret}`,'content-type':'application/json'},body:JSON.stringify({guildId,channelId:own,userId,requestId,sourceProfileId:approved.sourceProfileId,conversation:{messages:[{role:'user',content:'hello'}]}})}));assert.equal(response.status,409);assert.doesNotMatch(await response.text(),/NEVER_PUBLISH_THIS/);
+});
+for(const [name,nested] of [['missing',undefined],['empty',[]],['malformed',['not-a-uuid']],['not array',source(1)],['over limit',Array(501).fill(source(1))]])test(`Discord transport fails closed for ${name} nested source scope`,async()=>{
+ const f=fixture(),principal={id:'discord:100:300',allowedSourceIds:f.config.allowedSourceIds,liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:own,...(nested===undefined?{}:{allowedSourceIds:nested})}};
+ assert.equal((await f.window(principal)).status,'forbidden');assert.deepEqual(f.reads,[]);assert.equal(f.catalogueReads,0);
+});
+test('Discord nested audience scope intersects the full allowlist before any team source read',async()=>{
+ const f=fixture(),principal={id:'discord:100:300',allowedSourceIds:[source(1),source(4)],liveDiscord:{mode:'local-operator',guildId,transport:'discord-chat',invokingChannelId:sibling,allowedSourceIds:[source(2),source(4)]}};
+ assert.equal((await f.window(principal,{channelId:sibling,userMessage:'Read all team channels'})).status,'channel_scope_denied');assert.deepEqual(f.reads,[]);
+});
+test('global website source grants do not expand nested Discord audience to siblings or leadership',async()=>{
+ const f=fixture(),approved=await f.authorize();assert.deepEqual(approved.principal.allowedSourceIds,f.config.allowedSourceIds);assert.deepEqual(approved.principal.liveDiscord.allowedSourceIds,[source(1),source(4)]);
+ for(const channelId of [sibling,unrelated,LEADERSHIP_CHANNEL_ID]){const result=await f.window(approved.principal,{channelId,userMessage:'Read all team channels'});assert.equal(result.status,'channel_scope_denied');}assert.deepEqual(f.reads,[]);
 });

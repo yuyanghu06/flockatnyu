@@ -30,11 +30,11 @@ const denied=async f=>assert.rejects(f,{message:'discord_chat_denied'});
 test('eboard destination derives fresh actor identity and only intersected eboard sources',async()=>{
   const f=setup(),result=await f.authorize({actor:{userId:'999',displayName:'spoof'},principal:{isAdmin:true}});
   assert.deepEqual(result.actor,{provider:'discord',guildId,userId,username:'fresh_username',displayName:'Fresh Nick'});
-  assert.deepEqual(result.principal.allowedSourceIds,[source(1),source(2)]);
-  assert.equal(result.principal.isAdmin,false);assert.equal(result.threadId,null);
+  assert.deepEqual(result.principal.liveDiscord.allowedSourceIds,[source(1),source(2)]);
+  assert.deepEqual(result.principal.allowedSourceIds,f.state.config.allowedSourceIds);assert.equal(result.principal.isAdmin,false);assert.equal(result.threadId,null);
   assert.deepEqual(f.state.calls[0].userId,userId);
   f.state.config.allowedSourceIds=[source(1),source(3)];
-  assert.deepEqual((await f.authorize()).principal.allowedSourceIds,[source(1)]);
+  assert.deepEqual((await f.authorize()).principal.liveDiscord.allowedSourceIds,[source(1)]);
 });
 for(const [name,mutate] of [
  ['disabled interaction',s=>s.config.enabled=false],['foreign guild',s=>s.config.guildId='999'],
@@ -58,7 +58,7 @@ function threadFixture({privateThread=false}={}) {
  f.state.threads=[f.state.detail];f.state.catalogue.push({channelId:'250',guildId,sourceId:source(4),enabled:true});return f;
 }
 test('public thread authorizes its destination and requires send-in-threads, not send-messages',async()=>{
- const f=threadFixture();f.state.detail.botPermissions=String(1024n|(1n<<38n));const result=await f.authorize();assert.equal(result.threadId,'250');assert.ok(result.principal.allowedSourceIds.includes(source(4)));
+ const f=threadFixture();f.state.detail.botPermissions=String(1024n|(1n<<38n));const result=await f.authorize();assert.equal(result.threadId,'250');assert.ok(result.principal.liveDiscord.allowedSourceIds.includes(source(4)));
  f.state.detail.botPermissions=String(1024n|2048n);await denied(f.authorize);
 });
 for(const [name,change] of [
@@ -70,17 +70,17 @@ for(const [name,change] of [
 
 test('private sibling thread cannot become a broadly readable source',async()=>{
  const f=setup(),privateRow=row('260',channelId,12);f.state.threads.push(privateRow);f.state.catalogue.push({channelId:'260',guildId,sourceId:source(4),enabled:true});
- assert.equal((await f.authorize()).principal.allowedSourceIds.includes(source(4)),false);
+ assert.equal((await f.authorize()).principal.liveDiscord.allowedSourceIds.includes(source(4)),false);
 });
 test('differing view ACL sibling cannot become a source for this destination',async()=>{
  const f=setup();f.state.metadata.find(r=>r.id==='201').permission_overwrites=[{id:'900',type:0,allow:'0',deny:'1024'}];
- assert.deepEqual((await f.authorize()).principal.allowedSourceIds,[source(1)]);
+ assert.deepEqual((await f.authorize()).principal.liveDiscord.allowedSourceIds,[source(1)]);
 });
 test('renamed source channel invalidates retained conversation source profile without revision change',async()=>{
  const f=setup(),before=await f.authorize();f.state.metadata.find(r=>r.id==='201').name='renamed';assert.notEqual((await f.authorize()).sourceProfileId,before.sourceProfileId);
 });
 test('disabled source invalidates retained conversation source profile without revision change',async()=>{
- const f=setup(),before=await f.authorize();f.state.catalogue[1].enabled=false;const after=await f.authorize();assert.notEqual(after.sourceProfileId,before.sourceProfileId);assert.deepEqual(after.principal.allowedSourceIds,[source(1)]);
+ const f=setup(),before=await f.authorize();f.state.catalogue[1].enabled=false;const after=await f.authorize();assert.notEqual(after.sourceProfileId,before.sourceProfileId);assert.deepEqual(after.principal.liveDiscord.allowedSourceIds,[source(1)]);
 });
 test('source mapping changes invalidate retained conversation even if source UUID set stays the same',async()=>{
  const f=setup(),before=await f.authorize();[f.state.catalogue[0].sourceId,f.state.catalogue[1].sourceId]=[f.state.catalogue[1].sourceId,f.state.catalogue[0].sourceId];assert.notEqual((await f.authorize()).sourceProfileId,before.sourceProfileId);
@@ -108,4 +108,13 @@ for(const mode of ['member role revoked','private thread membership revoked'])te
  }}});
  const response=await bridge.handle(new Request('https://flock.invalid/internal/discord/chat',{method:'POST',headers:{authorization:`Bearer ${secret}`,'content-type':'application/json'},body:JSON.stringify({guildId,channelId:f.state.detail.id,userId,requestId:'400',sourceProfileId:initial.sourceProfileId,conversation:{messages:[{role:'user',content:'hello'}],timeZone:'America/New_York'}})}));
  assert.equal(response.status,409);assert.doesNotMatch(await response.text(),/DO NOT PUBLISH/);
+});
+test('full configured source allowlist retains non-Discord UUIDs while nested Discord scope remains audience-safe',async()=>{
+ const f=setup(),miro='00000000-0000-4000-8000-000000000099';f.state.config.allowedSourceIds.push(miro);const approved=await f.authorize();assert.ok(approved.principal.allowedSourceIds.includes(miro));assert.deepEqual(approved.principal.liveDiscord.allowedSourceIds,[source(1),source(2)]);assert.equal(approved.principal.liveDiscord.transport,'discord-chat');assert.equal(approved.principal.liveDiscord.invokingChannelId,channelId);
+});
+test('Google access matches configured website grant only and affects the conversation source profile',async()=>{
+ const f=setup(),initial=await f.authorize({googleAccess:true});assert.notEqual(initial.principal.googleAccess,true);f.state.config.googleEnabled=true;const granted=await f.authorize({googleAccess:false});assert.equal(granted.principal.googleAccess,true);assert.notEqual(granted.sourceProfileId,initial.sourceProfileId);f.state.config.googleEnabled=false;assert.notEqual((await f.authorize()).principal.googleAccess,true);
+});
+test('non-Discord source grant changes invalidate retained conversation even when nested Discord sources are unchanged',async()=>{
+ const f=setup(),initial=await f.authorize();f.state.config.allowedSourceIds.push('00000000-0000-4000-8000-000000000099');const expanded=await f.authorize();assert.deepEqual(expanded.principal.liveDiscord.allowedSourceIds,initial.principal.liveDiscord.allowedSourceIds);assert.notEqual(expanded.sourceProfileId,initial.sourceProfileId);
 });

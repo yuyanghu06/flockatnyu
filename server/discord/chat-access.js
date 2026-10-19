@@ -23,8 +23,9 @@ function viewAccessKey(channel) {
 export function createDiscordChatAccess({config, store, client, memberClient,now=Date.now} = {}) {
   async function authorize({guildId,channelId,userId,signal} = {}) {
     if (!config?.enabled || guildId !== config.guildId || !snowflake(guildId) || !snowflake(channelId) || !snowflake(userId)) throw denied();
-    const allowed = new Set((config.allowedSourceIds || []).filter(uuid));
-    if (!allowed.size) throw denied();
+    const allowed = new Set((Array.isArray(config.allowedSourceIds) ? config.allowedSourceIds : []).filter(uuid));
+    if (!allowed.size || allowed.size > 500) throw denied();
+    const sharedSourceIds = [...allowed].sort(), googleEnabled = config.googleEnabled === true;
     const [policyResult,catalogueResult,metadata,detail,member,active,rawChannels,roles,guild] = await Promise.all([
       store.getPolicy({guildId,signal}),store.listSyncChannels({signal}),client.getGuildChannels({signal}),
       client.getChannel({channelId,signal}),memberClient.getGuildMember({guildId,userId,signal}),
@@ -125,7 +126,8 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
     const sourceIds = [...new Set(selected.map(row=>row.sourceId))].sort();
     if (!sourceIds.length || sourceIds.length > 500) throw denied();
     const transport = 'discord-chat';
-    const sourceProfileId = `discord-chat:${createHash('sha256').update(JSON.stringify([guildId,transport,channelId,policy.revision,
+    const sourceProfileId = `discord-chat:${createHash('sha256').update(JSON.stringify([guildId,transport,channelId,
+      sharedSourceIds,sourceIds,googleEnabled,policy.revision,
       safePolicy.excludedChannelIds,safePolicy.excludedCategoryIds,selected.map(row=>{
         const channel=channels.get(row.channelId);
         return [row.channelId,row.sourceId,channel.name,channel.type,channel.parent_id];
@@ -134,8 +136,9 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
     const actor = {provider:'discord',userId,guildId,
       username:label(member.user.username),displayName:label(member.nick || member.user.global_name || member.user.username)};
     return {sourceProfileId,threadId:threadTypes.has(detail.type)?channelId:null,actor,
-      principal:{id:`discord:${guildId}:${userId}`,isAdmin:false,allowedSourceIds:sourceIds,
-        liveDiscord:{mode:'local-operator',guildId,transport,invokingChannelId:channelId}}};
+      principal:{id:`discord:${guildId}:${userId}`,isAdmin:false,allowedSourceIds:sharedSourceIds,
+        ...(googleEnabled ? {googleAccess:true} : {}),
+        liveDiscord:{mode:'local-operator',guildId,transport,invokingChannelId:channelId,allowedSourceIds:sourceIds}}};
   }
   return Object.freeze({authorize});
 }
