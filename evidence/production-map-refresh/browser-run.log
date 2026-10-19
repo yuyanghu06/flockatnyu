@@ -1,0 +1,11 @@
+PASS Campus loads nine landmarks with empty authorized activity and no failed assets
+PASS Building pointer selection and camera focus preserve complete model bounds
+PASS Completed upsert refreshes a current avatar before the answer finishes without reload or camera reset
+PASS Attendance completion refreshes while minimized; future event attendees stay off current map
+PASS A delayed stale poll and repeated notifications coalesce into one post-save read
+PASS Transient 503 clears stale people and unavailable card then recovers automatically after 1s and 3s retries
+PASS Transient retries stop after two attempts and authorization denial does not retry
+PASS Hidden page defers write refresh and recovers on foreground visibility change
+PASS Map remains aligned and interactive after refresh; overview/orbit changes camera without shifting models
+PASS Disposal aborts pending work, removes overlay and cancels queued retries/listeners
+{"passed":10,"total":10}

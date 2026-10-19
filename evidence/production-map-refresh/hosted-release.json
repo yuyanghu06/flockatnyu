@@ -1,0 +1,74 @@
+{
+  "checkedAt": "2026-10-19T15:56:32.611Z",
+  "deployment": "9be6ab23-9349-4792-b859-d386233a7e35",
+  "sourceCommit": "a303b8a",
+  "before": {
+    "http": 503,
+    "deadlineMs": 5000,
+    "readOnlyLongerBudgetMs": 10477
+  },
+  "reads": [
+    {
+      "attempt": 1,
+      "http": 200,
+      "status": "ok",
+      "ms": 2149,
+      "buildings": 9,
+      "events": 5,
+      "people": 0
+    },
+    {
+      "attempt": 2,
+      "http": 200,
+      "status": "ok",
+      "ms": 2267,
+      "buildings": 9,
+      "events": 5,
+      "people": 0
+    },
+    {
+      "attempt": 3,
+      "http": 200,
+      "status": "ok",
+      "ms": 2149,
+      "buildings": 9,
+      "events": 5,
+      "people": 0
+    },
+    {
+      "attempt": 4,
+      "http": 200,
+      "status": "ok",
+      "ms": 1838,
+      "buildings": 9,
+      "events": 5,
+      "people": 0
+    },
+    {
+      "attempt": 5,
+      "http": 200,
+      "status": "ok",
+      "ms": 1741,
+      "buildings": 9,
+      "events": 5,
+      "people": 0
+    }
+  ],
+  "checks": {
+    "anonymousDenied": true,
+    "indexMatchesBuild": true,
+    "bundleMatchesBuild": true,
+    "health": true,
+    "actualCampusLoaded": true,
+    "bobstCardAvailable": true,
+    "pageErrors": 0,
+    "landmarks": 9
+  },
+  "limitations": [
+    "No real map writes or model calls performed; streamed-write-to-avatar behavior verified independently with synthetic sources in actual-campus Chrome.",
+    "Current active people may be zero; future attendees remain off current map until their activity starts."
+  ],
+  "bundleSha256": "2762400ef07ce1dd9ab55ce317beb6f20730d331955ad127fabd98fd485e0256",
+  "pass": true,
+  "completedAt": "2026-10-19T15:57:04.424Z"
+}

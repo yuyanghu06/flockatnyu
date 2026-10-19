@@ -1,3 +1,10 @@
+## Production map auto-refresh repair
+
+- [x] Diagnose current hosted unavailable card and existing tool-triggered refresh.
+- [x] Optimize request-local source authorization;93focused checks and actual-data default-deadline probes pass.
+- [x] Independent actual-campus Chrome10/10verifies immediate avatars, retry/coalescing/lifecycle and active/future behavior.
+- [x] Deploy protected web9be6ab23, verify5hosted200reads/actualBobstcard, and publish bounded source/evidence.
+
 ## Model-assisted event candidates
 
 - [x] Accept user correction: expose actual authorized catalogue candidates for model resolution.

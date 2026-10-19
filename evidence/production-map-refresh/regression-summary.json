@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "a303b8a",
+  "fullSuite": {
+    "command": "node --test tests/*.test.mjs",
+    "pass": 1209,
+    "fail": 0,
+    "skipped": 0,
+    "durationMs": 99786.18725
+  },
+  "independentEvaluator": {
+    "pass": 122,
+    "fail": 0
+  },
+  "independentTester": {
+    "focusedPass": 41,
+    "backendPass": 93,
+    "browserPass": 10
+  },
+  "builds": [
+    "npm run build",
+    "npm run build:api"
+  ],
+  "sanitizedPackage": {
+    "files": 247,
+    "textFilesScanned": 76,
+    "actualPrivatePatterns": 8,
+    "matches": 0
+  },
+  "scope": "Web projection/read performance and browser refresh; no schema, provider writes, worker changes, geometry or access expansion."
+}

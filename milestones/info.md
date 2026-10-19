@@ -129,3 +129,5 @@ agent-prompts/ is complete for bounded prompt/runtime policy and synthetic-sourc
 miro-quota/ tracks quota-aware official MCP reads and protected chat capacity; runtime/test/release state remains in the rolling snapshot.
 
 chat-production-fixes tracks bounded report reliability, current-chat named attendance and file uploads with isolated release verification.
+
+production-map-refresh/ tracks the current hosted map deadline repair, request-local source checks and automatic avatar refresh acceptance.

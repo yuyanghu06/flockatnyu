@@ -152,3 +152,5 @@ the terminal password page. It contains no credentials, cookies or source data.
 spotlight-background/ records the published background-reply/streaming-button
 release, exact delivered frontend hashes and private-gate/session status checks.
 No credentials, cookies or original source content are retained.
+
+production-map-refresh/ contains synthetic actual-campus tool-stream/avatar/retry browser evidence, independent reports, regression totals and protected hosted release receipts. Private production screenshots remain outside the repository.

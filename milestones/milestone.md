@@ -1,3 +1,41 @@
+## Live: map refresh repaired and verified
+
+Web9be6ab23isSUCCESS. Production presence reads now return200in1.7–2.3seconds across5consecutive checks, replacing repeated503at5seconds. Bobst card is available in actual protected Chrome with9landmarks/0pageerrors. Shipped frontend bytes match the tested build.
+
+Projection-local provider/snapshot reuse and max4concurrency preserve exact source/event/person gates and uncached writes. Agent tool completion automatically refreshes active people; stale polls coalesce and temporary read failures recover with bounded retries. Future attendance retains scheduled timing. Current data has0activepeople; no real activity writes were needed for verification. Full1209regressions, independent122review,10actual-campus browser gates and both builds pass. Sourcea303b8aispushed; this documentation/evidence followup closes the repair.
+
+[Hosted receipt](../evidence/production-map-refresh/hosted-release.json) · [Final pass](history/2026-10-19_11-57-41-407041-orchestrator-map-refresh-live-verified.md)
+
+## Map refresh accepted; deploying protected web fix
+
+Independent actual-campus Chrome10/10gates pass: immediate current avatars before answer completion, minimized attendance, stale-poll coalescing, transient recovery, denial/visibility/disposal and camera continuity. Full1209regressions, evaluator122checks and both builds pass. Sanitized247fileweb package scanned without private values. Deploying only web; hosted verification pending.
+
+[Browser acceptance](history/2026-10-19_11-53-41-850550-tester-map-refresh-browser-accepted.md)
+
+## Map refresh source accepted; browser gate pending
+
+Independent evaluator ACCEPT with122focused checks; full parent regression1209/1209passes. Both builds and whitespace pass. Sanitized247fileweb context has zero matches across8privatepatterns. Actual-data default5second reads succeed; independent Chrome and final protected-web rollout remain.
+
+[Review](history/2026-10-19_11-52-38-439027-evaluator-map-refresh-accepted.md)
+
+## Map read optimization implemented; independent acceptance underway
+
+Projection-local source-check reuse and bounded4waychecks reduce actual-data runtime reads from10.5seconds to4.4seconds cold/1.4seconds warm within existing5second budget. Coder93focused regressions and frontend/API builds pass. Exact participant bindings, fresh later-request policy checks and uncached writes remain. Independent browser/review and protected production deployment pending.
+
+[Backend pass](history/2026-10-19_11-51-48-183355-coder-production-map-read-optimization.md)
+
+## Map refresh recovery implemented; backend optimization in progress
+
+Actual-data read-only probe succeeded at10.5seconds with7serial source checks, exceeding the5second projection deadline. Browser now coalesces writes behind a pending poll and retries temporary read failures twice without retaining stale authorized activity. Independent browser tests and backend optimization are in progress; no deployment yet.
+
+[Implementation](history/2026-10-19_11-49-45-490394-orchestrator-map-refresh-recovery.md)
+
+## Active: production map auto-refresh repair
+
+Production map reads reproducibly return503 at the5second backend deadline. Existing chat map-write completion already requests an immediate refresh, but failed reads clear cards/portraits. Independent planner33checks pass and confirms repeated serial provider authorization work. Optimizing within-request reads while preserving current access/expiry; implementation and hosted acceptance pending.
+
+[Diagnosis](history/2026-10-19_11-48-20-072230-planner-production-map-read-timeout.md)
+
 ## Live: catalogue-based attendance resolution verified
 
 Website48d3baf9 is successful. Attendance lookup now exposes the authorized, date-filtered event catalogue with fuzzy ranking when normalized titles do not resolve. The model selects a clear match using actual title/date/context; incomplete lists, ambiguous references and unsupported short names require clarification. Person identities remain exact, and writes stay bound to returned events and fresh source/revision checks.
