@@ -1,3 +1,14 @@
+## Stable chat tool catalogues
+
+- [x] Inspect wording-based catalogue filters and semantic Calendar orchestration dependencies.
+- [x] Remove Calendar intent gating and attendance catalogue wording filtering; preserve real backend execution/source boundaries.
+- [x] Remove adaptive two-round planning truncation after source reads; retain global call/round/cancellation/dedup limits.
+- [x] Independently verify stable catalogues, backend denials, model completion and truthful receipts;187affectedchecks pass.
+- [x] Reverify actual-model ambiguous-target clarification after initial synthetic failure; production Calendar client/synthetic HTTP confirms0writes and clarification.
+- [x] Run configured-model synthetic semantic cases, full regressions/builds and final review;1596passed/1existingoptional skip, independent133/187, final3criticalreal-provider/production-client cases pass.
+- [x] Deploy reviewed web package, verify access boundaries and publish source/journal; webb495b1fcSUCCESS, live5Calendar/2attendance inventory and auth checks pass; sourceef19398published.
+- Superseded: earlier Calendar parser expansion remains historical; the current direction removes that parser instead of expanding its phrase list.
+
 ## Calendar chat request handling
 
 - [x] Reproduce colloquial and coordinated-action capability failures; inspect existing shared Calendar write path.

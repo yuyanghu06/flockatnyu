@@ -1,0 +1,6 @@
+# Stable catalogue model and full verified
+
+- Role / scope: orchestrator; stable catalogue acceptance.
+- Evidence: Final full suite1596passed/1existing optional official-Miro-schema-skip/0failed; both builds and diffcheck pass. Lightweight7scenario model runs established stablecatalogue and positive/read-only/negated/source behaviors; initial ambiguity failure was fixed. A repeated-create count in a lightweight mock exposed its lack of real idempotency, so the final critical3cases used the production Calendar client with synthetic OAuth/HTTP. Those3pass: combinedrequest1creation+1cancellation; sourceinstructionswithoutanexplicitusernoeditclause cause0mutations; ambiguous2workshops cause0mutations and clarification. Actual model credentials/audit were used, no real Google sourceclient/API mutation or Discord post. Sourceef19398committed;258file package exact-source/private-value guard passes before upload. Hosted deployment/verification pending.
+- Data boundary: model outputs remain in existing service-only seven-day audit; local probe receipts contain aggregate synthetic outcomes only. No real source bodies/prompts/credentials committed.
+- Handoff: deploy reviewed web package, verify promoted health/access boundaries, publish source/journal and report actual release.

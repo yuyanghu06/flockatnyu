@@ -1,3 +1,27 @@
+## Live: stable Calendar and attendance catalogues
+
+Webb495b1fc-3ab2-4f1d-8d25-6d23504005e6isSUCCESS, sourceef19398published to main/codex/dev. Calendar's wording parser is deleted. All5Calendar and configured attendance definitions remain visible; the model interprets the request/conversation. Backend Google permissions, fixed target, argument/revision/idempotency and service source/identity checks remain. Progress reports attempts/receipts; global limits and mechanical stalls bound planning.
+
+Final full1596passed/1existingoptionalMiro-schema skip; independent tester187/evaluator133and both builds pass. Final actual-provider tests with production Calendar client and synthetic HTTP verify exactly1create+1cancel,0source-instruction edits and0ambiguous-target edits plus clarification. These samples establish tested behavior, not a universal model guarantee.
+
+The258fileupload matches reviewed source and passes private-value scan. Promoted health/auth/login/logout/private-bridge checks pass; authenticated live inventory confirms all5Calendar and both attendance tools. No real source mutations or Discord test posts; only web deployed. [Live acceptance](history/2026-10-19_17-48-49-460460-orchestrator-stable-chat-catalogues-live.md).
+
+## Stable catalogues accepted; deployment starting
+
+Sourceef19398removes the Calendar parser and keeps Calendar/configured attendance definitions stable. Final1596fullchecks pass with1existingoptionalMiro-schema skip; independent evaluator133and tester187affectedchecks pass. Actual-provider final tests using the production Calendar client and synthetic HTTP verify exactly1create+1cancel, source-instruction refusal and ambiguous-target clarification. The258filepackage matches source and passes private-value scanning; web rollout/verification is starting. [evaluator](history/2026-10-19_17-46-32-397122-evaluator-stable-catalogues-locally-accepted.md) · [orchestrator](history/2026-10-19_17-46-32-398446-orchestrator-stable-catalogue-model-and-full-verified.md).
+
+## Stable catalogue: backend checks pass; final model retest underway
+
+Independent187affectedchecks pass. Wording-independent stall detection avoids repeated identical proposals without changing tools or user authority. The initial7scenario actual-model probe exposed an ambiguity-selection error with synthetic workshops; prompt/tool descriptions now explicitly require a distinguishing target. Final7scenario retest and final independent review/full suite are underway. No new deployment or real Calendar mutations. [tester](history/2026-10-19_17-44-07-079581-tester-stable-catalogue-backend-verified.md) · [coder](history/2026-10-19_17-44-07-080070-coder-stable-catalogue-stall-budget.md) · [tester](history/2026-10-19_17-44-07-080419-tester-stable-catalogue-stall-recovery-tested.md) · [coder](history/2026-10-19_17-44-07-081106-coder-stable-catalogue-ambiguity-prompt.md).
+
+## Stable catalogue implementation: continuation finding fixed
+
+Calendar parser and wording-based catalogue/execution gating are removed; configured attendance visibility is stable. An independent evaluator caught a remaining two-round limit that truncated Gmail-to-Calendar workflows; that shortcut is now removed. Existing global limits and actual permission/source/revision checks remain. Final independent continuation regression, model semantic cases and release verification are in progress. [coder](history/2026-10-19_17-40-52-703991-coder-stable-catalogue-implementation.md) · [evaluator](history/2026-10-19_17-40-52-704310-evaluator-stable-catalogue-continuation-finding.md) · [coder](history/2026-10-19_17-40-52-704418-coder-stable-catalogue-continuation-fixed.md).
+
+## Active: stable chat tool catalogues
+
+The user approved removing wording-based tool visibility and Calendar intent authorization. Calendar tools and configured attendance tools will stay visible across wording; the model interprets requests while actual Google/source/identity/revision checks remain. Parser-derived progress and Calendar early stops are being replaced with observed execution facts and model completion. No new release claimed yet. [Contract](history/2026-10-19_17-38-30-173912-planner-stable-chat-tool-catalogue.md).
+
 ## Live: Calendar chat requests and combined confirmations repaired
 
 Web760b075f-ec9a-45c8-a3b8-0a1702270928isSUCCESS with source3916599, published to main and codex/dev. Casual please abbreviations, coordinated actions and a current affirmative confirming the same user's pending request now expose the requested write tools. Trusted receipt progress preserves remaining creation after cancellation. Calendar overlaps alone need no extra confirmation.
