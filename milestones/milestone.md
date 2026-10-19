@@ -1,3 +1,23 @@
+## Live: Calendar chat requests and combined confirmations repaired
+
+Web760b075f-ec9a-45c8-a3b8-0a1702270928isSUCCESS with source3916599, published to main and codex/dev. Casual please abbreviations, coordinated actions and a current affirmative confirming the same user's pending request now expose the requested write tools. Trusted receipt progress preserves remaining creation after cancellation. Calendar overlaps alone need no extra confirmation.
+
+Final full suite1590passed/1existingoptionalMiro-schema-skip; independent tester90/evaluator91and parent107focusedchecks pass; both builds pass. Two final actual-provider scenarios with synthetic Calendar clients create and create+cancel successfully and produce matching confirmations. Read-only live checks verify owner access and one supported cancellation target. The259fileupload matches reviewed source and passes private-value scanning.
+
+Post-promotion health/login/authenticated API/logout and private-bridge denial checks pass. Existing fixed-calendar, Google grant, exact read revision and source boundaries remain. No real Calendar mutation or Discord test post; prior failed actions were not replayed. Missing/expired confirmation history needs a new explicit request; duplicate completed proposals may still consume bounded planning rounds. [Live repair receipt](history/2026-10-19_17-09-56-566114-orchestrator-calendar-chat-repair-live.md).
+
+## Calendar repair accepted locally; actual-model workflows pass
+
+The configured model now completes both the casual first request and combined confirmation: list/read as required, create plus cancellation, and final prose confirming both. Synthetic Calendar clients prevented real source writes. Live read-only checks confirm existing owner access and one supported cancellation target with a valid revision. Independent final evaluator91checks and parent107focusedchecks pass; API/frontend builds pass. Final full regressions and refreshed web release are pending. Duplicate completed proposals remain safely skipped and may consume extra planning rounds. [coder](history/2026-10-19_17-06-04-864565-coder-calendar-action-progress.md) · [tester](history/2026-10-19_17-06-04-865459-tester-calendar-action-progress-tested.md) · [evaluator](history/2026-10-19_17-06-04-865834-evaluator-calendar-action-progress-accepted.md) · [orchestrator](history/2026-10-19_17-06-04-866079-orchestrator-calendar-model-workflow-verified.md).
+
+## Calendar repair: live-model completeness check found a second gap
+
+Initial parser/context implementation passed independent86integration/evaluator80checks. The actual configured model, using synthetic Calendar clients only, successfully created for the casual first request but performed only cancellation on the combined follow-up and repeated proposals. The fix is being extended to show trusted resolved actions and remaining receipt-backed work explicitly. No real Calendar/source writes or Discord post occurred. Broader test run is pending; API and frontend builds pass. [coder](history/2026-10-19_17-03-59-260573-coder-calendar-intent-implemented.md) · [tester](history/2026-10-19_17-03-59-260937-tester-calendar-followup-regressions.md) · [evaluator](history/2026-10-19_17-03-59-261077-evaluator-calendar-intent-local-accepted.md) · [orchestrator](history/2026-10-19_17-03-59-261180-orchestrator-calendar-model-completeness-finding.md).
+
+## Active: Calendar chat request handling repair
+
+The reported Discord wording reproduces a capability-gate bug: abbreviated please and affirmative follow-ups are rejected, and coordinated requests expose only the first action. Calendar writes already exist. A bounded parser/context repair and independent integration tests are underway; existing fixed-calendar, Google access and revision safeguards remain required. No live fix claimed yet. [Diagnosis](history/2026-10-19_17-01-08-703125-planner-calendar-chat-intent-diagnosed.md).
+
 ## Working tree published
 
 All seven remaining documentation/example/history paths are committed as a278d5b and atomically published to main and codex/dev. The newer accepted eBoard repair was preserved by fast-forwarding from origin/main first. Parent content/whitespace checks pass; both remote refs matched and the source tree was clean. No runtime deployment or source-data changes. [Publication receipt](history/2026-10-19_15-49-28-669939-orchestrator-working-tree-published.md).

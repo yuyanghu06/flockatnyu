@@ -1,0 +1,15 @@
+# Calendar chat repair deployed and verified
+
+- Acting role / requested scope: orchestrator; fix the reported Calendar chat refusal.
+- Source:391659991c8f92fcf25b3a33cf9aeb021a46ad82. Atomically pushed to main and codex/dev; git ls-remote verified both exact refs before this journal commit.
+- Implemented: casual explicit commands, coordinated actions and bounded immediate confirmation of the user's own pending request. Trusted action progress keeps creation pending after successful cancellation. Overlaps alone no longer request another confirmation or authorize cancellation.
+- Boundaries: fixed Calendar/current Google grant, exact current-request read revisions, unsupported event protections and individual saved receipts remain. Assistant/source text alone cannot authorize edits. Only web was deployed; collector/update-agent configuration and source policies were untouched.
+- Local verification: final full suite1590passed/1existing optional official-Miro-schema test skipped/0failed. Parent107focusedchecks; independent tester90/evaluator91/coder94pass. API and frontend builds and git diff --check pass. Initial full run1582passed/1skip is superseded by final expanded suite.
+- Actual model evidence: final two scenarios use the configured real provider and only synthetic Calendar clients. Colloquial request lists/creates; confirmation lists/reads/cancels/creates; final prose confirms both. Initial incomplete model result was fixed and retested. Completed duplicate proposals are safely skipped but can consume extra planning rounds. Existing private operational auditing remains enabled.
+- Read-only live diagnostic: owner preflight ready, complete November3window, exactly one matching cancellation target, supported event and valid revision. No source bodies retained. Real Calendar mutations and Discord test posts:0.
+- Package:259sanitizedfiles; exact runtime/frontend byte matching, per-file hashes and private-value scan passed. Source guard reran immediately before upload. Remote filesystem hashing was not performed.
+- Deployment: web760b075f-ec9a-45c8-a3b8-0a1702270928 SUCCESS; previous web44718830removed. Build image sha256:790c80de469f47ed8b59d624fcd9099904f62aa3e593597f6a68d9e21d056c7d; Railway /healthz check passed.
+- Post-promotion checks: health200; anonymous API403; missing bridge bearer403; authenticated invalid bridge body400; login303; authenticated API200; logout303. No hosted model mutation or new organic Discord exchange was required/observed for verification.
+- Evidence: ignored aggregate package/model/readcheck/hosted receipts under evidence/discord-chat/calendar-*.json; no credentials, real source payloads or prompts committed.
+- Acceptance: requested software repair is live. Earlier failed Calendar actions were not retroactively replayed. Pending-history confirmations depend on the immediate retained exchange; missing/expired history requires a new explicit request. Broader existing source/provider operational follow-ups remain separate.
+- Handoff: publish this journal and verify final remote refs/clean tree; observe subsequent organic requests without sending a test message.

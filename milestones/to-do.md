@@ -1,3 +1,12 @@
+## Calendar chat request handling
+
+- [x] Reproduce colloquial and coordinated-action capability failures; inspect existing shared Calendar write path.
+- [x] Implement bounded direct commands and pending confirmation handling; preserve source/quote/negation safeguards.
+- [x] Fix model completeness: expose trusted resolved actions and remaining successful-receipt work; both actual-model synthetic scenarios pass.
+- [x] Independently verify create plus cancellation, partial failures and fresh revision reads; final evaluator91checks pass.
+- [x] Deploy reviewed web package and verify live service boundaries; web760b075fSUCCESS, full1590passed/1optional skip, actual-provider synthetic flows and post-promotion access checks pass.
+- Existing failed Calendar actions were not replayed; no new source write or Discord test post was performed. Organic follow-up behavior remains observable on the next member request.
+
 ## Requested working-tree push
 
 - [x] Preserve newer remote work, inspect pending files and commit documentation/example/history changes.
