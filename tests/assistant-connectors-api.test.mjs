@@ -28,7 +28,7 @@ test('explicit local flags determine per-connector access and status remains sec
 });
 test('HTTP tools expose read-only definitions and reject unknown SQL/send/write names',async()=>{
   const liveDiscordTools=createLiveRetrievalTools({guildId:'100'});const app=createApp({config,liveDiscordTools,googleTools:{tools:GOOGLE_TOOLS,execute:options=>executeGoogleTool({...options,client:{configured:false}})}});
-  const list=await (await app.request('http://localhost:3001/api/tools',{},transport)).json();assert.equal(list.policy.discord,'live_only');assert(!Object.hasOwn(list.policy,'supabase'));assert.equal(list.tools.length,8);assert(list.tools.every(t=>!/(send|write|sql|delete|post)/.test(t.name)));
+  const list=await (await app.request('http://localhost:3001/api/tools',{},transport)).json();assert.equal(list.policy.discord,'live_only');assert(!Object.hasOwn(list.policy,'supabase'));assert.equal(list.tools.length,9);assert(list.tools.some(tool=>tool.name==='list_drive_folder'));assert(list.tools.every(t=>!/(send|write|sql|delete|post)/.test(t.name)));
   for(const name of ['execute_sql','send_gmail','delete_drive','post_discord'])assert.equal((await request(app,`/api/tools/${name}`,{body:'{}'})).status,503);
   assert.equal((await request(app,'/api/tools/read_discord_messages',{body:JSON.stringify({url:'https://discord.com/channels/101/200/400'})})).status,400);
   assert.equal((await request(app,'/api/tools/search_gmail',{body:JSON.stringify({query:'budget'})})).status,503);
