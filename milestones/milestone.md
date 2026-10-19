@@ -1,3 +1,7 @@
+## Working tree published
+
+All seven remaining documentation/example/history paths are committed as a278d5b and atomically published to main and codex/dev. The newer accepted eBoard repair was preserved by fast-forwarding from origin/main first. Parent content/whitespace checks pass; both remote refs matched and the source tree was clean. No runtime deployment or source-data changes. [Publication receipt](history/2026-10-19_15-49-28-669939-orchestrator-working-tree-published.md).
+
 ## Live: eBoard discovery availability repaired
 
 Migration035 is applied as20261019193035 through the restored GitHub project-owner dashboard. Exact SQL/function hashes and service-only ACLs are verified. The existing scan completed191/191by15:36ET;229sources are readable, including eboard-chat and eboard-announcements. Leadership and manually disabled sources remain denied.

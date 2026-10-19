@@ -123,3 +123,5 @@ Current Discord tool-parity pass: [All chat tools deployed to Discord and verifi
 October 19 missing-person diagnosis distinguishes fixed-roster limits from observed planner map-read failures and pending inputs; exact pasted-message attribution remains unverified. No source bodies or private provider identities are retained.
 
 The exact-message follow-up records absent retained ingestion metadata and current discovery gates, explicitly separating those facts from earlier author-level planner failures and unproven historical causality.
+
+The working-tree publication receipt records duplicate documentation cleanup, retained historical records, preservation of newer remote work and atomic main/dev publication.

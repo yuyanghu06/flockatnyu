@@ -1,3 +1,8 @@
+## Requested working-tree push
+
+- [x] Preserve newer remote work, inspect pending files and commit documentation/example/history changes.
+- [x] Atomically push main and codex/dev; verify exact source refs and clean tree.
+
 ## eBoard discovery availability repair
 
 - Earlier publication cancellation is superseded by the user’s renewed push request after confirming the bot works.
