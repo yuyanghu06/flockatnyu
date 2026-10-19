@@ -1,3 +1,10 @@
+## Repository README and publication — complete
+
+- [x] Refresh README for live Flock services, access controls, source boundaries and private seven-day audit.
+- [x] Use renamed flockatnyu origin and fast-forward main from dev, preserving newer work.
+- [x] Ignore/untrack evidence while preserving4073localfiles; retain required automated-test fixture under tests/fixtures.
+- [x] Independently review and verify18/18focused tests, README links/scripts and both published branch heads.
+
 ## Completed: website feedback and custom-domain access
 
 - [x] Implement readable citations, bottom composer, platform shortcuts and named-team navigation/summary fixes.

@@ -1,3 +1,9 @@
+## README refreshed; renamed repository and main synchronized
+
+The README now describes live Flock@NYU, its four services, current access/source boundaries and private seven-day model audit. Origin is `https://github.com/yuyanghu06/flockatnyu.git`. User clarified that main should receive dev; atomic fast-forward publication advanced both remote branches to `2bf0b67`, preserving the73newer development commits. Working branch remains `codex/dev`; concurrent Discord implementation is untouched.
+
+`/evidence/` is ignored and4073files were removed from tracking, with all local files verified present. Earlier Git history remains. The required CLI signal fixture moved into tracked tests/fixtures; parent and independent evaluator each passed18/18focused tests. README links/scripts and whitespace passed; historical baseline dependencies are documented. [Accepted publication](history/2026-10-19_12-45-14-851895-orchestrator-flock-repository-publication-verified.md). No deployment was needed for this repository change.
+
 ## Live: website feedback implemented and verified
 
 Protected web deployment 1bea2c28 is successful. The composer stays below the conversation, Miro citations use readable names, shortcut hints match the platform, and named-team navigation/summary calls work with existing access checks. The loading animation is preserved.

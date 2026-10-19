@@ -85,3 +85,5 @@ October 19 favicon export records the verified 1080 × 1080 Downloads PNG; sourc
 The subsequent favicon export revision records square opaque backgrounds, tighter raised edges and verified 1080/4320 Downloads files.
 
 October 19 custom-domain and website feedback passes preserve stable attendance provenance and record translated product requirements only. Private correspondence/reference screenshots are excluded. The final hosted feedback receipt identifies the reviewed release and preserved audit baseline.
+
+October19 README/publication passes record the renamed flockatnyu remote, main fast-forward from dev, local-only evidence policy and required test-fixture relocation. Earlier evidence links may require original local artifacts; prior Git history was not rewritten.

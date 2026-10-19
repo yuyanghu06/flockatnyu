@@ -1,0 +1,10 @@
+# Flock repository publication verified
+
+- Local timestamp / acting role / milestone: 2026-10-19T12:45:14.851895-04:00 / orchestrator integration with independent evaluator / README and repository publication.
+- Requested scope: refresh README, ignore evidence, update main from dev preserving newer work, and use renamed flockatnyu repository.
+- Starting repository state: codex/dev b224d46 was73commits ahead of main a1fd52c; concurrent Discord implementation remained uncommitted.
+- Work performed / changed files: README.md, .gitignore, required CLI fixture/import and tests/fixtures/info.md; removed4073 evidence files from tracking while preserving every local file; origin changed to https://github.com/yuyanghu06/flockatnyu.git. Immutable implementation/review/fix passes precede this entry. Rolling journals updated with only this task's additions staged.
+- Decisions: user explicitly selected updating main from dev. Atomic normal push advanced both branches to 2bf0b67737a3c84a3237f73c2df97fea93a39764; no force push, reset, branch switch, history purge or deployment. Existing Git history still contains older evidence.
+- Checks and evidence: 23relative README links and8npm scripts valid; fixture byte-identical; parent and independent evaluator each ran node --test tests/discord-launch.test.mjs,18/18PASS. Cached whitespace clean. Independent review PASS after fixture preservation and historical-baseline disclosure. Remote heads read back matching 2bf0b67737a3c84a3237f73c2df97fea93a39764; zero indexed evidence files; all4073localfiles present.
+- Resulting state / acceptance: README/evidence cleanup accepted and published to both branches. This journal receipt is a follow-up documentation commit. No live model/source/schema calls, application deployment or runtime source changes.
+- Remaining work and handoff: ongoing Discord transport work is separate and preserved. Historical evidence links/profile comparisons need local artifacts. Continue existing operational follow-ups; no blanket planner reliability fix claimed.
