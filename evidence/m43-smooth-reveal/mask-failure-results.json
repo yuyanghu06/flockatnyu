@@ -1,6 +1,0 @@
-{
-  "pass": true,
-  "staticPixelsUnchanged": true,
-  "enteredAfterRealReadiness": true,
-  "method": "Only preload mask URL replaced with a failing local request because production assets may inline; real image decode/onerror and gate exercised."
-}

@@ -1,1 +1,0 @@
-{"status":"failed","code":"memory_failed","exitCode":1,"runs":11,"channelsProcessed":226,"pages":1250,"messages":108828,"scanned":108828,"embedded":0,"complete":false,"verifiedCollectionComplete":true,"fixedTargetAt":"2026-10-11T21:02:08.697Z","completedSources":216,"classificationError":{"httpStatus":500,"code":"57014","message":"canceling statement due to statement timeout"}}

@@ -4,6 +4,7 @@ node_modules/
 dist/
 build/
 coverage/
+/evidence/
 __pycache__/
 *.pyc
 .env

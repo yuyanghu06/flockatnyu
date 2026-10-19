@@ -1,3 +1,0 @@
-# M20 planning-only008 evaluator
-
-Read-only verdictPASS for local008. Reviewer catalogue/deadline/cancellation3/3, syntax/diff passed; independent23SQL/213integration/APIbuild accepted, immutable007scale reused. Onlypreview/beginSQL180/HTTP185 changes; bodies/signatures/ACL/invoker/16MB/roles/global/finish60/65/ordinary12/runtime600/modelspend untouched.006/007hashes unchanged,0083c6b88d3cc93b64364a0f12821e3525079049030604bf8aceea04832e1fbc1ad. Native~80sfull estimate is extrapolation; root must actualpreviewANDbegin with0model/rawprune beforepilot. No evaluator edits/cloud/model/credentialactions; root serialized report.

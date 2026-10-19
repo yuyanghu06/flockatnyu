@@ -157,7 +157,7 @@ test('CLI invalid command and strict missing configuration exit nonzero without 
 });
 
 test('real CLI SIGTERM aborts an in-flight request and emits a sanitized nonzero result', {timeout:10000}, async () => {
-  const child=spawn(process.execPath,['--import','./evidence/m17-discord-launch/signal-preload.mjs','server/discord/cli.js','preflight'],{env:{PATH:process.env.PATH,NODE_ENV:'production',...env},stdio:['ignore','pipe','pipe']});
+  const child=spawn(process.execPath,['--import','./tests/fixtures/discord-cli-signal-preload.mjs','server/discord/cli.js','preflight'],{env:{PATH:process.env.PATH,NODE_ENV:'production',...env},stdio:['ignore','pipe','pipe']});
   let stdout='',stderr='',sent=false;
   const guard=setTimeout(()=>child.kill('SIGKILL'),8000);
   child.stdout.on('data',data=>{stdout+=data;});

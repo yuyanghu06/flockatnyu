@@ -1,9 +1,0 @@
-# Chat production verification
-
-Sanitized evidence for once-per-message reports, chat-declared named attendance and image/PDF/text uploads. Node/Chrome acceptance uses synthetic originals and storage; model smoke uses actual configured Luna with synthetic inputs. Screenshots contain fixture conversations only. independent-report.json records verified source hashes; model receipts record formats and outcomes without private originals or credentials. Hosted release receipts are added only after actual verification.
-
-Hosted release receipt verifies private gating, exact bundle/new tools, stateless denial, actual requested attendance persistence/future projection and preservation, once-only real user report, and image/text upload response. Hosted-browser evidence uses real authenticated campus and picker/removal without sending files. The model smoke's tool-module hash predates the later conditional-exposure guard; the final backend guards are covered by independent acceptance and actual hosted execution.
-
-Event-resolution follow-up evidence distinguishes formatting-only hosted acceptance from the final candidate-mode review/model tests. event-candidate-model.json uses actual configured Luna and production services with synthetic authorization/storage; typo and semantic alias succeed, ambiguous workshop and unsupported short name clarify with no writes. Similarity only ranks the authorized catalogue; it is not proof of intent.
-
-event-candidates-hosted.json verifies actual production semantic alias selection, saved going/card visibility, unchanged other facts/people/locations and an unsupported acronym clarification with no write. The formatting-only hosted receipt separately verifies AWS Hackday spelling; candidate-review.json and event-candidate-model.json cover the final source.

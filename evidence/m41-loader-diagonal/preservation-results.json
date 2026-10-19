@@ -1,9 +1,0 @@
-{
-  "allBaselineFilesIdentical": true,
-  "sha256": {
-    "assets/branding/tech-at-flat-pastel-v5.svg": "4cb8d5363378a60d694e256b18f874ba27152f93c2e798ffa601ea30f376b60c",
-    "src/map-startup.js": "16daa3ed3e1fa26f1feb492b4d6a52eb2b2d40970e74645f838b02f3cb96ebc4",
-    "src/bootstrap.js": "ae1f6767e2565472e972563c81e6d0b2363627ffa8de34655d7ee81c5888f51a",
-    "index.html": "7a80bb76cd3478c559aca15bc7c34079ce69154a39878ff7a2d23d895e548b68"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "cacheCount": 5,
-  "eventCounts": {
-    "gmail:email_received": 1,
-    "discord:message_created": 4
-  },
-  "discordCreateEditDeleteLifecycleObserved": false
-}

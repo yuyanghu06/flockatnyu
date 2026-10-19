@@ -1,8 +1,0 @@
-{
-  "blockedMainThreadMs": 650,
-  "compositorFramesDuringBlock": 28,
-  "firstCaptureOffsetMs": 195.039794921875,
-  "lastCaptureOffsetMs": 647.123779296875,
-  "logoMeanChannelChangeDuringBlock": 10.505098140495868,
-  "logoMaxChannelChangeDuringBlock": 131
-}

@@ -1,4 +1,10 @@
-# Historical migration fixtures
+# Test fixtures
+
+`discord-cli-signal-preload.mjs` replaces network fetches in the CLI signal test
+with an inert abortable request. It belongs with test source rather than ignored
+local evidence, so the test also works in a fresh checkout.
+
+## Historical migration fixtures
 
 These seven small fixtures preserve only algorithms and SQL-adapter contracts needed to verify immutable historical migrations: legacy-message, legacy-memory, legacy-summaries, legacy-summary-config, legacy-summary-schedule, legacy-summary-store and legacy-live-summary-store.
 
