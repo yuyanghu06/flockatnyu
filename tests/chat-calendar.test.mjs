@@ -19,15 +19,16 @@ function fixture({ status = 'ready', nextPageToken = 'second-page', events = [ev
   return { tools, calls };
 }
 
-test('stateless Calendar tools expose only reads; explicit chat intent separately exposes the requested action', async () => {
+test('Calendar catalogue is stable while stateless writes remain denied and reads enforce Google scope', async () => {
   const { tools, calls } = fixture();
-  assert.deepEqual(tools.tools.map(tool => tool.name), ['list_calendar_events', 'read_calendar_event']);
-  assert(tools.tools.every(tool => tool.readOnly === true));
+  const expected=['list_calendar_events','read_calendar_event','create_calendar_event','update_calendar_event','delete_calendar_event'];
+  assert.deepEqual(tools.tools.map(tool => tool.name), expected);
+  assert(tools.tools.filter(tool=>tool.name.startsWith('list_')||tool.name.startsWith('read_')).every(tool => tool.readOnly === true));
   const explicit=tools.createRequest({userMessage:'Create a calendar event for tomorrow.',principal,operationId:'synthetic-request'});
-  assert.deepEqual(explicit.tools.map(tool=>tool.name),['list_calendar_events','read_calendar_event','create_calendar_event']);
+  assert.deepEqual(explicit.tools.map(tool=>tool.name),expected);
   const ordinary=tools.createRequest({userMessage:'What is on the calendar tomorrow?',principal,operationId:'synthetic-read'});
-  assert.deepEqual(ordinary.tools.map(tool=>tool.name),['list_calendar_events','read_calendar_event']);
-  for (const name of ['upsert_calendar_event', 'cancel_calendar_event', 'delete_calendar_event']) {
+  assert.deepEqual(ordinary.tools.map(tool=>tool.name),expected);
+  for (const name of ['upsert_calendar_event', 'cancel_calendar_event', 'create_calendar_event','update_calendar_event','delete_calendar_event']) {
     assert.equal((await tools.execute({ name, arguments: {}, principal })).status, 'invalid_request');
   }
   for (const actor of [undefined, { id: 'reader' }, { ...principal, googleAccess: false }]) {
@@ -71,16 +72,20 @@ test('Calendar read errors remain errors, and successful empty pages preserve ex
   assert.deepEqual(result.calendarContext.events, []); assert.deepEqual(result.sources, []);
 });
 
-test('protected tool inventory and execution expose Calendar reads through the existing Google adapter', async () => {
+test('protected inventory exposes every Calendar tool while stateless execution retains its read-only boundary', async () => {
   const { tools } = fixture();
   const app = createApp({ config: { production: false }, googleTools: tools, auth: () => principal });
   const inventory = await (await app.request('/api/tools')).json();
-  assert.deepEqual(inventory.tools.map(tool => tool.name), ['list_calendar_events', 'read_calendar_event']);
+  assert.deepEqual(inventory.tools.map(tool => tool.name), ['list_calendar_events','read_calendar_event','create_calendar_event','update_calendar_event','delete_calendar_event']);
   const response = await app.request('/api/tools/read_calendar_event', { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: JSON.stringify({ eventId: event.eventId }) });
   assert.equal(response.status, 200);
   const result = await response.json();
   assert.equal(result.calendarContext.events[0].eventId, event.eventId);
+  for(const name of ['create_calendar_event','update_calendar_event','delete_calendar_event']){
+    const response=await app.request('/api/tools/'+name,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({eventId:event.eventId})});
+    assert(response.status>=400);assert.notEqual((await response.json()).status,'ready');
+  }
   const denied = await app.request('/api/tools/upsert_calendar_event', { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{}' });
   assert.equal(denied.status, 503);

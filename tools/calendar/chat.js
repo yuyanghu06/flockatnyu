@@ -1,6 +1,5 @@
 import { createCalendarTools } from './index.js';
 import { validateArguments } from '../../server/automation/validation.js';
-import { calendarChatIntent } from './chat-intent.js';
 
 const names = new Set(['list_calendar_events', 'read_calendar_event']);
 const string = maxLength => ({type:'string',maxLength});
@@ -9,20 +8,19 @@ const eventFields = {title:{...string(300),minLength:1},description:string(3000)
 const define = (name,description,properties,required) => Object.freeze({name,description,idempotent:true,parameters:{type:'object',additionalProperties:false,properties,required}});
 const writes = Object.freeze([
   define('create_calendar_event','Create an explicitly user-requested event in the fixed club Calendar. Supply concrete title/start/end; all-day end is exclusive. Read the relevant window first to avoid existing duplicates. No attendees, invitations, recurrence or alternate calendar.',eventFields,['title','start','end']),
-  define('update_calendar_event','Patch only explicitly requested fields on an event read with read_calendar_event in this request. Preserve unspecified fields and known ends. A stale revision conflicts rather than overwriting changes. No attendees, recurrence, invitations or alternate calendar.',{eventId:{...string(1024),minLength:5},...eventFields},['eventId']),
-  define('delete_calendar_event','Soft-cancel only the explicitly user-selected event after read_calendar_event in this request. This patches status=cancelled without permanent deletion and requests no guest notifications (sendUpdates=none). Recurring, attendee and special events are unsupported.',{eventId:{...string(1024),minLength:5}},['eventId']),
+  define('update_calendar_event','Patch only explicitly requested fields on an event read with read_calendar_event in this request. Require one uniquely identified event: a generic/partial title matching multiple plausible events is ambiguous. First-result order, ranking and a successful read do not select the target. Clarify before writing unless an exact target or user-supplied distinguishing context identifies one. Preserve unspecified fields and known ends. A stale revision conflicts rather than overwriting changes. No attendees, recurrence, invitations or alternate calendar.',{eventId:{...string(1024),minLength:5},...eventFields},['eventId']),
+  define('delete_calendar_event','Soft-cancel only the explicitly user-selected event after read_calendar_event in this request. Require one uniquely identified event: generic/partial matches, ranking, the first result and a successful read do not resolve multiple plausible targets. Ask which event before cancelling; other one is sufficient only when conversation identifies one distinct prior referent. This patches status=cancelled without permanent deletion and requests no guest notifications (sendUpdates=none). Recurring, attendee and special events are unsupported.',{eventId:{...string(1024),minLength:5}},['eventId']),
 ]);
-const writeActions = {create_calendar_event:'create',update_calendar_event:'update',delete_calendar_event:'delete'};
 const writeMethods = {create_calendar_event:'createChatEvent',update_calendar_event:'updateChatEvent',delete_calendar_event:'cancelChatEvent'};
 const validEventId = value => typeof value==='string' && /^[a-zA-Z0-9_-]{5,1024}$/.test(value);
 const validEtag = value => typeof value==='string' && value.length>0 && value.length<=1000 && !/[\r\n]/.test(value);
 const eligible = principal => typeof principal?.id==='string' && Boolean(principal.id) && principal.googleAccess===true;
 
-// Chat's trusted Google grant permits reads of the configured club calendar.
-// The model cannot supply the calendar target or grant write authority.
+// The stable catalogue lets the model interpret user intent. Backend grants,
+// fixed targeting and request-local revisions still govern actual execution.
 export function createChatCalendarTools({ client, sourceId } = {}) {
   const calendar = createCalendarTools({ client });
-  const tools = calendar.tools.filter(tool => names.has(tool.name));
+  const tools = Object.freeze([...calendar.tools.filter(tool => names.has(tool.name)),...writes]);
   async function read({ name, arguments: args, principal, signal } = {}, readerCalendar=calendar, observe) {
     if (!names.has(name)) return { status: 'invalid_request', sources: [] };
     if (!eligible(principal)) {
@@ -52,13 +50,12 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
         reason: name === 'list_calendar_events' ? 'requested_window_only' : 'single_event_only' },
     };
   }
-  function createRequest({userMessage,messages,principal,operationId}={}) {
-    const actions=new Set(calendarChatIntent(userMessage,{messages})),revisions=new Map();
+  function createRequest({principal,operationId}={}) {
+    const revisions=new Map();
     // Capture only trusted authorization fields. Model arguments cannot select
     // a target, grant access, choose a revision or replace the current user.
     const actor={id:principal?.id,googleAccess:principal?.googleAccess,allowedSourceIds:Array.isArray(principal?.allowedSourceIds)?[...principal.allowedSourceIds]:[]};
     const readerCalendar=createCalendarTools({client:{...client,readEvent:args=>typeof client?.readChatEvent==='function'?client.readChatEvent(args):client.readEvent(args)}});
-    const requestTools=Object.freeze([...tools,...writes.filter(tool=>actions.has(writeActions[tool.name]))]);
     async function execute({name,arguments:args,signal}={}) {
       if(names.has(name)) {
         if(name==='read_calendar_event')revisions.delete(args?.eventId);
@@ -69,7 +66,7 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
       }
       const tool=writes.find(tool=>tool.name===name);
       if(!tool||!validateArguments(args,tool.parameters)||name==='update_calendar_event'&&Object.keys(args).length<2)return {status:'invalid_request',sources:[]};
-      if(!eligible(actor)||!actions.has(writeActions[name]))return {status:'forbidden',sources:[]};
+      if(!eligible(actor))return {status:'forbidden',sources:[]};
       if(!client?.configured)return {status:'not_configured',sources:[]};
       const revision=revisions.get(args.eventId);
       if(name!=='create_calendar_event'&&!revision)return {status:'read_required',sources:[]};
@@ -88,7 +85,7 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
           ...(typeof result.updatedAt==='string'?{updatedAt:result.updatedAt}:{})}};
       }catch{return {status:signal?.aborted?'aborted':'google_unavailable',sources:[]};}
     }
-    return Object.freeze({configured:calendar.configured,tools:requestTools,execute});
+    return Object.freeze({configured:calendar.configured,tools,execute});
   }
   return Object.freeze({ configured: calendar.configured, tools: Object.freeze(tools), execute:read, createRequest });
 }

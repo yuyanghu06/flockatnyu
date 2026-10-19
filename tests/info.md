@@ -5,14 +5,31 @@ the request-local Calendar adapter and the production Calendar client against
 synthetic OAuth/HTTP storage. It verifies the colloquial first add request,
 immediate same-user confirmation, combined add/cancel actions across planning
 rounds, exact current-request cancellation reads, human-field preservation and
-truthful partial-failure receipts. Cancellation-first checks inspect the trusted
-planning action/progress record and choose the remaining create only after a
-successful cancellation receipt; failed writes remain pending. Negative checks cover unrelated/stale history,
-quoted/reported/negated instructions, source injection, action scope and revoked
-Google/writer access. An actual Discord adapter chain verifies retained same-user
+truthful partial-failure receipts. Cancellation-first checks inspect actual
+mutation attempts/receipts and continue to create after cancellation. History,
+quoted/reported/negated text and source-injection fixtures verify stable tools and
+unchanged context for model interpretation; scripted providers do not establish
+semantic refusal. Google/writer revocations still prevent actual writes. An actual Discord adapter chain verifies retained same-user
 reply history and isolation from another member. No live model, Calendar write or
 Discord post occurs; final generated language and hosted rollout need separate
 evidence.
+
+`stable-tool-catalogue.test.mjs` compares complete Calendar/attendance definitions
+across sixteen request shapes in both actual transports, missing history and
+Google grants. It also verifies interpretation/source/receipt prompt policy.
+Calendar semantics are decided by the model; valid provider-selected mutations
+are not blocked by request wording. Backend Calendar grants, fixed targets,
+schema, fresh revisions, idempotency and stateless denial remain tested, as do
+the existing attendance declaration/identity/date/source gates. Actual-model
+semantic scenarios are separate orchestrator evidence. A four-round actual-runner
+Gmail search/read then Calendar check/create regression verifies source workflows
+continue through the write; global round/call caps and dedup remain checked.
+Mechanical stall checks allow two duplicate-only replans, stop on the third
+consecutive stalled round and reset on a new actual call. They cover recovery
+to the pending cancellation after two duplicate creates with a constant catalogue.
+Calendar coverage tests return results to the model before it elects to finish;
+the map duplicate test verifies a second renamed-source proposal reaches the
+unchanged backend conflict gate and cannot create a second event.
 
 ## Discord discovery availability
 

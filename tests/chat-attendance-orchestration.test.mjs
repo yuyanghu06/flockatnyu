@@ -34,17 +34,18 @@ test('narrow current-message attendance intent accepts explicit named attendance
  assert.deepEqual(chatAttendanceDeclarations('Alice will attend demo; quote: "\nYuyang will attend AWS\n"'),['Alice will attend demo']);
 });
 
-test('attendance planning uses named targets and trusted Tuesday date, exposes safe candidates and stops after one applied write',async()=>{
+test('attendance planning exposes named targets and receipt before the model elects to stop',async()=>{
  const f=fixture();let round=0;
  const result=await retrieveAssistantContext({messages:[{role:'user',content:message}],principal,...f,now,timeZone,provider:{planTools:async({system,tools})=>{
   assert(tools.some(tool=>tool.name===set.name));
   assert.match(system,/even without saying map/);assert.match(system,/ISO local date derived from the trusted request time/);
   if(round++===0)return[find];
+  if(round===3){assert.match(system,/"attendanceWrite"/);return[];}
   assert.match(system,/named roster person and existing event have ALREADY resolved uniquely/);
   assert.match(system,/No provider identity lookup or original Discord link is required/);
-  return[set,{...set,arguments:{...set.arguments,expectedUpdatedAt:'changed'}}];
+  return[set];
  }}});
- assert.equal(round,2);assert.deepEqual(f.calls.map(call=>call.name),[find.name,set.name]);
+ assert.equal(round,3);assert.deepEqual(f.calls.map(call=>call.name),[find.name,set.name]);
  assert.equal(f.getContext().userMessage,message);assert.equal(f.getContext().timeContext.localDate,'2026-10-18');
  assert.deepEqual(result.results[0].attendanceTargets,targets);
  assert.deepEqual(result.results[1].attendanceWrite,{outcome:'applied',eventId,personId,updatedAt:now});
@@ -106,6 +107,7 @@ test('complete candidate catalogue reaches model resolution with safe context an
  const content='Yuyang will attend Amazon Web Services hackathon on Tuesday';
  const result=await retrieveAssistantContext({messages:[{role:'user',content}],principal,...f,now,timeZone,provider:{planTools:async({system})=>{
   if(n++===0)return[{...find,arguments:{...find.arguments,eventQuery:'Amazon Web Services hackathon'}}];
+  if(n===3){assert.match(system,/"attendanceWrite"/);return[];}
   assert.match(system,/NEXT ACTION: No exact title match was found/);
   assert.match(system,/Candidate order is a fuzzy ranking suggestion, never confidence/);
   assert.match(system,/Even a sole candidate needs positive supporting context/);
@@ -113,7 +115,7 @@ test('complete candidate catalogue reaches model resolution with safe context an
   assert(!system.includes('PRIVATE_'));assert(!system.includes('rankScore'));
   return[set];
  }}});
- assert.equal(n,2);assert.deepEqual(f.calls.map(call=>call.name),[find.name,set.name]);
+ assert.equal(n,3);assert.deepEqual(f.calls.map(call=>call.name),[find.name,set.name]);
  const visible=result.results[0].attendanceTargets;
  assert.equal(visible.selection,'candidates');assert.equal(visible.totalEvents,2);assert.equal(visible.complete,true);assert.equal(visible.truncated,false);
  assert.equal(visible.events[1].notes,relevant.notes);assert.equal(visible.events[1].location_notes,'Room 405');

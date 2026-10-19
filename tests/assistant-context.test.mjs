@@ -47,9 +47,12 @@ test('catalogue truncation remains visible to model before it chooses a channel'
 test('arbitrary adapter credential fields and unsafe URLs never enter prompts; budgets cap source text',async()=>{
   const h=harness({status:'ready',sources:[source('bad',{url:'javascript:alert(1)'}),...Array.from({length:30},(_,i)=>source(String(i),{url:`https://example.com/${i}`,excerpt:'x'.repeat(5000),authorization:'fixture-secret'}))],coverage:{complete:true}});const r=await h.run();assert(r.sources.length<=12);assert(r.sources.every(s=>s.excerpt.length<=1800));assert(r.sources.reduce((n,s)=>n+s.excerpt.length,0)<=12000);assert(!assistantAnswerPrompt(r).includes('fixture-secret'));assert(!assistantAnswerPrompt(r).includes('javascript:'));
 });
-test('identical calls and pathological plans are bounded to two rounds and four executions',async()=>{
+test('duplicate calls execute once and global planning/call limits bound pathological providers',async()=>{
   const call={name:'read_discord_window',arguments:args};const h=harness({status:'ready',sources:[],coverage:{complete:true}},{plans:[[call,call,call],[call]]});await h.run();assert.equal(h.order.length,1);
   const g=harness({status:'ready',sources:[],coverage:{complete:true}},{plans:[Array.from({length:10},(_,i)=>({name:'search_discord',arguments:{query:String(i)}})),Array.from({length:10},(_,i)=>({name:'search_discord',arguments:{query:String(i+20)}}))]});await g.run();assert.equal(g.order.length,4);
+  const repeated=harness({status:'ready',sources:[],coverage:{complete:true}},{plans:Array.from({length:10},()=>[call])});await repeated.run();assert.equal(repeated.order.length,1);assert.equal(repeated.prompts.length,4,'two duplicate feedback/replans are allowed before the third consecutive stalled round stops');
+  const alternating=harness({status:'ready',sources:[],coverage:{complete:true}},{plans:Array.from({length:20},(_,round)=>[{name:'search_discord',arguments:{query:`query-${Math.floor(round/2)}`}}])});await alternating.run();assert.equal(alternating.order.length,4);assert.equal(alternating.prompts.length,8,'progress resets stalls but never extends the global round cap');
+  const unique=harness({status:'ready',sources:[],coverage:{complete:true}},{plans:Array.from({length:10},(_,round)=>[0,1].map(index=>({name:'search_discord',arguments:{query:`query-${round}-${index}`}})))});await unique.run();assert.equal(unique.order.length,8,'distinct proposals cannot exceed the global call cap');
 });
 test('cancelled tool retrieval does not continue to fallback',async()=>{
   const abort=new AbortController();const h=harness(()=>{abort.abort();return {status:'partial',sources:[]};});await assert.rejects(h.run({signal:abort.signal}),{name:'AbortError'});assert.equal(h.calls(),0);

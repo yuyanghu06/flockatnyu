@@ -257,16 +257,17 @@ test('a bounded duplicate lookup correction retains full identity arguments and 
   assert(result.results.some(row=>row.mapWrite?.outcome==='applied'));
 });
 
-test('one applied single-source map receipt stops additional calls in the same planning round',async()=>{
+test('model sees one applied map receipt while backend rejects a second renamed-source write in the same round',async()=>{
   const f=fixture();let round=0;
   const result=await retrieveAssistantContext({messages,principal,now,timeZone,liveTools:f.liveTools,mapTools:f.mapTools,
-    provider:{planTools:async()=>{
+    provider:{planTools:async({system})=>{
       const call=plan[round++];
       if(round===4)return [{...call,arguments:writeArgs()},{...call,arguments:{...writeArgs(),event:{...writeArgs().event,source_record_id:'renamed_duplicate'}}}];
-      if(!call)throw Error('Planning must stop after the applied receipt');
+      if(!call){assert.match(system,/"mapWrite"/);return [];}
       return [{...call,arguments:call.arguments||writeArgs()}];
     }}});
-  assert.equal(round,4);assert.equal(f.writes(),1);assert.equal(result.results.filter(row=>row.mapWrite).length,1);
+  assert.equal(round,5);assert.equal(f.writes(),1);assert.equal(result.results.filter(row=>row.mapWrite).length,1);
+  assert(result.results.some(row=>row.tool==='upsert_map_event'&&row.status==='conflict'));
 });
 
 test('a request cannot create a second event by renaming the same original source identity',async()=>{
@@ -317,20 +318,20 @@ test('a new current presence cannot be saved with unknown timing',async()=>{
 });
 
 
-test('a complete nonempty Calendar window ends an unsourced weekly schedule without an unnecessary Miro scan',async()=>{
+test('Calendar coverage reaches the model which chooses to finish without an unnecessary Miro scan',async()=>{
   for(const paginated of [false,true]){
     let rounds=0,miroReads=0;
     const context=await retrieveAssistantContext({messages:[{role:'user',content:'What is happening during the week of October 19–25, 2026?'}],principal,now,timeZone,
-      provider:{planTools:async()=>{rounds++;return [{name:'list_calendar_events',arguments:{timeMin:'2026-10-19T04:00:00Z',timeMax:'2026-10-26T04:00:00Z',...(rounds>1?{pageToken:'page2'}:{})}},{name:'list_miro_boards',arguments:{}}];}},
+      provider:{planTools:async({system})=>{rounds++;if(rounds>(paginated?2:1)){assert.match(system,/"windowComplete":true/);return [];}return [{name:'list_calendar_events',arguments:{timeMin:'2026-10-19T04:00:00Z',timeMax:'2026-10-26T04:00:00Z',...(rounds>1?{pageToken:'page2'}:{})}}];}},
       googleTools:{tools:[{name:'list_calendar_events'}],execute:async()=>({status:'ready',sources:[],coverage:{complete:!paginated||rounds===2},calendarContext:{events:rounds===1?[{eventId:'known_event',title:'Workshop'}]:[],nextPageToken:paginated&&rounds===1?'page2':null}})},
       miroTools:{tools:[{name:'list_miro_boards'}],execute:async()=>{miroReads++;return {status:'ready',sources:[]};}}});
-    assert.equal(rounds,paginated?2:1);assert.equal(miroReads,paginated?1:0);
+    assert.equal(rounds,paginated?3:2);assert.equal(miroReads,0);
     assert.equal(context.results.at(-1).calendarContext.windowComplete,true);
   }
 });
 
 
-test('weekly completion never combines different Calendar windows or skips explicit map/memory work',async()=>{
+test('different Calendar windows retain separate coverage and do not truncate later model-selected work',async()=>{
   const first={timeMin:'2026-10-19T04:00:00Z',timeMax:'2026-10-26T04:00:00Z'};
   const other={timeMin:'2026-11-02T05:00:00Z',timeMax:'2026-11-09T05:00:00Z'};
   for(const userMessage of ['What is happening this week?','What is happening on the map this week?','What is happening this week? Save the key dates to memory.']){
@@ -340,7 +341,9 @@ test('weekly completion never combines different Calendar windows or skips expli
       googleTools:{tools:[{name:'list_calendar_events'}],execute:async({arguments:args})=>({status:'ready',sources:[],coverage:{complete:!!args.pageToken||args.timeMin===other.timeMin},calendarContext:{events:args.pageToken||args.timeMin===other.timeMin?[]:[{eventId:'known',title:'Workshop'}],nextPageToken:args.timeMin===first.timeMin&&!args.pageToken?'last':null}})},
       mapTools:{tools:[{name:'read_map_events'}],execute:async()=>({status:'ready',sources:[]})}});
     assert.equal(context.results.filter(row=>row.tool==='list_calendar_events').length,3);
-    assert.equal(context.results.some(row=>row.tool==='read_map_events'),userMessage!=='What is happening this week?');
+    assert.equal(context.results.some(row=>row.tool==='read_map_events'),true);
+    assert.equal(context.results[0].calendarContext.windowComplete,false);
+    assert.equal(context.results[1].calendarContext.windowComplete,true);
   }
 });
 

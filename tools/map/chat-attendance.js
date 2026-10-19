@@ -1,5 +1,4 @@
 import {validateArguments} from '../../server/automation/validation.js';
-import {requestsChatAttendance} from '../../server/map/chat-intent.js';
 
 const text=maxLength=>({type:'string',minLength:1,maxLength});
 export const CHAT_ATTENDANCE_TOOLS=Object.freeze([
@@ -12,7 +11,7 @@ const forbidden=()=>({status:'forbidden',reason:'request_local_attendance_requir
 export function createChatAttendanceTools({service}={}) {
   function createRequest(context={}) {
     const request=service?.createRequest(context);
-    const tools=service?.configured===true&&requestsChatAttendance(context.userMessage)?CHAT_ATTENDANCE_TOOLS:[];
+    const tools=service?.configured===true?CHAT_ATTENDANCE_TOOLS:[];
     async function execute({name,arguments:args,principal,signal}={}) {
       const tool=CHAT_ATTENDANCE_TOOLS.find(row=>row.name===name);
       if(!tool||!validateArguments(args,tool.parameters))return {status:'invalid_request'};

@@ -313,10 +313,10 @@ test('questions, negation, hypotheticals, source quotations, organizer-only and 
   }
 });
 
-test('request tool exposure excludes unrelated bug reports, questions, quotations and unconfigured attendance',async()=>{
+test('configured attendance catalogue stays visible for unrelated messages while declaration execution gates remain',async()=>{
   for(const message of ['The bug reports tool is broken, please fix it','Will Yuyang attend AWS on Tuesday?',
     '"Yuyang will attend AWS on Tuesday"','```\nYuyang will attend AWS on Tuesday\n```','Yuyang will not attend AWS on Tuesday','I will attend AWS on Tuesday']) {
-    const f=fixture({message});assert.deepEqual(f.request.tools,[],message);assert.equal((await f.set()).status,'forbidden');
+    const f=fixture({message});assert.deepEqual(f.request.tools,CHAT_ATTENDANCE_TOOLS,message);assert.equal((await f.set()).status,'forbidden');
   }
   assert.equal(fixture().request.tools.length,2);
   const notConfigured=fixture({publicOrigin:''});assert.deepEqual(notConfigured.request.tools,[]);
