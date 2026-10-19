@@ -12,11 +12,28 @@ export function readSiteAuthConfig(env = process.env) {
     if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || url.pathname !== '/') throw Error();
     origin = url.origin;
   } catch { throw new Error('site_origin_invalid'); }
+  // Explicit login aliases do not change the stable PUBLIC_ORIGIN used by
+  // existing chat-attendance provenance shared with the update worker.
+  const allowedOrigins = [origin];
+  const aliases = env.SITE_ALLOWED_ORIGINS?.trim();
+  if (aliases) {
+    try {
+      const entries = aliases.split(',');
+      if (aliases.length > 4096 || entries.length > 16) throw Error();
+      for (const entry of entries) {
+        const value = entry.trim(), url = new URL(value);
+        if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash
+          || url.pathname !== '/' || url.hostname.includes('*')
+          || ![url.origin, `${url.origin}/`].includes(value)) throw Error();
+        if (!allowedOrigins.includes(url.origin)) allowedOrigins.push(url.origin);
+      }
+    } catch { throw new Error('site_allowed_origins_invalid'); }
+  }
   const password = env.SITE_ACCESS_PASSWORD || '', signingSecret = env.SITE_SESSION_SECRET || '';
   if (password.length < 12 || password.length > 1024 || signingSecret.length < 32 || signingSecret.length > 1024 || /[\r\n\0]/.test(password + signingSecret)) throw new Error('site_credentials_invalid');
   const ttlSeconds = Number(env.SITE_SESSION_TTL_SECONDS || 43200);
   if (!Number.isInteger(ttlSeconds) || ttlSeconds < 300 || ttlSeconds > 86400) throw new Error('site_session_duration_invalid');
-  return Object.freeze({origin, password, signingSecret, ttlSeconds,
+  return Object.freeze({origin, allowedOrigins:Object.freeze(allowedOrigins), password, signingSecret, ttlSeconds,
     googleEnabled: env.SITE_GOOGLE_ENABLED === 'true', discordEnabled: env.SITE_DISCORD_ENABLED === 'true'});
 }
 
@@ -24,10 +41,11 @@ export function readSiteAuthConfig(env = process.env) {
  * The existing local-operator label is a backend capability protocol; this
  * production grant comes only from a verified session and server configuration. */
 export function createSiteAuth({config = readSiteAuthConfig(), apiConfig, now = Date.now} = {}) {
+  const allowsOrigin = origin => (config.allowedOrigins || [config.origin]).includes(origin);
   const sign = body => createHmac('sha256', config.signingSecret).update(body).digest('base64url');
   const cookie = (token, maxAge) => `${COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
   function session(request) {
-    if (unsafe(request.method) && request.headers.get('origin') !== config.origin) return false;
+    if (unsafe(request.method) && !allowsOrigin(request.headers.get('origin'))) return false;
     if (request.headers.get('sec-fetch-site') === 'cross-site') return false;
     const matches = (request.headers.get('cookie') || '').split(';').map(v => v.trim()).filter(v => v.startsWith(`${COOKIE}=`));
     if (matches.length !== 1) return false;
@@ -54,6 +72,6 @@ export function createSiteAuth({config = readSiteAuthConfig(), apiConfig, now = 
       ...(config.googleEnabled ? {googleAccess:true} : {}),
       ...(config.discordEnabled && /^[0-9]{1,20}$/.test(apiConfig?.discordGuildId) ? {liveDiscord:{mode:'local-operator', guildId:apiConfig.discordGuildId}} : {})};
   }
-  return Object.freeze({config, session, issue, principal, clearCookie:() => cookie('', 0),
+  return Object.freeze({config, allowsOrigin, session, issue, principal, clearCookie:() => cookie('', 0),
     auth: c => principal(c.req.raw)});
 }

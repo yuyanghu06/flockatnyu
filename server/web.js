@@ -90,7 +90,7 @@ export function createWebsite({apiApp, siteAuth, miroTokenBroker, distRoot = res
     if (url.pathname === '/login') {
       if (request.method === 'GET') return reply(page, 200, {'content-type':'text/html; charset=utf-8'});
       if (request.method !== 'POST') return reply('Method not allowed', 405);
-      if (request.headers.get('origin') !== siteAuth.config.origin || request.headers.get('sec-fetch-site') === 'cross-site') return reply('Access denied', 403);
+      if (!siteAuth.allowsOrigin(request.headers.get('origin')) || request.headers.get('sec-fetch-site') === 'cross-site') return reply('Access denied', 403);
       if (now() >= reset) {attempts = 0; reset = now() + 900000;}
       if (request.headers.get('content-type')?.split(';')[0] !== 'application/x-www-form-urlencoded') return reply('Invalid request', 400);
       const reader = request.body?.getReader();

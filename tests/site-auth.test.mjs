@@ -35,6 +35,42 @@ test('configured production passwords accept twelve or fourteen characters while
   for (const SITE_SESSION_SECRET of ['', 'x'.repeat(31)]) assert.throws(() => readSiteAuthConfig({...env, NODE_ENV:'production', SITE_ACCESS_PASSWORD:'x'.repeat(14), SITE_SESSION_SECRET}), /site_credentials_invalid/);
 });
 
+test('explicit domain aliases support login and authenticated writes without changing canonical provenance', async () => {
+  const alias = 'https://custom.example';
+  const config = readSiteAuthConfig({...env, SITE_ALLOWED_ORIGINS:` ${alias},${env.PUBLIC_ORIGIN}/ `});
+  assert.equal(config.origin, env.PUBLIC_ORIGIN);
+  assert.deepEqual(config.allowedOrigins, [env.PUBLIC_ORIGIN, alias]);
+  assert.ok(Object.isFrozen(config.allowedOrigins));
+  const siteAuth = createSiteAuth({config, apiConfig});
+  const app = createWebsite({siteAuth, apiApp:{fetch:async req => Response.json(siteAuth.principal(req))}});
+  for (const origin of [env.PUBLIC_ORIGIN, alias]) {
+    const login = await app.fetch(new Request(`${origin}/login`, {method:'POST', headers:{origin, 'sec-fetch-site':'same-origin', 'content-type':'application/x-www-form-urlencoded'}, body:new URLSearchParams({password:env.SITE_ACCESS_PASSWORD})}));
+    assert.equal(login.status, 303);
+    const setCookie = login.headers.get('set-cookie');
+    assert.ok(setCookie); assert.ok(!setCookie.includes('Domain='));
+    const cookie = setCookie.split(';')[0];
+    const write = await app.fetch(new Request(`${origin}/api/chat`, {method:'POST', headers:{origin, cookie, 'sec-fetch-site':'same-origin'}}));
+    assert.equal(write.status, 200); assert.equal((await write.json()).isAdmin, false);
+    for (const headers of [{origin:'https://evil.example'}, {origin:'https://custom.example.evil.example'}, {origin:'null'}, {}, {origin, 'sec-fetch-site':'cross-site'}]) {
+      const denied = await app.fetch(new Request(`${origin}/api/chat`, {method:'POST', headers:{cookie,...headers}}));
+      assert.equal(denied.status, 403);
+      const deniedLogin = await app.fetch(new Request(`${origin}/login`, {method:'POST', headers:{'content-type':'application/x-www-form-urlencoded',...headers}, body:new URLSearchParams({password:env.SITE_ACCESS_PASSWORD})}));
+      assert.equal(deniedLogin.status, 403); assert.equal(deniedLogin.headers.get('set-cookie'), null);
+    }
+    assert.equal((await app.fetch(new Request(`${origin}/api/status`))).status, 403);
+  }
+  const defaultAuth = createSiteAuth({config:readSiteAuthConfig(env), apiConfig});
+  assert.equal(defaultAuth.allowsOrigin(alias), false);
+  assert.equal(defaultAuth.allowsOrigin(env.PUBLIC_ORIGIN), true);
+});
+
+test('domain alias configuration rejects broad, malformed and insecure values', () => {
+  for (const SITE_ALLOWED_ORIGINS of ['*', 'https://*.example', 'http://custom.example', 'https://user:pass@custom.example', 'https://custom.example/path', 'https://custom.example?x=1', 'https://custom.example#x', 'https://custom.example,', ',https://custom.example', 'https:custom.example', 'https://custom.\nexample', 'null', Array(17).fill('https://custom.example').join(','), 'x'.repeat(4097)]) {
+    assert.throws(() => readSiteAuthConfig({...env, SITE_ALLOWED_ORIGINS}), /site_allowed_origins_invalid/, SITE_ALLOWED_ORIGINS);
+  }
+  for (const SITE_ALLOWED_ORIGINS of ['', '  ']) assert.deepEqual(readSiteAuthConfig({...env, SITE_ALLOWED_ORIGINS}).allowedOrigins, [env.PUBLIC_ORIGIN]);
+});
+
 test('signed session resists forgery, expires, excludes secrets, and grants only configured nonadmin access', () => {
   let time = 1000000000000;
   const auth = createSiteAuth({config:readSiteAuthConfig(env), apiConfig, now:() => time});
