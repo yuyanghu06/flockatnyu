@@ -2,8 +2,8 @@
 
 - [x] Reproduce exact failed searches against live Google reads and identify cursor validation failure.
 - [x] Fix client, shared tool schema and chat result projection together; retain bounded input and access checks.
-- [x] Independently test punctuation, exact continuation, malformed input and coverage; final 97 parent checks and independent review/39 corrected integration checks pass. Final full rerun in progress.
-- [ ] Verify real reads, deploy web and update-agent, check hosted search behavior and publish source/journal.
+- [x] Independently test punctuation, exact continuation, malformed input and coverage; final 97 parent checks and independent review/39 corrected integration checks pass. Final full run: 1616 passed, one existing optional skip, zero failures.
+- [x] Verify real reads, deploy web and update-agent, check hosted search/continuation, malformed and anonymous denials, native model schema and publish source/journal. Both services SUCCESS; exact query and next page return five files each.
 
 ## Live Calendar refusal: native continuation
 

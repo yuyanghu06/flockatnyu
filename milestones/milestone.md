@@ -1,3 +1,9 @@
+## Live: Drive search pagination repaired
+
+The reported searches failed because valid Google next-page tokens containing `~` and `!` were rejected and their file results discarded. Source 0fcb963 now shares a bounded opaque-cursor contract across the Google client, tool schema and chat projection. Collector package boundaries and Google/source permissions remain intact.
+
+Web 07130de4-96d3-4742-bbbf-b750894972e1 and update-agent 9549077c-5265-4a92-9ae5-f8713417b0a4 are SUCCESS. The exact formerly failed hosted query and its continuation each return five files. Invalid-token/anonymous denials, updated-schema model chat, site auth and stable Calendar/attendance inventory pass. Final full suite: 1616 passed, one existing optional Miro-schema skip, zero failed; 97 parent focused checks, independent review and both builds pass. No business-source writes or Discord posts during verification. [Live acceptance](history/2026-10-19_18-19-45-067943-orchestrator-drive-search-repair-live.md).
+
 ## Drive cursor repair accepted locally
 
 Independent final review and collector checks pass. Parent final 97 focused checks and both builds pass; the full rerun is underway after fixing the two packaging failures found by the initial broad run. Guarded web/update-agent packages match source and pass private-value scans. Real failed queries and continuations return results. Hosted rollout and final verification are next. [Review](history/2026-10-19_18-17-00-190487-evaluator-drive-cursors-locally-accepted.md).
