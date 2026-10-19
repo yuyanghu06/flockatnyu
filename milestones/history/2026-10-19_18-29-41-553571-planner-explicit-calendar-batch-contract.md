@@ -1,0 +1,10 @@
+# Explicit Calendar batch execution contract
+
+- Local timestamp / acting role / milestone: 2026-10-19_18-29-41-553571 / planner and orchestrator / explicit action completion.
+- Requested scope: user reports excessive permission questions and repeated reads instead of completing a source-backed all-day Calendar batch.
+- Starting state: clean codex/dev at 557eb5d; Drive opaque-cursor repair live.
+- Work performed: root privately inspected exact model/audit outcomes for screenshot requests. Latest run 47e8ec67 completed Drive search/read and five Calendar page reads across eight rounds; no Calendar mutation was proposed or attempted. Earlier replies re-asked settled title, blank-row and literal-date choices. Independent planner traced eight-call/eight-round bounds, five-event Calendar pages, no batch tool and a separate 1800-character source projection cutoff despite 12000-character Drive exports.
+- Decisions: retain backend/source/account/fixed-target controls. Make explicit requests sufficient to proceed, carry prior user constraints across follow-ups, isolate uncertain rows, and report skipped blanks after completing clear rows. Provide a bounded chat-only all-day batch tool with internal complete per-date duplicate checks and per-item receipts so the batch fits existing outer limits. Preserve up to the supported Drive text bound in a separate allowlisted context and disclose first-sheet/truncation scope. Avoid global budget increases or wording-based permission parsers.
+- Checks and evidence: exact private audit classifications above; source content/prompts/credentials/raw responses are not retained in this journal. Planner read-only findings agree with runtime control flow. Coder/tester assigned exclusive implementation/test ownership.
+- Resulting state: implementation and independent regressions in progress; no new deployment or replay of the original Calendar request.
+- Remaining work: actual-model full-catalogue tests through all eligible batch receipts, independent review, complete regressions/builds, guarded rollout and hosted verification.

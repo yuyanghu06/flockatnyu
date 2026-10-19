@@ -1,3 +1,19 @@
+## Explicit action repair accepted for release
+
+Final full suite passes 1633 tests with one existing optional Miro-schema skip and zero failures; both builds pass. Actual-model workflows and independent final review pass. Sanitized web 259/shared-worker 54 file packages match the reviewed source and pass private-value scans. Guarded deployment is next. [Final checks](history/2026-10-19_18-36-51-346657-orchestrator-explicit-action-release-verified.md).
+
+## Explicit action model workflows pass; rollout preparation
+
+Frozen prompts and bounded batch execution pass actual configured-model/full-27-tool tests: first request and settled follow-up each create 14 exact synthetic all-day events without questions; existing retry and read-only source injection create none. Final timed-add retest performs its fresh duplicate read; combined create/cancel still completes both actions. Independent tester 101/final reviewer 44 checks and both builds pass. Full regressions and guarded release preparation are in progress; no original Calendar request has been replayed. [coder](history/2026-10-19_18-36-27-322511-coder-explicit-action-code-frozen.md) · [tester](history/2026-10-19_18-36-27-323752-tester-explicit-action-final-regressions.md) · [evaluator](history/2026-10-19_18-36-27-324170-evaluator-explicit-action-final-local-acceptance.md) · [model tests](history/2026-10-19_18-36-27-324558-orchestrator-explicit-action-model-workflows-verified.md).
+
+## Explicit all-day batch implementation locally accepted
+
+The six-tool Calendar catalogue now includes bounded all-day batch creation with internal duplicate checks and per-item outcomes; supported Drive text reaches planning beyond the former excerpt cutoff. Autonomy-first prompts carry settled instructions across follow-ups and complete clear rows before reporting skipped rows. Independent tester 100/evaluator 136 checks pass. Actual configured-model first-request and correction-history cases each create all 14 synthetic eligible rows, preserve literal dates/titles, ask no approval and perform no semester scans. Final remaining model, regression and release checks are pending. [coder](history/2026-10-19_18-34-28-999470-coder-explicit-all-day-batch-implemented.md) · [tester](history/2026-10-19_18-34-28-999920-tester-explicit-batch-regressions-verified.md) · [evaluator](history/2026-10-19_18-34-29-000033-evaluator-explicit-batch-locally-reviewed.md).
+
+## Active: explicit action completion and Calendar batches
+
+Exact screenshot audit confirms repeated Calendar pagination consumed eight rounds with no write attempt. The bot also re-asked instructions already settled by the user. A concise autonomy-first prompt, bounded all-day Calendar batch execution and full supported Drive text projection are underway. Existing source/account/target/revision boundaries remain. [Contract](history/2026-10-19_18-29-41-553571-planner-explicit-calendar-batch-contract.md).
+
 ## Live: Drive search pagination repaired
 
 The reported searches failed because valid Google next-page tokens containing `~` and `!` were rejected and their file results discarded. Source 0fcb963 now shares a bounded opaque-cursor contract across the Google client, tool schema and chat projection. Collector package boundaries and Google/source permissions remain intact.

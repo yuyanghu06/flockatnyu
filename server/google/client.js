@@ -216,8 +216,11 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
       } else return [{ ...source, contentStatus: 'unsupported_binary' }];
       if (file.mimeType === 'text/html') content = htmlText(content);
       const firstSheet = file.mimeType === 'application/vnd.google-apps.spreadsheet';
-      return [{ ...source, excerpt: `${firstSheet ? '[FIRST SHEET ONLY; partial spreadsheet export]\n' : ''}${clean(content, 12000) || '(No text content)'}`,
-        contentStatus: firstSheet ? 'first_sheet_only' : 'text_only_bounded', partial: true }];
+      const sourceText=clean(content,content.length),boundedText=sourceText.slice(0,12000),contentStatus=firstSheet?'first_sheet_only':'text_only_bounded';
+      const driveContent={fileId:id,url:source.url,contentStatus,text:boundedText,
+        textTruncated:sourceText.length>12000,firstSheetOnly:firstSheet,partial:true};
+      return {sources:[{...source,excerpt:`${firstSheet?'[FIRST SHEET ONLY; partial spreadsheet export]\n':''}${boundedText||'(No text content)'}`,
+        contentStatus,textTruncated:driveContent.textTruncated,partial:true}],driveContent};
     });
   }
 

@@ -121,3 +121,14 @@ test('native chat preserves opaque search and nested folder cursors into exact c
   assert.deepEqual(output.find(row=>row.type==='meta').retrieval.map(row=>row.status),['ready','empty']);
  }
 });
+
+test('bounded Drive content preserves honest first-sheet and text-truncation flags through final answer context',async()=>{
+ const f=fixture({mime:'application/vnd.google-apps.spreadsheet',body:'Name,Date\n'+'Synthetic padding,'.repeat(900)+'OUTSIDE_TEXT_BOUND'});
+ await records(await post(f.app,'Read the takeover spreadsheet.'));
+ const system=f.answerInputs[0].system;
+ const data=JSON.parse(system.split('\nUNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n')[1]);
+ const read=data.results.find(result=>result.tool==='read_drive');assert(read.driveContent);
+ assert.equal(read.driveContent.firstSheetOnly,true);assert.equal(read.driveContent.contentStatus,'first_sheet_only');assert.equal(read.driveContent.textTruncated,true);assert.equal(read.driveContent.partial,true);
+ assert(read.driveContent.text.length<=12000);assert(!read.driveContent.text.includes('OUTSIDE_TEXT_BOUND'));
+ assert(system.includes('FIRST SHEET ONLY'));assert(system.includes('first_sheet_only'));
+});

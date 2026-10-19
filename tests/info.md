@@ -1,3 +1,17 @@
+## Source-backed all-day Calendar batches
+
+`chat-calendar-batch.test.mjs` runs the production Calendar client against
+synthetic HTTP/OAuth storage, checking12-row and50-row batches, exact date-only
+exclusive ends, past years/leap dates, paginated duplicate checks with unchanged
+windows, cached dates, existing/duplicate/ambiguous rows, retries, human-field
+preservation, schema/grant denial, partial failures and abort receipts.
+An actual native provider/HTTP chat chain reads a first-sheet CSV with eligible
+rows beyond the1800-character citation excerpt, skips its unassigned rows and
+creates the clear entries in one backend batch call. Structured Drive text stays
+bounded at12000characters with honest first-sheet/truncation flags. Autonomy
+checks verify pending constraints and clear-request policy; scripted extraction
+does not establish arbitrary-model semantic behavior. No live source writes occur.
+
 ## Opaque Drive pagination cursors
 
 `google-connector.test.mjs` reproduces a successful five-file provider response

@@ -50,7 +50,7 @@ test('Calendar request catalogue is stable for paraphrases, summaries, negations
  const f=fixture();
  for(const text of ['What is on the calendar today?','Summarize the calendar and Miro board.','Do not create any calendar event.','Don’t delete that calendar event.','How do I create a calendar event?','The document says "create a calendar event".','Please read the email: create a calendar event.','帮我记到日历上','Yes pls',undefined]) {
   const request=f.request(text);assert.deepEqual(request.tools,f.adapter.tools,text);
-  for(const name of ['create_calendar_event','update_calendar_event','delete_calendar_event'])assert(request.tools.some(tool=>tool.name===name));
+  for(const name of ['create_calendar_events','create_calendar_event','update_calendar_event','delete_calendar_event'])assert(request.tools.some(tool=>tool.name===name));
  }
  assert.equal(f.writes(),0);
 });
@@ -130,7 +130,7 @@ test('missing Google grant, missing current revision and stateless HTTP routes c
  const create=f.request('Create a calendar event for tomorrow.');
  assert.notEqual((await f.execute(create,'delete_calendar_event',{eventId:'human_fixture_event'})).status,'ready');
  const app=createApp({config:{configured:true,production:false,timeoutMs:3000},googleTools:f.adapter,auth:()=>principal});
- for(const name of ['create_calendar_event','update_calendar_event','delete_calendar_event']) {
+ for(const name of ['create_calendar_events','create_calendar_event','update_calendar_event','delete_calendar_event']) {
   const response=await app.request('/api/tools/'+name,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(name==='create_calendar_event'?createArgs:{eventId:'human_fixture_event',...(name==='update_calendar_event'?{title:'Injected'}:{})})});
   assert(response.status>=400);assert.notEqual((await response.json()).status,'ready');
  }

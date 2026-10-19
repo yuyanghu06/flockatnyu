@@ -1,0 +1,10 @@
+# Configured-model explicit action workflows verified
+
+- Local timestamp / acting role / milestone: 2026-10-19_18-36-27-324558 / orchestrator / explicit action completion.
+- Requested scope: test the screenshot-style workflow through actual successful outcomes, not prompt-text assertions alone.
+- Starting state: source/tool implementation frozen with independent local acceptance.
+- Work performed: actual configured model, complete 27-tool catalogue and production Google/Calendar clients against synthetic HTTP fixtures. No live business-source client existed in these mutation tests; audit retains model outcomes under the authorized private policy.
+- Checks and evidence: clear first request (run 30d550de) and refusal/settled-clarification follow-up (0ecfe94d) each read the first-sheet CSV and create all 14 eligible events via one batch call. Exact titles, 2026 dates and exclusive next-day ends matched; every new event unique; zero permission questions, future promises or semester scans; real result links and first-sheet disclosure present. Retry seeded with existing events (465bf2c2) performs zero writes and reconciles existing matches. Read-only source-injection case (3fe63d35) performs zero writes. Each uses the complete 27-tool catalogue and finishes without errors.
+- Regression finding and correction: initial timed single-create probe omitted a fresh duplicate read. Strengthened that specific prompt requirement; final run 1267d141 lists Calendar first, creates exactly one timed event and confirms its canonical link without clarification or future promise. Combined timed create/cancel run 3310a795 completed both requested outcomes with fresh target read and no extra approval.
+- Resulting state: configured-model acceptance passed for the tested cases, not a universal model guarantee. API/frontend builds pass; final full suite and guarded package preparation underway.
+- Remaining work: collect full regressions, promote web/shared worker assets, verify source text and current catalogue/model schema read-only, publish exact release receipts.

@@ -102,7 +102,7 @@ for(const transport of ['discord','http']) {
 test('pure affirmative and a prior assistant suggestion retain all Calendar tools for model interpretation',async()=>{
  const f=fixture();await f.run(conversation('Yes pls'),{batches:[[create]]});
  assert.equal(f.writes().length,1);assert.equal(f.events.get(oldId).status,'confirmed');
- for(const name of ['create_calendar_event','update_calendar_event','delete_calendar_event'])assert(f.plans[0].tools.some(tool=>tool.name===name));
+ for(const name of ['create_calendar_events','create_calendar_event','update_calendar_event','delete_calendar_event'])assert(f.plans[0].tools.some(tool=>tool.name===name));
  assert.deepEqual(f.plans[0].messages,conversation('Yes pls'));
 });
 
@@ -184,7 +184,7 @@ const negativeCases=[
 for(const [label,messages] of negativeCases)test(`${label} preserves catalogue and original context for model interpretation`,async()=>{
  const f=fixture();await f.run(messages,{batches:[[read]]});
  assert.equal(f.writes().length,0);assert.deepEqual(f.events.get(oldId),f.original);assert.equal(f.events.size,1);
- assert(f.plans.every(plan=>['create_calendar_event','update_calendar_event','delete_calendar_event'].every(name=>plan.tools.some(tool=>tool.name===name))));
+ assert(f.plans.every(plan=>['create_calendar_events','create_calendar_event','update_calendar_event','delete_calendar_event'].every(name=>plan.tools.some(tool=>tool.name===name))));
  assert.deepEqual(f.plans[0].messages,messages);assert.match(f.plans[0].system,/untrusted/i);
  assert.deepEqual(calendarProgress(f.plans[0]).attempts,[]);
  assert.doesNotMatch(f.answers[0].system,/"calendarWrite":/);
