@@ -1,3 +1,9 @@
+## Live: normal Flockbot pings
+
+Normal @Flockbot mentions (including bare pings) and verified bot-reply followups now call the shared assistant in enabled nonblacklisted eboard channels/eligible threads. Caller ID/username/display name, the preceding hour of same-channel/thread originals and26SupabaseDiscordID/namepairs are injected automatically. No /ask handler or registration remains. Source/member/audience checks, request-local context and no-archive boundaries are preserved.
+
+Web5307cf5eandcollector9dc39afeareSUCCESS/RUNNING. Hosted realmemberaccess200/blacklist403 and private bridge/browser boundaries pass; actual live context loader and private model canary200/done/READY pass without a Discord post. Collector reportschatready/Gatewayresumed/listening after an initial retry. Final367affected, independent173chain and81reviewchecks pass; prior1461fullregressions retained. Sourcea620270pushed. Organic Discord delivery has not yet been observed; transient history/replay and text limits are documented. [Live pass](history/2026-10-19_13-12-13-306459-orchestrator-discord-ping-live-verified.md) · [Guide](../docs/discord-chat.md).
+
 ## Persistent password login is live
 
 Password sign-in remembers this browser for 30 days across restarts, with matching signed expiry, Max-Age and Expires. Logout clears the host-only Secure/HttpOnly/Strict cookie. Existing users need to sign in once again to replace their 12-hour cookie. Parent and independent evaluator each passed 30/30 focused tests.

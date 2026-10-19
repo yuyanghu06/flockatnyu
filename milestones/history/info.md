@@ -89,3 +89,5 @@ October 19 custom-domain and website feedback passes preserve stable attendance 
 October19 README/publication passes record the renamed flockatnyu remote, main fast-forward from dev, local-only evidence policy and required test-fixture relocation. Earlier evidence links may require original local artifacts; prior Git history was not rewritten.
 
 October19 persistent-auth passes track30dayhost-onlypasswordsessions, independent30/30securitychecks and auth-onlywebrollout; prior12hourcookies require one re-login.
+
+Normal-ping Discord release entries record source/identity/hour/name context, user cancellation of /ask, independent acceptance and verified web/collector deployment. Evidence artifacts remain local; organic delivery is distinguished from private model and synthetic transport checks.

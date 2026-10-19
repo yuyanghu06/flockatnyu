@@ -1,3 +1,12 @@
+## Discord normal pings — implemented and deployed
+
+- [x] Add automatic mention/reply calls in nonblacklisted eboard destinations, including bare pings.
+- [x] Inject verified actor, previous-hour originals and exact Discord ID/name directory; preserve source/audience/retention boundaries.
+- [x] Remove /ask and command registration as requested.
+- [x] Independently test/review and deploy verified web/collector releases with private hosted model/access checks.
+- [ ] Observe first organic member mention/reply delivery; no Discord test post was sent.
+- [ ] Retained Discord indexing remains a separate undecided proposal.
+
 ## Persistent password login
 
 - [x] Implement30daypersistentcookie with matching signed/browser expiry, logout and configurable shorterTTL.

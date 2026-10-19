@@ -133,3 +133,5 @@ chat-production-fixes tracks bounded report reliability, current-chat named atte
 production-map-refresh/ tracks the current hosted map deadline repair, request-local source checks and automatic avatar refresh acceptance.
 
 model-audit tracks private accounting/output logs for both chat and planner with seven-day retention and no source-input archive; independent and live acceptance remain in the rolling snapshot.
+
+`discord-chat/` tracks approved eboard interaction implementation, shared assistant execution and trusted caller context.
