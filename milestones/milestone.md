@@ -1,3 +1,11 @@
+## Tech@NYU Drive skill deployed
+
+Chat and the autonomous planner automatically load the same maintained skill before their first selected Drive execution, retain it for that request/batch and keep unrelated prompts unchanged. The skill uses program context and authorized live folder navigation; the private research index stays outside Git. Local Codex installation also validates. Source d27d980/af38a51 is pushed.
+
+Web8fe2f730 and update-agentcee0928f are SUCCESS. Hosted chat login/catalogue/root-read/logout pass; all30 root entries are readable and anonymous tools remain403. Final full suite1485/1485, API build and independent tester/evaluator acceptance pass. Exact sanitized packages contain the skill; remote file hashing was unavailable because SSH requires a registered key. No key or source allowlist was changed, and no model canary/source write was triggered for verification.
+
+**Planner access remains blocked:** its deployed Google OAuth is configured, but the existing Google source gate is false because the configured Gmail source is outside the shared allowlist. Drive tools and automatic guidance are deployed; successful planner Drive reads are not claimed. Next action is resolve that separate source policy while preserving read/write boundaries. [Live verification](history/2026-10-19_13-20-50-100452-orchestrator-drive-skill-live-verified.md) · [Guide](../docs/drive-skill.md).
+
 ## Live: normal Flockbot pings
 
 Normal @Flockbot mentions (including bare pings) and verified bot-reply followups now call the shared assistant in enabled nonblacklisted eboard channels/eligible threads. Caller ID/username/display name, the preceding hour of same-channel/thread originals and26SupabaseDiscordID/namepairs are injected automatically. No /ask handler or registration remains. Source/member/audience checks, request-local context and no-archive boundaries are preserved.

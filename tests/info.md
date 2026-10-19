@@ -431,3 +431,5 @@ assistant-presentation.test.mjs covers readable Miro citation labels and platfor
 Discord interaction tests cover shared runner/trusted context, adapter/client/delivery/config, independent access/bridge and Gateway failure paths using synthetic clients. They distinguish process-local replay prevention from durable delivery, and verify that channel replies cannot load website memory/private tools.
 
 Automatic context tests exercise live-service pagination with synthetic originals, the exact one-hour boundary, full-text/partial coverage and two-column identity-directory selection; no live messages or credentials appear in evidence.
+
+Drive skill acceptance covers selective pre-execution activation in both chat and the autonomous planner, request/batch isolation, live directory pagination, access denial and exact deployment asset inclusion. Connector fixtures retain bounded exports and prevent Drive reads from granting Calendar/map write provenance.

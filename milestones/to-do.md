@@ -1,3 +1,13 @@
+## Drive skill runtime integration
+
+- [x] Research the monodrive and keep the complete metadata inventory private.
+- [x] Create shared skill, install local Codex copy and inject before selected chat/planner Drive calls.
+- [x] Add read-only folder navigation, preserve source/write gates and package exact skill asset.
+- [x] Independently test/review; pass1485 full regressions and verify live web/worker releases.
+- [x] Verify authenticated chat root access and anonymous denial without model/source writes.
+- [ ] Separate access policy: resolve planner Google source allowlisting; current deployed gate denies Drive reads. No new source grant is implied by the skill.
+- Superseded: earlier prompt deferral; user explicitly authorized the implemented skill.
+
 ## Discord normal pings — implemented and deployed
 
 - [x] Add automatic mention/reply calls in nonblacklisted eboard destinations, including bare pings.

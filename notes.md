@@ -85,3 +85,13 @@ preserve all source permissions and avoid credentials in code/history/output.
 ## 2026-10-18 — Future personal memory and accounts
 
 - Consider persistent per-user memory, such as the user's name and preferences, identified through Chrome/browser local storage or Google OAuth account creation. These are alternative approaches to explore; no account model has been selected. Saved future idea only, not authorization to implement accounts, OAuth consent, browser identity tracking or personal-memory storage during the current chat bug/attendance fix.
+
+## 2026-10-19 — Canonical club Drive and future agent context
+
+- The user identified https://drive.google.com/drive/folders/1-B4dcmsHYTpneVgxzuzVKB_QaO0R3SkQ (tech@nyu) as the club's monodrive for everything. School-account connector access is authorized for this structural research.
+- Use the club's programs—Tech Treks, Dev Team, Mentorship, Buildathon and Startup Week—to understand and navigate that hierarchy. The requested direction is a complete file/folder navigation index supplied as context for Drive tool calls by chat and the autonomous planner/update agent. Prompt/runtime changes remain deferred under the user's earlier instruction; this research does not activate injection or change Drive files/sharing.
+- Private metadata-only research inventory and program navigation are saved outside Git at ~/.local/share/flock-drive-research/2026-10-19/. Document bodies and credential values are excluded. Current labels can be stale; preserve explicit semester/year, archive/template distinctions, real parent IDs and tentative-source wording. School research visibility is separate from runtime source authorization.
+
+## 2026-10-19 — Drive skill implementation authorized
+
+The user approved a new Tech@NYU Drive access skill, automatically injected for chat and autonomous planner Drive tool calls. This supersedes the earlier prompt-change deferral for this bounded read-only integration. Private research inventory stays outside Git; use current runtime account permissions and live metadata.

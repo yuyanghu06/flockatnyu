@@ -77,3 +77,5 @@ Discord and website share `chat-runner.js`; `chat-request-context.js` validates 
 `chat-discord-context.js` validates the request-local previous-hour message envelope and the explicitly approved Discord ID/name directory; both are serialized as source/label data in both model phases.
 
 Password website sessions default to30days and persist across browser restarts. site-auth.js sets matching signed expiry, Max-Age and Expires; logout clears the host-only Secure/HttpOnly/Strict cookie. SITE_SESSION_TTL_SECONDS supports300–2592000seconds; exact-lifetime validation means changing TTL invalidates older cookies.
+
+`skills/` contains shared server-owned domain guidance. Chat and the autonomous planner selectively load the same Tech@NYU Drive skill before Drive execution; the runtime Google account remains separate from desktop MCP connections and private research files.

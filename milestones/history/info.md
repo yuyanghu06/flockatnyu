@@ -91,3 +91,5 @@ October19 README/publication passes record the renamed flockatnyu remote, main f
 October19 persistent-auth passes track30dayhost-onlypasswordsessions, independent30/30securitychecks and auth-onlywebrollout; prior12hourcookies require one re-login.
 
 Normal-ping Discord release entries record source/identity/hour/name context, user cancellation of /ask, independent acceptance and verified web/collector deployment. Evidence artifacts remain local; organic delivery is distinguished from private model and synthetic transport checks.
+
+Drive skill passes record private structural research, shared maintained guidance, pre-execution chat/planner activation, independent acceptance and live release verification. Hosted chat access is verified; planner Google allowlisting remains a separate blocked access policy, not a prompt failure. Private inventories and receipts remain outside Git.
