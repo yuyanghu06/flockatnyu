@@ -12,6 +12,18 @@ export const MAP_LOCAL_PLAN_PERSON_ID = '135da55d-f0e8-5fec-50e9-c860f26e6782';
 const localPlanBuildings = new Set(['stern-school-of-business','courant-institute','nyu-john-a-paulson-center']);
 export const createMapPresenceStore = createMapEventStore;
 const unavailable=()=>({status:'unavailable',buildings:[]});
+// Fixed worker count bounds external checks without queueing one promise per row.
+async function concurrentChecks(items,check,signal) {
+  const results=new Array(items.length);let next=0;
+  await Promise.all(Array.from({length:Math.min(4,items.length)},async()=>{
+    while(next<items.length) {
+      if(signal.aborted)throw Error('map_work_cancelled');
+      const index=next++;results[index]=await check(items[index]);
+      if(signal.aborted)throw Error('map_work_cancelled');
+    }
+  }));
+  return results;
+}
 const personView=person=>({id:person.id,displayName:person.display_name,avatarUrl:safeAvatar(person.avatar_url)});
 
 /** Source UUID allowlisting and positive current policy are independently required. */
@@ -23,6 +35,7 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
       try {return await boundedWork(async readSignal=>{
         const date=new Date(now()),at=date.getTime();if(!Number.isFinite(at))throw Error('invalid_observation_time');
         const observedAt=date.toISOString(),data=validateSnapshot(await store.read({observedAt,signal:readSignal}));
+        const readAuthorizer=typeof authorizeSource?.createReadScope==='function'?authorizeSource.createReadScope({principal,snapshot:data,signal:readSignal}):authorizeSource;
         const eventTypes=new Map(data.event_types.map(type=>[type.code,type]));
         const people=new Map(data.people.filter(p=>uuid(p.id)&&text(p.display_name,200,1)&&p.is_trackable===true).map(p=>[p.id,p]));
         const linksByEvent=new Map(),peopleByEvent=new Map();
@@ -49,11 +62,12 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
               ['presence','personal_plan'].includes(event.kind)&&event.source_id===id&&event.source_url===url&&
               (!row.presence_basis||row.presence_basis==='planned');
           }
-          return authorizeProvenance({principal,sourceId:id,sourceUrl:url,buildingId:building.id,eventId:event.id,personId:person?.id,authorizeSource,signal:readSignal});
+          return authorizeProvenance({principal,sourceId:id,sourceUrl:url,buildingId:building.id,eventId:event.id,personId:person?.id,authorizeSource:readAuthorizer,signal:readSignal});
         };
         const current=new Map(buildings.map(b=>[b.id,new Map()])),labelTimes=new WeakMap();
         // Stable order makes overlap labels independent of database row order.
         const sorted=[...data.events].sort((a,b)=>(Date.parse(b.reported_at)||0)-(Date.parse(a.reported_at)||0)||String(a.id).localeCompare(String(b.id)));
+        const projections=[];
         for(const event of sorted) {
           if(!validEvent(event)||!['confirmed','tentative'].includes(event.status))continue;
           const window=eventWindow(event);if(window.unknown||window.end<=at)continue;
@@ -64,45 +78,48 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
           }
           const links=(linksByEvent.get(event.id)??[]).filter(b=>text(b.location_notes,500));
           for(const link of links) {
-            const building=byBuilding.get(link.building_id);if(!building||!await authorize(event,event,building))continue;
-            const authorized=[];
-            for(const candidate of candidates) {
-              if(!await authorize(candidate.p,event,building,candidate.person))continue;
-              authorized.push(candidate);
+            const building=byBuilding.get(link.building_id);
+            if(building)projections.push({event,window,candidates,link,building});
+          }
+        }
+        const visible=await concurrentChecks(projections,({event,building})=>authorize(event,event,building),readSignal);
+        for(let index=0;index<projections.length;index++) {
+          if(!visible[index])continue;
+          const {event,window,candidates,link,building}=projections[index];
+          const permissions=await concurrentChecks(candidates,candidate=>authorize(candidate.p,event,building,candidate.person),readSignal);
+          const authorized=candidates.filter((_,index)=>permissions[index]);
+          const displayParticipants=event.kind==='scheduled_event'?authorized:authorized.filter(({effective})=>effective.end>at);
+          if(event.kind==='scheduled_event'||displayParticipants.length>0) {
+            const type=eventTypes.get(event.type_id);
+            const presentation={id:event.id,title:event.name,type:{code:type.code,name:type.name,iconKey:type.icon_key},startsAt:new Date(window.start).toISOString(),endsAt:new Date(window.end).toISOString(),
+              timeZone:event.time_zone,allDay:window.allDay,status:event.status,description:event.notes,location:link.location_notes,url:event.url||null,
+              attendees:displayParticipants.map(({person})=>personView(person)).sort((a,b)=>a.id.localeCompare(b.id))};
+            if(building.events.length>=2000)throw Error('map_projection_too_large');reserve(presentation);building.events.push(presentation);
+          }
+          if(event.status!=='confirmed')continue;
+          for(const {person,p,effective} of authorized) {
+            if(p.attendance_status!=='going'||effective.end<=at)continue;
+            const times={validFrom:new Date(effective.start).toISOString(),expiresAt:new Date(effective.end).toISOString()};
+            if(effective.start>at) {
+              if(upcoming.length>=50000)throw Error('map_projection_too_large');
+              const plan={personId:person.id,buildingId:building.id,buildingName:building.name,label:p.label,...times};reserve(plan);upcoming.push(plan);continue;
             }
-            const displayParticipants=event.kind==='scheduled_event'?authorized:authorized.filter(({effective})=>effective.end>at);
-            if(event.kind==='scheduled_event'||displayParticipants.length>0) {
-              const type=eventTypes.get(event.type_id);
-              const presentation={id:event.id,title:event.name,type:{code:type.code,name:type.name,iconKey:type.icon_key},startsAt:new Date(window.start).toISOString(),endsAt:new Date(window.end).toISOString(),
-                timeZone:event.time_zone,allDay:window.allDay,status:event.status,description:event.notes,location:link.location_notes,url:event.url||null,
-                attendees:displayParticipants.map(({person})=>personView(person)).sort((a,b)=>a.id.localeCompare(b.id))};
-              if(building.events.length>=2000)throw Error('map_projection_too_large');reserve(presentation);building.events.push(presentation);
-            }
-            if(event.status!=='confirmed')continue;
-            for(const {person,p,effective} of authorized) {
-              if(p.attendance_status!=='going'||effective.end<=at)continue;
-              const times={validFrom:new Date(effective.start).toISOString(),expiresAt:new Date(effective.end).toISOString()};
-              if(effective.start>at) {
-                if(upcoming.length>=50000)throw Error('map_projection_too_large');
-                const plan={personId:person.id,buildingId:building.id,buildingName:building.name,label:p.label,...times};reserve(plan);upcoming.push(plan);continue;
+            const activity={eventId:event.id,name:event.name,label:p.label,...times};
+            const existing=current.get(building.id).get(person.id);
+            if(existing) {
+              reserve(activity);
+              existing.activities.push(activity);
+              if(p.label.trim()!==''&&(existing.label.trim()===''||Date.parse(p.reported_at)>labelTimes.get(existing))) {
+                existing.label=p.label;
+                labelTimes.set(existing,Date.parse(p.reported_at));
               }
-              const activity={eventId:event.id,name:event.name,label:p.label,...times};
-              const existing=current.get(building.id).get(person.id);
-              if(existing) {
-                reserve(activity);
-                existing.activities.push(activity);
-                if(p.label.trim()!==''&&(existing.label.trim()===''||Date.parse(p.reported_at)>labelTimes.get(existing))) {
-                  existing.label=p.label;
-                  labelTimes.set(existing,Date.parse(p.reported_at));
-                }
-                existing.validFrom=new Date(Math.min(Date.parse(existing.validFrom),effective.start)).toISOString();
-                existing.expiresAt=new Date(Math.max(Date.parse(existing.expiresAt),effective.end)).toISOString();
-                continue;
-              }
-              const occupant={...personView(person),status:p.presence_basis==='reported'?'self_reported':'planned',label:p.label,...times,activities:[activity]};
-              labelTimes.set(occupant,p.label.trim()!==''?Date.parse(p.reported_at):-Infinity);
-              if(current.get(building.id).size>=500)throw Error('map_projection_too_large');reserve(occupant);current.get(building.id).set(person.id,occupant);
+              existing.validFrom=new Date(Math.min(Date.parse(existing.validFrom),effective.start)).toISOString();
+              existing.expiresAt=new Date(Math.max(Date.parse(existing.expiresAt),effective.end)).toISOString();
+              continue;
             }
+            const occupant={...personView(person),status:p.presence_basis==='reported'?'self_reported':'planned',label:p.label,...times,activities:[activity]};
+            labelTimes.set(occupant,p.label.trim()!==''?Date.parse(p.reported_at):-Infinity);
+            if(current.get(building.id).size>=500)throw Error('map_projection_too_large');reserve(occupant);current.get(building.id).set(person.id,occupant);
           }
         }
         for(const building of buildings) {

@@ -110,6 +110,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
   let groups = [], source = [], disposed = false, pending = null;
   let catalogue = [], buildingCardKey = null, buildingCardId = null;
   let status = 'loading', observedAt = null, requestController = null;
+  let refreshQueued = false, retryTimer = null, retryAttempt = 0;
   const layout = createPresenceLayout(renderer, camera);
   let previousFrame = performance.now();
   const listeners = new AbortController();
@@ -610,13 +611,18 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
   function refresh() {
     if (disposed) return Promise.resolve();
     if (pending) return pending;
+    clearTimeout(retryTimer); retryTimer = null; refreshQueued = false;
     const controller = new AbortController();
     requestController = controller;
     const timeout = setTimeout(() => controller.abort(), 8000);
+    let retryable = true;
     pending = (async () => {
       try {
         const response = await fetchImpl('/api/map/presence', { signal: controller.signal, headers: { Accept: 'application/json' }, cache: 'no-store', credentials: 'same-origin' });
-        if (!response.ok) throw new Error('Map presence unavailable');
+        if (!response.ok) {
+          retryable = response.status >= 500 || [408, 429].includes(response.status);
+          throw new Error('Map presence unavailable');
+        }
         const payload = await response.json();
         const next = parsePresence(payload);
         const nextUpcoming = payload.upcoming === undefined ? [] : parseUpcoming(payload.upcoming);
@@ -633,6 +639,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
         upcomingAvailable = Array.isArray(payload.upcoming);
         observedAt = typeof payload.observedAt === 'string' ? payload.observedAt : null;
         status = 'ok';
+        retryAttempt = 0; retryable = false;
         markerKey = nextMarkerKey; contentKey = nextContentKey;
         if (contentChanged) invalidateContent();
         if (markersChanged) rebuild(); else update();
@@ -643,7 +650,17 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
           nextMarkerExpiry = Infinity;
           invalidateContent(); rebuild();
         }
-      } finally { clearTimeout(timeout); pending = null; requestController = null; }
+      } finally {
+        clearTimeout(timeout); pending = null; requestController = null;
+        if (!disposed && document.visibilityState !== 'hidden') {
+          // Coalesce writes during a poll into one read begun after those saves.
+          if (refreshQueued) void refresh();
+          else if (retryable && retryAttempt < 2) {
+            const delay = [1000, 3000][retryAttempt++];
+            retryTimer = setTimeout(refreshVisible, delay);
+          }
+        }
+      }
     })();
     return pending;
   }
@@ -657,7 +674,11 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
   const refreshVisible = () => { if (document.visibilityState !== 'hidden') void refresh(); };
   // A poll started before the save may still contain stale attendance. Queue a
   // fresh read after it settles instead of sharing that pre-write response.
-  const refreshAfterWrite = () => { if (pending) void pending.then(refreshVisible); else refreshVisible(); };
+  const refreshAfterWrite = () => {
+    retryAttempt = 0; refreshQueued = true;
+    clearTimeout(retryTimer); retryTimer = null;
+    if (!pending) refreshVisible();
+  };
   window.addEventListener('blur', () => { endDrag(); update(); }, { signal: listeners.signal });
   window.addEventListener('focus', refreshVisible, { signal: listeners.signal });
   document.addEventListener('visibilitychange', refreshVisible, { signal: listeners.signal });
@@ -668,6 +689,6 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
   return Object.freeze({
     update, refresh,
     snapshot: () => ({ status, observedAt, count: groups.reduce((sum, group) => sum + group.items.length, 0), buildings: groups.map(group => ({ id: group.building.id, visible: group.visible, count: group.items.length })) }),
-    dispose() { disposed = true; endDrag(false); requestController?.abort(); clearInterval(poll); clearInterval(expiry); listeners.abort(); layout.dispose(); layer.remove(); },
+    dispose() { disposed = true; endDrag(false); requestController?.abort(); clearTimeout(retryTimer); clearInterval(poll); clearInterval(expiry); listeners.abort(); layout.dispose(); layer.remove(); },
   });
 }

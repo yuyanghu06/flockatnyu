@@ -259,3 +259,5 @@ abort. Send/Stop hover/focus adds a subtle glow; color rotation is driven by act
 streaming rather than hover, and reduced motion remains static.
 
 The assistant supports a file picker, removable attachment chips/image previews, image paste and file drop using chat-attachments.js and the browser-safe server contract. PNG/JPEG/WebP, PDF and small UTF8 text/code are retained only in in-memory conversation/draft state; current attachments survive send failure. A successful map/attendance tool completion emits campus-map-updated so map-presence.js refreshes immediately. Closing the dialog still preserves in-flight streaming.
+
+Map refreshes coalesce agent write notifications behind an older pending read, guaranteeing a subsequent read begun after the saves. Transient read failures recover with at most two consecutive retries after1/3seconds; authentication denials do not retry. Failed reads still clear stale activity, and disposal cancels retries. Ordinary polling/visibility recovery remain.

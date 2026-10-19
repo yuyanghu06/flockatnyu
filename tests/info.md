@@ -411,3 +411,7 @@ Chat production coverage includes once-only varied bug-report attempts, chat-att
 Attendance formatting regressions cover full find/write and Hono/RPC flows for compound spacing, punctuation and Unicode compatibility, plus partial-token/invented-query denials and normalized-title ambiguity.
 
 Candidate resolution acceptance also tests model-selected returned events, catalogue completeness, full-context ambiguity beyond display bounds, short-name clarification, date/source scope and stale receipt rejection. Actual-model evidence uses real production prompts/tools/core services with synthetic storage and authorization; independent API tests do not claim to prove arbitrary semantic judgment.
+
+Map presence/source-access regressions cover projection-local provider reuse, exact attendance marker bindings, fresh request revocation, unchanged general-write authorization, bounded concurrency and cancellation under the total read deadline.
+
+map-refresh-browser.mjs runs an isolated actual-campus Chrome regression with synthetic native HTTP tool streams and map responses. It verifies avatars before reply completion, minimized attendance, stale-read coalescing, transient retries, access denial, foreground/disposal cleanup and unchanged camera/model geometry. Evidence uses synthetic people only.

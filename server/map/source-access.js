@@ -6,7 +6,7 @@ const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-
 export function createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, gmailSourceId, calendarClient, calendarSourceId,
   env=process.env,store=createMapEventStore({env}),publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date()} = {}) {
   const attendanceOrigin=chatAttendanceOrigin(publicOrigin);
-  return async function authorizeSource({principal, sourceId, sourceUrl, eventId, personId, signal} = {}) {
+  async function authorizeSource({principal, sourceId, sourceUrl, eventId, personId, signal} = {}, scope=null) {
     if (signal?.aborted || typeof principal?.id !== 'string' || !principal.id || !uuid(sourceId)
       || !Array.isArray(principal.allowedSourceIds) || !principal.allowedSourceIds.includes(sourceId)
       || typeof sourceUrl !== 'string' || sourceUrl.length > 2048) return false;
@@ -18,7 +18,7 @@ export function createMapSourceAuthorizer({liveDiscordService, miroStore, google
         // Bind this declaration to the actual relation being read/written;
         // another existing person or event cannot borrow its valid marker.
         if(!reference||reference.eventId!==eventId||reference.personId!==personId||store?.configured!==true)return false;
-        const data=validateSnapshot(await store.read({observedAt:new Date(now()).toISOString(),signal}));
+        const data=scope?.snapshot??validateSnapshot(await store.read({observedAt:new Date(now()).toISOString(),signal}));
         const event=data.events.find(row=>row.id===reference.eventId),person=data.people.find(row=>row.id===reference.personId);
         if(!event||!validEvent(event)||event.kind!=='scheduled_event'||event.source_id!==sourceId
           ||person?.is_trackable!==true||!text(person.display_name,200,1))return false;
@@ -27,8 +27,20 @@ export function createMapSourceAuthorizer({liveDiscordService, miroStore, google
         const original=new URL(event.source_url);
         if(!['https://discord.com','https://calendar.google.com','https://miro.com','https://mail.google.com'].includes(original.origin)
           ||original.origin===attendanceOrigin)return false;
-        return !signal?.aborted&&await authorizeSource({principal,sourceId,sourceUrl:event.source_url,signal})===true;
+        return !signal?.aborted&&await authorizeSource({principal,sourceId,sourceUrl:event.source_url,signal},scope)===true;
       }
+      // Only original provider checks are shared. Declaration bindings above are
+      // checked for the exact event/person on every invocation, before reuse.
+      if(scope) {
+        const key=JSON.stringify([sourceId,sourceUrl]);
+        if(!scope.originals.has(key))scope.originals.set(key,authorizeOriginal({principal,sourceId,sourceUrl,signal},url));
+        return !signal?.aborted&&await scope.originals.get(key)===true&&!signal?.aborted;
+      }
+      return await authorizeOriginal({principal,sourceId,sourceUrl,signal},url);
+    } catch { return false; }
+  }
+  async function authorizeOriginal({principal,sourceId,sourceUrl,signal},url) {
+    try {
       if (url.origin === 'https://calendar.google.com') {
         if (!uuid(calendarSourceId) || sourceId !== calendarSourceId || !calendarClient?.configured
           || typeof calendarClient.calendarId !== 'string' || !calendarClient.calendarId || calendarClient.calendarId === 'primary'
@@ -81,5 +93,16 @@ export function createMapSourceAuthorizer({liveDiscordService, miroStore, google
       }
       return false;
     } catch { return false; }
+  }
+  // A projection owns its snapshot and in-flight originals. General event reads
+  // and writes keep using the uncached callback, so later calls recheck access.
+  const authorizer=args=>authorizeSource(args);
+  authorizer.createReadScope=({principal,snapshot,signal}={})=>{
+    const scope={snapshot:validateSnapshot(snapshot),originals:new Map()};
+    return args=>{
+      if(args?.principal!==principal||args?.signal!==signal||signal?.aborted)return Promise.resolve(false);
+      return authorizeSource(args,scope);
+    };
   };
+  return authorizer;
 }

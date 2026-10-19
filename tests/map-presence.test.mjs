@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMapPresenceService,createMapPresenceStore,MAP_DEBUG_SOURCE_ID,MAP_DEBUG_SOURCE_URL,MAP_LOCAL_PLAN_SOURCE_ID,MAP_LOCAL_PLAN_SOURCE_URL,MAP_LOCAL_PLAN_PERSON_ID,MAP_DEBUG_EVENTS_SOURCE_ID,MAP_DEBUG_EVENTS_SOURCE_URL} from '../server/map/presence.js';
+import {createMapSourceAuthorizer} from '../server/map/source-access.js';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
 const at='2026-10-18T16:00:00.000Z',pid='11111111-1111-1111-1111-111111111111',other='11111111-1111-1111-1111-111111111112',sid='22222222-2222-2222-2222-222222222222',eid='33333333-3333-3333-3333-333333333333';
@@ -183,4 +184,50 @@ test('API authenticated production access still hides local-only fixtures',async
   const app=createApp({config:readConfig({NODE_ENV:'production'}),auth:async()=>principal,mapPresenceService});
   const response=await app.request('http://localhost/api/map/presence');
   assert.equal(response.status,200);const result=await response.json();assert.equal(result.status,'ok');assert.equal(result.buildings[0].people.length,0);
+});
+
+test('one projection shares originals across buildings and chat participants; the next read rechecks access',async()=>{
+  const origin='https://flock.example',sourceUrl='https://discord.com/channels/111/222/333';
+  const actor={id:'member',allowedSourceIds:[sid],liveDiscord:{guildId:'111'}};
+  const roster=Array.from({length:24},(_,i)=>person({id:`11111111-1111-1111-1111-${String(i).padStart(12,'0')}`}));
+  const buildings=Array.from({length:9},(_,i)=>({id:`building-${i}`,name:`Building ${i}`}));
+  const events=[event({kind:'scheduled_event',source_id:sid,source_url:sourceUrl}),event({id:'33333333-3333-3333-3333-333333333334',kind:'scheduled_event',source_id:sid,source_url:sourceUrl})];
+  const value=data({}, {}, {people:roster,buildings,events,event_buildings:events.flatMap(e=>buildings.map(b=>({event_id:e.id,building_id:b.id,location_notes:''}))),
+    event_people:events.flatMap(e=>roster.map(p=>participant({event_id:e.id,person_id:p.id,source_id:sid,source_url:`${origin}/?event=${e.id}#attendance-${p.id}-44444444-4444-4444-4444-444444444444`})))});
+  let reads=0,providerReads=0,access=true;
+  const store={configured:true,read:async()=>{reads++;return value;}};
+  const authorizeSource=createMapSourceAuthorizer({store,publicOrigin:origin,liveDiscordService:{configured:true,readMessages:async()=>{
+    providerReads++;await new Promise(resolve=>setTimeout(resolve,20));
+    return access?{status:'ready',sources:[{sourceId:sid,url:sourceUrl,guildId:'111',channelId:'222',messageId:'333'}]}:{status:'forbidden'};
+  }}});
+  const projection=service(value,{store,authorizeSource,production:true,timeoutMs:1500});
+  const visible=await read(projection,actor);assert.equal(visible.status,'ok');
+  for(const building of visible.buildings) {assert.equal(building.events.length,2);assert.equal(building.people.length,24);assert.equal(building.events[0].attendees.length,24);}
+  assert.equal(reads,1,'markers do not reread storage');assert.equal(providerReads,1,'all exact originals share one real provider check');
+  access=false;const revoked=await read(projection,actor);assert.equal(revoked.status,'ok');assert.equal(reads,2);assert.equal(providerReads,2);
+  for(const building of revoked.buildings){assert.deepEqual(building.events,[]);assert.deepEqual(building.people,[]);}
+});
+test('independent event and participant checks overlap with at most four external checks in flight',async()=>{
+  const events=Array.from({length:8},(_,i)=>event({id:`33333333-3333-3333-3333-${String(i).padStart(12,'0')}`,kind:'scheduled_event',source_id:sid,source_url:`https://example.com/event-${i}`}));
+  const roster=Array.from({length:8},(_,i)=>person({id:`11111111-1111-1111-1111-${String(i).padStart(12,'0')}`}));
+  const value=data({}, {}, {people:roster,events,event_buildings:events.map(e=>({event_id:e.id,building_id:'bobst-library',location_notes:''})),
+    event_people:roster.map(p=>participant({event_id:events[0].id,person_id:p.id,source_id:sid,source_url:`https://example.com/person-${p.id}`}))});
+  let active=0,max=0,calls=0;const eventPhases=[],participantPhases=[];
+  const authorizeSource=async args=>{
+    active++;calls++;max=Math.max(max,active);(args.personId?participantPhases:eventPhases).push(active);
+    await new Promise(resolve=>setTimeout(resolve,20));active--;return true;
+  };
+  const result=await read(service(value,{authorizeSource,timeoutMs:1000}));assert.equal(result.status,'ok');assert.equal(calls,16);
+  assert.equal(result.buildings[0].events.length,8);assert.equal(result.buildings[0].people.length,8);
+  assert.equal(max,4);assert(eventPhases.includes(4));assert(participantPhases.includes(4));
+});
+test('deadline cancellation aborts active checks and never starts queued authorization',async()=>{
+  const events=Array.from({length:8},(_,i)=>event({id:`33333333-3333-3333-3333-${String(i).padStart(12,'0')}`,source_id:sid,source_url:`https://example.com/event-${i}`}));
+  const value=data({}, {}, {events,event_buildings:events.map(e=>({event_id:e.id,building_id:'bobst-library',location_notes:''})),event_people:[]});
+  let calls=0,aborted=0;
+  const result=await read(service(value,{timeoutMs:50,authorizeSource:async({signal})=>{
+    calls++;return new Promise(resolve=>signal.addEventListener('abort',()=>{aborted++;resolve(true);},{once:true}));
+  }}));
+  assert.equal(result.status,'unavailable');await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(calls,4);assert.equal(aborted,4);
 });
