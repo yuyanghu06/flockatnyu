@@ -1,6 +1,8 @@
-## Persistent password login locally accepted; web rollout next
+## Persistent password login is live
 
-Password sign-in now issues a30daypersistenthost-onlycookie with matching signed expiry, Max-Age and Expires. Parent and independent evaluator each passed30/30auth/password/securitychecks. Shorter configured lifetimes, logout and existing security/source boundaries remain. Older12hourcookies require one re-login. Prepared257fileauth-onlyoverlay preserves all256otheracceptedwebfiles; Railway TTL is unset. No deployment/hosted claim yet. [Release preparation](history/2026-10-19_13-03-27-891337-orchestrator-persistent-auth-release-prepared.md).
+Password sign-in remembers this browser for 30 days across restarts, with matching signed expiry, Max-Age and Expires. Logout clears the host-only Secure/HttpOnly/Strict cookie. Existing users need to sign in once again to replace their 12-hour cookie. Parent and independent evaluator each passed 30/30 focused tests.
+
+Web `5307cf5e` is SUCCESS and includes the exact reviewed auth code. Actual custom-domain login, 30-day cookie attributes, protected API access in fresh HTTP clients and logout were verified; anonymous/cleared-cookie API access remains denied. The auth-only upload was stopped when this newer compatible release was detected, preserving concurrent Discord work. Source `e8a5ae8` is pushed to both branches. No model calls or source writes; no physical browser restart test. [Live acceptance](history/2026-10-19_13-05-48-540251-orchestrator-persistent-auth-live-verified.md).
 
 ## README refreshed; renamed repository and main synchronized
 
