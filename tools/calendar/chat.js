@@ -1,6 +1,6 @@
 import { createCalendarTools } from './index.js';
 import { validateArguments } from '../../server/automation/validation.js';
-import {CHAT_CALENDAR_BATCH_TOOL,createCalendarBatch} from './chat-batch.js';
+import {CHAT_CALENDAR_BATCH_TOOL,CHAT_CALENDAR_BATCH_UPDATE_TOOL,createCalendarBatch,updateCalendarBatch} from './chat-batch.js';
 
 const names = new Set(['list_calendar_events', 'read_calendar_event']);
 const string = maxLength => ({type:'string',maxLength});
@@ -8,7 +8,7 @@ const boundary = {type:'object',additionalProperties:false,properties:{date:{...
 const eventFields = {title:{...string(300),minLength:1},description:string(3000),location:string(500),start:boundary,end:boundary};
 const define = (name,description,properties,required) => Object.freeze({name,description,idempotent:true,parameters:{type:'object',additionalProperties:false,properties,required}});
 const writes = Object.freeze([
-  CHAT_CALENDAR_BATCH_TOOL,
+  CHAT_CALENDAR_BATCH_TOOL,CHAT_CALENDAR_BATCH_UPDATE_TOOL,
   define('create_calendar_event','Create an explicitly user-requested event in the fixed club Calendar. Supply concrete title/start/end; all-day end is exclusive. Read the relevant window first to avoid existing duplicates. No attendees, invitations, recurrence or alternate calendar.',eventFields,['title','start','end']),
   define('update_calendar_event','Patch only explicitly requested fields on an event read with read_calendar_event in this request. Require one uniquely identified event: a generic/partial title matching multiple plausible events is ambiguous. First-result order, ranking and a successful read do not select the target. Clarify before writing unless an exact target or user-supplied distinguishing context identifies one. Preserve unspecified fields and known ends. A stale revision conflicts rather than overwriting changes. No attendees, recurrence, invitations or alternate calendar.',{eventId:{...string(1024),minLength:5},...eventFields},['eventId']),
   define('delete_calendar_event','Soft-cancel only the explicitly user-selected event after read_calendar_event in this request. Require one uniquely identified event: generic/partial matches, ranking, the first result and a successful read do not resolve multiple plausible targets. Ask which event before cancelling; other one is sufficient only when conversation identifies one distinct prior referent. This patches status=cancelled without permanent deletion and requests no guest notifications (sendUpdates=none). Recurring, attendee and special events are unsupported.',{eventId:{...string(1024),minLength:5}},['eventId']),
@@ -74,6 +74,7 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
       if(isCreate&&(typeof operationId!=='string'||!operationId.trim()||operationId.length>200))return {status:'forbidden',sources:[]};
       const writer={id:actor.id,calendarAccess:true,calendarId:client.calendarId,calendarChatWrite:true};
       if(name==='create_calendar_events')return createCalendarBatch({client,events:args.events,principal:writer,operationId,signal});
+      if(name==='update_calendar_events')return updateCalendarBatch({client,events:args.events,principal:writer,signal});
       const revision=revisions.get(args.eventId);
       if(name!=='create_calendar_event'&&!revision)return {status:'read_required',sources:[]};
       if(revision?.unsupported)return {status:'unsupported_event',sources:[]};
@@ -86,6 +87,7 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
         if(!expectedUrl||result.url!==expectedUrl||!['created','updated','cancelled','unchanged','reconciled'].includes(result.outcome)||name!=='create_calendar_event'&&result.eventId!==args.eventId)return {status:'invalid_response',sources:[]};
         if(args.eventId)revisions.delete(args.eventId);
         return {status:'ready',sources:[],calendarWrite:{outcome:result.outcome,eventId:result.eventId,url:result.url,
+          ...(result.start&&result.end?{start:result.start,end:result.end,...(result.timeZone?{timeZone:result.timeZone}:{})}:{}),
           ...(typeof result.updatedAt==='string'?{updatedAt:result.updatedAt}:{})}};
       }catch{return {status:signal?.aborted?'aborted':'google_unavailable',sources:[]};}
     }

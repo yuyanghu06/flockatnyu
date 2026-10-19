@@ -1,7 +1,7 @@
 import { ATTACHMENT_ACCEPT, ATTACHMENT_ONLY_CONTENT, readAttachmentFiles } from './chat-attachments.js';
-import { boundedMessages, getAssistantStatus, safeSourceUrl, streamAssistant } from './chat-client.js';
+import { boundedMessages, getAssistantStatus, streamAssistant } from './chat-client.js';
 import { renderAssistantMarkdown } from './assistant-markdown.js';
-import { assistantShortcut, sourceLabel } from './assistant-presentation.js';
+import { assistantShortcut } from './assistant-presentation.js';
 const assistantLogoUrl = new URL('../assets/branding/tech-at-assistant.png', import.meta.url).href;
 const assistantHoverLogoUrl = new URL('../assets/branding/tech-at-assistant-hover.svg', import.meta.url).href;
 
@@ -242,17 +242,6 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       }
     } finally { if (statusRequest === controller) controls(); }
   }
-  function sources(parent, entries, resize = true) {
-    const height = resize ? panel.getBoundingClientRect().height : 0;
-    const follow = atLatest();
-    const list = el('ul', 'assistant-sources');
-    for (const source of Array.isArray(entries) ? entries.slice(0, 12) : []) {
-      const href = safeSourceUrl(source?.url); if (!href) continue;
-      const li = el('li'), link = el('a', '', sourceLabel(source, href));
-      link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer'; li.append(link); list.append(li);
-    }
-    if (list.children.length) { parent.append(list); if (resize) queueResize(height, follow); }
-  }
   function bubble(role, text) {
     const height = panel.getBoundingClientRect().height;
     const box = el('article', 'assistant-message assistant-' + role);
@@ -324,7 +313,6 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       const follow = atLatest();
       for (const event of events) {
         if (event.type === 'tool') updateTool(reply, event, false);
-        if (event.type === 'meta') sources(reply.box, event.sources, false);
       }
       events = [];
       if (text || finalText !== undefined) renderReply(reply, text);
@@ -338,7 +326,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
         if (event.type === 'tool' && event.status === 'completed' && ['set_map_attendance', 'upsert_map_event'].includes(event.name)) document.dispatchEvent(new CustomEvent('campus-map-updated'));
         if (event.type === 'done') { flush(partial || 'The assistant returned an empty reply.'); return; }
         if (event.type === 'delta') partial += event.text;
-        else if (event.type === 'tool' || event.type === 'meta') events.push(event);
+        else if (event.type === 'tool') events.push(event);
         else return;
         if (!renderFrame) {
           if (typeof requestAnimationFrame === 'function') renderFrame = requestAnimationFrame(() => flush());

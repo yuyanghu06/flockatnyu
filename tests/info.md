@@ -1,3 +1,20 @@
+## Timed Calendar batches and bulk corrections
+
+`chat-calendar-batch.test.mjs` additionally verifies26Tuesday/Thursday timed
+instances with exact New York hours across the November DST change, canonical
+offset input, invalid/ambiguous local clocks and refusal to duplicate a known
+all-day version. `chat-calendar-bulk-update.test.mjs` repairs26existing all-day
+events through fresh hidden revisions while preserving IDs and human fields.
+Its fake Google server recursively merges PATCH objects, requiring explicit null
+clears for opposite date/dateTime representations. Reverse conversions, conflicts,
+unsupported events, access denial, partial failures, cancellation, retry and safe
+25-item title-query pagination remain covered. An actual native-provider HTTP
+chain uses two list pages and one bulk update, with26saved-timing receipts and
+content-free audit counts. All network/provider responses are synthetic.
+Single-create HTTP checks also verify the production client's saved start/end,
+timezone and exact Calendar URL survive both follow-up planning and final context;
+existing provider stubs without optional timing fields remain supported.
+
 ## Source-backed all-day Calendar batches
 
 `chat-calendar-batch.test.mjs` runs the production Calendar client against

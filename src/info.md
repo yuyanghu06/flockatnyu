@@ -267,10 +267,12 @@ heights on short viewports. Streaming follows readers already at the bottom;
 scrolling back pauses following. Existing send/stop colors, loading animation,
 dismissal and background completion remain. `assistant-presentation.js` selects
 the Mac Command or Windows/Linux Control shortcut, suppresses desktop shortcuts
-on mobile platforms, and replaces opaque Miro board citation IDs/paths with
-supplied human titles or “Miro board” without changing source URLs.
+on mobile platforms, and retains a compatibility helper for readable Miro source labels. Answer
+inline citations now supply their own labels; no metadata footer is rendered.
 Composer animation clearance is capped by the current viewport; browser and
 visual-viewport resizing remeasure the footer so a retained multiline/upload
 draft stays accessible when the available height changes.
 
 Map refreshes coalesce agent write notifications behind an older pending read, guaranteeing a subsequent read begun after the saves. Transient read failures recover with at most two consecutive retries after1/3seconds; authentication denials do not retry. Failed reads still clear stale activity, and disposal cancels retries. Ordinary polling/visibility recovery remain.
+
+Assistant replies render only the answer’s safe inline citations. Retrieval metadata remains available to the server but is no longer blindly appended as a footer of unrelated search candidates or Calendar events.

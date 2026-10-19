@@ -137,10 +137,11 @@ test('final answer phase reports completed receipts and cannot promise further t
   assert(!planning.includes('\nFINAL ANSWER PHASE:\n'),'planning remains the tool execution phase');
   const phase=answer.split('\nFINAL ANSWER PHASE:\n')[1]?.split('\nUNTRUSTED TOOL STATUS')[0];assert(phase,'final output receives a distinct completion policy');
   assert.match(phase,/Tool execution.*finished/i);assert.match(phase,/answer step cannot execute more tools/i);
-  assert.match(phase,/already completed outcome.*was added, updated or cancelled/i);
-  assert.match(phase,/include.*exact supplied Calendar URL/i);
+  assert.match(phase,/confirms its reported operation.*was added, updated or cancelled/i);
+  assert.match(phase,/exact supplied Calendar URL/i);
   assert.match(phase,/Never say.*checking.*will add/i);
-  assert.match(phase,/successful receipts override historical assistant refusals/i);
+  assert.match(phase,/Compare saved start\/end\/timezone with the user request/i);
+  assert.match(phase,/Current receipts override historical assistant refusals/i);
   assert.match(phase,/no successful receipt.*do not claim saving/i);
   for(const prompt of [planning,answer]){assert.match(prompt,/Focus on the latest user message/i);assert.match(prompt,/Earlier completed or unrelated requests and complaints.*not new requests or new bug reports/i);}
   const mutations=capabilities(f.answers[0]).calendarMutations;
@@ -179,11 +180,11 @@ test('native provider accepts all 26 configured tool definitions and rejects 33 
  const before=f.requests.length;await assert.rejects(f.provider.toolTurn({...request,tools:Array.from({length:33},(_,i)=>define('tool_'+i))}),{code:'invalid_provider_request'});assert.equal(f.requests.length,before);
 });
 
-test('actual chat runner exposes the complete 27-tool catalogue on each native turn',async()=>{
+test('actual chat runner exposes the complete 28-tool catalogue on each native turn',async()=>{
  const tools={tools:Array.from({length:21},(_,i)=>define('read_fixture_'+i)),execute:async()=>({status:'ready',sources:[]})};
  const f=fixture({tools,batches:[[call('create1','create_calendar_event',createArgs)],[]]});
  assert.equal((await f.run()).status,'succeeded');assert.equal(f.plans.length,2);
- assert(f.plans.every(body=>body.tools.length===27));assert.equal(capabilities(f.plans[0]).registeredToolNames.length,27);
+ assert(f.plans.every(body=>body.tools.length===28));assert.equal(capabilities(f.plans[0]).registeredToolNames.length,28);
  assert.deepEqual(f.effects,['create_calendar_event']);
 });
 

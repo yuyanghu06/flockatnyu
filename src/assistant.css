@@ -227,8 +227,6 @@
 .assistant-markdown table { display: block; max-width: 100%; margin: 8px 0; border-collapse: collapse; overflow-x: auto; }
 .assistant-markdown th, .assistant-markdown td { padding: 6px 8px; border: 1px solid #0002; text-align: left; }
 .assistant-message-error { margin: 6px 0 0; font-size: 12px; color: #965d45; line-height: 1.6; overflow-wrap: anywhere; }
-.assistant-sources { margin: 10px 0 0; padding-left: 15px; color: var(--assistant-purple); font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
-.assistant-sources a { color: var(--assistant-purple); text-underline-offset: 3px; }
 .campus-assistant button:disabled { opacity: .5; cursor: default; }
 .campus-assistant button:focus-visible, .campus-assistant a:focus-visible { outline: 0; outline-offset: 0; }
 .campus-assistant button:focus-visible { filter: brightness(.96); }

@@ -32,7 +32,7 @@ function fixture({existing=[],failTitles=[],paginate=false,badPage=false,loopPag
     if(loopPages)return Response.json({items:[],nextPageToken:'repeated_page'});
     if(endlessPages)return Response.json({items:[],nextPageToken:'page_'+(Number(url.searchParams.get('pageToken')?.split('_')[1]||0)+1)});
     const from=Date.parse(url.searchParams.get('timeMin')),to=Date.parse(url.searchParams.get('timeMax')),pageToken=url.searchParams.get('pageToken');
-    const matching=[...events.values()].filter(event=>Date.parse(event.end.date)>from&&Date.parse(event.start.date)<to&&event.status!=='cancelled');
+    const matching=[...events.values()].filter(event=>Date.parse(event.end.date||event.end.dateTime)>from&&Date.parse(event.start.date||event.start.dateTime)<to&&event.status!=='cancelled');
     if(paginate&&!pageToken)return Response.json({items:[],nextPageToken:'second_page'});
     if(pageToken){assert.equal(pageToken,'second_page');if(badPage)return new Response('PRIVATE_PROVIDER_BODY',{status:503});}
     return Response.json({items:matching});
@@ -77,6 +77,38 @@ test('all-day batch preserves explicit past year, month rollover and leap-day ex
  for(const entry of entries){const saved=[...f.events.values()].find(event=>event.summary===entry.title);assert.equal(saved.start.date,entry.date);assert.equal(saved.end.date,nextDate(entry.date));}
 });
 
+test('twenty-six Tuesday and Thursday timed creates retain local hours and change offsets across November DST',async()=>{
+ const entries=[];
+ for(let stamp=Date.parse('2026-09-01T00:00:00Z');stamp<=Date.parse('2026-11-26T00:00:00Z');stamp+=86400000){const day=new Date(stamp).getUTCDay();if(day===2||day===4)entries.push({title:'Synthetic office hours',date:new Date(stamp).toISOString().slice(0,10),startTime:day===2?'18:00':'17:00',endTime:day===2?'19:00':'18:00',timeZone:'America/New_York'});}
+ assert.equal(entries.length,26);const f=fixture();const result=await f.run(entries);
+ assert.equal(result.status,'ready');assert.equal(f.posts.length,26);assert.equal(f.events.size,26);
+ for(const [index,entry] of entries.entries()) {
+  const saved=f.posts[index],offset=entry.date<'2026-11-01'?'-04:00':'-05:00';
+  assert.equal(saved.start.date,undefined);assert.equal(saved.end.date,undefined);assert.equal(saved.start.timeZone,'America/New_York');
+  assert.equal(Date.parse(saved.start.dateTime),Date.parse(`${entry.date}T${entry.startTime}:00${offset}`));
+  assert.equal(Date.parse(saved.end.dateTime)-Date.parse(saved.start.dateTime),3600000);
+  assert.deepEqual(result.calendarBatchWrite.items[index].calendarWrite.start,saved.start);assert.deepEqual(result.calendarBatchWrite.items[index].calendarWrite.end,saved.end);
+ }
+ const before=f.posts.length;await f.run(entries,{operationId:'second-timed-request'});assert.equal(f.posts.length,before,'existing exact timed instances are reused');
+});
+
+test('timed create refuses an existing all-day instance with the same title and date instead of duplicating it',async()=>{
+ const existing=human('Synthetic office hours','2026-09-01'),f=fixture({existing:[existing]});
+ const result=await f.run([{title:existing.summary,date:'2026-09-01',startTime:'18:00',endTime:'19:00',timeZone:'America/New_York'}]);
+ assert.equal(result.status,'partial');assert.equal(f.posts.length,0);assert.deepEqual(f.events.get(existing.id),existing);assert.equal(result.calendarBatchWrite.items[0].reason,'existing_event_requires_update');
+});
+
+test('canonical timed creates remain supported while mixed, incomplete and DST-ambiguous local clock rows fail before OAuth',async()=>{
+ const invalid=[{title:'Synthetic',date:'2026-09-01',startTime:'18:00',timeZone:'America/New_York'},
+  {title:'Synthetic',date:'2026-09-01',start:{date:'2026-09-01'},end:{date:'2026-09-02'}},
+  {title:'Synthetic',date:'2026-03-08',startTime:'02:30',endTime:'03:30',timeZone:'America/New_York'},
+  {title:'Synthetic',date:'2026-11-01',startTime:'01:30',endTime:'02:30',timeZone:'America/New_York'},
+  {title:'Synthetic'}];
+ for(const item of invalid){const f=fixture();const result=await f.run([item]);assert.equal(result.status,'partial');assert.equal(result.calendarBatchWrite.counts.failed,1);assert.equal(f.calls.length,0);assert.equal(f.oauthCalls.length,0);}
+ const f=fixture();const result=await f.run([{title:'Explicit offset workshop',start:{dateTime:'2026-11-01T01:30:00-04:00',timeZone:'America/New_York'},end:{dateTime:'2026-11-01T02:30:00-05:00',timeZone:'America/New_York'}}]);
+ assert.equal(result.status,'ready');assert.equal(f.posts.length,1);assert.equal(Date.parse(f.posts[0].end.dateTime)-Date.parse(f.posts[0].start.dateTime),7200000);
+});
+
 test('missing Google grant denies the entire batch before OAuth or HTTP and lost writer role never posts',async()=>{
  const denied=fixture({googleAccess:false});assert.equal((await denied.run()).status,'forbidden');assert.equal(denied.calls.length,0);assert.equal(denied.oauthCalls.length,0);
  const reader=fixture({role:'reader'});const result=await reader.run();assert.notEqual(result.status,'ready');assert.equal(reader.posts.length,0);
@@ -85,7 +117,7 @@ test('missing Google grant denies the entire batch before OAuth or HTTP and lost
 
 test('batch schema rejects unknown fields, blank rows, missing fields and more than fifty entries before dispatch',async()=>{
  const f=fixture(),tool=f.adapter.tools.find(tool=>tool.name==='create_calendar_events');assert(tool);assert.equal(checkSchema(tool.parameters),true);
- for(const args of [{events:[]},{events:Array(51).fill(items[0])},{events:[{title:'',date:'2031-03-01'}]},{events:[{title:'Named',date:''}]},{events:[{title:'Named'}]},{events:[{title:'Named',date:'2031-03-01',attendees:[]}]},{events:[items[0]],calendarId:'other@example.com'}]) {
+ for(const args of [{events:[]},{events:Array(51).fill(items[0])},{events:[{title:'',date:'2031-03-01'}]},{events:[{title:'Named',date:''}]},{events:[{date:'2031-03-01'}]},{events:[{title:'Named',date:'2031-03-01',attendees:[]}]},{events:[items[0]],calendarId:'other@example.com'}]) {
   const result=await f.request().execute({name:'create_calendar_events',arguments:args});assert.equal(result.status,'invalid_request');
  }
  assert.equal(f.calls.length,0);assert.equal(f.oauthCalls.length,0);

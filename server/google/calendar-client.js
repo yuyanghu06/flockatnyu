@@ -87,7 +87,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       ...(body ? { body: JSON.stringify(body) } : {}) });
     if (!response.ok) {
       await response.body?.cancel();
-      throw new GoogleError(({401:'reauthorization_required',403:'permission_denied',404:'not_found',409:'conflict',410:'gone',412:'conflict',429:'rate_limited'})[response.status] || 'google_unavailable');
+      throw new GoogleError(({400:'invalid_request',401:'reauthorization_required',403:'permission_denied',404:'not_found',409:'conflict',410:'gone',412:'conflict',429:'rate_limited'})[response.status] || 'google_unavailable');
     }
     try { return JSON.parse(await boundedGoogleBody(response, { maxBytes: 131072, signal })); }
     catch (error) { if (error instanceof GoogleError) throw error; throw new GoogleError('invalid_response'); }
@@ -149,11 +149,12 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       return {status:'ready',calendars:page.items.map(row=>({id:String(row.id).slice(0,254),title:String(row.summary||'').slice(0,300),accessRole:row.accessRole})),nextPageToken:page.nextPageToken||null};
     }, undefined, {preflight:true});
   }
-  async function listEvents({timeMin,timeMax,pageToken,limit=5,principal,signal}={}) {
-    if (!validCalendarInstant(timeMin) || !validCalendarInstant(timeMax) || Date.parse(timeMax)<=Date.parse(timeMin) || Date.parse(timeMax)-Date.parse(timeMin)>366*86400000 || !Number.isInteger(limit) || limit<1 || limit>5 || pageToken!==undefined&&!text(pageToken,2000,true)) return {status:'invalid_request',events:[]};
+  async function listEvents({timeMin,timeMax,pageToken,query,limit=5,principal,signal}={}) {
+    if (!validCalendarInstant(timeMin) || !validCalendarInstant(timeMax) || Date.parse(timeMax)<=Date.parse(timeMin) || Date.parse(timeMax)-Date.parse(timeMin)>366*86400000 || !Number.isInteger(limit) || limit<1 || limit>25 || query!==undefined&&!text(query,300,true) || pageToken!==undefined&&!text(pageToken,2000,true)) return {status:'invalid_request',events:[]};
     return run(signal, async (token, active) => {
       const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'false',fields:'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated),nextPageToken'});
       if(pageToken) params.set('pageToken',pageToken);
+      if(query!==undefined)params.set('q',query);
       const page = await request(`${target}?${params}`, token, active);
       const items=page.items===undefined?[]:page.items;
       if (!Array.isArray(items)||items.length>limit||page.nextPageToken!==undefined&&!text(page.nextPageToken,2000,true)) throw new GoogleError('invalid_response');
@@ -207,7 +208,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
     if(chatUnsupported(event))throw new GoogleError('unsupported_event');
     chatTimes(event);
     const output=eventOutput(event,config.calendarId);
-    return {status:'ready',outcome,eventId:output.eventId,url:output.url,...(output.updatedAt?{updatedAt:output.updatedAt}:{})};
+    return {status:'ready',outcome,eventId:output.eventId,url:output.url,start:output.start,end:output.end,...(output.start.timeZone?{timeZone:output.start.timeZone}:{}),...(output.updatedAt?{updatedAt:output.updatedAt}:{})};
   }
   async function createChatEvent(args={}) {
     if(!object(args)||Object.keys(args).some(key=>!['title','description','location','start','end','operationId','principal','signal'].includes(key)))return {status:'invalid_request',events:[]};
@@ -261,7 +262,14 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       if(active.aborted)throw new GoogleError('aborted');
       // Patch only requested fields. In particular, never reseal autonomous
       // updateAgentHash metadata: the worker must detect this explicit human edit.
-      const response=await request(`${target}/${encodeURIComponent(eventId)}?sendUpdates=none`,token,active,{method:'PATCH',body:patch,etag:expectedEtag});
+      // Google PATCH merges nested objects. Explicitly remove the incompatible
+      // representation when converting date-only events to timed or vice versa.
+      const wirePatch={...patch};
+      for(const key of ['start','end'])if(patch[key]) {
+        if(patch[key].dateTime&&existing[key]?.date)wirePatch[key]={...patch[key],date:null};
+        else if(patch[key].date&&existing[key]?.dateTime)wirePatch[key]={...patch[key],dateTime:null,timeZone:null};
+      }
+      const response=await request(`${target}/${encodeURIComponent(eventId)}?sendUpdates=none`,token,active,{method:'PATCH',body:wirePatch,etag:expectedEtag});
       if(response.id!==eventId||!chatMatches(response,patch))throw new GoogleError('invalid_response');
       return chatReceipt(response,cancel?'cancelled':'updated');
     },principal,{write:true});
@@ -315,3 +323,5 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
     updateChatEvent:args=>mutateChatEvent(args,false),cancelChatEvent:args=>mutateChatEvent(args,true),
     upsertEvent:args=>mutate(args,false),cancelEvent:args=>mutate(args,true)});
 }
+
+export {boundary as normalizeCalendarBoundary};

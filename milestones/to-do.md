@@ -1,3 +1,12 @@
+## General task behavior and timed corrections
+
+- [x] Trace exact all-day downgrade, repeated pagination, failed corrections and automatic unrelated-link footer.
+- [x] Implement generic timed/all-day creation, exact-ID bulk correction with fresh revisions, targeted Calendar queries and shared constraint-preserving completion guidance.
+- [x] Remove automatic retrieved-link footer while preserving safe inline citations; desktop/mobile browser and 8 UI tests pass.
+- [x] Independently exercise 26-instance DST creation/correction, nested PATCH, IDs/human fields, permission/conflict/partial/retry/cancellation; 137 focused checks pass.
+- [x] Verify actual configured-model full-28-tool timed creation, in-place correction, apology-history repair and general shared-note follow-up.
+- [ ] Finish final full rerun, guarded deployment, promoted verification and publication; independent review, 33 receipt/16 UI checks, four configured-model cases and both builds pass.
+
 ## Explicit action completion and Calendar batches
 
 - [x] Trace exact screenshot requests and identify permission-loop, pagination-budget and Drive text projection causes.

@@ -1,3 +1,17 @@
+## General behavior repair accepted for release
+
+Final full suite passes 1648 tests with one existing optional skip and zero failures; builds, independent review, timing-receipt checks and four configured-model workflows pass. Desktop/mobile citation screenshots are verified. Exact-source sanitized web 261/worker 54 file contexts pass private-value scans. Deployment and promoted checks are next. [Release checks](history/2026-10-19_19-57-42-989112-orchestrator-general-behavior-release-accepted.md).
+
+## General behavior and timed repairs accepted locally
+
+Independent review and final 33 timing-receipt checks pass; UI/Markdown/burst checks pass all 16 after updating obsolete footer expectations. Configured-model/full-28-tool tests create 26 exact timed instances and repair 26 existing records in place, including through apology history; the general shared-note follow-up also completes without renewed approval. Saved IDs, human notes and DST wall times are preserved. Visible desktop/mobile inline-citation checks pass with no unrelated footer. Both builds and guarded package scans/source matches pass. Final full rerun and rollout remain. [tester](history/2026-10-19_19-57-18-337815-tester-single-calendar-receipt-timing-verified.md) · [evaluator](history/2026-10-19_19-57-18-338340-evaluator-general-behavior-and-timed-repair-accepted.md) · [orchestrator](history/2026-10-19_19-57-18-338487-orchestrator-general-behavior-model-and-browser-verified.md).
+
+## Active: general task behavior and timed Calendar corrections
+
+Exact audits confirm a timed schedule was downgraded into 26 all-day entries, followed by pagination-only correction attempts and two failed individual updates. The website also appended unrelated retrieved links automatically. New shared behavior preserves user constraints and finishes authorized work, timed/all-day batches now carry actual timings, and exact-ID bulk corrections retain hidden fresh revisions. The unfiltered footer is removed; relevant inline citations remain.
+
+Independent tester 137 checks and root 8 UI checks plus desktop/mobile browser verification pass. Actual configured-model/full-28-tool tests create 26 exact timed instances, correct 26 wrong all-day records in place, complete a correction after apology history, and save a shared-note follow-up without renewed approval. Final review, broad regressions/builds and rollout are pending. [planner](history/2026-10-19_19-53-51-936269-planner-timed-repair-and-general-behavior-contract.md) · [coder](history/2026-10-19_19-53-51-936765-coder-timed-batch-and-exact-id-correction-implemented.md) · [tester](history/2026-10-19_19-53-51-936912-tester-timed-repair-regressions-verified.md) · [orchestrator](history/2026-10-19_19-53-51-937019-orchestrator-general-chat-policy-and-relevant-citations-implemented.md).
+
 ## Live: explicit requests complete without renewed approval
 
 Source cd8a8b0 is live on web 3ddb2eeb-6354-4848-910e-a8eae3d757db and update-agent c3980e04-9805-40f7-920b-42dee089ec5b. Chat keeps settled source/title/date/year/skip choices through follow-ups and completes clear rows before reporting exceptions. Its new chat-only all-day batch tool handles up to 50 entries with internal bounded duplicate checks, existing skips and per-item receipts. Backend permissions and source/target/revision boundaries remain.

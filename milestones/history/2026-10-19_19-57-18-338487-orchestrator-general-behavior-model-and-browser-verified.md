@@ -1,0 +1,8 @@
+# General behavior model and browser verified
+
+- Local timestamp / acting role / milestone: 2026-10-19_19-57-18-338487 / orchestrator / general task behavior and timed corrections.
+- Requested scope: preserve requested meaning, complete corrections and remove unrelated links.
+- Starting state: frozen implementation under final acceptance.
+- Work performed / checks / decisions: Actual configured-model tests with all 28 tool definitions and production clients against synthetic HTTP pass: 26 exact timed creates, 26 existing all-day records corrected in place with zero creates, the same repair through apology history, and one shared-note follow-up preserving the old note. Corrected records preserve IDs and human notes, and New York clock times remain correct across November DST. No renewed permission questions, future promises or irrelevant links. Replies use at most four Calendar links and remain below 1100 characters. An extra verification update in one create case was unchanged, with no extra effects. Desktop/mobile browser checks pass with visible relevant inline links, zero automatic footer links and no page errors. Broader tests caught three stale assertions expecting the removed footer; only those expectations were updated. All 16 citation/Markdown/stream-burst checks now pass, preserving all 500 deltas and terminal-state behavior. Final full rerun is underway.
+- Resulting state: local and model acceptance with stated limits; no verification business-source writes or Discord posts.
+- Remaining work: final full-run collection, guarded deployment, hosted read-only source/catalogue/model/frontend checks and publication.

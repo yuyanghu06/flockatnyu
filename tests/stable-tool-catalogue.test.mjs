@@ -29,7 +29,7 @@ test('top-level and request Calendar/attendance definitions remain identical acr
   assert.deepEqual(definitions(f.googleTools.createRequest(context).tools),definitions(f.googleTools.tools));
   assert.deepEqual(definitions(f.mapTools.createRequest(context).tools),definitions(f.mapTools.tools));
  }
- assert.equal(f.googleTools.tools.length,6);assert.equal(f.mapTools.tools.length,2);assert.equal(f.effects(),0);
+ assert.equal(f.googleTools.tools.length,7);assert.equal(f.mapTools.tools.length,2);assert.equal(f.effects(),0);
 });
 for(const transport of ['http','discord'])test(`${transport} planning receives the same complete definitions for every semantic request shape`,async()=>{
  const f=adapters(),observed=[];
@@ -65,7 +65,7 @@ test('both model prompts explain semantic intent, untrusted sources and receipt-
 
 test('unconfigured Calendar preserves definitions while actual execution fails without a receipt',async()=>{
  const tools=createChatCalendarTools();const request=tools.createRequest({userMessage:'任意内容',principal:actor,operationId:'a'.repeat(64)});
- assert.equal(tools.tools.length,6);assert.deepEqual(definitions(request.tools),definitions(tools.tools));
+ assert.equal(tools.tools.length,7);assert.deepEqual(definitions(request.tools),definitions(tools.tools));
  const result=await request.execute({name:'create_calendar_event',arguments:{title:'Synthetic',start:{date:'2031-11-03'},end:{date:'2031-11-04'}}});
  assert.equal(result.status,'not_configured');assert(!result.calendarWrite);
 });
