@@ -80,8 +80,14 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
         channels.set(parent.id,{id:parent.id,guild_id:parent.guild_id,type:parent.type,parent_id:parent.parent_id ?? null,name:String(parent.name || '').slice(0,100),sourceId:registered.get(parent.id)?.sourceId ?? null});
       }
       if (isDiscordChannelExcluded({channel:channels.get(channelId),channels,policy})) fail('channel_scope_denied');
+      // Only the service-built Discord principal can implicitly read the exact
+      // channel/thread where it was invoked. A thread does not implicitly opt
+      // into its team parent or siblings. Website and other team reads retain
+      // the existing current-user explicit-request requirement.
+      const invokingDestination = principal.liveDiscord.transport === 'discord-chat'
+        && id(principal.liveDiscord.invokingChannelId) && principal.liveDiscord.invokingChannelId === channelId;
       if (typeof userMessage === 'string' && discordChannelScope(channels.get(channelId),channels) === 'team'
-        && !explicitlyRequestedTeam(userMessage,channels.get(channelId),channels)) fail('team_request_required');
+        && !invokingDestination && !explicitlyRequestedTeam(userMessage,channels.get(channelId),channels)) fail('team_request_required');
       checkedSources.set(channelId,registered.get(channelId).sourceId);
       return channels.get(channelId);
     }

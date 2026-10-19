@@ -94,7 +94,7 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
       if(membership?.id!==channelId||membership.user_id!==userId)throw denied();
     }
     const safePolicy = {...policy,excludedChannelIds:[...new Set([...policy.excludedChannelIds,LEADERSHIP_CHANNEL_ID])]};
-    const eligible = row => row && readable.has(row.type) && discordChannelScope(row,channels) === 'eboard'
+    const eligible = row => row && readable.has(row.type) && ['eboard','team'].includes(discordChannelScope(row,channels))
       && !isDiscordChannelExcluded({channel:row,channels,policy:safePolicy});
     if (!eligible(detail)) throw denied();
     const registered = catalogueResult.channels.filter(row=>row?.enabled === true && row.guildId === guildId
@@ -112,6 +112,9 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
       const channel=channels.get(row.channelId);
       if(!eligible(channel))return false;
       if(channel.id===channelId||channel.id===parent?.id)return true;
+      // A team destination authorizes only that channel/thread and its parent
+      // for ancestry readiness. Matching ACLs never sweep sibling team sources.
+      if(discordChannelScope(channel,channels)==='team')return false;
       if(channel.type===12)return false; // membership differs from its parent
       const source=threadTypes.has(channel.type)?raw.get(channel.parent_id):raw.get(channel.id);
       if(!source || source.id!==(threadTypes.has(channel.type)?channel.parent_id:channel.id))return false;
@@ -121,7 +124,8 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
     const selected = registered.filter(safeForAudience).sort((a,b)=>a.channelId.localeCompare(b.channelId));
     const sourceIds = [...new Set(selected.map(row=>row.sourceId))].sort();
     if (!sourceIds.length || sourceIds.length > 500) throw denied();
-    const sourceProfileId = `eboard:${createHash('sha256').update(JSON.stringify([guildId,policy.revision,
+    const transport = 'discord-chat';
+    const sourceProfileId = `discord-chat:${createHash('sha256').update(JSON.stringify([guildId,transport,channelId,policy.revision,
       safePolicy.excludedChannelIds,safePolicy.excludedCategoryIds,selected.map(row=>{
         const channel=channels.get(row.channelId);
         return [row.channelId,row.sourceId,channel.name,channel.type,channel.parent_id];
@@ -131,7 +135,7 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
       username:label(member.user.username),displayName:label(member.nick || member.user.global_name || member.user.username)};
     return {sourceProfileId,threadId:threadTypes.has(detail.type)?channelId:null,actor,
       principal:{id:`discord:${guildId}:${userId}`,isAdmin:false,allowedSourceIds:sourceIds,
-        liveDiscord:{mode:'local-operator',guildId}}};
+        liveDiscord:{mode:'local-operator',guildId,transport,invokingChannelId:channelId}}};
   }
   return Object.freeze({authorize});
 }

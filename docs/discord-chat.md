@@ -1,6 +1,6 @@
 # Discord conversations
 
-Flockbot responds automatically to explicit bot mentions and replies to its own messages in the currently enabled, nonblacklisted eboard channels and eligible descendant threads. Ordinary messages, other guilds, DMs, bot/webhook authors and blacklisted leadership channels do not trigger chat. Implementation is independent of Morpheus source code; no archive or index is added.
+Flockbot responds automatically to explicit bot mentions and replies to its own messages in the currently enabled, nonblacklisted eboard and team channels and eligible descendant threads. Ordinary messages, other guilds, DMs, bot/webhook authors and blacklisted leadership channels do not trigger chat. Implementation is independent of Morpheus source code; no archive or index is added.
 
 ## Shared assistant and caller identity
 
@@ -20,7 +20,9 @@ Recent text is capped at 2000 messages / 120000 characters and 4000 characters p
 
 The initial Discord runner exposes only live Discord read/summary tools. It omits the website's shared memory, Gmail/Drive, Miro, map and Calendar tools. These omissions keep source material from a broader website conversation out of channel replies. Extending this profile is a separate source/audience decision.
 
-`chat-access.js` intersects the server source UUID allowlist with the currently enabled eboard catalogue and current exclusion/ancestry policy. The invoking destination must be registered and eligible; a disabled parent cannot be bypassed through a thread. Other source channels/public threads must have equivalent View Channel and Read Message History overwrite rules to the destination; privately restricted threads are available only as their own destination. Missing permission metadata narrows to the invoking channel and eligible parent. All source tools retain their own final policy checks. Source mapping/names/ancestry and policy changes invalidate transient conversation profiles.
+`chat-access.js` intersects the server source UUID allowlist with the currently enabled eboard/team catalogue and current exclusion/ancestry policy. The invoking destination must be registered and eligible; a disabled parent cannot be bypassed through a thread. Eboard source channels/public threads must have equivalent View Channel and Read Message History overwrite rules to the destination; privately restricted threads are available only as their own destination. Team sources are limited to the exact invoking destination and its registered parent for thread readiness. Equal audience permissions do not add sibling team channels. Missing permission metadata narrows to the invoking channel and eligible parent. All source tools retain their own final policy checks. Source mapping/names/ancestry, policy and invoking-destination changes invalidate transient conversation profiles.
+
+The server-built Discord principal carries a trusted transport marker and the exact invoking channel ID. That pair allows automatic previous-hour reads from its own team channel/thread even when the ping does not explicitly name the team. It does not implicitly authorize the parent of an invoked thread, a sibling team or any other destination. Other team reads, including website requests, retain the current user's explicit-team-intent requirement. Browser and bridge bodies cannot supply this principal or marker.
 
 ## Services and configuration
 
