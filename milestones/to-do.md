@@ -1,3 +1,10 @@
+## Live: team channel pings repaired
+
+- [x] Repair team destination access and exact invoking-channel automatic context.
+- [x] Pass independent tests/review, preserve current runtime and deploy web.
+- [x] Verify live team 200, leadership 403, complete hour/name context and successful hosted model response.
+- [ ] Observe an organic member-triggered Discord reply; private generation and synthetic delivery chains pass.
+
 ## Drive skill runtime integration
 
 - [x] Research the monodrive and keep the complete metadata inventory private.
@@ -8,20 +15,18 @@
 - [ ] Separate access policy: resolve planner Google source allowlisting; current deployed gate denies Drive reads. No new source grant is implied by the skill.
 - Superseded: earlier prompt deferral; user explicitly authorized the implemented skill.
 
-## Discord normal pings — implemented and deployed
-
-- [x] Add automatic mention/reply calls in nonblacklisted eboard destinations, including bare pings.
-- [x] Inject verified actor, previous-hour originals and exact Discord ID/name directory; preserve source/audience/retention boundaries.
-- [x] Remove /ask and command registration as requested.
-- [x] Independently test/review and deploy verified web/collector releases with private hosted model/access checks.
-- [ ] Observe first organic member mention/reply delivery; no Discord test post was sent.
-- [ ] Retained Discord indexing remains a separate undecided proposal.
-
 ## Persistent password login
 
 - [x] Implement30daypersistentcookie with matching signed/browser expiry, logout and configurable shorterTTL.
 - [x] Independently pass30/30focusedsecuritychecks; prepare private-value-scannedauth-onlywebcontext.
 - [x] Deploy and verify actual live cookie/protected access/logout; publish both branches.
+
+## Drive navigation context research
+
+- [x] Record the user-designated monodrive and authorized school research account.
+- [x] Traverse all visible real folders, validate the metadata graph, and inspect representative program documents.
+- [x] Prepare private metadata-only inventory and program navigation outside Git.
+- Superseded: user authorized and deployed the shared Drive skill; existing source access restrictions remain.
 
 ## Repository README and publication — complete
 
@@ -30,12 +35,23 @@
 - [x] Ignore/untrack evidence while preserving4073localfiles; retain required automated-test fixture under tests/fixtures.
 - [x] Independently review and verify18/18focused tests, README links/scripts and both published branch heads.
 
-## Completed: website feedback and custom-domain access
+## Discord interactions — authorized
 
-- [x] Implement readable citations, bottom composer, platform shortcuts and named-team navigation/summary fixes.
-- [x] Independently verify source, desktop/mobile browser, streaming/uploads and authorization boundaries.
-- [x] Deploy protected web 1bea2c28; verify login, exact assets, live tool schema and actual-campus UI.
-- [x] Preserve accepted audit 8249119/034, existing attendance provenance and loading animation.
+- [x] Plan shared audited runner, eboard destination policy and trusted caller context.
+- [x] Implement mention/reply/thread transport and nonblocking collector integration.
+- [x] Independently test identity/source boundaries, limits/delivery and website/collector regressions; evaluate and fix findings.
+- [x] Add and independently verify previous-hour context and exact DiscordID/name directory with bounded loading and no archives.
+- [x] Verify final ping-only correction (slash invocation cancelled by user); no /ask registration.
+- [x] Prepare and verify bounded production activation; preserve existing source exclusions and private credentials.
+- [ ] Observe first organic member mention/reply delivery; no test Discord posts were sent.
+
+- [x] Independent evaluator accepted the Morpheus assessment with native-search, output-audience and static-evidence corrections.
+
+## Morpheus reuse decision — assessment only
+
+- [x] Independently compare actual indexing/search and Discord user-interaction code against Flock.
+- [x] User approved Discord interaction implementation after the assessment.
+- [ ] Retained Discord indexing remains a separate undecided proposal; current implementation adds no archive.
 
 ## Private model audit — complete and live
 
@@ -67,7 +83,7 @@ Earlier audit rollout checklist entries are superseded by the completed live rec
 - [x] Read requested feedback and independently diagnose four product issues without retaining personal correspondence.
 - [x] Implement frontend and named-team/summary schema corrections; align source-routing instructions and normalize natural catalogue queries.
 - [x] Independently verify desktop/mobile/browser/security behavior and focused regressions; six browser scenarios and120final affected checks pass.
-- [ ] Deploy bounded web release and verify new domain; preserve concurrent model audit.
+- [x] Deploy web1bea2c28andverifycustomdomainlogin,reviewedassets,toolschemaanddesktop/mobileUI;preserveaccepted8249119audit.
 
 ## Model audit release gates
 

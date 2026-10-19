@@ -84,12 +84,28 @@ October 19 favicon export records the verified 1080 × 1080 Downloads PNG; sourc
 
 The subsequent favicon export revision records square opaque backgrounds, tighter raised edges and verified 1080/4320 Downloads files.
 
-October 19 custom-domain and website feedback passes preserve stable attendance provenance and record translated product requirements only. Private correspondence/reference screenshots are excluded. The final hosted feedback receipt identifies the reviewed release and preserved audit baseline.
+October 19 Morpheus feasibility entries record independent read-only indexing and Discord transport reviews; they do not authorize implementation or retention changes.
+
+The Morpheus evaluator entry records accepted decision guidance, including native-search and Discord output-audience corrections; implementation remains unapproved.
 
 October19 README/publication passes record the renamed flockatnyu remote, main fast-forward from dev, local-only evidence policy and required test-fixture relocation. Earlier evidence links may require original local artifacts; prior Git history was not rewritten.
 
+Discord-chat implementation entries record runner/actor context, transport, independently found ACK/access/shutdown fixes and runtime integration; hosted activation is tracked separately.
+
+Final Discord local acceptance entries cover expanded hour-context and identity-directory requirements, independent deadline/source tests and pending production gates. The final collector closure is20modules, correcting the earlier provisional22module count.
+
+Drive structure research entries contain only aggregate coverage and non-secret user direction. Private file indexes/program guides live outside Git; Drive prompts and files were unchanged during research.
+
 October19 persistent-auth passes track30dayhost-onlypasswordsessions, independent30/30securitychecks and auth-onlywebrollout; prior12hourcookies require one re-login.
 
-Normal-ping Discord release entries record source/identity/hour/name context, user cancellation of /ask, independent acceptance and verified web/collector deployment. Evidence artifacts remain local; organic delivery is distinguished from private model and synthetic transport checks.
+The final normal-ping release records /ask cancellation, current source/member checks, private actual-model verification and running web/collector releases; organic Discord delivery is distinguished from synthetic acceptance.
+
+
+
+
 
 Drive skill passes record private structural research, shared maintained guidance, pre-execution chat/planner activation, independent acceptance and live release verification. Hosted chat access is verified; planner Google allowlisting remains a separate blocked access policy, not a prompt failure. Private inventories and receipts remain outside Git.
+
+
+
+Team ping repair passes record the original team authorization/context failures, exact invoking-channel capability, independent acceptance and hosted 200/model-response verification. Organic delivery is tracked separately.

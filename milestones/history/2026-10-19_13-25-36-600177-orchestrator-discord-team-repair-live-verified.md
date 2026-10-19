@@ -1,0 +1,7 @@
+# Live: team channel pings repaired
+
+- Local timestamp / role: 2026-10-19T13:25:36.600177-04:00 / orchestrator
+- Team destinations were rejected by the old backend. Fixed source 9739672 is deployed on web 84d6cf12-b864-4bb7-93af-7233bebbc6eb, now SUCCESS. The existing mention-only collector remains compatible and active. Current Drive integration and persistent login are preserved.
+- Live engineering-team authorization now returns 200 instead of 403; leadership remains 403. The private hosted model canary returned 200, done and READY with no error or tool calls. The exact invoking-channel profile contains 13 authorized sources; automatic context read two preceding-hour messages completely and all 26 Discord ID/name pairs. Web/collector configuration agreement was checked without exposing values.
+- Independent tester passed 201 checks including 30 new team cases; evaluator passed 177 and accepted. Parent broader Discord 215, runtime/source/package 99 and API build passed. The sanitized 259-file upload exactly matched reviewed runtime/frontend assets and passed private-value scanning.
+- No test message was posted to Discord. Live backend generation and read access are verified; first organic reply delivery remains to be observed. Blacklists, member/source/audience checks, exact thread scope, website team-request gates and live-only retention remain enforced. Local aggregate receipt: evidence/discord-chat/team-hosted-repair.json.

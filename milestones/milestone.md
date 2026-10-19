@@ -1,3 +1,12 @@
+## Live: team channel pings repaired
+
+- Team destinations were rejected by the old backend. Fixed source 9739672 is deployed on web 84d6cf12-b864-4bb7-93af-7233bebbc6eb, now SUCCESS. The existing mention-only collector remains compatible and active. Current Drive integration and persistent login are preserved.
+- Live engineering-team authorization now returns 200 instead of 403; leadership remains 403. The private hosted model canary returned 200, done and READY with no error or tool calls. The exact invoking-channel profile contains 13 authorized sources; automatic context read two preceding-hour messages completely and all 26 Discord ID/name pairs. Web/collector configuration agreement was checked without exposing values.
+- Independent tester passed 201 checks including 30 new team cases; evaluator passed 177 and accepted. Parent broader Discord 215, runtime/source/package 99 and API build passed. The sanitized 259-file upload exactly matched reviewed runtime/frontend assets and passed private-value scanning.
+- No test message was posted to Discord. Live backend generation and read access are verified; first organic reply delivery remains to be observed. Blacklists, member/source/audience checks, exact thread scope, website team-request gates and live-only retention remain enforced. Local aggregate receipt: evidence/discord-chat/team-hosted-repair.json.
+
+[Latest pass](history/2026-10-19_13-25-36-600177-orchestrator-discord-team-repair-live-verified.md).
+
 ## Tech@NYU Drive skill deployed
 
 Chat and the autonomous planner automatically load the same maintained skill before their first selected Drive execution, retain it for that request/batch and keep unrelated prompts unchanged. The skill uses program context and authorized live folder navigation; the private research index stays outside Git. Local Codex installation also validates. Source d27d980/af38a51 is pushed.
@@ -18,11 +27,43 @@ Password sign-in remembers this browser for 30 days across restarts, with matchi
 
 Web `5307cf5e` is SUCCESS and includes the exact reviewed auth code. Actual custom-domain login, 30-day cookie attributes, protected API access in fresh HTTP clients and logout were verified; anonymous/cleared-cookie API access remains denied. The auth-only upload was stopped when this newer compatible release was detected, preserving concurrent Discord work. Source `e8a5ae8` is pushed to both branches. No model calls or source writes; no physical browser restart test. [Live acceptance](history/2026-10-19_13-05-48-540251-orchestrator-persistent-auth-live-verified.md).
 
+## Normal-ping source accepted; hosted bridge verified
+
+User correction is complete: no /ask handler or registration. Sourcea620270passes367affectedchecks, independent173chainchecks and evaluator81checks; prior1461fullsuite retained. Compatibleweb968e6854SUCCESS; hosted privatebridge and realmemberallowed/leadershipdenied boundaries verified. Catalogue is ready again with11eligible top-level eboard channels,26directorypairs. Finalmention-onlypackages are being refreshed after exactsourceguardrejectedstaleartifact. NoDiscordtestposts ormodelcalls. [Transport corrected to normal pings](history/2026-10-19_13-02-58-237816-coder-discord-normal-ping-only.md) · [Ping-only chain independently accepted](history/2026-10-19_13-02-58-238373-tester-discord-normal-ping-chain-accepted.md) · [Ping-only correction accepted](history/2026-10-19_13-02-58-238533-evaluator-discord-normal-ping-only-accepted.md) · [Hosted bridge verified before final collector rollout](history/2026-10-19_13-02-58-238658-orchestrator-discord-hosted-bridge-boundary-verified.md)
+
+## Discord invocation: normal pings only
+
+User explicitly removed /ask. Normal @Flockbot mentions, including a bare ping, automatically invoke the assistant with caller/hour/name context. Slash handler and command registration are being removed; no command was registered or collector activated. Independent ping-only integration tests/review underway. Existing web bridge rollout remains compatible. [Correction](history/2026-10-19_12-59-52-877605-orchestrator-discord-ping-only-correction.md).
+
+## Discord web deploying; source accepted
+
+Feature source471029e is committed. Final1461fulltests and69finalboundarychecks pass; independent129/244checks and evaluatoraccept retained. Sanitized257fileweb/20modulecollector contexts match current runtime and pass private-value scan. Private bridge settings configured without credential output. Web968e6854BUILDING; collector/command activation pending. Existing metadata discovery keeps sources failclosed until ready. [Release pass](history/2026-10-19_12-57-20-153605-orchestrator-discord-chat-web-deploying.md).
+
+## Discord chat locally accepted, including hour context and names
+
+Independent implementation/review covers /ask, mentions/replies/threads, verified actor identity, automatic preceding-hour originals and the26entrySupabaseDiscordID/name directory. Expanded244regressions/final129independentchecks and evaluatoraccept pass; prior full1420passed, finalfullrunning. Overall180sbridge/45scontext deadlines and eboard audience/source controls are enforced. No live activation yet; existing metadata discovery currently keeps source catalogue closed. [Independent Discord interactions accepted](history/2026-10-19_12-54-21-262219-tester-discord-chat-independent-accepted.md) · [Discord local implementation accepted](history/2026-10-19_12-54-21-263070-evaluator-discord-chat-local-accepted.md) · [Automatic context model integration](history/2026-10-19_12-54-21-263358-coder-discord-hour-context-and-name-directory.md) · [Automatic context independently accepted](history/2026-10-19_12-54-21-264293-tester-discord-hour-context-and-directory-accepted.md) · [Automatic context review accepted](history/2026-10-19_12-54-21-264899-evaluator-discord-context-additions-accepted.md) · [Discord release gates prepared](history/2026-10-19_12-54-21-265112-orchestrator-discord-chat-final-release-gates.md)
+
+## Discord interactions implemented; independent release checks underway
+
+Shared audited runner, caller context, Discord transport, current eboard/member/source access and private service bridge are integrated. Focused checks and builds pass; evaluator findings around pre-ACK limits, member permission freshness and synchronous shutdown are fixed. Independent access/bridge/Gateway and package acceptance remain; no live activation yet. [Shared assistant runner and actor context](history/2026-10-19_12-47-06-587895-coder-shared-discord-chat-runner.md) · [Discord transport implemented](history/2026-10-19_12-47-06-588549-coder-discord-chat-transport.md) · [Pending ACK admission fixed](history/2026-10-19_12-47-06-588663-coder-discord-chat-ack-admission-fixed.md) · [Discord runtime integrated](history/2026-10-19_12-47-06-588759-orchestrator-discord-chat-runtime-integrated.md)
+
 ## README refreshed; renamed repository and main synchronized
 
 The README now describes live Flock@NYU, its four services, current access/source boundaries and private seven-day model audit. Origin is `https://github.com/yuyanghu06/flockatnyu.git`. User clarified that main should receive dev; atomic fast-forward publication advanced both remote branches to `2bf0b67`, preserving the73newer development commits. Working branch remains `codex/dev`; concurrent Discord implementation is untouched.
 
 `/evidence/` is ignored and4073files were removed from tracking, with all local files verified present. Earlier Git history remains. The required CLI signal fixture moved into tracked tests/fixtures; parent and independent evaluator each passed18/18focused tests. README links/scripts and whitespace passed; historical baseline dependencies are documented. [Accepted publication](history/2026-10-19_12-45-14-851895-orchestrator-flock-repository-publication-verified.md). No deployment was needed for this repository change.
+
+## Active: Discord interaction implementation
+
+User approved /ask, mentions/replies, trusted actor identity and all nonblacklisted eboard destinations. Shared-runner and Discord transport coders are working concurrently; independent access/bridge testing is assigned. Existing source policy and live-only retention remain. Public eboard replies use only authorized eboard Discord sources, with broader website memory/private account tools omitted. No rollout claimed yet. [Plan](history/2026-10-19_12-40-46-710505-planner-discord-chat-implementation-contract.md).
+
+## Morpheus reuse assessment complete; no implementation
+
+Independent indexing/Discord reviews and evaluator accept selective interaction patterns around Flock's existing assistant. Recommend Discord interface first; durable archive/index is a separate user decision under current live-only policy. Current Discord native search already exists; speed/cost benefits of a new index were not benchmarked. Preserve source policy and choose source scope safe for the Discord reply audience. Static archive/edit/history risks and missing license were recorded. Source `01e6700`; no tests/model calls/services/application changes. [Accepted review](history/2026-10-19_12-33-01-638835-evaluator-morpheus-reuse-assessment-accepted.md).
+
+## Morpheus feasibility review; no implementation
+
+Two independent read-only planner reviews recommend adding Discord as a transport for the existing assistant and considering any durable Discord index separately. Current live-only retention and source policy remain authoritative. Source inspected at `01e6700269e48c113a5b1fd4447f9e7e558b42f1`; findings are static, without runtime/performance claims. Synthesis review pending. [Morpheus indexing assessment](history/2026-10-19_12-32-27-485966-planner-morpheus-indexing-assessment.md) · [Morpheus Discord interface assessment](history/2026-10-19_12-32-27-486530-planner-morpheus-discord-interface-assessment.md)
 
 ## Live: website feedback implemented and verified
 
