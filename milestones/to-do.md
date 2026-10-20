@@ -8,7 +8,7 @@
 - [x] Finish first release full suite (1648 passed, one existing optional skip), guarded deployment and hosted behavior/citation/access checks; both services SUCCESS, source a23ea47 published.
 - [x] Implement and independently test/review compact identity lookup; configured model repairs 26 verbose synthetic records using two compact pages and one batch.
 - [x] Finish compact follow-up regressions/builds and guarded package checks: 1651 passed, one existing optional skip, zero failures.
-- [ ] Deploy compact follow-up, verify hosted pagination and publish final journal.
+- [x] Deploy compact follow-up and verify hosted two-page identity lookup, schemas, access gates, native capability and exact frontend bundle; both services SUCCESS, source d53bbec published. Final acceptance journal recorded. Existing Calendar records were read only during verification.
 
 ## Explicit action completion and Calendar batches
 

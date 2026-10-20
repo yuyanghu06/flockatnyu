@@ -1,3 +1,9 @@
+## Live: general task behavior, timed repairs and relevant citations
+
+Runtime source d53bbec is live on web 50ef16b1-fa2e-4ff3-a1e0-2c5d7a280291 and update-agent ecebc4d5-a65f-49ff-8eda-539be79fe7f4, both SUCCESS and published to main/codex/dev. Shared website/Discord prompts preserve the full request, continue authorized corrections and verify saved fields. Timed/all-day batches and exact-ID fresh-revision corrections are supported. Relevant inline citations remain; the automatic unrelated-link footer is removed.
+
+Compact identity lookup now reads the existing 27 matching Calendar records in two complete pages within unchanged context bounds. Hosted access, stable 28-tool catalogue, timed/compact schemas, capability marker and exact frontend source checks pass. Final full suite: 1651 passed, one existing optional skip, zero failed; builds, independent review, five configured-model synthetic workflows and desktop/mobile citation evidence pass. No original Calendar mutation was replayed: observed existing entries remain 26 all-day and one timed. [Live acceptance](history/2026-10-19_20-07-03-992658-orchestrator-general-behavior-and-calendar-repair-live.md).
+
 ## Compact Calendar release accepted
 
 Final full suite: 1651 passed, one existing optional skip, zero failed. API/frontend builds, model correction, independent review and exact-source sanitized package checks pass. Follow-up rollout is next. [Release checks](history/2026-10-19_20-04-46-625745-orchestrator-compact-calendar-release-accepted.md).
