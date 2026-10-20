@@ -129,3 +129,5 @@ The working-tree publication receipt records duplicate documentation cleanup, re
 October20 attendance diagnosis records exact pending-input correlation and independent queue/tool code tracing. It distinguishes known linked identity and active mapped event from missing attendance, while retaining no private original or model output. Runtime repair remains pending.
 
 The map-read follow-up records live-source timeout reproduction and separates successful Supabase reads from sequential Calendar validation exceeding the service deadline; production changes remain pending.
+
+Source-timeout release entries record independent virtual-clock regressions, exact-source package verification and successful web/worker rollout. Organic map-read success is distinguished from separate remaining Calendar/model failures and backlog clearance.

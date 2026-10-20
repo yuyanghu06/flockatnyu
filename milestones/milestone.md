@@ -1,3 +1,9 @@
+## Live: sixty-second source/tool deadlines
+
+Source1258b2d is live on web f1fd2162-4a93-4fae-9df7-5c5e2f58fa84 and update-agent01076bc2-40c8-4072-b299-35abec6695bf, both SUCCESS and published to main/codex/dev. Shared map/Google/Discord/Miro/memory/report source deadlines now permit60seconds, with cancellation/access and longer overall budgets preserved.
+
+Final1711tests passed,1existing optional skip,0failed; builds, independent review and real-source checks pass. Promoted broad map read returns11events in10.27seconds; health/access/inventory and9building presence checks pass. Organic planner audit shows4successful map reads and one completed batch handling1input. Separate Calendar invalid_request and run-unavailable failures persist; backlog clearance is not claimed. [Live acceptance](history/2026-10-20_19-18-02-397851-orchestrator-source-timeouts-live.md).
+
 ## Timeout release gates pass
 
 Final full suite:1711passed,1existing optional skip,0failed. API/frontend builds, independent tests/review, default-budget live-source read and sanitized exact-source package scans pass. Reviewed web and worker packages are ready for rollout. [Release gates](history/2026-10-20_19-01-43-438886-orchestrator-source-timeout-release-gates.md).

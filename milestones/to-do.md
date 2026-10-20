@@ -3,13 +3,14 @@
 - [x] Inventory shared source/network deadlines and hidden map/runtime caps.
 - [x] Implement60second shared source/tool deadlines while preserving cancellation and authorization; live-source default-budget read passes in9.55seconds.
 - [x] Independently test actual deadline composition, run affected regressions/builds and review;275pass/1optional skip, builds and final review accepted. Full-suite release gate underway.
-- [ ] Deploy guarded web and planner packages; verify hosted access/source reads and actual queue outcomes.
+- [x] Deploy guarded web and planner packages; both SUCCESS. Hosted broad read/access pass; organic worker4map reads ready and one input completed. Separate Calendar/model failures remain.
 
 ## Attendance queue diagnosis — October20
 
 - [x] Correlate exact screenshot input with queue, roster, event and private audit: collected, source-allowlisted and pending; no attendee write or target-linked model proposal observed.
 - [x] Reproduce broad Calendar read_map_events failure: sequential original-source checks exceed five-second total budget; direct Supabase and exact-event reads succeed.
-- [ ] Repair broad map-read source verification performance without weakening authorization; diagnostic timeout increase is not deployed.
+- [x] Raise broad map-read source-check budget to60seconds without weakening authorization; deployed and organic reads succeed.
+- [ ] Consider reducing repeated source checks and investigate remaining Calendar invalid_request/model-unavailable outcomes; timeout increase alone does not clear the backlog.
 - [ ] Prevent repeatedly failing oldest batches from indefinitely delaying newer attendance inputs; validate retry fairness and timely processing.
 - [ ] After repair, verify attendance against current original evidence and valid event windows; do not extend expired presence to compensate for backlog.
 
