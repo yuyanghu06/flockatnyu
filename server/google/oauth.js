@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import { OAuth2Client } from 'google-auth-library';
 import { GOOGLE_SCOPES } from './config.js';
 
@@ -7,7 +8,7 @@ export class GoogleError extends Error {
 
 export function createGoogleOAuth(config) {
   return new OAuth2Client({ clientId: config.clientId, clientSecret: config.clientSecret,
-    redirectUri: config.redirectUri, transporterOptions: { timeout: 15000, retryConfig: { retry: 0 },
+    redirectUri: config.redirectUri, transporterOptions: { timeout: SOURCE_TOOL_TIMEOUT_MS, retryConfig: { retry: 0 },
       size: 65536, maxContentLength: 65536, maxRedirects: 0 } });
 }
 

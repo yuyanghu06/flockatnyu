@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import {isDiscordChannelExcluded} from './discovery.js';
 import {discordSnowflakeAt} from './live-client.js';
 import {DISCORD_SCOPES,discordChannelScope,explicitlyRequestedTeam} from './channel-scope.js';
@@ -43,7 +44,7 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
   const configured = Boolean(config?.configured && id(config.guildId) && store?.getPolicy && store?.listSyncChannels && client?.getChannel && client?.getGuildChannels && client?.getCurrentApplication && client?.configured !== false);
   const maxChannels = bounded(config?.maxChannels,16,30);
   const maxPages = bounded(config?.maxPages,20,100), maxMessages = bounded(config?.maxMessages,2000,10000);
-  const maxRuntimeMs = bounded(config?.maxRuntimeMs,45000,120000), maxInputChars = bounded(config?.maxInputChars,500000,2000000);
+  const maxRuntimeMs = bounded(config?.maxRuntimeMs,SOURCE_TOOL_TIMEOUT_MS,120000), maxInputChars = bounded(config?.maxInputChars,500000,2000000);
   async function context(principal, signal, userMessage) {
     if (principal?.liveDiscord?.mode !== 'local-operator' || principal.liveDiscord.guildId !== config?.guildId) fail('forbidden');
     const allowed = principal.allowedSourceIds;

@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import {createHash} from 'node:crypto';
 
 const error=code=>Object.assign(new Error(code),{code});
@@ -62,7 +63,7 @@ export function createPacedDiscordRequest({config,fetchImpl,requestPacer,indexin
     try {
       for(let attempt=0;attempt<4;attempt++) {
         const result=await pacer.run(async({defer,now})=>{
-          const active=AbortSignal.any([signal,AbortSignal.timeout(15000)]);
+          const active=AbortSignal.any([signal,AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS)]);
           const response=await fetchImpl(`https://discord.com/api/v10${path}`,{...(indexing?{method:'GET'}:{}),headers:{Authorization:`Bot ${config.botToken}`},signal:active,redirect:'error'});
           if(!response.ok&&response.status!==429&&!(indexing&&response.status===202)) {
             await response.body?.cancel();

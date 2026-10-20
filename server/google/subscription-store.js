@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import { boundedGoogleBody } from './client.js';
 
 // Service-only metadata. Raw mail is written only by the shared input updater.
@@ -10,7 +11,7 @@ export function createGmailSubscriptionStore({ url, serviceRoleKey, fetchImpl = 
   } catch { throw new Error('invalid_subscription_store_config'); }
   if (!serviceRoleKey || typeof fetchImpl !== 'function') throw new Error('invalid_subscription_store_config');
   async function rpc(name, args, signal) {
-    const active = AbortSignal.any([AbortSignal.timeout(10000), ...(signal ? [signal] : [])]);
+    const active = AbortSignal.any([AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS), ...(signal ? [signal] : [])]);
     try {
       const response = await fetchImpl(`${origin}/rest/v1/rpc/${name}`, { method: 'POST', redirect: 'error', signal: active,
         headers: { apikey: serviceRoleKey, Authorization: `Bearer ${serviceRoleKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify(args) });

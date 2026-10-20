@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from './source-timeout.js';
 // Server-only insert adapter. UUID comes from the chat request, never the model.
 export function createBugReportStore({ env = process.env, fetchImpl = globalThis.fetch } = {}) {
   let base;
@@ -12,7 +13,7 @@ export function createBugReportStore({ env = process.env, fetchImpl = globalThis
     if (!configured) return { status: 'not_configured' };
     if (signal?.aborted) return { status: 'aborted' };
     try {
-      const active = AbortSignal.any([signal, AbortSignal.timeout(15000)].filter(Boolean));
+      const active = AbortSignal.any([signal, AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS)].filter(Boolean));
       const response = await fetchImpl(`${base}/rest/v1/rpc/bug_report_record`, {
         method: 'POST', redirect: 'error', signal: active,
         headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },

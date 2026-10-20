@@ -61,3 +61,5 @@ The agent harness enforces exact synthetic provider selectors/window pagination 
 `prepare-runtime-deploy.mjs` produces secret-free temporary web/worker contexts with reachable reviewed modules, pinned pruned dependencies and exact Docker inclusion. It never uploads repository environment/auth files.
 
 Runtime web packaging permits the existing @discordjs/rest dependency for the authenticated Discord bridge’s metadata checks. Collector packaging follows the optional chat transport imports without adding a model provider or account connectors to that service.
+
+Collector packaging permits the exact shared `server/source-timeout.js` module alongside each service's existing directory roots. Both Discord and Gmail use this shared static-import packager; the runtime packager follows the same module through its existing import closure. This does not allow other server-root modules into collector contexts.

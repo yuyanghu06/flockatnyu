@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 // Current-chat declarations are a separate provenance kind, never a provider identity.
 import {randomUUID} from 'node:crypto';
 import {createMapEventStore,createMapEventService,validateSnapshot,eventWindow,validEvent,text,uuid,timestamp,boundedWork} from './events.js';
@@ -90,7 +91,7 @@ function eventContextMatchCount(events,query,links) {
   return matched;
 }
 
-export function createChatAttendanceService({env=process.env,store=createMapEventStore({env}),service=createMapEventService({store}),publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date(),timeoutMs=15000}={}) {
+export function createChatAttendanceService({env=process.env,store=createMapEventStore({env}),service=createMapEventService({store}),publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date(),timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
   const origin=chatAttendanceOrigin(publicOrigin),configured=Boolean(origin&&store?.configured===true&&service?.configured===true);
   function createRequest({userMessage='',principal:requestPrincipal,timeContext}={}) {
     // timeContext is supplied by the server request, never by tool arguments.

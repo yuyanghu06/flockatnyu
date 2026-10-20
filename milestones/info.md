@@ -135,3 +135,5 @@ production-map-refresh/ tracks the current hosted map deadline repair, request-l
 model-audit tracks private accounting/output logs for both chat and planner with seven-day retention and no source-input archive; independent and live acceptance remain in the rolling snapshot.
 
 `discord-chat/` tracks approved eboard interaction implementation, shared assistant execution and trusted caller context.
+
+source-timeouts/ tracks the authorized sixty-second shared source/tool deadline release and independent acceptance.

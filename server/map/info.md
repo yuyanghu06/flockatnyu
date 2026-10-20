@@ -31,7 +31,7 @@ The service-only `map_read_events` RPC returns all event states, including past
 and cancelled records needed for reconciliation. Limits are100buildings,
 500people,2000events,20000rows per relationship and16MiB total; overflow fails
 instead of truncating. Fixed HTTPS origin, private credentials, streamed response
-bounds, cancellation and a maximum15second deadline apply to all requests.
+bounds, cancellation and a maximum 60-second deadline apply to all event requests.
 
 The service exposes authorized event reads, exact linked Discord/email identity
 lookup and complete optimistic event replacement through `map_upsert_event`.
@@ -130,4 +130,6 @@ Event phrases use NFKC/case normalization and contiguous whole alphanumeric toke
 
 When normalized titles do not resolve, lookup returns the authorized, unexpired, date-filtered catalogue with fuzzy bigram ranking and bounded notes/location context. The model resolves clear typos or aliases from those actual events; rank alone is not confidence. All candidates are returned up to20, with explicit truncation and no write receipts for incomplete lists. Exact duplicate matches, multiple matching full contexts and unsupported single short names require clarification. Complete candidate selections bind the exact returned event name/source/revision and recheck authorization before an attendance-only write. Person matching remains exact.
 
-Browser projection creates a request-local read authorization scope using its validated snapshot, principal and cancellation signal. Original provider checks share in-flight results by exact source UUID/URL within that projection; app attendance markers still bind the exact event/person/source before reuse. Later requests and all general event read/write callbacks recheck providers without this cache. Independent event/building and participant checks use at most four concurrent workers, preserve deterministic projection ordering and retain the five-second total deadline.
+Browser projection creates a request-local read authorization scope using its validated snapshot, principal and cancellation signal. Original provider checks share in-flight results by exact source UUID/URL within that projection; app attendance markers still bind the exact event/person/source before reuse. Later requests and all general event read/write callbacks recheck providers without this cache. Independent event/building and participant checks use at most four concurrent workers, preserve deterministic projection ordering and use the shared 60-second total deadline.
+
+Map event storage, source verification, browser presence and chat attendance default to 60 seconds through `../source-timeout.js`. The bounded-work ceiling is also 60 seconds, so production wiring cannot silently clamp verification to the old 15-second maximum. Explicit shorter deadlines and caller cancellation are preserved; source checks and write authorization are unchanged.

@@ -1,3 +1,18 @@
+## Sixty-second source checks
+
+- [x] Inventory shared source/network deadlines and hidden map/runtime caps.
+- [x] Implement60second shared source/tool deadlines while preserving cancellation and authorization; live-source default-budget read passes in9.55seconds.
+- [x] Independently test actual deadline composition, run affected regressions/builds and review;275pass/1optional skip, builds and final review accepted. Full-suite release gate underway.
+- [ ] Deploy guarded web and planner packages; verify hosted access/source reads and actual queue outcomes.
+
+## Attendance queue diagnosis — October20
+
+- [x] Correlate exact screenshot input with queue, roster, event and private audit: collected, source-allowlisted and pending; no attendee write or target-linked model proposal observed.
+- [x] Reproduce broad Calendar read_map_events failure: sequential original-source checks exceed five-second total budget; direct Supabase and exact-event reads succeed.
+- [ ] Repair broad map-read source verification performance without weakening authorization; diagnostic timeout increase is not deployed.
+- [ ] Prevent repeatedly failing oldest batches from indefinitely delaying newer attendance inputs; validate retry fairness and timely processing.
+- [ ] After repair, verify attendance against current original evidence and valid event windows; do not extend expired presence to compensate for backlog.
+
 ## Discord replied-message context
 
 - [x] Implement exact live replied-to message context for bot mentions, including targets outside the previous hour; code frozen and independent evaluator 159 checks pass.

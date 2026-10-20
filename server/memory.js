@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from './source-timeout.js';
 export const MEMORY_MAX_BYTES = 16000;
 export function validMemory(value) {
   return value?.id === 'shared' && typeof value.content === 'string'
@@ -18,7 +19,7 @@ export function createMemoryStore({ env = process.env, fetchImpl = globalThis.fe
     if (!configured) return {status:'not_configured'};
     if (signal?.aborted) return {status:'aborted'};
     try {
-      const active = AbortSignal.any([signal, AbortSignal.timeout(10000)].filter(Boolean));
+      const active = AbortSignal.any([signal, AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS)].filter(Boolean));
       const response = await fetchImpl(`${base}/rest/v1/rpc/${name}`, {method:'POST',redirect:'error',signal:active,
         headers:{apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify(args)});
       if (!response.ok) { await response.body?.cancel(); return {status:response.status===404?'schema_not_ready':'unavailable'}; }

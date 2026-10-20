@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import { createHash } from 'node:crypto';
 import { readCalendarConfig, CALENDAR_REQUIRED_SCOPES } from './calendar-config.js';
 import { boundedGoogleBody } from './client.js';
@@ -111,7 +112,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
   }
   async function run(signal, operation, principal, { write = false, preflight = false } = {}) {
     if (!configured) return { status:'not_configured', events:[] };
-    const timeout = AbortSignal.timeout(20000), active = signal ? AbortSignal.any([signal, timeout]) : timeout;
+    const timeout = AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS), active = signal ? AbortSignal.any([signal, timeout]) : timeout;
     try {
       if (!preflight) gate(principal);
       if (active.aborted) throw new GoogleError('aborted');

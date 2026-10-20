@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 // Trusted normalized-event storage. Browser projections live in presence.js.
 import {randomUUID} from 'node:crypto';
 import {EVENT_TYPE_CODES} from './contracts.js';
@@ -83,13 +84,13 @@ export function validateSnapshot(data) {
   if(data.buildings.some(x=>!buildingId(x.id)||!text(x.name,200,1)))throw Error('invalid_event_building');
   return data;
 }
-export async function boundedWork(work, signal, timeoutMs=5000) {
+export async function boundedWork(work, signal, timeoutMs=SOURCE_TOOL_TIMEOUT_MS) {
   if(signal?.aborted)throw Error('map_work_cancelled');
   const controller=new AbortController(),abort=()=>controller.abort();
   let listener;
   const cancelled=new Promise((_,reject)=>{listener=()=>reject(Error('map_work_cancelled'));controller.signal.addEventListener('abort',listener,{once:true});});
   signal?.addEventListener('abort',abort,{once:true});
-  const timer=setTimeout(abort,Number.isFinite(timeoutMs)?Math.min(15000,Math.max(50,timeoutMs)):5000);
+  const timer=setTimeout(abort,Number.isFinite(timeoutMs)?Math.min(SOURCE_TOOL_TIMEOUT_MS,Math.max(50,timeoutMs)):SOURCE_TOOL_TIMEOUT_MS);
   try { if(signal?.aborted)abort();return await Promise.race([Promise.resolve().then(()=>{if(controller.signal.aborted)throw Error('map_work_cancelled');return work(controller.signal);}),cancelled]); }
   finally {clearTimeout(timer);signal?.removeEventListener('abort',abort);controller.signal.removeEventListener('abort',listener);controller.abort();}
 }
@@ -101,7 +102,7 @@ async function boundedJson(response, signal) {
   try {while(true) {if(signal.aborted)throw Error('map_work_cancelled');const {value,done}=await reader.read();if(signal.aborted)throw Error('map_work_cancelled');if(done)break;size+=value.byteLength;if(size>max)throw Error('event_response_too_large');chunks.push(value);}const parsed=JSON.parse(Buffer.concat(chunks).toString('utf8'));if(!response.ok){const error=Error('event_request_failed');if(['40001','23514','23503','23505','22023'].includes(parsed?.code))error.code=parsed.code;throw error;}return parsed;}
   finally {signal.removeEventListener('abort',cancel);await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
-export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,timeoutMs=5000}={}) {
+export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
   let origin=null;try{const u=new URL(env.SUPABASE_URL);if(u.protocol==='https:'&&!u.username&&!u.password&&!u.search&&!u.hash&&['','/'].includes(u.pathname))origin=u.origin;}catch{}
   const key=env.SUPABASE_SERVICE_ROLE_KEY?.trim(),configured=Boolean(origin&&key);
   const request=(path,body,signal)=>boundedWork(async requestSignal=>{
@@ -139,7 +140,7 @@ const safeEventType=({code,name,description,icon_key,sort_order})=>({code,name,d
 const personKeys=new Set(['event_id','person_id','attendance_status','presence_basis','label','starts_at','ends_at','source_id','source_url','reported_at']);
 const buildingKeys=new Set(['event_id','building_id','location_notes']);
 const onlyKeys=(row,keys)=>object(row)&&Object.keys(row).every(key=>keys.has(key));
-export function createMapEventService({store=createMapEventStore(),authorizeSource=null,now=()=>new Date(),timeoutMs=5000}={}) {
+export function createMapEventService({store=createMapEventStore(),authorizeSource=null,now=()=>new Date(),timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
   const allowed=(principal,row,signal)=>authorizeProvenance({principal,sourceId:row.source_id,sourceUrl:row.source_url,eventId:row.event_id||row.id,personId:row.person_id,authorizeSource,signal});
   const run=async(args,work)=>{
     if(!principalValid(args?.principal))return {status:'forbidden'};

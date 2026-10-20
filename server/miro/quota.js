@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import { MiroMcpError } from './mcp-auth.js';
 
 export const MIRO_QUOTA_KEY = 'subscription:miro-mcp-budget:v1';
@@ -37,7 +38,7 @@ function validate(state) {
 export function createMiroMcpQuota({ store, now = Date.now } = {}) {
   let localBlockedUntil = null;
   async function update(change, signal) {
-    const active = AbortSignal.any([AbortSignal.timeout(5000), ...(signal ? [signal] : [])]);
+    const active = AbortSignal.any([AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS), ...(signal ? [signal] : [])]);
     for (let attempt = 0; attempt < 8; attempt++) {
       if (active.aborted) fail(signal?.aborted ? 'aborted' : 'quota_state_unavailable');
       let previous;

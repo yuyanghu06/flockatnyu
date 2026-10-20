@@ -1,3 +1,33 @@
+## Timeout release gates pass
+
+Final full suite:1711passed,1existing optional skip,0failed. API/frontend builds, independent tests/review, default-budget live-source read and sanitized exact-source package scans pass. Reviewed web and worker packages are ready for rollout. [Release gates](history/2026-10-20_19-01-43-438886-orchestrator-source-timeout-release-gates.md).
+
+## Timeout release review accepted
+
+Independent final review resolves prior findings and accepts deadline/cancellation regressions. API/frontend builds and guarded source-package checks pass; web262/worker55file packages match reviewed source with private-value scans passed. Neither service has a shorter Miro override. Full regression suite is running before deployment. [Final review](history/2026-10-20_19-01-26-526944-evaluator-source-timeouts-accepted.md).
+
+## Independent timeout regressions pass
+
+New23virtual-timer cases reproduce15failures on the old source and pass on the60second implementation. Updated collector/store expectations plus focused tests pass34; broad affected suite275pass,1existing optional skip,0fail. Cancellation, deadline expiry, explicit short overrides, source denials and longer aggregate budgets pass. Final full suite/API build and release checks are underway. [Tester](history/2026-10-20_19-00-36-315200-tester-source-timeout-regressions-verified.md).
+
+## Sixty-second implementation and real-source check pass
+
+Shared source/tool defaults and hidden map/runtime caps now use60seconds. Independent review accepts implementation and preserved access/cancellation boundaries; stale inventory/timeout test expectations are being updated. A default-budget read using actual worker configuration succeeds in9.55seconds with11events,2participants and13successful source checks. API/frontend builds pass. Final independent tests and release are pending. [coder](history/2026-10-20_18-59-54-736921-coder-source-timeouts-implemented.md) · [evaluator](history/2026-10-20_18-59-54-736921-evaluator-source-timeouts-reviewed.md) · [orchestrator](history/2026-10-20_18-59-54-736921-orchestrator-source-timeouts-live-read-verified.md).
+
+## Active: sixty-second source/tool timeouts
+
+User authorized increasing source-check/tool timeouts to60seconds. Independent inventory found shorter map, Google OAuth/HTTP, Discord, Miro preflight, memory and report-tool limits, including a15second map ceiling and web override. Coder owns shared implementation; independent tester owns regressions. Preserve authorization/cancellation and longer overall budgets. Reviewed deployment to web and update-agent is authorized; no release yet. [Contract](history/2026-10-20_18-57-54-928243-planner-source-timeout-contract.md).
+
+## Map read failure reproduced: total deadline exceeded
+
+Read-only current-code/live-source diagnostics isolate the broad Calendar map-read failure. Supabase snapshot succeeds (11events,2participation rows,9buildings). Under the default five-second service deadline six Calendar source checks pass and the seventh aborts; result is unavailable. An exact-event read succeeds in1.34seconds. A diagnostic-only15second budget lets the broad read finish in6.61seconds with all11Calendar checks ready. This establishes a timeout mechanism, rather than a Supabase permission failure; historical hosted audits still lack underlying exception detail. No runtime configuration/code changed. [Reproduction](history/2026-10-20_18-55-14-192194-orchestrator-map-read-timeout-reproduced.md).
+
+## Attendance incident: received but still pending
+
+A read-only exact-message check found the reported attendance input still pending at18:50ET on October20. Its source is allowlisted, the person has an exact linked trackable profile, and the active scheduled event is mapped, but no attendance row exists. The inspected model audit contains no proposal linked to this input. Older work repeatedly fails read_map_events and returns to the queue; the live worker takes only two inputs per run. Snapshot:639 pending originals,549 in configured source scope,521 source-scoped originals received before the target.
+
+Diagnosis complete; runtime unchanged. Repair broad map-read failures and retry fairness before claiming timely attendance automation. A sequential source-authorization timeout is a code-based possibility, not a proven hosted root cause. [Incident check](history/2026-10-20_18-50-56-834661-orchestrator-attendance-pending-backlog-diagnosed.md) · [Independent code trace](history/2026-10-20_18-50-56-834661-planner-attendance-queue-path-reviewed.md).
+
 ## Live: exact Discord replied-message context
 
 Source 6c1417a is live on web 6645c0c7-cb30-4c54-9515-79522fdf1054 (SUCCESS), published to main/codex/dev. When pinged in a reply, FlockBot receives a separate validated original replied-to message in both model phases, including references older than one hour. Web reads the exact native trigger and verifies the approved actor before following one same-channel/guild reference. Whole bounded text, author/time/link metadata and explicit partial/unavailable states preserve factual context without granting source/action/identity authority.

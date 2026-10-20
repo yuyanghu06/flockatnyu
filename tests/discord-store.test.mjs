@@ -39,7 +39,7 @@ test('active metadata HTTP errors sanitized, unconfigured metadata never fetches
  const timeouts=[];t.mock.method(AbortSignal,'timeout',ms=>{timeouts.push(ms);return new AbortController().signal;});
  let start;const started=new Promise(resolve=>start=resolve);
  const store=createDiscordStore({env,fetchImpl:async(url,options)=>{start(options.signal);return new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(new Error('private-fixture')),{once:true}));}});
- const controller=new AbortController(),pending=store.listSyncChannels({signal:controller.signal});const signal=await started;controller.abort();assert.equal(signal.aborted,true);const result=await pending;assert.equal(result.status,'aborted');assert(!JSON.stringify(result).includes('private-fixture'));assert.deepEqual(timeouts,[12000]);
+ const controller=new AbortController(),pending=store.listSyncChannels({signal:controller.signal});const signal=await started;controller.abort();assert.equal(signal.aborted,true);const result=await pending;assert.equal(result.status,'aborted');assert(!JSON.stringify(result).includes('private-fixture'));assert.deepEqual(timeouts,[60000]);
  const calls=timeouts.length;assert.equal((await store.listSyncChannels({signal:controller.signal})).status,'aborted');assert.equal(timeouts.length,calls);
 });
 

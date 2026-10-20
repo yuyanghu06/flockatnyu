@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import {validateDiscordRepliedMessage} from '../chat-discord-context.js';
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const label = (value,max) => String(value || '').replace(/[\u0000-\u001f\u007f-\u009f]/g,' ').trim().slice(0,max);
@@ -13,7 +14,7 @@ export function createDiscordUserDirectory({env=process.env,fetchImpl=globalThis
     try {
       const params=new URLSearchParams({select:'discord_user_id,display_name',discord_user_id:'not.is.null',order:'discord_user_id',limit:'1001'});
       const response=await fetchImpl(`${origin}/rest/v1/map_people?${params}`,{method:'GET',redirect:'error',
-        signal:AbortSignal.any([AbortSignal.timeout(12000),...(signal?[signal]:[])]),
+        signal:AbortSignal.any([AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS),...(signal?[signal]:[])]),
         headers:{apikey:key,authorization:`Bearer ${key}`,prefer:'count=exact'}});
       if(!response.ok){await response.body?.cancel();throw new Error('unavailable');}
       const reader=response.body.getReader();let size=0;const chunks=[];
@@ -41,7 +42,7 @@ export function createDiscordUserDirectory({env=process.env,fetchImpl=globalThis
 
 /** Request-local originals only. History is anchored to the triggering Discord
  * snowflake, not a model-chosen window or a later inference clock. */
-export function createDiscordChatContextLoader({liveDiscordService,directory,maxRuntimeMs=45000} = {}) {
+export function createDiscordChatContextLoader({liveDiscordService,directory,maxRuntimeMs=SOURCE_TOOL_TIMEOUT_MS} = {}) {
   return {async load({guildId,channelId,requestId,actorId,principal,signal} = {}) {
     if(![guildId,channelId,requestId].every(snowflake))throw new Error('invalid_discord_context');
     const end=Number((BigInt(requestId)>>22n)+1420070400000n);

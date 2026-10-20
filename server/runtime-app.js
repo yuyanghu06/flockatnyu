@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from './source-timeout.js';
 import { createApp } from './app.js';
 import {createProvider} from './providers/index.js';
 import {createChatRunner} from './chat-runner.js';
@@ -73,10 +74,10 @@ const mapStore = createMapEventStore();
 const authorizeMapSource = createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, store:mapStore,
   gmailSourceId:process.env.AGENT_GMAIL_SOURCE_ID?.trim(),calendarClient,calendarSourceId:calendarConfig.sourceId});
 const mapPresenceService = createMapPresenceService({store:mapStore,production:config.production, authorizeSource:authorizeMapSource});
-const mapService = createMapEventService({store:mapStore,authorizeSource:authorizeMapSource,timeoutMs:15000});
+const mapService = createMapEventService({store:mapStore,authorizeSource:authorizeMapSource,timeoutMs:SOURCE_TOOL_TIMEOUT_MS});
 const sourceMapTools = createChatMapTools({mapTools:createMapTools({service:mapService}),
   gmailSourceId:process.env.AGENT_GMAIL_SOURCE_ID?.trim()});
-const attendanceTools = createChatAttendanceTools({service:createChatAttendanceService({store:mapStore,service:mapService,timeoutMs:15000})});
+const attendanceTools = createChatAttendanceTools({service:createChatAttendanceService({store:mapStore,service:mapService,timeoutMs:SOURCE_TOOL_TIMEOUT_MS})});
 const mapTools = {
   configured:sourceMapTools.configured,
   tools:[...sourceMapTools.tools,...attendanceTools.tools],

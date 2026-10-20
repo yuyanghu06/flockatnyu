@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 // Service-only projections from normalized events; no legacy JSON fallback.
 import {createMapEventStore, validateSnapshot, validEvent, validParticipation, eventWindow, authorizeProvenance, boundedWork, text, uuid, safeAvatar} from './events.js';
 export const MAP_DEBUG_SOURCE_ID = 'a7969a7a-53cc-4c75-9736-95dd386f1c5e';
@@ -27,7 +28,7 @@ async function concurrentChecks(items,check,signal) {
 const personView=person=>({id:person.id,displayName:person.display_name,avatarUrl:safeAvatar(person.avatar_url)});
 
 /** Source UUID allowlisting and positive current policy are independently required. */
-export function createMapPresenceService({store=createMapPresenceStore(),production=process.env.NODE_ENV==='production',authorizeSource=null,now=()=>new Date(),timeoutMs=5000}={}) {
+export function createMapPresenceService({store=createMapPresenceStore(),production=process.env.NODE_ENV==='production',authorizeSource=null,now=()=>new Date(),timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
   return Object.freeze({configured:store?.configured===true,
     async read({principal,signal}={}) {
       if(!text(principal?.id,200,1)||!Array.isArray(principal.allowedSourceIds))return {status:'forbidden',buildings:[]};

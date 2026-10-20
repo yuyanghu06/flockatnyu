@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 export const validMiroId = value => typeof value === 'string' && /^[A-Za-z0-9_=-]{1,200}$/.test(value);
@@ -44,7 +45,7 @@ export function readMiroMcpConfig(env = process.env) {
     if (tokenBrokerSecret.length < 32 || tokenBrokerSecret.length > 512) issues.push('invalid_token_broker_secret');
     if (accessToken || refreshToken || clientId || clientSecret || env.MIRO_MCP_AUTH_FILE || env.MIRO_MCP_PERSIST_AUTH === 'true') issues.push('broker_credentials_conflict');
   }
-  const requestTimeoutMs = limit(env.MIRO_MCP_REQUEST_TIMEOUT_MS, 45000, 1000, 120000);
+  const requestTimeoutMs = limit(env.MIRO_MCP_REQUEST_TIMEOUT_MS, SOURCE_TOOL_TIMEOUT_MS, 1000, 120000);
   const maxResponseBytes = limit(env.MIRO_MCP_MAX_RESPONSE_BYTES, 8388608, 1024, 33554432);
   if (!requestTimeoutMs || !maxResponseBytes) issues.push('invalid_resource_limit');
   if (env.MIRO_MCP_ENDPOINT && env.MIRO_MCP_ENDPOINT !== MIRO_MCP_ENDPOINT) issues.push('invalid_endpoint');

@@ -5,6 +5,7 @@ import {dirname, isAbsolute, join, posix, resolve, relative, sep} from 'node:pat
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const sharedModules = new Set(['server/source-timeout.js']);
 const nativeModules = new Set(['node:crypto', 'node:http', 'node:path', 'node:timers/promises', 'node:url']);
 // Node parses imports without executing source or resolving/loading its packages.
 const parseImports = `import {SourceTextModule} from 'node:vm';
@@ -37,7 +38,7 @@ export async function prepareCollectorDeployment({root = repository, temporaryRo
   const sources = new Map(), external = new Set();
   async function visit(name) {
     if (sources.has(name)) return;
-    if (!name.endsWith('.js') || !moduleRoots.some(prefix => name.startsWith(`${prefix}/`))) throw new Error('deployment_module_denied');
+    if (!name.endsWith('.js') || (!sharedModules.has(name) && !moduleRoots.some(prefix => name.startsWith(`${prefix}/`)))) throw new Error('deployment_module_denied');
     const source = await input(root, name);
     if (dynamicLoader.test(source.toString('utf8'))) throw new Error('deployment_dynamic_import_denied');
     let imports;

@@ -97,3 +97,19 @@ Model audit rollout requires additive migration033 before deploying the compatib
 ## Discord interactions
 
 The existing discord-events collector can forward eboard mention/reply requests through the protected web service’s separately authenticated internal bridge. Both services require private `DISCORD_CHAT_ENABLED` and `DISCORD_CHAT_BRIDGE_SECRET`; the collector also needs `DISCORD_CHAT_API_ORIGIN`. No second Gateway, archive or schema is introduced. Follow [Discord conversations](discord-chat.md) for source/audience restrictions and limits; actual release verification lives in the milestone snapshot.
+
+## Source tool deadlines
+
+Shared source requests and tool source-validation work default to60seconds through
+`server/source-timeout.js`. This includes map storage/service/attendance/presence,
+Google API and OAuth transport, Discord policy/request/context reads, Miro request
+and quota preflight, shared memory and bug-report tools. Web and planner use the
+same default; map's internal ceiling also permits the full60seconds. Explicit
+shorter caller/test deadlines and cancellation still take precedence. Existing
+longer Discord retrieval/pacing and overall chat/planner run budgets are unchanged;
+model dispatch, private audit, lease maintenance and request-body deadlines remain
+separate. Miro's explicit request-timeout setting continues to override its default.
+
+This change permits slower checks; it does not bypass source authorization, change
+queue ordering or guarantee backlog drainage. Current release acceptance is in the
+rolling milestone journal.

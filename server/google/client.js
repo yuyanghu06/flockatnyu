@@ -1,3 +1,4 @@
+import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 import { readGoogleConfig } from './config.js';
 import {validDrivePageToken} from '../automation/validation.js';
 import { createGoogleOAuth, GoogleError, googleError, verifyGoogleToken, waitForGoogleAuth } from './oauth.js';
@@ -102,7 +103,7 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
 
   async function run(signal, operation) {
     if (!configured) return { status: 'not_configured', sources: [] };
-    const timeout = AbortSignal.timeout(20000), combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
+    const timeout = AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS), combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
     try {
       if (combined.aborted) throw new GoogleError('aborted');
       const result = await waitForGoogleAuth(() => oauth.getAccessToken(), combined);
