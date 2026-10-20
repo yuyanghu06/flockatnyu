@@ -1,3 +1,9 @@
+## Live: exact Discord replied-message context
+
+Source 6c1417a is live on web 6645c0c7-cb30-4c54-9515-79522fdf1054 (SUCCESS), published to main/codex/dev. When pinged in a reply, FlockBot receives a separate validated original replied-to message in both model phases, including references older than one hour. Web reads the exact native trigger and verifies the approved actor before following one same-channel/guild reference. Whole bounded text, author/time/link metadata and explicit partial/unavailable states preserve factual context without granting source/action/identity authority.
+
+The actual screenshot reference was missing before release and is now present in the promoted read-only model check; zero tools, source writes or Discord posts. Access gates and stable tool inventory pass. Final full suite: 1688 passed, one existing optional skip, zero failed; API build, independent 118/159 checks and configured-model add-this/hostile-quote cases pass. Collector protocol/frontend/update-agent unchanged. General cancellation target-discovery variability remains separately recorded. [Live acceptance](history/2026-10-20_00-27-54-320361-orchestrator-discord-replied-message-live.md).
+
 ## Discord reply release accepted
 
 Final full suite: 1688 passed, one existing optional skip, zero failures. API build, independent 118/159 checks, configured-model exact add-this and hostile-quote read-only tests pass. The 261-file sanitized web package matches reviewed source and passes private-value scans. Web-only rollout and promoted exact native reply canary are next. Combined cancellation target discovery remains model-variable; no universal workflow claim. [Release checks](history/2026-10-20_00-25-02-449441-orchestrator-discord-reply-release-accepted.md).
