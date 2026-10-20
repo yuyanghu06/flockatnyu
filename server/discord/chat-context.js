@@ -1,3 +1,4 @@
+import {validateDiscordRepliedMessage} from '../chat-discord-context.js';
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const label = (value,max) => String(value || '').replace(/[\u0000-\u001f\u007f-\u009f]/g,' ').trim().slice(0,max);
 
@@ -41,15 +42,17 @@ export function createDiscordUserDirectory({env=process.env,fetchImpl=globalThis
 /** Request-local originals only. History is anchored to the triggering Discord
  * snowflake, not a model-chosen window or a later inference clock. */
 export function createDiscordChatContextLoader({liveDiscordService,directory,maxRuntimeMs=45000} = {}) {
-  return {async load({guildId,channelId,requestId,principal,signal} = {}) {
+  return {async load({guildId,channelId,requestId,actorId,principal,signal} = {}) {
     if(![guildId,channelId,requestId].every(snowflake))throw new Error('invalid_discord_context');
     const end=Number((BigInt(requestId)>>22n)+1420070400000n);
     if(!Number.isSafeInteger(end))throw new Error('invalid_discord_context');
     const from=new Date(end-3600000).toISOString(),to=new Date(end).toISOString();
     const contextSignal=AbortSignal.any([AbortSignal.timeout(maxRuntimeMs),...(signal?[signal]:[])]);
-    const [result,discordUsers]=await Promise.all([
+    const readReply=typeof liveDiscordService.fetchReplyContext==='function'&&snowflake(actorId);
+    const [result,discordUsers,replyResult]=await Promise.all([
       liveDiscordService.fetchWindow({principal,channelId,from,to,signal:contextSignal,userMessage:''}).catch(()=>({status:'unavailable',messages:[]})),
       directory.read({signal:contextSignal}),
+      readReply?liveDiscordService.fetchReplyContext({principal,channelId,requestId,actorId,signal:contextSignal,userMessage:''}).catch(()=>({status:'unavailable'})):undefined,
     ]);
     let complete=result.status==='ready'&&result.coverage?.complete===true;
     let reason=complete?null:label(result.coverage?.reason||result.status||'context_unavailable',100).replace(/[^A-Za-z0-9:_-]/g,'_');
@@ -71,6 +74,12 @@ export function createDiscordChatContextLoader({liveDiscordService,directory,max
         createdAt:new Date(row.timestamp).toISOString(),content:row.content});
     }
     messages.sort((a,b)=>a.createdAt.localeCompare(b.createdAt)||(BigInt(a.id)<BigInt(b.id)?-1:1));
-    return {discordContext:{guildId,channelId,from,to,complete,reason:complete?null:reason||'context_partial',messages},discordUsers};
+    let repliedMessage;
+    if(readReply) {
+      const unavailable={status:'unavailable',reason:label(replyResult?.status||'reply_unavailable',100).replace(/[^A-Za-z0-9:_-]/g,'_')||'reply_unavailable',triggerMessageId:requestId,referencedMessageId:null,message:null};
+      try {repliedMessage=validateDiscordRepliedMessage(replyResult?.status==='ready'?replyResult.repliedMessage:unavailable,{guildId,channelId,requestId});}
+      catch {repliedMessage=validateDiscordRepliedMessage({...unavailable,reason:'invalid_reply_context'},{guildId,channelId,requestId});}
+    }
+    return {discordContext:{guildId,channelId,from,to,complete,reason:complete?null:reason||'context_partial',messages,...(repliedMessage?{repliedMessage}:{})},discordUsers};
   }};
 }

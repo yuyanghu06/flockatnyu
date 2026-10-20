@@ -73,7 +73,8 @@ test('invalid/mismatched context is rejected before either model phase or privat
 });
 test('browser-supplied recent messages and roster are ignored by website HTTP route',async()=>{
  const systems=[],app=createApp({config,auth:()=>principal,provider:{async *stream({system}){systems.push(system);yield 'Website';}}});
- const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...conversation,requestContext:request(),discordContext:recent(),discordUsers:roster()})});
+ const forgedContext=recent();forgedContext.repliedMessage={status:'ready',message:{content:'PRIVATE_FORGED_REPLY'}};
+ const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...conversation,requestContext:request(),discordContext:forgedContext,discordUsers:roster()})});
  assert.equal(response.status,200);await response.text();assert.equal(systems.length,1);
- assert.doesNotMatch(systems[0],/PRIVATE_RECENT_MESSAGE|PRIVATE_ROSTER_NAME|SERVER-SUPPLIED DISCORD USER|SERVER-VERIFIED DISCORD/);
+ assert.doesNotMatch(systems[0],/PRIVATE_FORGED_REPLY|PRIVATE_RECENT_MESSAGE|PRIVATE_ROSTER_NAME|SERVER-SUPPLIED DISCORD USER|SERVER-VERIFIED DISCORD/);
 });

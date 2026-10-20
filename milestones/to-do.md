@@ -1,3 +1,11 @@
+## Discord replied-message context
+
+- [x] Implement exact live replied-to message context for bot mentions, including targets outside the previous hour; code frozen and independent evaluator 159 checks pass.
+- [x] Independently verify content, identity, bounds, deletion/failure, same-channel/guild/access policy and untrusted-source behavior; red baseline reproduced and 118 focused checks pass, including 37 new cases.
+- [x] Model-check exact add-this reference and read-only hostile quote; final full suite 1688 passed/one optional skip/zero failures, API build and guarded package checks pass.
+- [ ] Deploy and verify promoted exact screenshot reply context/access, publish journal.
+- Separate follow-up: cancellation target discovery remains model-variable after missing-read denial; reply injection does not guarantee every multi-action plan.
+
 ## General task behavior and timed corrections
 
 - [x] Trace exact all-day downgrade, repeated pagination, failed corrections and automatic unrelated-link footer.

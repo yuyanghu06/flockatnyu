@@ -532,6 +532,21 @@ Discord interaction tests cover shared runner/trusted context, adapter/client/de
 
 Automatic context tests exercise live-service pagination with synthetic originals, the exact one-hour boundary, full-text/partial coverage and two-column identity-directory selection; no live messages or credentials appear in evidence.
 
+`discord-reply-context.test.mjs` reproduces the missing old announcement through
+the production live Discord HTTP client, policy service, context loader, private
+bridge and shared runner. It checks exact trigger/approved-author binding, one
+same-destination direct reference, whole 10,000-character text and tail facts in
+both model phases, independent hour coverage, edited/empty/non-text records,
+explicit unavailable/oversize coverage, source/audience/policy withdrawal and
+final publication revocation. Strict immutable validation, spoofed browser/bridge
+context, cancellation and exclusion of source bodies from audit/output metadata
+are covered. A production native-provider serializer test verifies both actual
+planning/final HTTP envelopes, including reply evidence when the hour is empty;
+repeated requests verify fresh target reads. Source instructions remain data in
+the prompts; scripted providers verify transport and policy wording, not
+arbitrary model semantic decisions.
+Every HTTP response is synthetic; no live Discord read, post or model call occurs.
+
 Drive skill acceptance covers selective pre-execution activation in both chat and the autonomous planner, request/batch isolation, live directory pagination, access denial and exact deployment asset inclusion. Connector fixtures retain bounded exports and prevent Drive reads from granting Calendar/map write provenance.
 
 `discord-chat-team.test.mjs` exercises team text/thread bare-ping chains, exact invoking-channel capabilities, preceding-hour context, member/source blacklists, website intent isolation and final publication revocation.

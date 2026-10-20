@@ -1,0 +1,3 @@
+# Discord replied-message context
+
+Goal: current Discord bot requests can refer to the exact message they reply to, even when older than the automatic previous-hour window. Source originals are read live and remain untrusted data in request memory, with current guild/channel/source/audience restrictions. Root owns journal and integration; specialists have exclusive implementation/test ownership. Completion requires independent tests/review, model-context evidence and promoted verification. Status: full regressions, independent review, configured-model reference tests and guarded package checks accepted; web release and promoted verification next. Optional repliedMessage context stays separate from the recent-hour window.

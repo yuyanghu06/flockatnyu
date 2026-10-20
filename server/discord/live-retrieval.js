@@ -118,6 +118,7 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
       const ctx = await context(args?.principal,signal,args?.userMessage);
       const result = await operation(ctx,signal);
       await ctx.verify();
+      if(signal.aborted)fail('aborted');
       return result;
     } catch (error) {
       const status = signal.aborted ? 'aborted' : safe(error);
@@ -203,6 +204,41 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
       return {status:'ready',sources:value.sources,retrieval:'live',coverage:{complete:false,matchedCount:messages.length,returnedCount:value.sources.length,reason:args.messageId ? 'message_context' : 'latest_messages',textTruncated:value.trimmed}};
     });
   }
+  // The trigger and direct reply target are fetched live on the web service.
+  // Embedded referenced_message payloads and collector transport data are never
+  // accepted as originals, and a target's own reference is never followed.
+  async function fetchReplyContext(args={}) {
+    if(!id(args.channelId)||!id(args.requestId)||!id(args.actorId))return {status:'invalid_request',sources:[]};
+    return run(args,async(ctx,signal)=>{
+      await ctx.check(args.channelId);
+      if(signal.aborted)fail('aborted');
+      const unavailable=reason=>({status:'ready',sources:[],repliedMessage:{status:'unavailable',reason,triggerMessageId:args.requestId,referencedMessageId:null,message:null}});
+      if(typeof client.getMessage!=='function')return unavailable('reply_unavailable');
+      const raw=await client.getMessage({channelId:args.channelId,messageId:args.requestId,signal});
+      const trigger=cleanMessage(raw,args.channelId,config.guildId);
+      if(trigger.id!==args.requestId||trigger.author.id!==args.actorId)fail('invalid_response');
+      if(signal.aborted)fail('aborted');
+      const reference=raw.message_reference;
+      if(reference===undefined||reference===null)return {status:'ready',sources:[],repliedMessage:{status:'none',reason:null,triggerMessageId:args.requestId,referencedMessageId:null,message:null}};
+      if(!reference||typeof reference!=='object'||Array.isArray(reference)
+        ||reference.type!==undefined&&reference.type!==0||!id(reference.message_id)
+        ||reference.channel_id!==undefined&&reference.channel_id!==args.channelId
+        ||reference.guild_id!==undefined&&reference.guild_id!==config.guildId
+        ||BigInt(reference.message_id)>=BigInt(args.requestId))return unavailable('invalid_reply_reference');
+      const targetRaw=await client.getMessage({channelId:args.channelId,messageId:reference.message_id,signal});
+      if(signal.aborted)fail('aborted');
+      const target=cleanMessage(targetRaw,args.channelId,config.guildId);
+      if(target.id!==reference.message_id||Date.parse(target.timestamp)>Date.parse(trigger.timestamp))fail('invalid_response');
+      const base={triggerMessageId:args.requestId,referencedMessageId:target.id};
+      if(target.content.length>10000)return {status:'ready',sources:[],repliedMessage:{...base,status:'partial',reason:'reply_text_budget',message:null}};
+      const authorName=String(target.author.name||target.author.id).replace(/[\u0000-\u001f\u007f-\u009f]/g,' ').trim().slice(0,100)||target.author.id;
+      const message={id:target.id,channelId:args.channelId,authorId:target.author.id,authorName,
+        createdAt:target.timestamp,editedAt:target.edited_timestamp,content:target.content,
+        url:`https://discord.com/channels/${config.guildId}/${args.channelId}/${target.id}`,
+        hasNonTextContent:target.hasNonTextContent,textTruncated:false};
+      return {status:'ready',sources:[],repliedMessage:{...base,status:target.hasNonTextContent?'partial':'ready',reason:target.hasNonTextContent?'non_text_content':null,message}};
+    });
+  }
   async function fetchWindow(args = {}) {
     const from = iso(args.from), to = iso(args.to);
     if (!id(args.channelId) || !from || !to || from >= to) return {status:'invalid_request',sources:[],messages:[],coverage:{complete:false,reason:'invalid_request',matchedCount:0,returnedCount:0}};
@@ -243,5 +279,5 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     const trimmed = out.coverage.sourceTextTruncated || messages.length > out.sources.length || fullChars > sourceChars;
     return {...out,coverage:{...out.coverage,fetchedComplete:out.coverage.complete,complete:out.coverage.complete && !trimmed,returnedCount:out.sources.length,textTruncated:trimmed,reason:trimmed ? 'source_budget' : out.coverage.reason}};
   }
-  return Object.freeze({configured,search,readMessages,readWindow,fetchWindow,getCatalogue});
+  return Object.freeze({configured,search,readMessages,readWindow,fetchWindow,fetchReplyContext,getCatalogue});
 }

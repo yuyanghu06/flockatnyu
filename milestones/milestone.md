@@ -1,3 +1,23 @@
+## Discord reply release accepted
+
+Final full suite: 1688 passed, one existing optional skip, zero failures. API build, independent 118/159 checks, configured-model exact add-this and hostile-quote read-only tests pass. The 261-file sanitized web package matches reviewed source and passes private-value scans. Web-only rollout and promoted exact native reply canary are next. Combined cancellation target discovery remains model-variable; no universal workflow claim. [Release checks](history/2026-10-20_00-25-02-449441-orchestrator-discord-reply-release-accepted.md).
+
+## Discord reply regressions pass
+
+Independent tester froze 37 new reply cases; 118 focused checks pass after reproducing the old missing-context failure. Native provider envelopes and both model phases receive the full bounded old original, with strict access/revocation/failure/privacy handling. Final model and broad regression runs are underway. [Tester](history/2026-10-20_00-24-32-166988-tester-discord-reply-originals-verified.md).
+
+## Discord reply injection implemented and reviewed
+
+Web now fetches the exact native trigger and direct replied-to message, validates actor/source/destination and passes a separate bounded repliedMessage quote into both model phases. Whole text up to 10000 characters and explicit unavailable/partial states preserve context truth. Independent evaluator 159 checks and coder 139 pass. Read-only live baseline confirms the screenshot target is older than an hour and absent from the old injected context. Final tests/model checks and rollout remain. [coder](history/2026-10-20_00-23-47-447693-coder-discord-direct-reply-injection-implemented.md) · [evaluator](history/2026-10-20_00-23-47-448581-evaluator-discord-direct-reply-injection-accepted.md) · [orchestrator](history/2026-10-20_00-23-47-448858-orchestrator-live-discord-reply-omission-reproduced.md).
+
+## Discord reply contract accepted
+
+Web will derive the exact direct reply from the native triggering message using policy-checked live reads and the approved actor. A bounded separate quote block reaches both model phases, including messages older than the recent-hour window. Same-channel/guild, source/audience checks and quoted-data trust remain. Implementation and independent regressions are underway; no release claimed. [Planner](history/2026-10-20_00-19-13-437395-planner-discord-exact-reply-context-contract.md).
+
+## Active: Discord replied-message context
+
+The user requests explicit injection of the message they reply to while mentioning FlockBot. Current mentions send the user text and a previous-hour channel sample without identifying the trigger’s reply target. A bounded policy-checked live reply read and model context block are being planned; no source changes or release yet. [Scope](history/2026-10-20_00-17-37-736312-orchestrator-discord-replied-message-scope.md).
+
 ## Live: general task behavior, timed repairs and relevant citations
 
 Runtime source d53bbec is live on web 50ef16b1-fa2e-4ff3-a1e0-2c5d7a280291 and update-agent ecebc4d5-a65f-49ff-8eda-539be79fe7f4, both SUCCESS and published to main/codex/dev. Shared website/Discord prompts preserve the full request, continue authorized corrections and verify saved fields. Timed/all-day batches and exact-ID fresh-revision corrections are supported. Relevant inline citations remain; the automatic unrelated-link footer is removed.

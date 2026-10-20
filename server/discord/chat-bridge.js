@@ -59,7 +59,7 @@ export function createDiscordChatBridge({enabled=false,secret='',access,runner,c
       const requestContext={transport:'discord',actor:approved.actor,channelId:value.channelId,
         threadId:approved.threadId,requestId:value.requestId,sourceProfileId:approved.sourceProfileId};
       const context=contextLoader?await bounded(()=>contextLoader.load({guildId:value.guildId,channelId:value.channelId,
-        requestId:value.requestId,principal:approved.principal,signal}),signal):{};
+        requestId:value.requestId,actorId:approved.actor.userId,principal:approved.principal,signal}),signal):{};
       const records=[];let length=0;
       await bounded(()=>runner.run({conversation,principal:approved.principal,requestContext,...context,signal,
         onRecord:record=>{if(signal.aborted)return;length+=JSON.stringify(record).length;if(length>200000)throw new Error('response_too_large');records.push(record);}}),signal);

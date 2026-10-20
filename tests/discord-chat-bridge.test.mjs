@@ -124,7 +124,7 @@ for(const key of ['discordContext','discordUsers'])test(`private body cannot sup
 test('server loader is called with approved principal and supplied context reaches both actual model phases only',async()=>{
  const f=realRunnerFixture(),calls=[],events=[];f.services.audit.recordEvent=async event=>events.push(event);
  const context={discordContext:recentContext(),discordUsers:discordDirectory()},b=setup({runner:f.runner,contextLoader:{load:async args=>{calls.push(args);return context;}}});
- const response=await b.bridge.handle(request());assert.equal(response.status,200);const output=await records(response);assert.equal(output.at(-1).type,'done');assert.equal(calls.length,1);assert.deepEqual(calls[0].principal,principal);assert.equal(calls[0].channelId,'200');assert.equal(calls[0].requestId,'400');
+ const response=await b.bridge.handle(request());assert.equal(response.status,200);const output=await records(response);assert.equal(output.at(-1).type,'done');assert.equal(calls.length,1);assert.deepEqual(calls[0].principal,principal);assert.equal(calls[0].channelId,'200');assert.equal(calls[0].requestId,'400');assert.equal(calls[0].actorId,approved.actor.userId);
  assert.equal(f.plans.length,1);assert.equal(f.streams.length,1);for(const req of [...f.plans,...f.streams]){assert.ok(req.system.includes(JSON.stringify(context.discordContext)));assert.ok(req.system.includes(JSON.stringify(context.discordUsers)));assert.deepEqual(req.messages,conversation.messages);}
  assert.doesNotMatch(JSON.stringify([...events,...output]),/PRIVATE_SYNTHETIC_CONTEXT|PRIVATE_SYNTHETIC_DIRECTORY/);
 });
