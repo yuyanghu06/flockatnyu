@@ -1,3 +1,15 @@
+## Compact Calendar release accepted
+
+Final full suite: 1651 passed, one existing optional skip, zero failed. API/frontend builds, model correction, independent review and exact-source sanitized package checks pass. Follow-up rollout is next. [Release checks](history/2026-10-19_20-04-46-625745-orchestrator-compact-calendar-release-accepted.md).
+
+## Compact Calendar lookup accepted locally
+
+Optional identity/timing lookup solves verbose pages without increasing context limits. Tester 45 and independent evaluator 54 checks pass. The actual configured model chooses two compact pages and one batch to repair 26 synthetic records in place, preserving long human notes and local times with no duplicate creation or renewed approval. Full regressions/builds are running before the follow-up release. [coder](history/2026-10-19_20-03-09-954457-coder-compact-calendar-identities-implemented.md) · [tester](history/2026-10-19_20-03-09-955245-tester-verbose-calendar-compact-regressions-verified.md) · [evaluator](history/2026-10-19_20-03-09-955578-evaluator-compact-calendar-identities-accepted.md) · [orchestrator](history/2026-10-19_20-03-09-955911-orchestrator-verbose-calendar-model-correction-verified.md).
+
+## Live general behavior; compact Calendar repair follow-up active
+
+Source a23ea47 is live on web b32a334c-454a-4990-bcb0-b04ffdfd6a93 and update-agent bd7624da-835f-44aa-8b2f-7dd621272ede. Hosted access, catalogue, capability and exact frontend checks pass. A 25-event full Calendar page exceeds the response bound for existing verbose records; compact identity lookup is being added without increasing context limits or weakening fresh revision checks. Existing Calendar data was only read. [Finding](history/2026-10-19_20-02-22-614215-orchestrator-promoted-calendar-page-limit-finding.md).
+
 ## General behavior repair accepted for release
 
 Final full suite passes 1648 tests with one existing optional skip and zero failures; builds, independent review, timing-receipt checks and four configured-model workflows pass. Desktop/mobile citation screenshots are verified. Exact-source sanitized web 261/worker 54 file contexts pass private-value scans. Deployment and promoted checks are next. [Release checks](history/2026-10-19_19-57-42-989112-orchestrator-general-behavior-release-accepted.md).

@@ -14,6 +14,7 @@ for(let stamp=Date.parse('2026-09-01T00:00:00Z');stamp<=Date.parse('2026-11-26T0
 const nextDate=value=>new Date(Date.parse(value+'T00:00:00Z')+86400000).toISOString().slice(0,10);
 const oldEvent=(date,index)=>({id:'wrong_'+String(index).padStart(3,'0'),summary:title,start:{date},end:{date:nextDate(date)},description:'Preserve human description '+index,location:'Preserve room '+index,status:'confirmed',etag:'"initial-'+index+'"',extendedProperties:{private:{humanNote:'preserve'}}});
 const rows=dates.map((date,index)=>{const tuesday=new Date(date+'T00:00:00Z').getUTCDay()===2;return {eventId:'wrong_'+String(index).padStart(3,'0'),date,startTime:tuesday?'18:00':'17:00',endTime:tuesday?'19:00':'18:00',timeZone:'America/New_York'};});
+const verboseOriginals=()=>dates.map((date,index)=>({...oldEvent(date,index),description:`Synthetic human note ${index}: `.padEnd(1800,'n')}));
 
 // Google PATCH recursively merges nested objects. Null deletes a nested member;
 // replacing the entire object in a fake server would conceal invalid date/time
@@ -124,19 +125,48 @@ test('optional literal Calendar query with limit25 returns26 scoped instances in
  const lists=f.calls.filter(call=>call.url.pathname.endsWith('/events'));assert.equal(lists.length,2);for(const key of ['q','timeMin','timeMax','maxResults'])assert.equal(lists[0].url.searchParams.get(key),lists[1].url.searchParams.get(key));assert.equal(f.patches.length,0);
 });
 
+test('compact identities paginate26 verbose events while unchanged full25 mode retains its context limit',async()=>{
+ const f=fixture({originals:verboseOriginals()}),request=f.request(),window={timeMin:'2026-09-01T00:00:00-04:00',timeMax:'2026-11-27T00:00:00-05:00',query:title,limit:25};
+ assert.equal((await request.execute({name:'list_calendar_events',arguments:window})).status,'context_limit','default full mode must keep its existing size cap');
+ assert.equal((await request.execute({name:'list_calendar_events',arguments:{...window,resultMode:'full'}})).status,'context_limit');
+ const first=await request.execute({name:'list_calendar_events',arguments:{...window,resultMode:'identities'}});
+ assert.equal(first.status,'ready');assert.equal(first.calendarContext.events.length,25);assert.equal(first.calendarContext.nextPageToken,'25');assert.equal(first.coverage.contentScope,'event_identities');
+ for(const event of first.calendarContext.events)assert.deepEqual(Object.keys(event).sort(),['end','eventId','start','status','title','url']);
+ assert(!JSON.stringify(first).includes('Synthetic human note'));assert(Buffer.byteLength(JSON.stringify(first.calendarContext))<20000);
+ const second=await request.execute({name:'list_calendar_events',arguments:{...window,resultMode:'identities',pageToken:first.calendarContext.nextPageToken}});
+ assert.equal(second.status,'ready');assert.equal(second.calendarContext.events.length,1);assert.equal(second.calendarContext.nextPageToken,null);
+ const lists=f.calls.filter(call=>call.url.pathname.endsWith('/events'));assert.equal(lists.length,4);
+ assert(lists[0].url.searchParams.get('fields').includes('description'));assert.equal(lists[0].url.searchParams.get('fields'),lists[1].url.searchParams.get('fields'));
+ assert.equal(lists[2].url.searchParams.get('fields'),'items(id,summary,start,end,status),nextPageToken');
+ for(const key of ['q','timeMin','timeMax','maxResults','fields'])assert.equal(lists[2].url.searchParams.get(key),lists[3].url.searchParams.get(key));
+ assert.equal(f.patches.length,0);
+});
+
+test('unknown result modes fail tool schema and production client before OAuth',async()=>{
+ const f=fixture(),tool=f.adapter.tools.find(tool=>tool.name==='list_calendar_events'),window={timeMin:'2026-09-01T00:00:00Z',timeMax:'2026-11-27T00:00:00Z',query:title,limit:25};
+ assert.equal(checkSchema(tool.parameters),true);
+ for(const resultMode of ['summary','identities\n','',null,1,{}]) {
+  const args={...window,resultMode};assert.equal(validateArguments(args,tool.parameters),false);
+  assert.equal((await f.request().execute({name:'list_calendar_events',arguments:args})).status,'invalid_request');
+  assert.equal((await f.client.listEvents({...args,principal:{id:principal.id,calendarAccess:true,calendarId}})).status,'invalid_request');
+ }
+ assert.equal(f.oauth.length,0);assert.equal(f.calls.length,0);
+ const denied=fixture({googleAccess:false});assert.equal((await denied.request().execute({name:'list_calendar_events',arguments:{...window,resultMode:'identities'}})).status,'forbidden');assert.equal(denied.calls.length,0);assert.equal(denied.oauth.length,0);
+});
+
 test('stateless bulk corrections cannot obtain request-local revision authority',async()=>{
  const f=fixture(),app=createApp({config:{configured:true,production:false,timeoutMs:3000},googleTools:f.adapter,auth:()=>principal});const response=await app.request('/api/tools/update_calendar_events',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({events:[rows[0]]})});assert(response.status>=400);assert.notEqual((await response.json()).status,'ready');assert.equal(f.calls.length,0);
 });
 
-test('actual native list pagination and one bulk correction repair26 instances within three tool calls',async()=>{
- const f=fixture(),bodies=[],audit=[];let answerSystem='';
- const window={timeMin:'2026-09-01T00:00:00-04:00',timeMax:'2026-11-27T00:00:00-05:00',query:title,limit:25};
+for(const compact of [false,true])test(compact?'native compact lookup repairs26 verbose events with full fresh reads preserving1800-character human notes':'actual native list pagination and one bulk correction repair26 instances within three tool calls',async()=>{
+ const originals=compact?verboseOriginals():dates.map(oldEvent),f=fixture({originals}),bodies=[],audit=[];let answerSystem='';
+ const window={timeMin:'2026-09-01T00:00:00-04:00',timeMax:'2026-11-27T00:00:00-05:00',query:title,limit:25,...(compact?{resultMode:'identities'}:{})};
  const config={configured:true,production:false,provider:'openai-compatible',model:'synthetic',baseUrl:'https://synthetic-model.example/v1',apiKey:'synthetic',timeoutMs:3000,requestTimeoutMs:3000};
  const provider=createProvider(config,{audit:{required:false,startModel:async()=>({status:'ready'}),finishModel:async()=>({status:'ready'})},fetchImpl:async(_,init)=>{
   const body=JSON.parse(init.body);if(body.stream){answerSystem=body.messages[0].content;return new Response('data: {"choices":[{"index":0,"delta":{"content":"Synthetic correction outcomes"},"finish_reason":null}]}\n\ndata: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});}
   bodies.push(body);const round=bodies.length,results=body.messages.filter(message=>message.role==='tool').map(message=>JSON.parse(message.content));let selected=[];
   if(round===1)selected=[{name:'list_calendar_events',arguments:window}];
-  if(round===2){assert.equal(results[0].calendarContext.events.length,25);selected=[{name:'list_calendar_events',arguments:{...window,pageToken:results[0].calendarContext.nextPageToken}}];}
+  if(round===2){assert.equal(results[0].calendarContext.events.length,25);if(compact){assert.equal(results[0].coverage.contentScope,'event_identities');assert.equal(results[0].arguments.resultMode,'identities');assert(!JSON.stringify(results[0]).includes('Synthetic human note'));}selected=[{name:'list_calendar_events',arguments:{...window,pageToken:results[0].calendarContext.nextPageToken}}];}
   if(round===3){const events=results.flatMap(result=>result.calendarContext?.events||[]);assert.equal(events.length,26);selected=[{name:'update_calendar_events',arguments:{events:events.map(event=>({...rows.find(row=>row.eventId===event.eventId)}))}}];}
   if(round===4){const batch=results.find(result=>result.tool==='update_calendar_events').calendarBatchWrite;assert.equal(batch.counts.updated,26);assert.equal(batch.complete,true);assert.equal(batch.items.filter(row=>row.calendarWrite).length,26);}
   const toolCalls=selected.map((row,index)=>({id:`timed_${round}_${index}`,type:'function',function:{name:row.name,arguments:JSON.stringify(row.arguments)}}));
@@ -149,4 +179,5 @@ test('actual native list pagination and one bulk correction repair26 instances w
  assert.deepEqual(output.find(row=>row.type==='meta').retrieval.map(row=>row.tool),['list_calendar_events','list_calendar_events','update_calendar_events']);
  assert.deepEqual(audit.find(row=>row.kind==='tool_finished'&&row.tool==='update_calendar_events').counts,{sequence:3,requested:26,updated:26,unchanged:0,failed:0,unattempted:0});
  assert(answerSystem.includes('"updated":26'));assert(answerSystem.includes('"calendarBatchWrite"'));
+ if(compact){for(const original of originals){assert.equal(original.description.length,1800);assert.equal(f.events.get(original.id).description,original.description);assert((f.reads.get(original.id)||0)>=2);assert(f.calls.filter(call=>call.options.method==='GET'&&call.url.pathname.endsWith('/'+original.id)).every(call=>!call.url.searchParams.has('fields')||call.url.searchParams.get('fields').includes('description')));}assert(f.calls.filter(call=>call.url.pathname.endsWith('/events')).every(call=>call.url.searchParams.get('fields')==='items(id,summary,start,end,status),nextPageToken'));assert(!answerSystem.includes('Synthetic human note'),'internal full reads do not enlarge compact model context');}
 });

@@ -73,6 +73,12 @@ function eventOutput(event, calendarId) {
     sourceUrl: typeof event.source?.url === 'string' ? event.source.url.slice(0, 1000) : '', partial: true };
 }
 
+function eventIdentityOutput(event,calendarId) {
+  if(!eventIdValid(event?.id))throw new GoogleError('invalid_response');
+  return {eventId:event.id,title:String(event.summary||'').slice(0,300),start:displayBoundary(event.start),end:displayBoundary(event.end),
+    status:event.status||'confirmed',url:`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${event.id} ${calendarId}`).toString('base64url')}`};
+}
+
 export function createCalendarClient({ config = readCalendarConfig(), fetchImpl = globalThis.fetch, oauthClient } = {}) {
   const configured = Boolean(config.configured && config.calendarId && config.calendarId !== 'primary' && typeof fetchImpl === 'function');
   const oauth = oauthClient || createGoogleOAuth(config);
@@ -149,16 +155,16 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       return {status:'ready',calendars:page.items.map(row=>({id:String(row.id).slice(0,254),title:String(row.summary||'').slice(0,300),accessRole:row.accessRole})),nextPageToken:page.nextPageToken||null};
     }, undefined, {preflight:true});
   }
-  async function listEvents({timeMin,timeMax,pageToken,query,limit=5,principal,signal}={}) {
-    if (!validCalendarInstant(timeMin) || !validCalendarInstant(timeMax) || Date.parse(timeMax)<=Date.parse(timeMin) || Date.parse(timeMax)-Date.parse(timeMin)>366*86400000 || !Number.isInteger(limit) || limit<1 || limit>25 || query!==undefined&&!text(query,300,true) || pageToken!==undefined&&!text(pageToken,2000,true)) return {status:'invalid_request',events:[]};
+  async function listEvents({timeMin,timeMax,pageToken,query,resultMode='full',limit=5,principal,signal}={}) {
+    if (!validCalendarInstant(timeMin) || !validCalendarInstant(timeMax) || Date.parse(timeMax)<=Date.parse(timeMin) || Date.parse(timeMax)-Date.parse(timeMin)>366*86400000 || !Number.isInteger(limit) || limit<1 || limit>25 || !['full','identities'].includes(resultMode) || query!==undefined&&!text(query,300,true) || pageToken!==undefined&&!text(pageToken,2000,true)) return {status:'invalid_request',events:[]};
     return run(signal, async (token, active) => {
-      const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'false',fields:'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated),nextPageToken'});
+      const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'false',fields:resultMode==='identities'?'items(id,summary,start,end,status),nextPageToken':'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated),nextPageToken'});
       if(pageToken) params.set('pageToken',pageToken);
       if(query!==undefined)params.set('q',query);
       const page = await request(`${target}?${params}`, token, active);
       const items=page.items===undefined?[]:page.items;
       if (!Array.isArray(items)||items.length>limit||page.nextPageToken!==undefined&&!text(page.nextPageToken,2000,true)) throw new GoogleError('invalid_response');
-      return {status:'ready',events:items.map(event=>eventOutput(event,config.calendarId)),nextPageToken:page.nextPageToken||null,coverage:{complete:!page.nextPageToken,windowOnly:true}};
+      return {status:'ready',events:items.map(event=>resultMode==='identities'?eventIdentityOutput(event,config.calendarId):eventOutput(event,config.calendarId)),nextPageToken:page.nextPageToken||null,coverage:{complete:!page.nextPageToken,windowOnly:true,...(resultMode==='identities'?{contentScope:'event_identities'}:{})}};
     },principal);
   }
   async function readEvent({eventId,principal,signal}={}) {

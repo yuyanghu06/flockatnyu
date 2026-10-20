@@ -5,7 +5,10 @@
 - [x] Remove automatic retrieved-link footer while preserving safe inline citations; desktop/mobile browser and 8 UI tests pass.
 - [x] Independently exercise 26-instance DST creation/correction, nested PATCH, IDs/human fields, permission/conflict/partial/retry/cancellation; 137 focused checks pass.
 - [x] Verify actual configured-model full-28-tool timed creation, in-place correction, apology-history repair and general shared-note follow-up.
-- [ ] Finish final full rerun, guarded deployment, promoted verification and publication; independent review, 33 receipt/16 UI checks, four configured-model cases and both builds pass.
+- [x] Finish first release full suite (1648 passed, one existing optional skip), guarded deployment and hosted behavior/citation/access checks; both services SUCCESS, source a23ea47 published.
+- [x] Implement and independently test/review compact identity lookup; configured model repairs 26 verbose synthetic records using two compact pages and one batch.
+- [x] Finish compact follow-up regressions/builds and guarded package checks: 1651 passed, one existing optional skip, zero failures.
+- [ ] Deploy compact follow-up, verify hosted pagination and publish final journal.
 
 ## Explicit action completion and Calendar batches
 

@@ -11,6 +11,11 @@ unsupported events, access denial, partial failures, cancellation, retry and saf
 25-item title-query pagination remain covered. An actual native-provider HTTP
 chain uses two list pages and one bulk update, with26saved-timing receipts and
 content-free audit counts. All network/provider responses are synthetic.
+Verbose-event coverage reproduces the existing full25-item context limit, then
+uses identities mode to retrieve26events in two bounded pages and repair them
+in one native bulk operation. Compact listings omit1800-character descriptions;
+fresh full event reads and PATCH preservation retain every human note. Unknown
+modes fail before OAuth, and the existing default full behavior remains checked.
 Single-create HTTP checks also verify the production client's saved start/end,
 timezone and exact Calendar URL survive both follow-up planning and final context;
 existing provider stubs without optional timing fields remain supported.
