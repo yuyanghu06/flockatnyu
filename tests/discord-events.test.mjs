@@ -223,7 +223,7 @@ test('gateway metadata refresh is guild scoped; shutdown does not advance in-fli
 
 test('invalid durable and SDK sessions are rejected before unsafe resume',async()=>{
   for(const value of [{},{session:session(-1)},{session:{...session(),resumeURL:'https://fixture.invalid'}},{session:{...session(),resumeURL:'wss://gateway.discord.gg@fixture.invalid'}}])await assert.rejects(gatewayFixture({state:{load:async()=>value}}),/invalid_checkpoint/);
-  const f=await gatewayFixture();assert.throws(()=>f.options.updateSessionInfo(0,{...session(),shardCount:2}),/invalid_gateway_session/);f.options.updateSessionInfo(0,null);assert.deepEqual(f.logs,[{status:'session_reset',coverage:'possible_gap_no_backfill'}]);await f.gateway.stop();
+  const f=await gatewayFixture();assert.throws(()=>f.options.updateSessionInfo(0,{...session(),shardCount:2}),/invalid_gateway_session/);f.options.updateSessionInfo(0,null);assert.deepEqual(f.logs,[{status:'collector_failed',stage:'gateway_session',errorCode:'invalid_gateway_session',shardId:0},{status:'session_reset',stage:'gateway_session',coverage:'possible_gap_no_backfill'}]);await f.gateway.stop();
 });
 
 test('session RPC uses service-only POST checkpoint CAS, exact guild key and bounded response',async()=>{

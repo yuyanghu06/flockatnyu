@@ -1,5 +1,6 @@
 import {setTimeout as delay} from 'node:timers/promises';
 import {runDiscordDiscovery} from './discovery.js';
+import {collectorErrorFields} from './collector-diagnostics.js';
 
 const fail=()=>{throw new Error('metadata_refresh_failed');};
 const cancelled=signal=>{if(signal?.aborted)fail();};
@@ -35,15 +36,18 @@ export function createDiscordMetadataRefresh({config,store,client,signal,discove
         }
         cancelled(currentSignal);
         const result=await discover({config,store,client,signal:currentSignal});
+        // Discovery returns safe status codes rather than throwing. Retain only
+        // a recognized code, never its result payload or provider details.
+        const resultFailure=()=>new Error('metadata_refresh_failed',{cause:{code:collectorErrorFields({code:result?.code}).errorCode}});
         cancelled(currentSignal);
-        if(typeof result?.generation!=='string'||generation&&result.generation!==generation)fail();
+        if(typeof result?.generation!=='string'||generation&&result.generation!==generation)throw resultFailure();
         generation??=result.generation;
         current=await checkpoint(currentSignal);
         if(current.revision!==revision||current.state?.generation!==generation)fail();
         if(current.state.phase==='complete'){nextDelay=config.metadataRefreshMs;return {status:'ready',complete:true,channels:Number.isInteger(result.channels)?result.channels:0};}
         const retryable=result.status==='partial'&&result.code==='budget_exhausted'
           ||['partial','aborted'].includes(result.status)&&result.code==='aborted'&&!currentSignal?.aborted;
-        if(!retryable)fail();
+        if(!retryable)throw resultFailure();
         incomplete=true;nextDelay=retryMs;
       }
       throw new Error('metadata_refresh_pending');
@@ -51,7 +55,7 @@ export function createDiscordMetadataRefresh({config,store,client,signal,discove
       // Budget exhaustion gets another bounded invocation shortly; terminal
       // errors get a slower retry, never a tight internal retry loop.
       nextDelay=error?.message==='metadata_refresh_pending'&&incomplete?retryMs:failureMs;
-      throw new Error(error?.message==='metadata_refresh_pending'?'metadata_refresh_pending':'metadata_refresh_failed');
+      throw new Error(error?.message==='metadata_refresh_pending'?'metadata_refresh_pending':'metadata_refresh_failed',{cause:error});
     }
   }
   return Object.freeze({

@@ -8,11 +8,11 @@ export function createDiscordEventState({env = process.env, fetchImpl = globalTh
     const active = AbortSignal.any([AbortSignal.timeout(15000), ...(signal ? [signal] : [])]);
     const response = await fetchImpl(`${url.origin}/rest/v1/rpc/${name}`, {method:'POST',redirect:'error',signal:active,
       headers:{apikey:env.SUPABASE_SERVICE_ROLE_KEY,authorization:`Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,'content-type':'application/json'},body:JSON.stringify(args)});
-    if (!response.ok) { await response.body?.cancel(); throw new Error('checkpoint_unavailable'); }
+    if (!response.ok) { await response.body?.cancel(); throw Object.assign(new Error('checkpoint_unavailable'),{httpStatus:response.status}); }
     const reader = response.body.getReader(); const chunks=[];let bytes=0;
     try { while(true) { const {value,done}=await reader.read();if(done)break;
-      bytes+=value.byteLength;if(bytes>16384)throw new Error('checkpoint_unavailable');chunks.push(value); }
-      return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+      bytes+=value.byteLength;if(bytes>16384)throw new Error('checkpoint_response_too_large');chunks.push(value); }
+      try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new Error('checkpoint_invalid_response');}
     } finally { await reader.cancel().catch(()=>{});reader.releaseLock(); }
   }
   return Object.freeze({

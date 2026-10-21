@@ -150,7 +150,7 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
     'server/automation/events.js', 'server/automation/store.js', 'server/automation/validation.js',
     'server/discord/chat-adapter.js', 'server/discord/chat-bridge.js', 'server/discord/chat-client.js',
     'server/discord/chat-config.js', 'server/discord/chat-delivery.js', 'server/discord/chat-runtime.js',
-    'server/discord/client.js', 'server/discord/config.js', 'server/discord/discovery.js',
+    'server/discord/client.js', 'server/discord/collector-diagnostics.js', 'server/discord/config.js', 'server/discord/discovery.js',
     'server/discord/event-cli.js', 'server/discord/event-config.js', 'server/discord/event-listener.js',
     'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/metadata-refresh.js', 'server/discord/request-pacing.js', 'server/discord/store.js', 'server/source-timeout.js',
   ]);
