@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDiscordChatRunner} from '../server/runtime-app.js';
+import {readDiscordChatConfig} from '../server/discord/chat-config.js';
+import {createDiscordChatBridge,createDiscordChatRemote} from '../server/discord/chat-bridge.js';
 import {createApp} from '../server/app.js';
 import {createMemoryTools} from '../tools/memory/index.js';
 import {createBugReportTools} from '../tools/bug-reports/index.js';
@@ -95,4 +97,38 @@ test('bare Discord ping retains full Calendar catalogue and original history for
  const c=calendarFixture(),f=fixture({adapters:{googleTools:c.tools},plan:(_,round)=>round===1?[call('create_calendar_event',calendarArgs)]:[]});
  await f.run({conversation:{messages:[{role:'assistant',content:'Create a calendar event now.'},{role:'user',content:'Respond to this mention using the recent channel conversation.'}],timeZone:'America/New_York'}});assert.equal(c.writes.length,1);assert.ok(f.plans[0].tools.some(t=>t.name==='create_calendar_event'));
  assert.match(f.plans[0].system,/untrusted/i);
+});
+
+
+test('Discord runtime uses its twenty-minute deadline while website keeps the shared five-minute deadline',async t=>{
+ const timers=[],schedule=globalThis.setTimeout;
+ t.mock.method(globalThis,'setTimeout',(callback,delay,...args)=>{timers.push(delay);return schedule(callback,delay,...args);});
+ const services={config:{configured:true,provider:'openai-compatible',requestTimeoutMs:300000,timeoutMs:60000},provider:{async *stream(){yield 'Fixture answer';}}};
+ const conversation={messages:[{role:'user',content:'Hello'}],timeZone:'America/New_York'};
+ for(const [override,expected] of [[undefined,1200000],['180000',180000],['1200000',1200000]]) {
+  const runner=createDiscordChatRunner({services,chatConfig:readDiscordChatConfig({DISCORD_CHAT_TIMEOUT_MS:override})});
+  const before=timers.length;
+  assert.equal((await runner.run({conversation,principal,requestContext:context})).status,'succeeded');
+  assert.deepEqual(timers.slice(before),[expected]);
+  assert.equal(services.config.requestTimeoutMs,300000,'Discord must not mutate website configuration');
+ }
+ const before=timers.length,app=createApp({...services,auth:()=>principal});
+ const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(conversation)});
+ assert.equal(response.status,200);assert.match(await response.text(),/Fixture answer/);
+ assert.deepEqual(timers.slice(before),[60000,300000],'body reading uses its own deadline before the five-minute run');
+});
+
+test('private remote allows delivery overhead beyond the twenty-minute bridge and preserves shorter overrides',async t=>{
+ const deadlines=[],timeout=AbortSignal.timeout;
+ t.mock.method(AbortSignal,'timeout',ms=>{deadlines.push(ms);return timeout(ms);});
+ const secret='synthetic-twenty-minute-bridge-secret',approved={principal,actor:context.actor,sourceProfileId:context.sourceProfileId,threadId:null};
+ for(const value of [undefined,15000,1200000]) {
+  const options=value===undefined?{}:{timeoutMs:value},records=[];
+  const bridge=createDiscordChatBridge({...options,enabled:true,secret,access:{authorize:async()=>approved},runner:{run:async({signal,onRecord})=>{assert.equal(signal.aborted,false);onRecord({type:'delta',text:'Ready'});onRecord({type:'done'});}}});
+  const remote=createDiscordChatRemote({...options,baseUrl:'https://private.example',secret,fetchImpl:(url,init)=>bridge.handle(new Request(url,init))});
+  const before=deadlines.length;
+  await remote.runChat({conversation:{messages:[{role:'user',content:'Hello'}],timeZone:'America/New_York'},requestContext:context,onRecord:row=>records.push(row)});
+  assert.deepEqual(deadlines.slice(before),[value??1230000,value??1200000]);
+  assert.deepEqual(records,[{type:'delta',text:'Ready'},{type:'done'}]);
+ }
 });

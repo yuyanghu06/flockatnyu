@@ -1,4 +1,5 @@
 import {createHash,timingSafeEqual} from 'node:crypto';
+import {request as httpRequest} from 'node:http';
 
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const hash = value => createHash('sha256').update(value).digest();
@@ -27,7 +28,7 @@ async function readBody(request,maxBytes=48000) {
 /** Private bearer-authenticated service transport. Browser sessions and request
  * body principals cannot authorize it. Server-owned principals gate the same
  * assistant adapters as the website, with a separate Discord source subset. */
-export function createDiscordChatBridge({enabled=false,secret='',access,runner,contextLoader,maxConcurrent=3,timeoutMs=180000} = {}) {
+export function createDiscordChatBridge({enabled=false,secret='',access,runner,contextLoader,maxConcurrent=3,timeoutMs=1200000} = {}) {
   let active=0;
   const configured = enabled && typeof secret === 'string' && secret.length >= 32 && !/[\r\n]/.test(secret);
   async function handle(request) {
@@ -74,15 +75,50 @@ export function createDiscordChatBridge({enabled=false,secret='',access,runner,c
   return Object.freeze({handle});
 }
 
-export function createDiscordChatRemote({baseUrl,secret,fetchImpl=globalThis.fetch,timeoutMs=300000} = {}) {
-  let base;
-  try {const url=new URL(baseUrl);if(url.protocol==='https:'&&!url.username&&!url.password&&!url.search&&!url.hash&&url.pathname==='/')base=url.origin;}catch{}
+// Railway private networking avoids public proxy request/idle limits. Native
+// HTTP has no fetch headers deadline; the composed request signal bounds all I/O.
+function postInternal(url,{body,headers,signal,requestImpl}) {
+  return new Promise((resolve,reject)=>{
+    const request=requestImpl(url,{method:'POST',headers,signal,agent:false},response=>{
+      response.on('error',reject);
+      response.on('aborted',()=>reject(new Error('discord_chat_unavailable')));
+      if(response.statusCode<200||response.statusCode>=300){
+        reject(new Error('discord_chat_unavailable'));response.destroy();return;
+      }
+      const chunks=[];let bytes=0;
+      response.on('data',chunk=>{
+        bytes+=chunk.length;
+        if(bytes>250000){reject(new Error('discord_chat_invalid_response'));response.destroy();return;}
+        chunks.push(chunk);
+      });
+      response.on('end',()=>response.complete
+        ?resolve(Buffer.concat(chunks).toString('utf8')):reject(new Error('discord_chat_unavailable')));
+    });
+    request.on('error',reject);
+    request.end(body);
+  });
+}
+
+export function createDiscordChatRemote({baseUrl,secret,fetchImpl=globalThis.fetch,internalRequestImpl=httpRequest,timeoutMs=1230000} = {}) {
+  let base,internal=false;
+  try {
+    const url=new URL(baseUrl);
+    if(!url.username&&!url.password&&!url.search&&!url.hash&&url.pathname==='/'){
+      if(url.protocol==='https:')base=url.origin;
+      else {
+        const match=typeof baseUrl==='string'&&/^http:\/\/[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.railway\.internal:([1-9][0-9]{0,4})\/?$/.exec(baseUrl);
+        if(match&&Number(match[1])<=65535){base=url.origin;internal=true;}
+      }
+    }
+  }catch{}
   const configured=Boolean(base&&typeof secret==='string'&&secret.length>=32&&!/[\r\n]/.test(secret));
   async function post(path,value,signal) {
     if(!configured)throw new Error('discord_chat_not_configured');
+    const requestSignal=AbortSignal.any([AbortSignal.timeout(timeoutMs),...(signal?[signal]:[])]);
+    const headers={authorization:`Bearer ${secret}`,'content-type':'application/json'},body=JSON.stringify(value);
+    if(internal)return postInternal(`${base}/internal/discord/${path}`,{body,headers,signal:requestSignal,requestImpl:internalRequestImpl});
     const response=await fetchImpl(`${base}/internal/discord/${path}`,{method:'POST',redirect:'error',
-      headers:{authorization:`Bearer ${secret}`,'content-type':'application/json'},body:JSON.stringify(value),
-      signal:AbortSignal.any([AbortSignal.timeout(timeoutMs),...(signal?[signal]:[])])});
+      headers,body,signal:requestSignal});
     if(!response.ok){await response.body?.cancel();throw new Error('discord_chat_unavailable');}
     const reader=response.body.getReader();const chunks=[];let bytes=0;
     try{while(true){const part=await reader.read();if(part.done)break;bytes+=part.value.byteLength;

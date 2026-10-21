@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createServer,request as httpRequest} from 'node:http';
 import {createDiscordChatBridge,createDiscordChatRemote} from '../server/discord/chat-bridge.js';
 import {createDiscordChatRunner} from '../server/runtime-app.js';
 import {createApp} from '../server/app.js';
@@ -183,4 +184,70 @@ test('reply to actual bot message uses normal transport and preserves trusted ac
 test('unexpected slash invocation is ignored before REST, source authorization, context or model work',async()=>{
  const f=fullMentionFixture(),event={t:'INTERACTION_CREATE',d:{id:'1551603926630400000',guild_id:'100',channel_id:'200',application_id:'99',token:'synthetic-only',type:2,member:{user:{id:'300',username:'member'}},data:{name:'ask',type:1,options:[{name:'question',type:3,value:'hello'}]}}};
  try{assert.equal((await f.adapter.handle(event)).status,'ignored');assert.deepEqual(f.requests,[]);assert.deepEqual(f.contextLoads,[]);assert.deepEqual(f.plans,[]);assert.deepEqual(f.streams,[]);assert.deepEqual(f.sends,[]);assert.deepEqual(f.typing,[]);}finally{f.adapter.stop();}
+});
+
+
+for(const baseUrl of ['http://web.railway.internal:3000','http://flock-web.railway.internal:8080/','http://a.railway.internal:1','http://a.railway.internal:65535'])test(`remote accepts private Railway root ${baseUrl}`,()=>{
+ assert.equal(createDiscordChatRemote({baseUrl,secret}).configured,true);
+});
+for(const baseUrl of ['http://web.railway.internal','http://web.railway.internal:0','http://web.railway.internal:65536','http://web.railway.internal:03000','http://web.railway.internal:3000/path','http://web.railway.internal:3000/?x=1','http://web.railway.internal:3000/#x','http://user:pass@web.railway.internal:3000','http://web.railway.internal.evil:3000','http://evil.web.railway.internal:3000','http://WEB.railway.internal:3000','http://localhost:3000','http://127.0.0.1:3000','http://[::1]:3000','http://-web.railway.internal:3000','http://web-.railway.internal:3000'])test(`remote rejects noncanonical or unsafe private root ${baseUrl}`,()=>{
+ assert.equal(createDiscordChatRemote({baseUrl,secret}).configured,false);
+});
+async function internalFixture(t,handler,options={}) {
+ const requests=[],server=createServer((request,response)=>{requests.push(request);handler(request,response);});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ t.after(()=>new Promise(resolve=>{server.closeAllConnections();server.close(resolve);}));
+ const port=server.address().port,targets=[];
+ const remote=createDiscordChatRemote({baseUrl:'http://flock-web.railway.internal:3000',secret,...options,
+  fetchImpl:()=>{assert.fail('private transport must not use fetch or its headers timeout');},
+  internalRequestImpl:(url,requestOptions,callback)=>{targets.push({url,options:requestOptions});return httpRequest(`http://127.0.0.1:${port}${new URL(url).pathname}`,requestOptions,callback);}});
+ return {remote,requests,targets};
+}
+const remoteActor={actor,channelId:'200',requestId:'400',sourceProfileId:approved.sourceProfileId};
+const remoteIdentity={guildId:'100',channelId:'200',userId:'300'};
+test('private native HTTP preserves bearer authorization, POST bodies and bounded NDJSON through the actual bridge',async t=>{
+ const b=setup(),bodies=[];
+ const f=await internalFixture(t,async(req,res)=>{
+  const chunks=[];for await(const chunk of req)chunks.push(chunk);const body=Buffer.concat(chunks).toString();bodies.push(JSON.parse(body));
+  assert.equal(req.method,'POST');assert.equal(req.headers.authorization,`Bearer ${secret}`);assert.equal(req.headers['content-type'],'application/json');
+  const result=await b.bridge.handle(new Request(`http://flock-web.railway.internal:3000${req.url}`,{method:'POST',headers:req.headers,body}));
+  res.writeHead(result.status,Object.fromEntries(result.headers));res.end(await result.text());
+ });
+ const authorization=await f.remote.authorize(remoteIdentity);assert.equal(authorization.sourceProfileId,approved.sourceProfileId);
+ const output=[];await f.remote.runChat({conversation,requestContext:remoteActor,onRecord:row=>output.push(row)});
+ assert.deepEqual(output,[{type:'delta',text:'Fixture answer'},{type:'done'}]);
+ assert.deepEqual(bodies[0],remoteIdentity);assert.deepEqual(Object.keys(bodies[1]).sort(),['channelId','conversation','guildId','requestId','sourceProfileId','userId']);
+ assert.deepEqual(f.targets.map(row=>row.url),['http://flock-web.railway.internal:3000/internal/discord/authorize','http://flock-web.railway.internal:3000/internal/discord/chat']);
+ assert(f.targets.every(row=>row.options.signal instanceof AbortSignal&&row.options.agent===false));
+});
+test('private native HTTP rejects failures and redirects without exposing response bodies or following locations',async t=>{
+ for(const status of [302,401,500]) {
+  const f=await internalFixture(t,(_,res)=>{res.writeHead(status,{location:'http://external.invalid/secret'});res.end('PRIVATE_RESPONSE_BODY');});
+  await assert.rejects(f.remote.authorize(remoteIdentity),{message:'discord_chat_unavailable'});assert.equal(f.requests.length,1);
+ }
+});
+test('private native HTTP rejects oversized or truncated responses before delivering records',async t=>{
+ const oversized=await internalFixture(t,(_,res)=>res.end('x'.repeat(250001)));
+ await assert.rejects(oversized.remote.authorize(remoteIdentity),{message:'discord_chat_invalid_response'});
+ const incomplete=await internalFixture(t,(_,res)=>{res.writeHead(200,{'content-length':100});res.end('short');});
+ await assert.rejects(incomplete.remote.authorize(remoteIdentity));
+});
+test('private native HTTP caller cancellation and transport deadline abort a pending socket',async t=>{
+ for(const mode of ['caller','deadline'])for(const phase of ['before_headers','during_body']) {
+  let reached;const began=new Promise(resolve=>reached=resolve),abort=new AbortController();
+  const f=await internalFixture(t,(_,res)=>{if(phase==='during_body'){res.writeHead(200);res.write('{');}reached();},{timeoutMs:mode==='deadline'?30:1200000});
+  const pending=f.remote.authorize({...remoteIdentity,signal:abort.signal});
+  const rejected=assert.rejects(pending,{name:'AbortError'});
+  await began;if(mode==='caller')abort.abort();await rejected;
+  assert.equal(f.targets[0].options.signal.aborted,true);
+ }
+});
+
+
+test('private native HTTP accepts a complete response exactly at the 250KB bound',async t=>{
+ const body=JSON.stringify({status:'ready',sourceProfileId:'fixture',padding:''});
+ const exact=body.replace('"padding":""',`"padding":"${'x'.repeat(250000-Buffer.byteLength(body))}"`);
+ assert.equal(Buffer.byteLength(exact),250000);
+ const f=await internalFixture(t,(_,res)=>res.end(exact));
+ assert.equal((await f.remote.authorize(remoteIdentity)).sourceProfileId,'fixture');
 });

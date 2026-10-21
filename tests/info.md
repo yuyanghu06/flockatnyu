@@ -561,3 +561,19 @@ Drive skill acceptance covers selective pre-execution activation in both chat an
 source-timeouts.test.mjs uses virtual timers and synthetic source clients to verify sixty-second deadlines across composed map/source operations, real expiry, parent cancellation, explicit shorter overrides and unchanged authorization. It reproduces former shorter-cutoff failures without minute-long sleeps.
 
 Discord collector diagnostics tests exercise safe stage/code attribution, nested transport causes, hostile error values, logger failure containment, graceful cancellation and durable checkpoint ordering, CLI setup/teardown, monitor-only nonzero fatal exit and sanitized deployment closure. All fixtures are synthetic; no live Discord messages are sent. Native Node fatal stderr remains outside structured-log sanitization.
+
+
+Discord total-request deadlines: `discord-chat-config.test.mjs` checks the twenty-minute
+default and upper bound, shorter explicit overrides, clamping and malformed values.
+`discord-chat-tool-parity.test.mjs` observes actual runtime timers: Discord gets its
+own deadline while website chat retains five minutes, with separate body-read
+limits. Remote delivery has a thirty-second allowance beyond the bridge's default.
+These checks inspect scheduled deadlines without waiting twenty minutes.
+
+`discord-chat-bridge.test.mjs` exercises the private Railway native HTTP branch
+against ephemeral loopback HTTP servers via the injected request resolver. It
+checks strict private origins, actual bearer/POST/bridge behavior, redirects and
+non-success statuses, complete/truncated and 250KB response boundaries, and
+cancellation/deadlines both before headers and during response bodies. Private
+requests must bypass fetch. Railway DNS, IPv6 routing and deployed reachability
+need separate live verification.
