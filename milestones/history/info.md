@@ -131,3 +131,23 @@ October20 attendance diagnosis records exact pending-input correlation and indep
 The map-read follow-up records live-source timeout reproduction and separates successful Supabase reads from sequential Calendar validation exceeding the service deadline; production changes remain pending.
 
 Source-timeout release entries record independent virtual-clock regressions, exact-source package verification and successful web/worker rollout. Organic map-read success is distinguished from separate remaining Calendar/model failures and backlog clearance.
+
+October21 Discord outage entries distinguish collector fatal shutdown/retry exhaustion from channel authorization and preserve the uncertainty of the suppressed initiating error and current recovery status. No runtime recovery is claimed from startup logs alone.
+
+October21 chat-limit inspection confirms the shared website/Discord eight-round/eight-call ceiling without changing runtime configuration.
+
+Chat budget orchestrator pass records thirty call plan.
+
+Chat budget coder pass records thirty call implementation.
+
+Chat budget tester pass records thirty call boundaries pass.
+
+Chat budget evaluator pass records thirty call review accepted.
+
+Chat budget orchestrator pass records discord timeout diagnosed.
+
+October 21 Morpheus research entries distinguish upstream source evidence and local harness gaps from implementation or hosted verification.
+
+Chat budget orchestrator pass records thirty call rollout blocked.
+
+October21collector-crash-logging entries record failure-code implementation, independent privacy/checkpoint/shutdown regressions, the graceful startup exit correction, accepted review and the Railway-paused release. Source is verified but not live.

@@ -137,3 +137,9 @@ model-audit tracks private accounting/output logs for both chat and planner with
 `discord-chat/` tracks approved eboard interaction implementation, shared assistant execution and trusted caller context.
 
 source-timeouts/ tracks the authorized sixty-second shared source/tool deadline release and independent acceptance.
+
+collector-crash-logging/ tracks privacy-preserving stage/code diagnostics for the Discord listener and its live release verification.
+
+`morpheus-harness-research/` records the read-only upstream harness comparison; recommendations do not authorize implementation.
+
+`chat-limits/` tracks the shared30round/30call change, independent verification and the Railway-blocked rollout with five-minute Discord deadlines.

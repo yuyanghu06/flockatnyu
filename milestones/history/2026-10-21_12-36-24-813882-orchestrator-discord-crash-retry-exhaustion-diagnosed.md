@@ -1,0 +1,10 @@
+# discord crash retry exhaustion diagnosed
+
+- Local timestamp / acting role / milestone: 2026-10-21T12:36:24.813882-04:00 / orchestrator / Discord outage diagnosis.
+- Requested scope: user reports Buildathon bot failure, then explicitly directs checking why the Railway Discord instance crashed.
+- Starting repository state: clean after published timeout releasee40a81d.
+- Work performed / changed files: CLI read-only deployment/log inspection confirms Discord instanceCRASHED/stopped while web/planner/Gmail remain healthy. Deployed Oct19 collector9dc39afe-4aa5-4023-af82-686772314d69 has ON_FAILURE max3. All859retained log rows show4collector_failed entries: Oct19 17:04UTC, Oct20 13:10UTC, Oct20 21:57UTC, Oct21 13:04UTC. First3are followed by immediate startup; fourth at09:04ET precedes the reported noon unanswered pings and has no startup until12:34ET. This supports automatic-restart exhaustion as why the listener remained down. Exact initiating fatal cause is not recorded: no stage/code/exception/stack or OOM evidence in retained logs. A12:34ET chat_ready/gateway_ready/listening sequence is visible, but latest status still reports stopped/CRASHED, so sustained recovery is unverified. No restart/deploy/config/source mutation performed in this diagnostic. Prior60second rollout updated web+planner only; collector remains onOct19 image. Railway MCP unauthorized; authenticated CLI read-only fallback used.
+- Decisions: distinguish confirmed collector shutdown/retry exhaustion from unknown underlying fatal cause. No source messages, credentials or private model output retained.
+- Checks and evidence: read-only source/log/status inspection and actual synthetic checks above; no historical-message replay or public Discord posts.
+- Resulting state / acceptance: diagnosis recorded; crash triggering condition and sustained recovery remain unverified.
+- Remaining work and handoff: content-free stage/code diagnostics and bounded failure recovery would allow exact future diagnosis; restart policy resilience needs follow-up. Do not widen channel access or discard checkpoints to address a process outage.

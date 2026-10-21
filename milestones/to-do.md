@@ -1,3 +1,39 @@
+- [x] Chat budget orchestrator pass: thirty call rollout blocked; evidence in current milestone.
+## Shared chat budget rollout pending
+
+- [x] Implement and independently verify30rounds/30calls plus matching frontend progress IDs.
+- [x] Save five-minute Discord deadlines on web and collector.
+- [ ] Resume reviewed web deployment and collector existing-image redeploy when Railway lifts its October21 deployment pause; verify activation and live behavior. Current runtime still has previous limits.
+
+## Morpheus harness research
+
+- [x] Inventory our existing harness and identify actual gaps without runtime changes.
+- [x] Finish pinned upstream comparison and prioritized recommendations; runtime changes remain proposals only.
+
+- [x] Chat budget orchestrator pass: discord timeout diagnosed; evidence in current milestone.
+- [x] Chat budget evaluator pass: thirty call review accepted; evidence in current milestone.
+- [x] Chat budget tester pass: thirty call boundaries pass; evidence in current milestone.
+- [x] Chat budget coder pass: thirty call implementation; evidence in current milestone.
+- [x] Chat budget orchestrator pass: thirty call plan; evidence in current milestone.
+## Collector crash logging
+
+- [x] Define content-free stage/code diagnostics and preserve existing fatal/checkpoint behavior.
+- [x] Implement startup, Gateway, ingestion, checkpoint, metadata, overflow and shutdown diagnostics; coder106checks/API build pass.
+- [x] Independently verify47new diagnostics cases,307affected tests and final96startup-stop tests; full1755pass/1optional skip, API/package/review accepted.
+- [ ] Deploy209e106collector and verify diagnosticsVersion1startup, Gateway readiness and current checkpoint activity. Upload rejected: Railway deployments temporarily paused; no live release yet.
+
+## Chat tool limits explanation
+
+- [x] Confirm shared website/Discord ceiling: eight rounds, eight executed calls total, two per round; no change requested.
+
+## Discord collector crash diagnosis — October21
+
+- [x] Confirm collector crash and identify four fatal shutdowns with configured three automatic retries; latest09:04ET outage precedes noon unanswered requests.
+- [x] Inspect fatal code paths and distinguish ordinary reconnects from application shutdown; exact triggering error was not logged.
+- [ ] Verify stable single-instance recovery after12:34ET startup logs; instance metadata remainsCRASHED/stopped in this check.
+- [x] Implement content-free fatal stage/code diagnostics; deployment blocked by Railway pause.
+- [ ] Separately consider bounded transient recovery/restart policy so intermittent failures do not leave the bot offline indefinitely; not changed by logging scope.
+
 ## Sixty-second source checks
 
 - [x] Inventory shared source/network deadlines and hidden map/runtime caps.

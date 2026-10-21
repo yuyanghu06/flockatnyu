@@ -1,3 +1,75 @@
+## Collector diagnostics: Release verified; Railway deployment paused
+
+Source209e106 is committed. Full suite1755passed/1existing optional skip/0failed; subsequent narrow startup-stop correction passed96focused tests, API build and independent review. Final27file collector package exactly matches reviewed source and passes private-value scan. Railway collector upload was rejected with Deploys have been paused temporarily; no deployment ID/new running image exists and crash diagnostics are not live. Preserved existing retry policy and concurrent chat-budget changes. Prepared package receipt lives in ignored evidence/collector-crash-logging/release-package.json. Next action: retry verified collector upload after Railway restores deployments, then require diagnosticsVersion1 startup plus Gateway readiness and checkpoint progress before claiming live acceptance. [Evidence](history/2026-10-21_12-45-30-168113-orchestrator-collector-release-paused.md).
+
+## Collector diagnostics: Startup shutdown regressions pass
+
+Independent final focused96tests pass with0failures/skips. Diagnostics suite now47cases, including six final regressions for SIGTERM during connect and initial-delay resolve/reject, no false listening or failure markers, executable graceful exit0 and preservation of prior fatal1. Earlier broad307affected tests and parent full1755pass/1optional skip remain evidence; final delta covered by focused rerun. No live writes. [Evidence](history/2026-10-21_12-44-56-827726-tester-collector-startup-stop-verified.md).
+
+## Collector diagnostics: Final source review accepted
+
+Read-only evaluator accepts fixed stage/code/cause/numeric diagnostics, exact SDK signatures, content-free structured fields, discovery cause preservation, cleanup diagnostics, checkpoint ordering and exact collector package closure. Final startup SIGTERM exit/status finding resolved; graceful stop returns0 and prior fatal1 remains. Native Node default fatal stderr remains outside structured-record sanitization. Parent full suite1755passed/1optional skip/0failed before final narrow exit correction; independent focused delta tests cover that correction. No live acceptance yet. [Evidence](history/2026-10-21_12-44-48-152424-evaluator-collector-diagnostics-accepted.md).
+
+## Collector diagnostics: Graceful startup exit corrected
+
+Final event-cli-only correction returns stopped for cancellation during Gateway connect or metadata initial-delay resolution/rejection, suppressing misleading listening/failure markers. Executable maps graceful stopped to0 while preserving any prior fatal exit1. Coder96focused checks, syntax and diff checks pass. Implementation frozen; no restart/access changes. [Evidence](history/2026-10-21_12-44-48-081789-coder-collector-graceful-startup-stop-fixed.md).
+
+## Collector diagnostics: Final review requests graceful startup exit correction
+
+Earlier cancellation, metadata-cause and cleanup findings are resolved; safe diagnostic fields and package scope accepted. Final review found a deliberate stop during Gateway startup still returns unavailable and executable maps it to exit1. Coder/tester assigned stopped-result and exit-status correction, including no listening marker after stopped startup; preserve prior fatal exit1. Native stderr remains explicitly outside structured-log sanitization. Deployment held until focused correction tests and acceptance. [Evidence](history/2026-10-21_12-43-43-399637-evaluator-collector-startup-stop-fix-requested.md).
+
+## Chat budget: thirty call rollout blocked
+
+Source89a7730 implements shared30rounds/30calls and frontend1through30progress; tester137and reviewer263focused checks pass, API/frontend builds pass. Guarded web package262files has exact-source/private-value scans passed. Saved and read back DISCORD_CHAT_TIMEOUT_MS=300000 on web and discord-events. Web upload and existing collector-image redeploy both rejected with Deploys have been paused temporarily; no new deployment created and no live activation claimed. Official status.railway.com confirms October21 build/deploy pause, latest16:29UTC update. Preserve pending release and verify once platform recovers. Concurrent collector diagnostics and other journals were preserved; no collector source was packaged by this pass. [Evidence](history/2026-10-21_12-43-42-718658-orchestrator-thirty-call-rollout-blocked.md).
+
+## Collector diagnostics: Independent failure and privacy tests pass
+
+Tester froze41new synthetic regressions and passed307affected diagnostics, collector, metadata, chat and package tests with0failures. Covered stage attribution, exact SDK signatures, HTTP/cause codes, adversarial privacy values, logger failures, one-shot fatal handling, interrupted checkpoint ordering, delayed-chat graceful stop, periodic abort, teardown errors and package closure. Baseline isolated old source failed14of15gateway regressions. Structured top-level record privacy and native nonzero exit verified; native stderr is deliberately not globally sanitized. No live messages or source writes. Final evaluator/full-suite release gates pending. [Evidence](history/2026-10-21_12-43-21-788925-tester-collector-diagnostics-regressions-pass.md).
+
+## Collector diagnostics: Failure-stage logging implemented
+
+Added collector-diagnostics.js and integrated bounded stage/code/cause/HTTP/queue fields into Gateway, checkpoint RPC, metadata refresh and CLI startup/shutdown. Structured records exclude arbitrary errors, payloads and credentials; native Node fatal stderr remains unchanged. Explicit parent cancellation avoids false fatal diagnostics and interrupted checkpoint commits. Existing restart policy and access boundaries preserved. Coder106focused tests, API build and diff check pass. Independent review and release gates pending. [Evidence](history/2026-10-21_12-43-21-644144-coder-collector-diagnostics-implemented.md).
+
+## Morpheus harness comparison complete
+
+Pinned upstream01e6700 has a default Grok Bot webhook plus an optional Cursor SDK interactive dispatcher (default composer-2.5); actual live flags/model remain unverified. Recommended incremental reuse: bounded transient retries, failed-input quarantine beyond existing five-minute deferral, bounded conversation scheduling, and better search/link discovery. Existing native tools, audit, leases and deterministic Calendar writes already provide parity. Upstream Discord archives/persistent agent histories do not fit current retention policy. Source/test inspection only; no application or deployment changes. [Comparison](history/2026-10-21_12-43-08-059890-orchestrator-morpheus-harness-comparison.md).
+
+## Morpheus harness comparison: local inventory
+
+Independent read-only planner confirms existing native tool continuation, source/evidence controls, model audit, leases and deterministic Calendar writes. Incremental opportunities are bounded provider retries, failed-input quarantine beyond the existing five-minute deferral, and conversation-key scheduling. Research only; concurrent implementation and rollout status below remain unchanged. [Evidence](history/2026-10-21_12-42-36-361369-planner-morpheus-local-harness-inventory.md).
+
+## Chat budget: discord timeout diagnosed
+
+Live non-secret config confirms180000ms Discord overall deadlines on web and collector versus300000ms website. Content-free audit shows a nearby chat run succeeded in83931ms, including54918ms Discord read; web HTTP bridge later returned499after149258ms. Another nearby run aborted677ms after starting. These records support transport deadline pressure, but exact screenshot-to-run identity is not retained. Set both Discord deadlines to300000ms using existing supported cap; no model/source guard changes.30call source review and builds pass; rollout pending. [Evidence](history/2026-10-21_12-42-23-512715-orchestrator-discord-timeout-diagnosed.md).
+
+## Chat budget: thirty call review accepted
+
+Read-only evaluator ACCEPT:263focused boundary, shared-runner and Discord transport/access/context tests pass, scoped diff check passes. No material findings. Existing time/context/stall/auth guards preserved. User now reports Discord timeout; live config confirms180000ms Discord deadline on web and collector versus300000ms website. Investigating timeout before rollout. [Evidence](history/2026-10-21_12-41-17-169798-evaluator-thirty-call-review-accepted.md).
+
+## Chat budget: thirty call boundaries pass
+
+Independent tester updated five assigned test/guide files and passed137focused tests:30calls/15paired rounds,30single-call rounds, duplicate/no-progress guards, native call IDs/audit and separate final answer, frontend1through30acceptance and malformed31rejection, bridge/tool parity. No live calls. Runtime builds pass; rollout pending. [Evidence](history/2026-10-21_12-41-17-143497-tester-thirty-call-boundaries-pass.md).
+
+## Chat budget: thirty call implementation
+
+Implemented30rounds/30total executed calls and corrected planning prompt in server/assistant-context.js. Frontend validates exact tool-1 through tool-30 in src/chat-client.js; source guides refreshed. Coder syntax checks and scoped diff check pass. Independent tests/review and web rollout pending. [Evidence](history/2026-10-21_12-40-01-151059-coder-thirty-call-implementation.md).
+
+## Chat budget: thirty call plan
+
+Confirmed bot uses private web bridge and shared runner; server loads Discord identity, recent-hour messages, reply target and user directory. Plan30planning rounds/30executed calls with2per round; update frontend ID validation and focused behavioral boundaries. Coder/tester own disjoint files. Existing timeout, source authorization and context limits stay intact. Verification and web rollout pending. [Evidence](history/2026-10-21_12-39-53-694810-orchestrator-thirty-call-plan.md).
+
+## Active: Discord collector crash diagnostics
+
+User authorized stage/code logging for future collector failures. Runtime and independent test ownership are assigned; structured diagnostics exclude arbitrary errors, stacks, source bodies and credentials. Restart policy and failure/checkpoint behavior remain unchanged. Collector-only deployment follows verified tests/review. [Contract](history/2026-10-21_12-38-37-446488-planner-collector-crash-diagnostics-contract.md).
+
+## Chat tool limits confirmed
+
+Both website and Discord share eight planning rounds and eight total executed model-selected tool calls per request, at most two per round. Final answer is separate; early termination remains possible. Static source inspection only; no runtime changes. [Evidence](history/2026-10-21_12-38-34-407832-orchestrator-chat-tool-limits-verified.md).
+
+## Discord listener outage: fourth fatal shutdown exhausted retries
+
+Read-only October21 investigation confirms the separate Discord collector stopped at09:04ET after its fourth logged collector_failed shutdown since theOct19 deployment. Its live manifest allows only3automatic failure restarts; prior3shutdowns restarted promptly, while this one did not until a12:34ET startup sequence. This explains the noon missed pings across Discord, independent of Buildathon channel permission. Exact initiating error is unavailable because all fatal paths emit the same content-free status without stage/code. Latest instance metadata still reportsCRASHED/stopped despite12:34startup logs; sustained recovery unverified. No runtime changes/restart were made during this check. Earlier60second release updated web/planner only. [planner](history/2026-10-21_12-36-24-813882-planner-buildathon-chat-gates-reviewed.md) · [planner](history/2026-10-21_12-36-24-813882-planner-discord-collector-crash-path-reviewed.md) · [orchestrator](history/2026-10-21_12-36-24-813882-orchestrator-discord-crash-retry-exhaustion-diagnosed.md).
+
 ## Live: sixty-second source/tool deadlines
 
 Source1258b2d is live on web f1fd2162-4a93-4fae-9df7-5c5e2f58fa84 and update-agent01076bc2-40c8-4072-b299-35abec6695bf, both SUCCESS and published to main/codex/dev. Shared map/Google/Discord/Miro/memory/report source deadlines now permit60seconds, with cancellation/access and longer overall budgets preserved.
