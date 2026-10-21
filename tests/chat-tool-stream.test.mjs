@@ -47,7 +47,7 @@ test('client accepts tool updates across arbitrary byte boundaries without addin
 
 test('client rejects malformed, out-of-order or renamed tool progress',async()=>{
  const cases=[
-  [update('completed')], [update('running',{id:'tool-9'})], [update('running',{name:'<img>'})], [update('invented')],
+  [update('completed')], ...['tool-0','tool-31','tool-100','tool-01','tool-1.5','tool-1x','tool--1','tool-30\\n',30,null].map(id=>[update('running',{id})]), [update('running',{name:'<img>'})], [update('invented')],
   [update('running'),update('running')], [update('running'),update('completed',{name:'read_gmail'})],
   [update('running'),update('completed'),update('completed')],
  ];
@@ -59,12 +59,12 @@ test('tool progress never turns an interrupted reply into a successful answer',a
  await assert.rejects(streamAssistant({messages,fetchImpl:async()=>stream([update('running'),{type:'error',message:'Fixture unavailable'}])}),/Fixture unavailable/);
 });
 
-test('client accepts the eighth bounded tool call for source fallback and map updates',async()=>{
+test('client accepts all thirty bounded tool calls for source fallback and map updates',async()=>{
  const records=[];
- for(let i=1;i<=8;i++)records.push(update('running',{id:`tool-${i}`}),update('completed',{id:`tool-${i}`}));
+ for(let i=1;i<=30;i++)records.push(update('running',{id:`tool-${i}`}),update('completed',{id:`tool-${i}`}));
  records.push({type:'delta',text:'Updated from the retrieved source.'},{type:'done'});
  const events=[];
  assert.equal(await streamAssistant({messages,fetchImpl:async()=>stream(records),onEvent:event=>events.push(event)}),'Updated from the retrieved source.');
- assert.equal(events.filter(event=>event.type==='tool').length,16);
- assert.equal(events.filter(event=>event.type==='tool').at(-1).id,'tool-8');
+ assert.equal(events.filter(event=>event.type==='tool').length,60);
+ assert.equal(events.filter(event=>event.type==='tool').at(-1).id,'tool-30');
 });

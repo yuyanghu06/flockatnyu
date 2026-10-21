@@ -93,15 +93,31 @@ test('native unknown tools and malformed arguments receive matched failure resul
 test('more than two native proposals all receive matched results and no extra execution beyond global cap',async()=>{
  const names=Array.from({length:8},(_,i)=>'read_'+i),executed=[];
  const tools={tools:names.map(define),execute:async args=>{executed.push(args.name);return {status:'ready',sources:[]};}};
- const batches=Array.from({length:4},(_,round)=>[0,1,2].map(index=>call(`round${round}_${index}`,names[(round*2+index)%8],{query:`round${round}_${index}`})));
+ const batches=Array.from({length:16},(_,round)=>[0,1,2].map(index=>call(`round${round}_${index}`,names[(round*2+index)%8],{query:`round${round}_${index}`})));
  const f=fixture({tools,batches});
- assert.equal((await f.run()).status,'succeeded');assert.equal(executed.length,8);
- assert.equal(f.events.filter(row=>row.kind==='tool_started').length,8);
- assert.equal(f.finishes.filter(row=>row.output?.toolCalls).reduce((count,row)=>count+row.output.toolCalls.length,0),12,'model audits retain every proposal while tool events count actual executions');
+ assert.equal((await f.run()).status,'succeeded');assert.equal(executed.length,30);assert.equal(f.plans.length,15);
+ assert.equal(f.events.filter(row=>row.kind==='tool_started').length,30);
+ assert.equal(f.finishes.filter(row=>row.output?.toolCalls).reduce((count,row)=>count+row.output.toolCalls.length,0),45,'model audits retain every proposal while tool events count actual executions');
  for(const plan of f.plans)assertNativeTranscript(plan);
  const firstResults=f.plans[1].messages.filter(row=>row.role==='tool');assert.equal(firstResults.length,3);
  assert.equal(JSON.parse(firstResults[2].content).status,'deferred');
  assert(f.answers.length===1);assert(!f.records.some(row=>row.type==='error'));
+});
+
+test('native single-call continuations reach thirty rounds with valid matched IDs and a separate final answer',async()=>{
+ for(const skipSecond of [false,true]) {
+  const batches=Array.from({length:31},(_,i)=>[call(`single_${i+1}`,'read_original',{query:`page-${skipSecond&&i===1?0:i}`})]);
+  const f=fixture({batches});
+  assert.equal((await f.run()).status,'succeeded');assert.equal(f.plans.length,30);
+  assert.equal(f.effects.length,skipSecond?29:30);assert.equal(f.answers.length,1);
+  for(const plan of f.plans)assertNativeTranscript(plan);
+  const priorResults=f.plans.at(-1).messages.filter(row=>row.role==='tool');
+  assert.equal(priorResults.length,29);assert.equal(priorResults.at(-1).tool_call_id,'single_29');
+  assert.equal(f.answers[0].tools,undefined);
+  assert.equal(f.records.filter(row=>row.type==='tool'&&row.status==='running').at(-1).id,`tool-${skipSecond?29:30}`);
+  assert.equal(f.events.filter(row=>row.kind==='tool_started').length,skipSecond?29:30);
+  assert.equal(f.starts.length,31);assert.equal(f.finishes.length,31);
+ }
 });
 
 test('duplicate native proposals receive results and can recover to a new actual call',async()=>{

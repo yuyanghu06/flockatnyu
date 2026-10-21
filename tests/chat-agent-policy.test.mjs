@@ -132,12 +132,35 @@ test('actual Miro content can support an event but board/search navigation canno
   }
 });
 
-test('extended map workflows execute at most eight calls with sequential progress IDs',async()=>{
+test('extended map workflows stop at thirty total calls across paired rounds with sequential progress IDs',async()=>{
   let executions=0,rounds=0;const events=[];
   const mapTools={tools:[{name:'read_map_events'}],execute:async()=>{executions++;return {status:'ready',...snapshot};}};
   await retrieveAssistantContext({messages,principal,now,timeZone,mapTools,onToolEvent:e=>events.push(e),
     provider:{planTools:async()=>{rounds++;return [0,1].map(i=>({name:'read_map_events',arguments:{sourceRecordId:`unique-${rounds}-${i}`}}));}}});
-  assert.equal(executions,8);assert.equal(rounds,4);assert.equal(events.at(-1).id,'tool-8');
+  assert.equal(executions,30);assert.equal(rounds,15);
+  assert.deepEqual(events.filter(event=>event.status==='running').map(event=>event.id),Array.from({length:30},(_,i)=>`tool-${i+1}`));
+  assert.equal(events.at(-1).id,'tool-30');
+});
+
+test('single-call planning reaches round thirty and stops even when a skipped duplicate leaves unused call budget',async()=>{
+  for(const skipSecond of [false,true]) {
+    let rounds=0,executions=0;const events=[];
+    await retrieveAssistantContext({messages,principal,now,timeZone,onToolEvent:event=>events.push(event),
+      mapTools:{tools:[{name:'read_map_events'}],execute:async()=>{executions++;return {status:'ready',...snapshot};}},
+      provider:{planTools:async()=>{rounds++;return [{name:'read_map_events',arguments:{sourceRecordId:`unique-${skipSecond&&rounds===2?1:rounds}`}}];}}});
+    assert.equal(rounds,30);assert.equal(executions,skipSecond?29:30);
+    assert.equal(events.filter(event=>event.status==='running').length,executions);
+    assert.equal(events.at(-1).id,`tool-${executions}`);
+  }
+});
+
+test('three consecutive no-progress rounds still terminate planning before the expanded limit',async()=>{
+  let rounds=0,executions=0;
+  const result=await retrieveAssistantContext({messages,principal,now,timeZone,
+    mapTools:{tools:[{name:'read_map_events'}],execute:async()=>{executions++;return {status:'ready',...snapshot};}},
+    provider:{planTools:async()=>{rounds++;return [{name:'read_map_events',arguments:{sourceRecordId:'same'}}];}}});
+  assert.equal(rounds,4);assert.equal(executions,1);
+  assert.equal(result.results.filter(row=>row.status==='duplicate_call_skipped').length,3);
 });
 
 test('bounded Gmail body reads expose configured provenance and bind identity to the original sender',async()=>{

@@ -102,7 +102,7 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
       if (reply.length > 150000) throw new Error('The reply exceeded the supported length.');
     } else if (event.type === 'tool') {
       const previous = toolCalls.get(event.id);
-      if (typeof event.id !== 'string' || !/^tool-[1-8]$/.test(event.id) ||
+      if (typeof event.id !== 'string' || !/^tool-(?:[1-9]|[12][0-9]|30)(?![\s\S])/.test(event.id) ||
           typeof event.name !== 'string' || !/^[a-zA-Z][a-zA-Z0-9_.:-]{0,63}$/.test(event.name) ||
           !['running', 'completed', 'partial', 'failed'].includes(event.status) ||
           (!previous && event.status !== 'running') || (previous && (previous.name !== event.name || previous.status !== 'running' || event.status === 'running'))) {

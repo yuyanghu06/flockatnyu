@@ -246,7 +246,7 @@ reset on leaving building focus. Selected people can move with their Schedule.
 Rebuild/cancel/blur/Escape/dispose clean active capture. These positions are purely
 client-local and never change source activity/location records or the camera.
 
-The chat stream client accepts bounded tool-1 through tool-8 progress for dependent source fallback and map update workflows; tool progress can precede metadata. Status metadata is selected by event type, not stream position.
+The chat stream client accepts bounded tool-1 through tool-30 progress for dependent source fallback and map update workflows; tool progress can precede metadata. Status metadata is selected by event type, not stream position.
 
 The composer footer remains outside the transcript scrollport, keeping scrolled
 bubbles above the footer and the panel’s lower inset at every scroll position.

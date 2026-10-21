@@ -52,7 +52,12 @@ Google requests. All provider/Google responses are synthetic; no live data is re
 responses through the real chat runner and private Discord bridge. It verifies
 assistant/tool call-ID pairing, stable catalogues, historical refusals alongside
 current capability/attempt/receipt facts, unknown/invalid/deferred/duplicate calls,
-global execution caps, cancellation and actual execution audit counts. Drive
+thirty-round and thirty-execution caps, cancellation and actual execution audit counts.
+Paired proposals stop after fifteen rounds; single-call continuations can reach
+round thirty. A skipped duplicate leaves unused execution budget without extending
+the round limit, and three consecutive stalled rounds still stop early. The
+frontend stream tests accept every progress ID through tool-30 and reject tool-31
+and malformed IDs. Drive
 skill activation resolves every skipped native call before replanning. The actual
 attendance declaration gate still ignores instructions in source results.
 Full26-tool native requests, the33-tool bound and existing image/PDF multimodal
