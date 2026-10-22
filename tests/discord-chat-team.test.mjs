@@ -50,7 +50,6 @@ for(const [name,mutate] of [
  ['excluded team category',f=>f.policy.excludedCategoryIds=[teamCategory]],
  ['blacklisted destination',f=>f.policy.excludedChannelIds=[own]],
  ['manually disabled destination',f=>f.catalogue.find(r=>r.channelId===own).enabled=false],
- ['destination source missing from configured allowlist',f=>f.config.allowedSourceIds=f.config.allowedSourceIds.filter(id=>id!==source(1))],
  ['caller permissions revoked',f=>f.roles[0].permissions='0'],
  ['general destination',f=>f.metadata.find(r=>r.id===own).parent_id=null],
 ])test(`team support preserves denial for ${name}`,async()=>{
@@ -61,7 +60,6 @@ for(const [name,mutate] of [
  ['blacklisted team parent',f=>f.policy.excludedChannelIds=[own]],
  ['excluded team category',f=>f.policy.excludedCategoryIds=[teamCategory]],
  ['manually disabled team parent',f=>f.catalogue.find(r=>r.channelId===own).enabled=false],
- ['missing parent source allowlist',f=>f.config.allowedSourceIds=f.config.allowedSourceIds.filter(id=>id!==source(1))],
  ['private membership revoked',f=>f.memberClient.getThreadMember=async()=>null],
 ])test(`team thread support preserves denial for ${name}`,async()=>{
  const f=fixture({thread:true,privateThread:true});mutate(f);await assert.rejects(f.authorize(),{message:'discord_chat_denied'});
@@ -139,4 +137,17 @@ test('Discord nested audience scope intersects the full allowlist before any tea
 test('global website source grants do not expand nested Discord audience to siblings or leadership',async()=>{
  const f=fixture(),approved=await f.authorize();assert.deepEqual(approved.principal.allowedSourceIds,f.config.allowedSourceIds);assert.deepEqual(approved.principal.liveDiscord.allowedSourceIds,[source(1),source(4)]);
  for(const channelId of [sibling,unrelated,LEADERSHIP_CHANNEL_ID]){const result=await f.window(approved.principal,{channelId,userMessage:'Read all team channels'});assert.equal(result.status,'channel_scope_denied');}assert.deepEqual(f.reads,[]);
+});
+
+test('published invoking team and parent work without static UUIDs while sibling teams remain excluded',async()=>{
+ for(const thread of [false,true]) {
+  const f=fixture({thread});f.config.allowedSourceIds=[];const approved=await f.authorize();
+  const expected=thread?[source(1),source(4),source(5)]:[source(1),source(4)];
+  assert.deepEqual(approved.principal.liveDiscord.allowedSourceIds,expected);
+  assert.deepEqual(approved.principal.allowedSourceIds,expected);
+  assert.equal((await f.window(approved.principal)).status,'ready');
+  assert.ok(f.reads.length>0);assert.ok(f.reads.every(read=>read.channelId===f.destination));
+  assert.equal(approved.principal.liveDiscord.allowedSourceIds.includes(source(2)),false);
+  assert.equal(approved.principal.liveDiscord.allowedSourceIds.includes(source(3)),false);
+ }
 });

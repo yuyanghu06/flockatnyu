@@ -5,7 +5,7 @@ import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Complete only explicitly handled cache inputs after their required actions succeed; call alone.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = code => { throw new Error(code); };
-export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,prepareBatch,cleanupBatch,validateCompletion,principal,config,now=()=>new Date(),onProgress=()=>{},audit} = {}) {
+export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,principal,config,now=()=>new Date(),onProgress=()=>{},audit} = {}) {
   let running = false;
   let definitions;
   try {
@@ -23,8 +23,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
     if (!config?.enabled) return {status:'disabled'};
     if (running) return {status:'busy'};
     if (!definitions || !tools.length || (typeof authorizeEvent!=='function' && typeof authorizeEvents!=='function') || authorizeEvents!==undefined&&typeof authorizeEvents!=='function' || typeof provider?.toolTurn!=='function' || store?.configured===false) return {status:'not_configured'};
-    if(store.requiresScopedClaims===true&&(!Array.isArray(principal?.allowedSourceIds)||!principal.allowedSourceIds.length||principal.allowedSourceIds.length>500
-      ||!principal.allowedSourceIds.every(validUuid)||new Set(principal.allowedSourceIds).size!==principal.allowedSourceIds.length))return {status:'not_configured'};
+    if(resolveClaimSourceIds!==undefined&&typeof resolveClaimSourceIds!=='function')return {status:'not_configured'};
     running=true;
     const progressStarted=performance.now();
     let auditContext,runResult={status:'unavailable'},claimedCount=0,runError;
@@ -67,8 +66,16 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
     };
     let leaseToken,heartbeat,heartbeatBusy=false;
     try {
-      const claim=await guarded(()=>store.claim({config,allowedSourceIds:principal?.allowedSourceIds?[...principal.allowedSourceIds]:undefined,signal:combined}));
-      if (claim.status!=='ready') return {status:claim.status};
+      // Resolve before any queue bodies leave storage. Production supplies only
+      // current Discord grants plus its separately authorized Gmail source.
+      const sourceIds=resolveClaimSourceIds?await guarded(()=>resolveClaimSourceIds({principal,signal:combined})):principal?.allowedSourceIds;
+      if(resolveClaimSourceIds||store.requiresScopedClaims===true) {
+        if(!Array.isArray(sourceIds)||sourceIds.length>500||!sourceIds.every(validUuid)||new Set(sourceIds).size!==sourceIds.length)failure('not_configured');
+      }
+      // Empty trusted scopes still poll SQL for bounded quarantine/expired-lease
+      // maintenance. The scoped RPC cannot select any pending bodies for [].
+      const claim=await guarded(()=>store.claim({config,allowedSourceIds:sourceIds?[...sourceIds]:undefined,signal:combined}));
+      if (claim.status!=='ready') return outcome({status:claim.status});
       leaseToken=claim.leaseToken;
       const inputs=claim.inputs;
       auditContext={agent:'planner',runId:randomUUID()};

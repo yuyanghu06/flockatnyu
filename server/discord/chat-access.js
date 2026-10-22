@@ -23,9 +23,9 @@ function viewAccessKey(channel) {
 export function createDiscordChatAccess({config, store, client, memberClient,now=Date.now} = {}) {
   async function authorize({guildId,channelId,userId,signal} = {}) {
     if (!config?.enabled || guildId !== config.guildId || !snowflake(guildId) || !snowflake(channelId) || !snowflake(userId)) throw denied();
-    const allowed = new Set((Array.isArray(config.allowedSourceIds) ? config.allowedSourceIds : []).filter(uuid));
-    if (!allowed.size || allowed.size > 500) throw denied();
-    const sharedSourceIds = [...allowed].sort(), googleEnabled = config.googleEnabled === true;
+    if (!Array.isArray(config.allowedSourceIds) || config.allowedSourceIds.length > 500 || !config.allowedSourceIds.every(uuid)) throw denied();
+    const allowed = new Set(config.allowedSourceIds);
+    const googleEnabled = config.googleEnabled === true;
     const [policyResult,catalogueResult,metadata,detail,member,active,rawChannels,roles,guild] = await Promise.all([
       store.getPolicy({guildId,signal}),store.listSyncChannels({signal}),client.getGuildChannels({signal}),
       client.getChannel({channelId,signal}),memberClient.getGuildMember({guildId,userId,signal}),
@@ -99,7 +99,7 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
       && !isDiscordChannelExcluded({channel:row,channels,policy:safePolicy});
     if (!eligible(detail)) throw denied();
     const registered = catalogueResult.channels.filter(row=>row?.enabled === true && row.guildId === guildId
-      && snowflake(row.channelId) && uuid(row.sourceId) && allowed.has(row.sourceId));
+      && snowflake(row.channelId) && uuid(row.sourceId));
     if (!registered.some(row=>row.channelId === channelId)) throw denied();
     // A disabled parent cannot become an interactive destination through a thread.
     if (threadTypes.has(detail.type) && !registered.some(row=>row.channelId === detail.parent_id)) throw denied();
@@ -125,6 +125,8 @@ export function createDiscordChatAccess({config, store, client, memberClient,now
     const selected = registered.filter(safeForAudience).sort((a,b)=>a.channelId.localeCompare(b.channelId));
     const sourceIds = [...new Set(selected.map(row=>row.sourceId))].sort();
     if (!sourceIds.length || sourceIds.length > 500) throw denied();
+    const sharedSourceIds = [...new Set([...allowed,...sourceIds])].sort();
+    if (sharedSourceIds.length > 500) throw denied();
     const transport = 'discord-chat';
     const sourceProfileId = `discord-chat:${createHash('sha256').update(JSON.stringify([guildId,transport,channelId,
       sharedSourceIds,sourceIds,googleEnabled,policy.revision,

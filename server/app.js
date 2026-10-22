@@ -6,6 +6,7 @@ import { createProvider } from './providers/index.js';
 import { createAuditLogger } from './model-audit.js';
 import { createChatRunner } from './chat-runner.js';
 import {avatarProxyPath} from './map/avatars.js';
+import {withDiscordSourceScope} from './discord/source-scope.js';
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
@@ -93,10 +94,15 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
   const app = new Hono();
   const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,now});
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
+  const authorize = async c => {
+    try {
+      return await withDiscordSourceScope({principal:await auth(c, config),store:discordStore,
+        guildId:config.discordGuildId,signal:c.req.raw.signal});
+    } catch { return null; }
+  };
   app.get('/healthz', c => c.json({ ok: true, service: 'tech-nyu-api' }));
   app.get('/api/status', async c => {
-    let principal = null;
-    try { principal = await auth(c, config); } catch {}
+    const principal = await authorize(c);
     c.header('cache-control', 'no-store');
     return c.json({ chat: { configured: config.configured, provider: config.provider || null, model: config.model || null },
       discord: { configured: Boolean(discordStore.configured), syncConfigured: Boolean(discordConfig.configured),
@@ -106,7 +112,6 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
       google: { ...(googleClient?.status?.() || { configured: false, oauthVerified: false, status: 'not_configured' }), allowed: principal?.googleAccess === true },
       access: { mode: config.production ? 'members_required' : 'local_development', allowed: Boolean(principal), admin: principal?.isAdmin === true } });
   });
-  const authorize = async c => { try { return await auth(c, config); } catch { return null; } };
   const apiError = (c, code, status) => c.json({ status: code, error: { message: errorMessages[code] || 'This operation is unavailable.' } }, status);
   const resultStatus = status => ({ forbidden: 403, forbidden_source:403, invalid_request: 400, invalid:400, conflict:409, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429, timeout:504, not_found:404, reauthorization_required:401, permission_denied:403, invalid_response:502, response_too_large:502, read_required:409 })[status] || 200;
   app.get('/api/map/people/:personId/avatar', async c => {
@@ -175,8 +180,7 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     return c.json(result, resultStatus(result.status));
   });
   app.post('/api/chat', async c => {
-    let principal;
-    try { principal = await auth(c, config); } catch {}
+    const principal = await authorize(c);
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return deny(c, 'access_denied', 403);
     let conversation;
     try { conversation = await readConversation(c.req.raw, config.timeoutMs); } catch (error) { return deny(c, error instanceof AttachmentError ? error.code : 'invalid_request', 400); }

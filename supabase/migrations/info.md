@@ -211,3 +211,17 @@ chain; hosted application remains a separate release step.
 037 is a data-only owner migration adding `683-broadway`, displayed as Go Greek, with the exact `683 Broadway` alias. It uses the existing map write lock, preserves matching rows/timestamps on replay and rejects conflicting metadata. No grants, RLS, functions, event records or relationships change. It is independent of pending036: apply only reviewed037, never replay the directory. Hosted application/receipt remains separate in the rolling milestone. Future retirement requires an exact identity guard and no event_buildings references; preserve ON DELETE RESTRICT and linked activity history.
 
 Hosted037 is `20261021205505_go_greek_building`, applied through Supabase MCP on2026-10-21. Only this isolated catalogue seed was applied; unrelated036 remains pending. Verified ten buildings, exact Go Greek metadata, unchanged nine prior rows/timestamps, denied service catalogue DML, unchanged event/relationship counts and successful existing API recognition. Stored query MD5 (trimmed SQL) is4677f80195c7752fde3c45626c5902a9. Receipt: ignored evidence/683-broadway/backend/hosted-receipt.json; canonical handoff in milestones/milestone.md. Applied037 is now immutable.
+
+038 changes only the existing service-only scoped claim invoker to accept the
+exact empty UUID array. Empty scope still performs036's bounded expired-quarantine
+cleanup and expired-lease settlement, then returns empty before selecting pending
+bodies or issuing a processing lease. Active leases remain busy after retention
+cleanup. Null, duplicate, multidimensional and oversized nonempty scopes stay
+invalid; requeue still requires a nonempty authorized scope. Apply-time data,
+other functions, source/hash deletion guards and prior migrations remain intact.
+This supports dynamic Discord policy pauses, disables and catalogue outages
+without suspending queue retention. Tests execute the full chain in
+`tests/agent-automation-empty-scope-sql.test.mjs`. Hosted application is a separate
+reviewed release step recorded in the rolling milestone.
+
+Hosted038 is `20261022182039_agent_empty_scope_maintenance`, applied through Supabase MCP on2026-10-22. Exact function-body MD5 `693db56a3489e011782cc396ee75a1d8` matches the reviewed SQL; security-invoker, empty search path and service-only execute ACL are verified. No table/data migration; current runtime release evidence remains in milestones/milestone.md.

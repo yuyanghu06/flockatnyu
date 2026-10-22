@@ -12,6 +12,7 @@ import {createDiscordStore} from '../discord/store.js';
 import {createLiveDiscordClient} from '../discord/live-client.js';
 import {createLiveDiscordRetrieval} from '../discord/live-retrieval.js';
 import {isDiscordChannelExcluded} from '../discord/discovery.js';
+import {resolveDiscordSourceIds} from '../discord/source-scope.js';
 import {createMiroMcpTools} from '../../tools/miro/mcp.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../../tools/google/index.js';
 import {createLiveRetrievalTools} from '../../tools/discord/index.js';
@@ -56,14 +57,16 @@ export function discordCalendarIntent(content,{cancel=false}={}) {
  * are an explicit fixture seam; event/model data never selects implementations. */
 export function createAutomationAdapters({env=process.env,config,fetchImpl=globalThis.fetch,now=()=>new Date(),dependencies={}}={}) {
   const d=dependencies;
-  const allowedSourceIds=Object.freeze([...new Set(readConfig(env).allowedSourceIds)]);
+  const staticSourceIds=Object.freeze([...new Set(readConfig(env).allowedSourceIds)]);
+  let allowedSourceIds=staticSourceIds;
+  const setDiscordSourceIds=ids=>{allowedSourceIds=Object.freeze([...new Set([...staticSourceIds,...ids])]);};
   const googleConfig=d.googleConfig||readGoogleConfig(env);
   const googleClient=d.googleClient||createGoogleClient({config:googleConfig,fetchImpl});
   const gmailSourceId=(env.AGENT_GMAIL_SOURCE_ID||'').trim();
-  const googleAccess=googleConfig.configured===true&&validUuid(gmailSourceId)&&allowedSourceIds.includes(gmailSourceId);
+  const googleAccess=googleConfig.configured===true&&validUuid(gmailSourceId)&&staticSourceIds.includes(gmailSourceId);
   const calendarConfig=d.calendarConfig||readCalendarConfig(env);
   const calendarSourceId=calendarConfig.sourceId??(env.AGENT_CALENDAR_SOURCE_ID||'').trim();
-  const calendarMapConfigured=validUuid(calendarSourceId)&&allowedSourceIds.includes(calendarSourceId);
+  const calendarMapConfigured=validUuid(calendarSourceId)&&staticSourceIds.includes(calendarSourceId);
   const calendarClient=d.calendarClient||createCalendarClient({config:calendarConfig,fetchImpl});
   const calendarTools=d.calendarTools||createCalendarTools({client:calendarClient});
   const miroConfig=d.miroConfig||readMiroMcpConfig(env);
@@ -79,7 +82,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   const mapEventService=d.mapEventService||createMapEventService({store:d.mapEventStore||createMapEventStore({env,fetchImpl}),authorizeSource:mapSourceAuthorizer,now});
   const mapTools=createMapTools({service:mapEventService});
   const calendarSources=[];
-  const principal=Object.freeze({id:'update-agent',allowedSourceIds,googleAccess,
+  const principal=Object.freeze({id:'update-agent',get allowedSourceIds(){return allowedSourceIds;},googleAccess,
     liveDiscord:Object.freeze({mode:'local-operator',guildId:discordConfig.guildId}),
     calendarAccess:true,calendarId:calendarConfig.calendarId,calendarSources});
   const fragments=createBoundedResults();
@@ -90,6 +93,20 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   const knownCalendarEvents=new Map();
   const deferredMiro=new Map();
   let prepared=false,reconciliationWindow,windowComplete=false,catalogueRead=false;
+  async function resolveClaimSourceIds({principal:actor,signal}={}) {
+    if(actor!==principal||signal?.aborted)fail(signal?.aborted?'aborted':'forbidden');
+    // Old static Discord UUIDs are never claim authority. Only the live guarded
+    // catalogue supplies Discord claims; Gmail retains its exact static grant.
+    setDiscordSourceIds([]);
+    let discordIds=[];
+    if(discordConfig.configured) {
+      try {discordIds=await resolveDiscordSourceIds({store:discordStore,guildId:discordConfig.guildId,signal});}
+      catch {if(signal?.aborted)fail('aborted');}
+    }
+    if(signal?.aborted)fail('aborted');
+    setDiscordSourceIds(discordIds);
+    return [...new Set([...discordIds,...(googleAccess?[gmailSourceId]:[])])];
+  }
   const cleanupBatch=()=>{prepared=false;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();fragments.clear();
     calendarOccurrences.clear();projected.clear();pendingCalendarReads.clear();unprojectableCalendar.clear();cancellationIntents.clear();fixedBuildings.clear();calendarWindows.clear();observedMapScopes.length=0;observedMapSnapshots.clear();invalidatedMapState.clear();knownCalendarEvents.clear();deferredMiro.clear();reconciliationWindow=undefined;windowComplete=false;catalogueRead=false;};
   function rememberDiscord(source) {
@@ -154,7 +171,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   }
   async function currentScope(scope,signal) {
     const result=await miroStore.authorizedBoard({boardId:scope.boardId,principal,signal});
-    return result?.status==='ready'&&result.data?.board_id===scope.boardId&&result.data.source_id===scope.sourceId&&allowedSourceIds.includes(scope.sourceId)
+    return result?.status==='ready'&&result.data?.board_id===scope.boardId&&result.data.source_id===scope.sourceId&&staticSourceIds.includes(scope.sourceId)
       &&(!miroConfig.teamId||result.data.team_id===miroConfig.teamId)
       &&(!Object.hasOwn(scope,'teamId')||(result.data.team_id??null)===scope.teamId);
   }
@@ -185,7 +202,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     if(catalogue.status!=='ready'||!Array.isArray(boards)||!boards.length||boards.length>8
       ||new Set(boards.map(board=>board.boardId)).size!==boards.length)fail('preflight_failed');
     for(const board of boards) {
-      if(!miroConfig.boardIds.includes(board.boardId)||!validUuid(board.sourceId)||!allowedSourceIds.includes(board.sourceId)
+      if(!miroConfig.boardIds.includes(board.boardId)||!validUuid(board.sourceId)||!staticSourceIds.includes(board.sourceId)
         ||!await currentScope(board,signal))fail('forbidden');
       calendarSources.push(Object.freeze({boardId:board.boardId,sourceId:board.sourceId,
         ...(Object.hasOwn(board,'teamId')?{teamId:board.teamId}:{})}));
@@ -236,7 +253,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     if(actor!==principal||signal?.aborted||!Array.isArray(events)||!events.length||events.length>20)return false;
     const bindings=new Map();
     for(const event of events) {
-      if(!allowedSourceIds.includes(event?.source_id))return false;
+      if(!validUuid(event?.source_id))return false;
       if(event.source==='gmail') {
         if(!googleAccess||event.source_id!==gmailSourceId||!['email_received','email_received_metadata'].includes(event.event_type))return false;
         continue;
@@ -250,7 +267,8 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     if(!bindings.size)return !signal?.aborted;
     try {
       // Same current catalogue and live ancestry checks as the collector and
-      // live retrieval. Never discover/register or expand a source here.
+      // live retrieval. Grant only exact existing source/channel bindings; this
+      // also supports trusted enqueue calls before the first processing tick.
       const [policyResult,catalogue,metadata]=await Promise.all([
         discordStore.getPolicy({guildId:discordConfig.guildId,signal}),discordStore.listSyncChannels({signal}),
         discordClient.getGuildChannels({signal})]);
@@ -285,7 +303,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
         if(isDiscordChannelExcluded({channel,channels,policy}))return false;
       }
       const [latest,rows]=await Promise.all([discordStore.getPolicy({guildId:discordConfig.guildId,signal}),discordStore.listSyncChannels({signal})]);
-      return !signal?.aborted&&latest?.status==='ready'&&canonicalJson(latest.policy)===canonicalJson(policy)&&validCatalogue(rows);
+      if(signal?.aborted||latest?.status!=='ready'||canonicalJson(latest.policy)!==canonicalJson(policy)||!validCatalogue(rows))return false;
+      setDiscordSourceIds([...allowedSourceIds.filter(id=>!staticSourceIds.includes(id)),...bindings.values()]);
+      return true;
     }catch{return false;}
   }
 
@@ -614,5 +634,5 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       return fragments.bound(result);
     }})),
     {...fragments.tool,execute:(args,context)=>requirePrepared(context)?fragments.tool.execute(args,context):{status:'forbidden'}}];
-  return {principal,tools,authorizeEvent,authorizeEvents,prepareBatch,cleanupBatch,validateCompletion};
+  return {principal,tools,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion};
 }

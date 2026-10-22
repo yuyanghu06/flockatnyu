@@ -156,15 +156,19 @@ bodies or credentials are stored in queue metadata.
 Without `AGENT_AUTOMATION_ADAPTER_MODULE`, `cli.js` loads bundled `adapters.js`.
 An explicit local `.js`/`.mjs` override still takes precedence and exports
 `createAutomationAdapters({env,config,store,provider,fetchImpl,now})`, returning
-principal, tools, authorizeEvent and optionally prepareBatch/cleanupBatch. This
+principal, tools, authorizeEvent and optionally resolveClaimSourceIds/prepareBatch/cleanupBatch. This
 is trusted server code, never selected from source content. Disabled workers
 return before loading either adapter. Constructors perform no source requests.
 
-The bundled principal uses only server-configured shared source UUIDs. Gmail
-requires the exact AGENT_GMAIL_SOURCE_ID and supported email event types, with
-account verification in the underlying Google client. Discord events recheck
-the current enabled registered channel, live guild/channel/thread ancestry,
-exclusions and unchanged policy/catalogue; they never register or expand sources.
+The bundled principal combines immutable server-configured grants for other
+providers with fresh Discord source UUIDs from the configured guild's guarded
+published catalogue. New eligible discovered channels need no environment edit.
+Gmail requires the exact statically allowed AGENT_GMAIL_SOURCE_ID and supported
+email event types, with account verification in the underlying Google client.
+Discord events recheck the current enabled registered channel, live
+guild/channel/thread ancestry, exclusions and unchanged policy/catalogue. Exact
+verified bindings can also authorize enqueue before the first processing tick;
+they never discover/register a channel or grant another provider access.
 The existing DISCORD_LIVE_READ_ENABLED switch controls live bot context tools.
 
 For each ready batch, the bundled preflight verifies the exact configured
@@ -209,7 +213,20 @@ is independently rechecked.
 
 Batch authorization reuses only facts within each existing fresh authorization boundary, including preparation, while maintaining fresh checks before tools/mutations and completion. No authorization cache spans agent rounds.
 
-Production claims use trusted principal.allowedSourceIds via scoped RPC032 before bodies leave the queue. Counts/oldest/candidates exclude other sources; later fresh authorization still applies. Deferred outside-scope rows remain untouched.
+Before every production claim, the handler runs the trusted resolveClaimSourceIds
+hook within its existing cancellation and run deadline. The hook resolves fresh
+enabled same-guild Discord IDs plus only the explicitly allowed Gmail source.
+Obsolete static Discord UUIDs cannot select queue rows. A paused/disabled policy
+or empty scope skips Discord claims; catalogue failures clear dynamic Discord
+grants while preserving independently authorized Gmail processing. Empty scopes
+still call scoped SQL for bounded quarantine/expired-lease maintenance, including
+during a catalogue outage; they cannot select pending input bodies or call a
+model. Migration038 permits the exact empty UUID array while retaining036's
+maintenance, source/hash guards and lease fences. UUID lists must be unique and bounded to500. Scoped
+RPC032 still filters counts/oldest/candidates before bodies leave the queue;
+later fresh authorization still applies before model turns, tools and completion.
+Deferred outside-scope rows remain untouched. Custom injected adapters without
+the optional hook retain their existing static principal scope.
 
 Planner workload starts from queued originals, prioritizes eboard and fetches exact current messages before actionable changes. Extra reply/context reads are targeted; routine historical sweeps and repeated catalogue discovery are avoided. Calendar/Miro reconciliation and projection completion remain required.
 

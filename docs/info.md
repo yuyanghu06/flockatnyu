@@ -81,3 +81,5 @@ Tool reliability guides distinguish historical failure diagnosis from current lo
 [attio-integration.md](attio-integration.md) documents the opt-in CRM route/tool contract, server configuration, write semantics and verification limits for website and Discord Flockbot.
 
 `camera-navigation.md` describes the shared unobscured focus area and responsive activity-card positioning, complete-bound perspective fit and temporary lens widening within unchanged distance limits.
+
+Discord access guides describe automatic blacklist-based catalogue grants for chat and the update agent. Non-Discord source grants remain explicit; queue claims use fresh eligible Discord IDs and the configured authorized Gmail source. See `discord-live-only.md` and `discord-chat.md`; actual release evidence remains in the milestone snapshot.

@@ -27,18 +27,19 @@ function setup() {
   return {state,access,authorize:(extra={})=>access.authorize({guildId,channelId:state.detail.id,userId,...extra})};
 }
 const denied=async f=>assert.rejects(f,{message:'discord_chat_denied'});
-test('eboard destination derives fresh actor identity and only intersected eboard sources',async()=>{
+test('eboard destination derives fresh actor identity and audience-safe published eboard sources',async()=>{
   const f=setup(),result=await f.authorize({actor:{userId:'999',displayName:'spoof'},principal:{isAdmin:true}});
   assert.deepEqual(result.actor,{provider:'discord',guildId,userId,username:'fresh_username',displayName:'Fresh Nick'});
   assert.deepEqual(result.principal.liveDiscord.allowedSourceIds,[source(1),source(2)]);
   assert.deepEqual(result.principal.allowedSourceIds,f.state.config.allowedSourceIds);assert.equal(result.principal.isAdmin,false);assert.equal(result.threadId,null);
   assert.deepEqual(f.state.calls[0].userId,userId);
   f.state.config.allowedSourceIds=[source(1),source(3)];
-  assert.deepEqual((await f.authorize()).principal.liveDiscord.allowedSourceIds,[source(1)]);
+  assert.deepEqual((await f.authorize()).principal.liveDiscord.allowedSourceIds,[source(1),source(2)]);
+  assert.deepEqual((await f.authorize()).principal.allowedSourceIds,[source(1),source(2),source(3)]);
 });
 for(const [name,mutate] of [
  ['disabled interaction',s=>s.config.enabled=false],['foreign guild',s=>s.config.guildId='999'],
- ['empty source allowlist',s=>s.config.allowedSourceIds=[]],['invalid source allowlist',s=>s.config.allowedSourceIds=['not-uuid']],
+ ['missing source configuration',s=>delete s.config.allowedSourceIds],['invalid source allowlist',s=>s.config.allowedSourceIds=['not-uuid']],
  ['paused policy',s=>s.policy.paused=true],['policy unavailable',s=>s.policyStatus='failed'],
  ['catalogue unavailable',s=>s.catalogueStatus='failed'],['unregistered destination',s=>s.catalogue.shift()],
  ['manually disabled destination',s=>s.catalogue[0].enabled=false],['non-eboard destination',s=>s.detail.parent_id=null],
@@ -117,4 +118,19 @@ test('Google access matches configured website grant only and affects the conver
 });
 test('non-Discord source grant changes invalidate retained conversation even when nested Discord sources are unchanged',async()=>{
  const f=setup(),initial=await f.authorize();f.state.config.allowedSourceIds.push('00000000-0000-4000-8000-000000000099');const expanded=await f.authorize();assert.deepEqual(expanded.principal.liveDiscord.allowedSourceIds,initial.principal.liveDiscord.allowedSourceIds);assert.notEqual(expanded.sourceProfileId,initial.sourceProfileId);
+});
+
+for (const staticIds of [[],[source(99)]]) test(`published channels work without static Discord UUIDs (${staticIds.length} other grants)`,async()=>{
+ const f=setup();f.state.config.allowedSourceIds=staticIds;const approved=await f.authorize();
+ assert.deepEqual(approved.principal.liveDiscord.allowedSourceIds,[source(1),source(2)]);
+ assert.deepEqual(approved.principal.allowedSourceIds,[...new Set([...staticIds,source(1),source(2)])].sort());
+});
+test('mixed malformed static grants fail closed rather than silently filtering',async()=>{
+ const f=setup();f.state.config.allowedSourceIds.push('not-a-uuid');await denied(f.authorize);
+});
+test('newly published audience source joins principal and invalidates conversation profile',async()=>{
+ const f=setup();f.state.config.allowedSourceIds=[];const initial=await f.authorize();
+ f.state.metadata.push(row('205'));f.state.catalogue.push({channelId:'205',guildId,sourceId:source(9),enabled:true});
+ const next=await f.authorize();assert.ok(next.principal.allowedSourceIds.includes(source(9)));assert.ok(next.principal.liveDiscord.allowedSourceIds.includes(source(9)));assert.notEqual(next.sourceProfileId,initial.sourceProfileId);
+ f.state.catalogue.at(-1).enabled=false;assert.deepEqual((await f.authorize()).principal.allowedSourceIds,initial.principal.allowedSourceIds);
 });

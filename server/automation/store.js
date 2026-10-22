@@ -47,7 +47,7 @@ export function createAutomationStore({env = process.env,fetchImpl = globalThis.
     },
     async claim({config,allowedSourceIds,signal}={}) {
       if (!configured) return {status:'not_configured'};
-      if (!Array.isArray(allowedSourceIds)||!allowedSourceIds.length||allowedSourceIds.length>500||!allowedSourceIds.every(validUuid)
+      if (!Array.isArray(allowedSourceIds)||allowedSourceIds.length>500||!allowedSourceIds.every(validUuid)
         ||new Set(allowedSourceIds).size!==allowedSourceIds.length) return {status:'not_configured'};
       if (!config) return {status:'invalid_request'};
       const result=await objectCall('agent_automation_claim_scoped',{p_allowed_source_ids:[...allowedSourceIds],p_min_events:config.minEvents,p_max_age_seconds:config.maxAgeSeconds,

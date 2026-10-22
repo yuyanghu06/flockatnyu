@@ -1,5 +1,22 @@
 # Project instructions
 
+## Discord blacklist access override (2026-10-22)
+
+The user confirmed Discord uses a blacklist and requested correcting the static
+source allowlist mismatch for both chat and the autonomous update agent. Derive
+Discord source grants from the configured guild's current published eligible
+catalogue on authenticated requests and before each scoped worker claim. Newly
+discovered eligible channels require no environment UUID additions. Preserve
+blacklisted channels/categories/descendants, manual disables, live permissions,
+team opt-in and Discord destination/audience checks, exact source bindings and
+final revocation checks. Non-Discord source grants remain explicit. Queue scope
+contains fresh Discord IDs plus only explicitly authorized Gmail input sources;
+legacy static Discord IDs must not restore disabled-channel claims. Empty-scope
+polls must still perform bounded quarantine/expired-lease maintenance without
+selecting any queued originals. This
+supersedes older static Discord allowlist requirements only; current verification
+and release state live in milestones/milestone.md.
+
 ## Private model audit authorization (2026-10-19)
 
 The user requested model-call and agent-output logging for both chat and the
