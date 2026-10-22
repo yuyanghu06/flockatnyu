@@ -1,0 +1,8 @@
+# Combined Railway release and GitHub publication complete
+
+- Local timestamp / role / milestone: 2026-10-22T13:31:30.220494-04:00 / orchestrator / combined-release.
+- Requested scope: inspectentireworkingtree,shipallchangesRailway,thenlogicalcommitstoGitHub.
+- Starting state: allfourservicesverifiedlive;sourceacceptedandfrozen.
+- Work performed / decisions / checks: Completeduser-requestedallworkingtreeRailwayrolloutandlogicalGitHubpublication. Fourimplementationcommits619539d(backend),20ea670(frontend),7659ef1(deployment),3bf869f(documentation)publishedtoorigin/codex/dev;remote3bf869fmatchedlocalHEADandtreewascleanbeforethisfinalreceipt. All171deployedruntimefilecopiesmatchcommittedHEAD. FourRailwayservicesSUCCESSandpendingWork0; exactdeploymentIDs/hostedchecks recordedinpriorreleaseentry. LivechatHTTP200/nonemptyexpectedanswer/done in4627ms,0tools/errors. HostedAttioread/map/assets/accessand27privateportraitchecks pass; sourcefactspreserved. Local2150tests pass,1optionalMiroschemaskip,55browserchecks,builds/private-valuescanpass. NoCRMtestmutationorunsolicitedDiscordmessage. DirectprivatebridgeSSHhealthprobe unavailablebecauseaccount hasno registeredSSHkeys;nonecreated. Existingprivateorigin/matchingsecretpreserved,collectorchatready/Gatewayresumed;actualuserDiscordreplydelivery andphysical-deviceGPUbehaviornotclaimed.
+- Changed files: serializedreleaseguides/journalonlyinthisreceipt. Applicationchangesalreadycommittedandlive.
+- Result / handoff: requestedrolloutandpublicationcomplete. Thisreceiptispublishedseparatelyandfinalremote/treecheckfollowsthecommit. Remainingfollowups:observefailure-ratebaselineafterloggingactivation,optionallegacyavatarimportcleanup,savedplannerrelevant-linkimplementationandexplicitCRMmutationverification.

@@ -1,3 +1,12 @@
+## Discord access policy clarification
+
+- [x] Distinguish implemented blacklist discovery/ingestion from the additional static source grants enforced by chat/update-agent processing; acknowledge user expectation of automatic blacklist-based access.
+- Follow-up identified, not implemented: reconcile agent channel authorization with the expected blacklist-based behavior while retaining existing exclusion/permission boundaries.
+
+## Channel discovery explanation
+
+- [x] Explain event-triggered/hourly discovery, permission/exclusion checks and the separate source allowlist needed for chat/update-agent access. No runtime changes requested.
+
 ## All-building camera framing
 
 - [x] Fit complete selected models outside the activity card using shared responsive layout.
@@ -11,7 +20,8 @@
 - [x] Independently verify failure/access/write/receipt paths plus native and planned chat; tester84/84 and evaluator65/65 ACCEPT.
 - [x] Document setup and operational limits in docs/attio-integration.md.
 - [x] Configure ignored local Attio source/object/write settings after user saves key; verify live identity, fields and actual authenticated search/read routes for People and Companies. Local preview restarted.
-- [ ] Attio production configuration/deployment and deliberate write verification remain separate; no CRM writes performed.
+- [x] Configure/deployAttioinproductionwebandverifyauthenticatedliveattributeread;sharedsourcegrantpreserved.
+- [ ] DeliberateCRMwriteverificationremainsexplicitlyseparate;noCRMtestmutationsperformed.
 
 ## Active-event map indicators
 
@@ -56,7 +66,7 @@
 - [x] Inspect Railway logs and page all retained lifecycle failures sinceOctober18.
 - [x] Add content-free correlated reason/stage/validation/provider diagnostics for chat and planner, preserving real statuses and batch item causes.
 - [x] Independently test privacy, classification, persistence and noninterference; final463/463integrated/evaluator113/113/APIbuildpass.
-- [ ] Renew Railway CLI/app authentication (currentlyinvalid_grant), then prepare minimal reviewed release, activate logging/receipt fixes and verify hosted diagnostics; preserve unrelated worker036/avatar/collector releases.
+- [x] RecoverRailwayauthenticationandactivateacceptedlogging/receiptfixesintheuser-authorizedcombinedrelease;organicworkerdiagnosticsVersion1verified. Earlierminimal-isolationplanissupersededbyexplicitall-working-tree rollout.
 
 ## Calendar-to-map confirmation
 
@@ -79,7 +89,7 @@
 - [x] Record isolated live provider stop-with-empty-answer separately; no full deployed-chat health claim.
 - [ ] Investigate isolated zero-text final model stream and fail/fallback behavior without claiming missing output succeeded.
 - [ ] Include the two accepted tool-health fixes in the next coordinated web release; verify hosted actual Drive execution and completed empty-result progress.
-- [ ] Consider broad Discord summary latency improvements while preserving current permission rechecks and partial-coverage truth.
+- [x] RaisebroadDiscordsummarytofive minutesandwebsiteoveralltoseven;currentpermission/partialcoverageboundariespreserved.
 
 ## Storage-backed profile portraits
 
@@ -87,7 +97,7 @@
 - [x] Upload and hash-verify all 27 private objects; verify anonymous denials and preserve every profile row.
 - [x] Pass independent service/migration/browser review and full regressions: 1,921 passed, one optional skip, zero failures; six browser checks passed.
 - [x] Prepare and scan the reviewed 265-file web package; attempt deployment.
-- [ ] Blocked by Railway's deployment pause: retry the reviewed web release after recovery and verify the authenticated image endpoint.
+- [x] DeploycombinedwebafterRailwayrecovery;verifyall27authenticatedprivateportraitendpointsandanonymousdenials.
 - [x] After compatible web succeeds, MCP CAS-switch all27profileavatarURLs; hostedhash/auth/no-store and unchangedidentityfacts verified.
 - [ ] After verified cutover, remove bundled portrait imports and deploy that cleanup; preserve local original artwork.
 
@@ -1776,4 +1786,7 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 - [x] Complete collector packaging fixes and finalfulltests/browser/review (2150pass/1skip,55browser,ACCEPT).
 - [x] Apply/verify036 throughMCP and requiredprivateRailwayconfiguration; existingcredentials/grants preserved.
 - [x] Deploy/verify allfourRailwayservices fromfreshcombinedcontexts;SUCCESS andhostedaccess/feature/collector/workerchecks.
-- [ ] Publishlogicalcommits toGitHub andverifyclean/matchingremote.
+- [x] Publish four logical implementation commits to GitHub codex/dev; verify the clean tree and matching remote, then publish the final receipt.
+
+- [x] Complete all four Railway rollouts, hosted chat/API checks, the 27-portrait cutover and logical GitHub publication.
+- [ ] Optional private-network SSH health probe needs a registered Railway SSH key; none was created during release. Observe user-initiated Discord delivery without sending unsolicited test messages.

@@ -165,3 +165,5 @@ active-event-indicators/ tracks current-event visual signals and the bounded Go 
 `attio-integration/` tracks scoped CRM route/tool implementation and independent verification.
 
 `building-focus-framing/` records shared responsive camera/card space, complete-model fitting and smooth lens restoration, verified across all ten landmarks at three viewport sizes.
+
+`combined-release/` tracks the all-working-tree Railway rollout and logicalGitHubpublication, including requiredschema/privateconfiguration, sanitizedcontexts, hostedchecksandportraitcutover.

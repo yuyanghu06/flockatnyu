@@ -191,3 +191,5 @@ October 21 active-event indicator entries distinguish implementation, independen
 Attio entries record independent planning, implementation, verification and review of the opt-in CRM integration.
 
 October 21 all-building framing correction records direct implementation and actual30-case viewport verification; it supersedes the earlier selected-mobile card-occlusion limitation.
+
+October22combined-releaseentriesrecordentireworking-treeinventory,collectorpackagingfixes,2150test/55browseracceptance,036MCPapply,privateconfiguration,allfourhealthyRailwayreleases,27portraitcutoverandlogicalGitHubpublication. Correctingreceiptsremainappend-only.
