@@ -1,4 +1,5 @@
 import {DRIVE_PAGE_TOKEN_MAX_LENGTH,DRIVE_PAGE_TOKEN_PATTERN} from '../../server/automation/validation.js';
+import {googleError} from '../../server/google/oauth.js';
 const query = { type: 'string', minLength: 1, maxLength: 500 };
 const limit = { type: 'integer', minimum: 1, maximum: 5 };
 const driveId = { type: 'string', pattern: '^[A-Za-z0-9_-]{1,200}$' };
@@ -22,5 +23,5 @@ export async function executeGoogleTool({ name, arguments: args, principal, clie
   if (!client?.configured) return { status: 'not_configured', sources: [] };
   const method = { search_gmail: 'searchGmail', read_gmail: 'readGmail', search_drive: 'searchDrive', read_drive: 'readDrive', list_drive_folder: 'listDriveFolder' }[name];
   try { return await client[method]({ ...args, signal }); }
-  catch { return { status: signal?.aborted ? 'aborted' : 'google_unavailable', sources: [] }; }
+  catch (error) { return { status: signal?.aborted ? 'aborted' : 'google_unavailable', sources: [], diagnostics:googleError(error,signal).diagnostics }; }
 }

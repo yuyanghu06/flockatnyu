@@ -51,7 +51,7 @@ test('chat prompts encode calm tone, eboard first, explicit team opt-in and Cale
     assert.match(prompt,/general\/non-team channels only as a secondary fallback/);
     assert.match(prompt,/Never read blacklisted leadership/);assert.match(prompt,/Google Calendar FIRST/);
     assert.match(prompt,/successfully empty or unavailable, automatically check Miro/);
-    assert.match(prompt,/failure is not an empty calendar/);assert.match(prompt,/partial Calendar page does not establish absence/);
+    assert.match(prompt,/failure is not an empty calendar/);assert.match(prompt,/partial coverage requires a narrower window\/query and never establishes absence/);
   }
   assert.match(answer,/calm, friendly, helpful and natural tone/);assert.match(answer,/without sounding sharp, scolding or abrupt/);
   assert.match(planning,/never invent one, reuse debug provenance/);assert.match(answer,/mapWrite contains an applied receipt/);
@@ -341,14 +341,18 @@ test('a new current presence cannot be saved with unknown timing',async()=>{
 });
 
 
-test('Calendar coverage reaches the model which chooses to finish without an unnecessary Miro scan',async()=>{
+test('backend Calendar coverage reaches the model in one tool call without an unnecessary Miro scan',async()=>{
   for(const paginated of [false,true]){
-    let rounds=0,miroReads=0;
-    const context=await retrieveAssistantContext({messages:[{role:'user',content:'What is happening during the week of October 19–25, 2026?'}],principal,now,timeZone,
-      provider:{planTools:async({system})=>{rounds++;if(rounds>(paginated?2:1)){assert.match(system,/"windowComplete":true/);return [];}return [{name:'list_calendar_events',arguments:{timeMin:'2026-10-19T04:00:00Z',timeMax:'2026-10-26T04:00:00Z',...(rounds>1?{pageToken:'page2'}:{})}}];}},
-      googleTools:{tools:[{name:'list_calendar_events'}],execute:async()=>({status:'ready',sources:[],coverage:{complete:!paginated||rounds===2},calendarContext:{events:rounds===1?[{eventId:'known_event',title:'Workshop'}]:[],nextPageToken:paginated&&rounds===1?'page2':null}})},
+    let rounds=0,miroReads=0,calendarReads=0;
+    const googleTools=createChatCalendarTools({client:{configured:true,calendarId:'club@example.com',listEvents:async args=>{
+      calendarReads++;return {status:'ready',events:args.pageToken?[]:[{eventId:'known_event',title:'Workshop',url:'https://calendar.google.com/calendar/event?eid=known'}],
+        nextPageToken:paginated&&!args.pageToken?'private-page2':null,coverage:{complete:!paginated||!!args.pageToken}};
+    }}});
+    const context=await retrieveAssistantContext({messages:[{role:'user',content:'What is happening during the week of October 19–25, 2026?'}],principal:{...principal,googleAccess:true},now,timeZone,
+      provider:{planTools:async({system})=>{rounds++;if(rounds>1){assert.match(system,/"windowComplete":true/);assert(!system.includes('private-page2'));return [];}return [{name:'list_calendar_events',arguments:{timeMin:'2026-10-19T04:00:00Z',timeMax:'2026-10-26T04:00:00Z'}}];}},
+      googleTools,
       miroTools:{tools:[{name:'list_miro_boards'}],execute:async()=>{miroReads++;return {status:'ready',sources:[]};}}});
-    assert.equal(rounds,paginated?3:2);assert.equal(miroReads,0);
+    assert.equal(rounds,2);assert.equal(calendarReads,paginated?2:1);assert.equal(miroReads,0);
     assert.equal(context.results.at(-1).calendarContext.windowComplete,true);
   }
 });
@@ -360,8 +364,8 @@ test('different Calendar windows retain separate coverage and do not truncate la
   for(const userMessage of ['What is happening this week?','What is happening on the map this week?','What is happening this week? Save the key dates to memory.']){
     let round=0;
     const context=await retrieveAssistantContext({messages:[{role:'user',content:userMessage}],principal,now,timeZone,
-      provider:{planTools:async()=>{const calls=[{name:'list_calendar_events',arguments:first},{name:'list_calendar_events',arguments:other},{name:'list_calendar_events',arguments:{...first,pageToken:'last'}},{name:'read_map_events',arguments:{}}];return round<calls.length?[calls[round++]]:[];}},
-      googleTools:{tools:[{name:'list_calendar_events'}],execute:async({arguments:args})=>({status:'ready',sources:[],coverage:{complete:!!args.pageToken||args.timeMin===other.timeMin},calendarContext:{events:args.pageToken||args.timeMin===other.timeMin?[]:[{eventId:'known',title:'Workshop'}],nextPageToken:args.timeMin===first.timeMin&&!args.pageToken?'last':null}})},
+      provider:{planTools:async()=>{const calls=[{name:'list_calendar_events',arguments:first},{name:'list_calendar_events',arguments:other},{name:'list_calendar_events',arguments:{...first,timeMax:'2026-10-22T04:00:00Z'}},{name:'read_map_events',arguments:{}}];return round<calls.length?[calls[round++]]:[];}},
+      googleTools:{tools:[{name:'list_calendar_events'}],execute:async({arguments:args})=>({status:'ready',sources:[],coverage:{complete:args.timeMax==='2026-10-22T04:00:00Z'||args.timeMin===other.timeMin},calendarContext:{events:args.timeMin===other.timeMin?[]:[{eventId:'known',title:'Workshop'}]}})},
       mapTools:{tools:[{name:'read_map_events'}],execute:async()=>({status:'ready',sources:[]})}});
     assert.equal(context.results.filter(row=>row.tool==='list_calendar_events').length,3);
     assert.equal(context.results.some(row=>row.tool==='read_map_events'),true);
@@ -372,7 +376,7 @@ test('different Calendar windows retain separate coverage and do not truncate la
 
 
 test('paced source reads use their overall request budget separately from a model-call timeout',async()=>{
-  assert.equal(readConfig({}).requestTimeoutMs,300000);assert.equal(readConfig({}).timeoutMs,30000);
+  assert.equal(readConfig({}).requestTimeoutMs,420000);assert.equal(readConfig({}).timeoutMs,30000);
   assert.equal(readConfig({ASSISTANT_REQUEST_TIMEOUT_MS:'999999'}).requestTimeoutMs,600000);
   const f=fixture();
   const app=createApp({config:{...readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'fixture',LLM_API_KEY:'fixture'}),timeoutMs:5,requestTimeoutMs:500},

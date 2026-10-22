@@ -39,7 +39,8 @@ test('chat retains Calendar-first unnamed scheduling and honors explicitly reque
   assert.match(prompt,/without a named source[\s\S]*Google Calendar FIRST/i);
   assert.match(prompt,/successfully empty or unavailable[\s\S]*Miro/i);
   assert.match(prompt,/Explicit requests[\s\S]*Miro[\s\S]*requested source/i);
-  assert.match(prompt,/partial Calendar page does not establish absence/i);
+  assert.match(prompt,/Calendar pagination is managed by the backend/i);
+  assert.match(prompt,/partial coverage[^.]*never establishes absence/i);
  }
 });
 

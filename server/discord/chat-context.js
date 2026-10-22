@@ -1,4 +1,5 @@
 import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {loadDiscordChatImages} from './chat-images.js';
 import {validateDiscordRepliedMessage} from '../chat-discord-context.js';
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const label = (value,max) => String(value || '').replace(/[\u0000-\u001f\u007f-\u009f]/g,' ').trim().slice(0,max);
@@ -42,7 +43,7 @@ export function createDiscordUserDirectory({env=process.env,fetchImpl=globalThis
 
 /** Request-local originals only. History is anchored to the triggering Discord
  * snowflake, not a model-chosen window or a later inference clock. */
-export function createDiscordChatContextLoader({liveDiscordService,directory,maxRuntimeMs=SOURCE_TOOL_TIMEOUT_MS} = {}) {
+export function createDiscordChatContextLoader({liveDiscordService,directory,fetchImpl=globalThis.fetch,maxRuntimeMs=SOURCE_TOOL_TIMEOUT_MS} = {}) {
   return {async load({guildId,channelId,requestId,actorId,principal,signal} = {}) {
     if(![guildId,channelId,requestId].every(snowflake))throw new Error('invalid_discord_context');
     const end=Number((BigInt(requestId)>>22n)+1420070400000n);
@@ -50,10 +51,13 @@ export function createDiscordChatContextLoader({liveDiscordService,directory,max
     const from=new Date(end-3600000).toISOString(),to=new Date(end).toISOString();
     const contextSignal=AbortSignal.any([AbortSignal.timeout(maxRuntimeMs),...(signal?[signal]:[])]);
     const readReply=typeof liveDiscordService.fetchReplyContext==='function'&&snowflake(actorId);
+    const readImages=readReply&&typeof liveDiscordService.verifyChatContextAccess==='function'
+      &&principal?.liveDiscord?.transport==='discord-chat'&&principal.liveDiscord.invokingChannelId===channelId;
+    const imageOpt=readImages?{includeImageAttachments:true}:{};
     const [result,discordUsers,replyResult]=await Promise.all([
-      liveDiscordService.fetchWindow({principal,channelId,from,to,signal:contextSignal,userMessage:''}).catch(()=>({status:'unavailable',messages:[]})),
+      liveDiscordService.fetchWindow({principal,channelId,from,to,signal:contextSignal,userMessage:'',...imageOpt}).catch(()=>({status:'unavailable',messages:[]})),
       directory.read({signal:contextSignal}),
-      readReply?liveDiscordService.fetchReplyContext({principal,channelId,requestId,actorId,signal:contextSignal,userMessage:''}).catch(()=>({status:'unavailable'})):undefined,
+      readReply?liveDiscordService.fetchReplyContext({principal,channelId,requestId,actorId,signal:contextSignal,userMessage:'',...imageOpt}).catch(()=>({status:'unavailable'})):undefined,
     ]);
     let complete=result.status==='ready'&&result.coverage?.complete===true;
     let reason=complete?null:label(result.coverage?.reason||result.status||'context_unavailable',100).replace(/[^A-Za-z0-9:_-]/g,'_');
@@ -81,6 +85,20 @@ export function createDiscordChatContextLoader({liveDiscordService,directory,max
       try {repliedMessage=validateDiscordRepliedMessage(replyResult?.status==='ready'?replyResult.repliedMessage:unavailable,{guildId,channelId,requestId});}
       catch {repliedMessage=validateDiscordRepliedMessage({...unavailable,reason:'invalid_reply_context'},{guildId,channelId,requestId});}
     }
-    return {discordContext:{guildId,channelId,from,to,complete,reason:complete?null:reason||'context_partial',messages,...(repliedMessage?{repliedMessage}:{})},discordUsers};
+    let imageResult;
+    if(readImages) {
+      if(replyResult?.triggerVerified===true) {
+        const acceptedIds=new Set(messages.map(row=>row.id));
+        const recent=Array.isArray(result.imageCandidates)?result.imageCandidates.filter(row=>acceptedIds.has(row?.messageId))
+          .sort((a,b)=>BigInt(a.messageId)>BigInt(b.messageId)?-1:BigInt(a.messageId)<BigInt(b.messageId)?1:0):[];
+        const direct=Array.isArray(replyResult.imageCandidates)?replyResult.imageCandidates:[];
+        imageResult=await loadDiscordChatImages({candidates:[...direct,...recent],guildId,channelId,requestId,signal:contextSignal,fetchImpl,maxRuntimeMs});
+        let verified;
+        try{verified=await liveDiscordService.verifyChatContextAccess({principal,channelId,signal:contextSignal,userMessage:''});}catch{}
+        if(verified?.status!=='ready'||contextSignal.aborted)imageResult={imageAttachments:[],imageContext:{status:'unavailable',reason:'access_changed',candidateCount:0,loadedCount:0,images:[]}};
+      } else imageResult={imageAttachments:[],imageContext:{status:'unavailable',reason:'trigger_unverified',candidateCount:0,loadedCount:0,images:[]}};
+    }
+    return {discordContext:{guildId,channelId,from,to,complete,reason:complete?null:reason||'context_partial',messages,...(repliedMessage?{repliedMessage}:{}),
+      ...(imageResult?{imageContext:imageResult.imageContext}:{})},discordUsers,...(imageResult?{imageAttachments:imageResult.imageAttachments}:{})};
   }};
 }

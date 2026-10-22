@@ -120,21 +120,19 @@ test('list query and limit bounds reject malformed arguments before OAuth while 
 
 test('optional literal Calendar query with limit25 returns26 scoped instances in exactly two pages with unchanged window',async()=>{
  const f=fixture(),request=f.request(),window={timeMin:'2026-09-01T00:00:00-04:00',timeMax:'2026-11-27T00:00:00-05:00',query:title,limit:25};
- const first=await request.execute({name:'list_calendar_events',arguments:window});assert.equal(first.status,'ready');assert.equal(first.calendarContext.events.length,25);assert.equal(first.calendarContext.nextPageToken,'25');
- const second=await request.execute({name:'list_calendar_events',arguments:{...window,pageToken:first.calendarContext.nextPageToken}});assert.equal(second.status,'ready');assert.equal(second.calendarContext.events.length,1);assert.equal(second.calendarContext.nextPageToken,null);
+ const first=await request.execute({name:'list_calendar_events',arguments:window});assert.equal(first.status,'ready');assert.equal(first.calendarContext.events.length,26);assert.equal(first.calendarContext.nextPageToken,undefined);assert.equal(first.coverage.complete,true);
  const lists=f.calls.filter(call=>call.url.pathname.endsWith('/events'));assert.equal(lists.length,2);for(const key of ['q','timeMin','timeMax','maxResults'])assert.equal(lists[0].url.searchParams.get(key),lists[1].url.searchParams.get(key));assert.equal(f.patches.length,0);
 });
 
-test('compact identities paginate26 verbose events while unchanged full25 mode retains its context limit',async()=>{
+test('compact identities paginate26 verbose events while full mode returns bounded partial evidence',async()=>{
  const f=fixture({originals:verboseOriginals()}),request=f.request(),window={timeMin:'2026-09-01T00:00:00-04:00',timeMax:'2026-11-27T00:00:00-05:00',query:title,limit:25};
- assert.equal((await request.execute({name:'list_calendar_events',arguments:window})).status,'context_limit','default full mode must keep its existing size cap');
- assert.equal((await request.execute({name:'list_calendar_events',arguments:{...window,resultMode:'full'}})).status,'context_limit');
+ for(const args of [window,{...window,resultMode:'full'}]){
+  const full=await request.execute({name:'list_calendar_events',arguments:args});assert.equal(full.status,'partial');assert.equal(full.coverage.complete,false);assert(full.calendarContext.events.length>0&&full.calendarContext.events.length<26);assert(Buffer.byteLength(JSON.stringify(full.calendarContext.events))<=14336);
+ }
  const first=await request.execute({name:'list_calendar_events',arguments:{...window,resultMode:'identities'}});
- assert.equal(first.status,'ready');assert.equal(first.calendarContext.events.length,25);assert.equal(first.calendarContext.nextPageToken,'25');assert.equal(first.coverage.contentScope,'event_identities');
+ assert.equal(first.status,'ready');assert.equal(first.calendarContext.events.length,26);assert.equal(first.calendarContext.nextPageToken,undefined);assert.equal(first.coverage.complete,true);assert.equal(first.coverage.contentScope,'event_identities');
  for(const event of first.calendarContext.events)assert.deepEqual(Object.keys(event).sort(),['end','eventId','start','status','title','url']);
  assert(!JSON.stringify(first).includes('Synthetic human note'));assert(Buffer.byteLength(JSON.stringify(first.calendarContext))<20000);
- const second=await request.execute({name:'list_calendar_events',arguments:{...window,resultMode:'identities',pageToken:first.calendarContext.nextPageToken}});
- assert.equal(second.status,'ready');assert.equal(second.calendarContext.events.length,1);assert.equal(second.calendarContext.nextPageToken,null);
  const lists=f.calls.filter(call=>call.url.pathname.endsWith('/events'));assert.equal(lists.length,4);
  assert(lists[0].url.searchParams.get('fields').includes('description'));assert.equal(lists[0].url.searchParams.get('fields'),lists[1].url.searchParams.get('fields'));
  assert.equal(lists[2].url.searchParams.get('fields'),'items(id,summary,start,end,status),nextPageToken');
@@ -158,7 +156,7 @@ test('stateless bulk corrections cannot obtain request-local revision authority'
  const f=fixture(),app=createApp({config:{configured:true,production:false,timeoutMs:3000},googleTools:f.adapter,auth:()=>principal});const response=await app.request('/api/tools/update_calendar_events',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({events:[rows[0]]})});assert(response.status>=400);assert.notEqual((await response.json()).status,'ready');assert.equal(f.calls.length,0);
 });
 
-for(const compact of [false,true])test(compact?'native compact lookup repairs26 verbose events with full fresh reads preserving1800-character human notes':'actual native list pagination and one bulk correction repair26 instances within three tool calls',async()=>{
+for(const compact of [false,true])test(compact?'native compact lookup repairs26 verbose events with full fresh reads preserving1800-character human notes':'actual native backend pagination and one bulk correction repair26 instances within two tool calls',async()=>{
  const originals=compact?verboseOriginals():dates.map(oldEvent),f=fixture({originals}),bodies=[],audit=[];let answerSystem='';
  const window={timeMin:'2026-09-01T00:00:00-04:00',timeMax:'2026-11-27T00:00:00-05:00',query:title,limit:25,...(compact?{resultMode:'identities'}:{})};
  const config={configured:true,production:false,provider:'openai-compatible',model:'synthetic',baseUrl:'https://synthetic-model.example/v1',apiKey:'synthetic',timeoutMs:3000,requestTimeoutMs:3000};
@@ -166,18 +164,17 @@ for(const compact of [false,true])test(compact?'native compact lookup repairs26 
   const body=JSON.parse(init.body);if(body.stream){answerSystem=body.messages[0].content;return new Response('data: {"choices":[{"index":0,"delta":{"content":"Synthetic correction outcomes"},"finish_reason":null}]}\n\ndata: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});}
   bodies.push(body);const round=bodies.length,results=body.messages.filter(message=>message.role==='tool').map(message=>JSON.parse(message.content));let selected=[];
   if(round===1)selected=[{name:'list_calendar_events',arguments:window}];
-  if(round===2){assert.equal(results[0].calendarContext.events.length,25);if(compact){assert.equal(results[0].coverage.contentScope,'event_identities');assert.equal(results[0].arguments.resultMode,'identities');assert(!JSON.stringify(results[0]).includes('Synthetic human note'));}selected=[{name:'list_calendar_events',arguments:{...window,pageToken:results[0].calendarContext.nextPageToken}}];}
-  if(round===3){const events=results.flatMap(result=>result.calendarContext?.events||[]);assert.equal(events.length,26);selected=[{name:'update_calendar_events',arguments:{events:events.map(event=>({...rows.find(row=>row.eventId===event.eventId)}))}}];}
-  if(round===4){const batch=results.find(result=>result.tool==='update_calendar_events').calendarBatchWrite;assert.equal(batch.counts.updated,26);assert.equal(batch.complete,true);assert.equal(batch.items.filter(row=>row.calendarWrite).length,26);}
+  if(round===2){assert.equal(results[0].calendarContext.events.length,26);assert.equal(results[0].calendarContext.nextPageToken,undefined);if(compact){assert.equal(results[0].coverage.contentScope,'event_identities');assert.equal(results[0].arguments.resultMode,'identities');assert(!JSON.stringify(results[0]).includes('Synthetic human note'));}const events=results.flatMap(result=>result.calendarContext?.events||[]);assert.equal(events.length,26);selected=[{name:'update_calendar_events',arguments:{events:events.map(event=>({...rows.find(row=>row.eventId===event.eventId)}))}}];}
+  if(round===3){const batch=results.find(result=>result.tool==='update_calendar_events').calendarBatchWrite;assert.equal(batch.counts.updated,26);assert.equal(batch.complete,true);assert.equal(batch.items.filter(row=>row.calendarWrite).length,26);}
   const toolCalls=selected.map((row,index)=>({id:`timed_${round}_${index}`,type:'function',function:{name:row.name,arguments:JSON.stringify(row.arguments)}}));
   return Response.json({choices:[{index:0,finish_reason:toolCalls.length?'tool_calls':'stop',message:{role:'assistant',content:null,...(toolCalls.length?{tool_calls:toolCalls}:{})}}]});
  }});
  const app=createApp({config,provider,googleTools:f.adapter,auth:()=>principal,audit:{recordEvent:async event=>audit.push(event)}});
  const messages=[{role:'user',content:'Those office hours were saved all-day incorrectly. Keep the same events and dates; Tuesday is 6–7pm, Thursday5–6pm in New York.'},{role:'assistant',content:'I will fix the times.'},{role:'user',content:'Go ahead and finish all of them.'}];
  const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages,timeZone:'America/New_York'})});
- const output=(await response.text()).trim().split('\n').map(JSON.parse);assert.equal(output.at(-1).type,'done');assert.equal(bodies.length,4);assert.equal(f.patches.length,26);assert.equal(f.events.size,26);
- assert.deepEqual(output.find(row=>row.type==='meta').retrieval.map(row=>row.tool),['list_calendar_events','list_calendar_events','update_calendar_events']);
- assert.deepEqual(audit.find(row=>row.kind==='tool_finished'&&row.tool==='update_calendar_events').counts,{sequence:3,requested:26,updated:26,unchanged:0,failed:0,unattempted:0});
+ const output=(await response.text()).trim().split('\n').map(JSON.parse);assert.equal(output.at(-1).type,'done');assert.equal(bodies.length,3);assert.equal(f.patches.length,26);assert.equal(f.events.size,26);
+ assert.deepEqual(output.find(row=>row.type==='meta').retrieval.map(row=>row.tool),['list_calendar_events','update_calendar_events']);
+ assert.deepEqual(audit.find(row=>row.kind==='tool_finished'&&row.tool==='update_calendar_events').counts,{sequence:2,requested:26,updated:26,unchanged:0,failed:0,unattempted:0});
  assert(answerSystem.includes('"updated":26'));assert(answerSystem.includes('"calendarBatchWrite"'));
  if(compact){for(const original of originals){assert.equal(original.description.length,1800);assert.equal(f.events.get(original.id).description,original.description);assert((f.reads.get(original.id)||0)>=2);assert(f.calls.filter(call=>call.options.method==='GET'&&call.url.pathname.endsWith('/'+original.id)).every(call=>!call.url.searchParams.has('fields')||call.url.searchParams.get('fields').includes('description')));}assert(f.calls.filter(call=>call.url.pathname.endsWith('/events')).every(call=>call.url.searchParams.get('fields')==='items(id,summary,start,end,status),nextPageToken'));assert(!answerSystem.includes('Synthetic human note'),'internal full reads do not enlarge compact model context');}
 });

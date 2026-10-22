@@ -169,16 +169,48 @@ test('final answer phase reports completed receipts and cannot promise further t
  // configured-model cases separately check confirmation text and receipt links.
 });
 
-test('Drive preexecution skill replans with matched results for every pending native proposal',async()=>{
+test('Drive activation discards the unexecuted native turn, replans with prior receipts, and permits discarded IDs',async()=>{
+ let reads=0;
+ const batches=[
+  [call('source1','read_original'),call('saved1','create_calendar_event',createArgs)],
+  [call('drive1','read_drive',{fileId:'verified'}),call('discarded_write','create_calendar_event',{...createArgs,title:'Discarded proposal'})],
+  [call('drive1','read_drive',{fileId:'verified'})],[],
+ ];
+ const f=fixture({driveRead:async args=>{reads++;assert.equal(args.fileId,'verified');return {status:'ready',sources:[]};},fetchHook:(body,index)=>{
+  // Reproduce a model that stops when a skipped result looks terminal. Skill
+  // loading must not inject that result into the next turn at all.
+  if(body.messages.some(row=>row.role==='tool'&&JSON.parse(row.content).status==='skipped_due_to_skill_activation'))return response([]);
+  return response(batches[index]||[]);
+ }});
+ assert.equal((await f.run()).status,'succeeded');assert.equal(reads,1);assert.deepEqual(f.effects,['read_original','create_calendar_event']);
+ assert.equal(f.plans.length,4);
+ assert.doesNotMatch(f.plans[1].messages[0].content,/TRUSTED SKILL: techatnyu-drive/);
+ assert.match(f.plans[2].messages[0].content,/TRUSTED SKILL: techatnyu-drive/);
+ assert.deepEqual(f.plans[2].messages.slice(1),f.plans[1].messages.slice(1),'activation must leave the previously committed transcript unchanged');
+ const previous=f.plans[2].messages.filter(row=>row.role==='tool');
+ assert.deepEqual(previous.map(row=>row.tool_call_id),['source1','saved1']);
+ assert.equal(JSON.parse(previous[1].content).calendarWrite.url,eventUrl);
+ assert.equal(capabilities(f.plans[2]).calendarMutations[0].receipt.eventId,eventId);
+ assert.deepEqual(f.plans[3].messages.filter(row=>row.role==='tool').map(row=>row.tool_call_id),['source1','saved1','drive1']);
+ assert.equal(JSON.parse(f.plans[3].messages.find(row=>row.role==='tool'&&row.tool_call_id==='drive1').content).status,'ready');
+ assert(f.plans.every(body=>!JSON.stringify(body.messages).includes('discarded_write')));
+ assert.deepEqual(f.events.filter(row=>row.kind==='tool_started').map(row=>row.tool),['read_original','create_calendar_event','read_drive']);
+ assert.deepEqual(f.events.filter(row=>row.kind==='tool_finished').map(row=>row.status),['ready','ready','ready']);
+ assert.deepEqual(f.records.filter(row=>row.type==='tool'&&row.status==='running').map(row=>row.id),['tool-1','tool-2','tool-3']);
+ assert.equal(capabilities(f.answers[0]).calendarMutations.length,1);
+ assert.equal(capabilities(f.answers[0]).calendarMutations[0].receipt.url,eventUrl);
+ assert(f.finishes.some(row=>row.output?.toolCalls?.some(proposal=>proposal.id==='discarded_write')),'model audit may retain actual proposals without claiming execution');
+});
+
+test('Drive activation still rejects IDs already committed by an earlier native turn',async()=>{
  let reads=0;
  const f=fixture({driveRead:async()=>{reads++;return {status:'ready',sources:[]};},batches:[
-  [call('drive1','read_drive',{fileId:'synthetic'}),call('source1','read_original')],
-  [call('drive2','read_drive',{fileId:'synthetic'}),call('source2','read_original')],[],
+  [call('committed','read_original')],[call('committed','read_drive',{fileId:'synthetic'})],
  ]});
- assert.equal((await f.run()).status,'succeeded');assert.equal(reads,1);assert.deepEqual(f.effects,['read_original']);
- assert.match(f.plans[1].messages[0].content,/TRUSTED SKILL: techatnyu-drive/);
- const initial=f.plans[1].messages.filter(row=>row.role==='tool');assert.equal(initial.length,2);
- assert(initial.every(row=>JSON.parse(row.content).status==='skipped_due_to_skill_activation'));assertNativeTranscript(f.plans[2]);
+ assert.equal((await f.run()).status,'succeeded');assert.equal(reads,0);assert.deepEqual(f.effects,['read_original']);
+ assert.equal(f.plans.length,2);assert(f.plans.every(body=>!body.messages[0].content.includes('TRUSTED SKILL: techatnyu-drive')));
+ assert(f.records.find(row=>row.type==='meta').retrieval.some(row=>row.tool==='planning'&&row.status==='unavailable'));
+ assert.equal(f.events.filter(row=>row.kind==='tool_started').length,1);
 });
 
 test('native tool source text never replaces the current attendance declaration at its backend gate',async()=>{
@@ -190,10 +222,10 @@ test('native tool source text never replaces the current attendance declaration 
  assert.equal(f.plans[2].messages.find(row=>row.role==='user').content,'What does the source say?');
 });
 
-test('native provider accepts all 26 configured tool definitions and rejects 33 before dispatch',async()=>{
- const f=fixture();const request={messages:[{role:'user',content:'Hello'}],system:'Synthetic policy',tools:Array.from({length:26},(_,i)=>define('tool_'+i))};
- assert.deepEqual((await f.provider.toolTurn(request)).toolCalls,[]);assert.equal(f.plans[0].tools.length,26);
- const before=f.requests.length;await assert.rejects(f.provider.toolTurn({...request,tools:Array.from({length:33},(_,i)=>define('tool_'+i))}),{code:'invalid_provider_request'});assert.equal(f.requests.length,before);
+test('native provider accepts 64 tool definitions and rejects 65 before dispatch',async()=>{
+ const f=fixture();const request={messages:[{role:'user',content:'Hello'}],system:'Synthetic policy',tools:Array.from({length:64},(_,i)=>define('tool_'+i))};
+ assert.deepEqual((await f.provider.toolTurn(request)).toolCalls,[]);assert.equal(f.plans[0].tools.length,64);
+ const before=f.requests.length;await assert.rejects(f.provider.toolTurn({...request,tools:Array.from({length:65},(_,i)=>define('tool_'+i))}),{code:'invalid_provider_request'});assert.equal(f.requests.length,before);
 });
 
 test('actual chat runner exposes the complete 28-tool catalogue on each native turn',async()=>{

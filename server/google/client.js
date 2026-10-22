@@ -87,31 +87,41 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
   let oauthVerified = false, lastStatus = configured ? 'configured' : 'not_configured';
   let verifiedToken = null;
 
-  async function request(url, accessToken, signal, text = false, maxBytes = 1500000) {
+  async function request(url, accessToken, signal, text = false, maxBytes = 1500000, stage = 'provider_request') {
     // URLs are assembled only by the methods below; no model-provided URLs.
-    const response = await fetchImpl(url, { method: 'GET', redirect: 'error', signal,
-      headers: { Authorization: `Bearer ${accessToken}`, Accept: text ? 'text/plain' : 'application/json' } });
+    let response;
+    try {
+      response = await fetchImpl(url, { method: 'GET', redirect: 'error', signal,
+        headers: { Authorization: `Bearer ${accessToken}`, Accept: text ? 'text/plain' : 'application/json' } });
+    } catch (error) { throw googleError(error, signal, { stage }); }
     if (!response.ok) {
       await response.body?.cancel();
       throw new GoogleError(response.status === 401 ? 'reauthorization_required' : response.status === 403 ? 'permission_denied'
-        : response.status === 404 ? 'not_found' : response.status === 429 ? 'rate_limited' : 'google_unavailable');
+        : response.status === 404 ? 'not_found' : response.status === 429 ? 'rate_limited' : 'google_unavailable',
+        { stage, reason: 'http_error', httpStatus: response.status });
     }
-    const raw = await boundedGoogleBody(response, { maxBytes, signal });
-    if (text) return raw;
-    try { return JSON.parse(raw); } catch { throw new GoogleError('invalid_response'); }
+    try {
+      const raw = await boundedGoogleBody(response, { maxBytes, signal });
+      if (text) return raw;
+      try { return JSON.parse(raw); }
+      catch { throw new GoogleError('invalid_response', { stage: 'response_parse', reason: 'invalid_json', httpStatus: response.status }); }
+    } catch (error) {
+      const safe = googleError(error, signal, { stage: 'response_parse' });
+      throw new GoogleError(safe.code, { ...safe.diagnostics, httpStatus: response.status });
+    }
   }
 
   async function run(signal, operation) {
-    if (!configured) return { status: 'not_configured', sources: [] };
+    if (!configured) return { status: 'not_configured', sources: [], diagnostics: new GoogleError('not_configured', { stage: 'local_validation' }).diagnostics };
     const timeout = AbortSignal.timeout(SOURCE_TOOL_TIMEOUT_MS), combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
     try {
-      if (combined.aborted) throw new GoogleError('aborted');
-      const result = await waitForGoogleAuth(() => oauth.getAccessToken(), combined);
+      if (combined.aborted) throw new GoogleError('aborted', {stage:'oauth'});
+      const result = await waitForGoogleAuth(() => oauth.getAccessToken(), combined, 'oauth');
       const accessToken = result?.token;
-      if (!accessToken) throw new GoogleError('reauthorization_required');
+      if (!accessToken) throw new GoogleError('reauthorization_required', { stage: 'oauth', reason: 'missing_access_token' });
       if (accessToken !== verifiedToken) {
         await verifyGoogleToken(oauth, accessToken, config.expectedAccountEmail,
-          token => request(`${GMAIL}/profile`, token, combined), combined);
+          token => request(`${GMAIL}/profile`, token, combined, false, 1500000, 'account_verification'), combined, undefined, true);
         verifiedToken = accessToken; oauthVerified = true;
       }
       const output = await operation(accessToken, combined);
@@ -119,16 +129,16 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
       lastStatus = 'ready';
       return { ...(Array.isArray(output) ? {} : output), status: sources.length ? 'ready' : 'empty', sources };
     } catch (error) {
-      const safe = timeout.aborted && !signal?.aborted ? new GoogleError('timeout') : googleError(error, signal);
+      const safe = timeout.aborted && !signal?.aborted ? new GoogleError('timeout', { ...(error instanceof GoogleError ? error.diagnostics : {}), reason: 'timeout' }) : googleError(error, signal);
       lastStatus = safe.code;
       if (['reauthorization_required', 'account_mismatch'].includes(safe.code)) { oauthVerified = false; verifiedToken = null; }
-      return { status: safe.code, sources: [] };
+      return { status: safe.code, sources: [], diagnostics: safe.diagnostics };
     }
   }
 
   async function searchGmail({ query, limit, signal } = {}) {
     const count = limitOf(limit);
-    if (typeof query !== 'string' || !query.trim() || query.length > 500 || !count) return { status: 'invalid_request', sources: [] };
+    if (typeof query !== 'string' || !query.trim() || query.length > 500 || !count) return { status: 'invalid_request', sources: [], diagnostics: new GoogleError('invalid_request').diagnostics };
     const result = await run(signal, async (token, active) => {
       const params = new URLSearchParams({ q: query.trim(), maxResults: String(count), includeSpamTrash: 'false' });
       const list = await request(`${GMAIL}/messages?${params}`, token, active);
@@ -148,7 +158,7 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
   }
 
   async function readGmail({ messageId, signal } = {}) {
-    if (!mailId(messageId)) return { status: 'invalid_request', sources: [] };
+    if (!mailId(messageId)) return { status: 'invalid_request', sources: [], diagnostics: new GoogleError('invalid_request').diagnostics };
     return run(signal, async (token, active) => {
       const message = await request(`${GMAIL}/messages/${messageId}?format=full`, token, active);
       if (message?.id !== messageId) throw new GoogleError('invalid_response');
@@ -184,7 +194,7 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
   async function searchDrive({ query, limit, folderId, pageToken, signal } = {}) {
     const count = limitOf(limit);
     if (typeof query !== 'string' || !query.trim() || query.length > 500 || !count
-      || folderId !== undefined && !fileId(folderId) || !pageTokenValid(pageToken)) return { status: 'invalid_request', sources: [] };
+      || folderId !== undefined && !fileId(folderId) || !pageTokenValid(pageToken)) return { status: 'invalid_request', sources: [], diagnostics: new GoogleError('invalid_request').diagnostics };
     const literal = query.trim().replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     const q = `trashed = false and (fullText contains '${literal}')${folderId ? ` and '${folderId}' in parents` : ''}`;
     return drivePage({ params: driveListParams(q, count, pageToken), count, pageToken, folderId, signal, scope: folderId ? 'direct_child_search' : 'authorized_drive_search' });
@@ -192,7 +202,7 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
 
   async function listDriveFolder({ folderId, pageToken, limit, signal } = {}) {
     const count = folderLimitOf(limit);
-    if (!fileId(folderId) || !count || !pageTokenValid(pageToken)) return { status: 'invalid_request', sources: [] };
+    if (!fileId(folderId) || !count || !pageTokenValid(pageToken)) return { status: 'invalid_request', sources: [], diagnostics: new GoogleError('invalid_request').diagnostics };
     const result = await drivePage({ params: driveListParams(`trashed = false and '${folderId}' in parents`, count, pageToken), count, pageToken, folderId, signal, scope: 'direct_children' });
     if (!['ready', 'empty'].includes(result.status)) return { ...result, coverage: { ...result.coverage, navigationOnly: true } };
     return { ...result, sources: [], coverage: { ...result.coverage, navigationOnly: true },
@@ -202,7 +212,7 @@ export function createGoogleClient({ config = readGoogleConfig(), fetchImpl = gl
   }
 
   async function readDrive({ fileId: id, signal } = {}) {
-    if (!fileId(id)) return { status: 'invalid_request', sources: [] };
+    if (!fileId(id)) return { status: 'invalid_request', sources: [], diagnostics: new GoogleError('invalid_request').diagnostics };
     return run(signal, async (token, active) => {
       const file = await request(`${DRIVE}/files/${id}?${new URLSearchParams({ fields: FIELD, supportsAllDrives: 'true' })}`, token, active);
       if (file.id !== id) throw new GoogleError('invalid_response');

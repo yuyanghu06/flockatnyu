@@ -208,19 +208,36 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
   // The trigger and direct reply target are fetched live on the web service.
   // Embedded referenced_message payloads and collector transport data are never
   // accepted as originals, and a target's own reference is never followed.
+  const wantsImages = args => args.includeImageAttachments === true
+    && args.principal?.liveDiscord?.transport === 'discord-chat'
+    && args.principal.liveDiscord.invokingChannelId === args.channelId;
+  // Internal descriptors are opt-in and never part of ordinary source envelopes,
+  // read tools or automation. URL/body validation occurs before any download.
+  function imageCandidates(raw,origin) {
+    if(!Array.isArray(raw.attachments))return [];
+    return raw.attachments.slice(0,40).map(file=>({guildId:config.guildId,channelId:raw.channel_id,messageId:raw.id,
+      attachmentId:file?.id,name:file?.filename,mimeType:file?.content_type,size:file?.size,url:file?.url,origin}));
+  }
+  async function verifyChatContextAccess(args={}) {
+    if(!id(args.channelId)||!wantsImages({...args,includeImageAttachments:true}))return {status:'forbidden'};
+    return run(args,async ctx=>{await ctx.check(args.channelId);return {status:'ready'};});
+  }
   async function fetchReplyContext(args={}) {
     if(!id(args.channelId)||!id(args.requestId)||!id(args.actorId))return {status:'invalid_request',sources:[]};
     return run(args,async(ctx,signal)=>{
       await ctx.check(args.channelId);
       if(signal.aborted)fail('aborted');
-      const unavailable=reason=>({status:'ready',sources:[],repliedMessage:{status:'unavailable',reason,triggerMessageId:args.requestId,referencedMessageId:null,message:null}});
+      let candidates=[],triggerVerified=false;
+      const images=()=>wantsImages(args)?{imageCandidates:candidates,triggerVerified}:{};
+      const unavailable=reason=>({status:'ready',sources:[],...images(),repliedMessage:{status:'unavailable',reason,triggerMessageId:args.requestId,referencedMessageId:null,message:null}});
       if(typeof client.getMessage!=='function')return unavailable('reply_unavailable');
       const raw=await client.getMessage({channelId:args.channelId,messageId:args.requestId,signal});
       const trigger=cleanMessage(raw,args.channelId,config.guildId);
       if(trigger.id!==args.requestId||trigger.author.id!==args.actorId)fail('invalid_response');
+      if(wantsImages(args)){triggerVerified=true;candidates=imageCandidates(raw,'trigger');}
       if(signal.aborted)fail('aborted');
       const reference=raw.message_reference;
-      if(reference===undefined||reference===null)return {status:'ready',sources:[],repliedMessage:{status:'none',reason:null,triggerMessageId:args.requestId,referencedMessageId:null,message:null}};
+      if(reference===undefined||reference===null)return {status:'ready',sources:[],...images(),repliedMessage:{status:'none',reason:null,triggerMessageId:args.requestId,referencedMessageId:null,message:null}};
       if(!reference||typeof reference!=='object'||Array.isArray(reference)
         ||reference.type!==undefined&&reference.type!==0||!id(reference.message_id)
         ||reference.channel_id!==undefined&&reference.channel_id!==args.channelId
@@ -230,14 +247,16 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
       if(signal.aborted)fail('aborted');
       const target=cleanMessage(targetRaw,args.channelId,config.guildId);
       if(target.id!==reference.message_id||Date.parse(target.timestamp)>Date.parse(trigger.timestamp))fail('invalid_response');
+      if(wantsImages(args))candidates.push(...imageCandidates(targetRaw,'reply'));
+      candidates=candidates.slice(0,40);
       const base={triggerMessageId:args.requestId,referencedMessageId:target.id};
-      if(target.content.length>10000)return {status:'ready',sources:[],repliedMessage:{...base,status:'partial',reason:'reply_text_budget',message:null}};
+      if(target.content.length>10000)return {status:'ready',sources:[],...images(),repliedMessage:{...base,status:'partial',reason:'reply_text_budget',message:null}};
       const authorName=String(target.author.name||target.author.id).replace(/[\u0000-\u001f\u007f-\u009f]/g,' ').trim().slice(0,100)||target.author.id;
       const message={id:target.id,channelId:args.channelId,authorId:target.author.id,authorName,
         createdAt:target.timestamp,editedAt:target.edited_timestamp,content:target.content,
         url:`https://discord.com/channels/${config.guildId}/${args.channelId}/${target.id}`,
         hasNonTextContent:target.hasNonTextContent,textTruncated:false};
-      return {status:'ready',sources:[],repliedMessage:{...base,status:target.hasNonTextContent?'partial':'ready',reason:target.hasNonTextContent?'non_text_content':null,message}};
+      return {status:'ready',sources:[],...images(),repliedMessage:{...base,status:target.hasNonTextContent?'partial':'ready',reason:target.hasNonTextContent?'non_text_content':null,message}};
     });
   }
   async function fetchWindow(args = {}) {
@@ -245,7 +264,7 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     if (!id(args.channelId) || !from || !to || from >= to) return {status:'invalid_request',sources:[],messages:[],coverage:{complete:false,reason:'invalid_request',matchedCount:0,returnedCount:0}};
     return run(args, async (ctx,signal) => {
       const channel = await ctx.check(args.channelId);
-      const messages = [], seen = new Set();
+      const messages = [], seen = new Set(), candidates=[];
       let before = discordSnowflakeAt(to), pages = 0, chars = 0, complete = false, reason = 'page_budget';
       outer: while (pages < maxPages && messages.length < maxMessages) {
         const limit = Math.min(100,maxMessages - messages.length);
@@ -261,18 +280,19 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
           if (reachedFrom || message.timestamp >= to) fail('invalid_response');
           if (chars + message.content.length > maxInputChars) { reason = 'input_budget'; break outer; }
           chars += message.content.length; messages.push(message);
+          if(wantsImages(args)&&candidates.length<40)candidates.push(...imageCandidates(raw,'recent').slice(0,40-candidates.length));
         }
         before = previous.toString();
         if (reachedFrom) { complete = true; reason = null; break; }
         if (messages.length >= maxMessages) reason = 'message_budget';
       }
       const value = envelope(messages,ctx.channels);
-      return {status:complete ? 'ready' : 'partial',retrieval:'live',channel:{channelId:channel.id,name:channel.name,sourceId:channel.sourceId},messages,sources:value.sources,
+      return {status:complete ? 'ready' : 'partial',retrieval:'live',channel:{channelId:channel.id,name:channel.name,sourceId:channel.sourceId},messages,sources:value.sources,...(wantsImages(args)?{imageCandidates:candidates}:{}),
         coverage:{complete,from,to,pages,matchedCount:messages.length,returnedCount:messages.length,reason,sourceTextTruncated:value.trimmed,contentScope:'top_level_text_only',nonTextMessageCount:messages.filter(message => message.hasNonTextContent).length,snapshot:false}};
     });
   }
   async function readWindow(args = {}) {
-    const result = await fetchWindow(args);
+    const result = await fetchWindow({...args,includeImageAttachments:false});
     const {messages, ...out} = result;
     if (!messages) return out;
     const sourceChars = out.sources.reduce((n,source) => n + source.excerpt.length,0);
@@ -280,5 +300,5 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     const trimmed = out.coverage.sourceTextTruncated || messages.length > out.sources.length || fullChars > sourceChars;
     return {...out,coverage:{...out.coverage,fetchedComplete:out.coverage.complete,complete:out.coverage.complete && !trimmed,returnedCount:out.sources.length,textTruncated:trimmed,reason:trimmed ? 'source_budget' : out.coverage.reason}};
   }
-  return Object.freeze({configured,search,readMessages,readWindow,fetchWindow,fetchReplyContext,getCatalogue});
+  return Object.freeze({configured,search,readMessages,readWindow,fetchWindow,fetchReplyContext,verifyChatContextAccess,getCatalogue});
 }

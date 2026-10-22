@@ -237,8 +237,8 @@ test('partial and unavailable reply limits are disclosed in both phases without 
   const f=fixture(options);assert.equal((await f.run()).response.status,200);
   for(const request of [...f.plans,...f.answers]){
    assert.match(request.system,/Coverage is complete for message text in this exact channel\/thread and time window only/);
-   assert.match(request.system,/Reply coverage is partial|direct reply could not be read/);
-   assert.match(request.system,/text-budget failure|disclose that limitation/);
+   assert.match(request.system,/Reply (?:text\/non-text )?coverage is partial|direct reply could not be read/);
+   assert.match(request.system,/material actually omitted or unread|text-budget failure|disclose that limitation/);
    assert.ok(!request.system.includes('a'.repeat(100)));
   }
  }

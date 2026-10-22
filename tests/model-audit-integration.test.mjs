@@ -108,7 +108,8 @@ test('worker actual toolTurn connects runs, model rounds, source-only inputs and
  assert.equal((await w.tick()).status,'completed');assert.equal(w.completed(),true);
  assert.deepEqual(f.starts().map(x=>[x.agent,x.round]),[['planner',1],['planner',2]]);
  const run=f.starts()[0].runId;assert.ok(f.rows.every(x=>x.payload.runId===run));
- assert.deepEqual(f.events().filter(x=>x.kind==='tool_finished').map(x=>[x.tool,x.round,x.status]),[['read_fixture',1,'ready'],['finish_batch',2,'completed']]);
+ // Operational diagnostics use a fixed sentinel for non-product fixture names.
+ assert.deepEqual(f.events().filter(x=>x.kind==='tool_finished').map(x=>[x.tool,x.round,x.status]),[['unknown_tool',1,'ready'],['finish_batch',2,'completed']]);
  assert.equal(f.events().at(-1).status,'completed');assertPrivate(f);
 });
 

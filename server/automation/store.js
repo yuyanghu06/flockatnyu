@@ -1,4 +1,6 @@
 import {plainObject,validUuid} from './validation.js';
+const failureOutcomes=new Set(['timeout','forbidden','stale','invalid_batch','incomplete_batch','round_limit','call_limit',
+  'invalid_tool_call','invalid_completion','tool_failed','context_limit','preflight_failed','not_configured','audit_unavailable','unavailable']);
 export function createAutomationStore({env = process.env,fetchImpl = globalThis.fetch} = {}) {
   let base;
   try {
@@ -62,6 +64,18 @@ export function createAutomationStore({env = process.env,fetchImpl = globalThis.
       if (!Array.isArray(handledInputIds)||!handledInputIds.length||handledInputIds.length>20||!handledInputIds.every(validUuid)||new Set(handledInputIds).size!==handledInputIds.length) return Promise.resolve({status:'invalid_request'});
       return leaseCall('finish',{leaseToken,p_handled_ids:handledInputIds,signal});
     },
+    fail({leaseToken,outcome,signal}={}) {
+      if(!failureOutcomes.has(outcome)) return Promise.resolve({status:'invalid_request'});
+      return leaseCall('fail',{leaseToken,p_outcome:outcome,signal});
+    },
     release({leaseToken,signal}={}) { return leaseCall('release',{leaseToken,signal}); },
+    // Service operation only; never registered as a model/public tool.
+    async requeue({inputId,allowedSourceIds,expectedHash,signal}={}) {
+      if(!validUuid(inputId)||!Array.isArray(allowedSourceIds)||!allowedSourceIds.length||allowedSourceIds.length>500
+        ||!allowedSourceIds.every(validUuid)||new Set(allowedSourceIds).size!==allowedSourceIds.length
+        ||typeof expectedHash!=='string'||!/^[a-f0-9]{32}$/.test(expectedHash)) return {status:'invalid_request'};
+      const result=await rpc('agent_automation_requeue',{p_input_id:inputId,p_allowed_source_ids:[...allowedSourceIds],p_expected_hash:expectedHash},signal);
+      return result.status==='ready'?{status:result.data===true?'ready':'stale'}:result;
+    },
   });
 }

@@ -28,6 +28,7 @@ import {createMiroMcpClient} from './miro/mcp-client.js';
 import {createMiroStore} from './miro/store.js';
 import {createMiroMcpTools} from '../tools/miro/mcp.js';
 import {createMapPresenceService} from './map/presence.js';
+import {createMapAvatarService} from './map/avatars.js';
 import {createMapSourceAuthorizer} from './map/source-access.js';
 import {createMapEventStore,createMapEventService} from './map/events.js';
 import {createChatAttendanceService} from './map/chat-attendance.js';
@@ -38,6 +39,9 @@ import {createBugReportStore} from './bug-reports.js';
 import {createBugReportTools} from '../tools/bug-reports/index.js';
 import {createMemoryStore} from './memory.js';
 import {createMemoryTools} from '../tools/memory/index.js';
+import {readAttioConfig} from './attio/config.js';
+import {createAttioClient} from './attio/client.js';
+import {createAttioTools} from '../tools/attio/index.js';
 
 export function createRuntimeServices({ config = readConfig() } = {}) {
 const audit=createAuditLogger();
@@ -71,6 +75,7 @@ const miroStore = createMiroStore();
 const miroConfig = readMiroMcpConfig();
 const miroTools = createMiroMcpTools({config: miroConfig, store: miroStore, client: createMiroMcpClient({config: miroConfig})});
 const mapStore = createMapEventStore();
+const mapAvatarService = createMapAvatarService();
 const authorizeMapSource = createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, store:mapStore,
   gmailSourceId:process.env.AGENT_GMAIL_SOURCE_ID?.trim(),calendarClient,calendarSourceId:calendarConfig.sourceId});
 const mapPresenceService = createMapPresenceService({store:mapStore,production:config.production, authorizeSource:authorizeMapSource});
@@ -92,8 +97,10 @@ const mapTools = {
 };
 const bugReportTools = createBugReportTools({store: createBugReportStore()});
 const memoryTools = createMemoryTools({store: createMemoryStore()});
-return {config,audit,provider:createProvider(config,{audit}),mapPresenceService,mapTools,discordStore,discordConfig,discordClient,
-  liveDiscordService,liveDiscordTools,googleTools,googleClient,miroTools,bugReportTools,memoryTools};
+const attioConfig = readAttioConfig();
+const attioTools = createAttioTools({config:attioConfig,client:createAttioClient({config:attioConfig})});
+return {config,audit,provider:createProvider(config,{audit}),mapPresenceService,mapAvatarService,mapTools,discordStore,discordConfig,discordClient,
+  liveDiscordService,liveDiscordTools,googleTools,googleClient,miroTools,bugReportTools,memoryTools,attioTools};
 }
 
 export function createRuntimeApp({config=readConfig(),auth,services} = {}) {

@@ -1,3 +1,4 @@
+import {toolDiagnostics,argumentDiagnostic,safeDiagnosticTool} from '../tool-diagnostics.js';
 import {createHash,randomUUID} from 'node:crypto';
 import {buildAutomationPrompt} from './prompt.js';
 import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
@@ -26,13 +27,13 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       ||!principal.allowedSourceIds.every(validUuid)||new Set(principal.allowedSourceIds).size!==principal.allowedSourceIds.length))return {status:'not_configured'};
     running=true;
     const progressStarted=performance.now();
-    let auditContext,runResult={status:'unavailable'},claimedCount=0;
+    let auditContext,runResult={status:'unavailable'},claimedCount=0,runError;
     const outcome=value=>{runResult=value;return value;};
     const auditEvent=async event=>{
       if(!auditContext)return;
       try{await audit?.recordEvent({eventId:randomUUID(),context:{...auditContext,round:progressRound},...event});}catch{/* Provider dispatch independently enforces durable call logging. */}
     };
-    let progressCount=0,progressRound=0,progressCalls=0,activeProgress;
+    let progressCount=0,progressRound=0,progressCalls=0,activeProgress,proposalSequence=0;
     const registeredNames=new Set([...tools.map(tool=>tool.name),'finish_batch']);
     const emitProgress=(phase,status,tool)=>{
       if(typeof onProgress!=='function'||progressCount>=128)return;
@@ -41,17 +42,20 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       if(registeredNames.has(tool))event.tool=tool;
       try{Promise.resolve(onProgress(Object.freeze(event))).catch(()=>{});}catch{/* Diagnostics never change execution. */}
     };
-    const progressStart=async(phase,tool)=>{activeProgress={phase,tool,started:performance.now()};emitProgress(`${phase}_start`,'started',tool);if(phase==='tool'||phase==='prepare')await auditEvent({kind:'tool_started',tool:phase==='prepare'?'prepare_batch':tool,status:'started',counts:{sequence:progressCalls}});};
-    const progressDone=async status=>{
+    const progressStart=async(phase,tool)=>{activeProgress={phase,tool,started:performance.now(),dispatched:false,proposalSequence};emitProgress(`${phase}_start`,'started',tool);};
+    const markDispatched=async()=>{if(!activeProgress||activeProgress.dispatched)return;activeProgress.dispatched=true;await auditEvent({kind:'tool_started',tool:activeProgress.phase==='prepare'?'prepare_batch':activeProgress.tool,status:'started',counts:{sequence:progressCalls}});};
+    const progressDone=async(status,error)=>{
       if(!activeProgress)return;
-      const {phase,tool,started}=activeProgress;activeProgress=undefined;
+      const {phase,tool,started,dispatched,result,proposalSequence:sequence,validation}=activeProgress;activeProgress=undefined;
       status=typeof status==='string'&&/^[a-z][a-z0-9_]{0,63}$/.test(status)?status:'invalid_result';
       const publicStatus=['ready','pending','completed','already_succeeded','invalid_request','aborted','forbidden','failed'].includes(status)?status:'failed';
       emitProgress(`${phase}_done`,publicStatus,tool);
-      if(phase==='tool'||phase==='prepare')await auditEvent({kind:'tool_finished',tool:phase==='prepare'?'prepare_batch':tool,status,durationMs:Math.round(performance.now()-started),counts:{sequence:progressCalls}});
+      if(phase==='tool'||phase==='prepare')await auditEvent({kind:'tool_finished',tool:phase==='prepare'?'prepare_batch':tool,status,diagnostics:toolDiagnostics({result,status:status==='ready'?undefined:status,error,dispatched,proposalSequence:sequence,validation,stage:phase==='prepare'?'prepare':undefined}),durationMs:Math.round(performance.now()-started),counts:{sequence:progressCalls}});
     };
+    const rejectProposal=async(call,reason,validation)=>{await auditEvent({kind:'tool_finished',tool:safeDiagnosticTool(call?.name),status:'invalid_tool_call',durationMs:0,diagnostics:toolDiagnostics({status:'invalid_tool_call',reason,stage:'local_validation',dispatched:false,proposalSequence,validation})});};
     const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),config.maxRunMs);timeout.unref?.();
+    let timedOut=false,leaseLost=false;
+    const timeout=setTimeout(()=>{timedOut=true;controller.abort();},config.maxRunMs);timeout.unref?.();
     const combined=AbortSignal.any([signal,controller.signal].filter(Boolean));
     const guarded=async work=>{
       if (combined.aborted) failure('aborted');
@@ -88,7 +92,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       };
       heartbeat=setInterval(()=>{
         if(heartbeatBusy) return;heartbeatBusy=true;
-        renew().catch(()=>controller.abort()).finally(()=>{heartbeatBusy=false;});
+        renew().catch(()=>{leaseLost=true;controller.abort();}).finally(()=>{heartbeatBusy=false;});
       },20000);heartbeat.unref?.();
       await authorize();
       // Trusted adapters run only for an authorized, leased processing batch.
@@ -97,7 +101,9 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       if (prepareBatch !== undefined) {
         if (typeof prepareBatch !== 'function') failure('not_configured');
         await progressStart('prepare');
+        await markDispatched();
         batchContext=await guarded(()=>prepareBatch({inputs:structuredClone(inputs),principal,signal:combined}));
+        activeProgress.result=batchContext;
         if (!plainObject(batchContext)||batchContext.status!=='ready') failure('preflight_failed');
         if (Buffer.byteLength(canonicalJson(batchContext))>65536) failure('context_limit');
         await renew();await authorize();
@@ -116,13 +122,14 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         if (!plainObject(turn)||!Array.isArray(turn.toolCalls)||!turn.toolCalls.length||turn.toolCalls.length>8||!['tool_calls','tool_use'].includes(turn.stopReason)) failure('incomplete_batch');
         const turnIds=new Set();
         for(const call of turn.toolCalls) {
-          if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||turnIds.has(call.id)||!plainObject(call.arguments)) failure('invalid_tool_call');
+          proposalSequence++;
+          if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||turnIds.has(call.id)||!plainObject(call.arguments)) {await rejectProposal(call,'invalid_tool_call');failure('invalid_tool_call');}
           turnIds.add(call.id);
           const definition=call.name==='finish_batch'?finishTool:definitions.find(t=>t.name===call.name);
           const emptyFinish=turn.toolCalls.length===1&&call.name==='finish_batch'&&Object.keys(call.arguments).length===1
             &&Array.isArray(call.arguments.handledInputIds)&&call.arguments.handledInputIds.length===0;
-          if(!definition||!validateArguments(call.arguments,definition.parameters)&&!emptyFinish) failure('invalid_tool_call');
-          if(call.name!=='finish_batch'&&(new Set(call.arguments.inputIds).size!==call.arguments.inputIds.length||!call.arguments.inputIds.every(id=>validUuid(id)&&inputIds.includes(id)))) failure('invalid_tool_call');
+          if(!definition||!validateArguments(call.arguments,definition.parameters)&&!emptyFinish) {await rejectProposal(call,definition?'invalid_arguments':'unknown_tool',definition?argumentDiagnostic(call.arguments,definition.parameters):undefined);failure('invalid_tool_call');}
+          if(call.name!=='finish_batch'&&(new Set(call.arguments.inputIds).size!==call.arguments.inputIds.length||!call.arguments.inputIds.every(id=>validUuid(id)&&inputIds.includes(id)))) {await rejectProposal(call,'invalid_input_scope',{keyword:'scope',field:'inputIds'});failure('invalid_tool_call');}
         }
         await progressDone('ready');
         // Validate first, then load the reviewed skill and ask for a fresh plan.
@@ -131,18 +138,19 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           driveSkillActive=true;
           continue;
         }
-        calls+=turn.toolCalls.length;progressCalls=calls;if(calls>config.maxCalls) failure('call_limit');
+        calls+=turn.toolCalls.length;progressCalls=calls;if(calls>config.maxCalls) {for(const call of turn.toolCalls)await rejectProposal(call,'call_limit');failure('call_limit');}
         for(const id of turnIds)callIds.add(id);
         const finish=turn.toolCalls.find(c=>c.name==='finish_batch');
         if(finish) {
-          if(turn.toolCalls.length!==1) failure('invalid_completion');
+          if(turn.toolCalls.length!==1) {await rejectProposal(finish,'invalid_completion');failure('invalid_completion');}
           const handledInputIds=finish.arguments.handledInputIds;
-          if(new Set(handledInputIds).size!==handledInputIds.length||!handledInputIds.every(id=>validUuid(id)&&inputIds.includes(id))) failure('invalid_completion');
+          if(new Set(handledInputIds).size!==handledInputIds.length||!handledInputIds.every(id=>validUuid(id)&&inputIds.includes(id))) {await rejectProposal(finish,'invalid_completion_scope',{keyword:'scope',field:'handledInputIds'});failure('invalid_completion');}
           await progressStart('tool','finish_batch');
           await renew();await authorize();
           let completion;
           if(validateCompletion!==undefined) {
             if(typeof validateCompletion!=='function')failure('not_configured');
+            await markDispatched();
             completion=await guarded(()=>validateCompletion({handledInputIds,principal,signal:combined}));
             if(!plainObject(completion)||!['ready','pending'].includes(completion.status)||Buffer.byteLength(canonicalJson(completion))>16384)failure('invalid_completion');
           }
@@ -155,12 +163,15 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)},
                 {role:'tool',toolCallId:finish.id,content:JSON.stringify(feedback)});
               if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+              activeProgress.result=feedback;
               await progressDone('pending');
               continue;
           }
+          await markDispatched();
           const result=await guarded(()=>store.finish({leaseToken,handledInputIds,signal:combined}));
           if(result.status!=='ready') failure('stale');
           leaseToken=null;
+          activeProgress.result=completion?.miroReconciliation?.status==='deferred'?{status:'completed',deferred:true}:{status:'completed'};
           await progressDone('completed');
           const miro=completion?.miroReconciliation;
           const deferred=miro?.status==='deferred'&&miro.syncComplete===false&&Array.isArray(miro.boardIds)&&miro.boardIds.length>=1&&miro.boardIds.length<=8
@@ -168,15 +179,16 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           return outcome({status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls,...deferred});
         }
         messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)});
-        for(const call of turn.toolCalls) {
+        for(const [proposalIndex,call] of turn.toolCalls.entries()) {
           await progressStart('tool',call.name);
+          activeProgress.proposalSequence=proposalSequence-turn.toolCalls.length+proposalIndex+1;
           await renew();await authorize();
           const tool=tools.find(t=>t.name===call.name);
           const scopedIds=[...call.arguments.inputIds].sort();
           let executionArguments=structuredClone(call.arguments.arguments);
           if(tool.prepareArguments) {
             executionArguments=await guarded(()=>tool.prepareArguments(executionArguments,{principal,inputIds:scopedIds,signal:combined}));
-            if(!validateArguments(executionArguments,tool.parameters))failure('invalid_tool_call');
+            if(!validateArguments(executionArguments,tool.parameters)){activeProgress.validation=argumentDiagnostic(executionArguments,tool.parameters);failure('invalid_tool_call');}
           }
           const actionKey=createHash('sha256').update(canonicalJson({inputIds:scopedIds,name:call.name,arguments:executionArguments})).digest('hex');
           const receipt=tool.readOnly===true?{status:'execute'}:await guarded(()=>store.action({leaseToken,actionKey,signal:combined}));
@@ -185,7 +197,9 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           else {
             if(receipt.status!=='execute') failure('stale');
             await authorize();
+            await markDispatched();
             result=await guarded(()=>tool.execute(executionArguments,{principal,inputIds:scopedIds,idempotencyKey:actionKey,signal:combined}));
+            activeProgress.result=result;
             if (!plainObject(result)||!['ready','success','succeeded','completed','ok',...(tool.readOnly===true?['invalid_request']:[])].includes(result.status)||Buffer.byteLength(canonicalJson(result))>16384) {
               await progressDone(plainObject(result)&&Buffer.byteLength(canonicalJson(result))>16384?'result_too_large':plainObject(result)&&typeof result.status==='string'?result.status:'invalid_result');
               failure('tool_failed');
@@ -195,6 +209,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               if(saved.status!=='completed') failure('stale');
             }
           }
+          activeProgress.result=result;
           messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(result)});
           await progressDone(result.status==='already_succeeded'?'already_succeeded':result.status==='invalid_request'?'invalid_request':'ready');
         }
@@ -202,14 +217,25 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       }
       return outcome({status:'round_limit'});
     } catch(e) {
-      await progressDone(e?.message==='aborted'?'aborted':e?.message==='forbidden'?'forbidden':'failed');
+      runError=e;
+      await progressDone(e?.message==='aborted'?'aborted':e?.message==='forbidden'?'forbidden':'failed',e);
       const allowed=new Set(['aborted','forbidden','stale','invalid_batch','incomplete_batch','call_limit','invalid_tool_call','invalid_completion','tool_failed','context_limit','preflight_failed','not_configured','audit_unavailable']);
       return outcome({status:allowed.has(e?.message)?e.message:'unavailable'});
     } finally {
       clearTimeout(timeout);clearInterval(heartbeat);
-      if(leaseToken) { try { await store.release({leaseToken,signal:AbortSignal.timeout(15000)}); } catch { /* Expiring durable lease recovers after failures. */ } }
+      if(leaseToken) {
+        try {
+          const settlement={leaseToken,signal:AbortSignal.timeout(15000)};
+          // Only explicit caller shutdown is free of failure accounting. Internal
+          // run deadlines and lease heartbeat failures are bounded failed runs.
+          if(runResult.status==='aborted'&&signal?.aborted) await store.release(settlement);
+          else if(typeof store.fail==='function') await store.fail({...settlement,
+            outcome:timedOut?'timeout':leaseLost?'stale':runResult.status==='aborted'?'unavailable':runResult.status});
+          else await store.release(settlement); // Legacy injected test/custom stores.
+        } catch { /* Never mask failed accounting with release: expiry recovers it. */ }
+      }
       try { cleanupBatch?.()?.catch?.(()=>{}); } catch { /* Cleanup cannot change the leased outcome. */ }
-      await auditEvent({kind:'run_finished',status:runResult.status,durationMs:Math.round(performance.now()-progressStarted),counts:{inputs:claimedCount,handled:runResult.handled||0,remaining:runResult.remaining??claimedCount,calls:progressCalls,miroDeferred:runResult.miroReconciliation?.status==='deferred'?1:0,miroDeferredBoards:runResult.miroReconciliation?.boardCount||0}});
+      await auditEvent({kind:'run_finished',status:runResult.status,diagnostics:toolDiagnostics({status:runResult.status,error:runError,reason:timedOut?'timeout':leaseLost?'stale':runError?.diagnostics?.reason??runResult.status,stage:runError?.diagnostics?.stage??'orchestration',dispatched:false}),durationMs:Math.round(performance.now()-progressStarted),counts:{inputs:claimedCount,handled:runResult.handled||0,remaining:runResult.remaining??claimedCount,calls:progressCalls,miroDeferred:runResult.miroReconciliation?.status==='deferred'?1:0,miroDeferredBoards:runResult.miroReconciliation?.boardCount||0}});
       running=false;
     }
   }};

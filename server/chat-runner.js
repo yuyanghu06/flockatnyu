@@ -29,7 +29,7 @@ function validConversation(value) {
 }
 // Shared request execution for the website and trusted Discord transport. This
 // does not authorize a transport; callers construct the principal server-side.
-export function createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,now=()=>new Date()}) {
+export function createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,now=()=>new Date()}) {
   return {async run({conversation,principal,requestContext,discordContext,discordUsers,signal,onRecord=()=>{}}) {
     const send = record => onRecord(record);
     const reject = code => { send(errorRecord(code)); return {status:'failed',code}; };
@@ -69,7 +69,7 @@ export function createChatRunner({config,provider,audit,liveDiscordTools,googleT
       if (cancelled || signal?.aborted) disconnect();
       if (abort.signal.aborted) throw new ProviderError(timedOut?'timeout':'aborted');
       const retrieval = await wait(retrieveAssistantContext({messages:conversation.messages,principal,provider,
-        liveTools:liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,buildingId:conversation.buildingId,
+        liveTools:liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,buildingId:conversation.buildingId,
         signal:abort.signal,timeContext,requestContext,discordContext,discordUsers,planning:config.retrievalToolsEnabled!==false,
         auditContext,onAuditEvent:auditEvent,onToolEvent:event=>{if(!abort.signal.aborted)send(event);} }));
       const sources = retrieval.sources;

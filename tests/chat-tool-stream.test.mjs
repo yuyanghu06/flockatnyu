@@ -4,6 +4,10 @@ import {retrieveAssistantContext} from '../server/assistant-context.js';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
 import {streamAssistant} from '../src/chat-client.js';
+import {readGoogleConfig,GOOGLE_SCOPES} from '../server/google/config.js';
+import {createGoogleClient} from '../server/google/client.js';
+import {executeGoogleTool,GOOGLE_TOOLS} from '../tools/google/index.js';
+import {createMiroMcpTools} from '../tools/miro/mcp.js';
 const messages=[{role:'user',content:'Find a club resource'}];
 const config=readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'fixture',LLM_API_KEY:'fixture-only'});
 const principal={id:'fixture',allowedSourceIds:[]};
@@ -14,11 +18,40 @@ const update=(status,extra={})=>({type:'tool',id:'tool-1',name:'search_discord',
 const stream=records=>new Response(records.map(JSON.stringify).join('\n')+'\n',{headers:{'content-type':'application/x-ndjson'}});
 
 test('tool callbacks start before execution and expose only bounded names/statuses',async()=>{
- for(const [result,status] of [[{status:'ready'},'completed'],[{status:'partial'},'partial'],[{status:'metadata_only'},'partial'],[{status:'forbidden'},'failed'],[null,'failed']]){
+ for(const [result,status] of [[{status:'ready'},'completed'],[{status:'ok'},'completed'],[{status:'empty'},'completed'],[{status:'partial'},'partial'],[{status:'metadata_only'},'partial'],...['forbidden','permission_denied','timeout','invalid_request','invalid_response'].map(status=>[{status},'failed']),[null,'failed']]){
   const events=[];const liveTools={tools:[{name:call.name}],execute:async({principal:p})=>{assert.equal(p,principal);assert.equal(events.at(-1).status,'running');if(result===null)throw Error('private failure');return {...result,authorization:'private-token',sources:[]};}};
   await retrieveAssistantContext({messages,principal,provider:makeProvider(),liveTools,onToolEvent:e=>events.push(e)});
   assert.deepEqual(events,[update('running'),update(status)]);assert(!JSON.stringify(events).includes('private'));
  }
+});
+
+for(const mode of ['planned','native'])test(`${mode} Google empty search and Miro empty catalogue complete without rewriting results or audit`,async()=>{
+ const googleConfig=readGoogleConfig({GOOGLE_CLIENT_ID:'fixture',GOOGLE_CLIENT_SECRET:'fixture-only',GOOGLE_REFRESH_TOKEN:'fixture-only',GOOGLE_EXPECTED_ACCOUNT_EMAIL:'club@example.com'});
+ let searches=0;
+ const client=createGoogleClient({config:googleConfig,oauthClient:{setCredentials(){},getAccessToken:async()=>({token:'fixture-only'}),getTokenInfo:async()=>({scopes:GOOGLE_SCOPES})},
+  fetchImpl:async url=>{
+   const path=new URL(url).pathname;
+   if(path.endsWith('/profile'))return Response.json({emailAddress:'club@example.com'});
+   assert(path.endsWith('/files'));searches++;return Response.json({files:[]});
+  }});
+ const googleTools={tools:GOOGLE_TOOLS,execute:input=>executeGoogleTool({...input,client})};
+ const miroTools=createMiroMcpTools({config:{configured:true,boardIds:[]},store:{configured:true},client:{configured:true,callTool:async()=>{assert.fail('Empty catalogue must not call Miro');}}});
+ for(const [name,args,adapters] of [['search_drive',{query:'synthetic missing resource'},{googleTools}],['list_miro_boards',{},{miroTools}]]){
+  const events=[],audits=[];let turns=0,returnedToModel=false;
+  const next=input=>{
+   if(events.some(event=>event.status==='completed')){
+    const previous=mode==='native'?input.messages.filter(message=>message.role==='tool').map(message=>JSON.parse(message.content)):JSON.parse(input.system.split('\nUNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n')[1]);
+    assert(previous.some(result=>result.tool===name&&result.status==='empty'));returnedToModel=true;return [];
+   }
+   return [{id:`empty-${++turns}`,name,arguments:args}];
+  };
+  const provider=mode==='native'?{toolTurn:async input=>({text:'',toolCalls:next(input)})}:{planTools:async input=>next(input)};
+  const context=await retrieveAssistantContext({messages,principal:{...principal,googleAccess:true,allowedSourceIds:['10000000-0000-4000-8000-000000000001']},provider,...adapters,onToolEvent:event=>events.push(event),onAuditEvent:async event=>audits.push(event)});
+  assert.deepEqual(events,[{type:'tool',id:'tool-1',name,status:'running'},{type:'tool',id:'tool-1',name,status:'completed'}]);
+  assert(returnedToModel);assert.equal(context.results.length,1);assert.equal(context.results[0].status,'empty');assert.deepEqual(context.results[0].sources,[]);
+  assert.equal(context.status,'empty');assert.deepEqual(audits.filter(event=>event.kind==='tool_finished').map(event=>event.status),['empty']);
+ }
+ assert.equal(searches,1);
 });
 
 test('unregistered and duplicate calls do not create phantom progress entries',async()=>{

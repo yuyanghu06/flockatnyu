@@ -94,8 +94,8 @@ export function createMapSourceAuthorizer({liveDiscordService, miroStore, google
       return false;
     } catch { return false; }
   }
-  // A projection owns its snapshot and in-flight originals. General event reads
-  // and writes keep using the uncached callback, so later calls recheck access.
+  // Each read scope owns its snapshot and in-flight originals. Later scopes,
+  // identity lookups and both write checks revalidate current provider access.
   const authorizer=args=>authorizeSource(args);
   authorizer.createReadScope=({principal,snapshot,signal}={})=>{
     const scope={snapshot:validateSnapshot(snapshot),originals:new Map()};

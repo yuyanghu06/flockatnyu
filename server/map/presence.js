@@ -1,6 +1,7 @@
 import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
 // Service-only projections from normalized events; no legacy JSON fallback.
 import {createMapEventStore, validateSnapshot, validEvent, validParticipation, eventWindow, authorizeProvenance, boundedWork, text, uuid, safeAvatar} from './events.js';
+import {isGoGreekPreviewProvenance,authorizeGoGreekEventPreview} from './event-preview.js';
 export const MAP_DEBUG_SOURCE_ID = 'a7969a7a-53cc-4c75-9736-95dd386f1c5e';
 export const MAP_DEBUG_SOURCE_URL = 'https://example.invalid/tech-nyu/map-debug/bobst-fixture-v1';
 export const MAP_DEBUG_EVENTS_SOURCE_ID = '742d78b8-6d13-4f4a-a692-342617080bae';
@@ -25,7 +26,7 @@ async function concurrentChecks(items,check,signal) {
   }));
   return results;
 }
-const personView=person=>({id:person.id,displayName:person.display_name,avatarUrl:safeAvatar(person.avatar_url)});
+const personView=person=>({id:person.id,displayName:person.display_name,avatarUrl:safeAvatar(person.avatar_url,person.id)});
 
 /** Source UUID allowlisting and positive current policy are independently required. */
 export function createMapPresenceService({store=createMapPresenceStore(),production=process.env.NODE_ENV==='production',authorizeSource=null,now=()=>new Date(),timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
@@ -49,6 +50,11 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
         const authorize=async(row,event,building,person=null)=>{
           const {source_id:id,source_url:url}=row;
           const local=!production&&principal.id==='local-development';
+          // Reserved preview references never fall through to ordinary source
+          // authorization, including production and participant projections.
+          if(isGoGreekPreviewProvenance(row)||isGoGreekPreviewProvenance(event)) {
+            return authorizeGoGreekEventPreview({production,principal,row,event,building,person});
+          }
           if(id===MAP_DEBUG_EVENTS_SOURCE_ID||url===MAP_DEBUG_EVENTS_SOURCE_URL) {
             return local&&building.id==='bobst-library'&&id===MAP_DEBUG_EVENTS_SOURCE_ID&&url===MAP_DEBUG_EVENTS_SOURCE_URL&&
               event.kind==='scheduled_event'&&event.source_record_id?.startsWith('bobst-ui-debug-v1-')&&event.name.startsWith('[UI TEST] ');
@@ -92,7 +98,7 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
           const displayParticipants=event.kind==='scheduled_event'?authorized:authorized.filter(({effective})=>effective.end>at);
           if(event.kind==='scheduled_event'||displayParticipants.length>0) {
             const type=eventTypes.get(event.type_id);
-            const presentation={id:event.id,title:event.name,type:{code:type.code,name:type.name,iconKey:type.icon_key},startsAt:new Date(window.start).toISOString(),endsAt:new Date(window.end).toISOString(),
+            const presentation={id:event.id,title:event.name,kind:event.kind,type:{code:type.code,name:type.name,iconKey:type.icon_key},startsAt:new Date(window.start).toISOString(),endsAt:new Date(window.end).toISOString(),
               timeZone:event.time_zone,allDay:window.allDay,status:event.status,description:event.notes,location:link.location_notes,url:event.url||null,
               attendees:displayParticipants.map(({person})=>personView(person)).sort((a,b)=>a.id.localeCompare(b.id))};
             if(building.events.length>=2000)throw Error('map_projection_too_large');reserve(presentation);building.events.push(presentation);

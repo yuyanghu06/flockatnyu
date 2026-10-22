@@ -105,6 +105,6 @@ test('store sends fixed RPC transaction with optimistic token and sanitizes prov
   for(const [code,status] of [['40001','conflict'],['23514','invalid'],['23503','invalid']])assert.deepEqual(await createMapEventStore({env,fetchImpl:async()=>Response.json({code,message:'PRIVATE_PROVIDER_ERROR'},{status:400})}).upsert({event:event(),buildings:[],people:[]}),{status});
 });
 test('service remains bounded on stalled storage and cancellation; unconfigured authentication fails closed',async()=>{
-  const service=createMapEventService({store:{configured:true,read:()=>new Promise(()=>{})},timeoutMs:50});assert.deepEqual(await service.read({principal}),{status:'unavailable'});
-  const controller=new AbortController();controller.abort();assert.deepEqual(await service.read({principal,signal:controller.signal}),{status:'unavailable'});assert.deepEqual(await service.read({}),{status:'forbidden'});assert.deepEqual(await createMapEventService({store:{configured:false}}).read({principal}),{status:'not_configured'});
+  const service=createMapEventService({store:{configured:true,read:()=>new Promise(()=>{})},timeoutMs:50});assert.deepEqual(await service.read({principal}),{status:'unavailable',diagnostics:{stage:'execution',reason:'timeout'}});
+  const controller=new AbortController();controller.abort();assert.deepEqual(await service.read({principal,signal:controller.signal}),{status:'unavailable',diagnostics:{stage:'execution',reason:'aborted'}});assert.deepEqual(await service.read({}),{status:'forbidden'});assert.deepEqual(await createMapEventService({store:{configured:false}}).read({principal}),{status:'not_configured'});
 });

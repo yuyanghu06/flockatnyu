@@ -23,7 +23,7 @@ export function createLiveChatTools({ service, guildId, config, provider } = {})
     // An exact team channel reuses the window reader's current-source, explicit
     // user-intent and exclusion checks without scanning other team channels.
     if(args.channelId!==undefined)return execute({...options,name:'read_discord_window',arguments:windowArgs});
-    const signal=options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(120000)]):AbortSignal.timeout(120000);
+    const signal=options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(300000)]):AbortSignal.timeout(300000);
     const scope=args.scope||'eboard';
     const catalogue=await service.getCatalogue({scope,principal:options.principal,signal,...(typeof options.userMessage==='string'?{userMessage:options.userMessage}:{})});
     if(catalogue.status!=='ready')return {...catalogue,sources:[]};

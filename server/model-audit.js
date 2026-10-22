@@ -1,4 +1,7 @@
+import {DIAGNOSTIC_CODES,diagnosticCounts,safeDiagnosticTool,safeBatchFailures,toolDiagnostics} from './tool-diagnostics.js';
 // Private returned-output audit. Prompts, tool read results and exception bodies never enter this API.
+const DIAGNOSTIC_STATUS=Object.fromEntries(('unknown ready ok empty partial metadata_only pending deferred forbidden permission_denied access_denied channel_scope_denied forbidden_source cancelled aborted invalid_request invalid_tool_call invalid_completion invalid_result failed unavailable not_configured provider_unavailable request_timeout tool_failed team_request_required tool_result_error quota_exhausted budget_exhausted quota_state_unavailable reconciliation_deferred conflict stale not_found read_required context_limit unsupported_content result_too_large duplicate_call_skipped completed already_succeeded success succeeded applied started preflight_failed invalid_batch incomplete_batch call_limit audit_unavailable round_limit').split(' ').map(x=>[x,true]));
+const TOOL_COUNT_KEYS=new Set('sequence requested created existing updated unchanged failed unattempted inputs handled remaining calls miroDeferred miroDeferredBoards messages'.split(' '));
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SECRET_KEY=/(?:password|passwd|secret|credential|authorization|cookie|api.?key|access.?token|refresh.?token|private.?key|service.?role|client.?secret|token|^key$)/i;
 const MAX_OUTPUT=512*1024;
@@ -68,7 +71,7 @@ export function createAuditLogger({env=process.env,fetchImpl=globalThis.fetch,no
  const timeout=Math.max(250,Math.min(10000,Number(env.MODEL_AUDIT_TIMEOUT_MS)||3000));
  const secrets=secretsFrom(env),sanitize=serializer(secrets),calls=new Map();
  const metadata=(value,max)=>{const clean=safeName(value,max);return clean&&!secrets.some(secret=>clean.includes(secret))?clean:null;};
- const diagnostic=operation=>{try{writeDiagnostic({event:'model_audit_persistence_failed',operation});}catch{/* Diagnostics cannot leak or interrupt callers. */}};
+ const diagnostic=operation=>{try{void Promise.resolve(writeDiagnostic({event:'model_audit_persistence_failed',operation})).catch(()=>{});}catch{/* Diagnostics cannot leak or interrupt callers. */}};
  async function rpc(name,payload){
   if(!configured){if(required)diagnostic(name);return {status:required?'unavailable':'not_configured'};}
   const controller=new AbortController();let timer,reader;
@@ -101,10 +104,22 @@ export function createAuditLogger({env=process.env,fetchImpl=globalThis.fetch,no
     estimatedCostUsd:pricing?.estimatedCostUsd??null,pricingBasis:pricing?.pricingBasis??null,serviceTier:metadata(serviceTier,64)??identity.serviceTier});
    if(result.status==='ready')identity.finished=true;return result;
   },
-  async recordEvent({eventId,context,kind,tool,status,durationMs,counts}={}){
-   const c=contextValue(context);if(!UUID.test(eventId)||!c||!['run_started','run_finished','tool_started','tool_finished'].includes(kind)||!metadata(status,64)||tool!==undefined&&!metadata(tool,160))return {status:'unavailable'};
-   const safeCounts={};if(counts&&typeof counts==='object')for(const [k,v]of Object.entries(counts).slice(0,32))if(/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/.test(k)&&!SECRET_KEY.test(k)&&Number.isSafeInteger(v)&&v>=0&&v<=1e9)safeCounts[k]=v;
-   return rpc('agent_audit_record_event',{eventId,...c,kind,tool:tool??null,status,durationMs:token(durationMs),counts:safeCounts});
+  async recordEvent({eventId,context,kind,tool,status,durationMs,counts,diagnostics}={}){
+   const c=contextValue(context);if(!UUID.test(eventId)||!c||!['run_started','run_finished','tool_started','tool_finished'].includes(kind)||!diagnostics&&(!metadata(status,64)||tool!==undefined&&!metadata(tool,160)))return {status:'unavailable'};
+   const encoded=diagnostics?diagnosticCounts(diagnostics):{};
+   const safeCounts={...encoded};if(counts&&typeof counts==='object')for(const [k,v]of Object.entries(counts).slice(0,32-Object.keys(encoded).length))if((!diagnostics||TOOL_COUNT_KEYS.has(k))&&/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/.test(k)&&!SECRET_KEY.test(k)&&Number.isSafeInteger(v)&&v>=0&&v<=1e9)if(!Object.hasOwn(encoded,k))safeCounts[k]=v;
+   const safeTool=diagnostics&&tool!==undefined?safeDiagnosticTool(tool):tool;
+   if(['tool_finished','run_finished'].includes(kind)&&diagnostics){
+    const label=(dictionary,code)=>Object.keys(dictionary).find(name=>dictionary[name]===code)||'unknown';
+    const safeStatus=Object.hasOwn(DIAGNOSTIC_STATUS,status)||Object.hasOwn(DIAGNOSTIC_CODES.reason,status)?status:'unknown';
+    try{void Promise.resolve(writeDiagnostic({event:kind==='tool_finished'?'agent_tool_diagnostic':'agent_run_diagnostic',eventId,...c,...(kind==='tool_finished'?{tool:safeTool}:{}),...encoded,status:safeStatus,
+      reason:label(DIAGNOSTIC_CODES.reason,encoded.reasonCode),stage:label(DIAGNOSTIC_CODES.stage,encoded.stageCode),outcome:label(DIAGNOSTIC_CODES.outcome,encoded.outcomeCode),durationMs:token(durationMs)})).catch(()=>{});}catch{/* Log outages never change tool execution. */}
+   }
+   if(kind==='tool_finished'&&diagnostics)for(const item of safeBatchFailures(diagnostics.batchFailures)){
+    const itemCodes=diagnosticCounts(toolDiagnostics({result:{status:item.status,diagnostics:item},dispatched:item.dispatched===1}));
+    try{void Promise.resolve(writeDiagnostic({event:'agent_tool_batch_item_diagnostic',eventId,...c,tool:safeTool,itemIndex:item.itemIndex,status:item.status,stage:item.stage,reason:item.reason,...itemCodes})).catch(()=>{});}catch{/* One diagnostic sink failure must not skip other rows. */}
+   }
+   return rpc('agent_audit_record_event',{eventId,...c,kind,tool:safeTool??null,status:diagnostics?(Object.hasOwn(DIAGNOSTIC_STATUS,status)||Object.hasOwn(DIAGNOSTIC_CODES.reason,status)?status:'unknown'):status,durationMs:token(durationMs),counts:safeCounts});
   },
   prune(){return rpc('agent_audit_prune',{});},
  });

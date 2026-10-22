@@ -5,6 +5,7 @@ import { readConfig } from './config.js';
 import { createProvider } from './providers/index.js';
 import { createAuditLogger } from './model-audit.js';
 import { createChatRunner } from './chat-runner.js';
+import {avatarProxyPath} from './map/avatars.js';
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
@@ -25,13 +26,14 @@ export function developmentAuth(c, config) {
   try {
     const localHosts = ['localhost', '127.0.0.1', '[::1]'];
     const requestUrl = new URL(c.req.url);
+    if(/^\/api\/map\/people\/[^/]+\/avatar$/.test(requestUrl.pathname)&&c.req.header('sec-fetch-site')==='cross-site')return null;
     if (!localHosts.includes(requestUrl.hostname)) return null;
     const host = c.req.header('host');
     if (host && !localHosts.includes(new URL(`http://${host}`).hostname)) return null;
     const originHeader = c.req.header('origin');
     // Same-origin GET fetches generally omit Origin. Only the exact read-only
     // routes below receive this exemption; mutation requests still require Origin.
-    if (!originHeader && c.req.method === 'GET' && ['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname)) {
+    if (!originHeader && c.req.method === 'GET' && (['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname) || (!requestUrl.search && /^\/api\/map\/people\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\/avatar$/.test(requestUrl.pathname)))) {
       return { id: 'local-development', allowedSourceIds: [...config.allowedSourceIds], isAdmin: config.devAdminEnabled === true,
         ...(config.devLiveDiscordEnabled && /^[0-9]{1,20}$/.test(config.discordGuildId) ? { liveDiscord: { mode: 'local-operator', guildId: config.discordGuildId } } : {}),
         ...(config.devGoogleEnabled ? { googleAccess: true } : {}) };
@@ -87,9 +89,9 @@ async function readConversation(request, timeoutMs) {
   return { messages, buildingId: value.buildingId, timeZone };
 }
 
-export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, auth = developmentAuth, now = () => new Date() } = {}) {
+export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, attioTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, mapAvatarService = null, auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
-  const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,now});
+  const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,now});
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
   app.get('/healthz', c => c.json({ ok: true, service: 'tech-nyu-api' }));
   app.get('/api/status', async c => {
@@ -100,12 +102,29 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
       discord: { configured: Boolean(discordStore.configured), syncConfigured: Boolean(discordConfig.configured),
         liveConfigured: liveDiscordService?.configured === true, liveAllowed: Boolean(principal?.liveDiscord), retrieval: 'live_only' },
       miro: {configured: miroTools?.configured === true, retrieval: 'live_read_only'},
+      attio: {configured:attioTools?.configured === true},
       google: { ...(googleClient?.status?.() || { configured: false, oauthVerified: false, status: 'not_configured' }), allowed: principal?.googleAccess === true },
       access: { mode: config.production ? 'members_required' : 'local_development', allowed: Boolean(principal), admin: principal?.isAdmin === true } });
   });
   const authorize = async c => { try { return await auth(c, config); } catch { return null; } };
   const apiError = (c, code, status) => c.json({ status: code, error: { message: errorMessages[code] || 'This operation is unavailable.' } }, status);
-  const resultStatus = status => ({ forbidden: 403, forbidden_source:403, invalid_request: 400, invalid:400, conflict:409, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429 })[status] || 200;
+  const resultStatus = status => ({ forbidden: 403, forbidden_source:403, invalid_request: 400, invalid:400, conflict:409, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429, timeout:504, not_found:404, reauthorization_required:401, permission_denied:403, invalid_response:502, response_too_large:502, read_required:409 })[status] || 200;
+  app.get('/api/map/people/:personId/avatar', async c => {
+    c.header('cache-control', 'private, no-store');
+    c.header('x-content-type-options', 'nosniff');
+    const principal=await authorize(c);
+    if(!principal?.id||!Array.isArray(principal.allowedSourceIds))return apiError(c,'access_denied',403);
+    const url=new URL(c.req.url),personId=c.req.param('personId');
+    if(url.search||url.pathname!==avatarProxyPath(personId)||mapAvatarService?.configured!==true||!mapAvatarService?.read)return c.json({status:'not_found'},404);
+    try {
+      const result=await mapAvatarService.read({personId,principal,signal:c.req.raw.signal});
+      if(result?.status==='ok'&&result.contentType==='image/png'&&result.bytes instanceof Uint8Array) {
+        c.header('content-type','image/png');c.header('content-disposition','inline');
+        return c.body(result.bytes,200);
+      }
+      return c.json({status:result?.status==='unavailable'?'unavailable':'not_found'},result?.status==='unavailable'?503:404);
+    } catch {return c.json({status:'unavailable'},503);}
+  });
   app.get('/api/map/presence', async c => {
     c.header('cache-control', 'no-store');
     c.header('x-content-type-options', 'nosniff');
@@ -121,7 +140,7 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     const principal = await authorize(c);
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return apiError(c, 'access_denied', 403);
     c.header('cache-control', 'no-store');
-    return c.json({ tools: [...(liveDiscordTools?.tools || []), ...(googleTools?.tools || []), ...(miroTools?.tools || []), ...(bugReportTools?.tools || []), ...(memoryTools?.tools || []), ...(mapTools?.tools || [])], policy: { discord: 'live_only' } });
+    return c.json({ tools: [...(liveDiscordTools?.tools || []), ...(googleTools?.tools || []), ...(miroTools?.tools || []), ...(attioTools?.tools || []), ...(bugReportTools?.tools || []), ...(memoryTools?.tools || []), ...(mapTools?.tools || [])], policy: { discord: 'live_only' } });
   });
   app.get('/api/admin/discord', async c => {
     const principal = await authorize(c);
@@ -147,7 +166,7 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     let value;
     try { value = await readJSON(c.req.raw, config.timeoutMs, 8192); } catch { return apiError(c, 'invalid_request', 400); }
     const name = c.req.param('tool').replaceAll('-', '_');
-    const adapter = liveDiscordTools?.tools?.some(tool => tool.name === name) ? liveDiscordTools : googleTools?.tools?.some(tool => tool.name === name) ? googleTools : miroTools?.tools?.some(tool => tool.name === name) ? miroTools : mapTools?.tools?.some(tool => tool.name === name) ? mapTools : null;
+    const adapter = liveDiscordTools?.tools?.some(tool => tool.name === name) ? liveDiscordTools : googleTools?.tools?.some(tool => tool.name === name) ? googleTools : miroTools?.tools?.some(tool => tool.name === name) ? miroTools : attioTools?.tools?.some(tool => tool.name === name) ? attioTools : mapTools?.tools?.some(tool => tool.name === name) ? mapTools : null;
     if (!adapter) return apiError(c, 'not_configured', 503);
     const timeContext = createTimeContext({now:now()});
     const result = await adapter.execute({ name, arguments: value, principal, signal: c.req.raw.signal, timeContext,

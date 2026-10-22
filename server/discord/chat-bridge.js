@@ -1,5 +1,7 @@
 import {createHash,timingSafeEqual} from 'node:crypto';
 import {request as httpRequest} from 'node:http';
+import {normalizeAttachments} from '../chat-attachments.js';
+import {validateDiscordRecentContext} from '../chat-discord-context.js';
 
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const hash = value => createHash('sha256').update(value).digest();
@@ -61,8 +63,27 @@ export function createDiscordChatBridge({enabled=false,secret='',access,runner,c
         threadId:approved.threadId,requestId:value.requestId,sourceProfileId:approved.sourceProfileId};
       const context=contextLoader?await bounded(()=>contextLoader.load({guildId:value.guildId,channelId:value.channelId,
         requestId:value.requestId,actorId:approved.actor.userId,principal:approved.principal,signal}),signal):{};
+      // Bytes never join server/system context, transport history or metadata.
+      // Only this request's final user message receives normalized image inputs.
+      const {imageAttachments,...sourceContext}=context;
+      let modelConversation=conversation;
+      if(imageAttachments!==undefined) {
+        const attachments=normalizeAttachments(imageAttachments);
+        const imageContext=validateDiscordRecentContext(sourceContext.discordContext,requestContext)?.imageContext;
+        const ready=imageContext?.images.filter(row=>row.status==='ready')||[];
+        if(attachments.length!==ready.length||attachments.some((file,index)=>!['image/png','image/jpeg','image/webp'].includes(file.mimeType)||file.name!==ready[index].name))throw new Error('invalid_image_context');
+        if(attachments.length) {
+          // Channel audience ACLs can change while CDN downloads are pending.
+          // Rebuild the audience-bound profile before any model sees bytes.
+          let beforeInference;
+          try{beforeInference=await bounded(()=>access.authorize({...value,signal}),signal);}catch{return error('access_changed',409);}
+          if(beforeInference.sourceProfileId!==approved.sourceProfileId)return error('access_changed',409);
+          modelConversation={...conversation,messages:conversation.messages.map((message,index)=>index===conversation.messages.length-1?{...message,attachments}:{...message})};
+        }
+      }
       const records=[];let length=0;
-      await bounded(()=>runner.run({conversation,principal:approved.principal,requestContext,...context,signal,
+      await bounded(()=>runner.run({conversation:modelConversation,principal:approved.principal,requestContext,
+        discordContext:sourceContext.discordContext,discordUsers:sourceContext.discordUsers,signal,
         onRecord:record=>{if(signal.aborted)return;length+=JSON.stringify(record).length;if(length>200000)throw new Error('response_too_large');records.push(record);}}),signal);
       // A policy/catalogue change during inference prevents publication.
       let latest;try{latest=await bounded(()=>access.authorize({...value,signal}),signal);}catch{return error('access_changed',409);}

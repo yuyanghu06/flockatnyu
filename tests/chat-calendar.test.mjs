@@ -12,8 +12,8 @@ const event = { eventId: 'meeting_123', title: 'Club meeting', description: 'Age
   location: 'Club room', url: 'https://calendar.google.com/calendar/event?eid=synthetic', partial: true };
 function fixture({ status = 'ready', nextPageToken = 'second-page', events = [event] } = {}) {
   const calls = [];
-  const read = async args => { calls.push(args); return { status, events, nextPageToken,
-    coverage: { complete: !nextPageToken, windowOnly: true } }; };
+  const read = async args => { calls.push(args); const next=args.pageToken?null:nextPageToken; return { status, events:args.pageToken?[]:events, nextPageToken:next,
+    coverage: { complete: !next, windowOnly: true } }; };
   const tools = createChatCalendarTools({ client: { configured: true, calendarId: 'club@example.com',
     listEvents: read, readEvent: read, upsertEvent: () => assert.fail('chat write'), cancelEvent: () => assert.fail('chat cancellation') } });
   return { tools, calls };
@@ -47,17 +47,18 @@ test('Calendar content, links and pagination survive the actual chat planning an
   const provider = { planTools: async ({ system, tools: definitions }) => {
     assert(definitions.some(tool => tool.name === 'list_calendar_events'));
     if (round++ === 0) return [{ name: 'list_calendar_events', arguments: window }];
-    assert(system.includes('second-page'));
+    assert(!system.includes('second-page'));
     assert(system.includes(event.description));
-    return [{ name: 'list_calendar_events', arguments: { ...window, pageToken: 'second-page' } }];
+    return [];
   } };
   const context = await retrieveAssistantContext({ messages: [{ role: 'user', content: 'What is on today?' }],
     principal, provider, googleTools: tools, now: '2026-10-18T16:00:00Z', timeZone: 'America/New_York' });
   assert.equal(calls.length, 2); assert.equal(calls[1].pageToken, 'second-page');
   const result = context.results[0];
   assert.deepEqual(result.calendarContext.events[0], event);
-  assert.equal(result.calendarContext.nextPageToken, 'second-page');
-  assert.equal(result.coverage.complete, false);
+  assert.equal(result.calendarContext.nextPageToken, undefined);
+  assert.equal(result.coverage.complete, false,'selected source excerpts remain partial independently of full window traversal');
+  assert.equal(result.calendarContext.windowComplete, true);
   assert.equal(context.sources[0].url, event.url);
   const prompt = assistantAnswerPrompt({ ...context, now: '2026-10-18T16:00:00Z', timeZone: 'America/New_York' });
   assert(prompt.includes(event.start.dateTime)); assert(prompt.includes(event.location));

@@ -1,4 +1,5 @@
 import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {mapAvatarProxy} from './avatars.js';
 // Trusted normalized-event storage. Browser projections live in presence.js.
 import {randomUUID} from 'node:crypto';
 import {EVENT_TYPE_CODES} from './contracts.js';
@@ -7,15 +8,33 @@ export const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]
 export const text = (value,max,min=0) => typeof value === 'string' && [...value].length >= min && [...value].length <= max;
 export const buildingId = value => text(value,120,1) && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value);
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+const snapshotFailures=new Set(['invalid_event_snapshot','invalid_event_types','invalid_event_type_reference','event_snapshot_too_large','duplicate_event_snapshot','invalid_event_building','invalid_event_write_response']);
+const localFailures=new Set(['invalid_observation_time','invalid_provider_identity','invalid_provider']);
+class MapDiagnosticError extends Error {
+  constructor(message,stage,reason,httpStatus) {
+    super(message);
+    this.diagnostics=Object.freeze({stage,reason,...(Number.isInteger(httpStatus)&&httpStatus>=100&&httpStatus<=599?{httpStatus}:{})});
+  }
+}
+function mapFailureDiagnostics(error,signal) {
+  if(signal?.aborted)return {stage:'execution',reason:'aborted'};
+  if(error instanceof MapDiagnosticError)return error.diagnostics;
+  if(snapshotFailures.has(error?.message))return {stage:'response_parse',reason:'invalid_response'};
+  if(localFailures.has(error?.message))return {stage:'local_validation',reason:'invalid_request'};
+  if(error?.message==='map_work_cancelled')return {stage:'execution',reason:'timeout'};
+  return {stage:'execution',reason:'exception'};
+}
+
 export function safeHttps(value) {
   if (!text(value,2048,1) || /[\s\x00-\x1f\x7f]/u.test(value)) return null;
   try { const u=new URL(value); return u.protocol==='https:' && !u.username && !u.password ? u.href : null; } catch { return null; }
 }
-export function safeAvatar(value) {
+export function safeAvatar(value,personId) {
+  const proxy=mapAvatarProxy(value,personId);if(proxy)return proxy;
   if (!text(value,2048,1) || !/^\/assets\/avatars\/[^/?#\\\s]+\.png$/.test(value)) return null;
   try { const file=decodeURIComponent(value.slice(16)); return file && !/[\/\\\x00-\x1f\x7f]/.test(file) && file!=='..' ? value : null; } catch { return null; }
 }
-export const safePerson = person => ({id:person.id,display_name:person.display_name,avatar_url:safeAvatar(person.avatar_url),is_trackable:true});
+export const safePerson = person => ({id:person.id,display_name:person.display_name,avatar_url:safeAvatar(person.avatar_url,person.id),is_trackable:true});
 export function timestamp(value) {
   if (typeof value!=='string' || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,6})?(?:Z|[+-](?:0\d|1[0-5]):[0-5]\d)$/.test(value) || !calendarDate(value.slice(0,10))) return null;
   const at=Date.parse(value); return Number.isFinite(at) ? at : null;
@@ -85,29 +104,53 @@ export function validateSnapshot(data) {
   return data;
 }
 export async function boundedWork(work, signal, timeoutMs=SOURCE_TOOL_TIMEOUT_MS) {
-  if(signal?.aborted)throw Error('map_work_cancelled');
+  if(signal?.aborted)throw new MapDiagnosticError('map_work_cancelled','execution','aborted');
   const controller=new AbortController(),abort=()=>controller.abort();
   let listener;
-  const cancelled=new Promise((_,reject)=>{listener=()=>reject(Error('map_work_cancelled'));controller.signal.addEventListener('abort',listener,{once:true});});
+  const cancelled=new Promise((_,reject)=>{listener=()=>reject(new MapDiagnosticError('map_work_cancelled','execution',signal?.aborted?'aborted':'timeout'));controller.signal.addEventListener('abort',listener,{once:true});});
   signal?.addEventListener('abort',abort,{once:true});
   const timer=setTimeout(abort,Number.isFinite(timeoutMs)?Math.min(SOURCE_TOOL_TIMEOUT_MS,Math.max(50,timeoutMs)):SOURCE_TOOL_TIMEOUT_MS);
-  try { if(signal?.aborted)abort();return await Promise.race([Promise.resolve().then(()=>{if(controller.signal.aborted)throw Error('map_work_cancelled');return work(controller.signal);}),cancelled]); }
+  try { if(signal?.aborted)abort();return await Promise.race([Promise.resolve().then(()=>{if(controller.signal.aborted)throw new MapDiagnosticError('map_work_cancelled','execution',signal?.aborted?'aborted':'timeout');return work(controller.signal);}),cancelled]); }
   finally {clearTimeout(timer);signal?.removeEventListener('abort',abort);controller.signal.removeEventListener('abort',listener);controller.abort();}
 }
 async function boundedJson(response, signal) {
   const max=16777216;
-  if(!response.body || Number(response.headers.get('content-length'))>max) {await response.body?.cancel().catch(()=>{});throw Error('event_request_failed');}
+  if(!response.body || Number(response.headers.get('content-length'))>max) {
+    await response.body?.cancel().catch(()=>{});
+    throw new MapDiagnosticError('event_request_failed','response_parse','invalid_response',response.status);
+  }
   const reader=response.body.getReader(),chunks=[];let size=0;
   const cancel=()=>{void reader.cancel().catch(()=>{});};signal.addEventListener('abort',cancel,{once:true});
-  try {while(true) {if(signal.aborted)throw Error('map_work_cancelled');const {value,done}=await reader.read();if(signal.aborted)throw Error('map_work_cancelled');if(done)break;size+=value.byteLength;if(size>max)throw Error('event_response_too_large');chunks.push(value);}const parsed=JSON.parse(Buffer.concat(chunks).toString('utf8'));if(!response.ok){const error=Error('event_request_failed');if(['40001','23514','23503','23505','22023'].includes(parsed?.code))error.code=parsed.code;throw error;}return parsed;}
-  finally {signal.removeEventListener('abort',cancel);await reader.cancel().catch(()=>{});reader.releaseLock();}
+  try {
+    while(true) {
+      if(signal.aborted)throw Error('map_work_cancelled');
+      const {value,done}=await reader.read();
+      if(signal.aborted)throw Error('map_work_cancelled');
+      if(done)break;size+=value.byteLength;
+      if(size>max)throw new MapDiagnosticError('event_response_too_large','response_parse','invalid_response',response.status);
+      chunks.push(value);
+    }
+    let parsed;
+    try {parsed=JSON.parse(Buffer.concat(chunks).toString('utf8'));}
+    catch {throw new MapDiagnosticError('event_request_failed','response_parse','invalid_response',response.status);}
+    if(!response.ok) {
+      const error=new MapDiagnosticError('event_request_failed','provider_request','http_error',response.status);
+      if(['40001','23514','23503','23505','22023'].includes(parsed?.code))error.code=parsed.code;
+      throw error;
+    }
+    return parsed;
+  } finally {signal.removeEventListener('abort',cancel);await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
+
 export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
   let origin=null;try{const u=new URL(env.SUPABASE_URL);if(u.protocol==='https:'&&!u.username&&!u.password&&!u.search&&!u.hash&&['','/'].includes(u.pathname))origin=u.origin;}catch{}
   const key=env.SUPABASE_SERVICE_ROLE_KEY?.trim(),configured=Boolean(origin&&key);
   const request=(path,body,signal)=>boundedWork(async requestSignal=>{
     if(!configured)throw Error('events_not_configured');
-    return boundedJson(await fetchImpl(`${origin}/rest/v1/${path}`,{method:body===undefined?'GET':'POST',headers:{apikey:key,Authorization:`Bearer ${key}`,'content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)}),redirect:'error',signal:requestSignal}),requestSignal);
+    let response;
+    try {response=await fetchImpl(`${origin}/rest/v1/${path}`,{method:body===undefined?'GET':'POST',headers:{apikey:key,Authorization:`Bearer ${key}`,'content-type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)}),redirect:'error',signal:requestSignal});}
+    catch {throw new MapDiagnosticError('event_request_failed','provider_request',requestSignal.aborted?'aborted':'exception');}
+    return boundedJson(response,requestSignal);
   },signal,timeoutMs);
   return Object.freeze({configured,
     async read({observedAt,signal}={}) {if(timestamp(observedAt)===null)throw Error('invalid_observation_time');return validateSnapshot(await request('rpc/map_read_events',{p_at:observedAt},signal));},
@@ -140,12 +183,26 @@ const safeEventType=({code,name,description,icon_key,sort_order})=>({code,name,d
 const personKeys=new Set(['event_id','person_id','attendance_status','presence_basis','label','starts_at','ends_at','source_id','source_url','reported_at']);
 const buildingKeys=new Set(['event_id','building_id','location_notes']);
 const onlyKeys=(row,keys)=>object(row)&&Object.keys(row).every(key=>keys.has(key));
+// Keep provider checks bounded without allocating an in-flight promise per row.
+// Indexed results preserve snapshot ordering even when checks finish out of order.
+async function readChecks(rows,check,signal) {
+  const results=new Array(rows.length);let next=0;
+  if(signal.aborted)throw Error('map_work_cancelled');
+  await Promise.all(Array.from({length:Math.min(4,rows.length)},async()=>{
+    while(next<rows.length) {
+      if(signal.aborted)throw Error('map_work_cancelled');
+      const index=next++;results[index]=await check(rows[index]);
+      if(signal.aborted)throw Error('map_work_cancelled');
+    }
+  }));
+  return results;
+}
 export function createMapEventService({store=createMapEventStore(),authorizeSource=null,now=()=>new Date(),timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
   const allowed=(principal,row,signal)=>authorizeProvenance({principal,sourceId:row.source_id,sourceUrl:row.source_url,eventId:row.event_id||row.id,personId:row.person_id,authorizeSource,signal});
   const run=async(args,work)=>{
     if(!principalValid(args?.principal))return {status:'forbidden'};
     if(store?.configured!==true)return {status:'not_configured'};
-    try{return await boundedWork(signal=>work(signal),args.signal,timeoutMs);}catch{return {status:'unavailable'};}
+    try{return await boundedWork(signal=>work(signal),args.signal,timeoutMs);}catch(error){return {status:'unavailable',diagnostics:mapFailureDiagnostics(error,args.signal)};}
   };
   const snapshot=async signal=>validateSnapshot(await store.read({observedAt:new Date(now()).toISOString(),signal}));
   return Object.freeze({configured:store?.configured===true,
@@ -159,12 +216,28 @@ export function createMapEventService({store=createMapEventStore(),authorizeSour
     async read(args={}) {return run(args,async signal=>{
       if((args.eventId!==undefined&&!uuid(args.eventId))||(args.sourceId!==undefined&&!uuid(args.sourceId))||(args.sourceRecordId!==undefined&&!text(args.sourceRecordId,200,1)))return {status:'invalid'};
       const data=await snapshot(signal),events=[],event_people=[],event_buildings=[];
-      for(const event of data.events) {
-        if(!validEvent(event)||(args.eventId&&event.id!==args.eventId)||(args.sourceId&&event.source_id!==args.sourceId)||(args.sourceRecordId&&event.source_record_id!==args.sourceRecordId)||!await allowed(args.principal,event,signal))continue;
-        events.push(Object.fromEntries([...eventKeys,'created_at','updated_at'].filter(k=>k in event).map(k=>[k,event[k]])));
-        event_buildings.push(...data.event_buildings.filter(x=>x.event_id===event.id&&buildingId(x.building_id)&&text(x.location_notes,500)).map(({event_id,building_id,location_notes})=>({event_id,building_id,location_notes})));
-        for(const p of data.event_people.filter(x=>x.event_id===event.id))if(validParticipation(p,event)&&await allowed(args.principal,p,signal))event_people.push(Object.fromEntries([...personKeys,'created_at','updated_at'].filter(k=>k in p).map(k=>[k,p[k]])));
+      const readAuthorizer=typeof authorizeSource?.createReadScope==='function'?authorizeSource.createReadScope({principal:args.principal,snapshot:data,signal}):authorizeSource;
+      const readAllowed=row=>authorizeProvenance({principal:args.principal,sourceId:row.source_id,sourceUrl:row.source_url,eventId:row.event_id||row.id,personId:row.person_id,authorizeSource:readAuthorizer,signal});
+      const buildingsByEvent=new Map(),peopleByEvent=new Map();
+      for(const row of data.event_buildings) {
+        if(!buildingsByEvent.has(row.event_id))buildingsByEvent.set(row.event_id,[]);
+        buildingsByEvent.get(row.event_id).push(row);
       }
+      for(const row of data.event_people) {
+        if(!peopleByEvent.has(row.event_id))peopleByEvent.set(row.event_id,[]);
+        peopleByEvent.get(row.event_id).push(row);
+      }
+      const candidates=data.events.filter(event=>validEvent(event)&&(!args.eventId||event.id===args.eventId)&&(!args.sourceId||event.source_id===args.sourceId)&&(!args.sourceRecordId||event.source_record_id===args.sourceRecordId));
+      const eventPermissions=await readChecks(candidates,readAllowed,signal),participants=[];
+      for(let index=0;index<candidates.length;index++) {
+        if(!eventPermissions[index])continue;
+        const event=candidates[index];
+        events.push(Object.fromEntries([...eventKeys,'created_at','updated_at'].filter(k=>k in event).map(k=>[k,event[k]])));
+        event_buildings.push(...(buildingsByEvent.get(event.id)??[]).filter(x=>buildingId(x.building_id)&&text(x.location_notes,500)).map(({event_id,building_id,location_notes})=>({event_id,building_id,location_notes})));
+        participants.push(...(peopleByEvent.get(event.id)??[]).filter(p=>validParticipation(p,event)));
+      }
+      const participantPermissions=await readChecks(participants,readAllowed,signal);
+      for(let index=0;index<participants.length;index++)if(participantPermissions[index])event_people.push(Object.fromEntries([...personKeys,'created_at','updated_at'].filter(k=>k in participants[index]).map(k=>[k,participants[index][k]])));
       const personIds=new Set(event_people.map(x=>x.person_id));
       return {status:'ok',events,event_buildings,event_people,event_types:data.event_types.map(safeEventType),buildings:data.buildings.map(({id,name})=>({id,name})),people:data.people.filter(p=>personIds.has(p.id)&&uuid(p.id)&&p.is_trackable===true&&text(p.display_name,200,1)).map(safePerson)};
     });},

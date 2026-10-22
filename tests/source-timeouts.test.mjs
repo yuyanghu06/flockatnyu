@@ -74,7 +74,7 @@ test('map source checks stop at 60s and return no partially authorized snapshot'
   const advance=clock(t);let child;
   const service=createMapEventService({store:{configured:true,read:async()=>snapshot()},now:()=>new Date(at),authorizeSource:async({signal})=>{child=signal;return new Promise(()=>{});}});
   const state=observe(service.read({principal}));await flush();await advance(59999);assert.equal(state.done,false);
-  await advance(1);await state.promise;assert.equal(child.aborted,true);assert.deepEqual(state.value,{status:'unavailable'});
+  await advance(1);await state.promise;assert.equal(child.aborted,true);assert.deepEqual(state.value,{status:'unavailable',diagnostics:{stage:'execution',reason:'timeout'}});
 });
 
 const transports=[

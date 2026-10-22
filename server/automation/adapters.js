@@ -86,12 +86,12 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   const observed=new Map(), batchInputs=new Map(), linkedIdentities=new Map();
   const calendarOccurrences=new Map(), projected=new Set(), pendingCalendarReads=new Set(), unprojectableCalendar=new Set();
   const cancellationIntents=new Set(), fixedBuildings=new Map();
-  const calendarWindows=new Map();
+  const calendarWindows=new Map(),observedMapScopes=[],observedMapSnapshots=new Map(),invalidatedMapState=new Map();
   const knownCalendarEvents=new Map();
   const deferredMiro=new Map();
-  let prepared=false,reconciliationWindow,windowComplete=false,nextCalendarPage,catalogueRead=false;
+  let prepared=false,reconciliationWindow,windowComplete=false,catalogueRead=false;
   const cleanupBatch=()=>{prepared=false;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();fragments.clear();
-    calendarOccurrences.clear();projected.clear();pendingCalendarReads.clear();unprojectableCalendar.clear();cancellationIntents.clear();fixedBuildings.clear();calendarWindows.clear();knownCalendarEvents.clear();deferredMiro.clear();reconciliationWindow=undefined;windowComplete=false;nextCalendarPage=undefined;catalogueRead=false;};
+    calendarOccurrences.clear();projected.clear();pendingCalendarReads.clear();unprojectableCalendar.clear();cancellationIntents.clear();fixedBuildings.clear();calendarWindows.clear();observedMapScopes.length=0;observedMapSnapshots.clear();invalidatedMapState.clear();knownCalendarEvents.clear();deferredMiro.clear();reconciliationWindow=undefined;windowComplete=false;catalogueRead=false;};
   function rememberDiscord(source) {
     if(source.guildId!==discordConfig.guildId||!snowflake(source.channelId)||!snowflake(source.messageId)
       ||!validUuid(source.sourceId)||!allowedSourceIds.includes(source.sourceId)
@@ -195,7 +195,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       calendarMap:{configured:calendarMapConfigured,...(calendarMapConfigured?{sourceId:calendarSourceId}:{}),
         notice:'Calendar map provenance requires the configured source UUID in the shared allowlist. Otherwise defer Calendar-to-map writes; never borrow a Miro, Gmail or Discord source UUID.'},
       reconciliationWindow:{timeMin:new Date(clock-86400000).toISOString(),timeMax:new Date(clock+8*86400000).toISOString(),
-        notice:'Bounded rolling window covering active overlaps and the upcoming week. List every page in this exact window after Miro reconciliation; additional concretely supported event windows may be read separately.'},
+        notice:'Bounded rolling window covering active overlaps and the upcoming week. Backend pagination reads this window after Miro reconciliation. If partial, narrow to contiguous unfiltered full-mode subwindows covering it; incomplete reads never establish absence.'},
       miro:{boards:[],coverage:{complete:false,
       reason:'live_mcp_context_per_authorized_board',notice:'Fresh bounded board navigation only. Search relevant content, then read canvas items or native table rows. Follow continuations; this is not a full-board scan or evidence of event absence.'}}};
     reconciliationWindow={timeMin:context.reconciliationWindow.timeMin,timeMax:context.reconciliationWindow.timeMax};
@@ -360,21 +360,55 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     return event.time_kind==='timed'&&sameInstant(event.starts_at,original.start?.dateTime)&&sameInstant(event.ends_at,original.end?.dateTime);
   }
   function rememberProjection(event,buildings) {
-    if(catalogueRead&&matchesCalendarProjection(event,calendarOccurrences.get(event.source_record_id),buildings))projected.add(event.source_record_id);
+    if(catalogueRead&&!invalidatedMapState.has(event.source_record_id)&&matchesCalendarProjection(event,calendarOccurrences.get(event.source_record_id),buildings))projected.add(event.source_record_id);
   }
+  const calendarWindowKey=args=>canonicalJson([Date.parse(args.timeMin),Date.parse(args.timeMax),args.query??null,args.resultMode||'full',args.limit??5]);
+  function refreshWindowCoverage() {
+    let covered=Date.parse(reconciliationWindow.timeMin),end=Date.parse(reconciliationWindow.timeMax);
+    const windows=[...calendarWindows.values()].filter(window=>window.complete&&window.query===undefined&&window.resultMode==='full')
+      .sort((a,b)=>a.from-b.from);
+    for(const window of windows) {
+      if(window.from>covered)break;
+      if(window.to>covered)covered=window.to;
+      if(covered>=end)break;
+    }
+    windowComplete=covered>=end;
+  }
+  const mapStateObserved=event=>!invalidatedMapState.has(event.eventId)&&(observedMapSnapshots.has(event.eventId)||observedMapScopes.some(scope=>
+    !scope.eventId&&(!scope.sourceId||scope.sourceId===calendarSourceId)&&(!scope.sourceRecordId||scope.sourceRecordId===event.eventId)));
+  const requiredProjection=event=>({name:event.title,kind:'scheduled_event',source_id:calendarSourceId,source_record_id:event.eventId,source_url:event.url,
+    reported_at:event.updatedAt||event.createdAt||null,time_zone:event.start?.timeZone||config.timezone,location:event.location,start:event.start,end:event.end});
   async function validateCompletion({principal:actor,signal}={}) {
     if(!prepared||actor!==principal||signal?.aborted)return {status:'pending',reason:'batch_not_prepared'};
     const deferred=deferredMiro.size?{miroReconciliation:{status:'deferred',boardIds:[...deferredMiro.keys()],syncComplete:false}}:{};
     if(!calendarMapConfigured)return {status:'ready',...deferred};
     const nextActions=[];
     for(const eventId of pendingCalendarReads)if(nextActions.length<5)nextActions.push({name:'read_calendar_event',arguments:{eventId}});
-    if(!windowComplete&&nextActions.length<5)nextActions.push({name:'list_calendar_events',arguments:{...reconciliationWindow,...(nextCalendarPage?{pageToken:nextCalendarPage}:{})}});
-    for(const [eventId,event] of calendarOccurrences)if(!projected.has(eventId)&&nextActions.length<5)
-      nextActions.push({name:'read_map_events',arguments:{sourceId:calendarSourceId,sourceRecordId:eventId},
-        requiredProjection:{name:event.title,kind:'scheduled_event',source_record_id:eventId,source_url:event.url,reported_at:event.updatedAt||event.createdAt||null,time_zone:event.start?.timeZone||config.timezone,location:event.location,start:event.start,end:event.end}});
-    return windowComplete&&!pendingCalendarReads.size&&!unprojectableCalendar.size&&[...calendarOccurrences.keys()].every(id=>projected.has(id))?{status:'ready',...deferred}:
-      {status:'pending',...deferred,reason:'calendar_projection_incomplete',notice:'finish_batch did not complete. Perform these exact reads, then upsert missing/stale Calendar occurrences as complete scheduled_event map snapshots. Preserve source identity and original timestamps. Irrelevant triggering inputs do not waive this batch work.',nextActions,
-        blockedCount:unprojectableCalendar.size,outstandingCount:pendingCalendarReads.size+unprojectableCalendar.size+[...calendarOccurrences.keys()].filter(id=>!projected.has(id)).length+(windowComplete?0:1)};
+    if(!windowComplete&&nextActions.length<5) {
+      const ranges=[[Date.parse(reconciliationWindow.timeMin),Date.parse(reconciliationWindow.timeMax)]];
+      let examined=0,recommended=0;
+      while(ranges.length&&examined++<100&&nextActions.length<5&&recommended<2) {
+        const [start,end]=ranges.shift();
+        if([...calendarWindows.values()].some(window=>window.complete&&window.query===undefined&&window.resultMode==='full'&&window.from<=start&&window.to>=end))continue;
+        const arguments_={timeMin:new Date(start).toISOString(),timeMax:new Date(end).toISOString()};
+        if(!calendarWindows.has(calendarWindowKey(arguments_))) {
+          nextActions.push({name:'list_calendar_events',arguments:arguments_});recommended++;
+        } else if(end-start>1) {
+          // Split attempted incomplete scans; never ask for the same scan again.
+          const middle=Math.floor((start+end)/2);
+          ranges.push([start,middle],[middle,end]);
+        }
+      }
+    }
+    const outstanding=[...calendarOccurrences.values()].filter(event=>!projected.has(event.eventId));
+    if(outstanding.some(event=>!mapStateObserved(event))&&nextActions.length<5)
+      nextActions.push({name:'read_map_events',arguments:{sourceId:calendarSourceId},notice:'Read all Calendar map records once and reuse the returned complete snapshots for these occurrences.'});
+    for(const event of outstanding)if(mapStateObserved(event)&&nextActions.length<5)
+      nextActions.push({name:'upsert_map_event',requiredProjection:requiredProjection(event),
+        notice:'Map state was already observed. Merge these Calendar facts into that complete snapshot, preserving people/buildings and revision; supply normal validated upsert arguments. This metadata is not a replacement snapshot.'});
+    return windowComplete&&!pendingCalendarReads.size&&!unprojectableCalendar.size&&!outstanding.length?{status:'ready',...deferred}:
+      {status:'pending',...deferred,reason:'calendar_projection_incomplete',notice:'finish_batch did not complete. Reuse observed map state, upsert missing/stale occurrences with complete merged snapshots, and cover any incomplete Calendar window with narrower contiguous unfiltered full-mode reads. Do not repeat an identical incomplete scan. Preserve source identity and original timestamps. Irrelevant triggering inputs do not waive this batch work.',nextActions,
+        blockedCount:unprojectableCalendar.size,outstandingCount:pendingCalendarReads.size+unprojectableCalendar.size+outstanding.length+(windowComplete?0:1)};
   }
   const stripManaged=event=>Object.fromEntries(Object.entries(event).filter(([key,value])=>!['created_at','updated_at'].includes(key)&&value!==null));
   const stripRelation=row=>Object.fromEntries(Object.entries(row).filter(([key,value])=>!['event_id','created_at','updated_at'].includes(key)&&value!==null));
@@ -405,7 +439,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       if(!['ok','ready'].includes(current?.status))return current;
       previous={event:current.events?.find(row=>row.id===args.event.id),people:current.event_people||[],buildings:current.event_buildings||[]};
       if(!previous.event)return {status:'forbidden_source'};
-      if(previous.event.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};
+      if(previous.event.updated_at!==args.expectedUpdatedAt){if(args.event.source_id===calendarSourceId){invalidatedMapState.set(args.event.source_record_id,args.event.id);projected.delete(args.event.source_record_id);}return {status:'conflict'};}
     }
     const eventUnchanged=previous&&canonicalJson(stripManaged(previous.event))===canonicalJson(args.event);
     const orderedBuildings=rows=>rows.map(stripRelation).sort((a,b)=>a.building_id.localeCompare(b.building_id));
@@ -431,7 +465,14 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     if(args.event?.source_id===calendarSourceId&&calendarOccurrences.has(args.event.source_record_id)
       &&!matchesCalendarProjection(args.event,calendarOccurrences.get(args.event.source_record_id),args.buildings))return {status:'forbidden_source'};
     const result=await mapTools.execute({name:'upsert_map_event',arguments:args,principal,signal:context.signal});
-    if(result?.status==='ready')rememberProjection(args.event,args.buildings);
+    if(args.event?.source_id===calendarSourceId) {
+      if(result?.status==='conflict'){invalidatedMapState.set(args.event.source_record_id,args.event.id);projected.delete(args.event.source_record_id);}
+      if(result?.status==='ready') {
+        invalidatedMapState.delete(args.event.source_record_id);
+        observedMapSnapshots.set(args.event.source_record_id,{event:{...structuredClone(args.event),...(result.event_id?{id:result.event_id}:{}),...(result.updated_at?{updated_at:result.updated_at}:{})},buildings:structuredClone(args.buildings||[])});
+        rememberProjection(args.event,args.buildings);
+      }
+    }
     return result;
   }
   const tools=[...miroTools.tools.map(tool=>{
@@ -464,15 +505,6 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     }})),
     ...calendarTools.tools.map(tool=>({...tool,execute:async(args,context)=>{
       if(!requirePrepared(context))return {status:'forbidden'};
-      if(tool.name==='list_calendar_events'&&args.pageToken!==undefined) {
-        const previous=calendarWindows.get(canonicalJson([Date.parse(args.timeMin),Date.parse(args.timeMax)]));
-        if(!previous||previous.complete||previous.nextPageToken!==args.pageToken) {
-          const completion=await validateCompletion({principal,signal:context.signal});
-          return {status:'invalid_request',reason:'unobserved_calendar_page_token',nextPageToken:previous?.nextPageToken??null,
-            notice:'Only the exact nextPageToken returned for this same time window may be used. A null token means no further page was returned; use already observed events for projection. No HTTP request was made.',
-            nextActions:completion.nextActions||[]};
-        }
-      }
       if(tool.readOnly!==true) {
         const scope=observed.get(args.sourceKey);
         if(!scope||scope.sourceUrl!==args.sourceUrl)return {status:'forbidden_source'};
@@ -495,7 +527,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
               if(!existing)return {status:'conflict'};
             }
             const start=Date.parse(args.start?.dateTime||resolveDateBoundary(args.start?.date,{timeZone:config.timezone,now:now().toISOString()}));
-            if(![...calendarWindows.values()].some(window=>window.complete&&start>=window.from&&start<window.to))return {status:'forbidden_source'};
+            if(![...calendarWindows.values()].some(window=>window.complete&&window.query===undefined&&window.resultMode==='full'&&start>=window.from&&start<window.to))return {status:'forbidden_source'};
             // A separately known event cannot be overwritten or duplicated by
             // guessing a new source identity from a title/date or linked board.
             if([...knownCalendarEvents.values()].some(event=>event.sourceUrl!==scope.sourceUrl&&(
@@ -516,25 +548,27 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
           // map deletion or missing-source inference is needed.
           pendingCalendarReads.delete(args.eventId);calendarOccurrences.delete(args.eventId);projected.delete(args.eventId);
         }
-        if(tool.name==='list_calendar_events'&&sameInstant(args.timeMin,reconciliationWindow.timeMin)&&sameInstant(args.timeMax,reconciliationWindow.timeMax)
-          &&(args.pageToken===undefined||args.pageToken===nextCalendarPage)) {
-          nextCalendarPage=result.nextPageToken||undefined;windowComplete=!result.nextPageToken&&result.coverage?.complete!==false;
-        }
       }
-      if(result.status==='ready'&&tool.name==='list_calendar_events') {
-        const from=Date.parse(args.timeMin),to=Date.parse(args.timeMax),key=canonicalJson([from,to]);
-        const prior=calendarWindows.get(key);
-        if(args.pageToken===undefined||args.pageToken===prior?.nextPageToken)calendarWindows.set(key,{from,to,nextPageToken:result.nextPageToken||undefined,complete:!result.nextPageToken&&result.coverage?.complete!==false});
+      if(['ready','partial'].includes(result.status)&&tool.name==='list_calendar_events') {
+        const from=Date.parse(args.timeMin),to=Date.parse(args.timeMax);
+        calendarWindows.set(calendarWindowKey(args),{from,to,query:args.query,resultMode:args.resultMode||'full',
+          complete:result.status==='ready'&&result.coverage?.complete===true});
+        refreshWindowCoverage();
       }
-      if(result.status==='ready'&&tool.readOnly===true)for(const event of result.events||[])if(typeof event?.eventId==='string')knownCalendarEvents.set(event.eventId,structuredClone(event));
-      if(result.status==='ready'&&tool.readOnly===true&&calendarMapConfigured) {
+      if(['ready','partial'].includes(result.status)&&tool.readOnly===true)for(const event of result.events||[])if(typeof event?.eventId==='string'&&(!(tool.name==='list_calendar_events'&&args.resultMode==='identities')||!knownCalendarEvents.has(event.eventId)))knownCalendarEvents.set(event.eventId,structuredClone(event));
+      if(['ready','partial'].includes(result.status)&&tool.readOnly===true&&calendarMapConfigured) {
         result.sources=[];
         for(const event of result.events||[]) {
           if(typeof event.eventId!=='string'||!/^[a-zA-Z0-9_-]{5,200}$/.test(event.eventId)){unprojectableCalendar.add(event.eventId??'invalid_event');continue;}
           const sourceUrl=`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${event.eventId} ${principal.calendarId}`).toString('base64url')}`;
           if(event.url!==sourceUrl)continue;
+          // Identity-only listings cannot supply full projection facts.
+          if(tool.name==='list_calendar_events'&&args.resultMode==='identities')continue;
           if(canonicalJson(calendarOccurrences.get(event.eventId)||null)!==canonicalJson(event))projected.delete(event.eventId);
           calendarOccurrences.set(event.eventId,structuredClone(event));
+          const priorMap=observedMapSnapshots.get(event.eventId);
+          if(priorMap)rememberProjection(priorMap.event,priorMap.buildings);
+          else if(event.status==='cancelled'&&mapStateObserved(event))projected.add(event.eventId);
           if(tool.name==='read_calendar_event'&&args.eventId===event.eventId)pendingCalendarReads.delete(event.eventId);
           observed.set(`calendar:${event.eventId}`,{provider:'calendar',sourceId:calendarSourceId,sourceUrl,eventId:event.eventId});
           result.sources.push({kind:'google_calendar',retrieval:'live',sourceId:calendarSourceId,externalId:event.eventId,url:sourceUrl});
@@ -559,8 +593,23 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       if(tool.name==='read_map_events'&&result?.status==='ready') {
         if(Array.isArray(result.buildings))catalogueRead=true;
         for(const building of result.buildings||[])if(typeof building.id==='string'&&typeof building.name==='string')fixedBuildings.set(building.id,building.name);
-        for(const event of result.events||[])rememberProjection(event,(result.event_buildings||[]).filter(row=>row.event_id===event.id));
-        if(args.sourceId===calendarSourceId&&Array.isArray(result.events)&&result.events.length===0&&calendarOccurrences.get(args.sourceRecordId)?.status==='cancelled')projected.add(args.sourceRecordId);
+        const coversRecord=event=>(!args.eventId||args.eventId===event.id)&&(!args.sourceId||args.sourceId===event.source_id)&&(!args.sourceRecordId||args.sourceRecordId===event.source_record_id);
+        for(const [eventId,snapshot] of observedMapSnapshots)if(coversRecord(snapshot.event)) {
+          observedMapSnapshots.delete(eventId);projected.delete(eventId);
+        }
+        for(const [eventId,event] of calendarOccurrences) {
+          const mapId=invalidatedMapState.get(eventId);
+          if((!args.eventId||args.eventId===mapId)&&(!args.sourceId||args.sourceId===calendarSourceId)&&(!args.sourceRecordId||args.sourceRecordId===eventId)) {
+            invalidatedMapState.delete(eventId);projected.delete(eventId);
+          }
+        }
+        observedMapScopes.push({...args});
+        for(const event of result.events||[]) {
+          const buildings=(result.event_buildings||[]).filter(row=>row.event_id===event.id);
+          if(event.source_id===calendarSourceId)observedMapSnapshots.set(event.source_record_id,{event:structuredClone(event),buildings:structuredClone(buildings)});
+          rememberProjection(event,buildings);
+        }
+        for(const event of calendarOccurrences.values())if(event.status==='cancelled'&&mapStateObserved(event)&&!observedMapSnapshots.has(event.eventId))projected.add(event.eventId);
       }
       return fragments.bound(result);
     }})),

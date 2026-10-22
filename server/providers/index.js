@@ -1,16 +1,23 @@
 import { randomUUID } from 'node:crypto';
 import { AttachmentError, providerChatMessages } from '../chat-attachments.js';
 import { createAuditLogger } from '../model-audit.js';
+import { abortableDelay, retryDelay, transientStatus, transientTransport, untilAborted } from './retry.js';
 export class ProviderError extends Error {
   constructor(code = 'provider_unavailable') { super(code); this.code = code; }
 }
+const responseFailureReasons=new Set(['invalid_json','response_too_large','invalid_response_shape','invalid_tool_shape','too_many_tool_calls','finish_reason_mismatch','malformed_tool_arguments','duplicate_call_id','reused_call_id']);
+const responseFailure=(reason,code='invalid_provider_response')=>{
+  const error=new ProviderError(code);
+  error.diagnostics=Object.freeze({stage:'response_parse',reason:responseFailureReasons.has(reason)?reason:'invalid_response_shape'});
+  return error;
+};
 
 // Incremental SSE parsing tolerates network chunk and CRLF boundaries, but bounds
 // each event. Never return upstream error bodies or credentials to the caller.
 export async function* parseSSE(body, signal) {
   if (!body) throw new ProviderError('invalid_provider_response');
   const reader = body.getReader();
-  const decoder = new TextDecoder();
+  const decoder = new TextDecoder('utf-8', { fatal: true });
   let buffer = '', data = [], event = '', size = 0;
   const abort = () => { void reader.cancel().catch(() => {}); };
   signal?.addEventListener('abort', abort, { once: true });
@@ -19,7 +26,8 @@ export async function* parseSSE(body, signal) {
       if (signal?.aborted) throw new ProviderError('aborted');
       const { value, done } = await reader.read();
       if (signal?.aborted) throw new ProviderError('aborted');
-      buffer += decoder.decode(value, { stream: !done });
+      try { buffer += decoder.decode(value, { stream: !done }); }
+      catch { throw new ProviderError('invalid_provider_response'); }
       if (buffer.length > 262144) throw new ProviderError('invalid_provider_response');
       let newline;
       while ((newline = buffer.indexOf('\n')) !== -1) {
@@ -39,7 +47,7 @@ export async function* parseSSE(body, signal) {
     if (buffer.trim() || data.length) throw new ProviderError('incomplete_provider_response');
   } finally {
     signal?.removeEventListener('abort', abort);
-    await reader.cancel().catch(() => {});
+    await (signal ? untilAborted(reader.cancel(), signal) : reader.cancel()).catch(() => {});
     reader.releaseLock();
   }
 }
@@ -111,7 +119,7 @@ function captureToolDelta(state, index, delta) {
   for (const key of ['id', 'name', 'arguments']) appendOutput(state, key, delta[key], target);
 }
 
-export function createProvider(config, { fetchImpl = fetch, audit = createAuditLogger() } = {}) {
+export function createProvider(config, { fetchImpl = fetch, audit = createAuditLogger(), retrySleep = abortableDelay, writeDiagnostic=entry=>console.warn(JSON.stringify(entry)) } = {}) {
   const newCall = (operation, context, stream = false) => ({
     callId: randomUUID(), operation, context: context || { agent: 'chat', runId: randomUUID() }, stream,
     status: 'cancelled', usage: emptyUsage(), output: {}, responseId: null,
@@ -141,21 +149,73 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       console.warn(JSON.stringify({ event: 'model_audit_finish_failed', callId: state.callId, status: 'unavailable' }));
     }
   };
-  const failCall = (state, error, signal) => {
-    const safe = error instanceof ProviderError ? error : new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
+  const failCall = (state, error, signal, combined) => {
+    const safe = signal?.aborted ? new ProviderError('aborted') : combined?.aborted ? new ProviderError('provider_unavailable')
+      : error instanceof ProviderError ? error : new ProviderError('provider_unavailable');
     state.status = safe.code === 'aborted' ? 'aborted' : 'failed'; state.errorCode = safe.code;
+    if(safe.diagnostics&&responseFailureReasons.has(safe.diagnostics.reason)) {
+      state.output.diagnostics=safe.diagnostics;
+      try {void Promise.resolve(writeDiagnostic({event:'agent_model_failure',diagnosticsVersion:1,
+        agent:state.context?.agent==='planner'?'planner':'chat',runId:typeof state.context?.runId==='string'&&/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(state.context.runId)?state.context.runId:null,round:Number.isInteger(state.context?.round)&&state.context.round>=0&&state.context.round<=10000?state.context.round:null,
+        callId:state.callId,operation:state.operation,status:state.status,errorCode:safe.code,
+        ...safe.diagnostics,...(Number.isInteger(state.httpStatus)?{httpStatus:state.httpStatus}:{})})).catch(()=>{});}catch{/* Diagnostics never change the original model outcome. */}
+    }
     return safe;
   };
   const noteResponse = (state, response) => {
     state.httpStatus = response.status;
     state.providerRequestId = response.headers.get('x-request-id') || response.headers.get('request-id');
   };
+  const budget = signal => {
+    const timeoutMs = config.timeoutMs || 30000;
+    return { combined: AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)].filter(Boolean)), deadline: performance.now() + timeoutMs };
+  };
+  const cancelResponse = async (response, signal) => {
+    try { await untilAborted(response?.body?.cancel(), signal); }
+    catch { /* Discard error bodies; cleanup cannot extend the operation deadline. */ }
+  };
+  const dispatch = async ({ operation, context, body, signal, combined, deadline, stream = false }) => {
+    // One operation owns one fallback run ID, including every rejected attempt.
+    const callContext = context || { agent: 'chat', runId: randomUUID() };
+    const anthropic = config.provider === 'anthropic';
+    const init = { method: 'POST', redirect: 'error', signal: combined,
+      headers: { 'content-type': 'application/json', accept: stream ? 'text/event-stream' : 'application/json',
+        ...(anthropic ? { 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01' } : { authorization: `Bearer ${config.apiKey}` }) },
+      body: JSON.stringify(body) };
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const state = newCall(operation, callContext, stream);
+      await startCall(state);
+      let response, retryable = false, failure;
+      try {
+        if (combined.aborted || performance.now() >= deadline) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
+        // Only this fetch rejection is eligible for transport retries. Parsing,
+        // validation and streaming occur outside this loop and cannot replay.
+        try {
+          response = await untilAborted(fetchImpl(`${config.baseUrl.replace(/\/$/, '')}/${anthropic ? 'messages' : 'chat/completions'}`, init), combined,
+            value => { void cancelResponse(value, combined); });
+        } catch (error) { retryable = transientTransport(error); throw error; }
+        noteResponse(state, response);
+        if (combined.aborted) { await cancelResponse(response, combined); throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable'); }
+        if (response.ok) return { response, auditState: state };
+        retryable = transientStatus(response.status, config.provider);
+        await cancelResponse(response, combined);
+        throw new ProviderError('provider_unavailable');
+      } catch (error) { failure = failCall(state, error, signal, combined); }
+      await finishCall(state);
+      const delay = retryable ? retryDelay(attempt, response?.headers.get('retry-after')) : null;
+      if (signal?.aborted) throw new ProviderError('aborted');
+      if (delay === null || combined.aborted || delay >= deadline - performance.now()) throw failure;
+      try { await untilAborted(retrySleep(delay, combined), combined); }
+      catch { throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable'); }
+      if (combined.aborted || performance.now() >= deadline) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
+    }
+  };
 
   return {
     async toolTurn({messages,system,tools,signal,auditContext}) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic=config.provider==='anthropic';
-      if (!Array.isArray(messages)||!Array.isArray(tools)||tools.length>32||typeof system!=='string') throw new ProviderError('invalid_provider_request');
+      if (!Array.isArray(messages)||!Array.isArray(tools)||tools.length>64||typeof system!=='string') throw new ProviderError('invalid_provider_request');
       const native=[];let pending=new Set();const seen=new Set();
       for(const message of messages) {
         if(message.role==='tool') {
@@ -185,45 +245,45 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
         :{model:config.model,messages:[{role:'system',content:system},...native],tools:definitions,tool_choice:'auto',max_completion_tokens:2048,stream:false,store:false,
           ...(['gpt-6-luna','gpt-6-sol'].includes(config.model)&&config.baseUrl.replace(/\/$/,'')==='https://api.openai.com/v1'?{reasoning_effort:'none'}:{})};
       if(Buffer.byteLength(JSON.stringify(body))>350000) throw new ProviderError('invalid_provider_request');
-      const combined=AbortSignal.any([signal,AbortSignal.timeout(config.timeoutMs||30000)].filter(Boolean));
-      const auditState = newCall('toolTurn', auditContext);
-      await startCall(auditState);
+      const { combined, deadline } = budget(signal);
+      const { response, auditState } = await dispatch({ operation: 'toolTurn', context: auditContext, body, signal, combined, deadline });
       let reader;
       const cancel=()=>{void reader?.cancel().catch(()=>{});};
       combined.addEventListener('abort',cancel,{once:true});
       try {
-        if (combined.aborted) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
-        const response=await fetchImpl(`${config.baseUrl.replace(/\/$/,'')}/${anthropic?'messages':'chat/completions'}`,{method:'POST',redirect:'error',signal:combined,
-          headers:{'content-type':'application/json',accept:'application/json',...(anthropic?{'x-api-key':config.apiKey,'anthropic-version':'2023-06-01'}:{authorization:`Bearer ${config.apiKey}`})},body:JSON.stringify(body)});
-        noteResponse(auditState, response);
-        if(!response.ok||!response.body) { await response.body?.cancel();throw new ProviderError('provider_unavailable'); }
+        if(!response.body) throw new ProviderError('provider_unavailable');
         reader=response.body.getReader();const chunks=[];let bytes=0;
-        while(true) {if(combined.aborted)throw new ProviderError(signal?.aborted?'aborted':'provider_unavailable');const {value,done}=await reader.read();if(combined.aborted)throw new ProviderError(signal?.aborted?'aborted':'provider_unavailable');if(done)break;bytes+=value.byteLength;if(bytes>65536)throw new ProviderError('invalid_provider_response');chunks.push(value);}
-        let data;try {data=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks)));} catch {throw new ProviderError('invalid_provider_response');}
+        while(true) {if(combined.aborted)throw new ProviderError(signal?.aborted?'aborted':'provider_unavailable');const {value,done}=await reader.read();if(combined.aborted)throw new ProviderError(signal?.aborted?'aborted':'provider_unavailable');if(done)break;bytes+=value.byteLength;if(bytes>65536)throw responseFailure('response_too_large');chunks.push(value);}
+        let data;try {data=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks)));} catch {throw responseFailure('invalid_json');}
         captureResponse(auditState, data, anthropic);
         if(data?.error) throw new ProviderError('provider_unavailable');
         const reason=anthropic?data.stop_reason:data.choices?.[0]?.finish_reason;
         if(!(anthropic?['tool_use','end_turn','stop_sequence']:['tool_calls','stop']).includes(reason)) throw new ProviderError('incomplete_provider_response');
         let rawCalls,text;
         if(anthropic) {
-          if(!Array.isArray(data.content)||data.content.some(c=>!c||!['text','tool_use'].includes(c.type)||c.type==='text'&&typeof c.text!=='string')) throw new ProviderError('invalid_provider_response');
+          if(!Array.isArray(data.content)||data.content.some(c=>!c||!['text','tool_use'].includes(c.type)||c.type==='text'&&typeof c.text!=='string')) throw responseFailure('invalid_response_shape');
           rawCalls=data.content.filter(c=>c.type==='tool_use');text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('');
         } else {
-          if(data.choices?.length!==1||data.choices[0].message?.role!=='assistant'||data.choices[0].message.refusal) throw new ProviderError('invalid_provider_response');
+          if(data.choices?.length!==1||data.choices[0].message?.role!=='assistant'||data.choices[0].message.refusal) throw responseFailure('invalid_response_shape');
           rawCalls=data.choices[0].message.tool_calls||[];text=data.choices[0].message.content??'';
         }
-        if(!Array.isArray(rawCalls)||rawCalls.length>8||typeof text!=='string'||Boolean(rawCalls.length)!==['tool_calls','tool_use'].includes(reason)) throw new ProviderError('invalid_provider_response');
+        if(!Array.isArray(rawCalls))throw responseFailure('invalid_tool_shape');
+        if(rawCalls.length>8)throw responseFailure('too_many_tool_calls');
+        if(typeof text!=='string')throw responseFailure('invalid_response_shape');
+        if(Boolean(rawCalls.length)!==['tool_calls','tool_use'].includes(reason))throw responseFailure('finish_reason_mismatch');
         const callIds=new Set();
         const toolCalls=rawCalls.map(c=>{
-          let args;try {args=anthropic?c.input:JSON.parse(c.function.arguments);} catch {throw new ProviderError('invalid_provider_response');}
+          let args;try {args=anthropic?c.input:JSON.parse(c.function.arguments);} catch {throw responseFailure('malformed_tool_arguments');}
           const name=anthropic?c.name:c.function?.name;
-          if(!anthropic&&c.type!=='function'||typeof c.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(c.id)||callIds.has(c.id)||seen.has(c.id)||typeof name!=='string'||!/^[a-zA-Z][a-zA-Z0-9_.:-]{0,63}$/.test(name)||!args||typeof args!=='object'||Array.isArray(args)) throw new ProviderError('invalid_provider_response');
+          if(!anthropic&&c.type!=='function'||typeof c.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(c.id)||typeof name!=='string'||!/^[a-zA-Z][a-zA-Z0-9_.:-]{0,63}$/.test(name)||!args||typeof args!=='object'||Array.isArray(args))throw responseFailure('invalid_tool_shape');
+          if(callIds.has(c.id))throw responseFailure('duplicate_call_id');
+          if(seen.has(c.id))throw responseFailure('reused_call_id');
           callIds.add(c.id);return {id:c.id,name,arguments:args};
         });
         auditState.status = 'succeeded';
         return {toolCalls,text,stopReason:reason};
-      } catch(e) {throw failCall(auditState,e,signal);}
-      finally {combined.removeEventListener('abort',cancel);try {if(reader){await reader.cancel().catch(()=>{});reader.releaseLock();}} finally {await finishCall(auditState);}}
+      } catch(e) {throw failCall(auditState,e,signal,combined);}
+      finally {combined.removeEventListener('abort',cancel);try {if(reader){await untilAborted(reader.cancel(),combined).catch(()=>{});reader.releaseLock();}} finally {await finishCall(auditState);}}
     },
     async planTools({ messages, system, tools, signal, auditContext }) {
       if (!config.configured) throw new ProviderError('not_configured');
@@ -240,33 +300,24 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
           // Answer streaming retains the configured model's default reasoning.
           ...(['gpt-6-luna', 'gpt-6-sol'].includes(config.model) && config.baseUrl.replace(/\/$/, '') === 'https://api.openai.com/v1'
             ? { reasoning_effort: 'none' } : {}) };
-      const auditState = newCall('planTools', auditContext);
-      await startCall(auditState);
-      let response;
+      const { combined, deadline } = budget(signal);
+      const { response, auditState } = await dispatch({ operation: 'planTools', context: auditContext, body, signal, combined, deadline });
       try {
-        if (signal?.aborted) throw new ProviderError('aborted');
-        response = await fetchImpl(`${config.baseUrl.replace(/\/$/, '')}/${anthropic ? 'messages' : 'chat/completions'}`, {
-          method: 'POST', signal, redirect: 'error',
-          headers: { 'content-type': 'application/json', accept: 'application/json',
-            ...(anthropic ? { 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01' } : { authorization: `Bearer ${config.apiKey}` }) },
-          body: JSON.stringify(body),
-        });
-        noteResponse(auditState, response);
-        if (!response.ok || !response.body) { await response.body?.cancel(); throw new ProviderError('provider_unavailable'); }
+        if (!response.body) throw new ProviderError('provider_unavailable');
         const reader = response.body.getReader(), decoder = new TextDecoder('utf-8', { fatal: true });
         let raw = '';
         const cancel = () => { void reader.cancel().catch(() => {}); };
-        signal?.addEventListener('abort', cancel, { once: true });
+        combined.addEventListener('abort', cancel, { once: true });
         try {
           while (true) {
-            if (signal?.aborted) throw new ProviderError('aborted');
+            if (combined.aborted) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
             const { value, done } = await reader.read();
-            if (signal?.aborted) throw new ProviderError('aborted');
+            if (combined.aborted) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
             raw += decoder.decode(value, { stream: !done });
             if (raw.length > 65536) throw new ProviderError('invalid_provider_response');
             if (done) break;
           }
-        } finally { signal?.removeEventListener('abort', cancel); await reader.cancel().catch(() => {}); reader.releaseLock(); }
+        } finally { combined.removeEventListener('abort', cancel); await untilAborted(reader.cancel(), combined).catch(() => {}); reader.releaseLock(); }
         let data;
         try { data = JSON.parse(raw); } catch { throw new ProviderError('invalid_provider_response'); }
         captureResponse(auditState, data, anthropic);
@@ -281,7 +332,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
         });
         auditState.status = 'succeeded';
         return result;
-      } catch (error) { throw failCall(auditState, error, signal); }
+      } catch (error) { throw failCall(auditState, error, signal, combined); }
       finally { await finishCall(auditState); }
     },
     async *stream({ messages, system, signal, auditContext }) {
@@ -292,25 +343,15 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       const body = anthropic
         ? { model: config.model, system, messages: nativeMessages, max_tokens: 2048, stream: true }
         : { model: config.model, messages: [{ role: 'system', content: system }, ...nativeMessages], stream: true, store: false, stream_options: { include_usage: true } };
-      const auditState = newCall('stream', auditContext, true);
-      await startCall(auditState);
-      let response;
+      const { combined, deadline } = budget(signal);
+      const { response, auditState } = await dispatch({ operation: 'stream', context: auditContext, body, signal, combined, deadline, stream: true });
       try {
-        if (signal?.aborted) throw new ProviderError('aborted');
-        response = await fetchImpl(`${config.baseUrl.replace(/\/$/, '')}/${anthropic ? 'messages' : 'chat/completions'}`, {
-          method: 'POST', signal, redirect: 'error',
-          headers: { 'content-type': 'application/json', accept: 'text/event-stream',
-            ...(anthropic ? { 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01' } : { authorization: `Bearer ${config.apiKey}` }) },
-          body: JSON.stringify(body),
-        });
-        noteResponse(auditState, response);
-        if (!response.ok) { await response.body?.cancel(); throw new ProviderError('provider_unavailable'); }
         if (!response.headers.get('content-type')?.includes('text/event-stream')) {
-          await response.body?.cancel(); throw new ProviderError('invalid_provider_response');
+          await cancelResponse(response, combined); throw new ProviderError('invalid_provider_response');
         }
         let finished = false, started = false;
-        for await (const frame of parseSSE(response.body, signal)) {
-          if (signal?.aborted) throw new ProviderError('aborted');
+        for await (const frame of parseSSE(response.body, combined)) {
+          if (combined.aborted) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
           if (!anthropic && frame.data === '[DONE]') {
             if (!finished) throw new ProviderError('incomplete_provider_response');
             auditState.status = 'succeeded';
@@ -372,7 +413,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
           }
         }
         throw new ProviderError('incomplete_provider_response');
-      } catch (error) { throw failCall(auditState, error, signal); }
+      } catch (error) { throw failCall(auditState, error, signal, combined); }
       finally {
         if (auditState.status === 'cancelled' && signal?.aborted) { auditState.status = 'aborted'; auditState.errorCode = 'aborted'; }
         await finishCall(auditState);
