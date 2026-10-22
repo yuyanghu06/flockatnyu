@@ -6,8 +6,9 @@ import { buildingViews, buildingFocusPolarAngle, buildingFocusedMaxPolarAngle } 
  * call cancel(); gesture end calls reconcile() for pinch-out overview return.
  * Reset/restore call clearFocus(). update runs after controls.update.
  * Original damping is drained and held off while a transition is active. */
-export function createCameraFocus({ camera, controls, limits, constrainPan, reducedMotion = false }) {
+export function createCameraFocus({ camera, controls, limits, constrainPan, reducedMotion = false, getFramingRect = () => null }) {
   let transition = null, focusedId = null, focusedRange = false, zoomGesture = null, overviewSnapshot = null;
+  let overviewZoom=camera.zoom;
   const overviewMaxPolar = limits.maxPolarAngle ?? controls.maxPolarAngle ?? Math.PI;
   const focusedMaxPolar = Math.max(overviewMaxPolar, buildingFocusedMaxPolarAngle);
   const clampDistance = n => THREE.MathUtils.clamp(n, limits.minDistance, limits.maxDistance);
@@ -22,15 +23,16 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
   function cancel({ preserveOverview = false } = {}) { stopTransition();if(!preserveOverview)overviewSnapshot=null; }
   function clearFocus() {
     cancel(); focusedId = null; focusedRange = false;
+    camera.zoom=overviewZoom;camera.updateProjectionMatrix();
     controls.maxPolarAngle = overviewMaxPolar;
   }
   function current() {
     const target = controls.target.clone();
     const sphere = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target));
     sphere.radius = clampDistance(sphere.radius); sphere.phi = clampPolar(sphere.phi);
-    return { target, sphere };
+    return { target, sphere, zoom:camera.zoom };
   }
-  function begin(target, distance, theta, phi, rate, exitFocus = false) {
+  function begin(target, distance, theta, phi, rate, exitFocus = false, zoom = transition ? Math.exp(transition.goal[6]) : camera.zoom) {
     if (!transition) {
       const damping = controls.enableDamping;
       const savedPosition = camera.position.clone(), savedTarget = controls.target.clone();
@@ -40,7 +42,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
       camera.position.copy(savedPosition); controls.target.copy(savedTarget);
       camera.lookAt(controls.target); controls.update();
       const start = current();
-      transition = { values: [...start.target.toArray(), start.sphere.theta, start.sphere.phi, Math.log(start.sphere.radius)], velocity: [0,0,0,0,0,0], damping };
+      transition = { values: [...start.target.toArray(), start.sphere.theta, start.sphere.phi, Math.log(start.sphere.radius),Math.log(start.zoom)], velocity: [0,0,0,0,0,0,0], damping };
     }
     const state = transition;
     // Shortest azimuth arc avoids a complete spin across the +/-pi seam.
@@ -49,7 +51,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     const endTarget = target.clone(), endPosition = new THREE.Vector3().setFromSpherical(endSphere).add(endTarget);
     constrainPan(endPosition, endTarget, limits);
     Object.assign(state, { endTarget, endSphere, rate, exitFocus, returning:false,
-      goal: [...endTarget.toArray(),endSphere.theta,endSphere.phi,Math.log(endSphere.radius)] });
+      goal: [...endTarget.toArray(),endSphere.theta,endSphere.phi,Math.log(endSphere.radius),Math.log(zoom)] });
     return true;
   }
   function focus(root, id = root?.userData?.buildingId) {
@@ -61,7 +63,8 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     const view = buildingViews[id];
     const target = view?.target ? new THREE.Vector3().fromArray(view.target) : box.getCenter(new THREE.Vector3());
     const radius = box.getSize(new THREE.Vector3()).length()/2;
-    const vertical = THREE.MathUtils.degToRad(camera.getEffectiveFOV ? camera.getEffectiveFOV() : camera.fov)/2;
+    if(!overviewSnapshot)overviewZoom=camera.zoom;
+    const vertical = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov)/2)/overviewZoom);
     const halfFov = Math.min(vertical, Math.atan(Math.tan(vertical)*camera.aspect));
     if (!Number.isFinite(halfFov) || halfFov<=0 || halfFov>=Math.PI/2) return false;
     let distance = radius/Math.sin(halfFov)*1.12*(view?.distanceScale ?? 1)*1.25;
@@ -75,31 +78,37 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     // Fit complete bounds on the configured side, including multi-part footprints.
     // Solve from projected bounds rather than assuming its configured anchor is
     // the visual centre (important for Courant, Silver, GCASL and Paulson).
-    const framingCamera = camera.clone();
     const rightAxis = new THREE.Vector3(Math.cos(theta), 0, -Math.sin(theta));
+    const backward = new THREE.Vector3().setFromSpherical(new THREE.Spherical(1,phi,theta));
+    const upAxis = new THREE.Vector3().crossVectors(backward,rightAxis);
     const originalTarget = target.clone();
     const corners = [];
     for (const x of [box.min.x,box.max.x]) for (const y of [box.min.y,box.max.y]) for (const z of [box.min.z,box.max.z]) corners.push(new THREE.Vector3(x,y,z));
-    let offset = 0;
-    for (let pass=0;pass<5;pass++) {
-      distance = clampDistance(distance);
-      target.copy(originalTarget).addScaledVector(rightAxis,-offset);
-      framingCamera.position.setFromSpherical(new THREE.Spherical(distance,phi,theta)).add(target);
-      framingCamera.lookAt(target);framingCamera.updateMatrixWorld();
-      const projected = corners.map(corner=>corner.clone().project(framingCamera));
-      const left = Math.min(...projected.map(point=>point.x));
-      const right = Math.max(...projected.map(point=>point.x));
-      const span = right-left;
-      if(span>.9 && distance<limits.maxDistance && pass<2) {
-        distance=Math.min(limits.maxDistance,distance*span/.9*1.03);
-        continue;
+    const rect=getFramingRect();
+    const frame=rect ? {left:rect.left/rect.width*2-1,right:rect.right/rect.width*2-1,top:1-rect.top/rect.height*2,bottom:1-rect.bottom/rect.height*2} : {left:-.94,right:.94,top:.94,bottom:-.94};
+    const cx=(frame.left+frame.right)/2,cy=(frame.top+frame.bottom)/2;
+    let tanV=Math.tan(vertical),tanH=tanV*camera.aspect,focusZoom=overviewZoom;
+    // Solve all eight perspective corners against the actual unobscured frame,
+    // including depth, rather than pushing every building toward the card.
+    for(let pass=0;pass<6;pass++){
+      let required=0;
+      for(const corner of corners){
+        const relative=corner.clone().sub(originalTarget),x=relative.dot(rightAxis),y=relative.dot(upAxis),z=relative.dot(backward);
+        required=Math.max(required,
+          (x+frame.right*tanH*z)/((frame.right-cx)*tanH),
+          (-x-frame.left*tanH*z)/((cx-frame.left)*tanH),
+          (y+frame.top*tanV*z)/((frame.top-cy)*tanV),
+          (-y-frame.bottom*tanV*z)/((cy-frame.bottom)*tanV));
       }
-      // Keep the right edge on-screen even when the hard distance cap prevents
-      // fitting the entire box into the right half on a narrow viewport.
-      const desiredCentre=view?.screenSide === 'left' ? Math.max(-.5,-.94+span/2) : Math.min(.5,.94-span/2);
-      offset+=(desiredCentre-(left+right)/2)*distance*Math.tan(vertical)*camera.aspect;
+      distance=clampDistance(Math.max(distance,required));
+      if(!rect||required<=distance||pass===5)break;
+      // Widen the lens for large complexes on narrow screens, preserving the
+      // world's distance limit instead of clipping the building at that cap.
+      focusZoom*=distance/required*.97;
+      tanV=Math.tan(vertical)*overviewZoom/focusZoom;tanH=tanV*camera.aspect;
     }
-    target.copy(originalTarget).addScaledVector(rightAxis,-offset);
+    distance=clampDistance(distance);
+    target.copy(originalTarget).addScaledVector(rightAxis,-cx*distance*tanH).addScaledVector(upAxis,-cy*distance*tanV);
     zoomGesture = null;
     if(!overviewSnapshot) {
       overviewSnapshot=current();
@@ -108,7 +117,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     focusedRange = true; controls.maxPolarAngle = focusedMaxPolar;
     // Per-building pullback scales the original fit; profile lowering sets only
     // the viewing angle, so selecting a new view does not also zoom inward.
-    begin(target,distance,theta,phi,10);
+    begin(target,distance,theta,phi,10,false,focusZoom);
     focusedId = id ?? null;
     return true;
   }
@@ -134,7 +143,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     const snapshot=overviewSnapshot??current();
     const phi=Math.min(snapshot.sphere.phi,overviewMaxPolar);
     zoomGesture=null;
-    begin(snapshot.target,snapshot.sphere.radius,snapshot.sphere.theta,phi,10,true);
+    begin(snapshot.target,snapshot.sphere.radius,snapshot.sphere.theta,phi,10,true,overviewSnapshot?.zoom??overviewZoom);
     transition.returning=true;
     return true;
   }
@@ -186,7 +195,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
       state.rate*(Math.log(limits.maxDistance)-state.values[5]));
     // Exact critically damped solution for a fixed goal during this frame.
     // Wheel/refocus retargets replace the goal, never the persistent velocity.
-    for(let i=0;i<6;i++) {
+    for(let i=0;i<7;i++) {
       if(immediate || exponent>700) { state.values[i]=state.goal[i];state.velocity[i]=0;continue; }
       const error=state.values[i]-state.goal[i], coefficient=state.velocity[i]+state.rate*error;
       state.values[i]=state.goal[i]+(error+coefficient*deltaSeconds)*decay;
@@ -200,6 +209,7 @@ export function createCameraFocus({ camera, controls, limits, constrainPan, redu
     controls.target.fromArray(state.values);
     const sphere = new THREE.Spherical(Math.exp(state.values[5]),state.values[4],state.values[3]);
     camera.position.setFromSpherical(sphere).add(controls.target);
+    camera.zoom=Math.exp(state.values[6]);camera.updateProjectionMatrix();
     constrainPan(camera.position,controls.target,limits);
     controls.target.toArray().forEach((n,i)=>{if(Math.abs(n-state.values[i])>1e-10){state.values[i]=n;state.velocity[i]=0;}});
     camera.lookAt(controls.target); controls.update();

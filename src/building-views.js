@@ -1,3 +1,5 @@
+import { goGreekPopup } from './go-greek-popup.js';
+
 // Horizontal camera-to-building offset directions in the shared map frame.
 // Street axes are measured from the supplied landmark footprints, not compass
 // screen directions. Detailed rationale and approximate choices are documented.
@@ -10,7 +12,8 @@ const screenshotView = (azimuth, polar, heightScale, basis) => ({
   polarAngle: polar * Math.PI / 180, heightScale, basis,
 });
 export const buildingViews = Object.freeze({
-  'nyu-kimmel-center': { ...screenshotView(117, 65, .8, 'User view: park-facing entrance and Bobst-side facade'), screenSide: 'left' },
+  ...(goGreekPopup.enabled ? { [goGreekPopup.id]: screenshotView(goGreekPopup.camera.azimuth, goGreekPopup.camera.polar, goGreekPopup.camera.heightScale, goGreekPopup.camera.basis) } : {}),
+  'nyu-kimmel-center': screenshotView(117, 65, .8, 'User view: park-facing entrance and Bobst-side facade'),
   'nyu-global-center': screenshotView(181, 53, .8, 'User view: long patterned facade, Kimmel behind left'),
   'bobst-library': { ...screenshotView(175, 62, .8, 'User view: park-facing entrance and eastern facade'), distanceScale: 1.2 },
   'nyu-silver-center': { ...screenshotView(197, 60, .8, 'Latest user image: Silver Center park facade, Leslie eLab behind'), distanceScale: 1.2 },

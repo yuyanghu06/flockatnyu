@@ -1,3 +1,5 @@
+import { goGreekPopup } from '../src/go-greek-popup.js';
+const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
 import {chromium} from 'playwright-core';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -44,7 +46,7 @@ try{
     assert.equal(await markers(p).count(),5);assert.equal(await p.locator('.map-presence__label').count(),5);
     const images=await p.locator('.map-presence__person img').evaluateAll(images=>images.map(x=>({complete:x.complete,naturalWidth:x.naturalWidth,url:x.currentSrc})));
     assert.equal(images.length,5);assert(images.every(x=>x.complete&&x.naturalWidth>0));for(const image of images){const r=await p.request.get(image.url);assert.equal(r.status(),200);assert.match(r.headers()['content-type'],/^image\/png/);}
-    assert.equal(s.landmarks.length,9);assert.deepEqual(s.failed,[]);assert.deepEqual(live.errors,[]);assert.deepEqual(live.failed,[]);assert.equal(await p.locator('body').getAttribute('class'),'map-only');assert(await p.locator('.toolbar').isHidden());assert(await p.locator('.map-presence').isVisible());
+    assert.equal(s.landmarks.length,expectedLandmarkCount);assert.deepEqual(s.failed,[]);assert.deepEqual(live.errors,[]);assert.deepEqual(live.failed,[]);assert.equal(await p.locator('body').getAttribute('class'),'map-only');assert(await p.locator('.toolbar').isHidden());assert(await p.locator('.map-presence').isVisible());
     await p.screenshot({path:'/tmp/tech-nyu-map-presence-live-private.png'});await fs.chmod('/tmp/tech-nyu-map-presence-live-private.png',0o600);return {loadMs:live.loadMs,landmarks:s.landmarks.length,people:ps.count,loadedPortraits:images.length,errors:live.errors.length,failedAssets:live.failed.length};
   });
   if(live){await live.context.close();live=null;}

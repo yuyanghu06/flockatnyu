@@ -1,9 +1,11 @@
 import { createPresenceLayout } from './map-presence-layout.js';
 import { clampFocusedAvatarPosition } from './map-presence-drag.js';
+import { resolveMapAvatarUrl } from './map-avatar-url.js';
+import { mapFocusLayout } from './map-focus-layout.js';
 import { buildings as campusBuildings } from './config.js';
 import './map-presence.css';
 
-// Vite includes every approved portrait in production, without trusting source URLs.
+// Retain approved bundled portraits only while older profile rows are migrated.
 const portraitImports = import.meta.glob('../assets/avatars/*.png', { eager: true, query: '?url', import: 'default' });
 const portraits = new Map(Object.entries(portraitImports).map(([path, url]) => [path.split('/').at(-1), url]));
 const buildingPortraitImports = import.meta.glob('../assets/building-portraits/*-v1.webp', { eager: true, query: '?url', import: 'default' });
@@ -16,11 +18,6 @@ function eventRoom(value, buildingName) {
   const name = buildingName.trim().toLocaleLowerCase();
   if (prefix.length >= 3 && (name === prefix || name.startsWith(`${prefix} `))) return (parts?.[2] ?? '').trim();
   return location;
-}
-function portraitUrl(value) {
-  if (typeof value !== 'string' || !value.startsWith('/assets/avatars/')) return null;
-  try { return portraits.get(decodeURIComponent(value.slice('/assets/avatars/'.length))) ?? null; }
-  catch { return null; }
 }
 function initials(name) {
   return name.trim().split(/\s+/u).map(part => [...part][0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
@@ -82,13 +79,13 @@ function markerSignature(buildings) {
 function contentSignature(buildings, plans) {
   return JSON.stringify([markerSignature(buildings), buildings.map(building => [building.id, building.name,
     building.events.map(event => [event.id, event.title, event.starts, event.ends, event.allDay,
-      event.status, event.timeZone, event.location ?? '', event.url ?? null,
+      event.status, event.kind ?? null, event.timeZone, event.location ?? '', event.url ?? null,
       event.attendees.map(person => [person.id, person.displayName, person.avatarUrl ?? null]),
     ]),
   ]), plans.map(plan => [plan.personId, plan.buildingId, plan.buildingName, plan.label, plan.starts, plan.ends])]);
 }
 
-export function createMapPresence({ container, camera, renderer, getRoot, selectBuilding, focusBuilding, getFocusedBuilding = () => null, fetchImpl = fetch }) {
+export function createMapPresence({ container, camera, renderer, getRoot, selectBuilding, focusBuilding, getFocusedBuilding = () => null, fetchImpl = fetch, onCatalogueChange = () => {} }) {
   const layer = document.createElement('div');
   layer.className = 'map-presence';
   layer.setAttribute('aria-label', 'People on the campus map');
@@ -230,7 +227,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
             const portrait = document.createElement('span');
             portrait.className = 'map-presence__event-avatar';
             portrait.title = person.displayName;
-            const url = portraitUrl(person.avatarUrl);
+            const url = resolveMapAvatarUrl(person.avatarUrl, person.id, portraits);
             if (url) {
               const image = document.createElement('img');
               image.src = url; image.alt = person.displayName; image.draggable = false;
@@ -388,7 +385,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
         fallback.setAttribute('aria-hidden', 'true');
         fallback.textContent = initials(person.displayName);
         portrait.append(fallback);
-        const url = portraitUrl(person.avatarUrl);
+        const url = resolveMapAvatarUrl(person.avatarUrl, person.id, portraits);
         if (url) {
           const image = document.createElement('img');
           image.src = url;
@@ -468,10 +465,12 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
     updateItinerary();
     updateBuildingCard();
     if (!buildingCard.hidden) {
-      const cardWidth = Math.max(120, Math.min(460, width * 0.52 - 32));
-      buildingCard.style.left = `${width - cardWidth - 24}px`;
-      buildingCard.style.width = `${cardWidth}px`;
-      buildingCard.style.top = `${height / 2}px`;
+      const {card}=mapFocusLayout(width,height);
+      buildingCard.style.left = `${card.left}px`;
+      buildingCard.style.width = `${card.width}px`;
+      buildingCard.style.maxHeight = `${card.maxHeight}px`;
+      buildingCard.style.transform = 'translateY(-50%)';
+      buildingCard.style.top = `${card.bottomAligned?height-card.margin-buildingCard.offsetHeight/2:height/2}px`;
     }
     let entranceIndex = 0;
     camera.updateMatrixWorld();
@@ -633,6 +632,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
         const markersChanged = markerKey !== nextMarkerKey;
         const contentChanged = contentKey !== nextContentKey || status !== 'ok' || upcomingAvailable !== Array.isArray(payload.upcoming);
         catalogue = next;
+        onCatalogueChange(catalogue);
         source = nextSource;
         nextMarkerExpiry = source.reduce((end, building) => building.people.reduce((end, person) => Math.min(end, person.ends), end), Infinity);
         upcoming = nextUpcoming;
@@ -646,6 +646,7 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
       } catch {
         if (!disposed) {
           catalogue = []; source = []; upcoming = []; upcomingAvailable = false;
+          onCatalogueChange(catalogue);
           status = 'unavailable'; observedAt = null; markerKey = contentKey = '';
           nextMarkerExpiry = Infinity;
           invalidateContent(); rebuild();
@@ -689,6 +690,6 @@ export function createMapPresence({ container, camera, renderer, getRoot, select
   return Object.freeze({
     update, refresh,
     snapshot: () => ({ status, observedAt, count: groups.reduce((sum, group) => sum + group.items.length, 0), buildings: groups.map(group => ({ id: group.building.id, visible: group.visible, count: group.items.length })) }),
-    dispose() { disposed = true; endDrag(false); requestController?.abort(); clearTimeout(retryTimer); clearInterval(poll); clearInterval(expiry); listeners.abort(); layout.dispose(); layer.remove(); },
+    dispose() { disposed = true; onCatalogueChange([]); endDrag(false); requestController?.abort(); clearTimeout(retryTimer); clearInterval(poll); clearInterval(expiry); listeners.abort(); layout.dispose(); layer.remove(); },
   });
 }

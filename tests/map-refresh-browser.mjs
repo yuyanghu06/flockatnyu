@@ -1,3 +1,5 @@
+import { goGreekPopup } from '../src/go-greek-popup.js';
+const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
 // Independent actual-campus Chrome acceptance with synthetic local APIs only.
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -66,9 +68,9 @@ try {
   page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(15000);
   const errors=[],assets=[];page.on('pageerror',error=>errors.push(error.message));page.on('requestfailed',request=>{if(!request.url().includes('/api/'))assets.push(new URL(request.url()).pathname);});
   await page.addInitScript(()=>{window.fixtureHidden=false;Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>window.fixtureHidden?'hidden':'visible'});});
-  await check('Campus loads nine landmarks with empty authorized activity and no failed assets',async()=>{
+  await check('Campus loads configured landmarks with empty authorized activity and no failed assets',async()=>{
     const started=Date.now();await page.goto(base,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__map?.snapshot().status==='ready'&&document.querySelector('#app').dataset.state==='entered',null,{timeout:120000});
-    await page.waitForFunction(()=>window.__map.presence.snapshot().status==='ok');assert.equal((await snapshot()).landmarks.length,9);assert.equal(await people().count(),0);assert.deepEqual(errors,[]);assert.deepEqual(assets,[]);return {loadMs:Date.now()-started,landmarks:9};
+    await page.waitForFunction(()=>window.__map.presence.snapshot().status==='ok');assert.equal((await snapshot()).landmarks.length,expectedLandmarkCount);assert.equal(await people().count(),0);assert.deepEqual(errors,[]);assert.deepEqual(assets,[]);return {loadMs:Date.now()-started,landmarks:expectedLandmarkCount};
   });
   await check('Building pointer selection and camera focus preserve complete model bounds',async()=>{
     const before=await snapshot(),point=before.landmarks.find(x=>x.id==='bobst-library').screen;

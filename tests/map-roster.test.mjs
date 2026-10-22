@@ -10,11 +10,12 @@ const member=(id,nick,extra={})=>({id,nick,global_name:null,username:`user${id}`
 const scan=(query,members,extra={})=>({query,complete:true,members,...extra});
 const plan=(people,members,extra={})=>createMatchPlan({people,scans:[scan(people[0].first_name,members,extra)]});
 
-test('avatar roster covers all26 actual PNGs with conservative first/last names and encoded URLs',async()=>{
+test('avatar roster covers the current PNG inventory with conservative first/last names and encoded URLs',async()=>{
  const files=(await readdir(new URL('../assets/avatars/',import.meta.url))).filter(f=>f.endsWith('.png'));
- const rows=avatarRoster(files);assert.equal(rows.length,26);
+ const rows=avatarRoster(files);assert.equal(rows.length,files.length);assert(files.includes('Grace.png'));
  assert.deepEqual(rows.map(p=>decodeURIComponent(p.avatar_url.split('/').at(-1))).sort(),files.sort());
  for(const row of rows){assert.equal(row.first_name,row.display_name.split(' ')[0]);assert.equal(row.last_name,row.display_name==='Sean Lai'?'Lai':null);assert(!/\s/.test(row.avatar_url));}
+ assert.deepEqual(rows.find(row=>row.avatar_url==='/assets/avatars/Grace.png'),{display_name:'Grace',first_name:'Grace',last_name:null,avatar_url:'/assets/avatars/Grace.png'},'A filename alone cannot invent Grace\'s surname or linked Discord identity');
  assert.deepEqual(splitAvatarName('Sean H.png'),{display_name:'Sean H',first_name:'Sean',last_name:null});
  assert.throws(()=>splitAvatarName('../Other.png'));assert.throws(()=>splitAvatarName('Other.jpg'));
 });
@@ -113,7 +114,7 @@ test('CLI defaults to proposal only; explicit apply patches only safe matches on
   assert.equal(url.origin,env.SUPABASE_URL);assert.equal(url.pathname,'/rest/v1/map_people');
   if(options.method==='PATCH')return Response.json([{id:url.searchParams.get('id').slice(3)}]);return Response.json(people);
  };
- const proposal=await runRoster({env,args:[],fetchImpl,write:()=>{}});assert.equal(proposal.mode,'plan');assert.equal(proposal.plan.length,26);assert.equal(proposal.plan.filter(r=>r.status==='matched').length,1);assert(calls.every(c=>c.options.method==='GET'));
+ const proposal=await runRoster({env,args:[],fetchImpl,write:()=>{}});assert.equal(proposal.mode,'plan');assert.equal(proposal.plan.length,people.length);assert.equal(proposal.plan.filter(r=>r.status==='matched').length,1);assert(calls.every(c=>c.options.method==='GET'));
  calls.length=0;const applied=await runRoster({env,args:['--apply'],fetchImpl,write:()=>{}});assert.equal(applied.application.applied,1);assert.equal(calls.filter(c=>c.options.method==='PATCH').length,1);
  let unsafeCalls=0;for(const args of [['--guild=1'],['--project=other'],['--apply=true']])await assert.rejects(runRoster({env,args,fetchImpl:async()=>{unsafeCalls++;},write:()=>{}}),e=>e.code==='invalid_arguments');assert.equal(unsafeCalls,0);
 });

@@ -10,9 +10,11 @@ import { buildings, palette, placements, paulson, initialCamera, mapExtent, came
 import { createMapAtmosphere } from './atmosphere.js';
 import { createLandmarkEffects } from './landmark-effects.js';
 import { createCameraFocus } from './camera-focus.js';
+import { mapFocusLayout } from './map-focus-layout.js';
 import { createMapInteractions } from './map-interactions.js';
 import { createKeyboardPan } from './keyboard-pan.js';
 import { createMapPresence } from './map-presence.js';
+import { createMapEventIndicators } from './map-event-indicators.js';
 import { compactContextGeometry, freezeStaticSubtree } from './map-resources.js';
 import { removeReplacedBuilding, trimDistantGrass, validateCamera, constrainPan } from './geometry.js';
 import { createPaulsonModel } from './paulson.js';
@@ -21,6 +23,7 @@ import { createGouldPlaza } from './gould-plaza.js';
 import { createKimmelModel, removeKimmelGeometry, kimmelReplacement } from './kimmel.js';
 import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from './global-center.js';
 import { createSilverCenterModel, silverCenterReplacement } from './silver-center.js';
+import { goGreekPopup } from './go-greek-popup.js';
 import { enhanceCourantAsync, enhanceSternAsync } from './courant-stern.js';
 import streetParkMetadata from '../assets/campus-assets/data/streets-parks-render.json';
 import './style.css';
@@ -84,7 +87,7 @@ ground.rotation.x = -Math.PI / 2;
 ground.position.y = -0.12;
 scene.add(ground);
 mapAtmosphere.apply(ground);
-const cameraNavigation = createCameraFocus({ camera, controls, limits: cameraLimits, constrainPan, reducedMotion: () => reducedMotionQuery.matches });
+const cameraNavigation = createCameraFocus({ camera, controls, limits: cameraLimits, constrainPan, reducedMotion: () => reducedMotionQuery.matches, getFramingRect: () => mapFocusLayout($('map').clientWidth,$('map').clientHeight).frame });
 const keyboardPan = createKeyboardPan({ camera, controls, navigation: cameraNavigation, constrainPan, limits: cameraLimits });
 
 function exportCamera() {
@@ -195,8 +198,9 @@ function setHovered(id) {
 const mapInteractions = createMapInteractions({ element: renderer.domElement, wheelEventTarget: window, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id),
   isWheelEnabled: () => controls.enabled && !document.querySelector('dialog[open]') && !document.querySelector('.map-presence__itinerary:hover') });
 createAssistant({ getBuilding: () => { const building = buildings.find(item => item.id === state.selected); return building ? { id: building.id, name: building.name } : null; } });
-const mapPresence = createMapPresence({ container: $('map'), camera, renderer, getRoot: id => roots.get(id), selectBuilding: select, focusBuilding: focusSelection, getFocusedBuilding: () => cameraNavigation.returning ? null : cameraNavigation.focusedId });
-if (import.meta.hot) import.meta.hot.dispose(() => mapPresence.dispose());
+const eventIndicators = createMapEventIndicators({ scene, camera, getRoot: id => roots.get(id), reducedMotion: () => reducedMotionQuery.matches });
+const mapPresence = createMapPresence({ container: $('map'), camera, renderer, getRoot: id => roots.get(id), selectBuilding: select, focusBuilding: focusSelection, getFocusedBuilding: () => cameraNavigation.returning ? null : cameraNavigation.focusedId, onCatalogueChange: catalogue => eventIndicators.setBuildings(catalogue) });
+if (import.meta.hot) import.meta.hot.dispose(() => { mapPresence.dispose(); eventIndicators.dispose(); });
 
 $('camera-open').addEventListener('click', () => {
   $('camera-json').value = JSON.stringify(exportCamera(), null, 2);
@@ -293,6 +297,14 @@ async function loadJob(job) {
     }
     if (job.tile) {
       model.traverse(mesh => { if (mesh.isMesh) mesh.material = cityMaterial; });
+      if (goGreekPopup.enabled && job.name === goGreekPopup.tile) {
+        const { createBroadway683Model, broadway683Replacement } = await import('./broadway-683.js');
+        const broadway = createBroadway683Model(model);
+        state.removedBroadway683Triangles = removeReplacedBuilding(model, broadway683Replacement);
+        if (state.removedBroadway683Triangles !== 70) recordError(job.name, new Error('683 Broadway replacement geometry count needs inspection.'));
+        registerLandmark(goGreekPopup.id, broadway);
+        scene.add(broadway);
+      }
       if (job.name === silverCenterReplacement.tile) {
         const silver = createSilverCenterModel(model);
         state.removedSilverCenterTriangles = removeReplacedBuilding(model, silverCenterReplacement);
@@ -393,6 +405,7 @@ function animate() {
   cameraNavigation.update(elapsedSeconds);
   constrainPan(camera.position, controls.target, cameraLimits);
   mapInteractions.update(delta);
+  eventIndicators.update();
   renderer.render(scene, camera);
   landmarkEffects.renderOutline(renderer, camera);
   mapPresence.update();
@@ -451,6 +464,7 @@ Object.defineProperty(window, '__map', { value: Object.freeze({
   snapshot: () => ({ ...structuredClone(state), camera: exportCamera(), navigation: { mapExtent: { ...mapExtent }, cameraLimits: structuredClone(cameraLimits), loadedTileCount: tiles.length }, render: { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, logarithmicDepthBuffer: renderer.capabilities.logarithmicDepthBuffer }, landmarks: [...roots].map(([id, root]) => landmarkSnapshot(id, root)) }),
   performance: performanceSnapshot,
   presence: Object.freeze({ refresh: mapPresence.refresh, snapshot: mapPresence.snapshot }),
+  eventIndicators: Object.freeze({ snapshot: eventIndicators.snapshot }),
   project,
   select,
   focus: focusSelection,

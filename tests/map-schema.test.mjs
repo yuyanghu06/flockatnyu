@@ -4,6 +4,7 @@ import {readFile,readdir} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
+import {goGreekPopup} from '../src/go-greek-popup.js';
 
 const migrations=new URL('../supabase/migrations/',import.meta.url);
 async function migration(n){const file=(await readdir(migrations)).find(f=>f.endsWith('.sql')&&Number(f.slice(8,12))===n);assert(file,`migration ${n}`);return readFile(new URL(file,migrations),'utf8');}
@@ -31,18 +32,37 @@ test('021 real SQL: seeded map identities, service isolation and validated atomi
   const people=(await db.query('select * from public.map_people order by display_name')).rows;
   const a=people[0].id,b=people[1].id,c=people[2].id;
   const home='bobst-library',target='nyu-kimmel-center',planned='stern-school-of-business';
-  await t.test('nine building IDs/names exactly match selectable source configuration',async()=>{
+  await t.test('immutable021 keeps nine seeded buildings; later Go Greek catalogue seed is verified separately',async()=>{
+   const seeded={
+    'nyu-silver-center':'Silver Center',
+    'nyu-kimmel-center':'Kimmel Center',
+    'nyu-global-center':'Global Center (GCASL)',
+    'nyu-leslie-elab-building':'Leslie eLab building',
+    'bobst-library':'Bobst Library',
+    'washington-square-arch':'Washington Square Arch',
+    'courant-institute':'Courant Institute',
+    'stern-school-of-business':'Stern School of Business',
+    'nyu-john-a-paulson-center':'John A. Paulson Center',
+   };
    const config=await readFile(new URL('../src/config.js',import.meta.url),'utf8');
-   const ids=[...config.split('export const buildings = [')[1].matchAll(/\bid: '([^']+)'/g)].map(m=>m[1]);
+   const visual=config.split('export const buildings = [')[1];
+   const ids=[...visual.matchAll(/\bid: '([^']+)'/g)].map(m=>m[1]);
    const actual=(await db.query('select id,name,people_here from public.map_buildings order by id')).rows;
-   assert.equal(ids.length,9);assert.deepEqual(actual.map(r=>r.id),ids.sort());assert(actual.every(r=>r.people_here.length===0));
-   for(const m of config.split('export const buildings = [')[1].matchAll(/id: '([^']+)', name: '([^']+)'/g))assert.equal(actual.find(r=>r.id===m[1]).name,m[2]);
+   assert.equal(actual.length,9);assert.deepEqual(Object.fromEntries(actual.map(r=>[r.id,r.name])),seeded);assert(actual.every(r=>r.people_here.length===0));
+   assert.equal(ids.length,9);assert.deepEqual(ids.sort(),Object.keys(seeded).sort());
+   assert.equal(goGreekPopup.id,'683-broadway');assert.equal(goGreekPopup.name,'Go Greek');
+   const visualIds=[...ids,...(goGreekPopup.enabled?[goGreekPopup.id]:[])];
+   assert.equal(visualIds.length,9+Number(goGreekPopup.enabled));assert.equal(new Set(visualIds).size,visualIds.length);
+   for(const m of visual.matchAll(/id: '([^']+)', name: '([^']+)'/g)){
+    assert.equal(seeded[m[1]],m[2]);
+   }
    const extraction=JSON.parse(await readFile(new URL('../assets/campus-assets/data/extracted-buildings.json',import.meta.url),'utf8'));
-   assert.equal(actual.find(r=>r.id==='nyu-john-a-paulson-center').name,extraction.buildings['nyu-john-a-paulson-center'].name);
+   assert.equal(seeded['nyu-john-a-paulson-center'],extraction.buildings['nyu-john-a-paulson-center'].name);
   });
-  await t.test('26 PNG assets seeded once, first/last names conservative and local URLs resolve',async()=>{
-   const filenames=(await readdir(new URL('../assets/avatars/',import.meta.url))).filter(f=>f.endsWith('.png')).sort();assert.equal(filenames.length,26);assert.equal(people.length,26);
-   assert.deepEqual(people.map(p=>decodeURIComponent(p.avatar_url.split('/').at(-1))).sort(),filenames);
+  await t.test('immutable021 seeds26 identities whose local URLs resolve among the current portrait inventory',async()=>{
+   const filenames=new Set((await readdir(new URL('../assets/avatars/',import.meta.url))).filter(f=>f.endsWith('.png')));assert.equal(people.length,26);
+   const seededFiles=people.map(p=>decodeURIComponent(p.avatar_url.split('/').at(-1)));assert.equal(new Set(seededFiles).size,26);for(const filename of seededFiles)assert(filenames.has(filename),`Historical portrait still resolves: ${filename}`);
+   assert(filenames.has('Grace.png'));assert(!seededFiles.includes('Grace.png'),'Later operator-added profiles must not be retroactively inserted into applied migration021');
    for(const p of people){assert.equal(p.first_name,p.display_name.split(' ')[0]);assert.equal(p.last_name,p.display_name==='Sean Lai'?'Lai':null);assert.equal(p.discord_user_id,null);assert.equal(p.email,null);assert.equal(p.is_trackable,true);}
    assert.equal(people.find(p=>p.display_name==='Sean H').last_name,null);
   });

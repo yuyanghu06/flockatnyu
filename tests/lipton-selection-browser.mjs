@@ -1,3 +1,5 @@
+import { goGreekPopup } from '../src/go-greek-popup.js';
+const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
 import {chromium} from 'playwright-core';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -19,7 +21,7 @@ try{
  await page.goto(url,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__map?.snapshot().status==='ready',null,{timeout:90000});assert(captured,probeError||'Scene references not captured');await cdp.send('Debugger.disable');
  if(await page.getByRole('button',{name:'Close assistant',exact:true}).isVisible())await page.getByRole('button',{name:'Close assistant',exact:true}).click();await page.mouse.move(5,5);await page.waitForTimeout(350);
  report.initial=await snap();
- await check('Actual fully loaded map exposes nine selectable landmarks with no Lipton picker/root/debug entry',async()=>{assert.deepEqual(report.initial.failed,[]);assert.equal(report.initial.landmarks.length,9);assert(!report.initial.landmarks.some(r=>r.id==='lipton-hall'));assert.equal(await page.locator('option[value="lipton-hall"]').count(),0);assert.equal(await page.evaluate(()=>window.__map.project('lipton-hall')),null);return {ids:report.initial.landmarks.map(r=>r.id),loaded:report.initial.loaded};});
+ await check('Actual fully loaded map exposes configured selectable landmarks with no Lipton picker/root/debug entry',async()=>{assert.deepEqual(report.initial.failed,[]);assert.equal(report.initial.landmarks.length,expectedLandmarkCount);assert(!report.initial.landmarks.some(r=>r.id==='lipton-hall'));assert.equal(await page.locator('option[value="lipton-hall"]').count(),0);assert.equal(await page.evaluate(()=>window.__map.project('lipton-hall')),null);return {ids:report.initial.landmarks.map(r=>r.id),loaded:report.initial.loaded};});
  report.lipton=await check('Lipton asset remains visible and pickable as context occluder with unchanged pale material and geometry',async()=>{
   const data=await page.evaluate(async()=>{
    const p=window.__liptonProbe,root=p.scene.getObjectByName('lipton-hall');if(!root)throw Error('Missing actual Lipton scene root');

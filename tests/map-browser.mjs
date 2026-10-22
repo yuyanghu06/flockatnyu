@@ -1,3 +1,5 @@
+import { goGreekPopup } from '../src/go-greek-popup.js';
+const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
@@ -40,7 +42,7 @@ try {
   });
   await check('all landmarks selectable without moving camera',async()=>{
     const options=await page.locator('#building option').evaluateAll(elements=>elements.filter(e=>e.value).map(e=>({id:e.value,name:e.textContent})));
-    assert.equal(options.length,report.initial.landmarks.length);assert.equal(options.length,9);
+    assert.equal(options.length,report.initial.landmarks.length);assert.equal(options.length,expectedLandmarkCount);
     for(const option of options){
       const before=(await snapshot()).camera;
       await page.selectOption('#building',option.id);await settle();

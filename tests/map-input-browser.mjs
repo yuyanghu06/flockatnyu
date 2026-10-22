@@ -1,3 +1,5 @@
+import { goGreekPopup } from '../src/go-greek-popup.js';
+const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
 import {chromium} from 'playwright-core';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -38,7 +40,7 @@ try{
  check('WASD typing in the assistant never pans or consumes characters',()=>{});
  await close(page);await page.keyboard.down('w');await page.waitForTimeout(100);await page.evaluate(()=>window.dispatchEvent(new Event('blur')));const blur=await camera(page);await page.waitForTimeout(250);same(blur,await camera(page));await page.keyboard.up('w');check('Window blur clears held keys and prevents stuck travel',()=>{});
  await reset(page);let snapshot=await page.evaluate(()=>window.__map.snapshot());const stern=snapshot.landmarks.find(x=>x.id==='stern-school-of-business');
- check('Gould has one shared Stern root and no separate selectable entry',()=>{assert.equal(snapshot.landmarks.length,9);assert(!snapshot.landmarks.some(x=>x.id==='nyu-gould-plaza'));assert(stern.details.includesGouldPlaza);assert.equal(stern.parts.length,2);});
+ check('Gould has one shared Stern root and no separate selectable entry',()=>{assert.equal(snapshot.landmarks.length,expectedLandmarkCount);assert(!snapshot.landmarks.some(x=>x.id==='nyu-gould-plaza'));assert(stern.details.includesGouldPlaza);assert.equal(stern.parts.length,2);});
  assert.equal(await page.locator('option[value="nyu-gould-plaza"]').count(),0);
  const old=JSON.parse(await fs.readFile('evidence/m19-building-views/restored-zoom/browser-results.json','utf8')).initial.landmarks;
  for(const part of stern.parts){const id=part.name==='nyu-gould-plaza'?'nyu-gould-plaza':'stern-school-of-business',prior=old.find(x=>x.id===id);part.bounds.min.concat(part.bounds.max).forEach((n,i)=>assert(Math.abs(n-prior.bounds.min.concat(prior.bounds.max)[i])<.002));}
