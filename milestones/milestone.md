@@ -1,3 +1,43 @@
+## Discord blacklist GitHub publication ready
+
+User requested push. Independent review ACCEPT of40pending files, deployed source/migration hash comparison and credential/binary/size/whitespace checks pass. Local codex/dev matches origin/codex/dev at9224a49 before publication. Publish implementation/tests/guides plus milestone/history records; ignored operational evidence stays local. [Review](history/2026-10-22_14-36-46-936840-evaluator-discord-blacklist-publication-accepted.md).
+
+## Discord roster username lookup complete
+
+Read-only hosted roster and exact live Discord member lookups verified usernames for all 27 linked people. Personal mappings are shown only in the user response; no source/database/configuration/runtime changes. Existing blacklist release state below remains current. [Lookup pass](history/2026-10-22_14-36-18-593515-orchestrator-discord-username-mapping-verified.md).
+
+## Discord blacklist fix complete and deployed
+
+Both Railway deployments are SUCCESS: web0f9ed90d-cde1-42b5-a0c3-5325380d35cb and update-agent de011f53-0525-4479-8db0-51c4562f8123. Hosted health200, anonymous tool403 and password login303 pass. Published catalogue has234sources,16absent from the old static list. Actual authenticated hosted catalogue lookup accepts an eligible base channel absent that list; worker resolver with production settings includes all234current Discord sources plus its explicit Gmail source (235total). No queue claim, source-content fetch, model call or Discord send was performed by the hosted probe. Sanitized package runtime source files byte-match current source. Applied03820261022182039body/ACL verified through Supabase MCP; no collector/configuration changes. Independent local dynamic admission, exact map/Calendar provenance, revocation and empty-scope retention tests/evaluation pass. Existing audience/team/permission/leadership restrictions and explicit non-Discord grants remain. Newly discovered eligible channels need no environment UUID additions. No native test channel/message was created; hosted env-absent channel admission is verified. [Release](history/2026-10-22_14-25-36-167023-orchestrator-discord-blacklist-live-release-verified.md); [scope](discord-blacklist/info.md).
+
+## Discord blacklist release underway
+
+Final independent20integration and319post-fix checks pass; evaluator ACCEPT. Applied only038 through Supabase MCP as20261022182039; exact reviewed body MD5 and invoker/service-only ACL verified. Sanitized web274file and worker59file contexts both contain new shared resolver. Railway MCP upload returned Unauthorized; authenticated local CLI fallback successfully created web0f9ed90d and worker de011f53 deployments, still building/deploying at this pass. No collector/configuration/source-content mutations. [Final tester](history/2026-10-22_14-23-10-431803-tester-discord-blacklist-maintenance-final-verified.md).
+
+## Discord blacklist local acceptance complete
+
+Independent evaluator ACCEPT after038 source-free maintenance correction;70focused SQL/runtime cases pass, coder165regressions/APIbuild pass. Existing full suite2198pass/1skip predates only the focused maintenance correction. Forward038 accepts empty UUID arrays for existing cleanup/lease recovery before returning without pending originals/new leases;036 remains unchanged. Sanitized web/update-agent packaging and hosted038/release are next. [coder](history/2026-10-22_14-20-34-258269-coder-empty-source-maintenance-restored.md) · [evaluator](history/2026-10-22_14-20-34-258585-evaluator-discord-blacklist-final-accepted.md).
+
+## Discord core integration and full regressions pass
+
+Independent19integration cases and1344relevant regressions pass; root full Node suite2198passed/1skipped/0failed, both builds pass. Checks prove new non-environment channel access, exact map/Calendar evidence, audience restrictions and revocations. They predate the maintenance correction; forward038 and focused post-fix review remain release gates. [Tests](history/2026-10-22_14-18-18-688809-tester-discord-blacklist-integration-verified.md).
+
+## Discord fix: empty-scope maintenance correction required
+
+Independent review found the handler’s empty-scope early return skips036 quarantine/lease cleanup. Core150focused access checks pass, but release remains gated on a source-free maintenance poll. Worker coder is adding forward038 plus store/handler changes and SQL-backed expiry/fencing coverage; applied036 stays immutable. No hosted changes yet. [Finding](history/2026-10-22_14-17-49-050797-evaluator-discord-empty-scope-maintenance-finding.md).
+
+## Discord blacklist implementation ready for independent acceptance
+
+Chat/helper and worker implementations are complete. Authenticated requests derive current Discord grants; Flockbot retains its audience subset. Every production worker tick claims fresh eligible Discord IDs plus explicit Gmail, while exact source/live permission reauthorization protects enqueue/model/action boundaries. Non-Discord source grants remain static. Chat308 and worker145 regression checks plus API builds pass; independent17integration checks already pass. Full suite and evaluation are underway; no live deployment yet. [coder](history/2026-10-22_14-16-30-853008-coder-discord-chat-blacklist-implemented.md) · [coder](history/2026-10-22_14-16-30-853675-coder-update-agent-blacklist-implemented.md) · [orchestrator](history/2026-10-22_14-16-30-854042-orchestrator-discord-blacklist-guidance-aligned.md).
+
+## Flockbot concurrency clarified
+
+Read-only code inspection and synthetic checks confirm concurrent channel conversations: defaults3active/process,1/member across channels,20/member/hour; isolated destination/member history and exact-channel replies. Transport overflow drops without a public busy reply; private bridge returns429. Source GETs share a serialized750ms default pacer; reply sends use SDK rate-limit buckets. Limits are process-local; website requests have a separate path. **106focused tests pass**, plus a three-channel overlap/destination probe. No runtime changes/live messages/model calls; production overrides not inspected. [Pass](history/2026-10-22_14-15-58-016919-orchestrator-flockbot-concurrency-explained.md). Existing blacklist work below remains active.
+
+## Discord blacklist fix in progress
+
+User requested automatic catalogue/blacklist-based Discord access for both chat and update agents. Independent planner traced request authorization, map/Calendar provenance and scoped queue claims. Reuse current guarded published catalogue; enrich trusted principals and resolve worker queue grants on every tick, preserving other source grants and current exclusions/member/audience/team/revocation checks. No migration planned. Two coders have exclusive chat/helper and worker ownership; independent integration tester assigned. [Plan](history/2026-10-22_13-34-47-451181-planner-discord-blacklist-contract.md); [scope](discord-blacklist/info.md).
+
 ## Combined Railway release and GitHub publication complete
 
 All working-tree features from every thread are deployed. **Web, update-agent, discord-events and gmail-events report SUCCESS**, with no pending rollout. Migration 036 is hosted as `20261022171407`; existing 037 was preserved. Attio is configured only on web, existing grants and credentials were preserved, and all 27 portrait URLs were switched through guarded comparisons with unchanged identity facts.

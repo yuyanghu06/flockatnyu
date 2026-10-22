@@ -167,3 +167,5 @@ active-event-indicators/ tracks current-event visual signals and the bounded Go 
 `building-focus-framing/` records shared responsive camera/card space, complete-model fitting and smooth lens restoration, verified across all ten landmarks at three viewport sizes.
 
 `combined-release/` tracks the all-working-tree Railway rollout and logicalGitHubpublication, including requiredschema/privateconfiguration, sanitizedcontexts, hostedchecksandportraitcutover.
+
+`discord-blacklist/` tracks automatic current-catalogue grants for chat and the update agent, non-Discord grant preservation, dynamic scoped claims and empty-scope retention maintenance.

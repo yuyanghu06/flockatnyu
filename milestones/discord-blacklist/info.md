@@ -1,0 +1,5 @@
+# Automatic Discord blacklist access
+
+Make newly published eligible Discord channels available to website chat, Flockbot and the autonomous update agent without per-channel environment grants. Use the current guarded Discord catalogue; preserve exclusions, manual disables, live permissions, team/audience restrictions, exact source evidence and explicit non-Discord grants. Completion requires implementation, independent boundary tests/review and clear local/live release evidence. Current state lives in ../milestone.md. Orchestrator owns shared tracking; specialists own assigned implementation/tests.
+
+Completed and deployed on2026-10-22. Independent dynamic-admission/revocation and executed038empty-scope maintenance tests pass. Reviewed038 is applied; web/update-agent deployments SUCCESS and real hosted catalogue admission of a published source absent the old environment list verified. No collector changes or per-channel environment edits. Exact evidence and limitations are in the rolling snapshot.

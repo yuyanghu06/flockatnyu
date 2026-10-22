@@ -1,7 +1,32 @@
+## Discord blacklist GitHub publication
+
+- [x] Review all pending files, existing test/deployment evidence and remote branch; independent publication ACCEPT and no credential findings.
+- [ ] Commit/push logical changes and verify a clean tree with matching remote SHA.
+
+## Discord username mapping lookup
+
+- [x] Show existing roster name-to-username mapping after 27 successful exact live Discord member reads; no identity writes.
+
+## Discord empty-scope review correction
+
+- [x] Preserve expired-quarantine/lease maintenance when the current Discord/Gmail claim scope is empty, without granting any sources.
+- [x] Independently verify forward038, immutable036, empty-scope cleanup/no-body/no-model behavior and service-only grants before release.
+
+## Flockbot concurrency clarification
+
+- [x] Verify overlapping channel replies, member/global admission bounds, history isolation and API pacing;106focused tests and a three-channel synthetic probe pass. Explanation only; no runtime change requested.
+
+## Discord blacklist fix
+
+- [x] Trace all chat/update-agent/source-evidence/queue authorization paths and accept bounded planner contract.
+- [x] Implement fresh catalogue-derived website/Flockbot grants and dynamic worker scoped claims.
+- [x] Independently test new sources, blacklist/manual-disable/revocation and unchanged non-Discord/audience restrictions.
+- [x] Evaluate, resolve findings, verify builds and release status; reviewed038 and both web/update-agent deployments verified live.
+
 ## Discord access policy clarification
 
 - [x] Distinguish implemented blacklist discovery/ingestion from the additional static source grants enforced by chat/update-agent processing; acknowledge user expectation of automatic blacklist-based access.
-- Follow-up identified, not implemented: reconcile agent channel authorization with the expected blacklist-based behavior while retaining existing exclusion/permission boundaries.
+- [x] Earlier follow-up superseded by the completed and deployed Discord blacklist fix above, preserving exclusion/permission boundaries.
 
 ## Channel discovery explanation
 
