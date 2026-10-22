@@ -1,0 +1,8 @@
+# Independent image final verification
+
+- Local timestamp / role / milestone: 2026-10-21T16:26:17.623942-04:00; tester; Discord image context.
+- Requested scope: read Discord message images and inject as chat context.
+- Starting state: bounded local implementation; unrelated dirty/concurrent work preserved.
+- Work/checks/result: Final independent run391pass/0fail/0skip, including63newimagecases and legacytextcontext. Command: node --test tests/discord-chat-images.test.mjs tests/discord-chat-context.test.mjs tests/chat-discord-context.test.mjs tests/discord-chat-bridge.test.mjs tests/discord-reply-context.test.mjs tests/chat-request-context.test.mjs tests/discord-chat-adapter.test.mjs tests/chat-attachments.test.mjs tests/chat-native-tools.test.mjs tests/chat-tool-stream.test.mjs tests/discord-live-tools.test.mjs tests/model-audit-provider.test.mjs tests/model-audit-integration.test.mjs tests/stable-tool-catalogue.test.mjs tests/chat-calendar-followup.test.mjs. New regression proves3invalid5MiB candidates cause2downloads/10MiB consumed, third omitted attachment_total; same result for post-chunk stream failures. No private exception text/bytes escape. Tester owns tests/discord-chat-images.test.mjs, two existing reply wording assertions and tests/info.md; no implementation/shared edits or livecalls/writes. PASS locally.
+- Decisions: maintain exact source access/identity/action boundaries and request-local inputs; local acceptance and live activation remain distinct.
+- Remaining work/handoff: coordinated web release and authorized hosted verification after external deployment blockers clear.

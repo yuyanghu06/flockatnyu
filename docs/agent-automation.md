@@ -69,13 +69,63 @@ npm run worker:agent
 npm run test:agent-automation
 ```
 
-Only successful actions followed by explicit `finish_batch` permit exact cleanup.
+Only successful actions followed by explicit `finish_batch` permit successful
+processing cleanup. Separately,036 expires matching quarantined raw snapshots
+after24hours; expiry never reports successful processing.
 Tool adapters must support the provided stable idempotency key and reconcile an
 ambiguous remote outcome. Source/context reads should be refreshed on retries.
 Source bodies and tool result bodies are not copied into receipt metadata. Pending
 inputs survive errors, unknown tools, incomplete model turns and exhausted bounds.
-Metadata receipts currently have no automatic retention job; no extra source
-content archive or embeddings are created.
+Metadata receipts remain; no extra source archive or embeddings are created.
+
+## Bounded queue recovery (036)
+
+Each input has a fixed maximum of five failed attempts. Failed mixed batches and
+unhandled partial completions are deferred five minutes, then retried individually.
+An input enters quarantine only after a singleton failure reaches the cap. A
+healthy input therefore gets its own attempt before quarantine, even if its
+original batch failed. Fresh batches and eligible retry singletons alternate while
+both lanes have work; the30-input/oldest30-minute aggregate trigger,60-second
+cooldown, configured per-claim count/byte caps and source scope remain unchanged.
+
+Queue metadata records only a fixed outcome code, attempt count, retry timing and
+snapshot hashes. Failure callbacks require the current unexpired lease token and
+settle at most once. The next scoped claim accounts for an expired lease once and
+uses the same isolation rules. Explicit caller shutdown defers without counting a
+failure; an internal configured run timeout counts as `timeout`, and heartbeat
+loss as `stale`. The public handler still returns `aborted` for cancellation and
+internal deadline aborts. Completion deletes only explicitly handled, unchanged
+source/hash snapshots; remaining inputs are isolated and deferred. Changed
+snapshots cannot be deleted or have failures charged by stale work.
+
+Quarantined raw bodies stay only in `agent_input_cache` for24hours from quarantine.
+Each scoped poll/claim performs maintenance before returning empty/busy/cooldown,
+removing at most100 expired matching bodies per call and retaining minimal metadata
+for deduplication. No model call is needed for maintenance. Replacement bodies with
+a changed hash/source are preserved under `quarantine_changed` for private service
+review; their retention is not governed by the old snapshot's24-hour deadline.
+This introduces no general pending-input purge, and applying036 itself deletes no
+existing records. While the worker is stopped, maintenance waits until scoped
+polling resumes.
+
+Recovery is an explicit service-only operation, absent from public/model tools:
+`store.requeue({inputId, allowedSourceIds, expectedHash})` calls
+`agent_automation_requeue(p_input_id, p_allowed_source_ids, p_expected_hash)`.
+Use the exact quarantined UUID, the current configured source UUID allowlist and
+the stored MD5 hash of `raw_response::text`. Recovery requires an unexpired
+quarantine, matching metadata/raw source IDs and hashes, and no active lease. It
+resets attempts while retaining singleton isolation; expired/changed snapshots
+cannot be requeued. There is no assistant-facing quarantine retrieval. The legacy
+unscoped claim RPC loses service execution permission in036; the production store
+already uses scoped claims. Apply the reviewed migration before deploying this
+runtime; local implementation/tests do not establish hosted rollout.
+
+Action receipt keys and adapters retain their existing identity rules. An identical
+input subset/tool/argument tuple reuses its receipt, but splitting a former action's
+input group changes that key. Regrouped writes must still reconcile stable source
+identities: Calendar IDs derive from calendar/source keys, and map writes preserve
+source identity and optimistic revision checks. Receipts alone do not promise
+exactly-once remote writes. No new mutation retries bypass these adapters.
 
 ## Gmail subscriptions for techflock
 
@@ -182,3 +232,9 @@ Production worker claims only configured shared source UUIDs using scoped RPC032
 Live rollout pacing: five inputs per batch and configured600second maximum run, with unchanged16round/32call limits and fresh authorization. Library default180seconds stays unchanged; configurable ceiling is600seconds. The first20-input180second live pilot aborted safely and kept its inputs pending.
 
 Optional AGENT_AUTOMATION_LOG_PROGRESS=true emits bounded safe phase/status/counter/registered-tool-name metadata. Source contents, IDs, arguments, URLs, results and private errors never enter logs. Default CLI final-status-only behavior remains unchanged.
+
+## Backend Calendar traversal and map-read reuse
+
+Agent-facing Calendar listings traverse provider continuation pages internally; model arguments do not include pageToken. Low-level client single-page reads remain available to bounded batch duplicate checks. The traversal retains bounded partial evidence when it cannot finish, and partial or filtered results cannot establish absence or full reconciliation coverage. Complete unfiltered full-mode subwindows may cover the reconciliation interval only without gaps. Completion feedback requests narrower unattempted windows after an incomplete scan.
+
+The worker can read map records for the configured Calendar source once and reuse the returned complete snapshots across occurrences. Missing or stale observed projections need a merged upsert; an unchanged reread does not reconcile them. Conflicts require fresh state before retrying. Per-read source-original deduplication and bounded authorization concurrency reduce work while preserving later fresh reads and write-time checks. Current local verification and release status live in milestones/milestone.md.

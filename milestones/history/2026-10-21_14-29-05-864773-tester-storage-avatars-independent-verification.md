@@ -1,0 +1,10 @@
+# storage avatars independent verification
+
+- Local timestamp / acting role / milestone: 2026-10-21T14:29:05.864773-04:00 / tester / storage-avatars.
+- Requested scope: useSupabaseStorageforportraitssofutureadditionsneednobuild.
+- Starting state:27localprofiles, missingliveimage, preservedunrelatedworkingtree.
+- Work / decisions / evidence: Independent targeted46avatar+14operator checks pass, including auth/strictURL/checksum/PNG/deadline/FIFOlimits, genuineCASraces/private-denialproofs. Browser6/6passes on actualproductionbuild+websiteauth/API/service/projection with syntheticdata: a profileaddedafterbuild loads, focusedcurrent/eventattendee imagesvisible,27current+27attendeeimagesload, wrongperson/foreignURLs initials/noexternalrequests, freshmissingobjectfallback/recovery. Bundleunchanged duringbrowser. Historic26assettestassumptions corrected in tests/map-roster.test.mjs/tests/map-schema.test.mjs; immutable021unchanged and focused26checks pass. Overviewpackingvisibilityisalignedneithertestednoraccepted; no mapgeometrycodechanged. No realprovider/profilewrites bytester.
+- Changedfiles: privateavatarservice/serverwiring/sanitization, frontendresolver, operatorupload/CASscript, tests/guides andparentjournals. Originalartworks retained.
+- Evidence: ignored evidence/storage-avatars/browser-report.json, final-status.json, release-package.json, migration.json, full-tests.log, deploy-attempt.log. Migrationmanifest mode0600 anduntracked. docs/profile-avatars.md documentsoperatorworkflow.
+- Result: localcodeandprivateuploadstagecomplete; livemigrationNOTcomplete.
+- Remainingwork/handoff: afterRailwayrecovers deploycurrentreviewed265filewebpackage (verifybytesfirst), requireSUCCESS+authenticatedproxy, CASswitchGracetoverifythenremainingprofiles usingmanifest, verifyall27imagehashes/rendering/preservedfacts, thenremovebundledfallback/rebuild/deployandverifydynamicnewprofilesagain. DoNOTapplyURLsagainstoldweb. Existingpendingworker036/reliability/transportrolloutsremainseparate; donotdeployunapplied036worker. Nobackgrounddeploymentjobcreated.

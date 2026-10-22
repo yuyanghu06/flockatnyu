@@ -14,6 +14,14 @@ provider response/request IDs, HTTP/finish/error codes, available input/output a
 cache/reasoning token counts, and sanitized model text/tool proposals. Chat native toolTurn planning (or planTools for uploads/legacy providers) and answer streaming share one chat run UUID; each claimed planner batch
 has a separate run UUID and round numbers, independent of queue leases.
 
+The provider may make up to three HTTP attempts for a transient rejection or
+transport failure before accepting a response. Each attempt has its own durable
+call UUID and terminal record, while retaining the invocation's run, round and
+operation. Attempts share the original deadline. Successful response parsing or
+streaming is never restarted, and a logging completion failure does not cause
+another inference. Totals must count all dispatched attempts; missing usage on a
+failed attempt remains unknown. This changes no audit schema or retention rules.
+
 Run and tool lifecycle events record names, actual status codes, numeric counts
 and durations. They contain no tool arguments or response bodies. Model-generated
 tool proposals are retained before business validation or chat's proposal slice.
@@ -53,3 +61,5 @@ it. Development recording is opt-in through `MODEL_AUDIT_ENABLED=true`;
 `MODEL_AUDIT_REQUIRED=true` enforces it in other environments.
 `MODEL_AUDIT_TIMEOUT_MS` bounds storage operations. Existing private Supabase
 server credentials are reused. Rollout status lives in `milestones/milestone.md`.
+
+Tool and run diagnostics now add versioned fixed reason/stage/outcome and schema-field codes to existing numeric counts, with safe human-readable Railway mirrors. Predispatch rejects are separate from actual execution. Calendar batches persist the primary item cause and aggregate counts; full sanitized per-item detail is Railway-only. No migration, broader retrieval or changed seven-day retention is introduced. See [tool failure logging](tool-failure-logging.md) for historical coverage, code decoding and failure-rate denominators.

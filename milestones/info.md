@@ -143,3 +143,25 @@ collector-crash-logging/ tracks privacy-preserving stage/code diagnostics for th
 `morpheus-harness-research/` records the read-only upstream harness comparison; recommendations do not authorize implementation.
 
 `chat-limits/` tracks the shared30round/30call change, independent verification and the Railway-blocked rollout with five-minute Discord deadlines.
+
+`harness-reliability/` tracks bounded model retries and queue isolation/quarantine implementation.
+
+`personal-location-behavior/` tracks source-backed personal-location create-if-missing guidance and synthetic SQL/map/model verification; the future time selector remains notes-only.
+
+`storage-avatars/` tracks private Supabase portrait storage, authenticated byte proxy, guarded profile URL migration and removal of frontend-bundled people images after acceptance.
+
+`tool-health/` tracks live tool-failure diagnosis, empty-result progress and native Drive activation corrections with separate hosted acceptance.
+
+683-broadway/ tracks source-aligned corner-tower modeling and browser acceptance.
+
+`discord-image-context/` tracks fresh authorized Discord image attachments into request-local multimodal chat and independent acceptance.
+
+`tool-failure-logging/` tracks historical failure review, content-free cause logging and the user-requested saved Calendar location receipts with explicit hosted activation state.
+
+active-event-indicators/ tracks current-event visual signals and the bounded Go Greek preview.
+
+`active-event-indicators/` records original-site yellow markers, steady current-event building glow and the exact local-only MCP-seeded Go Greek preview. Current acceptance and expiry are in milestone.md.
+
+`attio-integration/` tracks scoped CRM route/tool implementation and independent verification.
+
+`building-focus-framing/` records shared responsive camera/card space, complete-model fitting and smooth lens restoration, verified across all ten landmarks at three viewport sizes.

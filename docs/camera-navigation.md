@@ -2,23 +2,27 @@
 
 ## Selected-building framing
 
-Kimmel overrides the default with `screenSide: 'left'` in building-views.js. Its
-complete bounds use the mirrored left-side band (centre near -0.5 NDC), retaining
-the existing front angle/pullback. Other buildings retain right-side framing.
+`map-focus-layout.js` defines one shared camera/card layout for every building.
+On desktop, the complete building fits in the open area to the left of the
+right-hand activity card. On screens up to 600 px wide, the card moves below
+the building, has a scrollable height capped at 32% of the viewport, and leaves
+clearance for the assistant launcher. The camera uses the same reserved area
+as the actual card layout; no building-specific screen-side override remains.
 
-Focus now requests 25% more distance than the prior fit, within the existing hard
-maximum. It projects all eight corners of the complete building bounds at the
-configured front/height angle, adjusts the orbit target to present those bounds
-on the right, and increases distance further where necessary/allowed. The target
-right-side horizontal span is 0.9 NDC, centred near +0.5 NDC. If the maximum
-prevents that fit, framing prioritizes retaining the right edge on-screen.
+At each focus, `camera-focus.js` solves all eight complete world-bounds corners
+against that area in perspective, retaining each building's facade angle and
+base pullback. If a large complex cannot fit on a narrow screen at the existing
+maximum distance, it smoothly widens the lens instead of clipping the building
+or changing the world distance cap. Lens zoom shares the existing focus spring,
+never compounds on refocus and restores with the saved overview pose.
 
-This bounds-based solution also covers Courant, Silver, GCASL and Paulson rather
-than assuming their configured anchor is the visual centre. Focused portraits
-occupy the left 44% of the viewport, including person-click focus. Existing pan
-limits and overview return remain. Direct checks pass for all four requested
-profiles with synthetic complete-box bounds; actual model appearance remains for
-the user's browser review.
+Actual wide desktop (1440×1000), screenshot-sized desktop (783×514) and phone
+(390×844) browser checks cover all ten
+loaded landmarks, including their real complete model bounds and actual DOM
+card rectangles. All thirty combinations fit without card overlap. Numerical
+checks cover layout, smooth capped fitting, repeated focus and overview/lens
+restoration. These are local browser/emulated viewport checks, not physical
+device acceptance. Geometry and source event data are unchanged.
 
 ## Front views and unchanged limits
 
@@ -52,8 +56,8 @@ Repeated focus does not compound the adjustment.
 Focus uses a complete world bounding box expanded vertically ±4.5 m for hover
 motion. Sphere radius divided by the sine of the smaller effective horizontal
 and vertical half-FOV, times1.12, with the per-building multiplier above, provides conservative framing. Aspect and
-camera zoom are included. An oversized portrait fit remains capped by the
-global maximum and may therefore crop. Stern retains the rotunda presentation
+camera zoom are included. An oversized portrait fit retains the global maximum distance and widens the
+lens as needed for the reserved building area. Stern retains the rotunda presentation
 target `[85,25,193]`, using the same full-building distance calculation as all
 other views. Its earlier 94.36 m close-distance override is removed following
 the user's zoom feedback. Foreground overlap can remain at the lowered angle;
@@ -64,7 +68,7 @@ pan bounds, ground guard and default pose remain unchanged.
 ## Focus and reverse-focus behavior
 
 The first valid focus records the pre-focus overview target, orientation and
-distance. Switching between landmarks preserves that same return pose. The
+distance and lens zoom. Switching between landmarks preserves that same return pose. The
 first outward wheel event while focused **reverses the focus journey to that
 saved overview pose**, using the same spring rate as focusing. This supersedes
 the earlier distance-threshold/pitch-only outward exit.

@@ -1,0 +1,8 @@
+# personal location final behavior verified
+
+- Local timestamp / acting role / milestone: 2026-10-21T13:12:27.589407-04:00 / tester / personal-location-behavior and avatar-assets.
+- Requested scope: matching linked person/avatar, verify create-if-absent source-backed location activity, save future time selector only.
+- Starting state: existing unrelated reliability/chat/collector work preserved; prior exact-wording model failures required focused fixes.
+- Work / decisions / checks / resulting state: Independent tester45/45deterministic checks pass, including actual001–036SQL, service/chat adapters, duplicate retries/corrections, source/identity/action denials and current/future/exclusive-expiry projection. Final frozen-source configured-model planner until-only probe passes12calls with exact source text observed, stable hashes/no changed files: one personal_plan/planned, original start, explicit17:00end, blank label/type other, exact linked author/fixed eLab and zero Calendar writes. Prior stable source-backed chat6calls and hypothetical9calls pass; retained earlier classification/end/caption failures led to focused corrections. Total93model calls across diagnostics/retests, all synthetic fixtures. Report/evidence under ignored evidence/personal-location-behavior. No real club-source reads or business writes by tester.
+- Files: new portrait/prompt; shared/chat prompt and map/docs guides; new synthetic behavior test and tests guide; notes.md; parent journal/asset guides. No applied migration edits.
+- Remaining work/handoff: next coordinated deployment must include new bundled portrait and shared guidance; do not claim live behavior from local model fixtures. Preserve current source, identity and Calendar/Miro boundaries.

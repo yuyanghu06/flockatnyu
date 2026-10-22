@@ -55,6 +55,29 @@ Miro quota recovery uses shared operational counters and cooldowns in existing s
 
 model-audit.md explains private planner/chat model-call and output accounting, null usage/cost limits, credential redaction, service-only access and seven-day retention.
 
+The audit guide also explains per-attempt inference accounting. The automation
+guide covers isolated queue retries, fair admission, temporary quarantine and
+service-only recovery; the rolling milestone distinguishes local code from
+applied schema and deployed behavior.
+
 `discord-chat.md` documents shared assistant execution, verified caller context, eboard source/audience rules, private bridge setup and transient interaction limits.
 
 [drive-skill.md](drive-skill.md) describes shared Tech@NYU Drive guidance, selective runtime activation, read-only folder navigation and private research boundaries.
+
+`profile-avatars.md` documents private Supabase portrait storage, authenticated image delivery and the guarded operator upload/profile-cutover workflow. Actual rollout state remains in the milestone snapshot.
+
+`tool-health.md` records the October21 live connector/model diagnosis, successful-empty progress correction, native Drive activation issue and explicit read-only/mutation verification limits.
+
+`683-broadway-model.md` documents the Go Greek temporary popup: complete source-to-model-to-UI import chain, 70-face replacement boundary, one-switch disable workflow and exact permanent cleanup inventory. It distinguishes popup-owned files from shared map assets/UI and the separately registered Go Greek database row, with linked-data cleanup guards.
+
+`discord-chat.md` also explains request-local attachment vision for verified trigger/reply/recent messages, bounded native-CDN downloads, partial coverage and existing permission/privacy boundaries.
+
+`tool-failure-logging.md` records the fully paged historical failure baseline and safe versioned operational cause logging, including its retention, batch-detail and hosted activation limits.
+
+`active-event-indicators.md` explains original marker provenance, active-window/whole-building glow integration, resource ownership and the exact local-only Go Greek sample and cancellation boundaries.
+
+Tool reliability guides distinguish historical failure diagnosis from current local implementation: five-minute broad Discord summaries, backend-owned bounded Calendar pagination and per-read map source-check reuse/concurrency. Planner relevant-link inspection is a saved requirement in notes.md; its implementation is a follow-up. Release and verification truth remain in milestones/milestone.md.
+
+[attio-integration.md](attio-integration.md) documents the opt-in CRM route/tool contract, server configuration, write semantics and verification limits for website and Discord Flockbot.
+
+`camera-navigation.md` describes the shared unobscured focus area and responsive activity-card positioning, complete-bound perspective fit and temporary lens widening within unchanged distance limits.

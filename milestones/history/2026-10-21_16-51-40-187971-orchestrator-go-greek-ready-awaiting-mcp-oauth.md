@@ -1,0 +1,8 @@
+# Go Greek migration ready; Supabase MCP requires renewed OAuth
+
+- Role/scope: orchestrator; authorized backend row and cleanup documentation.
+- Local readiness: exact037 and guide accepted; independent10SQLchecks and reviewer in-memory checks pass. [Tester](2026-10-21_16-51-40-187111-tester-go-greek-catalogue-sql-accepted.md); [review](2026-10-21_16-51-40-187813-evaluator-go-greek-catalogue-approved-for-apply.md). No schema/grants/events/older migrations changed. Pending036 remains unapplied.
+- Access: no Supabase tools are exposed to this parent chat. Account CLI lists configured Supabase OAuth MCP. Initial authenticated dashboard preflight was read-only:9rows,targetabsent,0links,deniedserviceDML,latesthosted035,othercatalogueMD5 6553fd9b09534d5b3d6e7c99b727b24e. User requested MCP; computer control stopped before mutation.
+- MCP route: ephemeral normal codex exec with required Supabase MCP, other persisted servers disabled for this invocation only, failed startup because OAuth refresh requires authorization. No persistent configuration/permissions altered. Official Codex MCP/noninteractive docs support the configured CLI route. No database write attempted.
+- Action: normal codex mcp login supabase started and awaits authorization. User asked asynchronously to complete the login. All authorized concrete implementation/review is finished before that login request.
+- Next: after login succeeds, fresh MCP preflight; apply only exact reviewed037 through apply_migration; record hosted receipt, unchanged prior catalogue/access, verify actual API/building recognition; finalize docs. Do not use UI for database changes or bulk apply036.

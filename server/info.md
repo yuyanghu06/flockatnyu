@@ -19,6 +19,8 @@ The independent Railway collectors are running `discord-events` and `gmail-event
 `assistant-context.js` reports actual registered tool execution start/result via
 an optional request-local callback. `app.js` forwards bounded NDJSON tool records
 before answer metadata/text: ID, name and running/completed/partial/failed only.
+Successful `empty` results show completed progress; model results and private
+audit outcomes retain `empty`, while actual errors still show failed progress.
 No arguments or result contents enter progress records. Existing four-call limit,
 source authorization, adapter behavior and cancellation remain authoritative.
 
@@ -28,11 +30,16 @@ source authorization, adapter behavior and cancellation remain authoritative.
 
 Miro calendar navigation now accepts valid omitted-array empty searches and locates exact month/year areas before reading canvas. Bounded chat retrieval and explicitly configured boards remain limits; no full-workspace completeness is claimed.
 
+First Drive proposals load the shared Drive skill and replan the entire proposed
+turn before committing native messages, IDs or effects. Previously executed
+receipts remain in context; discarded proposals produce no synthetic tool result,
+progress or execution audit. Their uncommitted IDs may be proposed again.
+
 Chat prompting now includes calm tone and source routing; `assistant-context.js` supports 30 executed tools / 30 planning rounds for dependent Calendar/Miro/map workflows. `index.js` wires the same source-authorized map service into projection and request-local chat tools. Calendar originals need configured source identity; participation needs exact linked original author/sender evidence and successful lookup. Runtime UI tool progress matches the 30-call bound.
 
 Chat binds the composite Google adapter per request with the same Calendar read/write definitions for all user wording. The model resolves requested actions and confirmations from conversation; it must ignore quoted or retrieved instructions and clarify ambiguous targets. Actual execution checks trusted Google access, fixed targeting, valid arguments and request-local revision/idempotency state. Stateless mutations remain denied. Calendar receipts reach planning/answer context. Orchestration does not infer Calendar intent or stop workflows through wording heuristics; model completion, 30-round/30-call limits and duplicate-call guards bound execution. No adaptive two-round shortcut truncates source-to-Calendar workflows. Mechanical stall detection permits two duplicate-only rounds with feedback and stops on a third consecutive round executing no new call; any new call resets that counter. This never interprets user intent or changes tool visibility.
 
-Chat has a separate overall requestTimeoutMs (ASSISTANT_REQUEST_TIMEOUT_MS, default300s/max600s) so paced source reads fit before final answer generation; provider LLM_TIMEOUT_MS remains an independent per-call limit.
+Chat has a separate overall requestTimeoutMs (ASSISTANT_REQUEST_TIMEOUT_MS, default420s/max600s) so a broad Discord summary's shared300second scan can leave time for planning and final answer generation. Explicit shorter overrides and parent cancellation remain authoritative; provider LLM_TIMEOUT_MS stays independently30seconds by default.
 
 Production entrypoint `web.js` wraps the shared `runtime-app.js` factory with `site-auth.js` signed sessions, fixed-origin writes and protected static assets/API. Local `index.js` retains development authentication. Internal Miro token broker uses an independent server credential.
 
@@ -91,3 +98,15 @@ Chat all-day copies use create_calendar_events for up to50rows per model call. P
 Trusted Discord pings can include separately validated repliedMessage evidence alongside the previous-hour context. The bridge passes only the approved actor to the web-side loader, which fetches the exact trigger and direct reply target with existing source checks. Both model phases receive the whole bounded text as untrusted facts and retain the actual speaker; no-source messaging recognizes usable reply text even when the recent-hour list is empty. This does not grant map identity authority or expose raw reply bodies in client metadata/audits.
 
 Source adapters share the 60-second default in `source-timeout.js`, including map/source verification, Google, Discord, Miro, shared memory and bug-report persistence. Caller cancellation and explicit shorter overrides still apply; longer conversation, scan and pacing budgets retain their existing limits.
+
+Private map portraits are served by `map/avatars.js` through the authenticated
+`GET /api/map/people/:personId/avatar` route. Runtime wiring creates the bounded
+server-only Storage reader. Profile HTTPS references become person-bound
+same-origin paths; private bucket URLs/credentials never appear in display data.
+Legacy safe local avatars remain compatible during storage migration. The route
+uses existing site/development authentication and private no-store PNG responses;
+see [map guide](map/info.md) for request, binary and resource bounds.
+
+`tool-diagnostics.js` defines append-only version-1 operational code dictionaries and sanitizers. Chat/worker diagnostics log fixed causes and reviewed schema field IDs without source content or argument values; model-audit stores numeric codes in existing private counts and mirrors safe labels to Railway. Calendar saved locations remain business receipt fields and never enter diagnostic events.
+
+`attio/` supplies the opt-in live CRM client. `runtime-app.js` registers its shared adapter for website and Discord chat; `app.js` exposes it through existing authenticated `/api/tools/:tool` routes. `chat-runner.js` and `assistant-context.js` carry bounded CRM context and write receipts through both planning protocols. Attio has separate source/object authorization and does not supply map write evidence or autonomous-worker access. See [Attio setup](../docs/attio-integration.md).

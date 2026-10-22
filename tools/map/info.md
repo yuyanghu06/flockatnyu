@@ -29,3 +29,12 @@ Chat additionally gates mutations on affirmative current-turn intent, exact user
 Event phrases use NFKC/case normalization and contiguous whole alphanumeric token matching, so AWS Hackday and AWS Hack Day can resolve the same occurrence despite spaces, hyphens or punctuation. The same rule binds the current declaration and rechecks the event before writing. This formatting normalizer does not infer synonyms or match fragments of larger tokens; catalogue-based model resolution below handles aliases. Person/date/source/concurrency checks remain unchanged.
 
 When normalized titles do not resolve, lookup returns the authorized, unexpired, date-filtered catalogue with fuzzy bigram ranking and bounded notes/location context. The model resolves clear typos or aliases from those actual events; rank alone is not confidence. All candidates are returned up to20, with explicit truncation and no write receipts for incomplete lists. Exact duplicate matches, multiple matching full contexts and unsupported single short names require clarification. Complete candidate selections bind the exact returned event name/source/revision and recheck authorization before an attendance-only write. Person matching remains exact.
+
+Prompt guidance for both agents covers creating a complete map-only personal
+activity when an authorized original has no existing stable source record;
+creation omits event.id for trusted UUID assignment. Explicit location windows
+and exact author/building resolution remain required, and updates keep their
+source identity and fresh optimistic token. A hypothetical example or bare
+website first-person claim cannot supply original-source/identity evidence.
+
+Trusted event reads deduplicate exact provider-original checks within one read, reuse its validated snapshot for bound attendance declarations, and authorize at most four rows concurrently in each event/participant phase. Relationship indexes preserve snapshot ordering while avoiding repeated array scans. A later read uses a fresh snapshot and access checks; identity lookups and both write authorization passes remain uncached. Reuse a complete source-filtered map read when reconciling multiple records; missing or stale records require a merged upsert rather than identical rereads.

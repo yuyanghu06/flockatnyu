@@ -1,3 +1,26 @@
+## Discord request-local image context
+
+`discord-chat-images.test.mjs` exercises the production Discord REST client,
+current source/policy retrieval, context loader, private bridge, shared chat runner
+and provider serializer against synthetic HTTP responses. Both planning and final
+answer payloads receive bounded PNG/JPEG/WebP bytes in the last user message,
+with the original question preserved and exact message provenance in separate
+system metadata. The native text-only tool-turn path is not selected.
+
+Checks cover trigger/old direct reply/recent priority, attachment deduplication,
+four files, exact 5 MiB files and 10 MiB aggregate limits, strict CDN identity and
+query validation, unsupported bodies, MIME/signature/size failures, ignored-abort
+fetch/body deadlines and late response cleanup. Failed signatures and failed body
+streams still consume the shared 10 MiB download budget, so rejected images
+cannot unlock repeated full-size downloads. Source, policy and audience
+withdrawals discard images before inference. Metadata injection, malformed names
+and oversized recent text cannot corrupt the remaining valid context. Actual
+adapter/remote/bridge follow-ups retain text only; model audit arguments, system
+metadata, output records and transport logs contain no uploaded bytes or signed
+CDN URLs. These fixtures verify protocol, permissions and data handling; real
+model interpretation and hosted rollout require separate evidence. No live model
+call, source read, message post, business write or deployment occurs in this suite.
+
 ## Timed Calendar batches and bulk corrections
 
 `chat-calendar-batch.test.mjs` additionally verifies26Tuesday/Thursday timed
@@ -9,13 +32,21 @@ Its fake Google server recursively merges PATCH objects, requiring explicit null
 clears for opposite date/dateTime representations. Reverse conversions, conflicts,
 unsupported events, access denial, partial failures, cancellation, retry and safe
 25-item title-query pagination remain covered. An actual native-provider HTTP
-chain uses two list pages and one bulk update, with26saved-timing receipts and
+chain follows two pages inside one list call, then one bulk update, with26saved-timing receipts and
 content-free audit counts. All network/provider responses are synthetic.
-Verbose-event coverage reproduces the existing full25-item context limit, then
-uses identities mode to retrieve26events in two bounded pages and repair them
+Verbose-event coverage checks bounded partial full-mode evidence, then
+uses identities mode to retrieve26events in two backend pages and repair them
 in one native bulk operation. Compact listings omit1800-character descriptions;
 fresh full event reads and PATCH preservation retain every human note. Unknown
 modes fail before OAuth, and the existing default full behavior remains checked.
+`calendar-pagination.test.mjs` exercises stable query/window/page parameters,
+empty pages, duplicate identities, malformed/repeated cursors, late failures,
+account/access revocation, shared60second cancellation and20page/200event/UTF-8
+output ceilings. Model schemas reject cursors while the low-level single-page
+client remains compatible. Native completed scans recheck access before release.
+Worker sync tests require gap-free unfiltered full-mode coverage, recursively
+narrow incomplete windows, reuse bulk map observations and invalidate them after
+conflicts or fresh reads showing vanished records. No source/provider writes run.
 Single-create HTTP checks also verify the production client's saved start/end,
 timezone and exact Calendar URL survive both follow-up planning and final context;
 existing provider stubs without optional timing fields remain supported.
@@ -48,8 +79,16 @@ Google requests. All provider/Google responses are synthetic; no live data is re
 
 ## Native chat tool execution
 
+`chat-tool-stream.test.mjs` checks actual Google empty searches and Miro empty
+catalogues through planned and native chat: progress completes, original `empty`
+results reach models/audit unchanged, and permission/timeout/invalid errors fail.
+
 `chat-native-tools.test.mjs` runs the production provider against synthetic HTTP
 responses through the real chat runner and private Discord bridge. It verifies
+Drive skill activation leaves the unexecuted proposed turn out of the transcript,
+preserves prior receipts, allows discarded IDs and rejects committed ID reuse.
+Mixed writes wait for a fresh plan; only actual executions emit tool progress/audit.
+It also verifies
 assistant/tool call-ID pairing, stable catalogues, historical refusals alongside
 current capability/attempt/receipt facts, unknown/invalid/deferred/duplicate calls,
 thirty-round and thirty-execution caps, cancellation and actual execution audit counts.
@@ -566,8 +605,8 @@ Discord collector diagnostics tests exercise safe stage/code attribution, nested
 Discord total-request deadlines: `discord-chat-config.test.mjs` checks the twenty-minute
 default and upper bound, shorter explicit overrides, clamping and malformed values.
 `discord-chat-tool-parity.test.mjs` observes actual runtime timers: Discord gets its
-own deadline while website chat retains five minutes, with separate body-read
-limits. Remote delivery has a thirty-second allowance beyond the bridge's default.
+own deadline while website chat retains its independent configured deadline
+(five minutes in that fixture; the runtime default is now seven), with separate body-read limits. Remote delivery has a thirty-second allowance beyond the bridge's default.
 These checks inspect scheduled deadlines without waiting twenty minutes.
 
 `discord-chat-bridge.test.mjs` exercises the private Railway native HTTP branch
@@ -577,3 +616,23 @@ non-success statuses, complete/truncated and 250KB response boundaries, and
 cancellation/deadlines both before headers and during response bodies. Private
 requests must bypass fetch. Railway DNS, IPv6 routing and deployed reachability
 need separate live verification.
+
+Harness reliability tests: provider-retries.test.mjs verifies transient HTTP/transport classification, bounded attempt/deadline/Retry-After behavior, per-attempt audit and no successful-body/stream replay. automation-reliability.test.mjs covers settlement wiring/cancellation and real Calendar identity across changed batch keys. automation-reliability-sql.test.mjs executes migrations001–036 in PGlite for fair singleton retries, lease/snapshot/source fences, quarantine retention and service-only recovery. Historical migration fixtures remain unchanged.
+
+`personal-location-behavior.test.mjs` exercises synthetic original personal-location activity through actual map service/chat adapters and SQL001–036, including stable-source retry/correction, active/future/expiry projection and identity/action denials. Its explicit `--live-model` mode adapts the existing inert synthetic prompt verifier; it never writes club sources or the hosted database.
+
+`map-avatars.test.mjs` covers private portrait URL/auth/body/checksum/deadline/FIFO bounds and projections. `avatar-storage-migration.test.mjs` covers private uploads, recognized denial envelopes, guarded/idempotent avatar-only CAS writes and concurrent human edits. `map-avatar-storage-browser.mjs` exercises built-map current/attendee images for post-build profiles through real website/API/private-proxy code using synthetic sources; no hosted source or profile writes.
+
+`broadway-683-geometry.test.mjs` verifies the source-backed 70-face extraction/removal, exact neighbor retention, complete original shell, deterministic finite single-mesh detail. `broadway-683-browser.mjs` exercises the isolated local map with synthetic API responses, desktop/mobile model framing, real canvas selection and existing focus/return behavior; screenshots/results go to ignored evidence/683-broadway.
+
+Tool-failure logging tests cover versioned counts, privacy, predispatch versus executed calls, source coverage, sink failure noninterference and provider parser causes. Google and map diagnostic suites distinguish observed upstream HTTP from local validation/deadlines. Calendar location receipt tests exercise actual mocked Hono flows, single/batch and native/planned next-turn/final-answer projections with saved, cleared and unknown locations.
+
+Go Greek's browser harness also verifies the actual enabled name and the disabled state by overriding only the pure manifest in a fresh browser context: no popup UI/model request and exact original tile retention. Six current count scripts derive nine plus the manifest flag. The schema test preserves nine immutable database records independently of this optional visual location.
+
+`go-greek-building-sql.test.mjs` applies real001–035 plus isolated037 in local PGlite and verifies a single guarded Go Greek catalogue seed, exact preservation/replay/conflicts, unchanged access/metadata, production presence projection and safe future cleanup/FK restriction. Optional036 compatibility is local only; no hosted036 activation is implied.
+
+Active-event indicators have source-art/controller/resource/window tests in map-event-indicators.test.mjs, adversarial local sample-policy tests in map-event-preview.test.mjs and desktop/mobile/reduced-motion/failure/selection/disabled-popup browser evidence in map-event-indicators-browser.mjs. Synthetic API coverage and actual MCP-seeded local preview receipts are distinguished in the journal.
+
+`attio-integration.test.mjs` independently exercises opt-in CRM configuration, source/object/write denials, exact provider requests, bounded content and safe errors, cancellation, request-bound writes and uncertain outcomes, authenticated tool routes, shared native/planned chat receipts and the complete runtime catalogue. All provider fixtures are synthetic; it does not contact Attio or establish live credentials.
+
+`map-focus-framing.test.mjs` checks responsive clear space, smooth capped lens fitting, repeated focus and overview restoration. `map-focus-framing-browser.mjs` verifies all ten real landmark bounds against shared frame and actual card rectangles at desktop/phone sizes; evidence is in ignored evidence/camera-framing.

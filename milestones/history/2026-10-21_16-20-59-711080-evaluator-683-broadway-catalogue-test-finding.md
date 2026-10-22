@@ -1,0 +1,7 @@
+# 683 Broadway review requests catalogue test correction
+
+- Role / scope: independent read-only evaluator; inspect implementation, source geometry, reference likeness and verification.
+- Evidence: model is a deterministic, finite, single Mesh with 34,118 triangles; exact 70 source removals and second removal zero; original asset hash unchanged. Desktop likeness and complete geometry are coherent with the supplied image. No material model-code issue identified.
+- Finding: active tests/map-schema.test.mjs incorrectly equates the current visual catalogue with immutable migration 021's nine seeded database buildings. Adding the visual-only tenth landmark causes 10 !== 9. Fix the test contract explicitly; preserve the applied SQL and database catalogue. Current browser count assertions need corresponding ten-landmark updates.
+- Verification limitations: final mobile run remains pending after a test camera-aspect race and development reload. Parent started a separate local Vite instance on 5174 that ignores test/docs/journal/evidence writes. Existing camera-focus.mjs's centre assertion conflicts with pre-existing shifted framing; camera-focus.js is unchanged. Existing map Escape return is unavailable; actual Reset/outward wheel remain in scope.
+- Next: bounded coder test correction, final independent browser run, evaluator recheck and journal integration. No external data or release changes.

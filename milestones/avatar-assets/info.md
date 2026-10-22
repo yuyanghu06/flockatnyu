@@ -9,3 +9,7 @@ Current avatars are also copied into docs/avatars/ under readable person-name fi
 2026-10-17 cleanup correction: the user authorized deleting output/, including scratch delivery variants/archive/prompts. The26 named documentation images remain in docs/avatars/. Earlier delivery statements above describe the historical artwork pass, not current storage.
 
 M40 relocation: all 26 retained images now live under assets/avatars/. Earlier docs/avatars/ locations above are historical; source photos and deleted scratch output remain outside current asset storage.
+
+2026-10-21 addition: one new matching avatar is retained as assets/avatars/Grace.png, with exact built-in generation prompt in grace-prompt.txt. The original supplied photograph remains outside the repository. A separately authorized linked profile was inserted and all26existing profiles preserved; the new bundled image requires a website build/deployment. Personal-location behavior verification is separate from artwork and does not create presence from hypothetical examples.
+
+2026-10-21 Storage direction: all 27 original portraits have verified private Storage copies. Dynamic proxy loading removes the need for future per-person builds after the initial web cutover. Local artworks remain for recovery. Railway's deployment pause currently prevents profile URL backfill and bundled fallback removal; the rolling milestone is authoritative.

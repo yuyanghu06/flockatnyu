@@ -1,14 +1,135 @@
+## All-building camera framing
+
+- [x] Fit complete selected models outside the activity card using shared responsive layout.
+- [x] Preserve facade angles/distance caps; smoothly widen lens for large compact views and restore overview.
+- [x] Directly verify all ten buildings at wide/screenshot-sized/phone viewports (30/30), numerical restoration, existing regressions and build.
+
+## Attio integration
+
+- [x] Inspect existing Flockbot routes/tool/context/auth contracts; confirm requested create/update scope.
+- [x] Implement scoped server-only Attio client, field discovery, search/read/create/update tools and website/Discord wiring.
+- [x] Independently verify failure/access/write/receipt paths plus native and planned chat; tester84/84 and evaluator65/65 ACCEPT.
+- [x] Document setup and operational limits in docs/attio-integration.md.
+- [x] Configure ignored local Attio source/object/write settings after user saves key; verify live identity, fields and actual authenticated search/read routes for People and Companies. Local preview restarted.
+- [ ] Attio production configuration/deployment and deliberate write verification remain separate; no CRM writes performed.
+
+## Active-event map indicators
+
+- [x] User follow-up: small marker bounce and softly flashing glow; reduced motion static; direct local browser verification.
+
+- [x] Locate original personal-site marker and plan event timing, geometry/resource and sample-policy boundaries.
+- [x] Add authorized event kind, exact local preview policy, yellow marker and whole-building event glow.
+- [x] Independently test active windows, failure clearing, selection coexistence, mobile/reduced-motion and resource ownership; evaluator ACCEPT. Existing selected-mobile card occlusion documented.
+- [x] Seed exact two-hour [UI TEST] Go Greek event via Supabase MCP; verify actual local API/unmocked desktop/mobile preview and document cancellation/expiry (October21,7:11PM New York).
+
+## Go Greek backend registration
+
+- [x] Plan one-row owner migration, preserved catalogue grants and safe future retirement.
+- [x] Implement and independently verify only migration037 plus backend cleanup documentation; tester10/10 and evaluator ACCEPT.
+- [x] Renew Supabase MCP OAuth, apply only reviewed037 through MCP (hosted20261021205505), and verify unchanged prior catalogue/security plus actual API recognition. Pending036 remains separate.
+
+## Go Greek temporary popup
+
+- [x] Plan stable identity, one-switch removal and complete import/cleanup documentation.
+- [x] Rename display to Go Greek; gate model, catalogue and camera from one manifest.
+- [x] Document all owned/shared files, assets, UI behavior and permanent cleanup.
+- [x] Verify enabled/disabled browser states, source integrity and build; independent review ACCEPT. Guide includes event empty-state/backend boundary.
+
+## Discord chat image context
+
+- [x] Independently inspect and define trusted attachment reads and multimodal context contract.
+- [x] Verify actual configured model image understanding with a synthetic read-only probe and durable private audit.
+- [x] Implement fresh trigger/direct-reply/recent image reading, ephemeral multimodal injection and final source checks.
+- [x] Charge failed image downloads against aggregate10MiB network budget; independent failed-signature/stream regressions pass.
+- [x] Independently verify both model payloads, failure/permission/privacy behavior and existing chat regressions:391pass; real configured-model full local pipeline succeeds.
+- [x] Review/fix/retest/integrate docs and prepare267filewebpackage with5exactimage-modules/private-value scan; evaluator ACCEPT locally.
+- [ ] Hosted release: recover Railway platform/deployment access, coordinate current combined web package and verify authorized hosted image invocation. No deployment/push claimed.
+
+## Tool failure reason logging
+
+- [x] Diagnose three historical groups: confirmed planner over-batching and reproduced old map deadline; Calendar cursor handling narrowed with explicit reconstruction limits.
+
+- [x] Preserve actual saved Calendar location through single/batch/final-answer receipts; read-only Go Greek event venue confirmed already saved.
+- [ ] After logging activation, measure dispatched failure rate; prioritize excessive (>8) planner proposals and invalid Calendar continuations without replaying mutations.
+- [ ] Investigate separate Gmail collector/Discord delivery errors using appropriate bounded source diagnostics; tool logging does not establish those pipelines are repaired.
+
+- [x] Inspect Railway logs and page all retained lifecycle failures sinceOctober18.
+- [x] Add content-free correlated reason/stage/validation/provider diagnostics for chat and planner, preserving real statuses and batch item causes.
+- [x] Independently test privacy, classification, persistence and noninterference; final463/463integrated/evaluator113/113/APIbuildpass.
+- [ ] Renew Railway CLI/app authentication (currentlyinvalid_grant), then prepare minimal reviewed release, activate logging/receipt fixes and verify hosted diagnostics; preserve unrelated worker036/avatar/collector releases.
+
+## Calendar-to-map confirmation
+
+- [x] Confirm automatic batch-driven Calendar projection and live worker activity through fresh Railway status/progress reads; distinguish active reconciliation from verified full freshness.
+- [ ] If exact freshness is required, compare all current rolling-window Calendar occurrences against map identity, fields and building links through authenticated read-only access; this status pass did not establish full parity.
+
+## 683 Broadway model
+
+- [x] Identify screenshot corner tower and source-aligned70triangle extraction contract.
+- [x] Build facade/roof detail, complete-model selection and fixed camera view.
+- [x] Correct active test expectations for ten visual landmarks versus nine fixed database buildings.
+- [x] Independently verify geometry retention/removal, desktop/mobile appearance and map interactions; evaluate/integrate. Local model accepted; no hosted release or database addition.
+
+## Live tool failure diagnosis
+
+- [x] Inventory chat/update tools and correlate screenshot with private content-free live audit.
+- [x] Correct successful empty-result progress and independently verify genuine failures remain failures.
+- [x] Complete live read probes and document stateless/mutation limits:15read tools fully successful,2valid partial reads,2request-local lookups verified with fixtures; no live business mutations.
+- [x] Correct native Drive skill activation locally; independent64/64checks and actual configured-model/read-connector probe pass.
+- [x] Record isolated live provider stop-with-empty-answer separately; no full deployed-chat health claim.
+- [ ] Investigate isolated zero-text final model stream and fail/fallback behavior without claiming missing output succeeded.
+- [ ] Include the two accepted tool-health fixes in the next coordinated web release; verify hosted actual Drive execution and completed empty-result progress.
+- [ ] Consider broad Discord summary latency improvements while preserving current permission rechecks and partial-coverage truth.
+
+## Storage-backed profile portraits
+
+- [x] Implement private Storage, authenticated person-bound image proxy and dynamic frontend URLs.
+- [x] Upload and hash-verify all 27 private objects; verify anonymous denials and preserve every profile row.
+- [x] Pass independent service/migration/browser review and full regressions: 1,921 passed, one optional skip, zero failures; six browser checks passed.
+- [x] Prepare and scan the reviewed 265-file web package; attempt deployment.
+- [ ] Blocked by Railway's deployment pause: retry the reviewed web release after recovery and verify the authenticated image endpoint.
+- [x] After compatible web succeeds, MCP CAS-switch all27profileavatarURLs; hostedhash/auth/no-store and unchangedidentityfacts verified.
+- [ ] After verified cutover, remove bundled portrait imports and deploy that cleanup; preserve local original artwork.
+
+## Club website memory
+
+- [x] Add and verify public Tech@NYU website and internal Flock chat site in hosted shared memory, preserving prior notes; prompting change superseded by user.
+
+## Avatar and personal-location follow-up
+
+- [x] Generate matching portrait and add verified linked person; preserve existing profiles.
+- [x] Save future map clock/time selector in notes; implementation explicitly deferred.
+- [x] Clarify source-backed personal-location creation, stable identity, same-day until-only planned availability and explicit expiry; preserve all runtime identity/source gates.
+- [x] Independently verify planner/source-backed chat behavior, active/future/expiry display and zero Calendar writes; final strict stable-source model check and local review accepted.
+- [x] Build and verify byte-identical new avatar is bundled.
+- [ ] Deploy shared personal-location guidance in the next coordinated web/worker release; no live activation claimed. Portrait-specific bundling is superseded by the Storage work above, whose live cutover is externally blocked.
+
+- [x] Chat budget orchestrator pass: twenty minute discord release blocked; evidence in current milestone.
+- [x] Chat budget evaluator pass: twenty minute discord review accepted; evidence in current milestone.
+- [x] Chat budget tester pass: twenty minute discord tests pass; evidence in current milestone.
+## Harness failure recovery
+
+- [x] Define bounded provider retry and queue isolation/quarantine contracts.
+- [x] Implement provider retries with per-attempt audit/shared deadline; coder82/independent88tests pass after cleanup timeout repair; evaluator accepts with88checks.
+- [x] Implement036 queue failure accounting, fair singleton retries, bounded quarantine and scoped service requeue; coder75tests and independent review accepted.
+- [x] Independently verify transient/permanent failures, deadlines, partial streaming, leases, fairness, retention, authorization and mutation replay protection;88provider/41final queue-Calendar checks pass.
+- [x] Review/fix/integrate: full1858pass/1existing optional skip/0fail; API/frontend builds pass; independent provider/queue review accepted.
+- [ ] Hosted activation: apply reviewed036before deploying updated worker, deploy provider changes to web/worker and verify actual behavior. No live changes from this implementation pass.
+- Separate follow-ups: search recovery/link discovery and channel queues.
+
+- [x] Chat budget coder pass: twenty minute private bridge implemented; evidence in current milestone.
+- [x] Chat budget orchestrator pass: twenty minute discord plan; evidence in current milestone.
 - [x] Chat budget orchestrator pass: thirty call rollout blocked; evidence in current milestone.
 ## Shared chat budget rollout pending
 
 - [x] Implement and independently verify30rounds/30calls plus matching frontend progress IDs.
-- [x] Save five-minute Discord deadlines on web and collector.
-- [ ] Resume reviewed web deployment and collector existing-image redeploy when Railway lifts its October21 deployment pause; verify activation and live behavior. Current runtime still has previous limits.
+- [x] Superseded five-minute Discord deadlines with user-requested20minutes on web and collector; private route and dual-stack web host staged.
+- [ ] Deploy new c984237 web AND collector source when Railway lifts its October21 pause; old-image redeploy cannot support privateHTTP/20minutes. Verify private reachability and activation. Current runtime still has previous limits.
 
 ## Morpheus harness research
 
 - [x] Inventory our existing harness and identify actual gaps without runtime changes.
-- [x] Finish pinned upstream comparison and prioritized recommendations; runtime changes remain proposals only.
+- [x] Finish pinned upstream comparison and prioritized recommendations; first reliability recommendation subsequently authorized/implemented in Harness failure recovery. Search/channel scheduling remain proposals.
 
 - [x] Chat budget orchestrator pass: discord timeout diagnosed; evidence in current milestone.
 - [x] Chat budget evaluator pass: thirty call review accepted; evidence in current milestone.
@@ -20,7 +141,7 @@
 - [x] Define content-free stage/code diagnostics and preserve existing fatal/checkpoint behavior.
 - [x] Implement startup, Gateway, ingestion, checkpoint, metadata, overflow and shutdown diagnostics; coder106checks/API build pass.
 - [x] Independently verify47new diagnostics cases,307affected tests and final96startup-stop tests; full1755pass/1optional skip, API/package/review accepted.
-- [ ] Deploy209e106collector and verify diagnosticsVersion1startup, Gateway readiness and current checkpoint activity. Upload rejected: Railway deployments temporarily paused; no live release yet.
+- [ ] User requires deployment after other agent rollout. Logging209e106 is already included in combinedc984237collector package; use latest verified combined release, never the older logging-only package. After other deployment completes, verify diagnosticsVersion1startup, Gateway readiness and checkpoint activity; deploy only if missing. Railway pause still blocks live activation.
 
 ## Chat tool limits explanation
 
@@ -1623,3 +1744,36 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 ## Domain HTTPS follow-up
 
 - [x] Verify live TLS/certificate/DNS, HTTP redirect and fresh Chrome login/app security; current setup is secure. User-browser warning remains unreproduced.
+
+- [x] Clarify local60secondsource-default scope, specializedsummary/modelbudgets andoverallcancellation; questiononly,nobudgetchange.
+
+- [x] Explain broad Discord summary shared deadline versus exact-channel reads; record coordinated five-minute/concurrency recommendation without changing runtime.
+
+- [x] Plan request-local map original-check deduplication and bounded concurrency; preserve fresh calls and write checks.
+- [x] Implement and verify map read overhead reduction (independent445integratedchecks and evaluator acceptance).
+
+- [x] Implement five-minute broad Discord summary and seven-minute website default; independent integration verification pending.
+- [x] Plan backend-owned Calendar pagination with bounded partial evidence and unfiltered completion authority.
+- [x] Implement and verify backend Calendar pagination and map completion feedback (independent445integratedchecks and evaluator acceptance).
+
+- [x] Independently verify five-minute aggregate scan, shared signal/cancellation and seven-minute default/overrides (48checks plus synthetic probe).
+
+- [x] Implement per-read map authorization deduplication, indexed relationships and concurrency four; coder56checks/API build pass, independent verification pending.
+
+- [x] Independently review completed summary/map code and79focusedchecks; no findings, combined Calendar verdict pending.
+
+- [x] Save planner permission/preference to inspect relevant linked resources during Discord summarization (for example volunteer signup sheets).
+- [ ] Follow-up: implement/verify relevant-link inspection by planner through available authorized reads; saved requirement, outside current reliability pass.
+
+- [x] Implement backend-owned Calendar traversal, bounded partial evidence, recursive narrower windows and map observation/conflict feedback; independent final acceptance pending.
+
+- [x] Integrate five-minute summary, backend Calendar pagination and map overhead fixes; independent445tests/evaluator accept, API build/whitespace pass.
+- [ ] Verify production tool timing and failure rates after an isolated reviewed release; this pass remains local.
+
+## Combined Railway release and GitHub publication
+
+- [x] Inventoryallworkingtreefeatures and fourservices; plan schema/config/releaseorder.
+- [x] Complete collector packaging fixes and finalfulltests/browser/review (2150pass/1skip,55browser,ACCEPT).
+- [x] Apply/verify036 throughMCP and requiredprivateRailwayconfiguration; existingcredentials/grants preserved.
+- [x] Deploy/verify allfourRailwayservices fromfreshcombinedcontexts;SUCCESS andhostedaccess/feature/collector/workerchecks.
+- [ ] Publishlogicalcommits toGitHub andverifyclean/matchingremote.

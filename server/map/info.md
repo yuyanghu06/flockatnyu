@@ -77,7 +77,8 @@ participant whose effective window has not ended before their stored title and
 portraits can be shown. Scheduled events may remain visible without attendees.
 Tentative events remain visible, while tentative/declined participation never places avatars.
 Attendee portraits require independent event and participation authorization.
-Only trackable roster names and safe local avatar paths reach browsers. Labels
+Only trackable roster names and person-bound same-origin avatar proxy paths (or
+legacy safe local avatar paths during rollout) reach browsers. Labels
 remain verbatim plain text, including blank labels and literal angle brackets,
 with200Unicode code points maximum. No provenance, private linked identities or
 inferred activity text is sent to the frontend. Unavailable/unconfigured data
@@ -130,6 +131,44 @@ Event phrases use NFKC/case normalization and contiguous whole alphanumeric toke
 
 When normalized titles do not resolve, lookup returns the authorized, unexpired, date-filtered catalogue with fuzzy bigram ranking and bounded notes/location context. The model resolves clear typos or aliases from those actual events; rank alone is not confidence. All candidates are returned up to20, with explicit truncation and no write receipts for incomplete lists. Exact duplicate matches, multiple matching full contexts and unsupported single short names require clarification. Complete candidate selections bind the exact returned event name/source/revision and recheck authorization before an attendance-only write. Person matching remains exact.
 
-Browser projection creates a request-local read authorization scope using its validated snapshot, principal and cancellation signal. Original provider checks share in-flight results by exact source UUID/URL within that projection; app attendance markers still bind the exact event/person/source before reuse. Later requests and all general event read/write callbacks recheck providers without this cache. Independent event/building and participant checks use at most four concurrent workers, preserve deterministic projection ordering and use the shared 60-second total deadline.
+Browser projection and trusted event reads each create their own request-local authorization scope using the read's validated snapshot, principal and cancellation signal. Original provider checks share in-flight results by exact source UUID/URL only within that read; app attendance markers still bind the exact event/person/source before reuse. Each later read fetches a fresh snapshot and rechecks providers. Lookup and both write authorization passes remain uncached. Custom authorizers without a scope factory retain their direct callback behavior.
+
+Trusted reads preindex building and participant relationships, authorize filtered events with at most four concurrent workers, then authorize only those events' valid participants with the same concurrency bound. Results preserve snapshot event order and per-event relationship order regardless of provider completion order. Cancellation stops queued work and returns unavailable instead of a partial authorized snapshot. Browser event/building and participant checks likewise use at most four concurrent workers and deterministic projection ordering. Both paths keep the shared 60-second total deadline.
 
 Map event storage, source verification, browser presence and chat attendance default to 60 seconds through `../source-timeout.js`. The bounded-work ceiling is also 60 seconds, so production wiring cannot silently clamp verification to the old 15-second maximum. Explicit shorter deadlines and caller cancellation are preserved; source checks and write authorization are unchanged.
+
+The shared record prompt explicitly creates source-backed map-only presence or
+personal-plan events when no stable source record exists. It resolves fixed
+buildings and linked authors first; trusted creation assigns the event UUID.
+Explicit current-report ends override freshness defaults, future intervals stay
+upcoming. Unqualified same-day until-time availability uses report time as its
+planned start; explicitly delayed/future missing arrivals remain unresolved.
+Hypothetical feature examples are not location evidence. Chat intent/identity
+and current source-access gates remain unchanged; see `docs/events.md`.
+
+`avatars.js` reads private `map-avatars` objects through the server-only Supabase
+service credential. Profiles store exact configured-origin HTTPS authenticated
+Storage references: `map-avatars/<person UUID>/<64 lowercase hex>.png`. The
+sanitizer turns these into `/api/map/people/<UUID>/avatar`, preserving that bound
+proxy through repeated safe-person sanitization; storage references, keys and
+provider errors never reach the browser. Legacy safe local portraits remain
+compatible during rollout. No arbitrary external avatar URLs are fetched.
+
+The authenticated avatar GET reads only the exact trackable profile, then its
+strict person-bound object with redirects disabled. It accepts PNG content type,
+signature and an initial IHDR with dimensions1–4096, verifies SHA256 against the
+immutable object filename, reads at most4MiB, bounds
+profile JSON to16KiB, and shares a15second deadline/caller cancellation across
+both requests and queue wait. At most four operations run concurrently; a FIFO
+queue admits at most64waiting requests, and only queue overflow returns immediate
+unavailable. Queued cancellation/deadline removes the waiter without upstream I/O. A fetch ignoring cancellation retains its slot until it
+settles. Responses are private/no-store, nosniff and inline. Missing, disabled or
+invalid profiles/paths return generic404; upstream failures return sanitized503.
+The exact loopback development GET exemption rejects browser cross-site requests
+and remains disabled in production.
+Bucket provisioning and existing-profile migration are separate operator work;
+this module creates no buckets, profiles, storage writes or public policies.
+
+Map operational diagnostics preserve deadline/caller cancellation, storage HTTP and response-validation causes while retaining existing result statuses, SQL conflict/validation mapping and authorization behavior. Fixed codes and observed numbers only are forwarded; provider bodies, URLs, identities and raw errors remain excluded.
+
+Presence projections include the actual event kind. `event-preview.js` grants only the exact reserved two-hour Go Greek UI fixture a nonproduction/local-development display exception; no participants or normal source read/write permissions follow. Production excludes this fixture. See docs/active-event-indicators.md for identity, expiry and guarded cancellation.

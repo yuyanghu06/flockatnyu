@@ -37,3 +37,5 @@ watch freshness; this packaging pass makes no cloud changes.
 M36 hosted cutover is verified: the separate Discord/Gmail services are running with their isolated images, no cron, /healthz60 and ON_FAILURE3 against the same expected Supabase. Exact revisions and operational limits live in ../../milestones/milestone.md. No model worker or prompt/memory schema was deployed.
 
 Use GMAIL_EVENTS_ENABLED=true for collection. AGENT_AUTOMATION_ENABLED controls only the separate model worker; this collector does not read it.
+
+Docker copies the whole sanitized server tree from the generated context, including reviewed shared root modules, rather than omitting modules outside the service subfolder. The static packager still controls exact inclusion.

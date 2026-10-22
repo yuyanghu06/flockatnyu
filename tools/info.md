@@ -14,3 +14,5 @@ Tools preserve existing source restrictions; adding a directory never grants a s
 - bug-reports/index.js: dedicated chat bug_reports write tool with trusted current-message/request context and structured JSON; no report listing, editing or deletion.
 
 - memory/index.js: chat read_memory/update_memory tools for one shared plain-text note, with current-chat context and optimistic timestamp protection. Updates are proactive for useful durable club facts; no explicit remember request is needed.
+
+- `attio/index.js`: live CRM attribute discovery, fuzzy search, record reads and opt-in create/PATCH tools. Chat uses request-bound read-before-update and duplicate-write protection. Direct authenticated tool routes represent explicit API actions. Source UUID/object allowlists are enforced before provider access; no autonomous-worker registration.

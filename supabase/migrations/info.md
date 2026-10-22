@@ -188,3 +188,26 @@ Migration033 adds service-only agent_model_calls/agent_audit_events and fixed st
 Migration034 changes only terminal audit pricing validation for complete short-context cache-write accounting. Applied033 and existing terminal records remain unchanged.
 
 Migration035 repairs Discord discovery availability using the existing metadata JSONB fields. `channels` remains the published catalogue, while `discovery_state.staging_channels` holds the pending generation and `discovery_state.published` identifies its last completed policy/generation. Unchanged same-policy sources stay readable through partial refreshes. Observed removals, denials, renames, type and ancestry changes withdraw published entries and descendants immediately. Completion checks actual scan cursors before atomic promotion; UUIDs, manual disables, policy revisions and service-only access remain enforced. The new metadata validator is an invoker function with execution restricted to the service role. Initial and legacy incomplete generations cannot inherit a publication proof. No tables, columns, message storage or applied migration files change. Independent full-chain acceptance lives in `tests/discord-discovery-availability.test.mjs`. Hosted application20261019193035 is verified; base-channel availability and rollback-only refresh continuity passed. Exact hosted receipts are in the milestone snapshot; do not replay older migrations.
+
+
+Migration036 upgrades only the existing automation RPCs and metadata behavior.
+Failed batches become singleton retries; five failures quarantine an input only
+on a singleton attempt. Fresh/retry lane fairness survives lease settlement;
+expired leases are counted once, caller shutdown only defers, and exact partial
+completion leaves other matching snapshots isolated. Scoped claims perform at
+most100 expired-quarantine cleanups before busy/empty/cooldown results, retaining
+minimal dedup metadata after deleting only matching source/hash bodies24hours
+after quarantine. Changed replacement bodies survive as `quarantine_changed` for
+private service review; their retention is not covered by the old snapshot TTL.
+Exact service-only requeue requires current scope, hash, unexpired quarantine and
+no active lease. All new helpers are fenced invokers with service-only grants;
+unused unscoped claim execution is revoked. No schema columns, provider archive,
+assistant retrieval or apply-time row purge is added. Migrations001–035 remain
+immutable. `tests/automation-reliability-sql.test.mjs` executes the real migration
+chain; hosted application remains a separate release step.
+
+## Go Greek temporary-location catalogue seed (037)
+
+037 is a data-only owner migration adding `683-broadway`, displayed as Go Greek, with the exact `683 Broadway` alias. It uses the existing map write lock, preserves matching rows/timestamps on replay and rejects conflicting metadata. No grants, RLS, functions, event records or relationships change. It is independent of pending036: apply only reviewed037, never replay the directory. Hosted application/receipt remains separate in the rolling milestone. Future retirement requires an exact identity guard and no event_buildings references; preserve ON DELETE RESTRICT and linked activity history.
+
+Hosted037 is `20261021205505_go_greek_building`, applied through Supabase MCP on2026-10-21. Only this isolated catalogue seed was applied; unrelated036 remains pending. Verified ten buildings, exact Go Greek metadata, unchanged nine prior rows/timestamps, denied service catalogue DML, unchanged event/relationship counts and successful existing API recognition. Stored query MD5 (trimmed SQL) is4677f80195c7752fde3c45626c5902a9. Receipt: ignored evidence/683-broadway/backend/hosted-receipt.json; canonical handoff in milestones/milestone.md. Applied037 is now immutable.

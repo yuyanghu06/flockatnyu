@@ -1,5 +1,7 @@
-# Shared chat budget increase
+# Shared chat limits and Discord timeout
 
-Website and Discord shared chat now support30planning rounds and30executed tool calls in source, preserving2calls per round and existing source, timeout and context guards. Independent tester137checks and reviewer263checks pass; API/frontend builds pass. Source commit89a7730. Web release package has262files with exact-source/private-value checks passed.
+Sourcec984237 contains30planning rounds/30total calls for shared website/Discord chat and a20minute Discord overall default/maximum. Website remains5minutes; provider/source deadlines unchanged. Discord private nativeHTTP avoids public edge15minute/idle5minute limits. Bearer/source gates, cancellation and250KB response bounds remain. Independent239tester/242reviewer checks and API build pass.
 
-Discord timeout300000ms is saved on web and discord-events, but activation and30call release are blocked by Railway deployment pause on October21. Both web upload and collector existing-image redeploy returned “Deploys have been paused temporarily.” Running services remain on prior releases. Resume reviewed web rollout and collector timeout activation after recovery; verify health and promoted frontend. Autonomous update agent is unchanged.
+Railway variables saved/read back: both services DISCORD_CHAT_TIMEOUT_MS=1200000; web HOST=::; collector DISCORD_CHAT_API_ORIGIN=http://web.railway.internal:3000. These supersede prior five-minute Discord values. Both new source images are required: old collector rejects privateHTTP and clamps timeout. Sourcec984237 pushed to codex/dev.
+
+Fresh exact-commit web262file and collector27file packages pass exact-source/private-value scans. Both uploads again rejected by Railway deployment pause. No new running release; privateDNS/IPv6 and live20minute execution unverified. Resume source uploads after recovery (not old-image redeploy); verify health/access, Gateway readiness, private reachability and effective deadlines. Package receipts live in ignored evidence/chat-limits/twenty-minute-packages.json. Concurrent provider retry work excluded from frozen packages.

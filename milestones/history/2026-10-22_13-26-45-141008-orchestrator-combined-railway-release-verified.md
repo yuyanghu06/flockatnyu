@@ -1,0 +1,8 @@
+# Combined Railway rollout verified
+
+- Local timestamp / role / milestone: 2026-10-22T13:26:45.141008-04:00 / orchestrator / combined-release.
+- Requested scope: shipallworkingtreeRailwaythenlogicalGitHubcommits.
+- Starting state: locallyacceptedfrozencontexts andcompatiblehostedschema/configuration.
+- Work / evidence: AllfourcombinedRailwayreleasesreachSUCCESS: web=046b9fd4-1d66-4adb-bd8c-ec0c54102170, update-agent=bede3de6-1378-4e23-946b-a99c9fdfe35e, discord-events=79d8b35d-a085-44a5-afd0-4cd7b786c478, gmail-events=47f37200-72f0-431c-b819-218b640efdc2. Hostedwebhealth/login/APIdenial, fiveAttiotools+liveread, hiddenCalendarcursors, tenbuildings/GoGreek andbyte-identicalindex/mainassets pass. DiscorddiagnosticsVersion1startup/privatechatready/Gatewayresumed/listening; Gmail listening; worker organicbatchmodelcalls+Calendarlistingready andnewcorrelatedtool diagnostics observed. This provesstartup/execution,notfullbacklogfreshness orzeroerrorrate. Required036hosted20261022171407serviceonlygrantsverified;037unchanged. All27portraitsCASswitchedthroughMCPafterfirsthostedverification, remainingprofilefactshashunchanged;all27hostedauthenticatedPNGhashes/no-storepass,anonymous403. Originalartwork/legacyimportsretained. NoCRMWrites,unsolicitedmessagesorbusinesssourceprobe mutations.
+- Checks: evidence/combined-release/hosted-web.json, hosted-avatars.json, freshRailwaydeployment/logreads; all2150tests/1skip and55browserchecks remainlocalreleaseevidence.
+- Result / handoff: Railwayphasecomplete;logicalGitcommits/publicationnext. No fullcalendar-mapparity,CRMtestwrite orDiscordreplydeliverytestclaimed.

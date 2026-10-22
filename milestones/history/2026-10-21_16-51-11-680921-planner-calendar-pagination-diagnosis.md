@@ -1,0 +1,7 @@
+# Calendar invalid-request diagnosis follow-up
+
+- Role/scope: read-only planner,54historicalplannerCalendarinvalid_requestcalls. No edits/network/modelcalls/businesswrites.
+- Findings: deployed/currentworkerrejects unobserved/mismatched/completed-windowcursor beforeGoogleHTTP. Gatepredatesbaseline. Semanticdate/windowchecks and actualGoogle400alsomapinvalid_request; ordinaryschemaboundsusuallyfailbeforetoolasinvalid_tool_call.
+- Reconstructionlimit: allpageTokenvalueshistoricallyredacted; markerdoesnotmeanliteralmodelargument. Sourcepagecompleteness/contentnotstored. Timingincludeslease/sourcechecks andcannotdistinguishpaths.
+- Parentqueryhandoff: matchsame-run/roundmodelproposal andpriorreadyCalendarcalls; validatevisiblearguments, retainbooleans/countsonly. Donotassertwrongcursorforall54withoutmissingreason/HTTP.
+- Acceptance: sourcepathanalysiscomplete; parentliveauditreconstruction andaggregatejournalfollow. No testsexecutedbecauseinspectiononly.

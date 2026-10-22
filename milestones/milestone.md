@@ -1,3 +1,389 @@
+## Combined Railway release verified; GitHub publication next
+
+AllfourcombinedRailwayreleasesreachSUCCESS: web=046b9fd4-1d66-4adb-bd8c-ec0c54102170, update-agent=bede3de6-1378-4e23-946b-a99c9fdfe35e, discord-events=79d8b35d-a085-44a5-afd0-4cd7b786c478, gmail-events=47f37200-72f0-431c-b819-218b640efdc2. Hostedwebhealth/login/APIdenial, fiveAttiotools+liveread, hiddenCalendarcursors, tenbuildings/GoGreek andbyte-identicalindex/mainassets pass. DiscorddiagnosticsVersion1startup/privatechatready/Gatewayresumed/listening; Gmail listening; worker organicbatchmodelcalls+Calendarlistingready andnewcorrelatedtool diagnostics observed. This provesstartup/execution,notfullbacklogfreshness orzeroerrorrate. Required036hosted20261022171407serviceonlygrantsverified;037unchanged. All27portraitsCASswitchedthroughMCPafterfirsthostedverification, remainingprofilefactshashunchanged;all27hostedauthenticatedPNGhashes/no-storepass,anonymous403. Originalartwork/legacyimportsretained. NoCRMWrites,unsolicitedmessagesorbusinesssourceprobe mutations. [Pass](history/2026-10-22_13-26-45-141008-orchestrator-combined-railway-release-verified.md).
+
+## Attio connected and verified locally
+
+User saved `ATTIO_API_TOKEN`; live identity/object checks succeed. Ignored local environment now pins a dedicated source UUID/shared grant and only actual `people,companies` objects, with requested create/update support enabled. Restarted the confirmed local preview at5175/API3001. Fresh API reports configured and all5tools; actual authenticated search+exact-read routes returnHTTP200/ready and original citations for both objects. Attribute reads return28People/31Companyfields. No CRM records changed, model calls, schema writes or Railway deployment; live writes remain untested. No application-code/key changes were needed. Existing unrelated work is preserved. [Operational pass](history/2026-10-21_21-21-24-531712-orchestrator-attio-local-live-connection-verified.md).
+
+## All-building camera framing corrected locally
+
+Click-to-focus now fits every complete building in the area clear of its activity card. A shared layout contract places the building beside the desktop card and above a compact-screen card, with assistant-launcher clearance. Facade angles and world distance limits remain; large narrow-screen complexes smoothly widen the lens as needed, and overview return restores it.
+
+Direct local verification passes **all 10 buildings at 3 viewport sizes (30/30)**, using actual model bounds and DOM card rectangles: wide desktop1440×1000, screenshot-sized783×514 and phone390×844. No card overlap or browser errors. Three new numerical tests plus31existing controller/presence tests pass, as do production build and scoped syntax/whitespace checks. Earlier focused-mobile card occlusion is resolved by this shared layout. Local preview remains http://127.0.0.1:5175/; no database or production deployment changes. [Camera guide](../docs/camera-navigation.md) · [Pass](history/2026-10-21_20-51-06-343013-orchestrator-all-building-camera-framing-fixed.md).
+
+## Attio route/tool integration complete locally
+
+Flockbot and website chat now share opt-in Attio field discovery, fuzzy search, exact reads, create and PATCH-update tools through authenticated `/api/tools/:tool` routes. Server-only token, configured source UUID/shared allowlist and explicit object slugs gate access; writes require a separate enable flag. Chat requires an exact request-local read before updates and preserves receipts, deduplicates identical writes and blocks further distinct mutations after uncertain outcomes. Original user intent is model policy; retrieved content cannot authorize actions. PATCH appends multiselect values; atomic concurrency and cross-request idempotency are not provided.
+
+Independent **84/84 integrated tests**, evaluator **65/65 checks and ACCEPT**, API build and parent syntax/whitespace checks pass. The actual **33-tool** catalogue serializes through both native provider paths (definition cap64; existing30execution budgets unchanged). No live Attio calls/credentials, schema changes, worker/map/Calendar authority, commits/push or deployment. [Setup/API guide](../docs/attio-integration.md) documents private configuration and live verification still required. Existing unrelated pending work is preserved.
+
+[Independent testing](history/2026-10-21_20-43-11-056211-tester-attio-independent-verification.md) · [Independent acceptance](history/2026-10-21_20-43-11-056548-evaluator-attio-local-accepted.md) · [Final integration](history/2026-10-21_20-43-11-056713-orchestrator-attio-integration-complete-locally.md).
+
+## Attio integration implemented; final independent checks underway
+
+Server-only scoped CRM client, five tools, authenticated tool-route dispatch and website/Discord shared-runner context/receipt wiring are implemented. Source/object allowlists and a separate write flag fail closed; chat updates require an exact request-local read. Unknown writes block further distinct mutations in that request. Parent45shared regression checks and API build pass; coder synthetic checks pass. Final independent suite/review is underway. No live Attio calls, credentials, schema changes, worker registration or deployment. [Implementation pass](history/2026-10-21_20-41-53-883327-coder-attio-client-and-shared-wiring.md).
+
+## Attio integration underway
+
+User requested Flockbot Attio routes and tools and explicitly selected search, read, create and update. Independent architecture planning accepted; new server client/tool modules and parent-owned runtime/route/context wiring are underway. Uses existing authenticated tool routes, shared source UUID and explicit object allowlist; write support is opt-in. No CRM credentials, live calls, schema changes, autonomous-worker registration or deployment performed. Existing unrelated pending work is preserved. [Planning pass](history/2026-10-21_20-38-03-892788-planner-attio-integration-contract.md).
+
+## Event marker bounce and flashing glow complete locally
+
+At the user’s request, the exclamation now gently bounces over1.4seconds and the gold glow smoothly flashes over1.8seconds. Reduced motion remains static; the building itself does not move. Existing five controller tests and production build pass. Actual local browser verifies both animations and live reduced-motion switching without errors. Implemented and checked directly, without specialist delegation. No database or deployment changes. [Pass](history/2026-10-21_17-18-19-994119-orchestrator-event-marker-bounce-and-glow-pulse.md).
+
+## Tool reliability follow-up complete locally
+
+Five-minute broad Discord summaries, seven-minute website default, backend-owned bounded Calendar pagination and faster map reads are implemented and independently accepted. Calendar cursors stay internal; bounded partial coverage cannot establish absence. Complete unfiltered full-mode subwindows must cover the entire reconciliation interval without gaps. Map source checks deduplicate within each read and run at most four concurrently; later reads and write authorization stay fresh. Worker feedback reuses bulk map state and requires fresh reads after conflicts.
+
+Independent **445/445 tests** pass; API build, parent91focused regressions and whitespace checks pass. Synthetic providers only; no production rollout or latency benchmark. Earlier receipt/logging work and unrelated concurrent changes are preserved. Planner relevant-link inspection is saved in notes.md as a separate follow-up.
+
+[Tool reliability follow-up independently verified](history/2026-10-21_17-15-25-302072-tester-tool-reliability-followup-verified.md) · [Tool reliability follow-up independently accepted](history/2026-10-21_17-15-25-302378-evaluator-tool-reliability-followup-accepted.md) · [Tool reliability follow-up integrated locally](history/2026-10-21_17-15-25-302498-orchestrator-tool-reliability-followup-integrated.md)
+
+## Active-event markers, glow and Go Greek sample complete locally
+
+Buildings with authorized confirmed scheduled events now show the personal website's original yellow exclamation artwork and a steady gold whole-building glow during their exact active windows. White hover/selection, picking and original geometry remain intact. Future/expired/tentative/cancelled/personal/presence records do not activate this signal. Refresh failure clears stale signals; clock boundaries work without polling.
+
+Supabase MCP seeded one `[UI TEST] Go Greek sample event` and one link with no participants, preserving all existing map data through transaction digest guards. It runs **October 21, 2026, 5:11–7:11 PM America/New_York**. The exact reserved fixture displays only in the local-development/nonproduction API; it creates no Calendar/Discord announcement or normal agent access. The actual updated local API and unmocked desktop/mobile preview are verified at http://127.0.0.1:5175/. One Go Greek marker/glow, exact sample card, HTTP200/statusok and no browser errors. No production deployment performed.
+
+Implementation builds, **60 independent Node tests**, nine synthetic browser checks, actual unmocked preview and evaluator review pass. [Final tester report](history/2026-10-21_17-15-07-671655-tester-active-event-final-actual-preview-pass.md). Known preexisting mobile limitation: the selected card can cover the focused roof/marker; mobile overview and viewport projection are verified. [Signal/sample guide](../docs/active-event-indicators.md) explains expiry/cancellation/resource ownership; [popup import/removal guide](../docs/683-broadway-model.md) preserves shared modules and linked historical data. [Completion](history/2026-10-21_17-14-19-778790-orchestrator-active-event-indicators-integrated.md). Existing unrelated rollout work below remains pending.
+
+## Go Greek sample seeded; actual updated local API verified
+
+Supabase MCP inserted the reviewed exact `[UI TEST] Go Greek sample event`, one building link and no participants, preserving all prior map data through transaction digest guards. It is active **October21,5:11–7:11PM America/New_York** and is displayable only by the local-development API. ActualAPI3001 returns HTTP200/statusok and GoGreek1scheduled_event after the local preview restart; frontend remains at http://127.0.0.1:5175/. Independent tests/browser and evaluator accept implementation; final unmocked sample screenshot is underway. No Calendar/Discord or deployment changes. [Seed](history/2026-10-21_17-11-57-473651-orchestrator-go-greek-sample-seeded.md) · [Review](history/2026-10-21_17-11-57-473527-evaluator-active-event-signals-accepted.md) · [Tests](history/2026-10-21_17-11-57-473226-tester-active-event-signals-verified.md).
+
+## Active-event marker and building glow implemented
+
+The original yellow canvas artwork and steady gold whole-building overlay are integrated with authorized API events. Resources are shared, architecture is borrowed without mutation, and exact time boundaries work without waiting for the next poll. Coder build/presence checks and independent ten controller/security checks pass; browser and final review are underway. Supabase MCP tools are now directly exposed; read-only preflight confirms Go Greek and no existing sample. [Frontend pass](history/2026-10-21_17-11-00-190383-coder-active-event-indicators-implemented.md).
+
+## Event kind and local sample boundary implemented
+
+Authorized API event rows now include their real kind. The separate Go Greek sample policy is exact-identity and local-development-only; it grants no participant or normal agent-write authority. Backend51focused checks and direct write-denial probes pass. Frontend indicator implementation and independent tests are underway; no sample or other database row has been added in this pass. [Backend pass](history/2026-10-21_17-06-22-144525-coder-active-event-kind-and-preview-policy.md).
+
+## Active-event exclamation markers and glow underway
+
+The user requested the personal website's yellow exclamation artwork and building glow for events currently underway, plus a sample at Go Greek. Planning located the exact procedural canvas marker. The implementation will use authorized confirmed scheduled events within their active windows, independently of people, and preserve current white selection behavior. A clearly labeled two-hour local-only synthetic sample will be owner-seeded via MCP after testing/review; no external Calendar/Discord changes or permission expansion. [Plan](history/2026-10-21_17-06-22-142602-planner-active-event-indicators-contract.md).
+
+## Go Greek backend registration complete through Supabase MCP
+
+Live Supabase now contains `map_buildings.id = 683-broadway`, name **Go Greek**, aliases `['683 Broadway']`. Only reviewed local037 was applied, hosted as `20261021205505_go_greek_building`. The original nine catalogue rows/timestamps and event/relationship counts are unchanged; runtime catalogue writes remain denied and unrelated036 remains unapplied.
+
+Independent localSQL10checks and pre/postapply evaluator review pass. The actual existing local API `/api/map/presence` returns HTTP200, `status: ok`, ten buildings and Go Greek with empty people/events. The card can now show its normal no-events state after a successful refresh. Supabase MCP performed the live write and verification after OAuth renewal; earlier dashboard use was read-only and stopped at user preference. No frontend/service deployment or event creation was performed.
+
+[Model/import/removal guide](../docs/683-broadway-model.md) now includes the backend row and safe future retirement: the visual switch does not delete database data, and linked activities must be preserved. Applied037 is immutable. [Completion](history/2026-10-21_16-58-23-999589-orchestrator-go-greek-backend-registration-complete.md) · receipt: ignored evidence/683-broadway/backend/hosted-receipt.json. Existing unrelated release work below remains pending.
+
+## Go Greek backend migration ready; waiting for Supabase MCP OAuth
+
+New owner migration037 and cleanup documentation are implemented and independently accepted. Ten SQL checks verify one added row, preserved existing data/security, idempotence/conflict safety and actual SQL-backed production projection. The hosted write has **not** happened.
+
+The configured Supabase MCP fails OAuth refresh and requires renewed authorization. An ephemeral MCP-only CLI probe confirmed this; normal `codex mcp login supabase` is now waiting for authorization, requested asynchronously. Earlier dashboard use was read-only and stopped when the user requested MCP. No connection settings, grants or hosted data changed. After login: fresh MCP preflight, apply only reviewed037 (keep unrelated036 separate), verify row/API and update receipt. [Handoff](history/2026-10-21_16-51-40-187971-orchestrator-go-greek-ready-awaiting-mcp-oauth.md).
+
+## Common historical failure diagnoses completed (read-only)
+
+All277rejectedplannerresponsespropose9–14calls,mostlymaplookups,against8-per-turnparsercap; promptencouragesbatchingwithoutstatingtheceiling. All527mapunavailableresultspredate thealready-shipped60secondtimeoutfix; priorcontrolledreproductionprovedold5secondtotalbudgetexpiredinsequentialCalendarpermissionschecks. Postreleasebaselinewindow694mapreads:691ready,3aborted,0unavailable. All54invalidCalendarproposalsarevalidvisibleargumentswithredactedcontinuationcursorafterpriorready same-windowread; paginationmisuseislikelybutexactbadcursor/end-of-pages/provider400causecannotberecovered. No runtimewrites/deploys in this follow-up; concurrentworkbelowpreserved. [Diagnosis](../docs/tool-failure-logging.md) · [Pass](history/2026-10-21_16-51-11-680921-orchestrator-common-failure-causes-confirmed.md).
+
+## Go Greek owner migration037 prepared; independent checks underway
+
+The new data-only migration inserts the exact Go Greek catalogue row and rejects conflicting existing metadata without overwriting. Replay preserves timestamps; runtime catalogue permissions stay denied. Cleanup documentation preserves linked activities and requires a separate guarded owner operation. Coder fixture checks pass; full-chain independent tests and review are underway. MCP read-only preflight is in progress; no database changes made. Pending036 remains separate. [Coder](history/2026-10-21_16-49-12-656508-coder-go-greek-owner-migration-prepared.md).
+
+## Go Greek backend registration underway through Supabase MCP
+
+User authorized a Go Greek `map_buildings` row using the model's stable683-broadway ID. New owner migration037 will insert one guarded row without widening runtime permissions or creating events; unrelated pending036 remains unapplied. Initial dashboard access was read-only, and was stopped when the user requested MCP. This session exposes no Supabase tools, so the configured OAuth MCP is being checked through an ephemeral CLI session. Local implementation/verification proceeds while connection access is resolved. [Plan](history/2026-10-21_16-47-11-198432-planner-go-greek-backend-registration-contract.md).
+
+## Go Greek temporary popup complete and independently accepted locally
+
+The building now displays **Go Greek**. [src/go-greek-popup.js](../src/go-greek-popup.js) is the single enable switch for its visual record, camera preset, dynamic model import and 70-face source replacement. Setting `enabled: false` and rebuilding/reloading removes popup UI/interactions while retaining the untouched original background tower. The exact popup day remains unspecified; no automatic expiry was added.
+
+[Import and removal guide](../docs/683-broadway-model.md) covers the full source-to-model-to-UI chain, owned versus shared files, all test consumers, one-switch disable and permanent cleanup. It also explains the event empty state: Go Greek has no backend registration introduced by this feature, so the missing catalogue entry shows unavailable even when the API succeeds. Build, source/schema15checks and desktop/mobile enabled/disabled browser10checks pass; independent evaluator **ACCEPT**. Disabled mode retains all2,032original tile triangles and fetches no custom model. No database or deployment changes; unrelated work below preserved. [Integration](history/2026-10-21_16-35-21-872483-orchestrator-go-greek-popup-integrated.md).
+
+## Historical failure logging and Calendar receipts accepted locally; activation blocked by Railway auth
+
+Reviewed all20pages of retained lifecycle audit sinceOctober18 (oldest availableOctober19):8,463tool outcomes. Historical leaders are527unavailablemapreads,54invalidplannerCalendarlistings,47missingDiscordmessages and19unavailablelookups. Later inspection of278invalidplannerresponses finds everyoutput proposedmorethan8calls inone turn; this exceeds the existingparsercap. Legacytoolreasons were not retained, so individual historicaltimeout/upstreamcauses cannot be recreated. Railwayfailurequeries were paged through saturatedtimewindows and keptseparatefromtoolcounts. [Full baseline and logging contract](../docs/tool-failure-logging.md).
+
+New local logging retains fixed cause/stage/outcome/schema-field/observedHTTP/dispatch metadata in existingseven-dayservice-onlyauditcounts and safe readableRailwaylogs, with no migration. Calendarbatchprimarycause/counts are durable; all sanitizeditemdetails are Railway-only. Mapdeadline/storage/parse failures and Googlelocal/auth/account/ACL/request failures are distinguished. Unknownvalues/sourcecontent/arguments/credentials never enter diagnostics; no retry/access/deadline changes.
+
+Calendar receipts now retain the actualsavedproviderlocation throughsingle/batch/native/planned/finalanswerpaths, with explicitblankvsunknown andnoarg/priorreadfallback. Actualread-onlyGoGreekSocial lookup confirms the savedlocation already contains683Broadway;0eventwrites. Finalindependent463/463integratedchecks, evaluator113/113andAPIbuild/whitespace/hashespass; both changes acceptedlocally.
+
+**Not deployed:** RailwayCLI andconnectedapp nowrejectexpiredOAuthauthentication. The user has beenasked asynchronously torenew `railway login`; no confirmation received. No backgrounddeployment exists. Afterauthrecovery, prepareareviewedminimalweb/workerreleasewithoutunrelatedpendingmigration036/avatar/collectoractivation,deployandverifyhosteddiagnosticcorrelation/receipts. Existingunrelateddirty/concurrentmapworkispreserved. [Integration](history/2026-10-21_16-34-50-855082-orchestrator-historical-failure-logging-and-location-receipts-integrated.md).
+
+## Final diagnostics independently accepted locally
+
+Evaluator113/113focusedchecks andfinalreviewacceptlogging+savedlocationreceipts; no localmaterialfinding. HostedactivationrequiresRailwayreauthentication. [Pass](history/2026-10-21_16-34-50-855082-evaluator-failure-logging-and-receipts-final-accepted.md).
+
+## Final integrated diagnostics verification passes
+
+Independent463/463integratedchecks/APIbuild/whitespace/sourcehashespass;24adversarial/endtoendprivacycases included. HostedactivationrequiresRailwayreauthentication. [Pass](history/2026-10-21_16-34-50-855082-tester-failure-logging-final-verification.md).
+
+## Map failure causes implemented locally
+
+Map unavailable retains safe deadline/storage/parse causes with unchanged statuses;58/58checks pass. Final independent acceptance pending. [Pass](history/2026-10-21_16-32-56-498042-coder-map-failure-causes-implemented.md).
+
+## Review logging gaps corrected locally
+
+Known failure codes and per-item Calendar causes preserved;116core/25batch/148connector checks pass with explicit Railway-only item detail. Final independent acceptance pending. [Pass](history/2026-10-21_16-32-56-498042-coder-reviewed-status-and-batch-cause-fixes.md).
+
+## Go Greek rename and single-switch removal implemented
+
+The temporary popup now displays **Go Greek**. A pure-data manifest controls its visual record, camera preset, lazy model import and source replacement together; switching it off preserves the original background building. The expanded guide documents the full import path and precise permanent cleanup. Syntax/assertion/build checks pass; independent enabled/disabled browser acceptance and review are underway. [Coder pass](history/2026-10-21_16-31-53-412816-coder-go-greek-popup-toggle-and-guide.md).
+
+## Go Greek popup rename and removal workflow underway
+
+The user clarified that this is a temporary Go Greek popup for one specific day. Keep the model's stable internal ID while changing the displayed name and adding one central enable switch. Disabling must remove its model/UI/camera registration and preserve the original city shell. The guide will document the complete import chain and permanent cleanup inventory. No exact day was supplied, so no automatic expiry is added. Existing unrelated work remains preserved. [Plan](history/2026-10-21_16-30-13-415416-planner-go-greek-temporary-popup-contract.md).
+
+## Independent tests pass; review gaps under correction
+
+Evaluator accepts Calendar location receipts locally but requests preserving real Discord/map status codes and Calendar batch item failure causes in logging. Coders correcting both; no hosted release. [Pass](history/2026-10-21_16-27-05-297512-evaluator-failure-logging-gaps-and-receipts-accepted.md).
+
+## Independent logging and receipt tests pass
+
+402integrated/51affected/18independent executions pass (overlap), APIbuildpass; adversarialprivacy and actualmockedfinalanswerreceiptpaths verified. [Pass](history/2026-10-21_16-27-05-297512-tester-failure-logging-and-receipts-pass.md).
+
+## Discord image context accepted locally; hosted release remains pending
+
+Flockbot now has a locally accepted image path for fresh actor-verified invoking messages, exact same-channel replies and bounded accepted previous-hour messages. Supported PNG/JPEG/WebP bytes reach both existing multimodal planning and answering with strict source citations/coverage and unchanged question text. Fourfiles/5MiB each/10MiB accepted+downloaded limits, including failed streams/signatures; strict native CDN URLs and post-download/pre-inference source/audience rechecks. No new source/write/identity grants, durable image archive or raw input logs.
+
+Independent391checks pass, evaluator ACCEPT, root APIbuild/focusedchecks pass. Actual configured-model local pipeline identifies synthetic shapes in3274ms and confirms both phases receive theimage+provenance,0tools/businesswrites/Discorddelivery.267filewebpackage includes exact5reviewedimage-modules and passes private-value scan; other concurrent contents still require coordinatedreleaseacceptance. No deployment: officialRailwaybuild/APIoutage persists and localCLIauthisunauthorized. No commit/push/config/schema/collectorchange. Supported-image scope excludes later tool-search results/GIF/embeds/external links; unavailable directreply conservatively withholdsimagecontext. [Final fixes](history/2026-10-21_16-26-17-622866-coder-discord-image-download-budget-fixed.md) · [Verification](history/2026-10-21_16-26-17-623942-tester-discord-image-final-verification.md) · [Acceptance](history/2026-10-21_16-26-17-624176-evaluator-discord-image-final-accepted.md) · [Integration/handoff](history/2026-10-21_16-26-17-624635-orchestrator-discord-image-context-integrated.md).
+
+## Saved Calendar location receipts corrected locally
+
+Actual saved location survives client/single/batch/public/planning/finalanswer receipts, includingexplicitblank; provideromissionstaysunknown. Noargument/priorreadfallback. Google/Calendar144/144checks pass includingmockedHTTPchat. Independentacceptance/releasepending. [Coder pass](history/2026-10-21_16-24-21-648751-coder-calendar-location-receipts-implemented.md).
+
+## Correlated failure logging implemented locally
+
+Core113/113targetedchecks/APIbuild pass. Safe versioned reasons/stages/outcomes/validationfieldIDs persist in existing seven-day privateauditcounts and mirror toRailway; predispatch failures are distinguished from actualexecution. No schema/access/retrychange. Independent integration/privacy testing underway. [Coder pass](history/2026-10-21_16-24-21-648751-coder-core-failure-logging-implemented.md).
+
+## Discord images: actual model pipeline passes; final download-budget fix underway
+
+New image context reaches both actual configured-model planning and answer calls through the local Discord pipeline. The unchanged question and exact provenance marker survive; synthetic shapes are correctly identified in3274ms with0tool/businesswrites/Discorddelivery. Independent379regressions pass. Review repaired prompt injection/legacy wording and over-budget-text reference issues; a further finding requires charging failed downloads against the10MiB network bound, currently being fixed/retested. No hosted deployment; Railway still reports its build/API outage. [Coder](history/2026-10-21_16-24-13-748410-coder-discord-image-context-implemented.md) · [Tester](history/2026-10-21_16-24-13-748771-tester-discord-image-context-initial-verified.md) · [Review](history/2026-10-21_16-24-13-748902-evaluator-discord-image-context-fixes-requested.md) · [Actual model](history/2026-10-21_16-24-13-749016-orchestrator-discord-image-live-model-pipeline.md).
+
+## 683 Broadway model complete and independently accepted locally
+
+The site now has a detailed, selectable **683 Broadway** corner-tower model matching the supplied image as an architectural approximation. Its original 70 source faces, masonry/windows/cornice, rooftop planting and water tank are merged into one 34,118-triangle mesh. The neighboring complex and original exports are preserved. The new visual landmark has its own southeast camera and uses existing complete-building highlight, outline and footprint behavior.
+
+Frontend build, independent source/geometry checks, desktop/mobile Chrome acceptance (9/9), relevant map regressions and corrected database-schema tests (12/12) pass; independent evaluator **ACCEPT**. Ten local visual landmarks are distinct from nine fixed database buildings; no database addition or deployment was performed. Existing unrelated work and releases below remain pending. Current limitations: approximate detail, existing information-card overlap, no physical-device/GPU timing claim, and a stale historical centered-camera assertion against unchanged camera code. [Integration](history/2026-10-21_16-22-44-687311-orchestrator-683-broadway-integrated.md) · [Model guide](../docs/683-broadway-model.md). Preview: ignored evidence/683-broadway/desktop-architecture.png. Next action: user visual review; any hosted release must coordinate the existing pending work.
+
+## Google failure stages implemented locally
+
+Connector89/89focusedchecks pass. Sanitized Google failures retain actualHTTP andfixedlocal/auth/account/ACL/request/parse stages without body/credential exposure; success/status behavior preserved. Coreloggingintegration and user-requested Calendarlocationreceipts continue separately. [Coder pass](history/2026-10-21_16-22-37-427244-coder-google-failure-metadata-implemented.md).
+
+## 683 Broadway catalogue regression corrected
+
+The active SQL test now verifies nine immutable database buildings separately from ten local visual landmarks. Six current browser count expectations were updated consistently. All 12 SQL tests and six syntax checks pass; no SQL or database change was made. Dedicated model browser checks pass for desktop/mobile, with final independent review underway. [Correction](history/2026-10-21_16-21-41-399692-coder-683-broadway-test-catalogue-corrected.md).
+
+## 683 Broadway review: correct visual versus database test contract
+
+Independent review confirms source integrity and desktop model likeness, and found an active test assumption requiring correction: the local map now has ten visual landmarks while immutable migration 021 still seeds nine database buildings. No database addition is part of this modeling request. A bounded test correction is underway. Final mobile browser acceptance is rerunning on an isolated local dev server unaffected by journal/test writes. [Review finding](history/2026-10-21_16-20-59-711080-evaluator-683-broadway-catalogue-test-finding.md).
+
+## Configured model image understanding verified
+
+A read-only synthetic1258byte image probe through the existing provider and required private audit succeeds: configured gpt-6-luna identifies the red square and blue circle in1952ms. Discord attachment plumbing is still being implemented/tested; this is model capability evidence, not a hosted bot invocation. [Probe](history/2026-10-21_16-19-58-001494-orchestrator-discord-model-vision-probe.md).
+
+## Discord chat image context in progress
+
+The requested bot image capability will read fresh attachments on the invoking message, exact direct reply and bounded recent messages in the same authorized channel. Independent planning accepts reusing existing multimodal chat with request-local images and explicit provenance/coverage; signed URLs/bytes stay out of logs/history. No new tool/source grants or schema work. Coder and tester have exclusive nonoverlapping ownership, preserving concurrent unreleased work. [Plan](history/2026-10-21_16-18-32-086481-planner-discord-image-context-contract.md).
+
+## 683 Broadway model implemented; independent acceptance underway
+
+The new local683-broadway landmark preserves the isolated70source faces in one34,118triangle vertex-colored mesh with brick/stone facade,320windows, cornice, roof garden and water tank. Source-matched duplicate tile faces are removed; neighboring complex and original exports remain. Existing effects/outline/ring and a southeast fixedcamera serve the complete model. Coder sourceintegrity/syntax/build checks pass. Independent browser/geometry/review is underway; no hosted release or database catalogue change. [Coder pass](history/2026-10-21_16-17-58-169010-coder-683-broadway-model-implemented.md).
+
+## Historical tool failures and reason logging in progress
+
+User requests Railway and last-few-days failure review plus future cause logging. All-page private audit read sinceOctober18fetches19755lifecycle rows/8463toolfinishes; oldestavailableOctober19. Existing tool logs retain status but no reason/stage. Planner proposes fixed content-free diagnostics in existing numeric counts plus structured Railway mirror, preserving seven-day retention without schema migration. Source/privacy/permissions unchanged; implementation follows. [Plan](history/2026-10-21_16-15-46-043745-planner-tool-failure-diagnostics-contract.md).
+
+## Calendar-to-map sync: automatic batches active; full freshness unverified
+
+Fresh Railway status confirms the update-agent is online. Current worker logs show successful automatic Calendar/map reads and completed batches, alongside failed/incomplete runs. Calendar projection is required during eligible queued Discord/Gmail batches; a Calendar edit alone does not trigger an empty-queue run. Defaults remain 30 inputs or oldest age30minutes, with a rolling yesterday-to-eight-days-ahead Calendar window. No complete live occurrence comparison was performed: the direct read probe was blocked by expired local Railway CLI authentication, while connected Railway read tools worked. No runtime changes. [Confirmation](history/2026-10-21_16-14-50-004924-orchestrator-calendar-map-sync-confirmation.md).
+
+## 683 Broadway modeling underway
+
+Active map milestone: build the W 3rd Street corner tower in the user's supplied image. Read-only planning isolates70source triangles in tile-1_1.glb (BIN1008629), retaining the larger complex's other masses as context. Implementation will preserve the authoritative shell and add image-informed facade/roof detail under one selectable model with current map interactions. Existing unrelated unreleased work below remains unchanged. Next: implement, verify geometry and browser appearance/interactions, then independent review. No deployment or database changes performed. [Planner pass](history/2026-10-21_16-13-36-112694-planner-683-broadway-target-contract.md).
+
+## Live tool diagnosis complete; two local repairs accepted
+
+The live API responds and all four Railway services are online. The screenshot’s exact audit sequence proves a successful empty Drive search was shown Failed, while all four folder listings and the document read succeeded. Two fresh deployed model diagnostics also exposed a separate native Drive skill-loading bug: a requested search was replaced by a synthetic skip and never executed.
+
+Local repairs now mark valid empty results completed and replan skill activation before committing unexecuted native proposals/IDs. Independent tests/review accept both; a corrected local full28toolruntime with the actual production model/Google connector executes the search once, preserves empty, displays completed and returns a nonempty answer with zero write attempts. No deployment was performed, so the hosted site still needs release acceptance.
+
+All28chat/21planner tool definitions were inventoried and fixture-verified. Hosted diagnostics exercised15successfulreadtools and2validpartialreads; identity/attendance lookup success was tested with fixtures because stateless routes correctly lack request-local authority. No business writes or worker ticks were made. Broad Discord summary hits120seconds with7of11channels complete; one separate hosted provider stream returned zero text and remains unresolved. Existing unrelated dirty changes and rollout tasks are preserved. [Report](../docs/tool-health.md) · [Integration](history/2026-10-21_15-54-46-628287-orchestrator-live-tool-diagnosis-integrated.md).
+
+## Tool health repairs independently accepted locally
+
+Evaluator accepts empty-progress and native Drive activation corrections after independent34checks, tester64/64 and baseline/current regression review. Actual configured production model/read connectors succeed through corrected local runtime, not a deployment. Docs preserve unresolved empty answer and120secondpartialsummary limits. [Evaluation](history/2026-10-21_15-54-46-555429-evaluator-tool-health-local-repairs-accepted.md).
+
+## Native Drive activation independently verified; real model read succeeds locally
+
+Independent64/64targeted checks and separate old/new red/green reproduction pass. Corrected local28toolruntime with actual production provider/Google connector executes search_drive once and emits completed while preserving empty;5answer characters returned in8.946seconds,0write attempts/business writes. This is local code calling live services, not a hosted release. [Verification](history/2026-10-21_15-53-46-070478-tester-native-drive-activation-independent-pass.md).
+
+## Native Drive activation corrected locally
+
+Skill loading now replans before committing unexecuted native turns/IDs; no synthetic terminal skip result. Regression reproduces0reads before fix and exactly1after, preserving earlier receipts and mutation/ID gates. Coder64/64focused checks/APIbuild/whitespace pass. Independent review and local-runtime/live-model read-only probe underway; no deployment. [Coder pass](history/2026-10-21_15-53-14-714363-coder-native-drive-activation-fixed.md).
+
+## Native Drive activation correction planned
+
+Read-only follow-up accepts discarding an unexecuted proposal before native transcript/ID commitment, then replanning with the trusted Drive skill. No synthetic skipped outcome should tell the model its actual search finished. Earlier receipts, all permission/budget/cancellation gates remain. Coder assignment is bounded to this local orchestration change. Full live Discord summary probe now returns HTTP200/partial at120.1seconds:7of11channels complete,4aborted on request budget. [Plan](history/2026-10-21_15-50-59-178093-planner-native-drive-activation-contract.md).
+
+## Local empty progress accepted; native Drive activation issue reproduced live
+
+Evaluator accepts local empty-result display correction (50 focused pass/1 existing optional skip). Fresh live model audits show Drive proposal replaced with skill-activation skip; model then stops without executing search. One diagnostic stream returns stop with0text. These are separate from working direct connectors; broader chat health is not accepted. Plan safe activation replan before committing unexecuted native turns; full Discord summary timeout retry pending. [Review](history/2026-10-21_15-50-21-770901-evaluator-empty-progress-accepted-and-live-harness-findings.md).
+
+## Independent tool verification passes
+
+28 chat and 21 planner tools independently inventoried. Targeted fixture runs: 314 pass/1 existing optional skip, additional 74 pass, focused progress 50 pass/1 skip (overlapping runs, zero failures). Mutation gates exercised without business writes. Empty progress correction independently accepted locally; parent live read probes continue. [Tester pass](history/2026-10-21_15-48-22-189151-tester-tool-adapters-and-empty-progress-pass.md).
+
+## Empty-result progress correction implemented locally
+
+Successful empty results now emit completed progress while model/audit retain empty. Actual Google/Miro regressions cover native and planned execution; focused tests 50 pass/1 existing optional skip, API build and scoped whitespace pass. No live deployment; independent verification and broader read-only probes continue. [Coder pass](history/2026-10-21_15-46-48-912818-coder-empty-tool-progress-fixed.md).
+
+## Live tool failure diagnosis: empty results shown as failed
+
+Independent planner reproduces successful empty search results rendered Failed. Parent authenticated API/status/catalogue pass; Railway four services online. Service-only content-free audit matches screenshot sequence exactly (four ready listings, empty search, ready read). Inventory: 28 chat tools, 21 update tools including finish_batch. Local fix and broader live probes underway; existing release work preserved. [Pass](history/2026-10-21_15-45-10-921204-planner-live-tool-failure-inventory.md).
+
+## Storage avatars: locally accepted, live cutover blocked
+
+The private Storage implementation and upload stage are ready. All 27 PNG portraits (49,927,711 bytes) were uploaded to the private map-avatars bucket, read back and hash-verified. Anonymous reads are denied. All 27 profile rows remain exactly unchanged, including their existing avatar URLs.
+
+The backend serves person-bound private images through the existing authenticated site. The frontend accepts those URLs without requiring a build for each new person. Operator migration changes only avatar_url with ID, old URL and timestamp guards. Normal portrait bursts wait in a bounded queue instead of losing images. Local original artwork and the temporary bundled fallback are retained.
+
+Verification: 1,921 tests passed, one existing optional test skipped, zero failures. Six browser checks passed, including 27 current-person plus 27 attendee images added after the production build. API/frontend builds and independent review passed. The 265-file web package matches the reviewed runtime/build bytes and passed a private-value scan.
+
+Railway rejected the deployment with “Deploys have been paused temporarily”; no deployment ID was created. Its official status update at 18:15 UTC confirms the pause. Live cutover is therefore incomplete. After platform recovery, recheck the package, deploy the compatible web service, verify its authenticated proxy, CAS-switch one profile and then the rest, verify images and preserved profile facts, and only then remove the bundled fallback and release that cleanup. Do not backfill against the old web service. Pending worker migration036 and other releases remain separate. No background deployment job was created. The map time selector remains notes-only. [Handoff](history/2026-10-21_14-29-50-146602-orchestrator-storage-avatar-release-handoff.md).
+
+## Private avatar release ready deployment paused
+
+LocalprivateStorageimplementation accepted: backendstrictauth/personboundproxy, SHA256/PNG/4MiB/timeout/4active+64FIFO, frontenddynamicproxyloader and guardedoperator migration. Actual27privateobjects uploaded/readbackhashverified; missingauth/privatepublicURLdenials verified; all27profiles reread byte-for-byte identical to originalsnapshot,0avatarURLwrites. RealprivateGraceobjectpassesnewservicechecks with syntheticprofilepreview. Finalfullsuite1921pass/1existingoptionalskip/0fail; API/frontendbuilds, browser6/6, independentreview and265filepackage exactbyte/privatevaluescanspass. RailwayCLIupload rejected Deploys have been paused temporarily; no deploymentID. Officialstatus18:15UTCconfirmsbuild/deploypause. ExistingprofileURLsandlegacyfrontendimports retained toavoidbreakingoldsite. No source/event/Calendar/schema/credentialchanges; timeclockidea remainsnotesonly. [Evidence](history/2026-10-21_14-29-05-866943-orchestrator-private-avatar-release-ready-deployment-paused.md).
+
+## Storage avatars independent verification
+
+Independent targeted46avatar+14operator checks pass, including auth/strictURL/checksum/PNG/deadline/FIFOlimits, genuineCASraces/private-denialproofs. Browser6/6passes on actualproductionbuild+websiteauth/API/service/projection with syntheticdata: a profileaddedafterbuild loads, focusedcurrent/eventattendee imagesvisible,27current+27attendeeimagesload, wrongperson/foreignURLs initials/noexternalrequests, freshmissingobjectfallback/recovery. Bundleunchanged duringbrowser. Historic26assettestassumptions corrected in tests/map-roster.test.mjs/tests/map-schema.test.mjs; immutable021unchanged and focused26checks pass. Overviewpackingvisibilityisalignedneithertestednoraccepted; no mapgeometrycodechanged. No realprovider/profilewrites bytester. [Evidence](history/2026-10-21_14-29-05-864773-tester-storage-avatars-independent-verification.md).
+
+## Private avatar dual support release accepted
+
+Independent evaluator59avatar/migrationchecks pass and reproduces27distinctconcurrentportraits with27success/max4upstreamjobs. Auth/source/strictprivateURL/checksum bounds and guardedCAS remain. Recognized400privacyenvelopes/exactUUIDhashlength fixes accepted. No unresolvedmaterialfinding; localdual-supportreleaseacceptedpendingtesterbrowserandfinalregressions. No externalwritesbyreviewer. [Evidence](history/2026-10-21_14-12-20-605400-evaluator-private-avatar-dual-support-release-accepted.md).
+
+## Avatar burst queue and local auth fixed
+
+Backend added FIFO64waiting/4active with original deadlines including wait, cancelled waiters removed beforeI/O, ignored-cancel work retains slot until settlement and sanitizedoverflow. Local avatar GET denies crosssitebrowserrequests beforeaccess. Coder45checks/APIbuild/whitespace pass; files frozen. [Evidence](history/2026-10-21_14-12-20-602711-coder-avatar-burst-queue-and-local-auth-fixed.md).
+
+## Storage avatar normal burst fix requested
+
+Independent evaluator43checks pass but reproduces8person burst with4success/4unavailable. UI removes failed portraits and does not retry unchanged rows, so release blocked pending boundedFIFOwait and independent >4person coverage. Other auth/URL/checksum/CAS boundaries accepted. Reviewer also required privacyproof rejectunexpectednon2xx; parent has since tightened explicit denial envelopes/UUID/hash lengths and reverifies27privateobjects successfully with0profileupdates. No externalcalls/writes by evaluator. [Evidence](history/2026-10-21_14-02-31-207062-evaluator-storage-avatar-normal-burst-fix-requested.md).
+
+## Storage avatar backend implemented
+
+Backend coder added service/app/runtime integration and safe projection; legacy paths preserved. Strict private same-origin/person/hash refs, authenticated trackable profile read, checksum/PNG/4MiB/4096px/16KiB profile bounds, timeout/cancel and4active bound.55existing focused checks/APIbuild/whitespace pass. Initial version rejected excess active requests immediately; independent review requests normal burst fix before release. [Evidence](history/2026-10-21_14-02-31-205658-coder-storage-avatar-backend-implemented.md).
+
+## Private avatar objects uploaded; profile cutover waits web
+
+Uploaded/hashverified27portraits (49,927,711bytes) to private map-avatars bucket, PNGonly/4MiB. Private0600ignored manifest supports guarded CAS migration;0profileURLs changed. Runtime/frontend implemented; independent43initialchecks pass, normal>4image burst issue being corrected with bounded wait queue. Reverify recognized anonymous-denial envelopes, finish tests/review, deploy compatible web before any URLbackfill. [Evidence](history/2026-10-21_14-01-23-786385-orchestrator-private-avatar-uploads-verified.md).
+
+## Storage avatar frontend dual support
+
+Frontend coder added src/map-avatar-url.js and updated src/map-presence.js/src/info.md. Strict UUID-bound same-origin avatar proxy applies current people and event attendees; rejects foreign/absolute/wrong-person/query/hash/encoded variants. Temporary approved local-image glob remains only for rollout compatibility. Syntax, scoped whitespace,15resolver assertions and frontend build pass, existing chunk warning only. No external writes/deploy. Independent browser acceptance pending; remove bundled fallback after successful backfill. [Evidence](history/2026-10-21_13-51-08-271708-coder-storage-avatar-frontend-dual-support.md).
+
+## Private storage avatar contract
+
+Read-only planner inspected profile schema, server/frontend sanitization, API/site auth, runtime wiring and deployment packager. Contract: private map-avatars bucket, same-project/person-bound SHA256PNG object URL in existing avatar_url, authenticated same-origin byte proxy, bounded4MiB/4096px/timeout/concurrency and no public grants/keysbrowser. Upload+hashverify before dual-support web rollout, then CAS profileURLs; retain legacy support until hosted acceptance and local originals throughout. Signed/public URLs rejected as unnecessary access expansion. No edits/writes. [Evidence](history/2026-10-21_13-51-08-270595-planner-private-storage-avatar-contract.md).
+
+## Missing live portrait confirmed
+
+Live profile path is correct, but current main-2F71e7tu.js lacks the new avatar and /assets/Grace-uiHl5ucF.png returns404. The map therefore uses initials. Local portrait/build are ready; next coordinated web deployment must include them. Read-only authenticated site/profile checks only, no source/data/service changes. [Diagnosis](history/2026-10-21_13-41-31-198425-orchestrator-missing-live-portrait-diagnosis.md).
+
+## Avatar profile location behavior integrated
+
+Generated matching opaque1254square avatar retained/shown, verified exact Discord identity and inserted one27thSupabaseprofile preserving26prior rows unchanged. Source-backed personal-location guidance clarified and independently tested/reviewed; parent inspected final stable model evidence and3SQL/projection tests, API build, frontend build with byte-identical new image and scoped whitespace checks pass. Future top-of-map clock/date-time preview saved in notes.md only; no UI implementation. No real event/Calendar/location was created from hypothetical screenshot. Current chat still requires explicit map action and original source/identity; bare website I is unlinked. Local work complete; avatar/guidance require next coordinated web/worker deployment and hosted acceptance. Existing unrelated changes/deployment work preserved. Final automation prompt24555/24576bytes: future additions need compaction. [Evidence](history/2026-10-21_13-12-27-592195-orchestrator-avatar-profile-location-behavior-integrated.md).
+
+## Personal location final behavior verified
+
+Independent tester45/45deterministic checks pass, including actual001–036SQL, service/chat adapters, duplicate retries/corrections, source/identity/action denials and current/future/exclusive-expiry projection. Final frozen-source configured-model planner until-only probe passes12calls with exact source text observed, stable hashes/no changed files: one personal_plan/planned, original start, explicit17:00end, blank label/type other, exact linked author/fixed eLab and zero Calendar writes. Prior stable source-backed chat6calls and hypothetical9calls pass; retained earlier classification/end/caption failures led to focused corrections. Total93model calls across diagnostics/retests, all synthetic fixtures. Report/evidence under ignored evidence/personal-location-behavior. No real club-source reads or business writes by tester. [Evidence](history/2026-10-21_13-12-27-589407-tester-personal-location-final-behavior-verified.md).
+
+## Location-only final check implemented
+
+Final shared/chat pre-upsert guidance explicitly keeps location-only activity labels blank while preserving original start, planned/current distinction and explicit end. Coder44focused checks pass; automation prompt24555/24576bytes. Parent final API build passes. Independent final stable planner model probe passed; final integration follows. [Correction](history/2026-10-21_13-11-28-643518-coder-location-only-label-final-check.md).
+
+## Personal location final prompt delta
+
+Independent final read-only delta review finds no material regression. Source/identity/action gates, explicit deadlines, stable event updates and unknown delayed-arrival deferral preserved. Scoped whitespace check passes. Independently measured24551bytes for America/New_York and24567for longer America/Argentina/ComodRivadavia, under24576but tight. Local delta accepted pending exact-wording planner model result. No writes, live activation or broad repeated tests. [Evidence](history/2026-10-21_13-08-55-602416-evaluator-personal-location-final-prompt-delta.md).
+
+## Personal location explicit end correction
+
+Final shared/chat pre-upsert guidance requires same-day until-only availability as personal_plan/planned with original report start and explicit17:00, never presence/two-hour substitution. Synthetic shape times are never temporal defaults. Terse explicit current-location reports remain presence/reported. Coder55focused checks, API build and whitespace pass; prior10contracts pass. Files frozen. Automation prompt24551/24576bytes. Final model retry pending; no live claims. [Evidence](history/2026-10-21_13-08-55-600882-coder-personal-location-explicit-end-correction.md).
+
+## Personal-location review accepted; planner model correction required
+
+Independent local review passes80focused+3SQL/projection tests, matching avatar/build inclusion and notes-only clock constraint. Real configured-model until-only test found planner incorrectly used presence/two-hour expiry despite explicit5pm; source-backed chat passed correct planned interval. Coder reopened for focused guidance correction and tester will rerun; final behavior/live activation not accepted yet. [Review and finding](history/2026-10-21_13-06-23-681650-evaluator-personal-location-local-review.md).
+
+## Personal-location guidance implemented locally
+
+Shared planner/chat guidance explicitly creates missing source-backed informal activities using exact linked author, fixed building and stable source identity. Same-day until-only availability is planned from original report time to explicit end; future arrival without a start stays uncertain. Identity/source/action gates unchanged and hypothetical screenshot creates no event. Coder55focused+10contract checks, API build and prompt24486/24576bytes pass; independent model/review checks underway. [Implementation](history/2026-10-21_13-04-22-112763-coder-personal-location-guidance.md).
+
+## Club websites saved in shared memory
+
+User corrected requested destination from prompting to shared memory. Added public https://techatnyu.org/ and internal agent-chat http://flock.techatnyu.org/ as user-confirmed durable club facts through existing agent_memory_write with exact optimistic version. Hosted read-back confirms update at2026-10-21T17:02:16.393059Z and all prior content preserved. No prompt/application change or deployment required; next chat requests read shared memory. [Evidence](history/2026-10-21_13-02-33-570519-orchestrator-club-websites-shared-memory.md).
+
+## Avatar/profile and future map-clock note complete
+
+One verified Discord-linked profile added; hosted roster27with26existing profiles unchanged. Matching1254-square ivory/faceted avatar retained and shown; exact prompt saved. Frontend build passes and includes byte-identical image. Future top-of-map time selector recorded in notes only; no feature implementation or real presence event created. Live portrait requires next coordinated web deployment. Personal-location tests/guidance continue separately. [Evidence](history/2026-10-21_13-02-09-040235-orchestrator-avatar-profile-and-time-selector-note.md).
+
+## Grace profile and personal-location verification
+
+Generated matching avatar locally and inserted one verified linked profile; other26profiles unchanged. Future map time selector saved in notes only. Independent planner confirms existing source-backed map tools can create informal activities; bare website first-person identity remains unsupported. Bounded guidance and independent synthetic behavior tests underway; no real presence or Calendar event created from hypothetical screenshot. New bundled portrait requires frontend deployment. [Contract](history/2026-10-21_13-01-24-470096-planner-personal-location-and-profile-contract.md).
+
+## Harness reliability implemented and verified locally
+
+Local reliability implementation is complete and independently accepted. Provider calls permit at most3transient HTTP/transport attempts under one deadline, with per-attempt durable audit and no successful-body/stream replay. Queue036 adds fair fresh/singleton retries, five-failure quarantine,24-hour matching-payload expiry, fenced crash/cancellation accounting and service-only scoped recovery. Final full suite1858passed/1existing optional skip/0failed; API/frontend builds and diff checks pass. No hosted migration or deployment was performed. Apply036before the updated worker; provider changes require web/worker rollout. Search recovery and channel queues remain separate. [Integration](history/2026-10-21_12-56-57-099662-orchestrator-harness-reliability-integrated.md).
+
+## Queue reliability independently accepted
+
+Read-only evaluator finds no unresolved material defects in frozen implementation. Independently41queue/Calendar and23real map SQL tests pass. Verified upgrade preserves pre036active lease/originals, expiry settles once, source/hash/stale fences, source-only grants and no duplicate Calendar/map creation. Fixed test-only nondeterministic singleton selection assumption. Apply036before worker rollout; no hosted execution claimed. [Evidence](history/2026-10-21_12-55-34-243956-evaluator-queue-reliability-accepted.md).
+
+## Queue implementation complete
+
+Implemented036 service-only failure/expiry settlement, fair fresh/singleton retry lanes, five-failure singleton quarantine,24-hour matching-payload cleanup, exact scoped recovery, safe partial finish and legacy unscoped claim revocation. Handler distinguishes caller cancellation from run timeout/lease failure; production failed-settlement RPC never falls back to shutdown release. Coder75focused checks, syntax and diff checks pass. Changed handler/store/automation guide,036and migration guide, docs/agent-automation.md. [Evidence](history/2026-10-21_12-55-34-242600-coder-queue-reliability-implemented.md).
+
+## Queue reliability acceptance tests pass
+
+Independent queue acceptance passes:25new runtime/real-SQL checks cover full001–036chain, legacy active lease preservation, singleton retries, fair lanes, five-failure quarantine,24-hour expiry, scoped requeue, stale/snapshot fences and cancellation. Actual Calendar client sees changed batch-derived action keys but creates exactly one event. Final41queue/Calendar checks pass; combined216affected checks passed before fixture-only nondeterministic-order correction. No hosted writes. [Evidence](history/2026-10-21_12-54-57-883771-tester-queue-reliability-verified.md).
+
+## Collector diagnostics: Combined release waits for other agent rollout
+
+User explicitly requires collector diagnostics deployment after the other agent finishes its changes. Read-only Railway deployment inventory shows no new rollout; latest web/planner remain October20. Official status.railway.com latest16:29UTC October21 says builds/deployments remain paused. Other agent committedc984237 private twenty-minute transport and prepared exact combined collector package; collector-diagnostics.js and event-cli.js in that27file package byte-matchc984237, which descends from209e106. Thus logging is already bundled with the pending combined release. Do not upload older209e106package over the newer private bridge. After other-agent rollout completes, inspect live diagnosticsVersion1 and Gateway readiness; deploy only if missing using the latest verified combined source. No upload/restart/configuration change made in this pass. Live activation remains blocked externally; no background deployment job was created. [Evidence](history/2026-10-21_12-51-18-432221-orchestrator-collector-deployment-order-recorded.md).
+
+## Provider retries independently accepted
+
+Independent read-only evaluator accepts provider retry implementation with no material findings;88focused retry/audit/compatibility tests pass. Verified classification, shared deadline, durable per-attempt starts, no replay after successful response processing and bounded cancellation/cleanup. Local acceptance only; queue work and integrated checks remain. [Evidence](history/2026-10-21_12-51-16-298674-evaluator-provider-retries-accepted.md).
+
+## Provider retry implementation ready for review
+
+All three provider operations now share a fetch-only retry dispatcher with at most3audited attempts,1s/3s waits, explicit transient status/code classification and Retry-After lower bounds under one original deadline. Successful response processing cannot replay. SSE rejects malformed UTF-8. Cancel-aware fetch/sleep/body cleanup resolves the independent timeout finding. Coder82final checks and independent88checks pass; no live calls. Queue work continues. [Evidence](history/2026-10-21_12-50-45-250969-coder-provider-retries-implemented.md).
+
+## Provider retry regressions pass
+
+Independent tester added43behavioral cases and reproduced3deadline failures caused by a rejected response body whose cancellation never settled. Coder bounded cleanup by the original signal; independent rerun passes88/88 across new retries and existing model-audit/provider compatibility suites. Covered transient/permanent statuses and network codes, three attempts,1s/3s delays, Retry-After, deadlines/cancellation, per-attempt audit and no replay after malformed/partial output. Queue verification remains underway. [Evidence](history/2026-10-21_12-50-17-852787-tester-provider-retry-regressions.md).
+
+## Chat budget: twenty minute discord release blocked
+
+Committed/pushedc984237:20minute Discord default/max and private nativeHTTP transport,30call shared budget retained; website300000ms unchanged. Both services timeout1200000 saved/read back; web HOST=:: and collector private origin http://web.railway.internal:3000 staged. Independent tester239/reviewer242pass; parent224pass/APIbuild. Exact-commit web262file/collector27file packages pass source/private-value scans, excluding concurrent provider edits. BOTH source upload attempts rejected with Deploys have been paused temporarily; no deployment IDs or live activation. Requires new source on both services, not old-image restart. Prior five-minute Discord plan superseded. PrivateDNS/IPv6 and live long-run acceptance remain pending platform recovery. [Evidence](history/2026-10-21_12-50-13-403203-orchestrator-twenty-minute-discord-release-blocked.md).
+
+## Chat budget: twenty minute discord review accepted
+
+Independent evaluator ACCEPT with242focused Discord/shared-runner/context tests passed. Error handlers precede early response destruction; auth, cancellation, data bounds and website timeout preserved. HOST=:: and both-source rollout requirement documented. Parent224checks and API build pass. Actual private DNS/IPv6 connectivity and deployment still pending; prior Railway outage prevents current activation. [Evidence](history/2026-10-21_12-49-00-802505-evaluator-twenty-minute-discord-review-accepted.md).
+
+## Chat budget: twenty minute discord tests pass
+
+Independent tester239focused Discord/shared-runner tests pass. Verified1200000ms default/max and actual Discord timer versus300000ms website timer, shorter overrides and1230000ms remote allowance. Real loopback nativeHTTP exercises bearer/POST, strict origins, redirect/non2xx denial,250KB boundary, truncation, caller/deadline cancellation before headers and mid-body. No live model/source calls; twenty-minute wall-clock wait not performed. [Evidence](history/2026-10-21_12-49-00-770040-tester-twenty-minute-discord-tests-pass.md).
+
+## Active: harness failure recovery
+
+User authorized implementation of the first reliability recommendation. Provider retries: at most three HTTP attempts within one original deadline, transient transport/status classification, one durable audit per attempt, no retries after successful response processing. Queue: five failed attempts, isolated singleton retries, fair fresh/retry lanes, fixed outcome metadata, fenced recovery,24-hour quarantine payload expiry and service-only scoped requeue. Earlier planner suggestions of six failures/seven days were not adopted. Search/channel queues remain separate follow-ups. Implementation/test ownership assigned; no live changes. [Contract](history/2026-10-21_12-48-36-768444-planner-harness-reliability-contract.md).
+
+## Chat budget: twenty minute private bridge implemented
+
+Implemented Discord default/max1200000ms, bridge default1200000 and remote1230000 with parent deadline retained; exact Railway privateHTTP root/port validation and node:http request avoid public proxy/fetch headers limits. Preserved publicHTTPS path, bearer/access controls,250KB response bound and cancellation. Updated example and Discord guides. Coder syntax/diff and52current focused checks pass; independent private transport testing/review pending. Website config unchanged. Both services timeout1200000 and web HOST=:: saved with skip-deploys. [Evidence](history/2026-10-21_12-47-56-224628-coder-twenty-minute-private-bridge-implemented.md).
+
+## Chat budget: twenty minute discord plan
+
+User supersedes five-minute Discord setting with20minutes. Implement1200000ms default/max across Discord config and bridge, preserve website300000ms and individual provider/source deadlines. Official Railway public edge limits15minutes/5minute idle require private service route; verified web private domain web.railway.internal and port3000. Add strictly validated private HTTP bridge using node:http to avoid fetch headers timeout; preserve bearer/access/bounds. Set web dual-stack HOST=:: for private IPv6. Coder/tester assigned disjoint files; source deployment required on both web and collector. Existing collector diagnostics commit209e106 preserved. [Evidence](history/2026-10-21_12-47-06-016504-orchestrator-twenty-minute-discord-plan.md).
+
 ## Collector diagnostics: Release verified; Railway deployment paused
 
 Source209e106 is committed. Full suite1755passed/1existing optional skip/0failed; subsequent narrow startup-stop correction passed96focused tests, API build and independent review. Final27file collector package exactly matches reviewed source and passes private-value scan. Railway collector upload was rejected with Deploys have been paused temporarily; no deployment ID/new running image exists and crash diagnostics are not live. Preserved existing retry policy and concurrent chat-budget changes. Prepared package receipt lives in ignored evidence/collector-crash-logging/release-package.json. Next action: retry verified collector upload after Railway restores deployments, then require diagnosticsVersion1 startup plus Gateway readiness and checkpoint progress before claiming live acceptance. [Evidence](history/2026-10-21_12-45-30-168113-orchestrator-collector-release-paused.md).
@@ -2880,3 +3266,67 @@ Completed latest user request: reverted the outline experiment, made the existin
 - Remaining work/handoff: implement map tools plus read policy, resolve Calendar hard dependency while deferred, provision worker source settings, prepare/deploy/enable dedicated worker and verify a real message-to-label pilot. Renew Railway authentication before deployment/status verification.
 
 [Pass record](history/2026-10-17_19-52-28-728127-orchestrator-update-agent-readiness-audit.md).
+
+## Local timeout scope clarification
+
+Read-only inspection confirms60secondsisasharedsource-operationdefault,notuniversaltoolwallclock: broadDiscordsummary120seconds, modeldefault30seconds, batchmultipleoperations/overallparentbudgetandcancellationapply. No runtimechanges. [Pass](history/2026-10-21_16-57-34-388066-orchestrator-local-timeout-scope-clarified.md).
+
+## Discord broad-summary budget recommendation
+
+Read-only inspection confirms the broad120-seconddeadline is shared across sequential selected-channel reads and summarization; an exact requested team channel uses its ordinary window path. Recommend a five-minute aggregate ceiling with parent-budget answer reserve and bounded paced concurrency, based on prior7/11channel completion. Website overall default remains five minutes; local Discord overall is twenty minutes. Advice only; no runtime change. [Pass](history/2026-10-21_17-02-34-303096-orchestrator-discord-summary-budget-scope.md).
+
+## Map read overhead contract
+
+Read-only planner confirms agent reads sequentially revalidate every event/participant while browser reads already offer scoped original deduplication and concurrency four. Implement that existing per-read scope, bounded workers, stable ordering and relationship indexes; no cross-call caching and no change to uncached two-pass writes. Baseline event/source-access tests pass23/23. Implementation assigned independently; Calendar adapter ownership remains separate. [Pass](history/2026-10-21_17-07-15-441517-planner-map-read-overhead-contract.md).
+
+## Calendar backend pagination contract
+
+Preserve low-level single-page listEvents for internal batch duplicate checks. Add agent-facing backend traversal with20pages,200uniqueevents,14KiB event budget within16KiB envelope and one60second source deadline. Hide cursors from model, retain bounded partial evidence, withhold content on access failure, and require complete unfiltered worker reconciliation coverage. Exact-window/mode/query tracking and completion feedback must avoid identical partial scans. Source inspection only; implementation and independent tests assigned. [Pass](history/2026-10-21_17-07-57-064861-planner-calendar-backend-pagination-contract.md).
+
+## Five-minute Discord summary implemented locally
+
+Broad summary now shares300000ms across catalogue/channel/summarization work; exact-channel path unchanged. Website overall default/fallback420000ms leaves planning/answer room; cap600000, overrides, model30s, individual Discord traversal120s and overall Discord20min unchanged. Updated runtime guides and matching environment example/test default. Coder syntax/API build and124focused cases pass; synthetic deadline/cancellation/override checks pass. No live calls/deployment. Independent testing underway. [Pass](history/2026-10-21_17-07-57-065337-coder-five-minute-discord-summary-implemented.md).
+
+## Five-minute summary independently verified
+
+Independent tester passed48/48 Discord summary/config/chat policy checks. Executable synthetic probe confirms one300000ms signal shared by catalogue and two channel reads, parent cancellation stays incomplete, website default/invalid-value fallback420000ms, explicit180000ms override retained and maximum600000ms. No live calls, deployment or runtime edits. Calendar/map dependent tests remain underway. [Pass](history/2026-10-21_17-08-52-378599-tester-five-minute-summary-verified.md).
+
+## Map read overhead reduced locally
+
+Trusted map reads now reuse one validated-snapshot authorization scope and exact original checks, preindex relationships, and authorize events then eligible participation with at most four workers per phase. Snapshot order, filtering, per-call fresh checks, exact attendance bindings and both uncached write authorization passes remain. Eight new security/performance cases plus existing focused suite pass56/56 and API build/whitespace pass. Parent broader72test run exposed one older timeout assertion missing the intentionally added safe diagnostics; tester assigned that fixture correction. Synthetic providers only; no live latency measurement or deployment. [Pass](history/2026-10-21_17-10-12-856011-coder-map-read-overhead-reduced.md).
+
+## Summary and map interim review
+
+Independent read-only evaluator finds summary/map changes aligned with scope;79focused checks pass. One300000ms broad summary signal combines parent cancellation, exact-channel path remains unchanged, and website420000ms fallback/default honors explicit overrides/cap. Map uses per-read exact-original dedup, four-check phases, stable ordering and fresh later access; attendance bindings and two uncached write checks remain. Calendar implementation/tests still underway; combined verdict pending. [Pass](history/2026-10-21_17-10-39-007982-evaluator-summary-map-interim-accepted.md).
+
+## Planner relevant-link requirement saved
+
+Saved user-requested planner/update-agent behavior in notes.md: during Discord summarization/review, inspect relevant linked resources such as volunteer signup sheets through available authorized reads. Linked content remains evidence. Saved requirement only; no runtime expansion or external link reads performed. Ongoing summary/Calendar/map reliability verification continues. [Pass](history/2026-10-21_17-13-06-555051-orchestrator-planner-relevant-links-note.md).
+
+## Calendar backend pagination implemented locally
+
+Calendar listing now traverses backend-owned provider pages under20pages/200uniqueevents/14KiBevent-output/60second aggregate bounds, retaining explicit partial coverage. Shared client/tool16KiB and chat20KBcontext contracts remain. Agent schema/prompts expose no Calendar cursors; low-level single-page and bounded batch duplicate APIs remain. Final account/ACL rechecks withhold content on authorization revocation. Worker coverage requires contiguous complete unfiltered full-mode windows, narrows incomplete scans recursively, reuses bulk map state and recommends merged upserts for observed stale/missing projections. Both early/backend conflicts invalidate observations; successful rereads replace covered snapshots. Coder127focusedtests pass and prompt24501bytes fits24576byte budget; final2line conflict guard syntax/whitespace checked, independent final regression pending. [Pass](history/2026-10-21_17-13-34-211140-coder-calendar-backend-pagination-implemented.md).
+
+## Combined release underway
+
+User explicitly requested all working-tree changes deployed to Railway, then published in logical GitHub commits. Planner inventories web/update-agent/Discord/Gmail changes and confirms036 prerequisite, existing037 receipt, newAttio privateweb settings, combined web-beforecollector sequencing and separate postweb avatar cutover. Found collector static packager rejects3new sharedchatmodules and Dockerfiles omitrootsharedsources. Parent exactallowlist/COPYsanitizedserver fixes implemented; tester independently correcting closure/regression tests. CLI routine authentication renewed, connectedRailway and scopedSupabaseMCP reads work. Frontend/API builds pass. Initial2150test run2147pass2knownfail1optionalskip; finalrerun pending. No live service upload yet. [Pass](history/2026-10-22_13-14-07-541694-planner-combined-railway-release-contract.md).
+
+## Combined collector packaging repaired
+
+Parent implemented exactfourmodule sharedroot allowlist and DockerCOPY of whole sanitizedserver context. Independent tests materializeimageCOPYlayout and proveallrelativeimports/modulespresent forbothcollectors; unapprovedroots/symlinks/dynamicloaders/secretsstilldenied. No globalrepositorycopy. StaleMiroassert updatedto preservebackendpartialcoverage semantics. [Pass](history/2026-10-22_13-17-41-151869-coder-combined-collector-packaging-fixed.md).
+
+## Combined release verified
+
+Finalfull node --test tests/*.test.mjs:2150pass,0fail,1optionalskip,69.2seconds. Browser55/55:30framing,10GoGreek,9indicators,6productiondistavatars. Focusedpackaging/prompt18/18. Bothbuilds pass. Evidence under evidence/combined-release (ignored); testermodelnetworksynthetic, no liveproviders/messages. [Pass](history/2026-10-22_13-17-41-152526-tester-combined-release-final-verification.md).
+
+## Combined release independently accepted
+
+Read-onlyevaluatorACCEPTforstageddeployment. Independent250focusedchecks including036realSQLfixtures and privacy pass; reviewedfinalfull2150pass/1skip/browser55 and package/scanevidence. Final2444files131655739bytes no findings/oversized; packages273web/58worker/30Discord/16Gmail sourceparity andprivatevaluescan clean. No material localblocker; hostedverification required. [Pass](history/2026-10-22_13-17-41-152727-evaluator-combined-release-accepted.md).
+
+## Combined release dependencies ready
+
+RoutineRailwayCLIauthorization renewed inexistingaccount. SupabaseMCP freshpreflight036missing/037present; exactreviewed036transactionapplied andverified7RPCprivileges:scopedfinish/release/fail/settle/requeueserviceonly,unscopedclaimdenied. ExistingactiveleasecompatibleperSQLtests; no queue/businesssource mutations. WebAttio privatekey/source/object/write settings andexactgrantmergedpreservingexistinggrants;web420000ms timeoutsetwithdeploysskipped. Existingpassword/session/bridge secrets andprivateoriginunchanged; twentyminuteDiscordalreadyconfigured. Freshsanitizedfourcontextsready; webuploadattemptstarted afterindependentacceptance. Gitpublication remainsafterRailway. [Pass](history/2026-10-22_13-17-41-152857-orchestrator-combined-release-schema-configuration-ready.md).
+
+## Combined web release building
+
+Combined web package273files/78182292bytes uploaded asRailway deployment046b9fd4-1d66-4adb-bd8c-ec0c54102170 afterfinal independentacceptance. StatusprogressedINITIALIZING->BUILDING; this doesnotestablishhealthyrollout. Remainingworker/collector contexts frozen/source-parity/private-scanverified. GitHubpublication deferreduntilRailwayphase peruserorder. Required036applied andprivatewebconfigurationreadiness alreadyverified. [Pass](history/2026-10-22_13-19-30-874858-orchestrator-combined-web-uploaded.md).

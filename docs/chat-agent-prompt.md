@@ -96,14 +96,18 @@ activity-only edit cannot refresh that expiry.
 
 Live Discord scans are sequential. Both bot HTTP clients share per-process
 pacing (750 ms minimum gap by default), Retry-After/JSON retry delays and
-exhausted-bucket cooldowns. Each request is bounded at90seconds and each live or
-aggregate scan at120seconds; a longer cooldown can still produce honest partial
+exhausted-bucket cooldowns. The pacing request budget stays90seconds and each
+individual live window defaults to120seconds (maximum120seconds). Broad
+read_discord_summary scans share one300second aggregate deadline across catalogue
+discovery, sequential channel reads and summarization; exact-channel summaries
+retain the single-window path. Summary model calls retain their30second limit.
+Earlier parent cancellation or a longer cooldown can still produce honest partial
 coverage. Separate service processes do not share this in-memory queue. No
 increase to channel/page/message or summary-model cost caps follows.
 
-The overall chat deadline defaults to300seconds (ASSISTANT_REQUEST_TIMEOUT_MS,
-maximum600seconds), separate from each model call's LLM_TIMEOUT_MS. This gives
-paced reads and fallback time to return an answer. A complete nonempty Calendar
-window ends an unsourced informational weekly question; contiguous pages must
-belong to the same window, and explicit source/map/memory/action requests retain
-their own workflows.
+The website's overall chat deadline defaults to420seconds (ASSISTANT_REQUEST_TIMEOUT_MS,
+maximum600seconds), separate from each model call's LLM_TIMEOUT_MS (default30seconds).
+Explicit shorter overrides remain supported. The seven-minute overall default
+leaves room around a five-minute scan for planning and the final answer; Discord's
+overall20minute deadline is unchanged. A complete nonempty Calendar
+window ends an unsourced informational weekly question. Calendar pagination is backend-owned within bounded window reads; partial coverage requires narrower dates or queries and cannot establish absence. Explicit source/map/memory/action requests retain their own workflows.

@@ -33,9 +33,14 @@ assets/URLs. The inner wrapper alone owns the staggered bubble entrance. The sol
 the selected current location and authorized active/future plans, with New York dates/times and
 truthful empty/unavailable states. Interacting with it retains person focus and
 scrolls the panel independently. Notes have two detached tail dots, with clear
-gaps from the body and between dots. Protected
-API access, bundled URL allowlist, polling/foreground refresh, expiry and failure
-clearing remain unchanged. `camera-focus.js` now shifts selected buildings to the
+gaps from the body and between dots. `map-avatar-url.js` accepts only exact
+same-origin `/api/map/people/<person UUID>/avatar` URLs bound to the displayed
+person. Current map markers and event attendees share this resolver and retain
+initials when images fail. The authenticated API streams private Supabase Storage
+portraits, so new people do not need a frontend rebuild. Approved bundled artwork
+remains a temporary fallback for older profile rows during backfill. Protected
+API access, polling/foreground refresh, expiry and failure clearing remain
+unchanged. `camera-focus.js` now shifts selected buildings to the
 right using complete projected bounds and a 25% pullback (within distance limits),
 preserving front direction, angle profiles and overview return.
 See docs/map-presence.md and docs/camera-navigation.md for current contracts.
@@ -276,3 +281,11 @@ draft stays accessible when the available height changes.
 Map refreshes coalesce agent write notifications behind an older pending read, guaranteeing a subsequent read begun after the saves. Transient read failures recover with at most two consecutive retries after1/3seconds; authentication denials do not retry. Failed reads still clear stale activity, and disposal cancels retries. Ordinary polling/visibility recovery remain.
 
 Assistant replies render only the answer’s safe inline citations. Retrieval metadata remains available to the server but is no longer blindly appended as a footer of unrelated search candidates or Calendar events.
+
+## Go Greek temporary popup at 683 Broadway
+
+`broadway-683.js` extracts the exact 70 source faces of the southern W 3rd Street tower (BIN1008629) from tile-1_1, then merges its image-informed masonry/windows/cornice/garden/tank into one vertex-colored selectable mesh. `go-greek-popup.js` is the single enable switch and display/camera manifest. While enabled, `main.js` dynamically imports the model, removes those same tile faces and registers 683-broadway as Go Greek; config/building-views conditionally include its local label and independent southeast focus. Disabling skips all popup hooks and preserves the original tile. Adjacent complex geometry/source exports are preserved. The visual flag is independent of the backend catalogue row, separately added by owner migration037. See docs/683-broadway-model.md for import and database-safe removal instructions.
+
+Active-event signals live in `map-event-indicators.js`: original personal-site canvas exclamation, shared softly flashing gold borrowed-geometry overlay with a small marker bounce (both static for reduced motion), complete cached root bounds and exact active-window reconciliation. `map-presence.js` supplies the full authorized catalogue/clears failures; main owns lifecycle. Generic across buildings; preserve this module when retiring Go Greek. See docs/active-event-indicators.md.
+
+Selected-building framing now uses `map-focus-layout.js` as the shared camera/card contract: desktop buildings fit left of the card; compact cards move below them with assistant clearance. `camera-focus.js` solves complete perspective bounds, widens the lens smoothly only when distance caps prevent a compact fit and restores the overview lens. Per-building facade angles remain; the former Kimmel-only screen-side override is removed.

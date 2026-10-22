@@ -121,6 +121,45 @@ refreshes it; activity-only edits preserve expiry. Timed scheduled events with a
 supported start and missing end use start plus7200seconds. Existing explicit ends,
 partial edits, all-day boundaries and unknown starts retain their separate rules.
 
+## Source-backed personal locations
+
+The shared map prompt and chat map guidance explicitly cover informal personal
+locations without a pre-existing scheduled event. For an authorized original
+current self-report such as “I am at eLab until 5pm,” the agent resolves the
+original author's exact linked identity, the fixed building catalogue and the
+stable `(source_id, source_record_id)` before writing. If no record exists, it
+omits the internal event UUID so the trusted service assigns one, then creates a
+complete presence/building/participant snapshot. Existing records use the same
+identity and a fresh `expectedUpdatedAt`; conflicts require rereading and merging.
+This creates map activity, without adding an informal presence event to Calendar.
+A final pre-upsert prompt check explicitly preserves future-tense planned
+classification even when active now, checks the original deadline against the
+proposed end, and rejects copying synthetic sample times or using the two-hour
+fallback when an explicit end exists. The final check also requires blank
+participant labels for location-only statements, rather than echoing the building
+as an activity.
+
+Current presence starts at the original explicit report timestamp unless an
+earlier explicit start is supported, and ends at the supported local 5pm. The
+explicit end overrides the two-hour fallback. An explicit future “from 3 to 5pm”
+plan uses that interval and stays upcoming until 3pm. Under the user-requested
+same-day convention, an unqualified “I will be at eLab until 5pm” means immediate
+stated availability: `personal_plan`/`planned` from the original report timestamp
+to the explicit same-day end. It does not verify physical arrival. The end must
+follow the start; never roll an expired/ambiguous end to the next day. Explicitly
+future or delayed plans such as “tomorrow,” “later” or “after class” still need a
+supported arrival; without one, defer the timed window. Dates and offsets come
+from original source time and supported timezone context. Unknown activity leaves
+the participant label blank, uses type `other` and a neutral presence/plan title.
+
+A screenshot discussing a hypothetical feature or example statement does not
+establish a real location report. Chat generic writes still require an affirmative
+current-user map action, request-local supported originals and exact identity
+receipts. A bare website “I” statement does not identify a provider account; the
+separate named-person attendance path still updates existing events only.
+These are prompting instructions backed by existing tools, not a guarantee that
+a model will interpret every message correctly or a time-selector implementation.
+
 ## Fixed event types (028)
 
 Hosted028 (20261018173407_event_types) adds event_types and events.type_id. The catalogue has code, name, description, icon_key and sort_order. The user selected exactly Study, Meeting, Event, Social and Other. This classification is separate from structural kind (presence/personal_plan/scheduled_event).

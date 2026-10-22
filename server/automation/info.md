@@ -3,14 +3,14 @@
 The update agent is the backend autonomous processor. This opt-in local worker drains shared source inputs through server-owned tools. The conversational assistant is the chat agent; module paths and configuration keys retain their existing technical names.
 It has no public endpoint, durable-memory writer or automatic source subscription.
 The model worker runs only when `AGENT_AUTOMATION_ENABLED=true`, reviewed
-migrations018/019 are applied and model/source/Calendar configuration is ready.
+migrations018/019/032/036 are applied and model/source/Calendar configuration is ready.
 The bundled adapter supplies live Miro/Gmail/Discord reads and narrowly scoped
 Calendar reconciliation and normalized map event tools. This local implementation does not activate a worker
 or establish OAuth consent, live Calendar access or deployed operation.
 
 `config.js` defaults to thirty eligible deduplicated events or oldest age thirty minutes, a
-one-minute cooldown, one lease, twenty inputs/64KiB per claim, twelve model rounds,
-twenty-four calls, a ninety-second run bound and America/New_York worker time.
+one-minute cooldown, one lease, twenty inputs/64KiB per fresh claim, sixteen model rounds,
+thirty-two calls, a three-minute run bound and America/New_York worker time.
 `cli.js once` checks once; `cli.js serve` polls every five seconds. Empty, young,
 busy and cooldown queues do not invoke the model. Existing LLM environment
 configuration chooses the provider/model; this worker selects no model.
@@ -38,9 +38,24 @@ only as untrusted JSON in the user message. Hook failures release the lease and
 retain inputs without invoking the model, action tools or completion. Custom
 fixtures without a hook keep their prior behavior. The bundled adapter clears
 all batch-local source fragments and observed provenance in `cleanupBatch`.
-Failed/released snapshots and unhandled subset entries receive a five-minute
-metadata retry deferral. Claim counts/selects only currently eligible pending
-inputs, so retained failures cannot monopolize newly arrived work every minute.
+Migration036 records fixed safe outcomes and at most five failed attempts per
+input. Failed mixed batches and unhandled partial completions move to isolated
+singleton retries after the existing five-minute deferral. Only a failed singleton
+at the fifth attempt enters quarantine, so a failing peer cannot quarantine
+healthy inputs. Explicit caller cancellation defers without increasing attempts;
+the configured run timeout counts as `timeout`, and heartbeat loss as `stale`.
+A failed settlement RPC never falls back to shutdown release: the next scoped
+claim accounts for the expired token once. Delayed fail/release/finish callbacks
+cannot alter an expired or replacement lease. `handler.js` preserves its public
+`aborted` result for cancellation/timeouts; durable failure metadata distinguishes
+them. Production stores always implement `fail`; injected legacy fixture stores
+without that method retain release compatibility.
+
+Scoped claims alternate fresh batches and retry singletons when both have eligible
+work. `runner.last_lane` survives completion and release. The aggregate30-input
+or oldest30-minute trigger,60-second cooldown, allowed sources, source/hash
+snapshots and count/byte caps remain. A retry is only eligible after its deferral;
+source reauthorization still runs throughout each claimed batch.
 
 Tools are trusted objects `{name,description,parameters,execute,idempotent:true}`.
 Explicit `readOnly:true` tools fetch fresh context on every call and bypass
@@ -60,7 +75,12 @@ Successful receipts store no source bodies; a replay
 returns `already_succeeded`. Receipt keys bind scoped input UUIDs, tool name and
 canonical arguments, independently of unrelated arrivals. Adapters must reuse
 keys and reconcile ambiguous remote outcomes; this is not remote exactly-once
-delivery. Do not supply non-idempotent write tools. Current-state/source context
+delivery. Splitting a batch can change a tool's scoped input UUIDs and therefore
+its receipt key: receipt deduplication alone does not protect regrouped writes.
+Adapters must retain stable provider/source-derived mutation identity and reconcile
+current state. Existing Calendar event IDs derive from calendar/source identity;
+map writes retain their source identity and optimistic revision checks. Do not
+supply non-idempotent write tools. Current-state/source context
 fetches should be registered read-only so retries still obtain fresh results.
 
 `validation.js` supports bounded object/array/string/number/integer/boolean/null
@@ -114,7 +134,24 @@ Calendar/Miro preparation and disabled-worker default are unchanged.
 with sanitized errors. Subscription get/CAS RPCs are restricted to `subscription:`
 keys and metadata JSON. Direct cache inserts bypassing the updater are retained
 but not scheduled: adapters must use the atomic enqueue path. Metadata receipts
-and dedup identities have no automatic retention cleanup in this implementation.
+and dedup identities remain; quarantined original bodies expire after24hours.
+Every scoped claim performs bounded maintenance before busy/empty/cooldown checks,
+deleting at most100 expired matching quarantine source/hash snapshots from the
+existing cache, without calling a model. Only minimal metadata/dedup survives.
+This is a retention deletion, never a processing-success receipt. Replaced bodies
+are not deleted: mismatches become `quarantine_changed` for private service review.
+That replacement exception is not covered by the original snapshot's24-hour TTL;
+no general pending-input TTL or new content archive is introduced.
+
+Service operators may call `store.requeue({inputId,allowedSourceIds,expectedHash})`
+with the exact UUID, current configured source allowlist and the stored32-character
+MD5 snapshot hash, only before quarantine expiry and while no lease is active.
+Both metadata/raw source IDs and current/stored hashes must match. Recovery resets
+attempts to zero and keeps singleton isolation; it cannot recover expired or changed
+payloads. This method has no public endpoint or model-tool registration. SQL036
+restricts fail/settle/requeue to service_role and revokes the unused unscoped claim
+RPC so it cannot bypass recovery protections. No new arbitrary error text, source
+bodies or credentials are stored in queue metadata.
 
 Without `AGENT_AUTOMATION_ADAPTER_MODULE`, `cli.js` loads bundled `adapters.js`.
 An explicit local `.js`/`.mjs` override still takes precedence and exports
@@ -197,3 +234,7 @@ Each claimed planner batch now has an independent audit run UUID and per-round m
 The bundled adapter also exposes read-only Drive search, folder listing and bounded file reads under its existing prepared-batch and Google access gates. These reads do not register Calendar/map write provenance. `handler.js` activates the shared `server/skills/techatnyu-drive/SKILL.md` after a valid first Drive proposal, replans before execution and retains it for that batch. Activation consumes a model round, without executing or charging a source-tool call. Other workflows keep the existing prompt.
 
 The shared schema validator retains its restricted regular-expression rules. Its sole reviewed group/assertion exception is the exact opaque Drive cursor pattern exported by this folder’s pure validation.js module, which rejects terminal newlines while permitting printable ASCII punctuation. Other lookaheads, groups and near-match patterns remain rejected.
+
+Tool-failure diagnostics distinguish rejected proposals from dispatched adapter work, preserve sourceStatus and Miro deferral coverage, and correlate fixed causes to run/round without changing leases, budgets or idempotency. Existing private audit storage retains encoded primary causes; detailed failed Calendar batch items are mirrored to Railway without extra model-attempt records.
+
+Agent-facing Calendar reads now traverse bounded provider pages internally. Completion coverage requires contiguous complete unfiltered full-mode windows; partial scans lead to progressively narrower unattempted windows, with no provider cursors exposed to the model. One source-filtered map read can supply state for multiple Calendar occurrences. Observed missing/stale projections require merged upserts, while conflicts invalidate the observation and require a fresh matching read. Later reads replace covered snapshots; optimistic writes and source/participant gates remain authoritative.

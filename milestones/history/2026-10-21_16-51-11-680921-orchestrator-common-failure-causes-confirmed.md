@@ -1,0 +1,10 @@
+# Common historical failure causes investigated
+
+- Role/scope: orchestrator, useraskswhy527map/54Calendar/277plannerfailures occurred; diagnosisonly.
+- Startingstate: newlogging/receipts acceptedlocally, Railwayauthblocked; concurrentGoGreek/schema/UIworkpreserved. Readcurrentnotes/snapshot/to-do/workflow/latestlinkedstate andpriorreproductionhistory.
+- Modelcauseconfirmed: metadata-onlyretained-outputinspection for exact277baseline responses shows all9–14calls,151with10and80with11.2,794of2,886proposedtoolsaremapreads. Existingparsermax8rejectswholeturn. Deployedpromptencouragesbatchingwithoutper-turn8limit; no automaticparse-retrybehaviourchanged.
+- Mapcause: priorread-onlycontrolledreproduction database1.066s; oldcombined5sdeadlineexpiresduringsequentialCalendaroriginalsourcechecks; largerdiagnosticbudgetfinishes6.607s. All527unavailablebeforeOct20T23:02:34Zsource-timeoutrelease. Freshall-pageauditquerypostreleaseuntilbaselinecutoff694reads:690plannerready+1chatready+3planneraborted,0unavailable. Confirmsmitigationinobservedwindow,notalllegacyexceptiondetails.
+- Calendarcausebounded: parentread-onlyauditquery293modelrows/115Calendarlifecyclerows match54unique same-roundproposals; all54visibleargsvalid, pagecursorpresent/redacted, priorready same-windowreadexists. Thereforepaginationhandlingiscommoncontext; wrong/stalecursor/continuationaftercomplete andprovider400remainunresolvedalternativesbecausereasons/providerpageoutputsnotretained. No mistakenassertionthat[REDACTED]wasactualsentvalue.
+- Evidence: ignored evidence/failure-diagnoses scripts+aggregatecounts/flags only; no prompts/IDs/cursors/credentials/rawsource/modelbody persisted. Source-onlyplannerindependentpassrecordedseparately. No runtimechanges/tests/modelcalls/businesswrites/deploys.
+- Documentation: appendfollowupcauses to docs/tool-failure-logging.md; rollingstate/to-do updatedwithoutremovingconcurrentwork.
+- Handoff: reportconfirmedover-batchingandmaptimeoutvslikelypagination; prioritizeturnlimit/continuationworkonlyifrequested. Existingloggingactivationauthblockerunchanged.

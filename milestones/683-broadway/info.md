@@ -1,0 +1,3 @@
+# Go Greek temporary popup at 683 Broadway
+
+Go Greek's source-aligned model is locally integrated with one frontend enable switch for its catalogue entry, camera, dynamic model import and source replacement. Disabling preserves the original background tower; no exact popup date was supplied for automatic expiry. Separately authorized owner migration037 is applied to hosted Supabase as20261021205505_go_greek_building, adding the matching backend catalogue row. Actual API recognition and independent local/hosted checks pass. The visual switch does not remove backend rows or linked activities. Full import and safe permanent cleanup instructions are in docs/683-broadway-model.md; current repository truth is in ../milestone.md. No frontend deployment is implied.

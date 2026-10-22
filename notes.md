@@ -99,3 +99,23 @@ The user approved a new Tech@NYU Drive access skill, automatically injected for 
 ## 2026-10-19 — Planner Google access authorization
 
 The user authorized allowing planner Google reads and specified hello@techatnyu.org for Gmail because it can access the club Drive. This account is already configured across Google services. Restore the existing native Gmail source grant on the worker, covering its read-only Gmail/Drive tools, while preserving current source/write and collector boundaries. This supersedes the earlier separate pending source-policy decision.
+
+## 2026-10-21 — Future map time selector
+
+- Add a clock/time selector near the top of the map so members can choose a future date/time and preview the people, activities and events expected then. For example, a recorded eLab plan ending at 5pm should appear when viewing 4pm. Show recorded plans rather than claiming verified physical presence. Placement is tentative. Saved future feature only; do not implement it yet, and keep the current live map behavior until separately requested.
+
+## 2026-10-21 — Go Greek temporary popup
+
+The modeled 683 Broadway location should display as **Go Greek** and is a temporary popup for one specific day. Keep its model and associated UI/camera behavior easy to disable and remove together, and document the entire import/cleanup path. The exact day has not been supplied; no automatic scheduling or expiry is inferred.
+
+## 2026-10-21 — Supabase MCP preference
+
+Use Supabase MCP for database operations. The user objected to a silent computer-control fallback. Surface connection/authentication issues and use the configured MCP route; do not silently switch to dashboard writes. OAuth sign-in is separate from data operations.
+
+## 2026-10-21 — Active event map signals
+
+When an event is underway, show the yellow exclamation mark from the personal website and make its building glow. The user also requested a sample event at683Broadway/GoGreek to preview the appearance. Implement signals from authorized current scheduled events and retain clearly labeled, expiring sample provenance; do not fabricate a real provider announcement.
+
+## 2026-10-21 — Relevant links during planner Discord summaries
+
+- **Planner link following:** When the autonomous planner/update agent summarizes or reviews Discord originals, it should open links it judges relevant to understanding or acting on the activity—for example, a volunteer signup sheet. The presence of a relevant link is sufficient reason to inspect it through available authorized read tools rather than relying only on the message excerpt. Preserve normal source/account access and treat linked content as evidence. User requested this as a saved behavior requirement; implementation and verification are a separate follow-up.

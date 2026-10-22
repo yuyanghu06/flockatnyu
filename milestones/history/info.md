@@ -151,3 +151,43 @@ October 21 Morpheus research entries distinguish upstream source evidence and lo
 Chat budget orchestrator pass records thirty call rollout blocked.
 
 October21collector-crash-logging entries record failure-code implementation, independent privacy/checkpoint/shutdown regressions, the graceful startup exit correction, accepted review and the Railway-paused release. Source is verified but not live.
+
+Chat budget orchestrator pass records twenty minute discord plan.
+
+Chat budget coder pass records twenty minute private bridge implemented.
+
+Harness reliability passes record independent provider/queue implementation and verification; local acceptance is distinct from hosted migration/release.
+
+Chat budget tester pass records twenty minute discord tests pass.
+
+Chat budget evaluator pass records twenty minute discord review accepted.
+
+Chat budget orchestrator pass records twenty minute discord release blocked.
+
+Collector deployment-order follow-up verifies diagnostics are included in the newer combined private-bridge package and records the user-requested rollout dependency; platform pause still prevents activation.
+
+October21 website-memory pass records an optimistic hosted shared-note update and read-back without prompt changes.
+
+October21 avatar/person and personal-location entries record exact identity/profile preservation, source-backed create-if-missing guidance, actual-model failures/focused corrections and final synthetic acceptance. The future map clock is notes-only; local evidence does not claim hosted deployment.
+
+October21 Storage-avatar entries record the private bucket/upload stage, independent burst/auth findings and fixes, guarded profile migration tests, final local acceptance and externally paused Railway release. Profiles remain unchanged until compatible web deployment succeeds.
+
+October21 tool-health entries distinguish the screenshot’s successful empty search, native Drive skill-load skips, bounded Discord summary coverage and isolated empty-answer observation; local fixes and hosted findings are recorded separately.
+
+October21 683Broadway passes track exact corner-tower identity, source geometry, implementation and independent browser/review evidence.
+
+October21 Calendar/map confirmation records live batch activity and distinguishes automatic reconciliation from unverified full occurrence parity.
+
+Discord image-context passes record trusted native attachment reads, in-memory multimodal context, access/privacy checks and actual release status.
+
+Discord image-context final entries preserve independent391check acceptance, repaired failed-download byte accounting, actual-model local evidence and explicit pending hosted release.
+
+October21 failure-logging entries record the complete retained lifecycle baseline, safe cause instrumentation, independent privacy/status/batch review findings, location receipt acceptance and the eventual release/authentication boundary.
+
+Active-event indicator passes record original-site artwork reuse, timing/source/resource checks and the exact synthetic preview receipt.
+
+October 21 active-event indicator entries distinguish implementation, independent tests/review, exact operational MCP seeding and actual local API/browser verification. The synthetic event expires without deleting historical data.
+
+Attio entries record independent planning, implementation, verification and review of the opt-in CRM integration.
+
+October 21 all-building framing correction records direct implementation and actual30-case viewport verification; it supersedes the earlier selected-mobile card-occlusion limitation.

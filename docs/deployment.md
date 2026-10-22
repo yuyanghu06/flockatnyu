@@ -113,3 +113,11 @@ separate. Miro's explicit request-timeout setting continues to override its defa
 This change permits slower checks; it does not bypass source authorization, change
 queue ordering or guarantee backlog drainage. Current release acceptance is in the
 rolling milestone journal.
+
+## Combined release — 2026-10-22
+
+All four services received the combined working-tree source after2150passing tests (one optional upstream Miro schema test skipped),55browser checks and frontend/API builds. Fresh sanitized contexts preserve exact reachable source and pass private-value scans. Collector packages now admit four reviewed shared root modules; their Dockerfiles copy the complete sanitized server tree.
+
+Web release046b9fd4-1d66-4adb-bd8c-ec0c54102170; update-agent bede3de6-1378-4e23-946b-a99c9fdfe35e; Discord79d8b35d-a085-44a5-afd0-4cd7b786c478; Gmail47f37200-72f0-431c-b819-218b640efdc2 all reachedSUCCESS. Reviewed036 was applied through Supabase MCP before worker rollout; existing037 was preserved. Web-only Attio configuration merges its exact source grant while preserving other grants and credentials. Website overall deadline is420000ms; Discord remains1200000ms.
+
+Hosted checks verify login, anonymous API denial, exact index/main assets, all ten buildings including Go Greek, five Attio tools and a live read, and hidden Calendar cursors. Discord resumed its Gateway; worker organic model/Calendar activity emits diagnosticsVersion1. All27profiles were guarded-CAS switched to verified private portrait objects through MCP after compatible web was live; authenticated image bytes match original hashes and anonymous access is denied. Identity/name/email/visibility/creation facts remain unchanged. Original artwork and legacy frontend imports remain for compatibility; removing those imports is a later cleanup. No CRM test mutation or unsolicited Discord message was sent. Full receipts and scope limits live in the rolling milestone and ignored evidence/combined-release.

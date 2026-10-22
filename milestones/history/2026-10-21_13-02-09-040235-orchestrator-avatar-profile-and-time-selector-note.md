@@ -1,0 +1,9 @@
+# Avatar/profile addition and future time selector note
+
+- Local timestamp / acting role / milestone: 2026-10-21T13:02:09.040235-04:00 / orchestrator / avatar-assets.
+- Requested scope: matching avatar from supplied photograph, verified Discord-linked person, show image, save future time selector idea only.
+- Starting state:26profiles and portraits; unrelated reliability/chat/collector work preserved.
+- Work performed: built-in image_gen used original photograph for identity and two existing portraits for faceted style/ivory background. Saved assets/avatars/Grace.png and exact prompt in milestones/avatar-assets/grace-prompt.txt. Verified exact username through existing configured guild bot and inserted one guarded map_people row with supplied full name, split first/last name, provider display name and verified numeric identity. No email guessed. All26prior profiles compared byte-for-byte unchanged. No location/attendance/Calendar writes. Original photograph remains outside Git. Added notes.md future top-of-map clock/date-time preview idea with explicit implementation deferral. Updated assets and avatar milestone guides.
+- Checks/evidence: actual hosted insert and full roster reread27rows/26prior unchanged; exact bot username search complete/unique/nonbot; visual generated artwork review; npm run build passes, expected existing large-chunk warning. Build contains one byte-identical new avatar; square1254×1254PNG. Ignored aggregate receipt evidence/personal-location-behavior/avatar-verification.json.
+- Result: profile and generated artwork complete; picture shown inline. Build ready locally.
+- Remaining work/handoff: new bundled image requires next coordinated web deployment; no live portrait claim. Personal-location guidance/tests continue separately. Time selector remains notes-only, current-time map unchanged.

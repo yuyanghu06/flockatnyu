@@ -1,0 +1,7 @@
+# Combined release waits for other agent rollout
+
+- Local timestamp / acting role / milestone: 2026-10-21_12-51-18-432221 America/New_York / orchestrator / collector-crash-logging
+- Requested scope: Add safe failure diagnostics to the Discord collector.
+- Starting repository state: Concurrent chat-budget changes preserved and excluded from collector release.
+- Work, decisions, checks and resulting state: User explicitly requires collector diagnostics deployment after the other agent finishes its changes. Read-only Railway deployment inventory shows no new rollout; latest web/planner remain October20. Official status.railway.com latest16:29UTC October21 says builds/deployments remain paused. Other agent committedc984237 private twenty-minute transport and prepared exact combined collector package; collector-diagnostics.js and event-cli.js in that27file package byte-matchc984237, which descends from209e106. Thus logging is already bundled with the pending combined release. Do not upload older209e106package over the newer private bridge. After other-agent rollout completes, inspect live diagnosticsVersion1 and Gateway readiness; deploy only if missing using the latest verified combined source. No upload/restart/configuration change made in this pass. Live activation remains blocked externally; no background deployment job was created.
+- Remaining work and handoff: See rolling milestone and to-do.
