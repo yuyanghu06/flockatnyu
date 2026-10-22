@@ -1,3 +1,7 @@
+## Discord blacklist changes published to GitHub
+
+Implementation/tests/guides committed as4fc9a10 and milestone records as5f07d08, pushed to origin/codex/dev. Remote SHA5f07d08b0ebba2640934f3131aae06dd39501579 matched local with a clean tree before this documentation receipt. Independent publication review and credential/whitespace checks pass; functional tests and live release remain verified above. No additional deployment/configuration changes. [Publication receipt](history/2026-10-22_14-37-36-017832-orchestrator-discord-blacklist-github-publication-verified.md).
+
 ## Discord blacklist GitHub publication ready
 
 User requested push. Independent review ACCEPT of40pending files, deployed source/migration hash comparison and credential/binary/size/whitespace checks pass. Local codex/dev matches origin/codex/dev at9224a49 before publication. Publish implementation/tests/guides plus milestone/history records; ignored operational evidence stays local. [Review](history/2026-10-22_14-36-46-936840-evaluator-discord-blacklist-publication-accepted.md).

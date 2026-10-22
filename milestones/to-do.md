@@ -1,7 +1,7 @@
 ## Discord blacklist GitHub publication
 
 - [x] Review all pending files, existing test/deployment evidence and remote branch; independent publication ACCEPT and no credential findings.
-- [ ] Commit/push logical changes and verify a clean tree with matching remote SHA.
+- [x] Commit/push logical changes and verify a clean tree with matching remote SHA; implementation4fc9a10 and records5f07d08published.
 
 ## Discord username mapping lookup
 
