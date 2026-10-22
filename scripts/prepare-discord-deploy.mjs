@@ -5,7 +5,7 @@ import {dirname, isAbsolute, join, posix, resolve, relative, sep} from 'node:pat
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const sharedModules = new Set(['server/source-timeout.js']);
+const sharedModules = new Set(['server/source-timeout.js', 'server/chat-attachments.js', 'server/chat-discord-context.js', 'server/chat-request-context.js']);
 const nativeModules = new Set(['node:crypto', 'node:http', 'node:path', 'node:timers/promises', 'node:url']);
 // Node parses imports without executing source or resolving/loading its packages.
 const parseImports = `import {SourceTextModule} from 'node:vm';

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {copyFile, lstat, mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile} from 'node:fs/promises';
+import {copyFile, cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -90,6 +90,7 @@ test('path escapes, other connectors, missing modules and unreviewed dependencie
   for (const [source, error] of [
     ["import '../../.env';", /deployment_module_denied/u],
     ["import '../google/config.js';", /deployment_module_denied/u],
+    ["import '../unreviewed-shared.js';", /deployment_module_denied/u],
     ["import './missing.js';", /ENOENT/u],
     ["import 'three';", /deployment_dependency_denied/u],
     ["import 'node:fs';", /deployment_dependency_denied/u],
@@ -148,6 +149,7 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
   assert.deepEqual(result.dependencies, discordDependencies);
   assert.deepEqual(result.modules, [
     'server/automation/events.js', 'server/automation/store.js', 'server/automation/validation.js',
+    'server/chat-attachments.js', 'server/chat-discord-context.js', 'server/chat-request-context.js',
     'server/discord/chat-adapter.js', 'server/discord/chat-bridge.js', 'server/discord/chat-client.js',
     'server/discord/chat-config.js', 'server/discord/chat-delivery.js', 'server/discord/chat-runtime.js',
     'server/discord/client.js', 'server/discord/collector-diagnostics.js', 'server/discord/config.js', 'server/discord/discovery.js',
@@ -179,7 +181,32 @@ test('service deployment configs explicitly separate continuous collectors from 
     assert.match(docker, /npm ci --omit=dev --ignore-scripts/u);
     assert.match(docker, /USER node/u);
     assert.equal(docker.includes('build:api'), false);
-    assert.equal(docker.includes('COPY server ./server'), false);
+    assert.match(docker, /^COPY server \.\/server$/mu);
     assert.equal((await lstat(join(path, 'package-lock.json'))).isFile(), true);
+  }
+});
+
+test('both sanitized collector Docker COPY layouts retain every reachable relative module', async t => {
+  for (const [service, prepareService] of [['discord-worker', prepareDiscordDeployment], ['gmail-events', prepareGmailDeployment]]) {
+    const result = await prepare(t, prepareService, {});
+    const image = await mkdtemp(join(tmpdir(), 'collector-image-layout-'));
+    t.after(() => rm(image, {recursive: true, force: true}));
+    const docker = await readFile(join(result.directory, 'Dockerfile'), 'utf8');
+    // Materialize only the Dockerfile's actual server COPY instructions, rather
+    // than assuming the complete context is copied into the image.
+    for (const [, source, destination] of docker.matchAll(/^COPY (server(?:\/[^\s]+)?) (\.\/server(?:\/[^\s]+)?)$/gmu)) {
+      await cp(join(result.directory, source), join(image, destination), {recursive: true});
+    }
+    for (const name of result.modules) {
+      assert.equal((await lstat(join(image, name))).isFile(), true, `${service}: missing ${name} in image`);
+      const source = await readFile(join(image, name), 'utf8');
+      for (const [, specifier] of source.matchAll(/(?:\bfrom\s*|\bimport\s*)['"]([^'"]+)['"]/gu)) {
+        if (specifier.startsWith('.')) {
+          const target = resolve(image, dirname(name), specifier);
+          assert.equal((await lstat(target)).isFile(), true, `${service}: unresolved ${name} -> ${specifier}`);
+        }
+      }
+    }
+    assert.equal((await filesIn(image)).some(name => /(?:^|\/)\.env|handler\.js|model-audit\.js/u.test(name)), false);
   }
 });
