@@ -1,3 +1,9 @@
+## Main aligned with dev — October 23
+
+`main` was fast-forwarded to the complete tested and deployed `codex/dev` release (`ab8742d`), without rewriting history or checking out files. Local and remote refs were verified equal; existing local edits are preserved. This synchronization journal is published on both branches. Application code and deployment configuration are unchanged.
+
+[Branch synchronization](history/2026-10-23_16-43-29-155454-orchestrator-main-aligned-with-dev.md)
+
 ## Isolated tools complete and deployed — October 23
 
 **Web:** `33f90fb7-0134-4489-b6cf-aa0e9b576ac4` SUCCESS. **Planner worker:** `ae88da62-af5d-4d37-b0bf-7288a2e31963` SUCCESS. Accepted source is `d6ccfc5` on `codex/dev`; the original checkout now owns the integrated implementation. The isolated worktree retains private test evidence. Do not resume its old restart checkpoint as unfinished implementation.

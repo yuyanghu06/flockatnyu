@@ -264,3 +264,5 @@ The isolated-tools restart checkpoint preserves69closedmodel dispatches, zero-us
 October23: isolated-tool current workflows accepted/integrated; deployment authorized and next. Verification and immutable tester/evaluator/integration entries are linked from the rolling milestone.
 
 October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
+
+October23: main fast-forwarded to the deployed codex/dev release; branch synchronization recorded in the rolling milestone.
