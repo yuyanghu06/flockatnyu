@@ -1,5 +1,11 @@
 # Shared map event tools
 
+The chat adapter can update its internal current-user/time context when the
+website admits text into an active reply. This is not a callable tool or source
+read. It keeps the original actor/source scope, saved snapshots, identity
+lookups and completed-write receipts; new presence defaults use the admitted
+message's trusted server time. The model still selects each map operation.
+
 `index.js` defines read_map_events, lookup_map_person and upsert_map_event for
 trusted chat and update-worker adapters. The shared service validates fixed
 catalogues, complete event/building/person snapshots, current local source grants

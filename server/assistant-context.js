@@ -376,7 +376,7 @@ export function assistantAnswerPrompt({ sources = [], results = [], memory, time
     + 'Tool execution for this request is finished. This answer step cannot execute more tools. Summarize actual outcomes now; do not announce a plan or pretend work is still running. A ready calendarWrite receipt or each successful calendarBatchWrite item confirms its reported operation: say the event was added, updated or cancelled as its outcome indicates, and use its exact supplied Calendar URL. Compare saved start/end/timezone with the user request before claiming the task is complete. For batches, report the supplied created/existing or updated/unchanged counts and any failed/unattempted items, distinguish existing skips from new creates, and use a few relevant example links rather than every retrieved event. A partial batch still has real completed receipts. For combined requests, report each successful action and any remaining work separately. Never say I am checking, I will add, or I am about to save an event whose successful receipt is already supplied. Current receipts override historical assistant refusals or promises; a receipt with wrong saved fields does not confirm the requested result. If there is no successful receipt, do not claim saving: explain the actual failed outcome, missing facts or unresolved target and ask only a necessary clarification. No attempt is not permission denial; do not invent an inability to edit. '
     + '\nUNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n' + JSON.stringify(answerReferenceData(results,sources));
 }
-export async function retrieveAssistantContext({ messages, principal, provider, liveTools, googleTools, miroTools, attioTools, bugReportTools, memoryTools, mapTools, discordDraftTools, buildingId, signal, planning = true, now, timeZone, timeContext, onToolEvent = () => {}, auditContext, onAuditEvent = async () => {}, requestContext, discordContext, discordUsers }) {
+export async function retrieveAssistantContext({ messages, principal, provider, liveTools, googleTools, miroTools, attioTools, bugReportTools, memoryTools, mapTools, discordDraftTools, buildingId, signal, steering, planning = true, now, timeZone, timeContext, onToolEvent = () => {}, auditContext, onAuditEvent = async () => {}, requestContext, discordContext, discordUsers }) {
   requestContext = validateChatRequestContext(requestContext);
   discordContext = validateDiscordRecentContext(discordContext,requestContext);
   discordUsers = validateDiscordUsers(discordUsers,requestContext);
@@ -390,9 +390,9 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
       signal?.addEventListener('abort',onAbort,{once:true});
     })]);}finally{if(onAbort)signal?.removeEventListener('abort',onAbort);}
   };
-  const requestTime = createTimeContext(timeContext ?? {timeZone,now});
+  let requestTime = createTimeContext(timeContext ?? {timeZone,now});
   if (!requestTime) throw new Error('Invalid request time context');
-  const currentMessage = messages.at(-1);
+  let currentMessage = messages.at(-1),inputRevision=0;
   googleTools = googleTools?.createRequest ? googleTools.createRequest({
     principal,
     operationId:createHash('sha256').update(JSON.stringify([principal?.id,messages])).digest('hex'),
@@ -417,6 +417,7 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
   const bugReportContext = currentMessage?.role === 'user' ? { reportId: randomUUID(), userMessage: currentMessage.content,
     ...(typeof buildingId === 'string' ? {buildingId} : {}) } : null;
   let accessDenied = false, bugReportAttempted = false, driveSkillActive = false;
+  let roundsUsed=0,noProgressRounds=0;
   let conflictTarget,conflictReadUsed=false;
   const mayRefreshConflict=(call,previous)=>{
     if(conflictReadUsed||!conflictTarget||!previous)return false;
@@ -446,26 +447,45 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
     try{
       const args=valid&&call.name==='lookup_map_person'&&typeof call.arguments.personName==='string'
         ?{...call.arguments,personName:normalizeChatMapPersonName(call.arguments.personName)}:call.arguments;
-      signature=canonicalJson({name:call.name,arguments:args});
+      // A later human correction is a distinct update, even if it restores an
+      // earlier value. Creates keep their original run-wide replay protection.
+      signature=canonicalJson({name:call.name,arguments:args,...(inputRevision&&['read_map_events','read_calendar_event','list_calendar_events','read_attio_record','read_memory','update_calendar_event','update_calendar_events','update_attio_record'].includes(call.name)?{inputRevision}:{})});
     }catch{return skipped('invalid_request','invalid_arguments');}
     if (call.name === 'bug_reports' && bugReportAttempted) return skipped('duplicate_call_skipped','bug_report_already_attempted');
     const refreshConflict=signatures.has(signature)&&mayRefreshConflict(call,signatures.get(signature));
     if (signatures.has(signature)&&!refreshConflict) return skipped('duplicate_call_skipped','already_executed',{previousResult:signatures.get(signature)});
     if (callsUsed >= maxToolCalls) return skipped('budget_exhausted','request_call_limit');
     if (signal?.aborted) {await rejected(call,'aborted','aborted');throw new DOMException('Stopped','AbortError');}
-    if (call.name === 'bug_reports') bugReportAttempted = true;
     if(refreshConflict)conflictReadUsed=true;
     signatures.set(signature,null); callsUsed++;
     const event = { type: 'tool', id: `tool-${callsUsed}`, name: call.name };
     const toolStarted=performance.now();
     await auditEvent({kind:'tool_started',tool:call.name,status:'started',counts:{sequence:callsUsed}});
+    if(signal?.aborted){
+      await rejected(call,'aborted','aborted');
+      throw new DOMException('Stopped','AbortError');
+    }
+    // Audit I/O may admit a new human correction. Do not dispatch its old proposal.
+    if(steering?.hasPending()){
+      signatures.delete(signature);
+      await auditEvent({kind:'tool_finished',tool:call.name,status:'superseded',durationMs:Math.round(performance.now()-toolStarted),counts:{sequence:callsUsed}});
+      return {tool:call.name,status:'superseded',reason:'new_user_input',sources:[]};
+    }
     onToolEvent({ ...event, status: 'running' });
     let result,toolError;
     try {
-      result = await waitForTool(()=>adapter.execute({ name: call.name, arguments: call.arguments, principal, signal, timeContext:requestTime,
+      result = await waitForTool(()=>{
+        if(steering?.hasPending())return {status:'superseded',reason:'new_user_input',sources:[]};
+        if(call.name==='bug_reports')bugReportAttempted=true;
+        return adapter.execute({ name: call.name, arguments: call.arguments, principal, signal, timeContext:requestTime,
         ...(adapter === liveTools ? {userMessage:currentMessage?.role === 'user' ? currentMessage.content : ''} : {}),
-        ...(adapter === bugReportTools ? {bugReportContext} : {}), ...(adapter === memoryTools ? {memoryContext} : {}) }));
+        ...(adapter === bugReportTools ? {bugReportContext} : {}), ...(adapter === memoryTools ? {memoryContext} : {}) });});
     } catch(error) { toolError=error;result = { status: signal?.aborted?'aborted':'unavailable', sources: [] }; }
+    if(result?.status==='superseded'){
+      signatures.delete(signature);onToolEvent({...event,status:'failed'});
+      await auditEvent({kind:'tool_finished',tool:call.name,status:'superseded',durationMs:Math.round(performance.now()-toolStarted),counts:{sequence:callsUsed}});
+      return {tool:call.name,status:'superseded',reason:'new_user_input',sources:[]};
+    }
     if (signal?.aborted) {
       await auditEvent({kind:'tool_finished',tool:call.name,status:'aborted',diagnostics:toolDiagnostics({status:'aborted',proposalSequence}),durationMs:Math.round(performance.now()-toolStarted),counts:{sequence:callsUsed}});
       throw new DOMException('Stopped', 'AbortError');
@@ -489,8 +509,8 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
     return visible;
   };
   const tools = [...liveList, ...googleList, ...miroList, ...attioList, ...bugList, ...memoryList, ...mapList, ...discordDraftList];
-  // Native assistant/tool turns preserve causal call IDs. User authority still
-  // comes exclusively from the original conversation passed to each adapter.
+  // Native assistant/tool turns preserve causal call IDs. User authority comes
+  // from the conversation and admitted text, never proposed tool arguments.
   // Attachments retain the existing multimodal planTools path because toolTurn
   // currently accepts text-only messages.
   const native=typeof provider.toolTurn==='function'&&!messages.some(message=>message.attachments?.length);
@@ -514,17 +534,34 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
     }
     nativeResultBytes+=Buffer.byteLength(content);return content;
   };
+  function applyPending() {
+    if(signal?.aborted)throw new DOMException('Stopped','AbortError');
+    const pending=steering?.drain()??[];
+    for(const input of pending){
+      const message={role:'user',content:input.text};messages.push(message);nativeMessages?.push({...message});
+      currentMessage=message;requestTime=createTimeContext({timeZone:requestTime.timeZone,now:input.receivedAt});inputRevision++;
+      memoryContext.userMessage=message.content;
+      if(bugReportContext&&!bugReportAttempted){bugReportContext.userMessage=message.content;bugReportContext.reportId=randomUUID();}
+      if(mapTools?.updateUserContext&&mapTools.updateUserContext({messages,timeContext:requestTime})!==true)throw new Error('invalid_steering_context');
+      attioTools?.advanceUserInput?.();
+      steering.applied(input);
+    }
+    if(pending.length)noProgressRounds=0;
+    return pending.length;
+  }
+  async function plan() {
+  applyPending();
   if (planning && (native || typeof provider.planTools === 'function') && tools.length) {
-    let noProgressRounds=0;
-    for (let round = 0; round < maxPlanningRounds && callsUsed < maxToolCalls; round++) {
+    for (; roundsUsed < maxPlanningRounds && callsUsed < maxToolCalls;) {
+      applyPending();
       let calls,turn;
-      auditRound=round+1;
+      auditRound=++roundsUsed;
       try {
         const input={messages:native?structuredClone(nativeMessages):messages,
           system:assistantPlanningPrompt({timeContext:requestTime,results,memory:memoryContext.snapshot,
             requestContext,discordContext,discordUsers,driveSkillActive,includeResults:!native,
             toolCapabilities:toolCapabilitySummary(tools,principal,results)}),
-          tools,signal,timeContext:requestTime,auditContext:auditContext?{...auditContext,round:round+1}:undefined};
+          tools,signal,timeContext:requestTime,auditContext:auditContext?{...auditContext,round:auditRound}:undefined};
         if(native) {
           // Leave room below the provider's 350KB native envelope bound. Never
           // dispatch a growing context that cannot fit; completed receipts stay
@@ -543,7 +580,8 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
         if(signal?.aborted)throw new DOMException('Stopped','AbortError');
         results.push({tool:'planning',status:'unavailable',sources:[]});break;
       }
-      if (!Array.isArray(calls) || !calls.length) break;
+      if (!Array.isArray(calls)) break;
+      if (!calls.length) {if(applyPending())continue;break;}
       // Replan the entire unexecuted turn under the skill before committing any
       // messages, IDs or effects. A skipped result can look terminal to the model.
       const activateDrive=!driveSkillActive&&calls.slice(0,2).some(call=>isDriveTool(call?.name)&&googleList.some(tool=>tool.name===call.name));
@@ -557,7 +595,8 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
       for(const [index,call] of calls.entries()) {
         let result;
         if(native) {
-          if(aborted||signal?.aborted){proposalSequence++;aborted=true;result={tool:call.name,status:'aborted',sources:[]};await rejected(call,'aborted','aborted');}
+          if(steering?.hasPending()){proposalSequence++;result={tool:call.name,status:'superseded',reason:'new_user_input',sources:[]};await rejected(call,'superseded','new_user_input');}
+          else if(aborted||signal?.aborted){proposalSequence++;aborted=true;result={tool:call.name,status:'aborted',sources:[]};await rejected(call,'aborted','aborted');}
           else if(callsUsed>=maxToolCalls){proposalSequence++;result={tool:call.name,status:'budget_exhausted',reason:'request_call_limit',sources:[]};await rejected(call,result.status,result.reason);}
           else if(index>=2){proposalSequence++;result={tool:call.name,status:'deferred',reason:'round_call_limit_repropose_if_still_needed',sources:[]};await rejected(call,'deferred','round_call_limit');}
           else {
@@ -565,10 +604,12 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
             catch(error){if(!signal?.aborted)throw error;aborted=true;result={tool:call.name,status:'aborted',sources:[]};}
           }
           nativeMessages.push({role:'tool',toolCallId:call.id,content:nativeContent(result)});
-        } else if(index<2&&call&&typeof call.name==='string'&&call.arguments&&typeof call.arguments==='object'&&!Array.isArray(call.arguments))await execute(call);
+        } else if(steering?.hasPending()){proposalSequence++;await rejected(call,'superseded','new_user_input');}
+        else if(index<2&&call&&typeof call.name==='string'&&call.arguments&&typeof call.arguments==='object'&&!Array.isArray(call.arguments))await execute(call);
         else {proposalSequence++;await rejected(call,index>=2?'deferred':'invalid_request',index>=2?'round_call_limit':'invalid_arguments');}
       }
       if(aborted)throw new DOMException('Stopped','AbortError');
+      if(applyPending())continue;
       if (before === callsUsed) {
         if (!native&&!calls.some(call=>tools.some(tool=>tool.name===call?.name))) break;
         results.push({tool:'planning',status:'duplicate_call_skipped',sources:[],reason:'No new calls executed. Reuse previous results, correct invalid calls or return no calls when the request is satisfied. Do not claim registered tools unavailable.'});
@@ -577,8 +618,11 @@ export async function retrieveAssistantContext({ messages, principal, provider, 
     }
   } else if (liveList.some(tool => tool.name === 'search_discord')) {
     await execute({ name: 'search_discord', arguments: { query: messages.at(-1).content.slice(0, 500), limit: 5 } });
+    if(applyPending())return plan();
   }
   const sources = boundedSources(rows);
   const lastResult = results.findLast(result=>result.status!=='duplicate_call_skipped');
-  return { sources, results, toolCapabilities:toolCapabilitySummary(tools,principal,results), ...(memoryContext.snapshot ? {memory:memoryContext.snapshot} : {}), status: sources.length ? 'ready' : accessDenied ? 'forbidden' : lastResult?.status || 'not_requested' };
+  return { sources, results, toolCapabilities:toolCapabilitySummary(tools,principal,results), ...(memoryContext.snapshot ? {memory:memoryContext.snapshot} : {}), status: sources.length ? 'ready' : accessDenied ? 'forbidden' : lastResult?.status || 'not_requested', ...(steering?{resume:plan,timeContext:requestTime}:{}) };
+  }
+  return plan();
 }

@@ -91,9 +91,6 @@
 .assistant-identity { display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 650; }
 .assistant-identity .assistant-logo { width: 24px; height: 24px; }
 .assistant-header-actions { display: flex; align-items: center; gap: 12px; }
-.assistant-stop { display: flex; align-items: center; gap: 6px; min-height: 30px; padding: 4px 8px; border: 0; border-radius: 7px; background: #efede4; color: inherit; font-size: 11px !important; }
-.assistant-stop-indicator { box-sizing: border-box; width: 11px; height: 11px; border: 1.5px solid #70588440; border-top-color: var(--assistant-purple); border-radius: 50%; animation: assistant-send-spin 1.4222222222s linear infinite; }
-.assistant-stop:hover, .assistant-stop:focus-visible { background: #e4dfd6; }
 .assistant-icon-button {
   display: grid;
   place-items: center;
@@ -279,11 +276,15 @@
 .assistant-queue-state { flex: 1; margin: 0; font-size: 11px; font-weight: 600; }
 .assistant-queue-action { min-height: 30px; padding: 3px 0; border: 0; border-radius: 3px; background: transparent; color: var(--assistant-purple); font-size: 11px !important; }
 .assistant-queue-action:hover { text-decoration: underline; }
+.assistant-queue-clear { color: #000; }
 .assistant-queue-list { display: grid; gap: 5px; max-height: min(144px, 20dvh); margin: 4px 0 0; padding: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; list-style: none; }
 .assistant-queue-item { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 4px 6px 4px 9px; border-radius: 8px; background: #efede4; }
 .assistant-queue-details { flex: 1; min-width: 0; }
 .assistant-queue-text { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 1.5; }
 .assistant-queue-files, .assistant-queue-building, .assistant-queue-retry { margin: 2px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; line-height: 1.5; }
 .assistant-queue-retry { color: #81553e; }
+.assistant-queue-actions { display: flex; align-items: center; flex: 0 0 auto; gap: 2px; }
+.assistant-queue-inject { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #9d9d98; font-size: 18px !important; }
+.assistant-queue-inject:hover:not(:disabled), .assistant-queue-inject:focus-visible:not(:disabled) { background: #00000008; color: #6c6c69; }
 .assistant-queue-remove { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; font-size: 20px !important; }
 .assistant-queue-remove:hover, .assistant-queue-remove:focus-visible { background: #00000008; }

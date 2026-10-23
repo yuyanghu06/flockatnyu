@@ -10,6 +10,7 @@ import {withDiscordSourceScope} from './discord/source-scope.js';
 import {validateManualRunInput} from './automation/manual-runs.js';
 import {createManualPlannerAuth} from './automation/manual-auth.js';
 import {validUuid} from './automation/validation.js';
+import {createChatSteeringRegistry} from './chat-steering.js';
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
@@ -90,11 +91,13 @@ async function readConversation(request, timeoutMs) {
   if (value.buildingId !== undefined && (typeof value.buildingId !== 'string' || !/^[a-z0-9-]{1,80}$/.test(value.buildingId))) throw new Error('invalid');
   const timeZone = canonicalTimeZone(value.timeZone);
   if (!timeZone) throw new Error('invalid');
-  return { messages, buildingId: value.buildingId, timeZone };
+  if(value.steering!==undefined&&typeof value.steering!=='boolean')throw new Error('invalid');
+  return { messages, buildingId: value.buildingId, timeZone, ...(value.steering===true?{steering:true}:{}) };
 }
 
 export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, attioTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, mapAvatarService = null, plannerRuns = null, plannerAuth = createManualPlannerAuth(), auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
+  const steeringRuns = createChatSteeringRegistry({now});
   const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,now});
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
   const authorize = async c => {
@@ -213,6 +216,13 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     c.header('cache-control', 'no-store');
     return c.json(result, resultStatus(result.status));
   });
+  app.post('/api/chat/:runId/steer', async c => {
+    const principal=await authorize(c);
+    if(!principal?.id||!Array.isArray(principal.allowedSourceIds)||c.req.header('sec-fetch-site')==='cross-site')return apiError(c,'access_denied',403);
+    let body;try{body=await readJSON(c.req.raw,config.timeoutMs,32768);}catch{return apiError(c,'invalid_request',400);}
+    const result=steeringRuns.enqueue(c.req.param('runId'),{principal,origin:c.req.header('origin'),token:c.req.header('x-flock-steering-token'),body});
+    const {httpStatus,...data}=result;c.header('cache-control','no-store');return c.json(data,httpStatus);
+  });
   app.post('/api/chat', async c => {
     const principal = await authorize(c);
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return deny(c, 'access_denied', 403);
@@ -220,6 +230,8 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     try { conversation = await readConversation(c.req.raw, config.timeoutMs); } catch (error) { return deny(c, error instanceof AttachmentError ? error.code : 'invalid_request', 400); }
     if (config.provider === 'anthropic' && conversation.messages.some(message => message.attachments?.length)) return deny(c, 'attachments_provider_unsupported', 400);
     if (!config.configured) return deny(c, 'not_configured', 503);
+    const steering=conversation.steering?steeringRuns.create({principal,origin:c.req.header('origin'),messages:conversation.messages}):null;
+    if(conversation.steering&&!steering)return deny(c,'invalid_request',400);
     const abort = new AbortController(); let disconnected = false;
     const disconnect = () => { disconnected = true; abort.abort(); };
     c.req.raw.signal.addEventListener('abort', disconnect, { once: true });
@@ -228,9 +240,10 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
         const encode = new TextEncoder();
         try {
           if (c.req.raw.signal.aborted) disconnect();
-          await chatRunner.run({ conversation, principal, signal:abort.signal,
+          await chatRunner.run({ conversation, principal, steering, signal:abort.signal,
             onRecord:record => { if (!disconnected) controller.enqueue(encode.encode(JSON.stringify(record) + '\n')); } });
         } finally {
+          steering?.finish();
           c.req.raw.signal.removeEventListener('abort', disconnect);
           if (!disconnected) controller.close();
         }

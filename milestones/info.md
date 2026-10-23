@@ -236,3 +236,5 @@ October23: isolated-tool current workflows accepted/integrated; deployment autho
 October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
 
 October23: main fast-forwarded to the deployed codex/dev release; branch synchronization recorded in the rolling milestone.
+
+`spotlight-steering/` tracks black Clear, the restored animated square, removal of header Stop and explicit queued-text steering. Its evidence distinguishes scripted/browser mechanics, actual-model simulated-data choices and hosted release checks.

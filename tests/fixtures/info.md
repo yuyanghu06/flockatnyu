@@ -15,3 +15,5 @@ They are imported only by historical migration tests. They contain no runnable a
 `map-config.mjs` loads the actual map configuration for Node-only navigation and presentation tests. It inlines JSON that Vite normally imports and resolves JavaScript imports against their real file location. It contains no copied configuration values or production runtime fallback.
 
 `chat-map-attendance.mjs` supplies simulated map storage and normal map tools for attendance checks, shared by repeatable orchestration cases and bounded real-model evaluations. It contains no live business data or credentials.
+
+`chat-steering.mjs` supplies a production app/runner with synthetic authentication, controlled provider timing and inert tools for admission, cancellation and stream races. `chat-steering-model.mjs` uses the production runner, registry and map adapters with synthetic storage; only injection timing is controlled during an actual-model run. No fixture creates live business-service clients. The companion harness pins sources and bounds all inference dispatches.

@@ -1,3 +1,33 @@
+## Spotlight steering accepted for release
+
+Requested controls are complete: black Clear, restored animated square, no header Stop and gray injection arrow beside each X. Same-run corrections retain completed operations and replace obsolete drafts; failed/unconfirmed input stays queued. Independent evaluator accepts the scoped web release with no material findings.
+
+Actual gpt-6-luna model scenarios pass with11/12 requests on synthetic data, preserving the map event at7PM and changing a streaming answer correctly. Final cancellation-only two-file delta passes independent offline review; the original model ledger is preserved. Parent components165/165, tester40/40, desktop/mobile browser, API compiler and frontend build pass. No live business writes. Integration/deployment/hosted checks next.
+
+[tester](history/2026-10-23_19-28-04-696607-tester-spotlight-configured-model-passed.md) · [coder](history/2026-10-23_19-28-04-696608-coder-spotlight-late-cancellation-guard-fixed.md) · [evaluator](history/2026-10-23_19-28-04-696609-evaluator-spotlight-release-accepted.md) · [Verification and limits](../docs/spotlight-steering-verification-2026-10-23.md)
+
+## Spotlight UI and safe injection checks pass
+
+Desktop/mobile controls and queue races pass independent browser checks. Scripted production-runner cases preserve completed actions, suppress old pending actions, retain failed injections and replace old answer drafts. Exact-read and First→Second→First Attio corrections pass; create replay and unknown-write guards remain. Parent affected components148/148 and API check pass.
+
+Independent review approved one source-pinned actual-model batch on simulated data, hard12 inference requests total/7 per case, now running. No live business writes or deployment yet. Runtime frozen until the model gate completes.
+
+[tester evidence](history/2026-10-23_19-23-50-538250-tester-spotlight-browser-and-steering-mechanics.md) · [evaluator evidence](history/2026-10-23_19-23-50-538251-evaluator-spotlight-review-and-model-gate-approved.md)
+
+## Spotlight controls and steering implemented; verification underway
+
+Black Clear, animated square composer, no header Stop and faint gray row arrows are implemented. The arrow admits text into the same active run; an existing operation finishes, obsolete proposals are skipped, and an old answer draft resets. Completed receipts, permissions, budgets and deadline survive. Queue rows remain until the stream confirms the text was applied.
+
+Affected regression checks85/85, frontend build and API check passed. Independent browser/race/model review remains; no inference, business writes or deployment in this implementation pass. A review finding about fresh Attio reads after a correction has been fixed and awaits its independent regression.
+
+[Implementation and limits](history/2026-10-23_19-19-35-413280-coder-spotlight-controls-and-run-steering.md) · [Scope](spotlight-steering/info.md)
+
+## Spotlight controls and active-turn steering underway
+
+User requested black Clear, the former animated square, no separate Stop, and a gray queue-row arrow that steers the current reply. Independent contract accepted: one run retains receipts/adapters/budgets; input applies before the next action, and answer drafts reset safely. Text/file/building and authentication/race boundaries are explicit. No source/service writes, inference or deployment in this planning pass.
+
+[Plan and ownership](history/2026-10-23_19-08-34-447780-planner-spotlight-controls-and-steering-contract.md) · [Scope](spotlight-steering/info.md)
+
 ## Main aligned with dev — October 23
 
 `main` was fast-forwarded to the complete tested and deployed `codex/dev` release (`ab8742d`), without rewriting history or checking out files. Local and remote refs were verified equal; existing local edits are preserved. This synchronization journal is published on both branches. Application code and deployment configuration are unchanged.

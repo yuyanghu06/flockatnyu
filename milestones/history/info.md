@@ -266,3 +266,5 @@ October23: isolated-tool current workflows accepted/integrated; deployment autho
 October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
 
 October23: main fast-forwarded to the deployed codex/dev release; branch synchronization recorded in the rolling milestone.
+
+October23 Spotlight steering entries record the control contract, same-run implementation, independent scheduler/browser/model checks, cancellation/reversal fixes and the scoped web release. They preserve the original model ledger separately from the final cancellation-only source delta.

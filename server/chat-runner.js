@@ -30,7 +30,7 @@ function validConversation(value) {
 // Shared request execution for the website and trusted Discord transport. This
 // does not authorize a transport; callers construct the principal server-side.
 export function createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,discordDraftTools,now=()=>new Date()}) {
-  return {async run({conversation,principal,requestContext,discordContext,discordUsers,signal,onRecord=()=>{}}) {
+  return {async run({conversation,principal,requestContext,discordContext,discordUsers,steering,signal,onRecord=()=>{}}) {
     const send = record => onRecord(record);
     const reject = code => { send(errorRecord(code)); return {status:'failed',code}; };
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return reject('access_denied');
@@ -45,7 +45,7 @@ export function createChatRunner({config,provider,audit,liveDiscordTools,googleT
     if (!timeContext) return reject('invalid_request');
     if (!config.configured) return reject('not_configured');
     if (config.provider === 'anthropic' && conversation.messages.some(message=>message.attachments?.length)) return reject('attachments_provider_unsupported');
-    const auditContext = {agent:'chat',runId:randomUUID()}, started = performance.now();
+    const auditContext = {agent:'chat',runId:steering?.runId??randomUUID()}, started = performance.now();
     const auditEvent = async event => {
       try { await audit?.recordEvent({eventId:randomUUID(),context:auditContext,...event}); }
       catch { /* Provider dispatch independently enforces durable model logging. */ }
@@ -68,36 +68,56 @@ export function createChatRunner({config,provider,audit,liveDiscordTools,googleT
       await auditEvent({kind:'run_started',status:'started',counts:{messages:conversation.messages.length}});
       if (cancelled || signal?.aborted) disconnect();
       if (abort.signal.aborted) throw new ProviderError(timedOut?'timeout':'aborted');
-      const retrieval = await wait(retrieveAssistantContext({messages:conversation.messages,principal,provider,
+      // One mutable conversation and one retrieval closure live for this run.
+      // Steering changes user input, not execution ownership, receipts or budgets.
+      const messages=steering?structuredClone(conversation.messages):conversation.messages;
+      if(steering){steering.bind(send);send({type:'run',runId:steering.runId,steeringToken:steering.steeringToken});}
+      let retrieval = await wait(retrieveAssistantContext({messages,principal,provider,
         liveTools:liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,discordDraftTools,buildingId:conversation.buildingId,
-        signal:abort.signal,timeContext,requestContext,discordContext,discordUsers,planning:config.retrievalToolsEnabled!==false,
+        signal:abort.signal,steering,timeContext,requestContext,discordContext,discordUsers,planning:config.retrievalToolsEnabled!==false,
         auditContext,onAuditEvent:auditEvent,onToolEvent:event=>{if(!abort.signal.aborted)send(event);} }));
-      const sources = retrieval.sources;
-      send({type:'meta',sources,timeZone:timeContext.timeZone,now:timeContext.now,knowledgeStatus:retrieval.status,
-        retrieval:retrieval.results.map(result=>({tool:result.tool,status:result.status,coverage:result.coverage}))});
-      const iterator = provider.stream({messages:conversation.messages,
-        system:assistantAnswerPrompt({sources,results:retrieval.results,toolCapabilities:retrieval.toolCapabilities,memory:retrieval.memory,timeContext,requestContext,discordContext,discordUsers}),
-        signal:abort.signal,timeContext,auditContext})[Symbol.asyncIterator]();
-      let outputLength = 0;
-      try {
-        while (true) {
-          const {value,done} = await wait(iterator.next());
-          if (done) break;
-          if (typeof value !== 'string' || (outputLength += value.length) > 100000) throw new ProviderError('invalid_provider_response');
-          if (value) send({type:'delta',text:value});
+      let outputLength=0,answerVersion=0;
+      const reset=()=>send({type:'reset',answerVersion:++answerVersion});
+      while(true){
+        if(steering?.hasPending())retrieval=await wait(retrieval.resume());
+        const currentTime=retrieval.timeContext??timeContext,sources=retrieval.sources;
+        send({type:'meta',sources,timeZone:currentTime.timeZone,now:currentTime.now,knowledgeStatus:retrieval.status,
+          retrieval:retrieval.results.map(result=>({tool:result.tool,status:result.status,coverage:result.coverage}))});
+        const answerAbort=new AbortController(),parentAbort=()=>answerAbort.abort();
+        abort.signal.addEventListener('abort',parentAbort,{once:true});if(abort.signal.aborted)parentAbort();
+        const superseded=Symbol('steering');let answering=true,interrupted=false;
+        const changed=steering?.waitForInput().then(()=>{if(answering)answerAbort.abort();return superseded;});
+        const iterator=provider.stream({messages,
+          system:assistantAnswerPrompt({sources,results:retrieval.results,toolCapabilities:retrieval.toolCapabilities,memory:retrieval.memory,timeContext:currentTime,requestContext,discordContext,discordUsers}),
+          signal:answerAbort.signal,timeContext:currentTime,auditContext})[Symbol.asyncIterator]();
+        try{
+          while(true){
+            const next=wait(iterator.next()),step=changed?await Promise.race([next,changed]):await next;
+            if(step===superseded){interrupted=true;break;}
+            const {value,done}=step;if(done)break;
+            if(typeof value!=='string'||(outputLength+=value.length)>100000)throw new ProviderError('invalid_provider_response');
+            if(value)send({type:'delta',text:value});
+          }
+        }catch(error){
+          if(steering?.hasPending()&&!abort.signal.aborted)interrupted=true;else throw error;
+        }finally{
+          answering=false;answerAbort.abort();abort.signal.removeEventListener('abort',parentAbort);
+          try{void Promise.resolve(iterator.return?.()).catch(()=>{});}catch{}
         }
-      } finally {
-        abort.abort();
-        // Some injected adapters have no return() or return synchronously.
-        try { void Promise.resolve(iterator.return?.()).catch(()=>{}); } catch {}
+        if(interrupted||steering?.hasPending()){
+          reset();retrieval=await wait(retrieval.resume());continue;
+        }
+        // Closing admission and checking the inbox are synchronous. No accepted
+        // message can disappear between the final empty check and done.
+        if(steering&&!steering.closeIfEmpty()){reset();retrieval=await wait(retrieval.resume());continue;}
+        send({type:'done'});status='succeeded';break;
       }
-      send({type:'done'}); status='succeeded';
     } catch (error) {
       status = timedOut?'timeout':cancelled?'aborted':'failed';
       code = timedOut?'timeout':cancelled?'aborted':error instanceof ProviderError && errors[error.code]?error.code:'provider_unavailable';
       send(errorRecord(code));
     } finally {
-      clearTimeout(timeout); abort.abort();
+      steering?.finish();clearTimeout(timeout); abort.abort();
       abort.signal.removeEventListener('abort',abortListener);
       signal?.removeEventListener('abort',disconnect);
       await auditEvent({kind:'run_finished',status,durationMs:Math.round(performance.now()-started)});

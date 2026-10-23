@@ -75,7 +75,7 @@ export function browserTimeZone() {
 }
 // EOF never counts as successful completion.
 export async function streamAssistant({ messages, buildingId, signal, onEvent = () => {}, fetchImpl = fetch }) {
-  const body = { messages: boundedMessages(messages), timeZone: browserTimeZone() };
+  const body = { messages: boundedMessages(messages), timeZone: browserTimeZone(), steering:true };
   if (typeof buildingId === 'string' && buildingId) body.buildingId = buildingId;
   let r;
   try { r = await fetchImpl('/api/chat', { method: 'POST', signal, headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson' }, body: JSON.stringify(body) }); }
@@ -88,8 +88,8 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
   }
   if (!r.headers.get('content-type')?.toLowerCase().includes('application/x-ndjson') || !r.body) throw new Error('The assistant API did not return a reply stream.');
   const reader = r.body.getReader(), decoder = new TextDecoder();
-  let pending = '', reply = '', done = false;
-  const toolCalls = new Map();
+  let pending = '', reply = '', done = false, run, answerVersion=0, outputLength=0;
+  const toolCalls = new Map(), steeringMessages=new Map();
   function line(value) {
     if (!value.trim()) return;
     let event;
@@ -98,8 +98,22 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
     if (event.type === 'error') throw new Error(typeof event.message === 'string' ? event.message.slice(0, 1000) : 'The assistant could not finish this reply.');
     if (event.type === 'delta') {
       if (typeof event.text !== 'string') throw new Error('The reply stream contained invalid text.');
-      reply += event.text;
-      if (reply.length > 150000) throw new Error('The reply exceeded the supported length.');
+      reply += event.text;outputLength+=event.text.length;
+      if (outputLength > 150000) throw new Error('The reply exceeded the supported length.');
+    } else if(event.type==='run') {
+      if(run||typeof event.runId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(event.runId)
+        ||typeof event.steeringToken!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(event.steeringToken))throw new Error('The reply stream contained invalid run information.');
+      run={type:'run',runId:event.runId,steeringToken:event.steeringToken};event=run;
+    } else if(event.type==='steering') {
+      const prior=steeringMessages.get(event.messageId);
+      if(!run||typeof event.messageId!=='string'||!/^[A-Za-z0-9_-]{1,80}$/.test(event.messageId)
+        ||!Number.isInteger(event.sequence)||event.sequence<1||event.sequence>19||!['accepted','applied'].includes(event.status)
+        ||(!prior&&event.status!=='accepted')||(prior&&(prior.sequence!==event.sequence||prior.status!=='accepted'||event.status!=='applied')))
+        throw new Error('The reply stream contained an invalid injected-message update.');
+      event={type:'steering',messageId:event.messageId,sequence:event.sequence,status:event.status};steeringMessages.set(event.messageId,event);
+    } else if(event.type==='reset') {
+      if(!run||!Number.isInteger(event.answerVersion)||event.answerVersion!==answerVersion+1)throw new Error('The reply stream contained an invalid answer update.');
+      answerVersion=event.answerVersion;reply='';event={type:'reset',answerVersion};
     } else if (event.type === 'tool') {
       const previous = toolCalls.get(event.id);
       if (typeof event.id !== 'string' || !/^tool-(?:[1-9]|[12][0-9]|30)(?![\s\S])/.test(event.id) ||
@@ -128,4 +142,21 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
     if (!done) throw new Error('The connection ended before the reply finished. You can try again.');
     return reply;
   } finally { try { await reader.cancel(); } catch { /* Preserve request error. */ } reader.releaseLock(); }
+}
+
+// The token is issued only to the active reply stream. Never add it to history,
+// model input, query strings or persistent browser storage.
+export async function steerAssistant({runId,steeringToken,messageId,text,signal,fetchImpl=fetch}) {
+  if(typeof runId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(runId)
+    ||typeof steeringToken!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(steeringToken)
+    ||typeof messageId!=='string'||!/^[A-Za-z0-9_-]{1,80}$/.test(messageId)
+    ||typeof text!=='string'||!text.trim()||text.length>8000)throw new Error('This message cannot be added to the active reply.');
+  let response;
+  try{response=await fetchImpl(`/api/chat/${runId}/steer`,{method:'POST',signal,headers:{'Content-Type':'application/json','x-flock-steering-token':steeringToken},body:JSON.stringify({messageId,text})});}
+  catch(error){throw connectionError(error,signal);}
+  if(!response.ok)throw new Error(response.status===409?'The active reply has ended. Your message is still queued.':response.status===413?'The active conversation is full. Your message is still queued.':response.status===403?'Access to the active reply is no longer available. Your message is still queued.':connectionMessage);
+  let result;try{result=await response.json();}catch{throw new Error('Could not confirm adding this message. It is still queued.');}
+  if(response.status!==202||result?.status!=='accepted'||result.messageId!==messageId||!Number.isInteger(result.sequence)||result.sequence<1||result.sequence>19)
+    throw new Error('Could not confirm adding this message. It is still queued.');
+  return result;
 }

@@ -1,10 +1,41 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { boundedMessages, safeSourceUrl, getAssistantStatus, streamAssistant } from '../src/chat-client.js';
+import { boundedMessages, safeSourceUrl, getAssistantStatus, streamAssistant, steerAssistant } from '../src/chat-client.js';
 import { createAssistant } from '../src/assistant.js';
 const encode = text => new TextEncoder().encode(text);
 function response(parts, type = 'application/x-ndjson') { return new Response(new ReadableStream({ start(c) { parts.forEach(p => c.enqueue(typeof p === 'string' ? encode(p) : p)); c.close(); } }), { headers: { 'Content-Type': type } }); }
 const status = { chat: { configured: true, provider: 'fixture', model: 'offline' }, knowledge: { configured: false, status: 'not_configured' }, access: { mode: 'fixture', allowed: true } };
+const liveRun={type:'run',runId:'00000000-0000-4000-8000-000000000001',steeringToken:'a'.repeat(43)};
+test('active reply input keeps the capability out of conversation and resets obsolete answer text',async()=>{
+  const events=[],records=[liveRun,{type:'tool',id:'tool-1',name:'read_map_events',status:'running'},
+    {type:'tool',id:'tool-1',name:'read_map_events',status:'completed'},{type:'delta',text:'Obsolete'},
+    {type:'steering',messageId:'queue-2',sequence:1,status:'accepted'},{type:'reset',answerVersion:1},
+    {type:'steering',messageId:'queue-2',sequence:1,status:'applied'},{type:'delta',text:'Updated answer'},{type:'done'}];
+  assert.equal(await streamAssistant({messages:[{role:'user',content:'Original'}],onEvent:e=>events.push(e),fetchImpl:async(url,options)=>{
+    const body=JSON.parse(options.body);assert.equal(body.steering,true);assert.equal(JSON.stringify(body).includes(liveRun.steeringToken),false);
+    return response(records.map(event=>JSON.stringify(event)+'\n'));
+  }}),'Updated answer');
+  assert.deepEqual(events,records);
+  let request;
+  const result=await steerAssistant({...liveRun,messageId:'queue-2',text:'Actually 7 PM',fetchImpl:async(url,options)=>{
+    request={url,options};return Response.json({status:'accepted',messageId:'queue-2',sequence:1,applied:false},{status:202});
+  }});
+  assert.equal(result.applied,false,'HTTP acceptance does not claim that the active reply consumed the text');
+  assert.equal(request.url,`/api/chat/${liveRun.runId}/steer`);
+  assert.equal(request.options.headers['x-flock-steering-token'],liveRun.steeringToken);
+  assert.deepEqual(JSON.parse(request.options.body),{messageId:'queue-2',text:'Actually 7 PM'});
+});
+test('active reply transport rejects invalid acknowledgements and reports late/failed input without leaking bodies',async()=>{
+  const options={...liveRun,messageId:'queue-2',text:'Correction'};
+  for(const code of [403,409,413,500])await assert.rejects(steerAssistant({...options,fetchImpl:async()=>new Response('private upstream detail',{status:code})}),error=>!error.message.includes('private')&&(code===500||error.message.includes('still queued')));
+  for(const result of [{status:'accepted',messageId:'other',sequence:1},{status:'accepted',messageId:'queue-2',sequence:0}])
+    await assert.rejects(steerAssistant({...options,fetchImpl:async()=>Response.json(result,{status:202})}),/still queued/);
+  const accepted={type:'steering',messageId:'queue-2',sequence:1,status:'accepted'};
+  for(const records of [[{...accepted,status:'applied'}],[accepted,accepted],[accepted,{...accepted,status:'applied',sequence:2}],[{type:'reset',answerVersion:2}]])
+    await assert.rejects(streamAssistant({messages:[],fetchImpl:async()=>response([liveRun,...records,{type:'done'}].map(event=>JSON.stringify(event)+'\n'))}),/invalid .*update/);
+  const controller=new AbortController();controller.abort();
+  await assert.rejects(steerAssistant({...options,signal:controller.signal,fetchImpl:async()=>{throw new DOMException('private','AbortError');}}),{name:'AbortError'});
+});
 test('offline fixture: UTF8 split across chunks, metadata, final done without newline', async () => {
   const bytes = encode('{"type":"meta","sources":[]}\n{"type":"delta","text":"Hi 🌱"}\n{"type":"done"}'), events = [];
   const result = await streamAssistant({ messages: [{ role: 'user', content: 'hello' }], buildingId: 'bobst-library', fetchImpl: async (url, options) => { assert.equal(url, '/api/chat'); assert.equal(JSON.parse(options.body).buildingId, 'bobst-library'); return response(Array.from(bytes, b => new Uint8Array([b]))); }, onEvent: e => events.push(e.type) });
@@ -65,7 +96,7 @@ class Element {
 }
 function all(root){return [root,...root.children.flatMap(all)];}
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
-test('minimizing preserves an active reply, hidden completion and history; explicit stop still aborts', async () => {
+test('minimizing preserves an active reply, hidden completion and history; busy send still stops the current request', async () => {
   const saved={document:globalThis.document,fetch:globalThis.fetch,matchMedia:globalThis.matchMedia};
   const doc=new Element('document');doc.body=new Element('body');doc.createElement=tag=>new Element(tag);
   globalThis.document=doc;globalThis.matchMedia=()=>({matches:true});
@@ -99,7 +130,7 @@ test('minimizing preserves an active reply, hidden completion and history; expli
     assert.equal(requests[1].signal.aborted,true);
   } finally {assistant?.dispose();Object.assign(globalThis,saved);}
 });
-test('offline fake DOM: gated entry, honest status, safe inline citations, keyboard, separate Stop and paused loading failure', async () => {
+test('offline fake DOM: gated entry, honest status, safe inline citations, keyboard, single busy send/stop control and paused loading failure', async () => {
   const oldDoc=globalThis.document,oldFetch=globalThis.fetch,oldMatchMedia=globalThis.matchMedia,doc=new Element('document');doc.body=new Element('body');doc.createElement=tag=>new Element(tag);globalThis.document=doc;globalThis.matchMedia=()=>({matches:true});
   let configured=false,calls=[],hangController;globalThis.fetch=async(url,options)=>{calls.push({url,options});if(url==='/api/status')return Response.json({...status,chat:{...status.chat,configured}});if(JSON.parse(options.body).messages.at(-1).content==='hang')return new Response(new ReadableStream({start(c){hangController=c;options.signal.addEventListener('abort',()=>c.error(new DOMException('Stopped','AbortError')));}}),{headers:{'Content-Type':'application/x-ndjson'}});return response(['{"type":"meta","sources":[{"url":"javascript:alert(1)","title":"bad"},{"url":"https://example.com/info","title":"<img>"}],"knowledgeStatus":"not_configured"}\n','{"type":"delta","text":"<script>fixture</script> [Relevant record](https://example.com/cited)"}\n','{"type":"done"}\n']);};
   let assistant;
@@ -111,10 +142,14 @@ test('offline fake DOM: gated entry, honest status, safe inline citations, keybo
     assert(!all(root).some(n=>n.tagName==='button'&&n.textContent==='Clear chat'));assert.equal(find('assistant-identity').children.at(-1).textContent,'Flock@NYU');input.value='hello again';await form.emit('submit');assert.equal(JSON.parse(calls.at(-1).options.body).messages.length,3);
     input.value='hang';const stopped=form.emit('submit');await tick();
     const stop=all(root).find(n=>n.attributes['aria-label']==='Stop generating');
+    const send=all(root).find(n=>n.classList.contains('assistant-send'));
+    assert.equal(stop,send,'The existing composer send button stops the active run');
+    assert.equal(all(root).filter(n=>n.attributes['aria-label']==='Stop generating').length,1);
     assert.equal(stop.hidden,false);assert.equal(stop.disabled,false);assert.equal(stop.type,'button');
-    assert.notEqual(stop,find('assistant-send'),'Stop is independent of the usable composer');
+    assert(!all(root).some(n=>n.classList.contains('assistant-stop')),'There is no separate header Stop control');
     await stop.emit('click');await stopped;
-    assert.equal(stop.hidden,true);assert.equal(stop.attributes['aria-label'],'Stop generating');
+    assert.equal(stop.hidden,false);assert.equal(stop.type,'submit');assert.equal(stop.classList.contains('is-stopping'),false);
+    assert.notEqual(stop.attributes['aria-label'],'Stop generating');
     assert.equal(find('assistant-announcement').textContent,'Reply stopped.');
     assert(all(root).some(n=>n.textContent==='Stopped. This reply is incomplete.'));
     assert.equal(find('assistant-queue-list').children.length,1);

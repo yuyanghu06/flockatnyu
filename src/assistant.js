@@ -1,5 +1,5 @@
 import { ATTACHMENT_ACCEPT, ATTACHMENT_ONLY_CONTENT, readAttachmentFiles } from './chat-attachments.js';
-import { boundedMessages, getAssistantStatus, streamAssistant } from './chat-client.js';
+import { boundedMessages, getAssistantStatus, steerAssistant, streamAssistant } from './chat-client.js';
 import { renderAssistantMarkdown } from './assistant-markdown.js';
 import { assistantShortcut } from './assistant-presentation.js';
 const assistantLogoUrl = new URL('../assets/branding/tech-at-assistant.png', import.meta.url).href;
@@ -11,6 +11,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   const maxPendingMessages = 10;
   const maxPendingAttachmentBytes = 20 * 1024 * 1024;
   let queuedMessages = [], queuePaused = false, activeMessage = null, nextMessageId = 0;
+  let activeRun = null, pendingInjection = null;
   let conversation = [], request, statusRequest, generation = 0, previousFocus, replyRender;
   let closing = false, closeTimer;
   let resizeAnimation, resizeFrame = 0, resizeFrom;
@@ -73,10 +74,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   const closeButton = el('button', 'assistant-icon-button', '×');
   closeButton.type = 'button'; closeButton.setAttribute('aria-label', 'Close assistant');
   const headerActions = el('div', 'assistant-header-actions');
-  const stop = el('button', 'assistant-stop'); stop.type = 'button'; stop.hidden = true;
-  const stopIndicator = el('span', 'assistant-stop-indicator'); stopIndicator.setAttribute('aria-hidden', 'true'); stop.append(stopIndicator, el('span', '', 'Stop'));
-  stop.setAttribute('aria-label', 'Stop generating');
-  headerActions.append(stop, closeButton); header.append(identity, headerActions);
+  headerActions.append(closeButton); header.append(identity, headerActions);
   const form = el('form', 'assistant-form');
   const label = el('label', 'assistant-input-label', 'Message'), input = el('textarea');
   input.id = 'campus-assistant-message'; label.htmlFor = input.id;
@@ -97,7 +95,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   const queueState = el('p', 'assistant-queue-state'); queueState.setAttribute('role', 'status');
   const resumeQueue = el('button', 'assistant-queue-action', 'Resume'); resumeQueue.type = 'button'; resumeQueue.hidden = true;
   resumeQueue.setAttribute('aria-label', 'Resume queued messages');
-  const clearQueue = el('button', 'assistant-queue-action', 'Clear'); clearQueue.type = 'button'; clearQueue.setAttribute('aria-label', 'Clear queued messages');
+  const clearQueue = el('button', 'assistant-queue-action assistant-queue-clear', 'Clear'); clearQueue.type = 'button'; clearQueue.setAttribute('aria-label', 'Clear queued messages');
   queueHeader.append(queueState, resumeQueue, clearQueue);
   const queueList = el('ol', 'assistant-queue-list'); queueList.setAttribute('aria-label', 'Queued messages');
   queue.append(queueHeader, queueList);
@@ -163,14 +161,25 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     // Drafting remains possible while configuration or the network is unavailable.
     input.disabled = !entered;
     attach.disabled = !entered || readingFiles;
-    send.disabled = !entered || !available || readingFiles || (!input.value.trim() && !draftAttachments.length);
+    send.disabled = !entered || (!busy && (!available || readingFiles || (!input.value.trim() && !draftAttachments.length)));
     const willQueue = busy || queuePaused || queuedMessages.length > 0;
-    send.setAttribute('aria-label', willQueue ? 'Queue message' : 'Send message');
-    send.title = willQueue ? 'Add this message to the queue' : 'Send message';
-    stop.hidden = !busy; stop.disabled = !entered;
-    resumeQueue.disabled = !entered || !available || busy;
+    send.type = busy ? 'button' : 'submit'; send.textContent = busy ? '■' : '↑';
+    send.className = busy ? 'assistant-send is-stopping' : 'assistant-send';
+    send.setAttribute('aria-label', busy ? 'Stop generating' : willQueue ? 'Queue message' : 'Send message');
+    send.title = busy ? 'Stop this reply and pause queued messages' : willQueue ? 'Add this message to the queue' : 'Send message';
+    resumeQueue.disabled = !entered || !available || busy || Boolean(pendingInjection);
+    clearQueue.disabled = Boolean(pendingInjection);
     // The composer stays usable while the transcript is being updated.
     transcript.setAttribute('aria-busy', String(busy));
+  }
+  function injectionUnavailable(message) {
+    if (!entered || !available || !busy || !activeRun || request?.signal.aborted) return 'Wait for an active reply before adding queued text.';
+    if (pendingInjection) return 'Wait for the current queued message to be incorporated.';
+    if (message.attachments.length) return 'Messages with files must be sent as a separate reply.';
+    if (message.steeredMessages?.length) return 'Resume this interrupted reply to retain all of its added messages.';
+    if (!message.text.trim()) return 'Only text can be added to the current reply.';
+    if ((message.building?.id || null) !== (activeMessage?.building?.id || null)) return 'This message was queued for a different building. Send it as a separate reply.';
+    return '';
   }
   function renderQueue() {
     const height = panel.getBoundingClientRect().height;
@@ -186,17 +195,43 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       if (message.attachments.length) details.append(el('p', 'assistant-queue-files', message.attachments.map(file => file.name).join(', ')));
       if (message.building) details.append(el('p', 'assistant-queue-building', message.building.name));
       if (message.retry) details.append(el('p', 'assistant-queue-retry', 'Incomplete reply · ready to retry'));
+      for (const added of message.steeredMessages || []) details.append(el('p', 'assistant-queue-files', `Added to reply: ${added.text}`));
+      if (pendingInjection?.message.id === message.id) details.append(el('p', 'assistant-queue-retry', 'Waiting for the current reply to incorporate this text…'));
+      const actions = el('div', 'assistant-queue-actions');
+      const inject = el('button', 'assistant-queue-inject', '↑'); inject.type = 'button';
+      const unavailable = injectionUnavailable(message); inject.disabled = Boolean(unavailable);
+      inject.setAttribute('aria-label', `Add queued message ${index + 1} to current reply: ${(message.text || 'Attached files').slice(0, 80)}`);
+      inject.title = unavailable || 'Add queued text to the current reply';
+      inject.addEventListener('click', () => injectMessage(message));
       const remove = el('button', 'assistant-queue-remove', '×'); remove.type = 'button';
       remove.setAttribute('aria-label', `Remove queued message ${index + 1}: ${(message.text || 'Attached files').slice(0, 80)}`);
+      remove.disabled = pendingInjection?.message.id === message.id;
       remove.addEventListener('click', () => {
+        if (pendingInjection?.message.id === message.id) return;
         queuedMessages = queuedMessages.filter(entry => entry.id !== message.id);
         if (!queuedMessages.length) queuePaused = false;
         renderQueue(); controls();
         (queueList.children[index]?.querySelector('button') || input).focus();
       });
-      item.append(details, remove); queueList.append(item);
+      actions.append(inject, remove); item.append(details, actions); queueList.append(item);
     }
     queueResize(height, follow);
+  }
+  async function injectMessage(message) {
+    if (injectionUnavailable(message) || !queuedMessages.some(entry => entry.id === message.id)) return;
+    const pending = { message, messageId: `queue-${message.id}`, generation, run: activeRun };
+    // Register before POST: the stream can acknowledge incorporation first.
+    pendingInjection = pending; renderQueue(); controls();
+    try {
+      await steerAssistant({ ...pending.run, messageId: pending.messageId, text: message.text, signal: request.signal });
+      // HTTP acceptance does not mean the active model has used the message.
+    } catch (error) {
+      if (disposed || pendingInjection !== pending) return;
+      queuePaused = true;
+      pending.error = 'Adding this text to the reply could not be confirmed. It is kept in the queue; wait for the reply to finish before resuming.';
+      fileError(new Error(pending.error));
+      renderQueue(); controls();
+    }
   }
   function renderDraftFiles() {
     const height = panel.getBoundingClientRect().height;
@@ -241,7 +276,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   function abort() {
     if (disposed) replyRender?.cancel();
     else { replyRender?.flush(); replyRender?.interrupt(); }
-    replyRender = null; generation++; request?.abort(); request = null; busy = false; activeMessage = null; controls();
+    replyRender = null; generation++; request?.abort(); request = null; busy = false; activeMessage = null; activeRun = null; pendingInjection = null; controls();
   }
   function open() {
     if (!entered || disposed) return;
@@ -347,7 +382,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     renderQueue(); controls(); return drainQueue();
   }
   function drainQueue() {
-    if (disposed || !entered || !available || busy || queuePaused || !queuedMessages.length) return;
+    if (disposed || !entered || !available || busy || pendingInjection || queuePaused || !queuedMessages.length) return;
     const message = queuedMessages.shift();
     activeMessage = message; busy = true; renderQueue(); controls();
     return respond(message);
@@ -355,12 +390,14 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   async function respond(message) {
     const { text, attachments } = message;
     const id = ++generation, controller = new AbortController(); request = controller;
+    activeRun = null;
     const userBubble = bubble('user', text || 'Attached files');
     if (attachments.length) {
       const files = el('ul', 'assistant-message-files');
       for (const file of attachments) files.append(el('li', '', file.name));
       userBubble.box.append(files);
     }
+    for (const added of message.steeredMessages || []) bubble('user', added.text);
     const reply = bubble('assistant', 'Thinking…'); controls();
     announcement.textContent = 'Assistant is responding…'; let partial = '';
     let renderFrame = 0, events = [], renderedPartial = '';
@@ -391,9 +428,31 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     } }; replyRender = rendering;
     try {
       // Build history at dispatch, after the preceding reply has completed.
-      const messages = boundedMessages([...conversation, { role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }]);
+      const priorConversation = conversation;
+      const userMessages = () => [{ role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }, ...(message.steeredMessages || []).map(added => ({ role: 'user', content: added.text }))];
+      const messages = boundedMessages([...priorConversation, ...userMessages()]);
       const answer = await streamAssistant({ messages, buildingId: message.building?.id, signal: controller.signal, onEvent(event) {
         if (disposed || id !== generation || controller.signal.aborted) return;
+        if (event.type === 'run') {
+          activeRun = { runId: event.runId, steeringToken: event.steeringToken }; renderQueue(); controls(); return;
+        }
+        if (event.type === 'steering') {
+          const pending = pendingInjection;
+          if (!pending || pending.generation !== id || pending.messageId !== event.messageId || event.status !== 'applied') return;
+          message.steeredMessages ??= [];
+          if (!message.steeredMessages.some(added => added.messageId === event.messageId)) {
+            message.steeredMessages.push({ messageId: event.messageId, text: pending.message.text });
+            const added = bubble('user', pending.message.text); transcript.insertBefore(added.box, reply.box);
+          }
+          queuedMessages = queuedMessages.filter(entry => entry.id !== pending.message.id);
+          pendingInjection = null;
+          if (pending.error && attachmentError.textContent === pending.error) attachmentError.hidden = true;
+          renderQueue(); controls();
+          announcement.textContent = 'Queued text added to the current reply.'; return;
+        }
+        if (event.type === 'reset') {
+          flush(); partial = ''; renderedPartial = ''; renderReply(reply, ''); return;
+        }
         if (event.type === 'tool' && event.status === 'completed' && event.name === 'upsert_map_event') document.dispatchEvent(new CustomEvent('campus-map-updated'));
         if (event.type === 'done') { flush(partial || 'The assistant returned an empty reply.'); return; }
         if (event.type === 'delta') partial += event.text;
@@ -409,7 +468,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       if (!answer.trim()) throw new Error('The assistant returned an empty reply. Retry this message.');
       flush(answer);
       settleTools(reply, 'interrupted');
-      conversation = boundedMessages([...messages, { role: 'assistant', content: answer }]); announcement.textContent = 'Reply complete.';
+      conversation = boundedMessages([...priorConversation, ...userMessages(), { role: 'assistant', content: answer }]); announcement.textContent = 'Reply complete.';
     } catch (error) {
       if (disposed || id !== generation) return;
       flush();
@@ -426,7 +485,13 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     } finally {
       cancelRender();
       if (replyRender === rendering) replyRender = null;
-      if (id === generation) { busy = false; activeMessage = null; request = null; controls(); drainQueue(); }
+      if (id === generation) {
+        if (pendingInjection?.generation === id) {
+          queuePaused = true; pendingInjection = null;
+          fileError(new Error('The reply ended before it confirmed the queued text. The message is kept and the queue is paused.'));
+        }
+        busy = false; activeMessage = null; activeRun = null; request = null; renderQueue(); controls(); drainQueue();
+      }
     }
   }
   function onEnter() {
@@ -481,9 +546,9 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   });
   launcher.addEventListener('click', () => panel.open ? close() : open());
   closeButton.addEventListener('click', close); retry.addEventListener('click', () => void status()); form.addEventListener('submit', submit);
-  stop.addEventListener('click', stopRequest);
-  resumeQueue.addEventListener('click', () => { if (busy || !available || !entered || disposed) return; queuePaused = false; renderQueue(); controls(); return drainQueue(); });
-  clearQueue.addEventListener('click', () => { queuedMessages = []; queuePaused = false; renderQueue(); controls(); input.focus(); });
+  send.addEventListener('click', event => { if (busy) { event.preventDefault(); stopRequest(); } });
+  resumeQueue.addEventListener('click', () => { if (busy || pendingInjection || !available || !entered || disposed) return; queuePaused = false; renderQueue(); controls(); return drainQueue(); });
+  clearQueue.addEventListener('click', () => { if (pendingInjection) return; queuedMessages = []; queuePaused = false; renderQueue(); controls(); input.focus(); });
   document.addEventListener('keydown', onShortcut);
   globalThis.addEventListener?.('resize', onViewportResize);
   globalThis.visualViewport?.addEventListener('resize', onViewportResize);

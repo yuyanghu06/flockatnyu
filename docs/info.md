@@ -122,3 +122,5 @@ The chat, event and Discord guides now describe attendance through the ordinary 
 October23 isolated tools: [implementation contract](tool-isolation-implementation.md) and [verification/evidence limits](tool-isolation-verification-2026-10-23.md). Deployment truth is in milestones/milestone.md.
 
 October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
+
+[Spotlight steering verification](spotlight-steering-verification-2026-10-23.md) records active-reply input, controls, independent browser/runner/model evidence, cancellation-only final delta and process-local limits.

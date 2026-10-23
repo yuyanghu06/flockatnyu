@@ -101,7 +101,7 @@ export function createAttioTools({ client, config = client?.config } = {}) {
     const actor = { id: principal?.id, allowedSourceIds: Array.isArray(principal?.allowedSourceIds) ? [...principal.allowedSourceIds] : [] };
     const userAuthorized = typeof userMessage === 'string' && Boolean(userMessage.trim());
     const reads = new Set(), receipts = new Map();
-    let uncertainWrite = false;
+    let uncertainWrite = false, inputRevision = 0;
     async function requestExecute(input = {}) {
       const { name, arguments: args, signal } = input;
       if (input.principal !== undefined && (input.principal?.id !== actor.id || !input.principal?.allowedSourceIds?.includes(sourceId))) return failure('forbidden');
@@ -115,7 +115,7 @@ export function createAttioTools({ client, config = client?.config } = {}) {
         return result;
       }
       if (!userAuthorized) return failure('forbidden', 'current_user_instruction_required');
-      const key = `${name}:${canonicalJson(args)}`;
+      const key = `${name}:${name==='update_attio_record'?inputRevision:0}:${canonicalJson(args)}`;
       if (receipts.has(key)) return receipts.get(key);
       if (uncertainWrite) return failure('unavailable', 'write_outcome_unknown');
       if (name === 'update_attio_record' && !reads.has(target)) return failure('read_required');
@@ -130,7 +130,11 @@ export function createAttioTools({ client, config = client?.config } = {}) {
       receipts.set(key, pending);
       return pending;
     }
-    return Object.freeze({ configured: client?.configured === true, tools: Object.freeze(tools.filter(tool => userAuthorized || !writes.has(tool.name))), execute: requestExecute });
+    // Internal transport boundary only: later admitted human input can request
+    // a new update of the same record. Existing exact-read permits, all prior
+    // receipts, create dedupe and run-wide uncertain-write protection survive.
+    return Object.freeze({ configured: client?.configured === true, tools: Object.freeze(tools.filter(tool => userAuthorized || !writes.has(tool.name))), execute: requestExecute,
+      advanceUserInput(){inputRevision++;} });
   }
   return Object.freeze({ configured: client?.configured === true, tools, execute, createRequest });
 }

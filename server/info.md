@@ -1,5 +1,30 @@
 # Server source
 
+Website chat can opt into active-reply steering with `steering:true`.
+`chat-steering.js` keeps a bounded, process-local inbox for that run; its random
+capability is returned only in the NDJSON stream. The separately authenticated
+`POST /api/chat/:runId/steer` requires that capability, the initial Origin and the
+unchanged principal/source scope. It accepts only a message ID and text, with
+idempotent admission and the existing conversation bounds. No token or queued
+text is added to audit records or persistent storage.
+
+`chat-runner.js` retains one retrieval session, completed receipts, native call
+history, total budgets and deadline. An executing operation finishes; admitted
+text supersedes unstarted proposals before the next dispatch. The model chooses
+any further reads/writes. The answer stage uses a child cancellation signal so
+new input can reset an obsolete draft without cancelling the run. Stream
+`accepted` means admitted; `applied` means appended to trusted user context.
+Only the latter consumes the website queue row. Restarted/closed runs reject
+honestly, so this is not a durable or cross-replica message queue. Discord keeps
+its existing transport and behavior.
+
+Later admitted input has a trusted internal revision for model-selected fresh
+map/Calendar/Attio/memory reads and existing-target Calendar/Attio updates. This
+allows a correction to restore a prior value without mistaking it for a replay.
+Creates retain their stable identity and run-wide duplicate protection. Attio
+keeps its exact-read permits, old receipt history and uncertain-write stop across
+all input revisions; an internal counter changes update receipt keys only.
+
 The user-facing **chat agent** runs through the Hono Chat API. The autonomous **update agent** runs through `automation/`. Agent names do not change module paths or configuration keys.
 
 `index.js` starts Hono, `config.js` reads server settings and `app.js` guards status, streaming chat, administrative and read-tool routes. `/healthz` identifies the API as `tech-nyu-api` for local paired startup. `providers/` supplies bounded model adapters/tool selection. Credentials stay server-side and never enter browser imports.

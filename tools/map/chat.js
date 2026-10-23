@@ -8,6 +8,7 @@ import {chatMapTimeSchema,normalizeChatMapTimes,chatMapLocalDisplay,ChatMapTimeE
 import {EVENT_DEFAULT_DURATION_SECONDS,PRESENCE_DEFAULT_TTL_SECONDS} from '../../server/map/contracts.js';
 import {chatMapTargetChoicePrompt} from '../../server/chat-behavior.js';
 import {compareDeduplicatedMapRead} from '../../server/map/read-comparison.js';
+import {createTimeContext} from '../../server/time-zone.js';
 
 const principalValid=principal=>text(principal?.id,200,1)&&Array.isArray(principal.allowedSourceIds)&&principal.allowedSourceIds.every(uuid);
 export const normalizeChatMapPersonName=value=>value.normalize('NFC').trim().replace(/\s+/gu,' ').toLowerCase();
@@ -84,9 +85,9 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
     let discordUsers;try{discordUsers=validateDiscordUsers(context.discordUsers,requestContext);}catch{discordUsers=undefined;}
     const mappedActor=discordUsers?.users.find(row=>row.discordUserId===requestContext?.actor.userId);
     const discordActor=mappedActor?{...mappedActor,username:requestContext.actor.username,displayName:requestContext.actor.displayName}:undefined;
-    const reportedAt=timestamp(context.timeContext?.now)!==null?context.timeContext.now:new Date(now()).toISOString();
+    let reportedAt=timestamp(context.timeContext?.now)!==null?context.timeContext.now:new Date(now()).toISOString();
     const snapshots=new Map(),completed=new Map();let latestReadContext;
-    const history=Array.isArray(context.messages)?context.messages.filter(row=>row&&['user','assistant'].includes(row.role)&&typeof row.content==='string').map(({role,content})=>({role,content})): [{role:'user',content:context.userMessage||''}];
+    let history=Array.isArray(context.messages)?context.messages.filter(row=>row&&['user','assistant'].includes(row.role)&&typeof row.content==='string').map(({role,content})=>({role,content})): [{role:'user',content:context.userMessage||''}];
     let boundPrincipal=context.principal?.id;
     const requestIdentity=principal=>canonicalJson(requestContext?{principal:principal.id,discordRequestId:requestContext.requestId,actorId:requestContext.actor.userId,channelId:requestContext.channelId,threadId:requestContext.threadId,sourceProfileId:requestContext.sourceProfileId}:{principal:principal.id,date:reportedAt.slice(0,10),messages:history});
     const readRaw=async signal=>store?.configured===true?validateSnapshot(await store.read({observedAt:new Date(now()).toISOString(),signal})):null;
@@ -203,7 +204,16 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
       }catch(error){return {status:signal?.aborted?'aborted':error instanceof ChatMapTimeError?'invalid_request':'unavailable',...(error instanceof ChatMapTimeError?{reason:error.reason}:{})};}
     }
     const execute=async options=>{const result=await executeRaw(options);return {...result,...(discordUsers?{discordUsers}:{}),...(discordActor?{discordActor}:{})};};
-    return Object.freeze({tools,execute,observe});
+    // Internal same-run input update. It never changes actor/source grants,
+    // snapshots, successful identities, revisions or completed-write caches.
+    function updateUserContext({messages,timeContext}={}) {
+      const next=createTimeContext(timeContext);
+      if(!next||next.timeZone!==context.timeContext?.timeZone||!Array.isArray(messages)
+        ||messages.some(row=>!row||!['user','assistant'].includes(row.role)||typeof row.content!=='string'))return false;
+      history=messages.map(({role,content})=>({role,content}));reportedAt=next.now;
+      context={...context,timeContext:next};return true;
+    }
+    return Object.freeze({tools,execute,observe,updateUserContext});
   }
   return Object.freeze({configured:mapTools?.configured===true,tools,createRequest,
     execute:options=>options?.name==='read_map_events'?mapTools.execute(options):Promise.resolve(forbidden())});

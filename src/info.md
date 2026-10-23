@@ -219,7 +219,7 @@ semibold;12px date/location lines stay2px apart with24px between events.
 Conversation replies are labeled FlockBot in black inside a left-aligned soft white
 bubble. User messages have compact right-aligned inset ivory bubbles with an
 accessible You label, without a visible role caption. Send stays at the input
-area’s top while text wraps; the separate Stop button stays in the header. Per-call gray blocks show real tool lifecycle events;
+area’s top while text wraps and becomes the square Stop control while replying. Per-call gray blocks show real tool lifecycle events;
 Only Running/Thinking shimmer; all terminal statuses and reduced motion stay static.
 `assistant-markdown.js` renders streamed assistant Markdown through markdown-it,
 with raw HTML disabled, credential-free HTTP(S) links and no remote image loading.
@@ -261,14 +261,31 @@ Assistant streaming coalesces Markdown/DOM work per animation frame with termina
 Spotlight dismissal hides the panel without cancelling active requests. Hidden
 updates set a pending latest-scroll flag consumed on reopen, with completed
 responses retained in history. Explicit Stop, loading failure and disposal still
-abort. Send hover/focus adds a subtle glow; Stop shows a small rotating indicator
-during streaming, and reduced motion keeps it static.
+abort. During an active reply, the composer send control restores its original
+square and rotating pastel background; clicking it stops the reply and pauses
+queued messages. There is no separate header Stop button. Enter still queues a
+draft while the reply runs. Send hover/focus adds a subtle glow; reduced motion
+keeps the busy background static.
 
 Spotlight accepts follow-up messages while replying. A separate, scrollable queue
 shows messages, captured building context and attachment names before they enter
 the sent transcript. Messages send one at a time in submission order, building
 each request from the latest completed conversation. Remove deletes an individual
 waiting message; Clear deletes the waiting queue and preserves the current draft.
+Clear uses black text. Each waiting row has a faint gray arrow beside Remove to
+add its text to the active reply. The arrow requires an active run, plain text,
+the same captured building and no other pending injection. Files and interrupted
+replies that retain earlier added text must use ordinary queue Resume instead.
+The arrow sends through the active-run steering endpoint; it never starts a
+replacement chat or moves the message to the front of the queue.
+
+HTTP acceptance leaves the row queued. Only the active stream's applied
+acknowledgement removes it and inserts its user bubble before the revised answer.
+The client clears replaced answer text on reset while retaining tool progress.
+Pending injection disables Clear and that row's Remove. Failed acknowledgement
+or a reply ending before incorporation retains the row and pauses automatic
+queue dispatch. An incorporated message is retained once in completed history,
+and with the unfinished original on a stopped/failed reply's explicit retry.
 At most 10 messages may be active or waiting. Files across active/waiting messages
 and the current draft are capped at 20 MiB, in addition to existing per-request
 upload limits. Limit feedback keeps the current draft intact.
