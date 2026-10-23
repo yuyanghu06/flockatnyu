@@ -1,7 +1,7 @@
 # Tool isolation audit and implementation
 
-Goal: isolate all chat/planner tools and verify prompt-selected workflows.
+Goal: isolate all chat/planner tools, verify prompt-selected workflows and deploy.
 
-Status: all twelve audited paths corrected, independently reviewed and integrated into the original checkout. Actual-model conversations use simulated business storage;95dispatches include preserved failures. Final current behavior check184passes/one unavailable private historical replay. User authorized deployment; current web/worker rollout and read-only production checks are next. Read the rolling milestone for exact current release truth; the restart handoff is historical.
+Status: complete and live. All twelve audited paths are fixed and independently accepted. Web33f90fb7 and worker ae88da62 are SUCCESS. Production saved-map read without an attached original returned29events in1.595seconds. Worker startup/normal processing is observed; synthetic live business writes were not used. The rolling milestone has exact release IDs and evidence limits.
 
-Ordinary operations keep local authentication, exact grants, catalogues, versions and leases. The separately named post-finish Calendar-to-map sync is the explicit user exception. Full checks/limits: [verification](../../docs/tool-isolation-verification-2026-10-23.md).
+The original checkout/codex/dev owns the integrated implementation; the isolated worktree retains private evidence. Ordinary operations preserve local permissions, exact source grants, catalogues, versions and leases. The separately named post-finish sync is the explicit user exception. [Verification](../../docs/tool-isolation-verification-2026-10-23.md). The restart handoff is historical.

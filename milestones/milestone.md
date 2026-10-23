@@ -1,3 +1,21 @@
+## Isolated tools complete and deployed — October 23
+
+**Web:** `33f90fb7-0134-4489-b6cf-aa0e9b576ac4` SUCCESS. **Planner worker:** `ae88da62-af5d-4d37-b0bf-7288a2e31963` SUCCESS. Accepted source is `d6ccfc5` on `codex/dev`; the original checkout now owns the integrated implementation. The isolated worktree retains private test evidence. Do not resume its old restart checkpoint as unfinished implementation.
+
+All twelve audited operation paths now stay on their own service/data. Prompts select workflows; successful initial finish still invokes the explicit separate named sync with its own arguments/result/audit/budget. Source-down saved-map reads, private attendance, conflicts, exact task versions, older signed Member Plans and partial sync remain protected.
+
+Production read-only checks pass: saved-map tool without an attached provider original returned **29 events in 1.595 seconds**, versus earlier ~60-second timeouts. Map display took 1.466 seconds. Login/anonymous denial, new tool definitions, exact frontend bytes and planner bearer boundary pass. Worker startup and normal queue/model/source processing are observed; a complete live event-write cycle was not used as a verification test.
+
+Configured-model workflows on simulated business stores pass final semantic review; 95 dispatches include retained failures. Independent current behavior checks: 184 passed, zero failures, one unavailable private historical replay. Older private/hash-linked experimental tests remain outside this passing claim. Collectors, schema, configuration and existing 16/64 worker limits are unchanged. Pre-existing root edits and the older managed worktree are preserved.
+
+[Verification and limits](../docs/tool-isolation-verification-2026-10-23.md) · [Final release pass](history/2026-10-23_16-32-55-138378-orchestrator-isolated-tools-deployed-live-verified.md)
+
+## Web verified live; planner worker uploaded
+
+Web `33f90fb7-0134-4489-b6cf-aa0e9b576ac4` is SUCCESS. Production saved-map read without an attached original returned29events in1.595seconds; map display1.466seconds. Login/anonymous denial/newtool definitions/exact frontend bytes/planner bearer boundary all pass. Read-only checks made no event/source mutations or modelcalls. Worker `ae88da62-af5d-4d37-b0bf-7288a2e31963` is uploaded; build/startup verification remains.
+
+[Live web evidence](history/2026-10-23_16-30-39-582104-orchestrator-web-live-read-verified-worker-uploaded.md)
+
 ## Web package uploaded — live verification pending
 
 Reviewed web deployment `33f90fb7-0134-4489-b6cf-aa0e9b576ac4` is uploaded; build/health checks and planner-worker upload remain. Current final integrity check passed184currentcases with no failures and one unavailable private historical replay. No live outcome is claimed yet.

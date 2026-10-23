@@ -232,3 +232,5 @@ The tool-isolation-audit restart handoff points to the current isolated implemen
 2026-10-23: isolated tool verification resumed; deployment authorized after acceptance. See 2026-10-23_16-07-19-827953-orchestrator-tool-isolation-resumed-final-checks.md.
 
 October23: isolated-tool current workflows accepted/integrated; deployment authorized and next. Verification and immutable tester/evaluator/integration entries are linked from the rolling milestone.
+
+October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.

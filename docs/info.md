@@ -120,3 +120,5 @@ The chat, event and Discord guides now describe attendance through the ordinary 
 [October23 tool-isolation audit](tool-isolation-audit-2026-10-23.md) inventories every registered chat/planner tool and records11root/12candidate violations with source evidence; no runtime fix is claimed.
 
 October23 isolated tools: [implementation contract](tool-isolation-implementation.md) and [verification/evidence limits](tool-isolation-verification-2026-10-23.md). Deployment truth is in milestones/milestone.md.
+
+October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
