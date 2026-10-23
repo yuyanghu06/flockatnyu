@@ -1,0 +1,10 @@
+# Chat time, queue and recovery release accepted
+
+- Local timestamp / acting role / milestone: 2026-10-23T18:43:00.506582-04:00 / orchestrator recording independent read-only evaluator / chat-time-spotlight-queue.
+- Requested scope: final combined acceptance for the three user requests.
+- Starting repository state: final actual-model gates pass; earlier independent queue/browser and component evidence retained; prepared source-only web context not uploaded.
+- Work performed / changed files: evaluator independently read original proposals, attempts/actual commits, receipts, final answers and exact saved graphs, matched all current final source pins, and inspected changed code/production SQL. No evaluator edits.
+- Decisions: ACCEPT scoped web release. Target ambiguity is resolved before calls on current gate; explicit-room correction is exact; failed-write recovery reuses identities, preserves fields and handles lost receipts honestly. No further prompt/storage/model changes required.
+- Checks and evidence: final 2/2 time and 2/2 recovery semantic review accepted; earlier queue/browser acceptance stands. Focused API/component/build/whitespace evidence documented in docs/chat-time-queue-verification-2026-10-23.md. Model tests simulate business storage; no live write claim.
+- Resulting state / acceptance: strict zero-redundant-upsert objective remains FAILED and unrerun after interface changes. Last evidence preserves activity facts but adds a save; real SQL also refreshes participant relationship timestamps and can cause normal revision contention. This lower-priority limitation is nonblocking for the requested lookup-loop fix and must remain disclosed.
+- Remaining work and handoff: parent integrates accepted files, commits/pushes scoped changes under standing authorization, deploys web only, verifies authenticated hosted assets/tool definitions/access/configuration and records actual receipt. Preserve concurrent planner edits and all earlier evidence; no automatic old-entry repair, worker/collector/environment/schema change.

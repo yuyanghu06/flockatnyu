@@ -1,0 +1,10 @@
+# Resolve the user's target before recovery
+
+- Local timestamp / acting role / milestone: 2026-10-23T18:32:42.311488-04:00 / orchestrator recording independent read-only evaluation/planning / chat-time-spotlight-queue.
+- Requested scope: bounded correction for the material combined target-selection failure.
+- Starting repository state: all failed original ledgers preserved; combined release blocked; no upload. No test oracle, model or budget change.
+- Work performed / changed files: evaluator inspected complete two-target model evidence and actual prompt composition. Both records and distinct rooms were present before the wrong-target write, so this was not missing data or conversion failure. No evaluator writes.
+- Decisions: a plausible priority weakness is unconditional recovery prose following the target-stop rule. Replace repeated flat instructions with ordered decisions: identify a unique USER-selected target across all observed matches; compare required state only for that target; recover a failure only on that identified target. Put target selection last in the planning prompt. Remove the full recovery workflow from the upsert description while preserving its named operation, local-clock and revision contracts. No parser, resolver, implicit call or runner gate.
+- Checks and evidence: 24 independent recovery/time behavior checks pass. Failed model/source evidence remains unchanged. Diagnosis is plausible instruction salience, not a proven causal claim.
+- Resulting state / acceptance: coder owns only server/chat-behavior.js, server/assistant-context.js and tools/map/chat.js plus their existing guides. Tester owns unchanged model harness/fixtures. Parent journals and integrates. Specialists preserve concurrent edits and do not spawn children.
+- Remaining work and handoff: focused behavior/API checks and code/setup review; unchanged ambiguous/selected-room cases under a fresh hard-12 total cap; if passing, needed-attendee and lost-receipt recovery under a separately approved hard-eight cap. The strict redundant-save objective remains failed and is not retried in this release.

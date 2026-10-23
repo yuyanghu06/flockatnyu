@@ -85,12 +85,12 @@ test('minimizing preserves an active reply, hidden completion and history; expli
     const first=requests[0],send=event=>first.controller.enqueue(encode(JSON.stringify(event)+'\n'));
     send({type:'tool',id:'tool-1',name:'search_discord',status:'running'});await tick();
     await nodes().find(n=>n.attributes['aria-label']==='Close assistant').emit('click');
-    assert(panel.hidden);assert.equal(first.signal.aborted,false);assert.equal(form.attributes['aria-busy'],'true');
-    assistant.open();assert.equal(nodes().find(n=>n.attributes['aria-label']==='Stop generating').textContent,'■');
+    assert(panel.hidden);assert.equal(first.signal.aborted,false);assert.equal(nodes().find(n=>n.className==='assistant-transcript').attributes['aria-busy'],'true');
+    assistant.open();assert.equal(nodes().find(n=>n.attributes['aria-label']==='Stop generating').hidden,false);
     await panel.emit('cancel');assert(panel.hidden);assert.equal(first.signal.aborted,false);
     send({type:'tool',id:'tool-1',name:'search_discord',status:'completed'});
     send({type:'delta',text:'Finished while minimized.'});send({type:'done'});first.controller.close();await pending;
-    assert.equal(first.signal.aborted,false);assert.equal(form.attributes['aria-busy'],'false');
+    assert.equal(first.signal.aborted,false);assert.equal(nodes().find(n=>n.className==='assistant-transcript').attributes['aria-busy'],'false');
     assert(nodes().some(n=>n.innerHTML?.includes('Finished while minimized.')));
     assert(!nodes().some(n=>n.textContent==='Stopped. This reply is incomplete.'));
     assistant.open();input.value='follow up';const next=form.emit('submit');await tick();
@@ -99,7 +99,7 @@ test('minimizing preserves an active reply, hidden completion and history; expli
     assert.equal(requests[1].signal.aborted,true);
   } finally {assistant?.dispose();Object.assign(globalThis,saved);}
 });
-test('offline fake DOM: gated entry, honest status, streaming safe text/inline citations without unrelated footer links, keyboard, integrated stop and failure abort', async () => {
+test('offline fake DOM: gated entry, honest status, safe inline citations, keyboard, separate Stop and paused loading failure', async () => {
   const oldDoc=globalThis.document,oldFetch=globalThis.fetch,oldMatchMedia=globalThis.matchMedia,doc=new Element('document');doc.body=new Element('body');doc.createElement=tag=>new Element(tag);globalThis.document=doc;globalThis.matchMedia=()=>({matches:true});
   let configured=false,calls=[],hangController;globalThis.fetch=async(url,options)=>{calls.push({url,options});if(url==='/api/status')return Response.json({...status,chat:{...status.chat,configured}});if(JSON.parse(options.body).messages.at(-1).content==='hang')return new Response(new ReadableStream({start(c){hangController=c;options.signal.addEventListener('abort',()=>c.error(new DOMException('Stopped','AbortError')));}}),{headers:{'Content-Type':'application/x-ndjson'}});return response(['{"type":"meta","sources":[{"url":"javascript:alert(1)","title":"bad"},{"url":"https://example.com/info","title":"<img>"}],"knowledgeStatus":"not_configured"}\n','{"type":"delta","text":"<script>fixture</script> [Relevant record](https://example.com/cited)"}\n','{"type":"done"}\n']);};
   let assistant;
@@ -109,6 +109,26 @@ test('offline fake DOM: gated entry, honest status, streaming safe text/inline c
     await doc.emit('campus-building-selected',{detail:{id:'bobst-library',name:'Bobst'}});assert.equal(find('assistant-context'),undefined);assert.equal(find('assistant-footer'),undefined);input.value='hello';await form.emit('submit');assert.equal(find('assistant-announcement').textContent,'Reply complete.');assert(all(root).some(n=>n.innerHTML?.includes('&lt;script&gt;fixture&lt;/script&gt;')));const links=all(root).filter(n=>n.tagName==='a');assert.equal(links.length,0,'metadata candidates are not automatically appended');assert(!all(root).some(n=>n.className==='assistant-sources'));assert(all(root).some(n=>n.innerHTML?.includes('href="https://example.com/cited"')),'relevant inline citations remain rendered');assert(!all(root).some(n=>n.innerHTML?.includes('https://example.com/info')),'unrelated retrieved URLs stay out of the reply');assert.equal(JSON.parse(calls.at(-1).options.body).buildingId,'bobst-library');
     const wheel=await root.emit('wheel');assert(wheel.stopped);await root.emit('keydown',{key:'Escape'});assert(panel.hidden);assistant.open();assert.equal(doc.activeElement,input);const shifted=await input.emit('keydown',{key:'Enter',shiftKey:true});assert(!shifted.prevented);
     assert(!all(root).some(n=>n.tagName==='button'&&n.textContent==='Clear chat'));assert.equal(find('assistant-identity').children.at(-1).textContent,'Flock@NYU');input.value='hello again';await form.emit('submit');assert.equal(JSON.parse(calls.at(-1).options.body).messages.length,3);
-    input.value='hang';const stopped=form.emit('submit');await tick();const stop=all(root).find(n=>n.attributes['aria-label']==='Stop generating');assert.equal(stop.textContent,'■');assert.equal(stop.disabled,false);assert.equal(stop.type,'button');const stopClick=await stop.emit('click');assert(stopClick.prevented);await stopped;assert.equal(stop.textContent,'↑');assert.equal(stop.attributes['aria-label'],'Send message');assert.equal(find('assistant-announcement').textContent,'Reply stopped.');assert(all(root).some(n=>n.textContent==='Stopped. This reply is incomplete.'));input.value='hang';const pending=form.emit('submit');await tick();assert(hangController);await doc.emit('campus-loading-failed');await pending;assert(root.hidden&&panel.hidden);assert(calls.at(-1).options.signal.aborted);assert(input.disabled);
+    input.value='hang';const stopped=form.emit('submit');await tick();
+    const stop=all(root).find(n=>n.attributes['aria-label']==='Stop generating');
+    assert.equal(stop.hidden,false);assert.equal(stop.disabled,false);assert.equal(stop.type,'button');
+    assert.notEqual(stop,find('assistant-send'),'Stop is independent of the usable composer');
+    await stop.emit('click');await stopped;
+    assert.equal(stop.hidden,true);assert.equal(stop.attributes['aria-label'],'Stop generating');
+    assert.equal(find('assistant-announcement').textContent,'Reply stopped.');
+    assert(all(root).some(n=>n.textContent==='Stopped. This reply is incomplete.'));
+    assert.equal(find('assistant-queue-list').children.length,1);
+    assert.match(find('assistant-queue-state').textContent,/Queue paused/);
+    input.value='newer draft';
+    const resume=all(root).find(n=>n.attributes['aria-label']==='Resume queued messages');
+    const pending=resume.emit('click');await tick();assert(hangController);
+    await doc.emit('campus-loading-failed');await pending;
+    assert(root.hidden&&panel.hidden);assert(calls.at(-1).options.signal.aborted);assert(input.disabled);
+    assert.equal(input.value,'newer draft');assert.equal(find('assistant-queue-list').children.length,1);
+    assert(all(root).some(n=>n.textContent==='Interrupted while the map was loading. Resume this message from the queue.'));
+    const callCount=calls.filter(call=>call.url==='/api/chat').length;
+    await doc.emit('campus-enter');await tick();assistant.open();
+    assert.equal(calls.filter(call=>call.url==='/api/chat').length,callCount,'loading recovery waits for explicit Resume');
+    assert.match(find('assistant-queue-state').textContent,/Queue paused/);
   } finally {assistant?.dispose();globalThis.document=oldDoc;globalThis.fetch=oldFetch;globalThis.matchMedia=oldMatchMedia;}
 });

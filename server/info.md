@@ -124,6 +124,56 @@ POST /api/planner/runs and GET /api/planner/runs/:runId require their own server
 
 The October 22 prompt audit removes keyword-generated map write reminders, scopes Miro evidence/date-shorthand instructions correctly and supplies applied map submission details to final answers. Conflict recovery permits one repeated relevant read after an observed optimistic conflict; mutation deduplication and existing budgets remain. See ../docs/prompt-audit.md for coverage and actual release status.
 
+Chat map timing now accepts new/changed local clocks through starts_local and
+ends_local. `map/chat-time.js` converts in event.time_zone and rejects UTC
+retagging, dual boundary forms and invalid/ambiguous daylight-saving clocks
+before a map write. Raw boundaries are exact same-event/person preservation
+copies from the current request only. Existing source timestamps remain separate.
+Read and applied-receipt projections retain derived local dates, offsets and
+12-hour labels, including participant inheritance, within existing completeness
+bounds. Display hints are omitted from storage. The shared map/worker schema is
+unchanged; normal Calendar writes retain their existing timestamp contract.
+The model-facing read projection omits optional null time fields while the raw
+read/private snapshot remains exact. Prompt guidance requires clarification before
+any map mutation when multiple current records match without a unique user detail
+or event ID, including corrections.
+The same target-choice instruction appears at the end of planning and in chat
+map read/upsert descriptions. Filtered reads retain earlier matching candidates;
+choosing an ID for inspection does not grant permission to choose that target.
+Multiple candidates for one request are not independent clear actions.
+
+Chat suppresses repeated calls using sorted object keys while preserving array
+order and original dispatched arguments. Valid personName lookups additionally
+share the map adapter's NFC/trim/space/case normalization; malformed arguments
+retain their original signature and normal adapter validation feedback. Provider
+IDs, URLs and other argument values are not normalized. This memo is confined to
+one request and does not change grants, call budgets or backend validation.
+
+Map write failures retain a safe mapFailure with the attempted event ID, fixed
+semantic/schema field hints and visible submitted row positions. Unavailable or
+missing receipts remain unconfirmed, while known rejections remain unsaved.
+Prompt guidance reuses prior successful identities and complete snapshots; only
+an actually missing requested change needs a repair. Conflicts use the existing
+targeted refresh allowance. There is no forced retry or cross-service recovery.
+
+A rejected duplicate proposal may carry a readComparison showing that its unique
+rows and event fields exactly match the same authorized request-local read. The
+helper uses exact stored timestamp/URL strings and the parent read revision.
+The adapter suppresses the hint after any unsuccessful later map read, changed
+scope or different snapshot. This adds only failure context: the model still
+compares the user's requirements, and no write is skipped, repaired or authorized.
+
+Map prompting gives target selection priority over state comparison and failure
+recovery. Only an unambiguous user target proceeds to those later decisions.
+The final planning decision repeats that target check after recovery guidance;
+the upsert description uses a short selection requirement rather than duplicating
+the recovery paragraph. Time conversion and failure/comparison code are unchanged.
+The target rule explicitly ends tool selection with zero calls when an ambiguous
+map change is the only remaining action. A small two-room example distinguishes
+that empty selection from the separate answer stage's clarification question.
+This changes model instructions only; no backend target selector or stop rule is
+introduced, and unrelated separately requested clear work may still proceed.
+
 Contextual attendance guidance in chat-behavior.js and assistant-context.js makes existing event hours precede missing-time questions or separate activity creation; short timing clarifications inherit the matched event interval.
 
 `tool-diagnostics.js` keeps fixed, bounded failure codes without raw proposed values or credentials. The local worker candidate adds only `participation_task_not_ready` to distinguish task preparation from source denial; no permission, execution or completion check changes.

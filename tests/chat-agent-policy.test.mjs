@@ -10,7 +10,8 @@ import {createChatCalendarTools} from '../tools/calendar/chat.js';
 import {createRuntimeServices} from '../server/runtime-app.js';
 import {createChatRunner} from '../server/chat-runner.js';
 import {CHAT_MAP_SOURCE_ID,withChatMapSource,chatMapEventUrl,createMapSourceAuthorizer} from '../server/map/source-access.js';
-import {createMapEventService} from '../server/map/events.js';
+import {createMapEventService,mapReadContext} from '../server/map/events.js';
+import {createTimeContext} from '../server/time-zone.js';
 
 const sourceId = MAP_RECORD_EXAMPLES.event.source_id, personId = MAP_RECORD_EXAMPLES.people[0].person_id;
 const sourceUrl = 'https://discord.com/channels/123/456/789';
@@ -20,10 +21,11 @@ const messages = [{role:'user',content:'Use this original Discord message to add
 const source = {kind:'discord',retrieval:'live',sourceId,url:sourceUrl,guildId:'123',channelId:'456',messageId:'789',authorId:'567',excerpt:'I am studying at Bobst',title:'Study plan'};
 const rosterPerson={id:personId,display_name:'Yuyang Hu',avatar_url:'/assets/avatars/Yuyang.png',is_trackable:true,discord_user_id:'567',email:'PRIVATE_EMAIL'};
 const snapshot = {events:[],event_buildings:[],event_people:[],buildings:[{id:'bobst-library',name:'Bobst Library'}],people:[rosterPerson],event_types:['study','meeting','event','social','other'].map((code,index)=>({code,name:code,description:'',icon_key:code,sort_order:index}))};
-const writeArgs = () => structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_url:sourceUrl},buildings:MAP_RECORD_EXAMPLES.buildings,people:MAP_RECORD_EXAMPLES.people.map(p=>({...p,source_url:sourceUrl}))});
+const storageWriteArgs = () => structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_url:sourceUrl},buildings:MAP_RECORD_EXAMPLES.buildings,people:MAP_RECORD_EXAMPLES.people.map(p=>({...p,source_url:sourceUrl}))});
+const writeArgs=()=>{const args=storageWriteArgs();for(const key of ['starts','ends']){args.event[`${key}_local`]=createTimeContext({now:args.event[`${key}_at`],timeZone}).localDateTime;delete args.event[`${key}_at`];}return args;};
 const directWriteArgs=()=>{
   const args=writeArgs();for(const row of [args.event,...args.people])for(const key of ['source_id','source_url','source_record_id','reported_at'])delete row[key];
-  args.event.starts_at=now;args.event.ends_at='2026-10-18T21:00:00Z';return args;
+  args.event.starts_local='2026-10-18T12:00:00';args.event.ends_local='2026-10-18T17:00:00';return args;
 };
 const plan = [
   {name:'read_discord_messages',arguments:{channelId:'456',messageId:'789'}},
@@ -277,7 +279,7 @@ test('website name-only clarification keeps the supplied place and end through o
   const result=await retrieveAssistantContext({messages:conversation,principal,now:'2026-10-18T16:31:00Z',timeZone,mapTools:resumed.mapTools,provider:{planTools:async({messages:history})=>{
     assert.deepEqual(history,conversation);return round<calls.length?[calls[round++]]:[];
   }}});
-  assert.equal(resumed.writes(),1);assert.equal(resumed.saved[0].event.ends_at,'2026-10-18T21:00:00Z');assert(result.results.some(row=>row.mapWrite?.outcome==='applied'));
+  assert.equal(resumed.writes(),1);assert.equal(resumed.saved[0].event.ends_at,'2026-10-18T21:00:00.000Z');assert(result.results.some(row=>row.mapWrite?.outcome==='applied'));
 });
 
 
@@ -299,12 +301,13 @@ test('the shared service retains invalid-window, fixed-catalogue and authenticat
   const calls=[],store={configured:true,read:async()=>structuredClone(snapshot),upsert:async args=>{calls.push(args);return {status:'applied',event_id:args.event.id,updated_at:now};}};
   const authorized=withChatMapSource(principal),authorizeSource=createMapSourceAuthorizer({store,publicOrigin:'https://flock.example',allowChatMapUpdates:true});
   const service=createMapEventService({store,authorizeSource,now:()=>new Date(now)});
-  const eventId='00000000-0000-0000-0000-000000000099',args=writeArgs();args.event={...args.event,id:eventId,source_id:CHAT_MAP_SOURCE_ID,source_url:chatMapEventUrl(eventId,'https://flock.example')};
+  const eventId='00000000-0000-0000-0000-000000000099',args=storageWriteArgs();args.event={...args.event,id:eventId,source_id:CHAT_MAP_SOURCE_ID,source_url:chatMapEventUrl(eventId,'https://flock.example')};
   args.people=args.people.map(row=>({...row,source_id:CHAT_MAP_SOURCE_ID,source_url:args.event.source_url}));
-  const invalid=structuredClone(args);invalid.event.ends_at=invalid.event.starts_at;
+  args.readContext=mapReadContext(await service.read({principal:authorized}));
+  const invalid={...structuredClone({...args,readContext:undefined}),readContext:args.readContext};invalid.event.ends_at=invalid.event.starts_at;
   assert.equal((await service.upsert({...invalid,principal:authorized})).status,'invalid');
-  const building=structuredClone(args);building.buildings[0].building_id='made-up';assert.equal((await service.upsert({...building,principal:authorized})).status,'invalid');
-  const person=structuredClone(args);person.people[0].person_id='00000000-0000-0000-0000-000000000088';assert.equal((await service.upsert({...person,principal:authorized})).status,'invalid');
+  const building={...structuredClone({...args,readContext:undefined}),readContext:args.readContext};building.buildings[0].building_id='made-up';assert.equal((await service.upsert({...building,principal:authorized})).status,'invalid');
+  const person={...structuredClone({...args,readContext:undefined}),readContext:args.readContext};person.people[0].person_id='00000000-0000-0000-0000-000000000088';assert.equal((await service.upsert({...person,principal:authorized})).status,'invalid');
   assert.equal((await service.upsert({...args,principal:null})).status,'forbidden');assert.equal(calls.length,0);
 });
 
@@ -377,7 +380,7 @@ test('fresh current-location reports with omitted times receive distinct accepte
   const authorized=withChatMapSource(principal),authorizeSource=createMapSourceAuthorizer({store,publicOrigin:'https://flock.example',allowChatMapUpdates:true});
   const service=createMapEventService({store,authorizeSource,now:()=>new Date(clock)}),mapTools=createChatMapTools({mapTools:createMapTools({service}),store,publicOrigin:'https://flock.example',now:()=>new Date(clock)});
   for(const reportedAt of ['2026-10-18T16:00:00Z','2026-10-18T16:05:00Z']) {
-    clock=reportedAt;const args=directWriteArgs();delete args.event.starts_at;delete args.event.ends_at;
+    clock=reportedAt;const args=directWriteArgs();delete args.event.starts_local;delete args.event.ends_local;
     const request=mapTools.createRequest({principal:authorized,messages:[{role:'user',content:'I am at Bobst studying'}],timeContext:{now:reportedAt,timeZone}});
     const result=await request.execute({name:'upsert_map_event',arguments:args,principal:authorized});assert.equal(result.status,'ready',JSON.stringify(result));
   }
@@ -413,7 +416,7 @@ test('actual runtime factory saves and displays map updates through existing too
     for(const native of [false,true]) {
       const requestContext={transport:'discord',actor:{provider:'discord',userId:'567',guildId:'123',username:'untrusted',displayName:'Unrelated name'},channelId:'456',threadId:null,requestId:native?'790':'789',sourceProfileId:'fixture'};
       const content=native?'plot me on map':'@Flock im at bobst',records=[];let round=0,answerSeen=false;
-      const args=directWriteArgs();args.event.starts_at=at.toISOString();args.event.ends_at=new Date(at.getTime()+7200000).toISOString();
+      const args=directWriteArgs();delete args.event.starts_local;args.event.ends_local=createTimeContext({now:new Date(at.getTime()+7200000),timeZone}).localDateTime;
       const provider={async *stream({system}){answerSeen=true;assert.match(system,/"mapWrite":\{"outcome":"applied"/);yield 'Saved your reported map activity.';}};
       const next=({system,messages:history,tools})=>{
         assert(!tools.some(row=>row.name==='resolve_chat_map_activity'||row.name==='save_chat_map_activity'));

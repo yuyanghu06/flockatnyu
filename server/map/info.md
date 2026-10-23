@@ -1,5 +1,14 @@
 # Map roster utilities
 
+`chat-time.js` implements the chat-only local-clock input boundary. It reuses
+the existing pure Member Plans timezone converter and rejects daylight-saving
+gaps/folds rather than choosing an instant. Exact same-event/person raw copies
+from the current request stay unchanged, including microseconds; local input
+fields are removed before the shared service receives its storage arguments.
+The helper also derives request-timezone display clocks and 12-hour labels for
+event/participant effective windows. These are response hints, never stored data
+or authorization. All-day dates retain their original date meaning.
+
 `roster.js` derives first/last name fields from avatar filenames and proposes
 Discord identity links using names only. No portrait pixels or facial recognition
 are used. A complete bounded first-name search is required for an automatic link;
@@ -47,6 +56,21 @@ same metadata scope. The resulting synchronous checker is retained in the
 private read receipt; writes reuse it without another metadata request.
 Legacy unmarked provider-authorizer callbacks are not dispatched by map tools.
 Safe profiles never include provider identity enrichment fields.
+
+Write validation returns fixed reason/field hints for duplicate participant IDs,
+duplicate building IDs and invalid event/participant windows, before persistence.
+Optional numeric positions identify only submitted visible relationships; errors
+in internally preserved private rows never expose their positions or counts.
+All existing field, catalogue, source and optimistic revision checks remain.
+The service returns the failure and does not merge, retry or read another service.
+
+`read-comparison.js` is a pure comparison for locally rejected duplicate proposals.
+It compares accepted storage fields against the same authorized read, using
+byte-exact scalar values and order-independent person/building collections.
+Only identical proposed duplicates may collapse; conflicting rows or any changed
+fact prevent a match. The comparison performs no reads, writes or repairs and
+does not decide whether the user's request is complete. Its version is the exact
+parent revision from that earlier read, not a claim about current database state.
 
 An explicit map read returns its usual public fields plus an internal symbol
 receipt that is absent from JSON/model output. The receipt binds the service,

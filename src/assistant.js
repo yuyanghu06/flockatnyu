@@ -8,6 +8,9 @@ const assistantHoverLogoUrl = new URL('../assets/branding/tech-at-assistant-hove
 export function createAssistant({ container = document.body, getBuilding = () => null } = {}) {
   let entered = false, disposed = false, available = false, busy = false;
   let draftAttachments = [], readingFiles = false;
+  const maxPendingMessages = 10;
+  const maxPendingAttachmentBytes = 20 * 1024 * 1024;
+  let queuedMessages = [], queuePaused = false, activeMessage = null, nextMessageId = 0;
   let conversation = [], request, statusRequest, generation = 0, previousFocus, replyRender;
   let closing = false, closeTimer;
   let resizeAnimation, resizeFrame = 0, resizeFrom;
@@ -69,7 +72,11 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   identity.append(logo(), el('span', '', 'Flock@NYU'));
   const closeButton = el('button', 'assistant-icon-button', '×');
   closeButton.type = 'button'; closeButton.setAttribute('aria-label', 'Close assistant');
-  header.append(identity, closeButton);
+  const headerActions = el('div', 'assistant-header-actions');
+  const stop = el('button', 'assistant-stop'); stop.type = 'button'; stop.hidden = true;
+  const stopIndicator = el('span', 'assistant-stop-indicator'); stopIndicator.setAttribute('aria-hidden', 'true'); stop.append(stopIndicator, el('span', '', 'Stop'));
+  stop.setAttribute('aria-label', 'Stop generating');
+  headerActions.append(stop, closeButton); header.append(identity, headerActions);
   const form = el('form', 'assistant-form');
   const label = el('label', 'assistant-input-label', 'Message'), input = el('textarea');
   input.id = 'campus-assistant-message'; label.htmlFor = input.id;
@@ -85,8 +92,17 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   const draftFiles = el('div', 'assistant-attachments'); draftFiles.hidden = true;
   draftFiles.setAttribute('aria-label', 'Attached files');
   const attachmentError = el('p', 'assistant-attachment-error'); attachmentError.hidden = true; attachmentError.setAttribute('role', 'alert');
+  const queue = el('section', 'assistant-queue'); queue.hidden = true; queue.setAttribute('aria-label', 'Message queue');
+  const queueHeader = el('div', 'assistant-queue-header');
+  const queueState = el('p', 'assistant-queue-state'); queueState.setAttribute('role', 'status');
+  const resumeQueue = el('button', 'assistant-queue-action', 'Resume'); resumeQueue.type = 'button'; resumeQueue.hidden = true;
+  resumeQueue.setAttribute('aria-label', 'Resume queued messages');
+  const clearQueue = el('button', 'assistant-queue-action', 'Clear'); clearQueue.type = 'button'; clearQueue.setAttribute('aria-label', 'Clear queued messages');
+  queueHeader.append(queueState, resumeQueue, clearQueue);
+  const queueList = el('ol', 'assistant-queue-list'); queueList.setAttribute('aria-label', 'Queued messages');
+  queue.append(queueHeader, queueList);
   compose.append(attach, input, send);
-  form.append(label, compose, fileInput, draftFiles, attachmentError);
+  form.append(queue, label, compose, fileInput, draftFiles, attachmentError);
   const connection = el('div', 'assistant-connection');
   const service = el('p', 'assistant-service', 'Checking connection…'); service.setAttribute('role', 'status');
   const retry = el('button', 'assistant-retry', 'Retry'); retry.type = 'button'; retry.hidden = true;
@@ -147,12 +163,40 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     // Drafting remains possible while configuration or the network is unavailable.
     input.disabled = !entered;
     attach.disabled = !entered || readingFiles;
-    send.disabled = !entered || (!busy && (!available || readingFiles || (!input.value.trim() && !draftAttachments.length)));
-    send.type = busy ? 'button' : 'submit';
-    send.textContent = busy ? '■' : '↑';
-    send.className = busy ? 'assistant-send is-stopping' : 'assistant-send';
-    send.setAttribute('aria-label', busy ? 'Stop generating' : 'Send message');
-    form.setAttribute('aria-busy', String(busy));
+    send.disabled = !entered || !available || readingFiles || (!input.value.trim() && !draftAttachments.length);
+    const willQueue = busy || queuePaused || queuedMessages.length > 0;
+    send.setAttribute('aria-label', willQueue ? 'Queue message' : 'Send message');
+    send.title = willQueue ? 'Add this message to the queue' : 'Send message';
+    stop.hidden = !busy; stop.disabled = !entered;
+    resumeQueue.disabled = !entered || !available || busy;
+    // The composer stays usable while the transcript is being updated.
+    transcript.setAttribute('aria-busy', String(busy));
+  }
+  function renderQueue() {
+    const height = panel.getBoundingClientRect().height;
+    const follow = atLatest();
+    queue.hidden = !queuedMessages.length;
+    queueState.textContent = `${queuePaused ? 'Queue paused' : 'Queued'} · ${queuedMessages.length} ${queuedMessages.length === 1 ? 'message' : 'messages'}`;
+    resumeQueue.hidden = !queuePaused;
+    queueList.replaceChildren();
+    for (const [index, message] of queuedMessages.entries()) {
+      const item = el('li', 'assistant-queue-item'); item.setAttribute('data-message-id', String(message.id));
+      const details = el('div', 'assistant-queue-details');
+      details.append(el('p', 'assistant-queue-text', message.text || 'Attached files'));
+      if (message.attachments.length) details.append(el('p', 'assistant-queue-files', message.attachments.map(file => file.name).join(', ')));
+      if (message.building) details.append(el('p', 'assistant-queue-building', message.building.name));
+      if (message.retry) details.append(el('p', 'assistant-queue-retry', 'Incomplete reply · ready to retry'));
+      const remove = el('button', 'assistant-queue-remove', '×'); remove.type = 'button';
+      remove.setAttribute('aria-label', `Remove queued message ${index + 1}: ${(message.text || 'Attached files').slice(0, 80)}`);
+      remove.addEventListener('click', () => {
+        queuedMessages = queuedMessages.filter(entry => entry.id !== message.id);
+        if (!queuedMessages.length) queuePaused = false;
+        renderQueue(); controls();
+        (queueList.children[index]?.querySelector('button') || input).focus();
+      });
+      item.append(details, remove); queueList.append(item);
+    }
+    queueResize(height, follow);
   }
   function renderDraftFiles() {
     const height = panel.getBoundingClientRect().height;
@@ -177,19 +221,27 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   function fileError(error) {
     attachmentError.textContent = error.message; attachmentError.hidden = false;
   }
+  function attachmentSize(attachments) {
+    return attachments.reduce((sum, file) => sum + file.data.length / 4 * 3 - (file.data.endsWith('==') ? 2 : file.data.endsWith('=') ? 1 : 0), 0);
+  }
+  function pendingAttachmentSize() {
+    return queuedMessages.reduce((sum, message) => sum + attachmentSize(message.attachments), 0) + (activeMessage ? attachmentSize(activeMessage.attachments) : 0);
+  }
   async function addFiles(files) {
     if (!entered || disposed || readingFiles || !files?.length) return;
     readingFiles = true; attachmentError.hidden = true; controls(); renderDraftFiles();
     try {
       const attachments = await readAttachmentFiles(files, draftAttachments);
+      if (pendingAttachmentSize() + attachmentSize(attachments) > maxPendingAttachmentBytes) throw new Error('Files in active and queued messages plus this draft can total up to 20 MiB. Remove a queued message or file, or wait for a reply.');
       if (!disposed) draftAttachments = attachments;
     } catch (error) { if (!disposed) fileError(error); }
     finally { readingFiles = false; fileInput.value = ''; if (!disposed) { renderDraftFiles(); controls(); } }
   }
-  function stopRequest() { replyRender?.flush(); request?.abort(); }
+  function stopRequest() { queuePaused = true; renderQueue(); controls(); replyRender?.flush(); request?.abort(); }
   function abort() {
-    if (disposed) replyRender?.cancel(); else replyRender?.flush();
-    replyRender = null; generation++; request?.abort(); request = null; busy = false; controls();
+    if (disposed) replyRender?.cancel();
+    else { replyRender?.flush(); replyRender?.interrupt(); }
+    replyRender = null; generation++; request?.abort(); request = null; busy = false; activeMessage = null; controls();
   }
   function open() {
     if (!entered || disposed) return;
@@ -240,7 +292,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
         service.textContent = 'Assistant offline'; service.title = error.message;
         service.setAttribute('data-connected', 'false'); retry.hidden = false; connection.hidden = false;
       }
-    } finally { if (statusRequest === controller) controls(); }
+    } finally { if (statusRequest === controller) { controls(); drainQueue(); } }
   }
   function bubble(role, text) {
     const height = panel.getBoundingClientRect().height;
@@ -281,15 +333,28 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     reply.content.classList.remove('is-thinking');
     reply.content.innerHTML = renderAssistantMarkdown(text);
   }
-  async function submit(event) {
+  function submit(event) {
     event.preventDefault();
-    const text = input.value.trim(); if (!entered || !available || busy || readingFiles || (!text && !draftAttachments.length)) return;
+    const text = input.value.trim(); if (!entered || disposed || !available || readingFiles || (!text && !draftAttachments.length)) return;
+    if (queuedMessages.length + Number(busy) >= maxPendingMessages) {
+      fileError(new Error('Up to 10 messages can be waiting or responding. Remove a queued message or wait for a reply; your draft is kept.')); return;
+    }
     const attachments = draftAttachments;
-    let messages;
-    try { messages = boundedMessages([...conversation, { role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }]); }
+    try { boundedMessages([{ role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }]); }
     catch (error) { fileError(error); return; }
-    const id = ++generation, controller = new AbortController(); request = controller; busy = true;
+    queuedMessages.push({ id: ++nextMessageId, text, attachments, building: building ? { ...building } : null });
     input.value = ''; draftAttachments = []; attachmentError.hidden = true; renderDraftFiles(); resizeInput();
+    renderQueue(); controls(); return drainQueue();
+  }
+  function drainQueue() {
+    if (disposed || !entered || !available || busy || queuePaused || !queuedMessages.length) return;
+    const message = queuedMessages.shift();
+    activeMessage = message; busy = true; renderQueue(); controls();
+    return respond(message);
+  }
+  async function respond(message) {
+    const { text, attachments } = message;
+    const id = ++generation, controller = new AbortController(); request = controller;
     const userBubble = bubble('user', text || 'Attached files');
     if (attachments.length) {
       const files = el('ul', 'assistant-message-files');
@@ -319,9 +384,15 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       renderedPartial = text;
       queueResize(height, follow);
     };
-    const rendering = { flush, cancel: cancelRender }; replyRender = rendering;
+    const rendering = { flush, cancel: cancelRender, interrupt() {
+      settleTools(reply, 'cancelled'); reply.content.classList.remove('is-thinking');
+      if (!partial) reply.content.textContent = '';
+      reply.box.append(el('p', 'assistant-message-error', 'Interrupted while the map was loading. Resume this message from the queue.'));
+    } }; replyRender = rendering;
     try {
-      const answer = await streamAssistant({ messages, buildingId: building?.id, signal: controller.signal, onEvent(event) {
+      // Build history at dispatch, after the preceding reply has completed.
+      const messages = boundedMessages([...conversation, { role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }]);
+      const answer = await streamAssistant({ messages, buildingId: message.building?.id, signal: controller.signal, onEvent(event) {
         if (disposed || id !== generation || controller.signal.aborted) return;
         if (event.type === 'tool' && event.status === 'completed' && event.name === 'upsert_map_event') document.dispatchEvent(new CustomEvent('campus-map-updated'));
         if (event.type === 'done') { flush(partial || 'The assistant returned an empty reply.'); return; }
@@ -334,7 +405,9 @@ export function createAssistant({ container = document.body, getBuilding = () =>
         }
       } });
       if (disposed || id !== generation) return;
-      flush(answer || 'The assistant returned an empty reply.');
+      if (controller.signal.aborted) throw new DOMException('Stopped', 'AbortError');
+      if (!answer.trim()) throw new Error('The assistant returned an empty reply. Retry this message.');
+      flush(answer);
       settleTools(reply, 'interrupted');
       conversation = boundedMessages([...messages, { role: 'assistant', content: answer }]); announcement.textContent = 'Reply complete.';
     } catch (error) {
@@ -348,13 +421,12 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       reply.box.append(el('p', 'assistant-message-error', error.name === 'AbortError' ? 'Stopped. This reply is incomplete.' : error.message));
       queueResize(height, follow);
       announcement.textContent = error.name === 'AbortError' ? 'Reply stopped.' : 'The reply could not finish.';
-      if (!input.value.trim() && !draftAttachments.length && !readingFiles) {
-        input.value = text; draftAttachments = attachments; renderDraftFiles(); resizeInput();
-      }
+      queuePaused = true;
+      queuedMessages.unshift({ ...message, retry: true }); renderQueue();
     } finally {
       cancelRender();
       if (replyRender === rendering) replyRender = null;
-      if (id === generation) { busy = false; request = null; controls(); }
+      if (id === generation) { busy = false; activeMessage = null; request = null; controls(); drainQueue(); }
     }
   }
   function onEnter() {
@@ -362,7 +434,10 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     entered = true; root.hidden = false; controls(); void status();
   }
   function onFailure() {
-    entered = false; abort(); statusRequest?.abort(); available = false;
+    entered = false;
+    if (!disposed && activeMessage) queuedMessages.unshift({ ...activeMessage, retry: true });
+    queuePaused = queuedMessages.length > 0;
+    abort(); renderQueue(); statusRequest?.abort(); available = false;
     close({ immediate: true }); root.hidden = true; panel.hidden = true; launcher.setAttribute('aria-expanded', 'false');
   }
   function onBuilding(event) { building = event.detail?.id ? { id: event.detail.id, name: event.detail.name || event.detail.id } : null; }
@@ -406,7 +481,9 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   });
   launcher.addEventListener('click', () => panel.open ? close() : open());
   closeButton.addEventListener('click', close); retry.addEventListener('click', () => void status()); form.addEventListener('submit', submit);
-  send.addEventListener('click', event => { if (busy) { event.preventDefault(); stopRequest(); } });
+  stop.addEventListener('click', stopRequest);
+  resumeQueue.addEventListener('click', () => { if (busy || !available || !entered || disposed) return; queuePaused = false; renderQueue(); controls(); return drainQueue(); });
+  clearQueue.addEventListener('click', () => { queuedMessages = []; queuePaused = false; renderQueue(); controls(); input.focus(); });
   document.addEventListener('keydown', onShortcut);
   globalThis.addEventListener?.('resize', onViewportResize);
   globalThis.visualViewport?.addEventListener('resize', onViewportResize);
@@ -416,7 +493,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   controls();
   return Object.freeze({ open, close, dispose() {
     stopLogoAnimation();
-    disposed = true; draftAttachments = []; conversation = []; onFailure();
+    disposed = true; draftAttachments = []; conversation = []; queuedMessages = []; activeMessage = null; onFailure();
     document.removeEventListener('keydown', onShortcut);
     globalThis.removeEventListener?.('resize', onViewportResize);
     globalThis.visualViewport?.removeEventListener('resize', onViewportResize);

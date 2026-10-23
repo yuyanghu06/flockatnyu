@@ -1,0 +1,7 @@
+# Map failure feedback and lookup reuse implemented
+
+- Coder owns runner/prompt/chatadapter/narrowmapvalidation/diagnostics/guides andnewtests/chat-map-recovery.test.mjs. Acceptedtime/queuechangespreserved.
+- Fixedsafe duplicateparticipant/building and invalidwindowreasons+field/visibleindices; hiddenindicesomitted andpublicindicesboundedtosubmittedarraylength. mapFailure exposesattemptedtarget andknownrejection vsunconfirmedlostreceipt; nosuccessreceiptforfailure. Originalexceptions/bodiesneverechoed.
+- Stableobjectkeycanonicalizationpreservesarrays/originalbackendargs. Onlyschema-validpersonNamevariants useadapter-equivalentUnicode/case/whitespacenormalization; malformedargskeeporiginalsignatureandnormaladaptervalidation. Native+legacyinvalidfeedbackpreserved. No cap/timeout/model/mandatoryworkflowchange.
+-8newmeaningfulrecoverygroups andtenfocusedsuites114/114pass. API/whitespacepass. Broader7legacysharedsuites67pass/14fail; isolatedHEADsame67andidentical14namedfailures,retainedin/tmp/flock-recovery-shared{,-baseline}.log.
+- Evaluatorpreflightfixedunknownreceipttruth,hiddenindexprivacy,nonnativeinvalidfeedback,unnecessaryduplicate-repairwording;independent47checks/setupselfcheckpass. Actualmodelgatefollowed.

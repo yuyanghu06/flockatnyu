@@ -218,8 +218,8 @@ semibold;12px date/location lines stay2px apart with24px between events.
 
 Conversation replies are labeled FlockBot in black inside a left-aligned soft white
 bubble. User messages have compact right-aligned inset ivory bubbles with an
-accessible You label, without a visible role caption. Send/stop stays at the input
-area’s top while text wraps. Per-call gray blocks show real tool lifecycle events;
+accessible You label, without a visible role caption. Send stays at the input
+area’s top while text wraps; the separate Stop button stays in the header. Per-call gray blocks show real tool lifecycle events;
 Only Running/Thinking shimmer; all terminal statuses and reduced motion stay static.
 `assistant-markdown.js` renders streamed assistant Markdown through markdown-it,
 with raw HTML disabled, credential-free HTTP(S) links and no remote image loading.
@@ -261,14 +261,31 @@ Assistant streaming coalesces Markdown/DOM work per animation frame with termina
 Spotlight dismissal hides the panel without cancelling active requests. Hidden
 updates set a pending latest-scroll flag consumed on reopen, with completed
 responses retained in history. Explicit Stop, loading failure and disposal still
-abort. Send/Stop hover/focus adds a subtle glow; color rotation is driven by active
-streaming rather than hover, and reduced motion remains static.
+abort. Send hover/focus adds a subtle glow; Stop shows a small rotating indicator
+during streaming, and reduced motion keeps it static.
+
+Spotlight accepts follow-up messages while replying. A separate, scrollable queue
+shows messages, captured building context and attachment names before they enter
+the sent transcript. Messages send one at a time in submission order, building
+each request from the latest completed conversation. Remove deletes an individual
+waiting message; Clear deletes the waiting queue and preserves the current draft.
+At most 10 messages may be active or waiting. Files across active/waiting messages
+and the current draft are capped at 20 MiB, in addition to existing per-request
+upload limits. Limit feedback keeps the current draft intact.
+
+Stop, failed/incomplete streams and empty replies pause the queue. The unfinished
+message and its files return to the front for explicit Resume or removal; newer
+draft text/files are untouched and incomplete turns never enter completed history.
+Closing the dialog allows queued work to continue. Loading failure aborts and
+retains a paused queue; re-entry requires Resume. Disposal cancels requests and
+clears the in-memory queue. Nothing is persisted across a page reload.
 
 The assistant supports a file picker, removable attachment chips/image previews, image paste and file drop using chat-attachments.js and the browser-safe server contract. PNG/JPEG/WebP, PDF and small UTF8 text/code are retained only in in-memory conversation/draft state; current attachments survive send failure. A normal upsert_map_event completion emits campus-map-updated so map-presence.js refreshes immediately. Closing the dialog still preserves in-flight streaming.
 
-The assistant transcript appears above its composer footer. Only the transcript
-scrolls through long conversations; input, upload chips and errors have bounded
-heights on short viewports. Streaming follows readers already at the bottom;
+The assistant transcript appears above its composer footer. The transcript
+scrolls through long conversations; the queue, input, upload chips and errors have
+bounded heights on short viewports, with an independently scrollable footer when
+their combined height needs more room. Streaming follows readers already at the bottom;
 scrolling back pauses following. Existing send/stop colors, loading animation,
 dismissal and background completion remain. `assistant-presentation.js` selects
 the Mac Command or Windows/Linux Control shortcut, suppresses desktop shortcuts

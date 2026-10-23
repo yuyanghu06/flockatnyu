@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {createMapEventService} from '../server/map/events.js';
+import {createMapEventService,mapReadContext} from '../server/map/events.js';
 import {createMapPresenceService} from '../server/map/presence.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
+import {createTimeContext} from '../server/time-zone.js';
 
 // All identities/messages below are synthetic. No source API or hosted database
 // is used. Optional configured-model checks reuse the existing inert harness.
@@ -15,6 +16,7 @@ const pid='11111111-1111-4111-8111-111111111111';
 const sourceUrl='https://discord.com/channels/100/200/300';
 const building='nyu-leslie-elab-building';
 const principal={id:'synthetic-tester',allowedSourceIds:[sid]};
+const localArgs=args=>{const result=structuredClone(args);for(const key of ['starts','ends']){result.event[`${key}_local`]=createTimeContext({now:result.event[`${key}_at`],timeZone:result.event.time_zone}).localDateTime;delete result.event[`${key}_at`];}return result;};
 const posted='2026-10-21T16:54:00.000Z';
 const current='2026-10-21T17:00:00.000Z';
 function args({future=false,record='300'}={}) {
@@ -59,7 +61,7 @@ if(!process.argv.includes('--live-model')) {
       const first=await f.invoke(request,'read_map_events',{sourceId:sid,sourceRecordId:'300'});
       assert.equal(first.status,'ready');assert.equal(first.events.length,0);assert(first.buildings.some(row=>row.id===building));
       assert.equal((await f.invoke(request,'lookup_map_person',{provider:'discord',providerUserId:'400',sourceId:sid,sourceUrl})).person.id,pid);
-      const receipt=await f.invoke(request,'upsert_map_event',p);assert.equal(receipt.sourceStatus,'applied');
+      const receipt=await f.invoke(request,'upsert_map_event',localArgs(p));assert.equal(receipt.sourceStatus,'applied');
       const active=await f.projection(current),elab=active.buildings.find(row=>row.id===building);
       assert.equal(active.status,'ok');assert.equal(elab.people.length,1);assert.equal(elab.people[0].id,pid);
       assert.equal(elab.people[0].label,'','Location does not imply studying');assert.equal(elab.people[0].expiresAt,'2026-10-21T21:00:00.000Z');
@@ -68,7 +70,7 @@ if(!process.argv.includes('--live-model')) {
       const fresh=await f.service.read({principal,sourceId:sid,sourceRecordId:'300'});assert.equal(fresh.events.length,1);
       const existing=fresh.events[0];
       const {created_at,updated_at,...old}=existing;
-      assert.equal((await f.service.upsert({...p,event:{...old,name:'At eLab, corrected title'},expectedUpdatedAt:updated_at,principal})).status,'applied');
+      assert.equal((await f.service.upsert({...p,event:{...old,name:'At eLab, corrected title'},expectedUpdatedAt:updated_at,readContext:mapReadContext(fresh),principal})).status,'applied');
       const rows=(await f.db.query('select * from public.events where source_id=$1',[sid])).rows;
       assert.equal(rows.length,1);assert.equal(new Date(rows[0].ends_at).toISOString(),'2026-10-21T21:00:00.000Z');
       assert.equal((await f.projection('2026-10-21T21:00:00Z')).buildings.find(row=>row.id===building).people.length,0,'Expiry is exclusive');
@@ -80,7 +82,7 @@ if(!process.argv.includes('--live-model')) {
       const request=f.chat(`Add this original Discord location plan to the map: ${sourceUrl}`);f.observe(request);
       await f.invoke(request,'read_map_events',{});
       await f.invoke(request,'lookup_map_person',{provider:'discord',providerUserId:'400',sourceId:sid,sourceUrl});
-      assert.equal((await f.invoke(request,'upsert_map_event',args({future:true}))).sourceStatus,'applied');
+      assert.equal((await f.invoke(request,'upsert_map_event',localArgs(args({future:true})))).sourceStatus,'applied');
       const before=await f.projection(current);assert.equal(before.buildings.find(row=>row.id===building).people.length,0);
       assert.equal(before.upcoming.length,1);assert.equal(before.upcoming[0].validFrom,'2026-10-21T20:00:00.000Z');
       assert.equal((await f.projection('2026-10-21T20:00:00Z')).buildings.find(row=>row.id===building).people.length,1);
@@ -93,7 +95,7 @@ if(!process.argv.includes('--live-model')) {
       const request=f.chat(`Add this author's stated availability to the map from ${sourceUrl}`);f.observe(request);
       await f.invoke(request,'read_map_events',{sourceId:sid,sourceRecordId:'300'});
       await f.invoke(request,'lookup_map_person',{provider:'discord',providerUserId:'400',sourceId:sid,sourceUrl});
-      assert.equal((await f.invoke(request,'upsert_map_event',p)).sourceStatus,'applied');
+      assert.equal((await f.invoke(request,'upsert_map_event',localArgs(p))).sourceStatus,'applied');
       const stored=(await f.service.read({principal,sourceId:sid,sourceRecordId:'300'})).events[0];
       assert.equal(stored.kind,'personal_plan');assert.equal(new Date(stored.starts_at).toISOString(),posted);assert.equal(new Date(stored.ends_at).toISOString(),'2026-10-21T21:00:00.000Z');
       const view=await f.projection(current),occupant=view.buildings.find(row=>row.id===building).people[0];

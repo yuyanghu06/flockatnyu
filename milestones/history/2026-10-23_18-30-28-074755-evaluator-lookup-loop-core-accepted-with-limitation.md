@@ -1,0 +1,10 @@
+# Lookup-loop fix accepted with a redundant-save limitation
+
+- Local timestamp / acting role / milestone: 2026-10-23T18:30:28.074755-04:00 / orchestrator recording independent read-only evaluator / chat-time-spotlight-queue.
+- Requested scope: evaluate failed-map-upsert recovery against the reported repeated identity-lookup loop.
+- Starting repository state: exact-read helper frozen; the strict no-redundant-mutation test remains failed. Two original target-selection/time cases are running under a separate hard-12 cap.
+- Work performed / changed files: evaluator read the original final hard-five ledger, checked all 22 current source hashes and reviewed pure comparison, public projection, scope/version/freshness binding and production SQL. No evaluator writes.
+- Decisions: ACCEPT for the user's lookup-loop goal, conditional on the final time/target regression. Do not waive or count the stricter no-redundant-mutation objective as passing. No more prompt retries or storage migrations in this release.
+- Checks and evidence: one actual recovery proposal/attempt/applied save, zero recovery lookups, accurate final answer and exact simulated business facts. Evaluator independently ran recovery/time tests: 24 behavior checks passed. Source review confirms no new implicit service operation or changed budget.
+- Resulting state / acceptance: lower-priority limitation retained. In-memory storage changes only the parent revision on a redundant save. Production replacement SQL additionally refreshes participant relationship created_at/updated_at (028 and 026) and may cause normal optimistic-version contention. These costs are not represented by the in-memory metadata oracle. No observed activity/attendance/timing/label/URL/provenance corruption. The earlier journal's revision-only description applies to simulated evidence, not all production metadata.
+- Remaining work and handoff: semantically review the two original target cases, then integrate and deploy web only. Preserve private failed ledgers and document hosted read-only checks separately from actual-model simulation.

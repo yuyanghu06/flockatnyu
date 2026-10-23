@@ -1,0 +1,10 @@
+# Recovery stops identity loops; redundant update remains
+
+- Local timestamp / acting role / milestone: 2026-10-23T18:29:39.480851-04:00 / orchestrator recording independent tester / chat-time-spotlight-queue.
+- Requested scope: failed-map-upsert recovery, preserving accepted time and Spotlight queue behavior.
+- Starting repository state: exact read-comparison code/setup independently accepted; all focused checks pass; no release yet.
+- Work performed / changed files: configured gpt-6-luna already-recorded-only recovery test with a hard five-request cap. Harness used production runner/adapters after a labeled scripted known-failure prefix. No runtime edits.
+- Decisions: retain the original strict zero-mutation-proposal oracle as FAILED. The model receives the exact true equality hint and revision but still sends one redundant upsert. This changes only the event revision, without changing business facts or repeating identities. The user's lookup-loop goal and this stricter extra-write objective are evaluated separately; no passing result is fabricated.
+- Checks and evidence: three actual inference requests, stable 22-file pins, validated prefix, one actual mutation proposal/attempt/applied receipt, zero identity relookups, exact unchanged business facts. Ignored evidence/chat-time-queue-2026-10-23/recovery-already5 retains all original files with copy/hash verification. No live business writes. Total recovery inference so far is 21 requests across three closed gates (12 + 6 + 3); initial time gates used 42 separately.
+- Resulting state / acceptance: strict no-op test remains failed. Independent evaluator assesses whether the harmless redundant update is nonblocking for the user's loop goal. There is no hidden workflow, storage migration or intent gate added to force the test.
+- Remaining work and handoff: two original time/target-selection cases run under an independent hard-12 cap on unchanged runtime. Final semantic review and release decision follow. Web package is prepared with exact current source/assets; unrelated planner runtime is excluded. Nothing uploaded yet.

@@ -82,10 +82,24 @@ export function validParticipation(participant, event) {
   if(!object(participant) || participant.event_id!==event.id || !uuid(participant.person_id) ||
     !['going','tentative','declined'].includes(participant.attendance_status) || !['planned','reported'].includes(participant.presence_basis) ||
     !text(participant.label,200) || !uuid(participant.source_id) || !safeHttps(participant.source_url) || timestamp(participant.reported_at)===null) return null;
-  const w=eventWindow(event); if(!w)return null;
+  return participationWindow(participant,eventWindow(event));
+}
+function participationWindow(participant,w) {
+  if(!w)return null;
   if(w.unknown)return participant.starts_at==null && participant.ends_at==null ? w : null;
   const start=participant.starts_at==null ? w.start : timestamp(participant.starts_at), end=participant.ends_at==null ? w.end : timestamp(participant.ends_at);
   return start!==null && end!==null && end>start && start>=w.start && end<=w.end ? {start,end,allDay:w.allDay} : null;
+}
+export const MAP_WRITE_VALIDATION_FIELDS=Object.freeze({duplicate_participant_ids:'people',duplicate_building_ids:'buildings',invalid_event_window:'event',invalid_participant_window:'people'});
+const invalidWrite=(reason,indices)=>({status:'invalid',reason,field:MAP_WRITE_VALIDATION_FIELDS[reason],...(indices?{indices}:{}),diagnostics:{stage:'local_validation',reason}});
+function duplicateIndices(rows,key,valid){
+  const seen=new Map();
+  for(const [index,row]of rows.entries()){
+    const value=row[key];if(!valid(value))continue;
+    if(seen.has(value))return [seen.get(value),index];
+    seen.set(value,index);
+  }
+  return null;
 }
 export function validateSnapshot(data) {
   if(!object(data))throw Error('invalid_event_snapshot');
@@ -257,12 +271,17 @@ export function createMapEventService({store=createMapEventStore(),authorizeSour
         people.push(...preservation.people.map(person=>({...person})));
       }
       for(const p of people)for(const key of ['person_id','source_id'])if(uuid(p[key]))p[key]=p[key].toLowerCase();
+      const duplicatePeople=duplicateIndices(people,'person_id',uuid),duplicateBuildings=duplicateIndices(buildings,'building_id',buildingId);
+      if(duplicatePeople)return invalidWrite('duplicate_participant_ids',duplicatePeople.every(index=>index<args.people.length)?duplicatePeople:undefined);
+      if(duplicateBuildings)return invalidWrite('duplicate_building_ids',duplicateBuildings);
+      const window=eventWindow(event);if(!window)return invalidWrite('invalid_event_window');
+      const invalidPersonWindow=people.findIndex(person=>!participationWindow(person,window));
+      if(invalidPersonWindow!==-1)return invalidWrite('invalid_participant_window',invalidPersonWindow<args.people.length?[invalidPersonWindow]:undefined);
       if(!validEvent(event)||!text(event.source_record_id,200,1)||buildings.length>100||people.length>500||
         args.buildings.some(b=>!onlyKeys(b,new Set(['building_id','location_notes'])))||args.people.some(p=>!onlyKeys(p,new Set([...personKeys].filter(x=>x!=='event_id'))))||
         (expectedUpdatedAt!==null&&timestamp(expectedUpdatedAt)===null)||
         buildings.some(b=>!onlyKeys(b,buildingKeys)||b.event_id!==event.id||!buildingId(b.building_id)||!text(b.location_notes,500))||
-        people.some(p=>!onlyKeys(p,personKeys)||!validParticipation(p,event))||
-        new Set(buildings.map(b=>b.building_id)).size!==buildings.length||new Set(people.map(p=>p.person_id.toLowerCase())).size!==people.length)return {status:'invalid'};
+        people.some(p=>!onlyKeys(p,personKeys)||!validParticipation(p,event)))return {status:'invalid'};
       const context=contextData(args),data=context?.raw??null,old=data?.events.find(x=>x.id===event.id);
       if(expectedUpdatedAt!==null&&!data)return {status:'read_required'};
       const knownBuildings=data&&new Set(data.buildings.map(x=>x.id)),knownPeople=data&&new Set(data.people.filter(p=>p.is_trackable===true).map(p=>p.id));

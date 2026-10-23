@@ -1,0 +1,10 @@
+# Clarification explicitly ends tool selection
+
+- Local timestamp / acting role / milestone: 2026-10-23T18:38:50.154780-04:00 / orchestrator recording coder and independent preflight evaluator / chat-time-spotlight-queue.
+- Requested scope: specific prompt-interface correction after the failed hierarchy-only gate.
+- Starting repository state: combined release remains blocked; original failed gates and strict oracles retained.
+- Work performed / changed files: only server/chat-behavior.js, server/assistant-context.js and tools/map/chat.js. Ambiguity now means zero further calls for that action, including reads, filtering, identity lookup, recovery and writes. If it is the only remaining action, end tool selection immediately with empty calls; the separate answer step asks which entry. A small generic two-room example illustrates the empty response. Chat event.id describes user selection provenance. Unrelated separately requested clear work remains allowed.
+- Decisions: no schema-shape, backend, helper, provider/model, budget, timeout or output-token changes. Existing reasoning_effort:none is required by the documented official-host Luna/Sol Chat Completions compatibility boundary, not an adjustable fix in this scope.
+- Checks and evidence: coder's 120 focused checks, API build and whitespace pass. Upsert description is 1,474 characters. Independent preflight verifies only these three files differ from the failed hierarchy source pins; harness/fixtures/backend/provider unchanged. Offline time mechanics and all four recovery mechanics pass without inference.
+- Resulting state / acceptance: code/setup ACCEPT only. Frozen hashes: behavior 50df40b2338d43d802bccddc9fbbda39b0672ebc491d51d12b0321b36cff1b2b; assistant-context 572e22059fae703352b6d8125e517b8596c5093a8b46ed00f30af75a11f91350; map-chat 88a5735b22f7bb20c8503564fdaae9b8ae9f1d7a9d965f63e25b47047fec602f.
+- Remaining work and handoff: unchanged original two-case configured-model gate is running under hard 12; no outcome yet. Only if it passes and receives semantic acceptance may the separately capped needed-attendee/lost-receipt gate run. No web upload.

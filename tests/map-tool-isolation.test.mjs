@@ -14,7 +14,7 @@ const principal={id:'member',allowedSourceIds:[sid,dsid],googleAccess:true,calen
 const event=()=>({id:eid,name:'Saved event',notes:'Keep these notes',kind:'scheduled_event',type_id:'meeting',status:'confirmed',time_kind:'timed',starts_at:'2026-10-23T19:00:00Z',ends_at:'2026-10-23T21:00:00Z',starts_on:null,ends_on:null,time_zone:'America/New_York',source_id:sid,source_url:calendarUrl,source_record_id:providerId,url:calendarUrl,reported_at:at,updated_at:at});
 const person=(id,name)=>({id,display_name:name,is_trackable:true,avatar_url:null});
 const snapshot=()=>({event_types:['other','meeting'].map((code,i)=>({code,name:code,description:'',icon_key:code,sort_order:i})),buildings:[{id:'bobst-library',name:'Bobst'}],people:[person(pid,'Alice'),person(priorId,'Existing person')],events:[event()],event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:'Room 2'}],event_people:[]});
-const strip=row=>Object.fromEntries(Object.entries(row).filter(([key,value])=>!['event_id','updated_at','created_at'].includes(key)&&value!==null));
+const strip=row=>Object.fromEntries(Object.entries(row).filter(([key,value])=>!['event_id','updated_at','created_at','local_display','effective_local_display'].includes(key)&&value!==null));
 function fixture({protectedPrior=false}={}) {
   const data=snapshot(),calls=[],writes=[];let sourceCalls=0;
   if(protectedPrior)data.event_people.push({event_id:eid,person_id:priorId,attendance_status:'going',presence_basis:'planned',label:'Preserve old label',starts_at:null,ends_at:null,source_id:CHAT_MAP_SOURCE_ID,source_url:chatMapEventUrl(eid,origin),reported_at:at});

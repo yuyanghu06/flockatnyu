@@ -11,6 +11,7 @@ import {createChatMapTools} from '../tools/map/chat.js';
 import {createMapTools} from '../tools/map/index.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';
 import {MAP_RECORD_EXAMPLES} from '../server/map/contracts.js';
+const localMapArgs=args=>{for(const key of ['starts','ends']){args.event[`${key}_local`]=args.event[`${key}_at`].slice(0,19);delete args.event[`${key}_at`];}return args;};
 const source=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const principal={id:'discord:100:300',allowedSourceIds:[source(1),source(2),source(3)],googleAccess:true,liveDiscord:{mode:'local-operator',guildId:'100',transport:'discord-chat',invokingChannelId:'200',allowedSourceIds:[source(1)]}};
 const context={transport:'discord',actor:{provider:'discord',userId:'300',guildId:'100',username:'member',displayName:'Member'},channelId:'200',threadId:null,requestId:'400',sourceProfileId:'discord-chat:fixture'};
@@ -47,7 +48,7 @@ test('authenticated Discord map calls need no original-read proof while actual s
    writes++;assert.equal(args.principal,principal);assert.equal(args.event.source_id,MAP_RECORD_EXAMPLES.event.source_id);
    return allowed?{status:'applied',event_id:source(9),updated_at:'2026-10-19T16:00:00.000Z'}:{status:'forbidden'};
   }}})});
-  const args=structuredClone({event:MAP_RECORD_EXAMPLES.event,buildings:MAP_RECORD_EXAMPLES.buildings,people:[]});
+  const args=localMapArgs(structuredClone({event:MAP_RECORD_EXAMPLES.event,buildings:MAP_RECORD_EXAMPLES.buildings,people:[]}));
   const f=fixture({adapters:{mapTools},question:'Add this study plan to the map.',plan:(_,round)=>round===1?[call('read_map_events')]:round===2?[call('upsert_map_event',args)]:[]});
   assert.equal((await f.run()).status,'succeeded');assert.equal(reads,1);assert.equal(writes,1);assert.equal(f.answers[0].system.includes('"mapWrite":'),allowed);
   if(!allowed)assert.match(f.answers[0].system,/"status":"forbidden"/);
@@ -64,7 +65,7 @@ test('Miro-backed chat writes preserve the non-Discord source UUID without an ob
    writes++;assert.equal(args.principal,principal);assert.equal(args.event.source_id,source(3));assert.equal(args.event.source_url,miroSource.url);
    return allowed?{status:'applied',event_id:source(9),updated_at:'2026-10-19T16:00:00.000Z'}:{status:'forbidden'};
   }}})});
-  const args=structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_id:source(3),source_url:miroSource.url},buildings:MAP_RECORD_EXAMPLES.buildings,people:[]});
+  const args=localMapArgs(structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_id:source(3),source_url:miroSource.url},buildings:MAP_RECORD_EXAMPLES.buildings,people:[]}));
   const f=fixture({adapters:{miroTools,mapTools},question:'Add this study plan to the map.',plan:(_,round)=>round===1?[call('read_miro_item',{boardId:'board=',itemId:'100',type:'canvas'})]:round===2?[call('read_map_events')]:round===3?[call('upsert_map_event',args)]:[]});
   assert.equal((await f.run()).status,'succeeded');assert.equal(writes,1);assert.equal(f.answers[0].system.includes('"mapWrite":'),allowed);
   if(!allowed)assert.match(f.answers[0].system,/"status":"forbidden"/);
