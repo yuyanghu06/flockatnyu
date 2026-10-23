@@ -1,3 +1,17 @@
+## Spotlight controls and active input — deployed and verified
+
+**Web9843c735-4821-436a-8fbb-56c584d9d135 is SUCCESS.** Clear is black, the animated square is restored, the separate Stop is removed, and each queue row has a gray arrow that adds supported text to the active reply. Completed actions survive corrections; obsolete drafts reset; failed/unconfirmed injections remain queued.
+
+Source5c0a4cb is pushed. Independent browser/runner/model/evaluator checks pass;165 final affected components, compiler/build, actual gpt-6-luna11/12 simulated-data requests and the separately reviewed cancellation-only final delta are recorded. Hosted login/access, the new closed-run route and exact HTML/10bundles pass11 check groups, with zero hosted model calls/business writes. No worker/schema rollout.
+
+[Final release and limits](history/2026-10-23_19-32-34-623026-orchestrator-spotlight-web-live-verified.md) · [Verification report](../docs/spotlight-steering-verification-2026-10-23.md)
+
+## Spotlight web update uploaded; hosted checks pending
+
+Source/test changes are pushed as5c0a4cb. Web9843c735-4821-436a-8fbb-56c584d9d135 is building from the exact reviewed package:279files,273runtime/frontend files verified. Independent component/browser/model/evaluator gates pass, with the documented cancellation-only post-model delta. No worker/schema/business changes.
+
+[Integration and upload](history/2026-10-23_19-29-49-109039-orchestrator-spotlight-web-uploaded.md) · [Verification and limits](../docs/spotlight-steering-verification-2026-10-23.md)
+
 ## Spotlight steering accepted for release
 
 Requested controls are complete: black Clear, restored animated square, no header Stop and gray injection arrow beside each X. Same-run corrections retain completed operations and replace obsolete drafts; failed/unconfirmed input stays queued. Independent evaluator accepts the scoped web release with no material findings.

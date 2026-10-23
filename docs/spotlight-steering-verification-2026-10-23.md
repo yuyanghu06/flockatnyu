@@ -75,5 +75,10 @@ and uncertain-write guards retain run-wide replay protection. No callable tool
 performs another service's operation. Discord behavior, model/provider settings,
 limits, schemas and worker deployments are unchanged.
 
-Hosted deployment and read-only checks are pending. Browser transport simulation
+Web9843c735-4821-436a-8fbb-56c584d9d135 is SUCCESS, from pushed source5c0a4cb.
+Hosted read-only checks pass11 groups: health, anonymous API/steering denial,
+login/logout, exact HTML and10 JS/CSS bundles, the new closed-run steering route,
+cross-origin denial, configured chat and preserved map contracts. The sanitized
+receipt is in `evidence/spotlight-steering-2026-10-23/hosted-check.json`.
+No hosted model calls or business writes were made. Browser transport simulation
 and model checks on simulated storage do not establish a live business-data edit.
