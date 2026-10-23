@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
@@ -51,6 +52,7 @@ function fixture({ large = true, bindFailure = false } = {}) {
       rows.delete(args.taskId); return { status: 'ready' };
     },
   };
+  attachTaskReads(store,rows);
   const staged = factory({ taskStore: store, principal, fragments, now: () => new Date(clock), runSync: async () => ({ status: 'ready', results: [], unresolved: [] }), bindTask: async row => {
     if (failBind) throw Error('Synthetic bind failure');
     bindings.push(structuredClone(row));
@@ -64,7 +66,9 @@ function fixture({ large = true, bindFailure = false } = {}) {
     history.push({ kind: 'tool_result', stage: staged.phase, tool: name, inputIds: ctx.inputIds, arguments: structuredClone(args), result: structuredClone(value) });
     return value;
   };
-  const read = extra => call('read_pending_task', { taskId }, extra);
+  // These checks concern delivery of retained full history, which is optional
+  // now that the operational default is compact. Keep the full-byte oracle.
+  const read = extra => call('read_pending_task', { taskId, detail: 'full' }, extra);
   const full = async first => {
     first ??= await read();
     if (!first.fragment) return first;
@@ -82,13 +86,15 @@ function fixture({ large = true, bindFailure = false } = {}) {
   return { staged, task, rows, history, bindings, storeCalls, principal, fragments, context, taskId, inputId, person, call, read, full, begin, after,
     setClock: value => { clock = value; }, setBindFailure: value => { failBind = value; }, setSaveTransform: value => { transformSave = value; } };
 }
-const compactNotice = 'This exact task snapshot was fully read earlier in this phase. Reuse its earlier full data; no new read/action proof.';
+const compactNotice = process.env.TASK_READ_DISCLOSURE_BASELINE
+  ? 'This exact task snapshot was fully read earlier in this phase. Reuse its earlier full data; no new read/action proof.'
+  : 'This exact task view was completely read earlier in this phase. Reuse its earlier data; no new read/action proof.';
 
 test('repeat of an actually delivered exact snapshot reuses data without rebinding, editing storage or granting completion', async () => {
   const h = fixture(); await h.begin(); await h.after();
   assert.deepEqual((await h.full()).task, h.task);
   const stored = canonicalJson(h.rows.get(h.taskId)), beforeBindings = h.bindings.length;
-  const expected = { status: 'ready', alreadyRead: true, taskId: h.taskId, updated_at: stamp, request: Object.fromEntries(Object.entries(h.task.info.request).filter(([key]) => ['operation', 'calendarKind', 'calendarEventId', 'personId', 'buildingId'].includes(key))), notice: compactNotice };
+  const expected = { status: 'ready', alreadyRead: true, ...(!process.env.TASK_READ_DISCLOSURE_BASELINE ? { detail: 'full' } : {}), taskId: h.taskId, updated_at: stamp, request: Object.fromEntries(Object.entries(h.task.info.request).filter(([key]) => ['operation', 'calendarKind', 'calendarEventId', 'personId', 'buildingId'].includes(key))), notice: compactNotice };
   assert.deepEqual(await h.read(), expected);
   assert.equal(Object.hasOwn(expected.request, 'summary'), false, 'Repeated metadata does not duplicate the fully delivered summary');
   assert.equal(h.bindings.length, beforeBindings, 'Known disclosure must not grant a new bind/read proof');
@@ -146,11 +152,11 @@ test('failed bind does not mark a small fully serialized task as reusable', asyn
 test('executed but unlogged data never counts as model-visible delivery', async () => {
   const h = fixture({ large: false }); await h.begin(); await h.after();
   const tool = h.staged.tools.find(row => row.name === 'read_pending_task');
-  const first = await tool.execute({ taskId: h.taskId }, h.context);
+  const first = await tool.execute({ taskId: h.taskId, detail: 'full' }, h.context);
   assert.deepEqual(first.task, h.task);
-  const unloggedRepeat = await tool.execute({ taskId: h.taskId }, h.context);
+  const unloggedRepeat = await tool.execute({ taskId: h.taskId, detail: 'full' }, h.context);
   assert.deepEqual(unloggedRepeat.task, h.task); assert.equal(unloggedRepeat.alreadyRead, undefined);
-  h.history.push({ kind: 'tool_result', stage: 'followup', tool: 'read_pending_task', inputIds: [h.taskId], arguments: { taskId: h.taskId }, result: structuredClone(first) });
+  h.history.push({ kind: 'tool_result', stage: 'followup', tool: 'read_pending_task', inputIds: [h.taskId], arguments: { taskId: h.taskId, detail: 'full' }, result: structuredClone(first) });
   assert.equal((await h.read()).alreadyRead, true);
 });
 

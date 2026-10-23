@@ -1,3 +1,4 @@
+import {withTaskReadFixtures} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID,createHash} from 'node:crypto';
@@ -6,7 +7,7 @@ import {readFile} from 'node:fs/promises';
 // Reuse the real-component synthetic fixture without registering its tests or
 // changing the pinned fixture. Extra controls affect simulated transports only.
 const frozenSource=await readFile(new URL('./staged-runtime-integration.test.mjs',import.meta.url),'utf8');
-assert.equal(createHash('sha256').update(frozenSource).digest('hex'),'58e010be5e2e7d9dad74b3913df14e34182918d5112cf009737df2be5b935a04');
+assert.equal(createHash('sha256').update(frozenSource).digest('hex'),'71e8f6b01c6feddc813f4d70f1b913d37824654cc9b9025fec77a08a737046a0');
 const begin=frozenSource.indexOf('async function participationFixture('),end=frozenSource.indexOf('\nconst participationCall=',begin);
 assert(begin>0&&end>begin);let fixtureSource=frozenSource.slice(begin,end);
 const replace=(from,to)=>{assert(fixtureSource.includes(from),'Pinned fixture transport marker changed');fixtureSource=fixtureSource.replace(from,to);};
@@ -21,7 +22,7 @@ if(process.env.NATIVE_PARTICIPATION_BASELINE_ADAPTER){
 }
 const imports=[['createAutomationAdapters',adapterUrl],['createAutomationHandler',new URL('../server/automation/handler.js',import.meta.url).href],['readAutomationConfig',new URL('../server/automation/config.js',import.meta.url).href],['createCalendarClient',new URL('../server/google/calendar-client.js',import.meta.url).href],['readCalendarConfig,readMemberPlansConfig,CALENDAR_REQUIRED_SCOPES',new URL('../server/google/calendar-config.js',import.meta.url).href],['createMapEventService',new URL('../server/map/events.js',import.meta.url).href],['createCalendarMapSync',new URL('../server/automation/calendar-sync.js',import.meta.url).href],['createLiveRetrievalTools',new URL('../tools/discord/index.js',import.meta.url).href]];
 const moduleSource="import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';\n"+imports.map(([names,url])=>`import {${names}} from ${JSON.stringify(url)};`).join('\n')+"\nconst clubId='club@group.calendar.google.com',memberId='members@group.calendar.google.com';\n"+fixtureSource+'\nexport {participationFixture};';
-const {participationFixture}=await import('data:text/javascript;base64,'+Buffer.from(moduleSource).toString('base64'));
+const {participationFixture}=await import('data:text/javascript;base64,'+Buffer.from(withTaskReadFixtures(moduleSource)).toString('base64'));
 const call=(name,id,args,ids)=>({id,name,arguments:name==='finish_batch'?{handledInputIds:args}:{inputIds:ids,arguments:args}}),turn=(...toolCalls)=>({stopReason:'tool_calls',toolCalls});
 const ownUrl=i=>'https://discord.com/channels/100/200/'+String(300+i);
 const facts=row=>Object.fromEntries(Object.entries(row).filter(([key])=>!['created_at','updated_at'].includes(key)));

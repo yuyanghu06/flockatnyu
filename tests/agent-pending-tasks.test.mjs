@@ -124,7 +124,7 @@ test('Node cache store validates before HTTP and suppresses all diagnostic/error
  for(const patch of [{leaseToken:'bad'},{task:{...task,info:{sourceIds:[other]}}},{expectedUpdatedAt:'bad'},{task:{...task,info:{sourceIds:[source],summary:'x'.repeat(262144)}}}])assert.equal((await store.save({leaseToken,allowedSourceIds:[source],task,...patch})).status,'invalid_request');
  assert.equal((await store.resolve({leaseToken,allowedSourceIds:[source],taskId:task.uuid})).status,'invalid_request');
  assert.equal(requests,0);
- assert.deepEqual(await store.save({leaseToken,allowedSourceIds:[source],task}),{status:'capacity'});
+ const capacity=await store.save({leaseToken,allowedSourceIds:[source],task});assert.equal(capacity.status,'capacity');assert(!JSON.stringify(capacity).includes('SECRET'));
  for(const status of [400,401,403,500]){
   const bad=createPendingTaskStore({env,fetchImpl:async()=>new Response('PRIVATE_ERROR_BODY',{status})});
   assert.deepEqual(await bad.prune(),{status:[401,403].includes(status)?'forbidden':'unavailable'});

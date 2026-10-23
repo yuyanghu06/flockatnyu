@@ -1,3 +1,4 @@
+import {withTaskReadFixtures} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
@@ -31,7 +32,7 @@ const dependencies = [
   ['createCalendarMapSync', new URL('../server/automation/calendar-sync.js', import.meta.url).href],
   ['createLiveRetrievalTools', new URL('../tools/discord/index.js', import.meta.url).href],
 ];
-const { participationFixture } = await import(dataUrl("import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';\n" + dependencies.map(([names, url]) => `import {${names}} from ${JSON.stringify(url)};`).join('\n') + "\nconst clubId='club@group.calendar.google.com',memberId='members@group.calendar.google.com';\n" + fixtureText.slice(start, end) + '\nexport {participationFixture};'));
+const { participationFixture } = await import(dataUrl(withTaskReadFixtures("import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';\n" + dependencies.map(([names, url]) => `import {${names}} from ${JSON.stringify(url)};`).join('\n') + "\nconst clubId='club@group.calendar.google.com',memberId='members@group.calendar.google.com';\n" + fixtureText.slice(start, end) + '\nexport {participationFixture};')));
 
 const source = randomUUID(), calendarSource = randomUUID(), eventId = randomUUID(), actor = randomUUID(), late = randomUUID(), helper = randomUUID();
 const revision = '2026-10-23T00:24:17.653692+00:00';

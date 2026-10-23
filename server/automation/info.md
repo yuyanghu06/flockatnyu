@@ -122,9 +122,13 @@ chat Miro modules are independent and unchanged.
   plans and current presence originate in Member Plans, never worker map-only
   creation.
 - `task-store.js` manages bounded service-only temporary tasks with exact-version
-  completion, expiry and lease fencing. Task lists/reads use stored contents and
+  completion, expiry and lease fencing. The worker uses a small `catalogue`
+  response for IDs, timestamps, input UUIDs and request hints, then `read` for one
+  complete selected row. Both use stored contents and
   current local source scope only; they do not reread Discord/Gmail originals,
-  check reference URLs or perform Calendar preflights. Mechanical projection failures remain API
+  check reference URLs or perform Calendar preflights. The old full `list` RPC
+  remains available for compatibility but the production pipeline never calls it.
+  Mechanical projection failures remain API
   outcomes; source interpretation/participation/ambiguous locations may need model
   follow-up. Existing unsupported work is not silently deleted.
 - `bounded-result.js` transports large JSON results as batch-local lossless RAM
@@ -211,8 +215,16 @@ and fragments return an earlier batch result. Receipts store no source bodies.
 Regrouped input subsets change receipt keys, so stable provider identities and
 optimistic writes remain necessary for replay safety.
 
-read_pending_task returns the saved task from the service-only snapshot, using
-local row/input/source-scope/expiry checks and a read-version receipt. Binding its
+read_pending_task fetches one complete saved row before constructing its requested
+compact/full view, using service-only lease/source-scope/expiry checks plus local
+row/input checks and a read-version receipt. The catalogue grants no read receipt
+or action/deletion proof. Startup loads full rows only for catalogue candidates
+sharing claimed input UUIDs, and coverage still requires identical complete
+originals. Phase transitions refresh metadata; finish checks reread only relevant
+or obligated exact task IDs and compare complete contents and all timestamps.
+Stable generated IDs are read before any merge, including privately listed
+mechanical work. Checkpoints touch only loaded tasks with actual new history;
+untouched and unsupported rows retain their saved contents and timestamps. Binding its
 original inputs in memory is not a live observation or write grant. defer_task
 bookkeeping also uses local inputs only: every supplied UUID must belong to this
 cycle or an eligible task already read at its current version. Unknown/mixed IDs
@@ -222,6 +234,16 @@ person-lookup and map tools after reading. Those tools retain their normal live
 permission, original identity and write checks; resolve_pending_task still verifies
 actual confirmed work before deleting an exact version. Cache reads themselves
 make no claim that originals remain current or readable.
+
+Task storage emits content-free `planner_task_storage` diagnostics with a fixed
+operation/category/reason, HTTP status when available, elapsed milliseconds and
+response byte count. Database cancellation (`57014`), the unchanged15second
+request timeout, permission denial, invalid JSON/shape, oversized responses and
+network/HTTP failures remain distinguishable. Failed response bodies, arguments,
+originals, exception text and credentials are excluded. Startup, phase-transition
+and finish failures retain safe reason/stage/HTTP metadata for operational audits.
+The local catalogue implementation requires migration045 before release; actual
+deployment and verification status remain in the milestone.
 
 Unsuccessful tool results, thrown preparation/execution errors, malformed results
 and results over16KiB return one small tool_error response to the model with the

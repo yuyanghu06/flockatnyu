@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -28,6 +29,7 @@ function harness({pending=[],runSync,authorizeInputs,authorizeTask,verifyResolut
     },
     resolve:async args=>{calls.push({method:'resolve',...args});if(rows.get(args.taskId)?.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};rows.delete(args.taskId);return {status:'ready'};},
   };
+  attachTaskReads(store,rows,{onCall:row=>calls.push(row)});
   const fragments=createBoundedResults({maxBytes:4*1048576,maxEntries:64});
   const staged=createStagedPipeline({taskStore:store,principal,fragments,now:()=>new Date(stamp),
     authorizeInputs:async(...args)=>authorized&&(authorizeInputs?await authorizeInputs(...args):true),authorizeTask,verifyResolution,getEvidenceReferences,

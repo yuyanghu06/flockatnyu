@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -40,6 +41,7 @@ function worker({staged=false,turns=[],failSlot,authorizeEvent}={}){
   const executed=[],requests=[],progress=[],audits=[],receipts=new Set(),storage=[],errors=[];let pending=true,index=0;
   const principal={id:'limit-worker',allowedSourceIds:[sourceId]},task={uuid:randomUUID(),created_at:stamp,updated_at:stamp,expires_at:'2026-10-23T20:00:00Z',info:{version:1,sourceIds:[sourceId],inputs:[structuredClone(input)],request:{summary:'Still needs interpretation',operation:'source_review'},executionHistory:[]}},tasks=new Map([[task.uuid,structuredClone(task)]]);
   const taskStore={configured:true,list:async()=>({status:'ready',tasks:structuredClone([...tasks.values()])}),save:async args=>{storage.push('save');const saved={...tasks.get(args.task.uuid),...args.task,created_at:stamp,updated_at:stamp,expires_at:task.expires_at};tasks.set(saved.uuid,saved);return {status:'ready',task:saved};},resolve:async args=>{storage.push('resolve');tasks.delete(args.taskId);return {status:'ready'};}};
+  attachTaskReads(taskStore,tasks);
   const pipeline=staged?createStagedPipeline({taskStore,principal,fragments:createBoundedResults(),now:()=>new Date(stamp),bindTask:async()=>{},runSync:async()=>({status:'ready',results:[],unresolved:[]})}):null;
   const store={configured:true,claim:async()=>({status:'ready',leaseToken:lease,inputs:[structuredClone(input)]}),renew:async()=>({status:'ready'}),action:async({actionKey,complete})=>{if(receipts.has(actionKey))return {status:'completed'};if(complete){receipts.add(actionKey);return {status:'completed'};}return {status:'execute'};},finish:async()=>{pending=false;return {status:'ready'};},release:async()=>{},fail:async()=>{}};
   const tools=[{...definition,idempotent:true,execute:async args=>{executed.push(args.slot);return args.slot===failSlot?{status:'unavailable',body:canary}:{status:'ready',body:canary};}},...(pipeline?.tools??[])];

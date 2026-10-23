@@ -1,3 +1,4 @@
+import {withTaskReadFixtures} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID,createHash} from 'node:crypto';
@@ -28,11 +29,11 @@ function harness({turns,legacy=false,config={},providedProvider,prepare}={}){
 const mixedFeedback=(request,finishId,ordinaryId)=>{const finish=response(request,finishId),peer=response(request,ordinaryId);assert.equal(finish.status,'tool_error');assert.equal(finish.reason,'invalid_completion');assert.match(finish.message,/Call finish_batch alone/);assert.equal(peer.status,'tool_error');assert.equal(peer.reason,'unattempted');assert(Buffer.byteLength(JSON.stringify([finish,peer]))<1000);assert(!JSON.stringify([finish,peer]).includes('Synthetic own offered plan'));};
 
 // Extract only the frozen inert real-component constructor, never its tests.
-const frozen=await readFile(new URL('./staged-runtime-integration.test.mjs',import.meta.url),'utf8');assert.equal(createHash('sha256').update(frozen).digest('hex'),'58e010be5e2e7d9dad74b3913df14e34182918d5112cf009737df2be5b935a04');
+const frozen=await readFile(new URL('./staged-runtime-integration.test.mjs',import.meta.url),'utf8');assert.equal(createHash('sha256').update(frozen).digest('hex'),'71e8f6b01c6feddc813f4d70f1b913d37824654cc9b9025fec77a08a737046a0');
 const from=frozen.indexOf('async function participationFixture('),to=frozen.indexOf('\nconst participationCall=',from);assert(from>0&&to>from);
 const imports=[['createAutomationAdapters','../server/automation/adapters.js'],['readAutomationConfig','../server/automation/config.js'],['createCalendarClient','../server/google/calendar-client.js'],['readCalendarConfig,readMemberPlansConfig,CALENDAR_REQUIRED_SCOPES','../server/google/calendar-config.js'],['createMapEventService','../server/map/events.js'],['createCalendarMapSync','../server/automation/calendar-sync.js'],['createLiveRetrievalTools','../tools/discord/index.js']];
 const body="import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';\n"+imports.map(([names,path])=>`import {${names}} from ${JSON.stringify(new URL(path,import.meta.url).href)};`).join('\n')+`\nimport {createAutomationHandler} from ${JSON.stringify(handlerUrl)};\nconst clubId='club@group.calendar.google.com',memberId='members@group.calendar.google.com';\n`+frozen.slice(from,to)+'\nexport {participationFixture};';
-const {participationFixture}=await import('data:text/javascript;base64,'+Buffer.from(body).toString('base64'));
+const {participationFixture}=await import('data:text/javascript;base64,'+Buffer.from(withTaskReadFixtures(body)).toString('base64'));
 
 test('retained resolve-plus-finish failure recovers with the same actual applied receipt, then resolves and finishes separately',async()=>{
  const f=await participationFixture(),id=f.pending[0].uuid,before=f.clone([...f.mapRows.values()][0]),untouched=f.clone(f.pending.slice(1));let ref,receipt,mixed,taskBeforeMixed;const resolveTool=f.adapters.tools.find(t=>t.name==='resolve_pending_task'),execute=resolveTool.execute;let resolves=0;

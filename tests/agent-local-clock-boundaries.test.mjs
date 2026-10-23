@@ -1,3 +1,4 @@
+import {withTaskReadFixtures} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
@@ -5,7 +6,7 @@ import {randomUUID,createHash} from 'node:crypto';
 
 // Extract only the inert constructor, without registering the historical tests.
 const pinned=await readFile(new URL('./staged-runtime-integration.test.mjs',import.meta.url),'utf8');
-assert.equal(createHash('sha256').update(pinned).digest('hex'),'58e010be5e2e7d9dad74b3913df14e34182918d5112cf009737df2be5b935a04');
+assert.equal(createHash('sha256').update(pinned).digest('hex'),'71e8f6b01c6feddc813f4d70f1b913d37824654cc9b9025fec77a08a737046a0');
 const start=pinned.indexOf('const source=randomUUID()'),end=pinned.indexOf('\nconst lookup=',start);let body=pinned.slice(start,end);assert(start>0&&end>start);
 const replace=(from,to)=>{assert(body.includes(from),'Pinned constructor marker changed');body=body.replace(from,to);};
 replace("action:async({complete})=>({status:complete?'completed':'execute'})", "action:async args=>{chronology.push({kind:'action_reservation',...structuredClone(args)});return {status:args.complete?'completed':'execute'};}");
@@ -15,7 +16,7 @@ let adapterUrl=new URL('../server/automation/adapters.js',import.meta.url).href;
 if(process.env.LOCAL_CLOCK_BASELINE_ADAPTER){const old=await readFile(process.env.LOCAL_CLOCK_BASELINE_ADAPTER,'utf8');assert.equal(createHash('sha256').update(old).digest('hex'),'ded1cc4a1ea2f122d2ada601d2f537632c565177d4fc78bf2f403ca5e119acbd');adapterUrl='data:text/javascript;base64,'+Buffer.from(old.replace(/from (['"])(\.[^'"]+)\1/g,(_m,_q,path)=>`from ${JSON.stringify(new URL(path,new URL('../server/automation/adapters.js',import.meta.url)).href)}`)).toString('base64');}
 const imports=[['createAutomationAdapters',adapterUrl],['createAutomationHandler',new URL('../server/automation/handler.js',import.meta.url).href],['readAutomationConfig',new URL('../server/automation/config.js',import.meta.url).href],['createCalendarClient',new URL('../server/google/calendar-client.js',import.meta.url).href],['readCalendarConfig,readMemberPlansConfig,CALENDAR_REQUIRED_SCOPES',new URL('../server/google/calendar-config.js',import.meta.url).href]];
 const moduleSource="import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';\n"+imports.map(([names,url])=>`import {${names}} from ${JSON.stringify(url)};`).join('\n')+'\nconst adapterFactory=createAutomationAdapters;\n'+body+'\nexport {fixture,source,clubSource,memberSource,personId,inputId,input,call,turn};';
-const {fixture,source,memberSource,personId,inputId,input,call,turn}=await import('data:text/javascript;base64,'+Buffer.from(moduleSource).toString('base64'));
+const {fixture,source,memberSource,personId,inputId,input,call,turn}=await import('data:text/javascript;base64,'+Buffer.from(withTaskReadFixtures(moduleSource)).toString('base64'));
 const url='https://discord.com/channels/100/200/300',memberId='members@group.calendar.google.com',zone='America/New_York';
 const lookup={provider:'discord',providerUserId:'400',sourceId:source,sourceUrl:url};
 const args=()=>({sourceUrl:url,personId,title:'Studying',description:'Existing personal notes',location:'Bobst',activityKind:'personal_plan',typeId:'study',label:'Studying'});

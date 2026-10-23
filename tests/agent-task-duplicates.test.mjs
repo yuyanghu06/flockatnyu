@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -19,6 +20,7 @@ function harness({pending=[],inputs=[original()]}={}){
  const rows=new Map(pending.map(t=>[t.uuid,structuredClone(t)])),saves=[],history=[],principal={id:'synthetic-worker',allowedSourceIds:[source]},leaseToken=randomUUID();let version=0;
  const store={configured:true,list:async()=>({status:'ready',tasks:structuredClone([...rows.values()])}),save:async args=>{saves.push(structuredClone({...args,signal:undefined}));const old=rows.get(args.task.uuid);if(old&&old.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};const saved={...args.task,created_at:old?.created_at??stamp,updated_at:`2026-10-22T20:00:${String(++version).padStart(2,'0')}.000Z`,expires_at:old?.expires_at??'2026-10-23T20:00:00.000Z'};rows.set(saved.uuid,JSON.parse(JSON.stringify(saved)));return {status:'ready',task:structuredClone(saved)};},resolve:async()=>({status:'forbidden'})};
  const fragments=createBoundedResults({maxBytes:1048576,maxEntries:32});
+ attachTaskReads(store,rows);
  const staged=pipelineFactory({taskStore:store,principal,fragments,bindTask:async()=>{},runSync:async()=>({status:'ready',results:[],unresolved:[]}),now:()=>new Date(stamp)});
  const execute=(name,args,ids,extra={})=>staged.tools.find(t=>t.name===name).execute(args,{principal,inputIds:ids,signal:undefined,...extra});
  const begin=()=>staged.pipeline.beginCycle({leaseToken,inputs,recordExecution:async row=>history.push(row),getExecutionLog:()=>structuredClone(history)});

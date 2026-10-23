@@ -1,3 +1,4 @@
+import {withTaskReadFixtures} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID,createHash} from 'node:crypto';
@@ -27,7 +28,7 @@ const {readAutomationConfig}=await import(new URL('server/automation/config.js',
 const frozen=await readFile(new URL('./staged-runtime-integration.test.mjs',import.meta.url),'utf8');
 const start=frozen.indexOf('async function participationFixture('),end=frozen.indexOf('\nconst participationCall=',start);assert(start>0&&end>start);let body=frozen.slice(start,end);
 const origin='https://web-production-e4edc.up.railway.app';
-const oldAuthorizer="const authorize=async({principal,sourceId,sourceUrl})=>!control.revoked&&principal.allowedSourceIds.includes(sourceId)&&!(control.hiddenHelper&&sourceUrl==='https://discord.com/channels/100/200/292');";
+const oldAuthorizer="const authorize=({principal,sourceId,sourceUrl})=>!control.revoked&&principal.allowedSourceIds.includes(sourceId)&&!(control.hiddenHelper&&sourceUrl==='https://discord.com/channels/100/200/292');";
 assert(body.includes(oldAuthorizer));body=body.replace(oldAuthorizer,`const authorize=createMapSourceAuthorizer({publicOrigin:${JSON.stringify(origin)},store:rawStore,now:()=>new Date(clock),calendarTargets:[{sourceId:cs,client:{configured:true,calendarId:clubId,readEvent:args=>control.calendarRevoked?Promise.resolve({status:'forbidden',events:[]}):calendarClient.readEvent(args)}}],liveDiscordService:{configured:true,readMessages:async args=>{if(control.revoked)return {status:'forbidden',sources:[]};if(args.messageId==='292')return {status:'ready',sources:[{kind:'discord',sourceId:s,url:'https://discord.com/channels/100/200/292',guildId:'100',channelId:'200',messageId:'292',authorId:'600',content:'I will help with the event.',createdAt:taskStamp,sourceUpdatedAt:taskStamp}]};return liveService.readMessages(args);}}});`);
 body=body.replace('const tasks=new Map(),mapRows=', 'const flowEvents=[],tasks=new Map(),mapRows=');
 // Simulate revoked Calendar access at its own explicitly called transport.
@@ -37,7 +38,7 @@ body=body.replace("action:async({complete})=>({status:complete?'completed':'exec
 body=body.replace('return {adapters,context,inputs,native,pending,ids,source:s,clubSource:cs,rawStore','return {flowEvents,authorize,calendars,adapters,context,inputs,native,pending,ids,source:s,clubSource:cs,rawStore');
 const imports=[['createMapSourceAuthorizer','server/map/source-access.js'],['createAutomationAdapters','server/automation/adapters.js'],['createAutomationHandler','server/automation/handler.js'],['readAutomationConfig','server/automation/config.js'],['createCalendarClient','server/google/calendar-client.js'],['readCalendarConfig,readMemberPlansConfig,CALENDAR_REQUIRED_SCOPES','server/google/calendar-config.js'],['createMapEventService,mapReadContext','server/map/events.js'],['createCalendarMapSync','server/automation/calendar-sync.js'],['createLiveRetrievalTools','tools/discord/index.js']];
 const fixtureSource="import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';\n"+(await Promise.all(imports.map(async([names,path])=>`import {${names}} from ${JSON.stringify(await moduleUrl(path))};`))).join('\n')+"\nconst clubId='club@group.calendar.google.com',memberId='members@group.calendar.google.com';\n"+body+'\nexport {participationFixture};';
-const fixtureFile=new URL('runtime/'+(baseline?'old':'current')+'-fixture.mjs',evidence);await mkdir(new URL('./',fixtureFile),{recursive:true});await writeFile(fixtureFile,fixtureSource);const {participationFixture}=await import(fixtureFile.href);
+const fixtureFile=new URL('runtime/'+(baseline?'old':'current')+'-fixture.mjs',evidence);await mkdir(new URL('./',fixtureFile),{recursive:true});await writeFile(fixtureFile,withTaskReadFixtures(fixtureSource));const {participationFixture}=await import(fixtureFile.href);
 async function fixture({pg=false}={}){
  const f=await participationFixture(),row=[...f.mapRows.values()][0];
  row.people[0].source_id=CHAT_MAP_SOURCE_ID;row.people[0].source_url=chatMapEventUrl(row.event.id,origin);row.people[0].label='PRIVATE_EXISTING_CHAT_KEEP';

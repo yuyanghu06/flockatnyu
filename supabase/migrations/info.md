@@ -232,3 +232,7 @@ Hosted038 is `20261022182039_agent_empty_scope_maintenance`, applied through Sup
 042adds service-only metadata manual dispatch and a separate forced scoped claim preserving038maintenance/retry/global lease behavior while skipping trigger/cooldown.043reads only exact requested Discord metadata and ancestry for isolated override validation; it performs no policy/source identity writes.
 
 044 adds service-only event-local Discord metadata snapshot/reconciliation RPCs and guards full discovery against newer event observations. It changes no tables/columns or source-content storage. Current publication proof, policy/ancestry, manual disables and stable IDs remain required. Apply before the matching restart-aware collector; older collectors fail safely but cannot resume a flagged scan.
+
+045 adds service-only scoped task catalogue and exact complete read RPCs without pruning, cross-service calls or runner write locks. Existing039/list/save/resolve and tabledata stay intact. Local tests pass; hosted application remains pending in the rolling milestone.
+
+Hosted045 is20261023234558_agent_task_catalogue, appliedOctober23through the existing signed-in projectSQLeditor after independent acceptance. Exact6020byte source receipt and both function-bodyMD5s match reviewedlocalSQL; service-onlyACL/emptysearchpath and RESTvisibility verify. The normal developer MCP remainsread-only. See the task-storage verification report and rollingmilestone for workerstate.

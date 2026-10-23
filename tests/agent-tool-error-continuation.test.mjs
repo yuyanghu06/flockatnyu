@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -110,6 +111,7 @@ test('actual staged task resolver refuses generic failed write as completion and
     save:async args=>{storage.push('save');const prior=rows.get(args.task.uuid),saved={...prior,...args.task,updated_at:'2026-10-22T18:01:00Z'};rows.set(saved.uuid,saved);return {status:'ready',task:structuredClone(saved)};},
     resolve:async args=>{storage.push('resolve');rows.delete(args.taskId);return {status:'ready'};},
   };
+  attachTaskReads(taskStore,rows);
   const staged=createStagedPipeline({taskStore,principal,fragments:createBoundedResults(),now:()=>new Date(stamp),authorizeInputs:async()=>true,bindTask:async()=>{},runSync:async()=>({status:'ready',results:[],unresolved:[]})});
   const h=harness({principal,pipeline:staged.pipeline,tools:[...staged.tools,tool('upsert_map_event',async()=>({status:'conflict',body:secret}),false)],turns:[
     finish('initial'),turn(call('read_pending_task','read_task',{taskId},[taskId])),

@@ -5,7 +5,7 @@ import {AUTOMATION_MAX_TOOL_CALLS,AUTOMATION_MAX_STAGE_CALLS} from './config.js'
 import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:0,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
-const failure = code => { throw new Error(code); };
+const failure = (code,result) => { const error=new Error(code);if(plainObject(result?.diagnostics))error.diagnostics=result.diagnostics;throw error; };
 // These tools use only leased task/batch data or already-fetched RAM fragments.
 // Their adapters still check principal, source scope and exact task versions.
 const localContextTools=new Set(['read_pending_task','defer_task','read_context_fragment']);
@@ -175,7 +175,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         await renew();await authorize();
         if(pipeline.finishCycle) {
           const checkpoint=await guarded(()=>pipeline.finishCycle({handledInputIds:[...handledInputIds],inputs:structuredClone(inputs),principal,signal:combined,leaseToken,executionLog:getExecutionLog(),followupStatus}));
-          if(checkpoint?.status!=='ready')failure('preflight_failed');
+          if(checkpoint?.status!=='ready')failure('preflight_failed',checkpoint);
         }
         await renew();await authorize();
         const result=await guarded(()=>store.finish({leaseToken,handledInputIds,signal:combined}));
@@ -235,7 +235,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         await recordExecution({kind:'initial_complete',handledInputIds:[...initialHandled]});
         if(afterFinish)await runFinishSync();
         const next=await guarded(()=>pipeline.afterInitial({handledInputIds:[...initialHandled],inputs:structuredClone(inputs),principal,signal:combined,leaseToken,executionLog:getExecutionLog()}));
-        if(!plainObject(next)||next.status!=='ready'||next.inputIds!==undefined&&(!Array.isArray(next.inputIds)||next.inputIds.length>500||!next.inputIds.every(validUuid)||new Set(next.inputIds).size!==next.inputIds.length))failure('preflight_failed');
+        if(!plainObject(next)||next.status!=='ready'||next.inputIds!==undefined&&(!Array.isArray(next.inputIds)||next.inputIds.length>500||!next.inputIds.every(validUuid)||new Set(next.inputIds).size!==next.inputIds.length))failure('preflight_failed',next);
         if(Buffer.byteLength(canonicalJson(next))>262144)failure('context_limit');
         await recordExecution({kind:'deterministic_result',stage:'deterministic',result:next});
         for(const id of next.inputIds||[])if(!inputIds.includes(id))inputIds.push(id);
@@ -529,7 +529,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
                 await progressDone('pending');continue;
               }
               if(completion?.status==='invalid_request') {await rejectProposal(finish,'invalid_completion');failure('invalid_completion');}
-              if(completion?.status!=='ready')failure('preflight_failed');
+              if(completion?.status!=='ready')failure('preflight_failed',completion);
               initialFinishVerdict=Object.freeze({status:completion.status,handledInputIds:Object.freeze([...handledInputIds])});
             }
             if(stage==='followup'&&typeof pipeline.validateFinish==='function') {
@@ -543,7 +543,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
                 if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
                 await progressDone('pending');continue;
               }
-              if(completion?.status!=='ready')failure('preflight_failed');
+              if(completion?.status!=='ready')failure('preflight_failed',completion);
             }
             const response={status:'ready',stage,handledInputIds};
             messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)},

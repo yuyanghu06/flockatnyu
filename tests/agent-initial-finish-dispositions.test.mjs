@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
@@ -32,6 +33,7 @@ function harness({ count = 2, covered = [1], writeCovered = [], legacy = false }
     save: async ({ task }) => { const saved = { ...structuredClone(task), created_at: stamp, updated_at: stamp, expires_at: '2026-10-24T08:00:00.000Z' }; tasks.set(saved.uuid, saved); return { status: 'ready', task: structuredClone(saved) }; },
     resolve: async () => ({ status: 'forbidden' }),
   };
+  attachTaskReads(taskStore,tasks);
   const staged = createStagedPipeline({ taskStore, principal, fragments: createBoundedResults(), now: () => new Date(stamp), getInitialWriteCoverage: () => coverage, bindTask: async () => {}, runSync: async () => ({ status: 'ready', results: [], unresolved: [] }) });
   const pipeline = { ...staged.pipeline,
     validateInitialFinish: async args => { const result = await staged.pipeline.validateInitialFinish(args); validations.push({ handled: [...args.handledInputIds], noChange: [...args.noChangeInputIds], result: structuredClone(result) }); return result; },

@@ -12,7 +12,9 @@ const taskProperties={taskId:{type:'string',minLength:36,maxLength:36},summary:{
 // observations are untrusted evidence and never become durable assistant memory.
 export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()=>principal.allowedSourceIds,verifyResolution,getEvidenceReferences=()=>[],getInitialWriteCoverage=()=>[],bindTask,fragments,now=()=>new Date()}={}) {
   let cycle,phase='initial';
-  const tasks=new Map(),touched=new Set(),receipts=new Map(),taskFragmentOrigins=new Map(),disclosures=new Map(),obligations=new Set(),stopWitnesses=new Map(),createdTaskIds=new Set(),initialTaskIds=new Set();
+  // Catalogue entries select work. Only complete saved rows can establish
+  // original coverage, model read receipts, action bindings or completion.
+  const catalogue=new Map(),tasks=new Map(),touched=new Set(),receipts=new Map(),taskFragmentOrigins=new Map(),disclosures=new Map(),obligations=new Set(),stopWitnesses=new Map(),createdTaskIds=new Set(),initialTaskIds=new Set();
   let followupScope=new Set();
   const mapPersonId=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
   function persistedTaskFragment(row) {
@@ -61,10 +63,11 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
   const scope=()=>[...getAllowedSourceIds()];
   const requireCycle=context=>cycle&&context?.principal===principal&&!context.signal?.aborted;
   const uniqueInputs=rows=>[...new Map(rows.map(row=>[row.uuid,row])).values()];
-  const currentCycleTask=task=>touched.has(task.uuid)||task.info.inputs.some(input=>cycle.inputs.some(row=>row.uuid===input.uuid));
-  const knownParticipation=task=>task?.info?.request?.operation==='participation'&&mapPersonId(task.info.request.personId)
-    &&['club','member'].includes(task.info.request.calendarKind)&&typeof task.info.request.calendarEventId==='string'
-    &&task.info.request.calendarEventId.length>=5&&task.info.request.calendarEventId.length<=1024;
+  const requestOf=task=>task?.info?.request??task?.request;
+  const currentCycleTask=task=>touched.has(task.uuid)||(task.info?.inputs?.map(input=>input.uuid)??task.inputIds??[]).some(id=>cycle.inputs.some(row=>row.uuid===id));
+  const knownParticipation=task=>requestOf(task)?.operation==='participation'&&mapPersonId(requestOf(task).personId)
+    &&['club','member'].includes(requestOf(task).calendarKind)&&typeof requestOf(task).calendarEventId==='string'
+    &&requestOf(task).calendarEventId.length>=5&&requestOf(task).calendarEventId.length<=1024;
   const latch=task=>{if(currentCycleTask(task)&&knownParticipation(task))obligations.add(task.uuid);};
   const hasRead=task=>Boolean(task&&receipts.get(task.uuid)?.updatedAt===task.updated_at
     &&receipts.get(task.uuid)?.snapshot===canonicalJson(task));
@@ -130,10 +133,45 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     } catch { /* Unknown or malformed log rows cannot establish disclosure. */ }
     return false;
   };
-  const manifest=()=>[...tasks.values()].sort((a,b)=>Number(currentCycleTask(b))-Number(currentCycleTask(a))
-    ||Number(b.info.request?.operation==='participation')-Number(a.info.request?.operation==='participation'))
-    .map(task=>Object.fromEntries(Object.entries({uuid:task.uuid,currentCycle:currentCycleTask(task),summary:[...(task.info.request?.summary||'Deferred source work')].slice(0,100).join(''),summaryTruncated:[...(task.info.request?.summary||'')].length>100,operation:task.info.request?.operation,
-    ...(typeof task.info.request?.calendarEventId==='string'&&task.info.request.calendarEventId.length<=200?{calendarEventId:task.info.request.calendarEventId}:{eventIdInTask:Boolean(task.info.request?.calendarEventId)}),calendarKind:task.info.request?.calendarKind,updated_at:task.updated_at,expires_at:task.expires_at}).filter(([,value])=>value!==undefined)));
+  const eligibleCatalogue=task=>task?.modelEligible===true&&Date.parse(task.expires_at)>new Date(now()).getTime()
+    &&task.sourceIds?.length>0&&task.sourceIds.every(id=>scope().includes(id));
+  const catalogueEntry=task=>{
+    const request=task.info.request,summary=typeof request.summary==='string'?request.summary:'Deferred source work';
+    return {uuid:task.uuid,created_at:task.created_at,updated_at:task.updated_at,expires_at:task.expires_at,
+      sourceIds:[...task.info.sourceIds],inputIds:task.info.inputs.map(input=>input.uuid),modelEligible:true,
+      summaryTruncated:[...summary].length>100,request:{...Object.fromEntries(['operation','calendarKind','calendarEventId','personId','buildingId']
+        .filter(key=>typeof request[key]==='string'&&(key!=='calendarEventId'||[...request[key]].length<=1024)).map(key=>[key,request[key]])),summary:[...summary].slice(0,100).join('')}};
+  };
+  const forgetTask=id=>{tasks.delete(id);receipts.delete(id);disclosures.delete(id);stopWitnesses.delete(id);};
+  const rememberTask=task=>{
+    const previous=tasks.get(task.uuid);
+    if(previous&&canonicalJson(previous)!==canonicalJson(task)) {
+      receipts.delete(task.uuid);disclosures.delete(task.uuid);stopWitnesses.delete(task.uuid);
+    }
+    tasks.set(task.uuid,task);catalogue.set(task.uuid,catalogueEntry(task));
+  };
+  const storageFailure=result=>{const error=new Error('preflight_failed');if(plainObject(result?.diagnostics))error.diagnostics=result.diagnostics;throw error;};
+  async function refreshCatalogue(signal) {
+    const result=await taskStore.catalogue({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),signal});
+    if(result?.status!=='ready'||!Array.isArray(result.tasks))return result??{status:'unavailable'};
+    catalogue.clear();for(const task of result.tasks)catalogue.set(task.uuid,task);
+    return {status:'ready'};
+  }
+  async function loadCoverageCandidates(inputs,signal) {
+    const ids=new Set(inputs.map(input=>input.uuid));
+    for(const entry of catalogue.values()) {
+      if(!eligibleCatalogue(entry)||!entry.inputIds.some(id=>ids.has(id)))continue;
+      const result=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:entry.uuid,signal});
+      if(result?.status==='not_found'){forgetTask(entry.uuid);continue;}
+      if(result?.status!=='ready')return result??{status:'unavailable'};
+      if(current(result.task))rememberTask(result.task);else forgetTask(entry.uuid);
+    }
+    return {status:'ready'};
+  }
+  const manifest=()=>[...catalogue.values()].filter(eligibleCatalogue).sort((a,b)=>Number(currentCycleTask(b))-Number(currentCycleTask(a))
+    ||Number(b.request?.operation==='participation')-Number(a.request?.operation==='participation'))
+    .map(task=>Object.fromEntries(Object.entries({uuid:task.uuid,currentCycle:currentCycleTask(task),summary:task.request.summary,summaryTruncated:task.summaryTruncated,operation:task.request.operation,
+    ...(typeof task.request.calendarEventId==='string'&&task.request.calendarEventId.length<=200?{calendarEventId:task.request.calendarEventId}:{eventIdInTask:Boolean(task.request.calendarEventId)}),calendarKind:task.request.calendarKind,updated_at:task.updated_at,expires_at:task.expires_at}).filter(([,value])=>value!==undefined)));
   function sourceIds(value,found=new Set()) {
     if(Array.isArray(value)){for(const item of value)sourceIds(item,found);}
     else if(plainObject(value))for(const [key,item] of Object.entries(value)) {
@@ -266,6 +304,7 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
 
   async function save(request,context,{inputs,identity,history}={}) {
     if(!requireCycle(context))return {status:'forbidden'};
+    const updatingTaskId=request.taskId;
     if(request.taskId) {
       if(!hasRead(tasks.get(request.taskId))||!context.inputIds?.includes(request.taskId)||!current(tasks.get(request.taskId)))return {status:'forbidden'};
       identity=request.taskId;request=Object.fromEntries(Object.entries(request).filter(([key])=>key!=='taskId'));
@@ -295,28 +334,41 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
           return {status:'invalid_request',reason:'existing_task_requires_update'};
       }
     }
-    const previous=tasks.get(uuid);
-    if(previous&&!current(previous))return {status:'forbidden'};
+    // Stable generated IDs may already belong to old or mechanical work that
+    // was intentionally absent from the model catalogue. Never overwrite it
+    // using only a metadata hint, or omit its retained originals/history.
+    const existing=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:uuid,signal:context.signal});
+    if(existing?.status!=='ready'&&existing?.status!=='not_found')return existing??{status:'unavailable'};
+    const previous=existing.status==='ready'?existing.task:undefined;
+    if(!previous&&(initialTaskIds.has(uuid)||tasks.has(uuid)||catalogue.has(uuid)))return {status:'conflict'};
+    if(previous&&!current(previous)){forgetTask(uuid);return {status:'forbidden'};}
+    if(previous&&updatingTaskId&&canonicalJson(previous)!==canonicalJson(tasks.get(uuid))) {
+      rememberTask(previous);return {status:'conflict'};
+    }
     const taskInputs=uniqueInputs([...(previous?.info.inputs||[]),...structuredClone(originals)]);
     const newThisCycle=createdTaskIds.has(uuid)||!previous&&!initialTaskIds.has(uuid);
     const info={version:1,sourceIds:[...new Set([...(previous?.info.sourceIds||[]),...dependencies])],references:references({previous:previous?.info.references,originals,executionHistory,batchContext:cycle.batchContext,observedReferences}),inputs:taskInputs,request:structuredClone(request),
       batchContext:structuredClone(cycle.batchContext??{}),executionHistory:mergeHistory(previous?.info.executionHistory,executionHistory,newThisCycle?taskInputs:undefined)};
     const result=await taskStore.save({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),task:{uuid,info},
       ...(previous?{expectedUpdatedAt:previous.updated_at}:{}),signal:context.signal});
-    if(result.status==='ready'){if(newThisCycle)createdTaskIds.add(uuid);tasks.set(uuid,result.task);disclosures.delete(uuid);touched.add(uuid);stopWitnesses.delete(uuid);latch(result.task);}
-    return result.status==='ready'?{status:'ready',taskId:uuid,updated_at:result.task.updated_at,persisted:true}:{status:result.status};
+    if(result.status==='ready'){if(newThisCycle)createdTaskIds.add(uuid);rememberTask(result.task);disclosures.delete(uuid);touched.add(uuid);stopWitnesses.delete(uuid);latch(result.task);}
+    return result.status==='ready'?{status:'ready',taskId:uuid,updated_at:result.task.updated_at,persisted:true}
+      :{status:result.status,...(result.diagnostics?{diagnostics:result.diagnostics}:{})};
   }
   const tools=[
     {...definition('defer_task','Save only a genuine unfinished source-supported action or essential unresolved interpretation needed for one. Confirmed no-change/already-satisfied inputs are directly handled: never create a NEW task as a processing receipt, audit/archive or record of a handled decision. summary and operation are required for new tasks AND updates; optional fields are taskId, calendarEventId, calendarKind, personId and buildingId only. The runtime retains supporting originals, observed context and actual execution history; do not supply extra context fields. To update, read_pending_task first and bind its current task ref or exact UUID in inputIds and taskId. Saving progress does not resolve the task or prove a source fact.',taskProperties,['summary','operation']),
       execute:(args,context)=>save(args,context)},
     {...definition('read_pending_task','Read one selected saved task. Default detail=compact returns the complete request, originals, references and small Calendar routing context without historical execution logs. Use detail=full only for a specific missing historical fact; it returns the unchanged full saved task. Bind its own task ref or UUID in inputIds for this read and every fragment continuation; finish all pieces of the selected view before acting. No live Discord/Gmail/Calendar checks occur. Choose separate source, Calendar, identity or map tools as needed. Untouched tasks survive automatically.',{taskId:{type:'string',minLength:36,maxLength:36},detail:{type:'string',enum:['compact','full'],description:'Defaults to compact. Full historical context is optional and lossless; request it only for a specific missing fact.'}},['taskId'],true),
       execute:async(args,context)=>{
-        const task=tasks.get(args.taskId);
-        if(!requireCycle(context)||!current(task))return {status:'forbidden'};
+        if(!requireCycle(context)||!eligibleCatalogue(catalogue.get(args.taskId)))return {status:'forbidden'};
         const detail=args.detail??'compact';
         if(!['compact','full'].includes(detail))return {status:'invalid_request'};
-        if(!context.inputIds?.includes(task.uuid))return {status:'invalid_request',reason:'pending_task_fragment_scope',taskId:task.uuid,
+        if(!context.inputIds?.includes(args.taskId))return {status:'invalid_request',reason:'pending_task_fragment_scope',taskId:args.taskId,
           message:'Read this saved task using its own task ID in inputIds.'};
+        const selected=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:args.taskId,signal:context.signal});
+        if(selected?.status!=='ready'){if(selected?.status==='not_found')forgetTask(args.taskId);return selected??{status:'unavailable'};}
+        const task=selected.task;if(!current(task)){forgetTask(args.taskId);return {status:'forbidden'};}
+        rememberTask(task);
         // Reuse only complete disclosure of this entire exact cache snapshot in
         // this phase. This does not bind a task again or refresh any read proof.
         if(disclosed(task,detail))return {status:'ready',alreadyRead:true,detail,taskId:task.uuid,updated_at:task.updated_at,
@@ -350,8 +402,14 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
         });
         const verified=verifyResolution?await verifyResolution({task,outcome:args.outcome,history:log,signal:context.signal}):args.outcome==='completed'&&successful;
         if(!verified)return {status:'invalid_request',reason:'confirmed_outcome_required'};
+        const latest=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:task.uuid,signal:context.signal});
+        if(latest?.status!=='ready'){if(latest?.status==='not_found')forgetTask(task.uuid);return latest??{status:'unavailable'};}
+        if(!current(latest.task)||canonicalJson(latest.task)!==canonicalJson(task)) {
+          if(current(latest.task))rememberTask(latest.task);else forgetTask(task.uuid);
+          return {status:'conflict'};
+        }
         const result=await taskStore.resolve({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:task.uuid,expectedUpdatedAt:task.updated_at,signal:context.signal});
-        if(result.status==='ready'){tasks.delete(task.uuid);receipts.delete(task.uuid);disclosures.delete(task.uuid);touched.delete(task.uuid);obligations.delete(task.uuid);stopWitnesses.delete(task.uuid);createdTaskIds.delete(task.uuid);}
+        if(result.status==='ready'){tasks.delete(task.uuid);catalogue.delete(task.uuid);receipts.delete(task.uuid);disclosures.delete(task.uuid);touched.delete(task.uuid);obligations.delete(task.uuid);stopWitnesses.delete(task.uuid);createdTaskIds.delete(task.uuid);}
         return result;
       }},
   ];
@@ -421,16 +479,15 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       const covered=new Set();
       for(const input of getInitialWriteCoverage())if(claimed.has(input?.uuid)
         &&canonicalJson(input)===canonicalJson(claimed.get(input.uuid)))covered.add(input.uuid);
-      if(tasks.size) {
-        const latest=await taskStore.list({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),signal});
-        if(latest?.status!=='ready'||!Array.isArray(latest.tasks))return {status:'unavailable'};
-        for(const [id,task] of tasks) {
-          const matches=latest.tasks.filter(row=>row.uuid===id),fresh=matches[0];
-          if(matches.length!==1||!current(fresh)||!current(task)||fresh.updated_at!==task.updated_at
-            ||fresh.created_at!==task.created_at||fresh.expires_at!==task.expires_at||canonicalJson(fresh.info)!==canonicalJson(task.info))continue;
-          for(const input of fresh.info.inputs)if(claimed.has(input.uuid)
-            &&canonicalJson(input)===canonicalJson(claimed.get(input.uuid)))covered.add(input.uuid);
-        }
+      for(const [id,task] of tasks) {
+        if(!task.info.inputs.some(input=>claimed.has(input.uuid)))continue;
+        const latest=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:id,signal});
+        if(latest?.status==='not_found')continue;
+        if(latest?.status!=='ready')return latest??{status:'unavailable'};
+        const fresh=latest.task;
+        if(!current(fresh)||!current(task)||canonicalJson(fresh)!==canonicalJson(task))continue;
+        for(const input of fresh.info.inputs)if(claimed.has(input.uuid)
+          &&canonicalJson(input)===canonicalJson(claimed.get(input.uuid)))covered.add(input.uuid);
       }
       if(noChangeInputIds.some(id=>covered.has(id)))return {status:'invalid_request',reason:'invalid_completion_disposition'};
       const missing=handledInputIds.filter(id=>!covered.has(id)&&!noChangeInputIds.includes(id));
@@ -446,18 +503,16 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     },
     async validateFinish(context) {
       if(!requireCycle(context)||phase!=='followup')return {status:'forbidden'};
-      const candidates=[...obligations].filter(id=>followupScope.has(id)&&tasks.has(id));
+      const candidates=[...obligations].filter(id=>followupScope.has(id));
       if(!candidates.length)return {status:'ready'};
       // Saved-cache freshness only: this check never reads a source/provider.
-      const latest=await taskStore.list({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),signal:context.signal});
-      if(latest?.status!=='ready'||!Array.isArray(latest.tasks))return {status:'unavailable'};
       const remaining=[];
       for(const id of candidates) {
-        let task=tasks.get(id);const fresh=latest.tasks.find(row=>row.uuid===id);
-        if(!fresh||!current(fresh)) {remaining.push(id);continue;}
-        if(task.updated_at!==fresh.updated_at||canonicalJson(task.info)!==canonicalJson(fresh.info)) {
-          tasks.set(id,fresh);receipts.delete(id);stopWitnesses.delete(id);task=fresh;
-        }
+        const latest=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:id,signal:context.signal});
+        if(latest?.status!=='ready'&&latest?.status!=='not_found')return latest??{status:'unavailable'};
+        let task=tasks.get(id);const fresh=latest.task;
+        if(!fresh||!current(fresh)) {forgetTask(id);remaining.push(id);continue;}
+        rememberTask(fresh);task=fresh;
         if(!hasRead(task)||![...(stopWitnesses.get(id)?.values()||[])].some(witness=>witness.updatedAt===task.updated_at&&witness.info===canonicalJson(task.info)))remaining.push(id);
       }
       return remaining.length?{status:'pending',reason:'unfinished_participation',taskIds:remaining.slice(0,20),remainingCount:remaining.length,
@@ -465,12 +520,14 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     },
     recordApiResult:entry=>cycle.recordExecution({kind:'api_response',stage:'followup',...entry}),
     async beginCycle({leaseToken,inputs,recordExecution,getExecutionLog,signal}) {
-      tasks.clear();touched.clear();receipts.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();followupScope.clear();phase='initial';
+      catalogue.clear();tasks.clear();touched.clear();receipts.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();followupScope.clear();phase='initial';
       cycle={id:randomUUID(),leaseToken,inputs:structuredClone(inputs),recordExecution,getExecutionLog};
-      if(taskStore.configured===false)throw Error('not_configured');
-      const result=await taskStore.list({leaseToken,allowedSourceIds:scope(),signal});
-      if(result.status!=='ready')throw Error('preflight_failed');
-      for(const task of result.tasks){initialTaskIds.add(task.uuid);if(current(task))tasks.set(task.uuid,task);}
+      if(taskStore.configured===false||typeof taskStore.catalogue!=='function'||typeof taskStore.read!=='function')throw Error('not_configured');
+      const result=await refreshCatalogue(signal);
+      if(result?.status!=='ready')storageFailure(result);
+      for(const id of catalogue.keys())initialTaskIds.add(id);
+      const candidates=await loadCoverageCandidates(cycle.inputs,signal);
+      if(candidates.status!=='ready')storageFailure(candidates);
     },
     getInitialTaskCoverage() {
       if(!cycle||phase!=='initial')return [];
@@ -480,25 +537,28 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     setBatchContext(context){if(cycle)cycle.batchContext=structuredClone(context);},
     async afterInitial({handledInputIds,inputs,signal,executionLog}) {
       const context={principal,inputIds:inputs.map(row=>row.uuid),signal};
-      const latest=await taskStore.list({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),signal});
+      const latest=await refreshCatalogue(signal);
       if(latest.status!=='ready')return latest;
-      tasks.clear();for(const task of latest.tasks)if(current(task))tasks.set(task.uuid,task);
+      const unfinished=inputs.filter(row=>!handledInputIds.includes(row.uuid));
+      const candidates=await loadCoverageCandidates(unfinished,signal);
+      if(candidates.status!=='ready')return candidates;
       // At an initial model cap, unfinished originals remain queued. Persist a
       // checkpoint only when no current task already retains that exact original.
       // Reusing saved work never marks an omitted queue input completed.
-      for(const input of inputs.filter(row=>!handledInputIds.includes(row.uuid))) {
-        if([...tasks.values()].some(task=>current(task)&&task.info.inputs.some(saved=>canonicalJson(saved)===canonicalJson(input))))continue;
+      for(const input of unfinished) {
+        if([...tasks.values()].some(task=>eligibleCatalogue(catalogue.get(task.uuid))&&catalogue.get(task.uuid).inputIds.includes(input.uuid)
+          &&current(task)&&task.info.inputs.some(saved=>canonicalJson(saved)===canonicalJson(input))))continue;
         const result=await save({summary:'Unfinished initial source interpretation',operation:'source_review'},context,
           {inputs:[input],identity:taskId(`unfinished:${input.uuid}`),history:executionLog});
         if(result.status!=='ready')return result;
       }
-      const result=await taskStore.list({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),signal});
+      const result=await refreshCatalogue(signal);
       if(result.status!=='ready')return result;
-      tasks.clear();for(const task of result.tasks)if(current(task))tasks.set(task.uuid,task);
-      followupScope=new Set(tasks.keys());for(const task of tasks.values())latch(task);
+      followupScope=new Set([...catalogue.values()].filter(eligibleCatalogue).map(task=>task.uuid));
+      for(const task of catalogue.values())if(followupScope.has(task.uuid))latch(task);
       phase='followup';disclosures.clear();
       const orderedTasks=manifest();
-      return {status:'ready',inputIds:orderedTasks.map(task=>task.uuid),followupRequired:tasks.size>0,context:{tasks:orderedTasks,taskCount:tasks.size,
+      return {status:'ready',inputIds:orderedTasks.map(task=>task.uuid),followupRequired:orderedTasks.length>0,context:{tasks:orderedTasks,taskCount:orderedTasks.length,
         executionHistory:fragments.bound({status:'ready',history:cycle.getExecutionLog().filter(row=>['api_response','api_result'].includes(row.kind)),
           notice:'Only deterministic API execution evidence is included here. Fully read selected saved tasks for original intent and retained initial source/tool context; the initial transcript may not remain in this model conversation.'}),
         apiResults:{status:'ready',notice:'See the separately recorded sync_calendars_to_map tool result; phase transition performs no business calls.'},
@@ -510,6 +570,9 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       for(const task of tasks.values()) {
         if(!current(task))continue;
         if(touched.has(task.uuid)) {
+          const latest=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:task.uuid,signal});
+          if(latest?.status!=='ready')return latest??{status:'unavailable'};
+          if(!current(latest.task)||canonicalJson(latest.task)!==canonicalJson(task))return {status:'conflict'};
           const observedReferences=getEvidenceReferences();
           const info={...task.info,executionHistory:mergeHistory(task.info.executionHistory,executionLog,createdTaskIds.has(task.uuid)?task.info.inputs:undefined),references:references({info:task.info,executionLog,observedReferences}),
             sourceIds:[...new Set([...task.info.sourceIds,...sourceIds({executionLog,observedReferences})])]};
@@ -520,6 +583,9 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
         if(!hasRead(task))continue;
         const newHistory=executionLog.slice(receipts.get(task.uuid).readAt).filter(row=>row.kind==='tool_result'&&row.inputIds?.includes(task.uuid)&&row.tool!=='read_pending_task');
         if(!newHistory.length)continue;
+        const latest=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:task.uuid,signal});
+        if(latest?.status!=='ready')return latest??{status:'unavailable'};
+        if(!current(latest.task)||canonicalJson(latest.task)!==canonicalJson(task))return {status:'conflict'};
         const mergedHistory=mergeHistory(task.info.executionHistory,newHistory,createdTaskIds.has(task.uuid)?task.info.inputs:undefined),observedReferences=getEvidenceReferences();
         const info={...task.info,executionHistory:mergedHistory,sourceIds:[...new Set([...task.info.sourceIds,...sourceIds({mergedHistory,observedReferences})])],
           references:references({info:task.info,mergedHistory,observedReferences})};
@@ -534,6 +600,6 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     getBoundOriginals:context=>requireCycle(context)&&Array.isArray(context.inputIds)
       &&context.inputIds.every(id=>phase==='initial'?cycle.inputs.some(row=>row.uuid===id):followupScope.has(id))
       ?structuredClone(contextInputs(context.inputIds)):null,
-    get phase(){return phase;},cleanup(){cycle=undefined;tasks.clear();receipts.clear();touched.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();followupScope.clear();},
-    getExecutionLog:()=>cycle?.getExecutionLog()??[],get taskCount(){return tasks.size;}};
+    get phase(){return phase;},cleanup(){cycle=undefined;catalogue.clear();tasks.clear();receipts.clear();touched.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();followupScope.clear();},
+    getExecutionLog:()=>cycle?.getExecutionLog()??[],get taskCount(){return [...catalogue.values()].filter(eligibleCatalogue).length;}};
 }

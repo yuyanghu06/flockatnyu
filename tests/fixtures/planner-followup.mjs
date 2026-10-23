@@ -14,6 +14,31 @@ export const ids={source:uid('1',1),club:uid('1',2),member:uid('1',3),event:uid(
 export const clubId='club@group.calendar.google.com',memberId='members@group.calendar.google.com',eventId='workshop20261023';
 export const eventUrl=`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${eventId} ${clubId}`).toString('base64url')}`;
 export const originalUrl=input=>`https://discord.com/channels/100/200/${input.raw_response.payload.id}`;
+// Simulated storage follows the catalogue/exact-read boundary independently of
+// the pipeline. Keep legacy list mocks only for frozen historical witnesses.
+export function taskCatalogue(row) {
+ const request=row.info.request??{},summary=typeof request.summary==='string'?request.summary:'Deferred source work';
+ const uuid=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+ const inputs=Array.isArray(row.info.inputs)?row.info.inputs:[],inputIds=[...new Set(inputs.filter(input=>uuid(input?.uuid)).map(input=>input.uuid.toLowerCase()))];
+ const eligible=row.info.version===1&&['participation','location','source_review'].includes(request.operation)&&inputs.length>0&&inputIds.length===inputs.length
+  &&inputs.every(input=>input?.raw_response&&['discord','gmail'].includes(input.raw_response.source)&&row.info.sourceIds.includes(input.raw_response.source_id)&&input.raw_response.payload&&typeof input.raw_response.payload==='object'&&!Array.isArray(input.raw_response.payload));
+ return {uuid:row.uuid,created_at:row.created_at,updated_at:row.updated_at,expires_at:row.expires_at,
+  sourceIds:copy(row.info.sourceIds),inputIds,modelEligible:eligible,summaryTruncated:[...summary].length>100,
+  request:{summary:[...summary].slice(0,100).join(''),...Object.fromEntries(['operation','calendarKind','calendarEventId','personId','buildingId'].filter(key=>typeof request[key]==='string'&&(key!=='calendarEventId'||[...request[key]].length<=1024)).map(key=>[key,request[key]]))}};
+}
+export function attachTaskReads(store,rows,{failed=()=>false,onCall=()=>{}}={}) {
+ const permitted=(row,scope)=>Array.isArray(scope)&&row.info.sourceIds.every(id=>scope.includes(id));
+ store.catalogue=async args=>{onCall({method:'catalogue',...args});return failed('catalogue')?{status:'unavailable'}:{status:'ready',tasks:[...rows.values()].filter(row=>permitted(row,args.allowedSourceIds)).map(taskCatalogue)};};
+ store.read=async args=>{onCall({method:'read',...args});if(failed('read'))return {status:'unavailable'};const row=rows.get(args.taskId);return row&&permitted(row,args.allowedSourceIds)?{status:'ready',task:copy(row)}:{status:'not_found'};};
+ return store;
+}
+export function withTaskReadFixtures(source) {
+ const adapted=source.includes('attachTaskReads(taskStore,tasks')?source:source.replace(/const adapters=(createAutomationAdapters|adapterFactory)\(/g,
+  (_match,factory)=>`attachTaskReads(taskStore,tasks,{failed:method=>typeof control!=='undefined'&&(method==='catalogue'?control.taskListUnavailable:control.taskReadUnavailable)});const adapters=${factory}(`);
+ assert(adapted.includes('attachTaskReads(taskStore,tasks'),'Expected an integration fixture storage boundary');
+ const contextImport=/import\s*\{[^}]*\bmapReadContext\b/.test(source)?'':`import {mapReadContext} from ${JSON.stringify(new URL('../../server/map/events.js',import.meta.url).href)};\n`;
+ return `import {attachTaskReads} from ${JSON.stringify(import.meta.url)};\n`+contextImport+adapted;
+}
 export function input(n=1,{content='I will attend the Friday workshop at Bobst tonight for the entire event.',author='400'}={}){
  return {uuid:uid('4',n),raw_response:{source:'discord',source_id:ids.source,event_type:'message_created',event_id:String(300+n),revision:'1',received_at:stamp,
   payload:{id:String(300+n),guild_id:'100',channel_id:'200',timestamp:stamp,author:{id:author,username:'synthetic-'+author},content}}};
@@ -49,6 +74,7 @@ export function fixture({backlog=121,current=[],freshInputs=[],mapUnavailable=fa
    const event={...copy(args.event),created_at:old.created_at,updated_at:new Date(Date.parse(now)+ ++version+2000).toISOString()};state={...state,events:state.events.map(row=>row.id===event.id?event:row),event_buildings:[...state.event_buildings.filter(row=>row.event_id!==event.id),...args.buildings.map(row=>({...copy(row),event_id:event.id}))],event_people:[...state.event_people.filter(row=>row.event_id!==event.id),...args.people.map(row=>({...copy(row),event_id:event.id}))]};validateSnapshot(state);writes.push(attempt);chronology.push({kind:'map_write',eventId:event.id});return {status:'applied',event_id:event.id,updated_at:event.updated_at};}};
  const taskStore={configured:true,prune:async()=>({status:'ready',pruned:0}),list:async()=>{
   return {status:'ready',tasks:copy([...tasks.values()])};},save:async args=>{const old=tasks.get(args.task.uuid);if(old&&old.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};const saved={...copy(args.task),created_at:old?.created_at||stamp,updated_at:new Date(Date.parse(now)+ ++version).toISOString(),expires_at:old?.expires_at||'2026-10-24T12:00:00.000Z'};tasks.set(saved.uuid,saved);chronology.push({kind:'task_save',taskId:saved.uuid,expectedUpdatedAt:args.expectedUpdatedAt});return {status:'ready',task:copy(saved)};},resolve:async args=>{chronology.push({kind:'task_resolve',taskId:args.taskId,expectedUpdatedAt:args.expectedUpdatedAt});if(taskConflict&&!taskChanged){taskChanged=true;const target=tasks.get(args.taskId);target.updated_at='2026-10-23T22:30:01.000Z';target.info.request.summary='Concurrent task revision: speaker now asks to arrive at 8 PM, preserve this new instruction.';}if(tasks.get(args.taskId)?.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};tasks.delete(args.taskId);return {status:'ready'};}};
+ attachTaskReads(taskStore,tasks,{onCall:row=>chronology.push({kind:'task_'+row.method,taskId:row.taskId})});
  const env={AGENT_AUTOMATION_STAGED_ENABLED:'true',ASSISTANT_ALLOWED_SOURCE_IDS:[ids.source,ids.club,ids.member].join(','),GOOGLE_CLIENT_ID:'synthetic',GOOGLE_CLIENT_SECRET:'synthetic',GOOGLE_REFRESH_TOKEN:'synthetic',GOOGLE_EXPECTED_ACCOUNT_EMAIL:'club@example.test',GOOGLE_CALENDAR_ID:clubId,AGENT_CALENDAR_SOURCE_ID:ids.club,GOOGLE_MEMBER_PLANS_CALENDAR_ID:memberId,AGENT_MEMBER_PLANS_SOURCE_ID:ids.member,AGENT_MEMBER_PLANS_SIGNING_KEY:'synthetic-member-signing-key-32-characters'};
  const calendarConfig=readCalendarConfig(env),memberConfig=readMemberPlansConfig(env),oauth={setCredentials(){},getAccessToken:async()=>({token:'synthetic'}),getTokenInfo:async()=>({scopes:CALENDAR_REQUIRED_SCOPES})};
  const calendarFetch=async(value,options={})=>{const url=new URL(value);assert(['gmail.googleapis.com','www.googleapis.com'].includes(url.hostname));if(url.hostname==='gmail.googleapis.com')return Response.json({emailAddress:'club@example.test'});if(url.pathname.includes('/calendarList/'))return Response.json({id:decodeURIComponent(url.pathname.split('/calendarList/')[1]),accessRole:'owner'});
