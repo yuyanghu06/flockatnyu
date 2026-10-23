@@ -15,3 +15,7 @@ Bounded prompt hierarchy plan: [target before recovery](../history/2026-10-23_18
 The hierarchy-only gate remains [failed](../history/2026-10-23_18-36-23-838663-tester-hierarchy-target-gate-still-blocked.md); a zero-tool-call clarification interface correction is pending.
 
 Current status: independent scoped release ACCEPT. [Final model evidence](../history/2026-10-23_18-43-00-506581-tester-final-time-recovery-current-runtime-pass.md) and [semantic acceptance](../history/2026-10-23_18-43-00-506582-evaluator-chat-time-queue-recovery-release-accepted.md). Web deployment/read-only hosted verification remain. Strict redundant-save objective remains failed/unrerun; no automatic old-entry repair.
+
+Integration: d90f9d5 pushed; [web upload pending](../history/2026-10-23_18-44-10-874842-orchestrator-chat-web-release-uploaded.md), deployment4830c82d. Hosted acceptance is next.
+
+Completed: d90f9d5 pushed and web deployment4830c82d SUCCESS. [Hosted verification](../history/2026-10-23_18-47-47-256333-orchestrator-chat-web-live-verified.md) passes exact asset/tool/access checks without business writes. Remaining redundant-save limitation stays documented; no automatic data repair.

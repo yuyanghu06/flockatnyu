@@ -1,6 +1,6 @@
 # Chat times, Spotlight queue and map recovery — October 23
 
-The release covers three requests: use local times correctly, queue Spotlight messages, and stop failed map writes from restarting completed person lookups. Local verification is complete; hosted release receipts are recorded in the rolling milestone.
+The release covers three requests: use local times correctly, queue Spotlight messages, and stop failed map writes from restarting completed person lookups. Deployed source is d90f9d5 on codex/dev; web deployment 4830c82d-f34d-477f-ba49-3bd7490b9ec9 is SUCCESS. Hosted release receipts are recorded in the rolling milestone.
 
 ## Behavior
 
@@ -73,3 +73,7 @@ The strict already-correct case still produced a redundant save in its last actu
 A read-only production audit confirmed that the reported Stern entry actually ended at 11 PM New York. Another read-only audit found a rejected 11-row/10-distinct-person proposal followed by repeated lookups across 19 model calls. This release does not automatically repair previously saved entries or resume old failed chat requests.
 
 Private model ledgers, matching sources, screenshots and hosted/package receipts are retained in ignored `evidence/chat-time-queue-2026-10-23/`. Independent acceptance and deployment status are recorded in the milestone journal. Hosted read-only checks are distinct from model simulations and do not establish a live write outcome.
+
+## Hosted release acceptance
+
+The authenticated read-only check passes eight checks: public health, anonymous API denial, login, exact accepted HTML, all ten accepted JS/CSS asset hashes, current local-time/target-selection map contract, configured/allowed chat and logout. The checker initially assumed outdated entry filenames; correcting it to enumerate the accepted package fixed the checker without changing application code. The hosted check makes zero model calls and zero business writes. The accepted package excludes unrelated concurrent planner runtime. Parent-owned local Vite was stopped.
