@@ -126,3 +126,5 @@ that action. If no unrelated requested work remains, it ends tool selection with
 an empty call list so the separate answer stage can ask which room or entry was
 intended. Further filtered reads or person lookups cannot choose for the user.
 The chat event ID description carries the same user-selection requirement.
+
+Chat participant labels are optional at the chat boundary only. Omission retains the same person's label from the authorized same-event request-local read, or uses an empty caption for a new participant; explicit empty text clears. After existing time/source completion, identical participant rows collapse to the first submitted row. Different facts reject with the original submitted indices. UUID casing is canonicalized and direct-chat event identity uses distinct participant IDs. This performs no extra reads and does not relax shared worker schemas, optimistic versions or duplicate-building rejection.

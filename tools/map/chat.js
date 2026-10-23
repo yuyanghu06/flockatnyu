@@ -18,8 +18,25 @@ const sha=value=>createHash('sha256').update(value).digest('hex');
 const idFor=value=>{const h=sha(value).slice(0,32);return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;};
 const provenanceKeys=['source_id','source_url','source_record_id','reported_at'];
 const personProvenanceKeys=['source_id','source_url','reported_at'];
+const canonicalUuid=value=>uuid(value)?value.toLowerCase():value;
 const forbidden=()=>({status:'forbidden',reason:'request_local_map_write_required'});
 const optionalProvenance=(schema,keys)=>({...schema,required:schema.required.filter(key=>!keys.includes(key)),properties:{...schema.properties,...Object.fromEntries(keys.filter(key=>schema.properties[key]).map(key=>[key,{...schema.properties[key],description:'Optional source metadata. Omit unchanged metadata on an existing event/participant so the adapter copies stored values; omit for a new direct-chat participant/report so the server supplies attribution. If included, copy exactly from the read result. Provider IDs/URLs are opaque: never decode, rebuild or re-encode them.'}]))}});
+
+// Only identical completed rows collapse. Missing inherited boundaries already
+// become null in the shared service; no other absent or differing fact is merged.
+function deduplicateParticipants(rows) {
+  const people=[],seen=new Map();
+  for(const [index,{participant,comparison}] of rows.entries()) {
+    if(!uuid(participant.person_id)){people.push(participant);continue;}
+    const encoded=canonicalJson({starts_at:null,ends_at:null,...comparison}),previous=seen.get(participant.person_id);
+    if(previous) {
+      if(previous.encoded!==encoded)return {status:'invalid',reason:'duplicate_participant_ids',field:'people',indices:[previous.index,index],diagnostics:{stage:'local_validation',reason:'duplicate_participant_ids'}};
+      continue;
+    }
+    seen.set(participant.person_id,{encoded,index});people.push(participant);
+  }
+  return {people};
+}
 
 // Confirm the values actually submitted by this adapter only after an applied
 // write. This is not an independent storage/provider readback; omitted defaults
@@ -48,13 +65,17 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
       parameters:{...tool.parameters,required:[],properties:{...tool.parameters.properties,personName:{type:'string',minLength:1,maxLength:200}}}};
     if(tool.name==='upsert_map_event'){
       const eventSchema=chatMapTimeSchema(optionalProvenance(tool.parameters.properties.event,provenanceKeys));
+      const personSchema=optionalProvenance(tool.parameters.properties.people.items,personProvenanceKeys);
+      personSchema.description=[personSchema.description,'For a NEW participant attending the entire event, omit starts_at, ends_at, starts_local and ends_local to inherit the event window. Never copy parent event timestamps into a new participant. Raw timestamps preserve only the SAME existing person\'s saved overrides. Use local fields for explicitly requested individual limits.'].filter(Boolean).join(' ');
       eventSchema.properties.id={...eventSchema.properties.id,description:'Existing map event ID from the current authorized read, used only after USER-SUPPLIED facts identify a unique target. A returned ID or an ID you selected for a filtered read is not user selection. If multiple events still match, propose no calls for that ambiguous action; when no other work remains, end tool selection with zero calls so the answer stage asks which entry. Never choose the first ID. Omit id for a new event so the service assigns it.'};
       eventSchema.properties.url={...eventSchema.properties.url,description:'For EXISTING-event attendance or recovery OMIT url so the adapter retains the exact saved link. Include only for a genuine USER-requested link change or a new supported event link. Existing URLs and opaque IDs must never be decoded, reconstructed, re-encoded or repaired. Do not copy this optional field into attendance/recovery arguments.'};
       return {...tool,
       description:'Before an existing-event write, identify a unique user target across ALL observed candidates. If several still fit, propose ZERO calls for that action, including further reads/lookups/writes. If no unrelated requested work remains, END tool selection with zero calls; the separate answer stage asks which entry. Result order or an ID you chose to read cannot select the target. Recovery applies only after this target is unambiguous. Argument shape is {event: event fields, buildings: building rows, people: participant rows, expectedUpdatedAt: the parent event updated_at}. expectedUpdatedAt is a TOP-LEVEL sibling of event, buildings and people, NEVER a field inside event. New or changed times use starts_local/ends_local, no offset, in event.time_zone; the server converts. Raw starts_at/ends_at are byte-exact SAME event/person preservation copies from a map read in this request only. Omit display-only local_display/effective_local_display. Write one complete event/building/participant snapshot to the map database. This tool performs no source fetch, identity lookup or Calendar operation. Existing-event updates use the exact parent event id and expectedUpdatedAt from an explicit map read in this request. Omitted unchanged source metadata and event.url are retained from that local read; direct-chat provenance is filled internally. Preserve all unrequested event and relationship facts. Only an applied result confirms saving; conflicts require a separate read.',
       parameters:{...tool.parameters,properties:{...tool.parameters.properties,
         event:eventSchema,
-        people:{...tool.parameters.properties.people,items:chatMapTimeSchema({...optionalProvenance(tool.parameters.properties.people.items,personProvenanceKeys),properties:{...optionalProvenance(tool.parameters.properties.people.items,personProvenanceKeys).properties,person_id:{...tool.parameters.properties.people.items.properties.person_id,description:'Existing trackable roster UUID returned by lookup_map_person; resolve a stated name or verified Discord actor, never invent a person ID.'}}})}}}};
+        people:{...tool.parameters.properties.people,items:chatMapTimeSchema({...personSchema,required:personSchema.required.filter(key=>key!=='label'),properties:{...personSchema.properties,
+          label:{...personSchema.properties.label,description:'Optional plain-text activity caption. Omit to retain this same person\'s caption from the authorized same-event map read; a new participant defaults to empty. Explicit empty string clears the caption; never infer activity from location.'},
+          person_id:{...personSchema.properties.person_id,description:'Existing trackable roster UUID returned by lookup_map_person; resolve a stated name or verified Discord actor, never invent a person ID.'}}})}}}};
     }
     return tool;
   });
@@ -115,10 +136,13 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
           return result;
         }
         return await boundedWork(async workSignal=>{
-          let event={...args.event};const observed=event.id?snapshots.get(event.id):null;
+          let event={...args.event};
+          for(const key of ['id','source_id'])if(event[key]!==undefined)event[key]=canonicalUuid(event[key]);
+          const observed=event.id?snapshots.get(event.id):null;
           const prior=observed?.event??null,oldPeople=observed?.people??[];
           if(args.expectedUpdatedAt!==undefined&&!prior)return {status:'read_required'};
           if(prior)for(const key of provenanceKeys)if(event[key]===undefined)event[key]=prior[key];
+          if(event.source_id!==undefined)event.source_id=canonicalUuid(event.source_id);
           // Keep an existing optional link when only attendance is changing.
           // Stored null already matches the shared service default on omission.
           if(prior&&event.url===undefined&&prior.url!==undefined&&prior.url!==null)event.url=prior.url;
@@ -130,17 +154,27 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
           // before deriving its identity; no report parser or cache is involved.
           if(!prior&&direct&&event.kind==='presence'&&event.starts_at===undefined)event.starts_at=reportedAt;
           if(!prior&&direct) {
-            const identity=sha(canonicalJson({request:requestIdentity(principal),kind:event.kind,time_kind:event.time_kind,starts_at:event.starts_at??null,ends_at:event.ends_at??null,starts_on:event.starts_on??null,ends_on:event.ends_on??null,buildings:args.buildings.map(row=>row.building_id).sort(),people:args.people.map(row=>row.person_id).sort()}));
+            const identity=sha(canonicalJson({request:requestIdentity(principal),kind:event.kind,time_kind:event.time_kind,starts_at:event.starts_at??null,ends_at:event.ends_at??null,starts_on:event.starts_on??null,ends_on:event.ends_on??null,buildings:args.buildings.map(row=>row.building_id).sort(),people:[...new Set(args.people.map(row=>canonicalUuid(row.person_id)))].sort()}));
             event.id=idFor(identity);event.source_id=CHAT_MAP_SOURCE_ID;event.source_url=chatMapEventUrl(event.id,publicOrigin);event.source_record_id=`chat:${identity}`;event.reported_at=reportedAt;
           }
-          const people=args.people.map(row=>{
-            const old=oldPeople.find(person=>person.person_id===row.person_id),participant=normalizeChatMapTimes(row,{current:old,timeZone:event.time_zone,timeKind:event.time_kind==='all_day'?'timed':event.time_kind});
+          const completedPeople=args.people.map(row=>{
+            const personId=canonicalUuid(row.person_id),old=oldPeople.find(person=>canonicalUuid(person.person_id)===personId),participant=normalizeChatMapTimes({...row,person_id:personId},{current:old,timeZone:event.time_zone,timeKind:event.time_kind==='all_day'?'timed':event.time_kind});
+            if(participant.label===undefined)participant.label=observed?.principalScope===readPrincipalScope(principal)&&old?old.label:'';
             if(old)for(const key of personProvenanceKeys)if(participant[key]===undefined)participant[key]=old[key];
+            if(participant.source_id!==undefined)participant.source_id=canonicalUuid(participant.source_id);
+            const comparison={...participant};
             if(participant.source_id===undefined||participant.source_id===CHAT_MAP_SOURCE_ID) {
-              participant.source_id=CHAT_MAP_SOURCE_ID;participant.source_url=chatMapEventUrl(event.id,publicOrigin);participant.reported_at??=reportedAt;
+              const sourceUrl=chatMapEventUrl(event.id,publicOrigin);
+              // Compare explicit source strings before chat-owned attribution
+              // replaces them. Only omitted metadata receives the actual default.
+              comparison.source_id=CHAT_MAP_SOURCE_ID;comparison.source_url??=sourceUrl;comparison.reported_at??=reportedAt;
+              participant.source_id=CHAT_MAP_SOURCE_ID;participant.source_url=sourceUrl;participant.reported_at??=reportedAt;
             }
-            return participant;
+            return {participant,comparison};
           });
+          const unique=deduplicateParticipants(completedPeople);
+          if(unique.status==='invalid')return unique;
+          const people=unique.people;
           if(!prior&&args.expectedUpdatedAt===undefined&&event.time_kind==='timed'&&event.ends_at===undefined){
             const start=timestamp(event.starts_at),report=timestamp(event.reported_at);
             if(start!==null&&(event.kind==='scheduled_event'||event.kind==='presence'&&start===report&&report<=new Date(now()).getTime()))
