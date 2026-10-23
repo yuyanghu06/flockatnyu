@@ -1,0 +1,10 @@
+# Saved-task catalogue and exact reads implemented
+
+- Local timestamp / acting role / milestone: 2026-10-23T19:45:40.969763-04:00 / coder report integrated by orchestrator / planner-task-storage.
+- Requested scope: accepted catalogue/exact-read worker fix.
+- Work / owned files: runtime coder changed server/automation/staged-pipeline.js,task-store.js,handler.js and automation/info.md. All five production full-list sites are removed. Metadata selects work; complete task reads alone establish current originals, disclosure/action receipts and resolution. Existing-ID merges, stale content/versions, mechanical/untouched work and checkpoint behavior retain safeguards.
+- Diagnostics: fixed safe operation/category/status/HTTP/time/bytes distinguish database timeout, request timeout, permission, network and malformed responses. No private failed body, exception text or credentials are retained.
+- Checks: coder's7-file scoped run passed127checks including actual local PostgreSQL039/045, large-backlog realrunner mechanical behavior, full/compact delivery, originals, version/expiry/receipt/collision/preservation and actual15second request timeout classification. API syntax/dependency build and whitespace pass. This is synthetic/source-simulated verification, not actual model or live business writes.
+- Evidence: runner synthetic backlog12,497,894bytes; largest storage response95,528bytes; four exact reads on the selected task;130oldtasks unchanged. Source SHA256 staged-pipeline d5f4f757799477831908fb2f4a0da9618eb13b1aa8590dfbdf4f8e0d0f2872ba,task-store f2f575a5b553e9303ddeab840ca8f777a3a7ca2b4322b211420298e1de6d6abd,handler42c2ecb597534e2db96f53de6a4c3f2642101c5175cdaece09a46869d613c5a9.
+- Preserved: prompts, exposed schemas, source isolation, auth/lease/content/version checks,16/64/10limits and all timeouts. No schema or deployment by coder.
+- Next / limits: independent final regression and evaluator acceptance pending. Orchestrator's frozen package contains exactly these three runtime changes on last worker d56; unrelated web map/diagnostic changes excluded. Hosted migration not yet applied.

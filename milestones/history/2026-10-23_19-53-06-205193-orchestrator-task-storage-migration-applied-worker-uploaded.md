@@ -1,0 +1,10 @@
+# Task storage migration verified; worker uploaded
+
+- Local timestamp / role: 2026-10-23T19:53:06.205193-04:00 / orchestrator / planner-task-storage release.
+- Migration: applied exact accepted atomicwrapper e71321af902ed3f46b810943ef6944e3758e1add1214256f78407b49a6b37ed6 through existing signed-in correct-project Supabase SQLeditor. Editor clipboard was compared byte-for-byte before Run; UIreports success. Developer read-onlyconnector and otheraccountpermissions were not changed.
+- Hosted receipt: version20261023234558/nameagent_task_catalogue stores6020bytes; sourceMD5b4ea77c7fc50b37046015432c7210e28 matches localreviewed045. CataloguebodyMD5f392fbba078995ff3b4c06c44979bcd9 and readbodyMD5e6ecaf4ebf4b4881ac091dd282b4eb29 match source. Both SECURITYDEFINER functions have emptysearchpath; onlyservice_role canexecute (PUBLIC/anon/authenticated denied).
+- RESTchecks: servicecatalogue(empty scope) returnsHTTP200/ready/0tasks,32B/448ms; exactread(empty scope) returnsHTTP200/not_found,23B/211ms. These prove RESTvisibility/status/ACL wiring, not populated-backlog timing. Neitherreadprunes/changesbusinessdata. Existingprunemaintenance remains separate.
+- Package:60files generatedfrom isolated d56baseline plus exactlyhandler,staged-pipeline,task-store runtimechanges; everypackagehashverified, credentials/tests/evidenceexcluded. Local/frozen gates accepted beforeupload.
+- Worker: Railwaya34ade2f-42aa-4c1d-a190-8cc51447d45b uploaded onlyto update-agent. It reachesSUCCESS/oneonline replica at2026-10-23T23:52:01.081Z (19:52:01NewYork). Startup/prune succeed andexisting globalleasebusy isobserved. Fullordinarycycle verification ispending; noforcedrun/source/testmessageorbusinesswrite wasissued.
+- Evidence: ignoredworker-package.json,migration-wrapper.json,hostedqueryplan,testlogs andmigration-success.jpg under evidence/planner-task-storage/. Existingweb/collector/config/schemaoutside045unchanged by thisrollout.
+- Handoff: inspect freshordinaryworker RPCtimings and runoutcomes, publishscopedsource andfinalreceipt. Do notclaimbacklogclearedorallreliabilityerrorsfixed.

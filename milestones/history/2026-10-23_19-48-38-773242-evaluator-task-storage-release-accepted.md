@@ -1,0 +1,10 @@
+# Planner storage accepted for migration and worker release
+
+- Local timestamp / acting role: 2026-10-23T19:48:38.773242-04:00 / independent evaluator report integrated by orchestrator.
+- Scope: catalogue/exact-read implementation,045migration, frozen worker and atomic receipt wrapper. Read-only evaluator, no edits or external calls.
+- Verdict: ACCEPT reviewed SQL application and worker packaging; no material local finding remains. All five complete-backlog calls are gone; catalogue remains selection-only and exact originals/content/version/source/expiry/lease/receipt checks remain. Mechanical/existing-ID/old/untouched tasks preserve their data. No prompt, tool schema, provider, limit or timeout change; exact frozenworker delta is three automation files.
+- Evidence: independent actual local PostgreSQL/runner suite and final frozen306checks pass. Local wrapper execution proves service-only grants, old receipt/runner preservation and exact6020byte stored source.
+- Findings fixed before any hosted write: added explicit PostgREST schema notification. First wrapper incorrectly used JavaScript replacement-string interpolation, which altered dollar characters inside its stored receipt; the executable DDL prefix was intact. It was blocked and replaced with callback-based construction. Corrected embedded-source equality, SHA256 and actual SQL execution pass. No erroneous wrapper was applied.
+- Approved hashes: source378fd90d23451c2d19608d80bbd1265519383b1057058d106ae1eb8caa943a01; wrapper e71321af902ed3f46b810943ef6944e3758e1add1214256f78407b49a6b37ed6. Hosted version20261023234558/nameagent_task_catalogue.
+- Limits: hosted722.196ms/88,583B is a query-shape measurement with private scopehelper omitted and a different snapshot from the full baseline. Historical timeout subtype remains inferred. No hosted migration, worker rollout or organic success claimed yet.
+- Handoff: apply only exact reviewed wrapper; verify hosted receipt, function bodies/grants and REST behavior, then release exact three-fileworker and observe ordinary processing. No business-data mutation pilot is required.

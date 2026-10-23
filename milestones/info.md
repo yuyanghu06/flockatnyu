@@ -237,4 +237,30 @@ October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / w
 
 October23: main fast-forwarded to the deployed codex/dev release; branch synchronization recorded in the rolling milestone.
 
+`chat-time-spotlight-queue/` tracks server-converted chat times and queued Spotlight follow-ups; actual acceptance remains in the rolling snapshot.
+
+October 23 planner-call review records production aggregate outcomes and representative follow-up starvation without retaining private audit bodies or changing runtime behavior; see the rolling snapshot and linked immutable review.
+
+The follow-up planner review uses the verified latest-worker activation boundary and run-start ownership, excluding older-release failures and distinguishing initial completion from follow-up completion. The exact window and limits are in the rolling snapshot and linked history.
+
+The excessive-call trace follow-up distinguishes complete retained tool proposals/lifecycle records from unavailable original transcripts and reasoning. Private trace exports remain ignored; committed journal evidence stays content-free.
+
+planner-followup-focus/ tracks current-cycle task priority, one/two-task follow-up work and compact saved-history disclosure with independent actual-model verification.
+
+`chat-map-participants/` tracks omitted-label preservation and conservative duplicate-participant removal in chat, with independent simulated-storage verification.
+
+October 23 at 7:05 PM: the post-focus planner status review distinguishes an online worker, five completed initial runs, remaining preparation/completion failures and 131 pending tasks; exact cohort, cutoff and limitations are in the rolling snapshot and linked history.
+
+October23 post-release diagnosis: two startup and seven initial-finish failures share full saved-task loading. A pure SELECT reproduction took16.5seconds for131tasks. Historical error subtype remains uncertain; no fix was implemented. Compact model views do not reduce this backend snapshot. See the rolling milestone and linked planner/evaluator/investigation entries.
+
 `spotlight-steering/` tracks black Clear, the restored animated square, removal of header Stop and explicit queued-text steering. Its evidence distinguishes scripted/browser mechanics, actual-model simulated-data choices and hosted release checks.
+
+October23 recommendation: small task catalogue plus targeted complete saved-task reads across all five list sites; current checks and retained tasks stay intact. Recommendation only; implementation and measured query/runner acceptance remain pending. See the rolling snapshot.
+
+planner-task-storage/ tracks the accepted catalogue/exact-read worker fix; migration045 and runtime/test work are in progress. Hosted migration access and release remain pending.
+
+October23 implementation: all five backlog loads replaced; local PostgreSQL/runner checks and API build pass. Hosted metadata query-shape137tasks/88,583B/722.196ms. Final frozen review and migration/worker release remain pending.
+
+October23 final evaluator accepts catalogue/exact-read release after306frozenchecks and exact local migration receipt/grants. Hosted migration and worker rollout are next; no hosted success is claimed yet.
+
+October23: hosted045/receipt/functionACL/RESTverified; isolatedworkera34ade2f isSUCCESSat19:52:01NewYork. Bothcurrent/frozengates306pass. Ordinaryrunobservation andsourcepublication remain.

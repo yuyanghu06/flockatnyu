@@ -267,4 +267,18 @@ October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / w
 
 October23: main fast-forwarded to the deployed codex/dev release; branch synchronization recorded in the rolling milestone.
 
+October 23 at 7:05 PM: the post-focus planner status review distinguishes an online worker, five completed initial runs, remaining preparation/completion failures and 131 pending tasks; exact cohort, cutoff and limitations are in the rolling snapshot and linked history.
+
+October23 post-release diagnosis: two startup and seven initial-finish failures share full saved-task loading. A pure SELECT reproduction took16.5seconds for131tasks. Historical error subtype remains uncertain; no fix was implemented. Compact model views do not reduce this backend snapshot. See the rolling milestone and linked planner/evaluator/investigation entries.
+
 October23 Spotlight steering entries record the control contract, same-run implementation, independent scheduler/browser/model checks, cancellation/reversal fixes and the scoped web release. They preserve the original model ledger separately from the final cancellation-only source delta.
+
+October23 recommendation: small task catalogue plus targeted complete saved-task reads across all five list sites; current checks and retained tasks stay intact. Recommendation only; implementation and measured query/runner acceptance remain pending. See the rolling snapshot.
+
+planner-task-storage/ tracks the accepted catalogue/exact-read worker fix; migration045 and runtime/test work are in progress. Hosted migration access and release remain pending.
+
+October23 implementation: all five backlog loads replaced; local PostgreSQL/runner checks and API build pass. Hosted metadata query-shape137tasks/88,583B/722.196ms. Final frozen review and migration/worker release remain pending.
+
+October23 final evaluator accepts catalogue/exact-read release after306frozenchecks and exact local migration receipt/grants. Hosted migration and worker rollout are next; no hosted success is claimed yet.
+
+October23: hosted045/receipt/functionACL/RESTverified; isolatedworkera34ade2f isSUCCESSat19:52:01NewYork. Bothcurrent/frozengates306pass. Ordinaryrunobservation andsourcepublication remain.

@@ -1,3 +1,31 @@
+## Planner storage live release — observation pending
+
+- [x] Independent/frozen306checks and evaluation; baselineclassify older unrelatedfailures.
+- [x] Apply045, verify exactreceipt/functionbodies/ACL/REST; upload only reviewedworker and observeSUCCESS.
+- [ ] Observe ordinaryqueue processing and populatedcatalogue/read timings; publish scopedsource/final evidence.
+
+## Planner storage accepted — release steps
+
+- [x] Independent final review and frozen306check gate; exact migration receipt/grants verified locally.
+- [ ] Apply reviewed045atomicwrapper and verify live functions/receipt/service-only RPC access.
+- [ ] Deploy isolated worker, inspect ordinary processing and publish exact reviewed source/evidence.
+
+## Planner storage implementation — final verification
+
+- [x] Implement catalogue/exact reads across all five old list sites and safe storage diagnostics.
+- [x] Verify local SQL/service guards, large simulated backlog, canonical originals, versions/receipts and preservation; API build passes.
+- [x] Measure hosted metadata query shape under existing limits; record scope-helper omission.
+- [ ] Finish independent current fixtures/regressions and exact frozen worker gate; final evaluator acceptance.
+- [ ] Apply reviewed migration plus receipt through existing project dashboard, verify RPC/grants, deploy only reviewed worker, observe ordinary runs.
+
+## Planner task storage fix — active
+
+- [x] Finalize catalogue/exact-read contract and exclusive implementation/test ownership.
+- [ ] Implement runtime and safe storage error details; verify all five old full-list locations.
+- [ ] Independently test large backlogs, exact original/version checks, lost scope/lease, fragments and preservation.
+- [ ] Benchmark proposed hosted query shapes; evaluate the complete reviewed package.
+- [ ] Apply reviewed migration through authorized writable access, then deploy/verify only the worker. Current developer DB connection is read-only; preserve that connection setting.
+
 ## Spotlight controls and active input — deployed and verified
 
 **Web9843c735-4821-436a-8fbb-56c584d9d135 is SUCCESS.** Clear is black, the animated square is restored, the separate Stop is removed, and each queue row has a gray arrow that adds supported text to the active reply. Completed actions survive corrections; obsolete drafts reset; failed/unconfirmed injections remain queued.
@@ -5,6 +33,13 @@
 Source5c0a4cb is pushed. Independent browser/runner/model/evaluator checks pass;165 final affected components, compiler/build, actual gpt-6-luna11/12 simulated-data requests and the separately reviewed cancellation-only final delta are recorded. Hosted login/access, the new closed-run route and exact HTML/10bundles pass11 check groups, with zero hosted model calls/business writes. No worker/schema rollout.
 
 [Final release and limits](history/2026-10-23_19-32-34-623026-orchestrator-spotlight-web-live-verified.md) · [Verification report](../docs/spotlight-steering-verification-2026-10-23.md)
+
+## Planner storage recommendation
+
+- [x] Recommend a bounded fix covering startup, phase transitions and completion without loading unrelated histories.
+- [ ] If resumed: implement scoped catalogue/targeted complete reads and safe storage diagnostics; verify versions, leases, source scope, preservation and representative hosted query timing before release.
+
+[Recommended scope](history/2026-10-23_19-30-58-739531-orchestrator-planner-storage-fix-recommended.md)
 
 ## Spotlight web update uploaded; hosted checks pending
 
@@ -36,11 +71,247 @@ Affected regression checks85/85, frontend build and API check passed. Independen
 
 [Implementation and limits](history/2026-10-23_19-19-35-413280-coder-spotlight-controls-and-run-steering.md) · [Scope](spotlight-steering/info.md)
 
+## Nine planner failures — diagnosis complete
+
+- [x] Match nine failed attempts to startup (two) and initial-finish task reads (seven).
+- [x] Separate live automatic attempts from local model tests/manual starts; retain two unknown original-input classifications.
+- [x] Reproduce full saved-task aggregation cost with pure SELECT; independently review cause and limits.
+- [ ] Follow-up correction requires implementation scope: avoid unrelated full-history reloads and retain safe failure details; preserve all current source/lease/version checks and budgets. Historical exact timeout subtype remains unavailable.
+
+[Diagnosis and limits](history/2026-10-23_19-15-49-092063-orchestrator-nine-planner-failures-and-test-origin-reviewed.md)
+
 ## Spotlight controls and active-turn steering underway
 
 User requested black Clear, the former animated square, no separate Stop, and a gray queue-row arrow that steers the current reply. Independent contract accepted: one run retains receipts/adapters/budgets; input applies before the next action, and answer drafts reset safely. Text/file/building and authentication/race boundaries are explicit. No source/service writes, inference or deployment in this planning pass.
 
 [Plan and ownership](history/2026-10-23_19-08-34-447780-planner-spotlight-controls-and-steering-contract.md) · [Scope](spotlight-steering/info.md)
+
+## Planner live status review — October 23, 7:05 PM
+
+- [x] Check the current worker's health, matched runs, follow-up outcomes and pending-task totals without triggering work.
+- [ ] Diagnosis remains: preparation/completion failures, required-audit persistence and unsuccessful exact-task resolution. No implementation requested by this status question.
+
+[Read-only review](history/2026-10-23_19-06-20-758768-orchestrator-planner-post-focus-health-reviewed.md)
+
+## Chat participant labels and duplicates — complete
+
+- [x] Omitted label preservation/default, explicit empty clearing and conservative identical-row removal.
+- [x] Conflicting-label/source/time facts and stale versions remain rejected.
+- [x] Independent component/model review and frozen source/package verification.
+- [x] Scoped commit/push and healthy web release; 31 hosted read-only checks pass.
+
+[Completion receipt](history/2026-10-23_19-00-04-918232-orchestrator-chat-participant-live-verified.md)
+
+## Chat participant labels and duplicates — accepted; release pending
+
+- [x] Fill omitted labels, preserve explicit empty clearing and drop only identical participants.
+- [x] Preserve differing source links during equality and strict version/source checks.
+- [x] Pass independent components and configured-model scenarios; retain original failures.
+- [ ] Upload accepted web package and verify hosted contract without business writes.
+
+[Final acceptance](history/2026-10-23_18-56-49-242051-evaluator-chat-participant-normalization-accepted.md)
+
+## Chat participant labels and duplicates — verification in progress
+
+- [x] Implement same-event omitted-label preservation, empty default and identical-row removal.
+- [ ] Preserve explicit source-link differences during comparison; retest conflicting duplicates.
+- [ ] Complete independent component and capped actual-model checks, evaluate and integrate.
+
+[Independent finding](history/2026-10-23_18-50-05-285965-evaluator-conflicting-source-url-requires-fix.md)
+
+## Chat times, Spotlight queue and lookup recovery deployed
+
+**Web deployment:** 4830c82d-f34d-477f-ba49-3bd7490b9ec9 SUCCESS. **Source:** d90f9d5, pushed to codex/dev. Local clock conversion, ordered Spotlight messages and failed-write identity reuse are live. Independent browser/model review accepted the scoped release. Hosted health/access/login/logout, exact HTML/all ten JS/CSS bundles, new map contract and configured chat pass read-only checks.
+
+Final model gates pass on current source; 95 total inference requests include all retained failures. The strict redundant-save case remains failed/unrerun and disclosed. Old incorrect entries/failed chats are not automatically repaired. This task dispatched no worker/collector/schema/environment or live business-data changes; unrelated concurrent changes remain preserved.
+
+[Live receipt and limitations](history/2026-10-23_18-47-47-256333-orchestrator-chat-web-live-verified.md) · [Verification report](../docs/chat-time-queue-verification-2026-10-23.md)
+
+## Chat participant labels and duplicate rows — implementation underway
+
+Omitted labels will preserve the same person's saved label from the event already read, or become `""` for a new participant. Identical completed participant rows will collapse; differing rows will still fail clearly. The chat-only change keeps version/source checks, shared worker contracts and duplicate-building rejection unchanged. Independent planner contract accepted; implementation and tests remain.
+
+[Planner contract](history/2026-10-23_18-45-50-082551-planner-chat-participant-normalization-contract.md)
+
+## Accepted chat release uploaded — waiting for Railway
+
+Code is pushed as d90f9d5. Source-only web deployment 4830c82d is INITIALIZING; no hosted success is claimed yet. The 278-file package matches accepted source/assets and excludes unrelated planner runtime. This task dispatched no worker/collector/schema/environment or business-data changes. Live read-only acceptance remains.
+
+[Integration/upload receipt](history/2026-10-23_18-44-10-874842-orchestrator-chat-web-release-uploaded.md)
+
+## Chat times, queue and lookup recovery accepted for web release
+
+Independent final review ACCEPT. Current-model target tests ask before any ambiguous mutation and change only the explicitly selected room to 7 PM. Recovery adds a missing attendee without relookups and verifies a lost-response save with one separate read. Final gates use 13 requests; all retained task gates total 95 including failures. Browser queue checks and focused component/API/frontend checks pass. The strict redundant-save objective remains failed/unrerun and disclosed. Web-only integration/release follows; nothing uploaded yet.
+
+[Final model gates](history/2026-10-23_18-43-00-506581-tester-final-time-recovery-current-runtime-pass.md) · [Independent acceptance](history/2026-10-23_18-43-00-506582-evaluator-chat-time-queue-recovery-release-accepted.md) · [Verification report](../docs/chat-time-queue-verification-2026-10-23.md)
+
+## Clarification now explicitly ends tool selection
+
+The frozen prompt says to return zero calls for an unresolved ambiguous action; the separate reply then asks which entry. A small worked example and event-ID guidance reinforce that interface. Focused checks and independent preflight pass, while the original actual-model gate remains the release criterion. No backend/provider/budget change or upload.
+
+[Code and preflight](history/2026-10-23_18-38-50-154780-coder-clarification-ends-tool-selection.md)
+
+## Target hierarchy alone still fails the original model test
+
+The explicit-room case passes, but the ambiguous case still proposes the first record after narrowing its own read. Existing field validation prevented storage; that does not satisfy target selection. The failed original gate remains retained. A specific interface correction now tells tool selection to end with zero calls so the separate reply can ask which room. Release remains blocked.
+
+[Observed failure and next bounded correction](history/2026-10-23_18-36-23-838663-tester-hierarchy-target-gate-still-blocked.md)
+
+## Planner follow-up — complete
+
+- [x] Keep 16 calls per reply and unchanged stage/round/time settings.
+- [x] Prioritize current-cycle references, use one/two task groups and compact exact task reads with explicit full-history access.
+- [x] Preserve first model failures, pass corrected bounded model scenarios and independent semantic evaluation.
+- [x] Deploy worker-only package and verify SUCCESS, startup and ordinary source/model processing.
+- No backlog-clearance or complete live mutation-cycle claim. This completion supersedes the earlier pending rows for this follow-up milestone; separate chat work remains outside its scope.
+
+## Target-priority prompt correction
+
+- [ ] Freeze the three prompt files after the ordered target/state/recovery correction.
+- [ ] Pass unchanged ambiguous/selected-room model cases under hard 12, then valid-save/lost-receipt recovery under a separate hard eight.
+- [ ] Obtain independent semantic acceptance before regenerating and uploading the web package. Keep the redundant-save objective failed and documented.
+
+[Plan](history/2026-10-23_18-32-42-311488-planner-map-target-decision-order.md)
+
+## Combined time/target regression blocks release
+
+On the final recovery runtime, the model changed the first of two matching Stern entries before asking which room. The explicit second-room case passed. This wrong-target write is a material blocker, separate from the known redundant-save limitation. The original failed ledger is retained. A bounded prompt hierarchy correction is underway; the prepared web package has not been uploaded.
+
+[Failed combined gate and next step](history/2026-10-23_18-31-50-319581-tester-combined-target-regression-blocks-release.md)
+
+## Planner worker startup verification
+
+- [x] Upload accepted worker-only package with exact tested source hashes.
+- [x] Confirm successful deployment and startup with read-only logs; distinguish organic processing from simulated model tests.
+
+## Focused follow-up release — accepted
+
+- [x] CorrectedactualmodelgateandindependentsemanticevaluationPASS;retainedallfirstfailures.
+- [x] Reviewexactbaseline+two-overlayworkerpackagewithunchangedlimitsandnoprivatedata.
+- [ ] Uploadworkeronlyandverifyactualdeployment/startupwithoutforcedbusinesswrites;recordtruthfulreleaseoutcome.
+
+## Lookup-loop fix accepted with a remaining redundant-save limitation
+
+Independent review accepts the reported loop fix: recovery reuses known people and preserves activity facts. The strict already-correct case remains failed because it still sends one extra save. Production replacement SQL can refresh relationship metadata and create ordinary version contention. This limitation is documented; no more prompt retries or storage changes are included. Final target-selection/time regression remains before web release.
+
+[Independent decision and production caveat](history/2026-10-23_18-30-28-074755-evaluator-lookup-loop-core-accepted-with-limitation.md)
+
+## Recovery limitation retained; combined regression underway
+
+The configured model no longer repeats identity lookups, but the strict already-correct case still makes one redundant update that changes only the revision. Its original test remains failed, with all evidence preserved. Independent review assesses this limitation against the requested loop fix; the two original target-selection/time cases are being rerun on the final runtime before a release decision.
+
+[Actual model result and scope](history/2026-10-23_18-29-39-480851-tester-lookup-loop-fixed-redundant-update-retained.md)
+
+## Focused follow-up failed-case retest
+
+- [x] Preserve closed first26dispatches, semantic findings and oracle limitations.
+- [x] Correct narrow CAS/endpoints/source-routing guidance; available integration checks pass.
+- [ ] Run freshfailed-case-only20dispatchgate with correctedoracles/frozenreleasebaseline; no reuseofunusedbudget.
+- [ ] Final independent semantic acceptance, documentation and integration; no deployment claimed.
+
+## Exact read comparison ready for final recovery test
+
+A rejected duplicate proposal can now say that its deduplicated fields exactly match the same authorized read. The comparison performs no I/O and does not authorize or claim a write. Independent review found and the coder fixed stale hints after later failed reads. Focused checks pass; the unchanged no-mutation model test and combined target-selection regression remain before deployment.
+
+[Implementation and review](history/2026-10-23_18-26-20-196081-coder-exact-read-comparison-reviewed.md)
+
+## Focused follow-up actual model — underway
+
+- [x] Correct initial-phase scope and independent test oracles; offline checks pass against frozen releasebaseline.
+- [ ] Complete hard32dispatch actual-model follow-up gate and independent semantic review; retain failures and limits.
+- [ ] Fix/retest material findings, integrate and document actual release state.
+
+## Recovery preserves links; one unnecessary update remains
+
+Failed-only6/10dispatchesverifycorrectnew-attendeesaveandzeroidentityrelookups,butalready-correctattendance stillgotonewritechangingonlyrevision. Originaltestremainsfailed. Addanexactdata-onlyread-snapshotequalityhintondeduplicatedproposals(noIO/intentgate)andkeepthestrongno-mutationoracle. Deploymentremainsonhold; earlierfailures/evidencearepreserved.
+
+[Retest and bounded next step](history/2026-10-23_18-21-13-463972-tester-recovery-url-fixed-noop-hint-planned.md)
+
+## Compact follow-up model gate
+
+- [x] Freeze implementation; existing focused/compiler checks pass.
+- [x] Independent provisional guard/network/budget review; retain oracle findings.
+- [ ] Correct focus/preservation oracles, run offline scenarios, freeze and run bounded actual model; no inference yet.
+- [ ] Independently review outcomes, fix/retest material failures and integrate with unchanged limits.
+
+## Recovery model stops lookup loops; preservation fixes pending
+
+Safe mapvalidationfeedback and stable callidentity are implemented;114focusedchecks pass. Actualgpt-6-lunarecoverygate used12of20dispatches: ALL4cases avoidedidentityrelookups; CAS/humanpreservation andlostreceipttruth pass. Two failures blockrelease: alreadyrecordedattendancegotunnecessarywrite, andnewattendeerecoverychangedonecharacterinevent.url. Originalfailedledgerretained. Boundedprompt/chatfielddescriptionfix andfailed-onlyretestfollow; no deployment orlivebusinesswrites.
+
+[Pass](history/2026-10-23_18-14-34-689850-coder-map-failure-feedback-and-call-reuse.md) · [Pass](history/2026-10-23_18-14-34-689851-tester-map-recovery-first-gate-retained.md)
+
+## Focused planner follow-up — October23
+
+- [x] Accept independent bounded contract and verify current104check baseline.
+- [ ] Implement consistent task priority/reference order, small prompt-selected task groups and compact/full saved-task disclosure with exact proof.
+- [ ] Independent focused regressions and hard32dispatch actual-model follow-up gate on simulated services; retain failures and inspect exact effects.
+- [ ] Independent evaluation, fixes/retests and integration; no deployment claimed.
+
+## Failed map upsert lookup loops added before deployment
+
+Userreportedfailedmapwritesfollowedbymanylookups. Read-onlyliveauditconfirmsoneupsertrejected11participantrows/10uniqueUUIDswithgenericinvalid,then10currentpeoplewerere-resolvedacross19modelcalls. Timeconversion/queuehaveindependentACCEPT,butwebpackageisnotuploaded. Addsafevalidationfeedback,stableduplicate-callidentityandpromptedrecoverywithknownpeople; no limit/timeout/compoundtoolchange. Independentactual-modelrecoverytestsandcombinedevaluationfollow.
+
+[Pass](history/2026-10-23_18-04-03-059026-evaluator-time-queue-accepted.md) · [Pass](history/2026-10-23_18-04-03-059027-planner-map-failure-recovery-planned.md)
+
+## Excessive-call trace review — October 23
+
+- [x] Trace both failures through initial work, separate sync, first follow-up proposal and rejection; export the complete available private tool trace outside Git.
+- [x] Confirm20proposals/reply,17shared targets,zeroexecution of rejected reads, and an already explicit16call prompt limit.
+- [ ] Separately scoped fix remains unimplemented: bounded/prioritized task selection and model adherence to the existing limits. Full original/source transcript and hidden reasoning are not recoverable from operational audits.
+
+[Trace review](history/2026-10-23_18-01-57-966897-orchestrator-excessive-call-chains-traced.md)
+
+## Chat local times and Spotlight queue accepted — release preparation
+
+Independent code/browser/model review ACCEPT. Final selected-target gate uses7of12dispatches: ambiguous request asks beforeanymutation; user-selectedsecondroom updatesonlythatentryto7PM withallotherdetailspreserved. Earlier verified Stern/summer/winter times and attendance remain documented, including retainedfailures (42totalinferencedispatches). Queue passes sevenindependentChromegroups. Web-only release preparation follows under existing deployment authorization; no migration,environment,collector,worker or business-datarepair is part of this change.
+
+[Verification](../docs/chat-time-queue-verification-2026-10-23.md) · [Final model check](history/2026-10-23_17-59-01-394398-tester-chat-time-final-model-accepted.md)
+
+## Attendance model check passes; ambiguous selection still blocked
+
+Fresh failed-case gate used11of12dispatches. Attendance now saves correctly while preserving exact event/participant facts. Ambiguous correction still fails: the model updatedoneof2equalcandidates beforeaskingwhichwasintended. This was simulated storage only. Final acceptance and deployment remain blocked while a bounded prompt correction is reviewed and retested; both closed model ledgers remain preserved.
+
+[Retest](history/2026-10-23_17-55-49-805403-tester-chat-time-retry-ambiguity-still-fails.md)
+
+## Latest-deployment planner review — October 23
+
+- [x] Verify actual latest-worker activation and exclude runs begun by the previous deployment.
+- [x] Separate17initial completions into8normal follow-up endings and9turn caps; record2excessive-call responses andzeroabort outcomes for this deployment.
+- [ ] Findings remain for separately requested work: large/repeated task disclosure, over-limit proposals and generic preparation/completion failures. No fix or budget change performed.
+
+[Deployment-only review](history/2026-10-23_17-54-43-120509-orchestrator-current-deployment-planner-logs-reviewed.md)
+
+## Chat times component checks pass; model follow-up underway
+
+Server-side clock conversion and local read/receipt displays are implemented. Initial configured gpt-6-luna gate correctly saved/reported Stern and summer/winter7PM, preserved details, and handled unavailable storage honestly.24closed dispatches also exposed2genuinefailures: nullable inherited times rejected attendance, and an ambiguous target was guessed. Both have bounded fixes;110componentchecks pass. Retest only those2cases with a fresh12dispatch cap, then final independent evaluation. Original failed evidence remains retained. No live data writes or deployment.
+
+[Pass](history/2026-10-23_17-53-36-914279-coder-chat-local-clock-and-null-fix.md) · [Pass](history/2026-10-23_17-53-36-914280-tester-chat-clock-first-model-gate.md)
+
+## Planner call-log review — October 23
+
+- [x] Read production model, run and tool logs; distinguish model success, initial handling and follow-up completion.
+- [ ] Findings for a separately scoped implementation: reduce oversized saved-task disclosure/repeated reading, address proposals above the existing 16-call ceiling, and investigate preflight/source-denial failures. No implementation or limit change authorized by this review.
+- Preserve the active chat local-time/Spotlight queue workflow and existing unfinished work.
+
+[Review](history/2026-10-23_17-52-17-049309-orchestrator-planner-call-logs-reviewed.md)
+
+## Spotlight queue implemented; independent review underway
+
+Messages now wait in order while a reply runs, with captured files/building, Remove/Clear, separate Stop and paused Resume after failures. Limits are10active/waiting messages and20MiBfiles across active/queue/draft. New browser scenarios and20focusedunitchecks pass; independent transcript scrolling checks and desktop/320pxheight visual review pass. Queue is memory-only. Backend time tests/model evaluation and final review remain; no deployment yet.
+
+[Queue pass](history/2026-10-23_17-51-13-313609-coder-spotlight-queue-verified.md)
+
+## Chat time/queue contract accepted
+
+Independent planner confirms timezone transport already works; the fix must convert local write clocks in code and expose derived local times to chat. Existing36baseline checks pass but do not cover the reported bug or queue. Separate backend/frontend coders are implementing; tester will use the actual configured model against simulated map storage with a24request cap.
+
+[Planner pass](history/2026-10-23_17-44-25-870170-planner-chat-time-queue-contract.md)
+
+## Chat local times and Spotlight queue — October23
+
+Implementation underway. A read-only hosted check confirms the reported Stern entry really ends11PM New York instead of7PM. Chat already receives the browser timezone; the remaining write path lets the model calculate/relabel UTC offsets. Add server-side local-clock conversion and readable local boundaries, plus a bounded sequential Spotlight queue with remove and pause/resume behavior. Two coders own separate backend/frontend files; configured-model simulation and independent evaluation remain. No hosted event writes or deployment in this pass.
+
+[Plan](history/2026-10-23_17-43-51-555473-orchestrator-chat-time-queue-plan.md) · [Scope](chat-time-spotlight-queue/info.md)
 
 ## Main aligned with dev — October 23
 

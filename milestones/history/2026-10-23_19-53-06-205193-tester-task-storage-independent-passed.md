@@ -1,0 +1,10 @@
+# Independent task-storage tests passed
+
+- Local timestamp / acting role: 2026-10-23T19:53:06.205193-04:00 / tester report integrated by orchestrator.
+- Scope: current catalogue/read SQL/store/runner preservation and failure checks; no application/SQL/sharedjournal edits by tester, no external calls or model inference.
+- Work: added agent-task-catalogue tests; adapted current injected stores and integration fixture/consumer hashes; full-history assertions explicitly request full detail. Closed historical evidence was untouched. CurrentfixtureSHA71e8f6b01c6feddc813f4d70f1b913d37824654cc9b9025fec77a08a737046a0.
+- Checks: final15suite currentgate passes306/306,zero failures/skips,17.9seconds. Parent repeats identical currenttests on isolated previousworker+threefilefrozenroot:306/306,18.3seconds. API/whitespace pass. Includes unchanged15second timeout classification.
+- Outcomes: actual PGliteSQL12,504,265Bfullsynthetic131-task data ->68,153Bcatalogue/99,901Bexactread. Runner reads selectedtaskfourtimes,largestresponse95,528B,old130rows unchanged. Exactoriginals rather thanUUIDalone, existingmechanical IDcollision, service-only grants/RLS, expiry/revocation/lease, compact/fullfragments, changedcontent/version proof and failed finish/read cases pass.
+- Findings corrected: Unicode metadata validation and consistent safe non-JSON permission errors; retested. Strongfullhistory/delivery/original/version assertions preserved through fixture API changes.
+- Existing failures independently compared: fourolder suites have24currentfailures; prechange runtimeHEAD5283209 in isolated/tmp baseline has25failures. Every current failedtestname also fails before thisfix. No blanketwhole-repositorypassingclaim. Syntheticlogs retained under evidence/planner-task-storage/; no private source bodies/credentials copied.
+- Verdict / limits: PASS scoped local acceptance; actualmodelbehavior and hosted/livebusinessoutcomes not claimed by tester. Orchestratorowns performance/SQLapply/deployment verification.

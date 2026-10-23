@@ -1,0 +1,7 @@
+# Saved task failure paths diagnosed
+
+- Local timestamp / acting role / milestone: 2026-10-23T19:15:49.092061-04:00 / planner / planner-failure-diagnosis.
+- Requested scope: trace the code behind nine post-release preflight_failed runs; read-only specialist, no external queries or edits.
+- Evidence: handler, staged-pipeline and task-store hashes match deployed d56cea87 package. Startup beginCycle and initial finish both call taskStore.list. The SQL list locks runner and aggregates every authorized complete task. Startup turns any non-ready status into preflight_failed; initial finish turns it into unavailable and then preflight_failed. HTTP, timeout, parsing and snapshot validation causes are lost. A failed finish diagnostics record with dispatched=0 can still include an actual task-store database request.
+- Checks: reported node --test tests/agent-pending-tasks.test.mjs passed, including local PGlite migration/lease/scope/version behavior. A synthetic Node probe showed unavailable/stale/forbidden/invalid_request collapse at startup/finish, and HTTP500/malformed JSON/invalid dates produce list unavailable. No inference or live business writes. No durable tests added.
+- Conclusion: common code path established; exact historical transport/database cause is not recoverable from generic diagnostics. Initial fix options are only relevant task snapshots or small exact-content/version checks, preserving current source scope, leases, data and budgets. Do not invoke live list RPC as a read-only test because it prunes expired tasks.

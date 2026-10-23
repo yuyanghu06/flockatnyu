@@ -1,0 +1,6 @@
+# Task storage implementation started
+
+- Local timestamp / acting role: 2026-10-23T19:37:45.415021-04:00 / orchestrator.
+- Scope, work and decisions: User “Okay” resumes implementation of the proposed database/worker fix. Runtime coder owns pipeline/store/handler and automation guide; independent tester owns current tests/fixture compatibility; orchestrator owns migration045, journal, benchmarks and integration. No prompt, provider, timeout or call-limit change is intended. Migration045 drafts service-only saved-task catalogue/read operations, preserving existing functions, data and applied migrations. Neither new read prunes or locks runner while building its response. Current developer DB connection is read-only; the separate management account denies project access. No permissions were changed, no migration was applied and no worker uploaded. Local checks and concrete review proceed before any required user action. Existing concurrent Spotlight/setup changes remain preserved.
+- Verification / limits: implementation and independent acceptance pending; no live business writes or new model calls.
+- Handoff: complete the bounded task storage implementation and tests, benchmark hosted query shapes, then review deployment readiness.
