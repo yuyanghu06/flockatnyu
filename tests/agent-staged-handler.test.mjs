@@ -8,7 +8,7 @@ const input={uuid:queueId,raw_response:{source:'discord',source_id:'channel:123'
 const toolCall=(name,id,args={},scope=[queueId])=>({id,name,arguments:name==='finish_batch'?{handledInputIds:args}:{inputIds:scope,arguments:args}});
 const turn=(...toolCalls)=>({text:'reasoned proposal',stopReason:'tool_calls',toolCalls});
 const finish=(id='finish',ids=[queueId])=>turn(toolCall('finish_batch',id,ids));
-function harness({turns=[finish('initial'),finish('final',[])],claimStatus='ready',config={},afterInitial,finishCycle,beginCycle,execute,tools,authorizeEvent,legacy=false}={}) {
+function harness({turns=[finish('initial'),finish('final',[])],claimStatus='ready',config={},afterInitial,finishCycle,beginCycle,recordExecution,execute,tools,authorizeEvent,legacy=false}={}) {
   const events=[],requests=[],logs=[],auditEvents=[];let pending=[structuredClone(input)],index=0;
   const store={configured:true,
     claim:async()=>{events.push('claim');return claimStatus==='ready'?{status:'ready',leaseToken,inputs:pending}:{status:claimStatus};},
@@ -21,7 +21,7 @@ function harness({turns=[finish('initial'),finish('final',[])],claimStatus='read
     beginCycle:async context=>{events.push('begin');await beginCycle?.(context);},
     afterInitial:async context=>{events.push('api');return afterInitial?afterInitial(context):{status:'ready',context:{apiResults:[{calendarId:'calendar:1',mapEventId:'map:1'}]},inputIds:[taskId]};},
     finishCycle:async context=>{events.push('checkpoint');return finishCycle?finishCycle(context):{status:'ready'};},
-    recordExecution:async event=>logs.push(event),
+    recordExecution:async event=>{logs.push(event);await recordExecution?.(event);},
   };
   const provider={toolTurn:async request=>{events.push('model');requests.push(request);const value=turns[index++];return typeof value==='function'?value(request):value;}};
   const handler=createAutomationHandler({store,provider,tools:tools??[ordinary],pipeline:legacy?undefined:pipeline,authorizeEvent:authorizeEvent??(async()=>true),principal:{id:'service'},config:{...readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),...config},audit:{recordEvent:async event=>auditEvents.push(event)},now:()=>new Date('2026-10-22T15:30:00Z')});
@@ -112,7 +112,7 @@ for(const status of ['forbidden','forbidden_source','stale','aborted'])test(`fol
 });
 
 test('followup required audit failure remains a hard stop',async()=>{
-  const h=harness({turns:[finish('initial'),turn(toolCall('read_source','failed'))],execute:async()=>({status:'audit_unavailable'})});
+  const h=harness({turns:[finish('initial'),turn(toolCall('read_source','failed',{},[taskId]))],execute:async()=>({status:'audit_unavailable'})});
   assert.equal((await h.handler.tick()).status,'audit_unavailable');assert.equal(h.pending().length,1);assert(!h.events.includes('finish'));
 });
 
@@ -137,4 +137,16 @@ test('trusted API may skip final model when no followup tasks remain',async()=>{
   const h=harness({afterInitial:async()=>({status:'ready',context:{apiResult:'complete'},inputIds:[],followupRequired:false})});
   const result=await h.handler.tick();assert.equal(result.status,'completed');assert.equal(result.followupStatus,'not_needed');assert.equal(h.requests.length,1);
   assert.deepEqual(h.events,['claim','begin','model','api','checkpoint','finish']);
+});
+
+test('argument recovery cannot continue past required audit or execution-history persistence bounds',async()=>{
+ for(const expected of ['audit_unavailable','context_limit']){
+  let record;const h=harness({turns:[turn(toolCall('read_source','rejected',{extra:'PRIVATE_INVALID_VALUE'})),finish('must_not_run')],beginCycle:async context=>{record=context.recordExecution;},recordExecution:async entry=>{
+   if(entry.kind==='tool_result'&&entry.result?.status==='tool_error'){
+    if(expected==='audit_unavailable')throw Error('audit_unavailable');
+    await record({kind:'test',body:'x'.repeat(1048576)});
+   }
+  }});
+  assert.equal((await h.handler.tick()).status,expected);assert.equal(h.requests.length,1);assert.equal(h.pending().length,1);assert(!h.events.includes('api')&&!h.events.includes('finish'));assert(!JSON.stringify(h.auditEvents).includes('PRIVATE_INVALID_VALUE'));
+ }
 });

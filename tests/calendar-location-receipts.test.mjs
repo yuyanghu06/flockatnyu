@@ -85,19 +85,21 @@ test('single wrapper never substitutes requested location for actual saved or om
   }
 });
 
-test('batch creates, existing matches and duplicate rows preserve saved venues through public projection',async()=>{
-  const f=fixture({existing:[human()]}),request=f.request();
+test('batch creations and same-operation duplicates preserve actual saved venues without choosing existing events',async()=>{
+  const original=human(),f=fixture({existing:[original]}),request=f.request();
   const result=await execute(request,'create_calendar_events',{events:[
-    {title:'Existing title',date:start.date,location:'Requested replacement must not overwrite'},
+    {title:'Existing title',date:start.date,location:'New separate room'},
     {title:'New row',date:start.date,location:'New actual room'},
-    {title:'New row',date:start.date,location:'Different later request'},
+    {title:'New row',date:start.date,location:'New actual room'},
   ]});
-  assert.equal(result.status,'ready');assert.deepEqual(result.calendarBatchWrite.counts,{requested:3,created:1,existing:2,failed:0,unattempted:0});
-  assert.deepEqual(result.calendarBatchWrite.items.map(row=>row.calendarWrite.location),['Human room','New actual room','New actual room']);
+  assert.equal(result.status,'ready');assert.deepEqual(result.calendarBatchWrite.counts,{requested:3,created:2,existing:1,failed:0,unattempted:0});
+  assert.deepEqual(result.calendarBatchWrite.items.map(row=>row.calendarWrite.location),['New separate room','New actual room','New actual room']);
   const projected=projectCalendarBatchWrite(result.calendarBatchWrite);
-  assert.deepEqual(projected.items.map(row=>row.calendarWrite.location),['Human room','New actual room','New actual room']);
-  assert.equal(f.events.get('existing_event').location,'Human room');assert.equal(f.writes(),1);
-  assert(!JSON.stringify(projected).includes(privateText));assert.equal(projected.items[0].calendarWrite.description,descriptionText);assert(!JSON.stringify(projected).includes('Requested replacement'));
+  assert.deepEqual(projected.items.map(row=>row.calendarWrite.location),['New separate room','New actual room','New actual room']);
+  assert.deepEqual(f.events.get(original.id),original);assert.equal(f.writes(),2);
+  assert.notEqual(projected.items[0].calendarWrite.eventId,original.id);
+  assert(!JSON.stringify(projected).includes(privateText));
+  assert.equal(f.calls.filter(call=>call.target.pathname.endsWith('/events')&&call.options.method==='GET').length,0);
 });
 
 test('batch title-only updates preserve human venue and clearing stays explicit',async()=>{
@@ -166,7 +168,7 @@ for(const savedLocation of ['Actual room','',undefined])test(`HTTP planning and 
   }
 });
 
-test('HTTP batch projection and final answer preserve actual existing/new locations',async()=>{
+test('HTTP batch projection and final answer preserve actual locations of explicitly created records',async()=>{
   const f=fixture({existing:[human()]}),plans=[];let round=0,answer;
   const app=createApp({config:{configured:true,production:false,timeoutMs:3000},googleTools:f.tools,auth:()=>actor,
     provider:{planTools:async input=>{plans.push(input);return round++===0?[{name:'create_calendar_events',arguments:{events:[
@@ -179,5 +181,6 @@ test('HTTP batch projection and final answer preserve actual existing/new locati
   const previous=JSON.parse(plans[1].system.split('\nUNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n')[1]);
   const final=JSON.parse(answer.system.split('\nUNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n')[1]);
   for(const rows of [previous,final.results])assert.deepEqual(rows.find(row=>row.tool==='create_calendar_events').calendarBatchWrite.items
-    .map(row=>row.calendarWrite.location),['Human room','Saved new room']);
+    .map(row=>row.calendarWrite.location),['Requested must not replace human room','Saved new room']);
+  assert.equal(f.events.get('existing_event').location,'Human room');
 });

@@ -76,6 +76,13 @@ export function createManualDiscordStore({store,client,guildId,channelIds}={}) {
       excludedCategoryIds:[],excludedChannelIds:[]},channels};
   }
   return Object.freeze({configured:store?.configured!==false,
+    async getAuthorizationSnapshot({guildId:requested,signal}={}) {
+      if(requested!==guildId)return {status:'forbidden',policy:null,channels:[]};
+      // One fresh validated result supplies one policy/catalogue pair only.
+      // Each later boundary, including the final recheck, calls snapshot anew.
+      try{return {status:'ready',...await snapshot(signal)};}
+      catch(error){return {status:safe(error),policy:null,channels:[]};}
+    },
     async getPolicy({guildId:requested,signal}={}) {
       if(requested!==guildId)return {status:'forbidden',policy:null};
       try{return {status:'ready',policy:(await snapshot(signal)).policy};}

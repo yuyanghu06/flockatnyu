@@ -61,7 +61,7 @@ test('source authorization false retains its existing denied/filtered behavior w
     time_kind:'timed',starts_at:'2026-10-21T15:00:00Z',ends_at:'2026-10-21T17:00:00Z',starts_on:null,ends_on:null,time_zone:'America/New_York',
     source_id:sourceId,source_url:'https://example.com/source',source_record_id:'source-event',url:null,reported_at:at};
   const store={configured:true,read:async()=>({...snapshot(),events:[event]}),lookup:async()=>{throw Error('must not read denied identity');}};
-  const service=serviceFor(store,{authorizeSource:async()=>false});
+  const service=serviceFor(store,{authorizeSource:Object.assign(()=>false,{localOnly:true})});
   const read=await service.read({principal});assert.equal(read.status,'ok');assert.deepEqual(read.events,[]);assert.equal(read.diagnostics,undefined);
   assert.deepEqual(await service.lookup({principal,provider:'email',providerUserId:'person@example.com',sourceId,sourceUrl:'https://example.com/source'}),{status:'forbidden'});
 });

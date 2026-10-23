@@ -16,7 +16,7 @@ test('Hono and actual RPC adapter save attendance through ordinary tools and the
   const {f,app,chat}=api(),events=await chat();assert.equal(events.at(-1).type,'done');assertAttendance(f);
   assert.deepEqual(events.filter(row=>row.type==='tool'&&row.status!=='running').map(row=>row.name),['read_map_events','lookup_map_person','upsert_map_event']);
   assert(f.calls.some(row=>row.name==='rpc'&&row.path.endsWith('/map_upsert_event')));const projected=await (await app.request('/api/map/presence')).json();assert(projected.buildings[0].events[0].attendees.some(row=>row.id===ids.person));
-  f.revoke();const hidden=await (await app.request('/api/map/presence')).json();assert.deepEqual(hidden.buildings[0].events,[]);
+  f.revoke();const saved=await (await app.request('/api/map/presence')).json();assert.deepEqual(saved.buildings,projected.buildings,'A provider outage must not erase saved authorized map data');
 });
 
 for(const reportStatus of ['ready','conflict','throw'])test(`bug report ${reportStatus} is attempted once while memory and ordinary map updates continue`,async()=>{

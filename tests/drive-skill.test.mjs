@@ -161,8 +161,8 @@ test('planner replans under the full skill before execution without receipts or 
 });
 
 test('planner validates queued input binding before activation and rechecks authorization before a Drive read',async()=>{
-  const wrong=plannerFixture({plan:()=>[plannerCall('wrong_binding',[otherInput])]});
-  assert.equal((await wrong.handler.tick()).status,'invalid_tool_call');assert.equal(wrong.seen.length,1);assert.equal(wrong.executed.length,0);
+  const wrong=plannerFixture({plan:(request,round)=>{assert(!request.system.includes(marker));if(round===1)return [plannerCall('wrong_binding',[otherInput])];assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');return [finish];}});
+  assert.equal((await wrong.handler.tick()).status,'completed');assert.equal(wrong.seen.length,2);assert.equal(wrong.executed.length,0);
   let authorized=true;
   const revoked=plannerFixture({authorize:async()=>authorized,plan:(request,round)=>{if(round===1)return [plannerCall()];assert(request.system.includes(skill));authorized=false;return [plannerCall()];}});
   assert.equal((await revoked.handler.tick()).status,'forbidden');assert.equal(revoked.executed.length,0);assert.equal(revoked.finished.length,0);

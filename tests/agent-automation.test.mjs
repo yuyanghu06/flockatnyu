@@ -97,7 +97,7 @@ function harness({inputs=[row()],turns=[],authorizeEvent=async()=>true,tools,cla
   finish:async({handledInputIds})=>{calls.push({kind:'finish',handledInputIds});queue=queue.filter(r=>!handledInputIds.includes(r.uuid));return {status:'ready'};},
   release:async()=>{calls.push({kind:'release'});return {status:'ready'};}
  };
- const provider={toolTurn:async request=>{calls.push({kind:'model',request});const next=turns[n++];const response=typeof next==='function'?await next(request):next;return response?{...response,toolCalls:response.toolCalls?.map(c=>c.arguments.inputIds==='__claimed__'?{...c,arguments:{...c.arguments,inputIds:[inputs[0].uuid]}}:c)}:response;}};
+ const provider={toolTurn:async request=>{calls.push({kind:'model',request});const next=turns[n++];const response=typeof next==='function'?await next(request):next;return response?{...response,toolCalls:response.toolCalls?.map(c=>c.arguments?.inputIds==='__claimed__'?{...c,arguments:{...c.arguments,inputIds:[inputs[0].uuid]}}:c)}:response;}};
  const handler=createAutomationHandler({store,provider,tools:tools||[tool],authorizeEvent,principal:{id:'service'},config,now:clock,validateCompletion});
  return {handler,store,provider,calls,receipts,queue:()=>queue,add:r=>queue.push(r)};
 }
@@ -136,8 +136,9 @@ test('empty/text-only/truncated turns never implicitly complete a batch',async()
 test('invalid names/arguments/call IDs and mixed finish calls cannot act or delete',async()=>{
  const input=row();
  const cases=[
-  [turn(call('unknown_tool',{})),'invalid_tool_call'],[turn(call('set_plan',{building:'unknown'})),'invalid_tool_call'],
-  [turn(call('set_plan',{building:'bobst',extra:'untrusted'})),'invalid_tool_call'],[turn(call('set_plan',{building:'bobst'},'bad id')),'invalid_tool_call'],
+  [turn(call('unknown_tool',{})),'invalid_tool_call'],[turn({id:'ordinary_outer',name:'set_plan',arguments:null}),'invalid_tool_call'],
+  [turn({id:'wrong_finish_wire',name:'finish_batch',arguments:{inputIds:[input.uuid],arguments:{handledInputIds:[input.uuid]}}}),'invalid_tool_call'],
+[turn(call('set_plan',{building:'bobst'},'bad id')),'invalid_tool_call'],
   [turn(call('set_plan',{building:'bobst'}),call('set_plan',{building:'kimmel'})),'invalid_tool_call'],
   [turn(call('finish_batch',{handledInputIds:[input.uuid]}),call('set_plan',{building:'bobst'},'call_2')),'invalid_completion'],
   [turn(call('finish_batch',{handledInputIds:[randomUUID()]})),'invalid_completion'],
@@ -147,8 +148,8 @@ test('invalid names/arguments/call IDs and mixed finish calls cannot act or dele
 });
 
 test('action input scope and reused cross-turn IDs fail closed before additional execution',async()=>{
- const input=row();const foreign=harness({inputs:[input],turns:[turn({id:'action1',name:'set_plan',arguments:{inputIds:[randomUUID()],arguments:{building:'bobst'}}})]});
- assert.equal((await foreign.handler.tick()).status,'invalid_tool_call');assert(!foreign.calls.some(c=>c.kind==='execute'));
+ const input=row();const foreign=harness({inputs:[input],turns:[turn({id:'action1',name:'set_plan',arguments:{inputIds:[randomUUID()],arguments:{building:'bobst'}}}),request=>{assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');return turn(call('finish_batch',{handledInputIds:[input.uuid]}));}]});
+ assert.equal((await foreign.handler.tick()).status,'completed');assert(!foreign.calls.some(c=>c.kind==='execute'||c.kind==='action'));
  const reused=harness({inputs:[input],turns:[turn(call('set_plan',{building:'bobst'},'same')),turn(call('finish_batch',{handledInputIds:[input.uuid]},'same'))]});
  assert.equal((await reused.handler.tick()).status,'invalid_tool_call');assert.equal(reused.queue().length,1);assert(!reused.calls.some(c=>c.kind==='finish'));
 });
@@ -315,4 +316,43 @@ test('empty-finish recovery never admits extra fields, malformed or foreign IDs,
  }
  const h=harness({inputs:[input],config:{...enabled(),maxRounds:1},turns:[turn(call('finish_batch',{handledInputIds:[]}))]});
  assert.equal((await h.handler.tick()).status,'round_limit');assert.equal(h.queue().length,1);assert.equal(h.calls.filter(c=>c.kind==='model').length,1);
+});
+
+// Scripted provider replies establish only runner/validation contracts.
+test('argument recovery retries exact outer input and nested task IDs without executing rejected proposals',async()=>{
+ for(const invalid of ['outer','nested']){
+  const input=row(),foreign=randomUUID(),taskId=randomUUID();let executions=0;
+  const tool={name:'read_pending_task',description:'Read exact saved task',readOnly:true,parameters:{type:'object',properties:{taskId:{type:'string',minLength:36,maxLength:36}},required:['taskId'],additionalProperties:false},execute:async args=>{executions++;assert.equal(args.taskId,taskId);return {status:'ready'};}};
+  const bad={id:'bad',name:tool.name,arguments:{inputIds:[invalid==='outer'?foreign:input.uuid],arguments:{taskId:invalid==='nested'?taskId.slice(1):taskId}}};
+  const h=harness({inputs:[input],tools:[tool],turns:[turn(bad),request=>{
+   assert.equal(executions,0);const error=JSON.parse(request.messages.at(-1).content);assert.equal(error.status,'tool_error');assert(!JSON.stringify(error).includes(foreign));assert(!JSON.stringify(error).includes(taskId));
+   if(invalid==='outer')assert.deepEqual(error.exactIds,{phase:'legacy',field:'inputIds',choices:[input.uuid],instruction:'Copy an exact listed ID without changing any characters.'});
+   else {assert(!error.exactIds);assert(!JSON.stringify(error).includes(input.uuid));}
+   return turn({id:'correct_retry',name:tool.name,arguments:{inputIds:[input.uuid],arguments:{taskId}}});
+  },turn(call('finish_batch',{handledInputIds:[input.uuid]},'complete'))]});
+  const result=await h.handler.tick();assert.equal(result.status,'completed');assert.equal(result.calls,3);assert.equal(executions,1);assert(!h.calls.some(c=>c.kind==='action'));assert.equal(h.queue().length,0);
+ }
+});
+
+test('argument recovery rejects the entire ordinary turn before peer prepare, action receipts or Drive activation',async()=>{
+ const input=row(),canary='PRIVATE_REJECTED_VALUE',counts={prepare:0,execute:0};
+ const action={name:'set_plan',description:'Save plan',idempotent:true,parameters:{type:'object',properties:{building:{type:'string',enum:['bobst']}},required:['building'],additionalProperties:false},prepareArguments:async args=>{counts.prepare++;return args;},execute:async()=>{counts.execute++;return {status:'ready'};}};
+ const drive={name:'list_drive_folder',description:'Read folder',readOnly:true,parameters:{type:'object',properties:{folderId:{type:'string'}},required:['folderId'],additionalProperties:false},execute:async()=>assert.fail('rejected Drive peer executed')};
+ let h;h=harness({inputs:[input],tools:[action,drive],turns:[turn(call('set_plan',{building:'bobst',PRIVATE_PROPERTY:canary},'invalid'),call('set_plan',{building:'bobst'},'valid_peer'),call('list_drive_folder',{folderId:'private_folder'},'drive_peer')),request=>{
+  assert.deepEqual(counts,{prepare:0,execute:0});assert.equal(h.receipts.size,0);assert(!h.calls.some(c=>c.kind==='action'));assert(!request.system.includes('TRUSTED SKILL: techatnyu-drive'));
+  const results=request.messages.filter(m=>m.role==='tool');assert.equal(results.length,3);assert.deepEqual(results.map(m=>m.toolCallId),['invalid','valid_peer','drive_peer']);
+  for(const message of results){const value=JSON.parse(message.content);assert.equal(value.status,'tool_error');assert(Buffer.byteLength(message.content)<1024);for(const hidden of [canary,'PRIVATE_PROPERTY','private_folder',input.uuid])assert(!message.content.includes(hidden));}
+  return turn(call('set_plan',{building:'bobst'},'fresh_retry'));
+ },turn(call('finish_batch',{handledInputIds:[input.uuid]},'finish'))]});
+ const result=await h.handler.tick();assert.equal(result.status,'completed');assert.equal(result.calls,5);assert.deepEqual(counts,{prepare:1,execute:1});assert.equal(h.receipts.size,1);
+});
+
+test('argument recovery keeps protocol reuse, mixed finish, revoked authorization and transcript bounds fatal',async()=>{
+ const input=row();const bad=()=>({id:'already_used',name:'set_plan',arguments:{inputIds:[randomUUID()],arguments:{building:'bobst'}}});
+ const reuse=harness({inputs:[input],turns:[turn(bad()),turn(call('set_plan',{building:'bobst'},'already_used'))]});assert.equal((await reuse.handler.tick()).status,'invalid_tool_call');assert(!reuse.calls.some(c=>c.kind==='execute'||c.kind==='action'));
+ const mixed=harness({inputs:[input],turns:[turn(bad(),call('finish_batch',{handledInputIds:[input.uuid]},'finish')),turn(call('set_plan',{building:'bobst'},'never'))]});assert.match((await mixed.handler.tick()).status,/^invalid_(tool_call|completion)$/);assert.equal(mixed.calls.filter(c=>c.kind==='model').length,1);assert(!mixed.calls.some(c=>c.kind==='execute'||c.kind==='action'||c.kind==='finish'));
+ let allowed=true;const revoked=harness({inputs:[input],authorizeEvent:async()=>allowed,turns:[turn(bad()),request=>{assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');allowed=false;return turn(call('set_plan',{building:'bobst'},'valid'));}]});assert.equal((await revoked.handler.tick()).status,'forbidden');assert(!revoked.calls.some(c=>c.kind==='execute'||c.kind==='finish'||c.kind==='action'&&c.complete));assert.equal(revoked.calls.filter(c=>c.kind==='action'&&!c.complete).length,1,'Reservation precedes the fresh source check; revocation still prevents mutation and completed receipt');
+ let leaseValid=true;const lost=harness({inputs:[input],turns:[turn(bad()),()=>{leaseValid=false;return turn(call('set_plan',{building:'bobst'},'valid'));}]});lost.store.renew=async()=>({status:leaseValid?'ready':'stale'});assert.equal((await lost.handler.tick()).status,'stale');assert(!lost.calls.some(c=>c.kind==='execute'||c.kind==='action'||c.kind==='finish'));
+ const controller=new AbortController(),aborted=harness({inputs:[input],turns:[turn(bad()),()=>{controller.abort();return turn(call('set_plan',{building:'bobst'},'valid'));}]});assert.equal((await aborted.handler.tick({signal:controller.signal})).status,'aborted');assert(!aborted.calls.some(c=>c.kind==='execute'||c.kind==='action'||c.kind==='finish'));
+ const oversized=bad();oversized.arguments.arguments.extra='x'.repeat(270000);const bounded=harness({inputs:[input],turns:[turn(oversized),turn(call('set_plan',{building:'bobst'},'never'))]});assert.equal((await bounded.handler.tick()).status,'context_limit');assert.equal(bounded.calls.filter(c=>c.kind==='model').length,1);assert(!bounded.calls.some(c=>c.kind==='execute'||c.kind==='action'));
 });

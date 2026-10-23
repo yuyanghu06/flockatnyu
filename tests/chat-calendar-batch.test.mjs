@@ -50,24 +50,19 @@ function fixture({existing=[],failTitles=[],paginate=false,badPage=false,loopPag
  return {client,adapter,request,run,events,calls,posts,oauthCalls};
 }
 
-test('all-day batch creates more than eight eligible rows once, skips duplicate rows and preserves an existing match',async()=>{
+test('batch creation does not scan or choose existing human events and retries only its own operation identity',async()=>{
  const existing=human(items[0].title,items[0].date),f=fixture({existing:[existing],paginate:true});
  const entries=[...items,{...items[3]}];
  const result=await f.run(entries);
- assert.equal(result.status,'ready');assert.equal(f.events.size,12);assert.equal(f.posts.length,11);
- assert.equal(result.calendarBatchWrite.complete,true);assert.deepEqual(result.calendarBatchWrite.counts,{requested:13,created:11,existing:2,failed:0,unattempted:0});
+ assert.equal(result.status,'ready');assert.equal(f.events.size,13);assert.equal(f.posts.length,12);
+ assert.deepEqual(result.calendarBatchWrite.counts,{requested:13,created:12,existing:1,failed:0,unattempted:0});
  assert.deepEqual(result.calendarBatchWrite.items.map(row=>row.index),entries.map((_,index)=>index));
  for(const row of result.calendarBatchWrite.items){assert(row.calendarWrite?.eventId);assert.match(row.calendarWrite.url,/^https:\/\/calendar.google.com\/calendar\/event\?eid=/);assert.equal(row.title,entries[row.index].title);assert.equal(row.date,entries[row.index].date);}
  assert.deepEqual(f.events.get(existing.id),existing);
- for(const item of items) {
-  const matching=[...f.events.values()].filter(event=>event.summary===item.title&&event.start.date===item.date);
-  assert.equal(matching.length,1);assert.deepEqual(matching[0].start,{date:item.date});assert.deepEqual(matching[0].end,{date:nextDate(item.date)});
- }
- const lists=f.calls.filter(call=>call.url.pathname.endsWith('/events')&&call.options.method==='GET');
- assert.equal(lists.length,24,'one complete two-page duplicate scan per distinct actual date');
- for(let index=0;index<lists.length;index+=2){assert.equal(lists[index].url.searchParams.get('pageToken'),null);assert.equal(lists[index+1].url.searchParams.get('pageToken'),'second_page');for(const key of ['timeMin','timeMax','maxResults'])assert.equal(lists[index].url.searchParams.get(key),lists[index+1].url.searchParams.get(key));}
- await f.run(entries);await f.run([...items].reverse(),{operationId:'another-request'});
- assert.equal(f.posts.length,11,'retry and reordering never duplicate observed Calendar events');assert.equal(f.events.size,12);
+ assert.equal(f.calls.filter(call=>call.url.pathname.endsWith('/events')&&call.options.method==='GET').length,0);
+ await f.run(entries);
+ assert.equal(f.posts.length,12,'same operation retry reads only deterministic IDs and creates nothing again');
+ assert.equal(f.events.size,13);assert.deepEqual(f.events.get(existing.id),existing);
 });
 
 test('all-day batch preserves explicit past year, month rollover and leap-day exclusive ends',async()=>{
@@ -88,13 +83,15 @@ test('twenty-six Tuesday and Thursday timed creates retain local hours and chang
   assert.equal(Date.parse(saved.end.dateTime)-Date.parse(saved.start.dateTime),3600000);
   assert.deepEqual(result.calendarBatchWrite.items[index].calendarWrite.start,saved.start);assert.deepEqual(result.calendarBatchWrite.items[index].calendarWrite.end,saved.end);
  }
- const before=f.posts.length;await f.run(entries,{operationId:'second-timed-request'});assert.equal(f.posts.length,before,'existing exact timed instances are reused');
+ const before=f.posts.length;await f.run(entries);assert.equal(f.posts.length,before,'same timed operation retry uses its deterministic IDs');
 });
 
-test('timed create refuses an existing all-day instance with the same title and date instead of duplicating it',async()=>{
+test('creation does not silently interpret an unrelated all-day event as a requested timed edit',async()=>{
  const existing=human('Synthetic office hours','2026-09-01'),f=fixture({existing:[existing]});
  const result=await f.run([{title:existing.summary,date:'2026-09-01',startTime:'18:00',endTime:'19:00',timeZone:'America/New_York'}]);
- assert.equal(result.status,'partial');assert.equal(f.posts.length,0);assert.deepEqual(f.events.get(existing.id),existing);assert.equal(result.calendarBatchWrite.items[0].reason,'existing_event_requires_update');
+ assert.equal(result.status,'ready');assert.equal(f.posts.length,1);assert.deepEqual(f.events.get(existing.id),existing);
+ assert.equal(f.posts[0].start.dateTime,'2026-09-01T22:00:00.000Z');
+ assert.equal(f.calls.filter(call=>call.url.pathname.endsWith('/events')&&call.options.method==='GET').length,0);
 });
 
 test('canonical timed creates remain supported while mixed, incomplete and DST-ambiguous local clock rows fail before OAuth',async()=>{
@@ -111,7 +108,7 @@ test('canonical timed creates remain supported while mixed, incomplete and DST-a
 test('missing Google grant denies the entire batch before OAuth or HTTP and lost writer role never posts',async()=>{
  const denied=fixture({googleAccess:false});assert.equal((await denied.run()).status,'forbidden');assert.equal(denied.calls.length,0);assert.equal(denied.oauthCalls.length,0);
  const reader=fixture({role:'reader'});const result=await reader.run();assert.notEqual(result.status,'ready');assert.equal(reader.posts.length,0);
- assert.deepEqual(result.calendarBatchWrite.counts,{requested:12,created:0,existing:0,failed:1,unattempted:11});assert.equal(reader.oauthCalls.length,2,'one duplicate check and one denied write; later rows never retry a lost grant');
+ assert.deepEqual(result.calendarBatchWrite.counts,{requested:12,created:0,existing:0,failed:1,unattempted:11});assert.equal(reader.oauthCalls.length,1,'denied write stops later rows without a preliminary scan');
 });
 
 test('batch schema rejects unknown fields, blank rows, missing fields and more than fifty entries before dispatch',async()=>{
@@ -134,28 +131,12 @@ test('impossible dates fail their own row without guessing a date or blocking va
  assert.equal(result.status,'partial');assert.deepEqual(result.calendarBatchWrite.counts,{requested:2,created:1,existing:0,failed:1,unattempted:0});assert.equal(f.events.size,1);assert.equal(f.posts.length,1);assert.equal(result.calendarBatchWrite.items[0].calendarWrite,undefined);
 });
 
-test('incomplete duplicate-check pagination prevents unsafe creation and does not claim a saved event',async()=>{
- const f=fixture({paginate:true,badPage:true});const result=await f.run([items[0]]);assert.notEqual(result.status,'ready');assert.equal(f.posts.length,0);assert.equal(f.events.size,0);
- assert(!JSON.stringify(result).includes('PRIVATE_PROVIDER_BODY'));
-});
-
-test('a repeated duplicate-check cursor terminates boundedly and cannot create from incomplete evidence',async()=>{
- const f=fixture({loopPages:true});const result=await f.run([items[0]]);assert.equal(result.status,'partial');assert.equal(f.posts.length,0);assert.equal(result.calendarBatchWrite.items[0].reason,'duplicate_check_incomplete');
- assert.equal(f.calls.filter(call=>call.url.pathname.endsWith('/events')).length,2);assert.equal(result.calendarBatchWrite.items[0].calendarWrite,undefined);
-});
-
-test('duplicate scanning is bounded to twenty pages per date and one hundred pages across a batch',async()=>{
- const f=fixture({endlessPages:true});const result=await f.run(items.slice(0,6));assert.equal(result.status,'partial');assert.equal(f.posts.length,0);
- const lists=f.calls.filter(call=>call.url.pathname.endsWith('/events'));
- assert.equal(lists.length,100);const windows=new Map();for(const call of lists){const key=call.url.searchParams.get('timeMin');windows.set(key,(windows.get(key)||0)+1);}
- assert.equal(windows.size,5);assert([...windows.values()].every(count=>count===20));assert.equal(result.calendarBatchWrite.items[5].reason,'duplicate_check_budget_exhausted');assert.equal(result.calendarBatchWrite.items.filter(row=>row.calendarWrite).length,0);
-});
-
-test('ambiguous identical existing entries are left untouched and unrelated overlaps never block a clear row',async()=>{
- const duplicates=[human(items[0].title,items[0].date,'existing_one'),human(items[0].title,items[0].date,'existing_two')];
- const f=fixture({existing:duplicates});const result=await f.run([items[0],{title:'Distinct takeover',date:items[0].date}]);
- assert.equal(result.status,'partial');assert.equal(result.calendarBatchWrite.items[0].reason,'ambiguous_existing_events');assert.equal(result.calendarBatchWrite.items[0].calendarWrite,undefined);
- assert.equal(f.posts.length,1);assert.equal(f.events.size,3);for(const original of duplicates)assert.deepEqual(f.events.get(original.id),original);
+test('unavailable or misleading list APIs are never consulted during requested batch creation',async()=>{
+ for(const options of [{paginate:true,badPage:true},{loopPages:true},{endlessPages:true}]) {
+  const f=fixture(options),result=await f.run(items.slice(0,2));
+  assert.equal(result.status,'ready');assert.equal(f.posts.length,2);
+  assert.equal(f.calls.filter(call=>call.url.pathname.endsWith('/events')&&call.options.method==='GET').length,0);
+ }
 });
 
 test('one failed item does not prevent later all-day creations or invent a successful receipt',async()=>{
@@ -208,25 +189,30 @@ test('source-to-batch native chat retains late sheet rows, skips unassigned rows
   const body=JSON.parse(init.body);if(body.stream){finalSystem=body.messages[0].content;return new Response('data: {"choices":[{"index":0,"delta":{"content":"Synthetic completed outcomes"},"finish_reason":null}]}\n\ndata: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});}
   modelBodies.push(body);const round=modelBodies.length;let selected=[];
   if(round<=2)selected=[{name:'read_drive',arguments:{fileId:'takeover_sheet'}}];
-  if(round===3){
+  if(round===3)selected=[{name:'list_calendar_events',arguments:{timeMin:'2031-03-01T00:00:00Z',timeMax:'2031-04-01T00:00:00Z'}}];
+  if(round===4){
    const source=body.messages.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content)).find(row=>row.tool==='read_drive'&&row.status==='ready');assert(source);
    assert(source.driveContent.text.includes('Member 12'));assert(!source.sources[0].excerpt.includes('Member 12'));
    assert.equal(source.driveContent.firstSheetOnly,true);assert.equal(source.driveContent.textTruncated,false);assert.equal(source.driveContent.partial,true);
    const entries=source.driveContent.text.split('\n').map(line=>line.split(',')).filter(([name,date])=>name?.trim()&&/^\d{4}-\d{2}-\d{2}$/.test(date||'')).map(([name,date])=>({title:`${name}'s takeover`,date}));
-   assert.equal(entries.length,13);selected=[{name:'create_calendar_events',arguments:{events:entries}}];
+   assert.equal(entries.length,13);
+   const listed=body.messages.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content)).find(row=>row.tool==='list_calendar_events'&&row.status==='ready');assert(listed);
+   const seen=new Set((listed.calendarContext?.events||[]).map(event=>`${event.title}|${event.start.date}`));
+   const pending=entries.filter(event=>{const key=`${event.title}|${event.date}`;if(seen.has(key))return false;seen.add(key);return true;});
+   assert.equal(pending.length,11);selected=[{name:'create_calendar_events',arguments:{events:pending}}];
   }
-  if(round===4){const saved=body.messages.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content)).find(row=>row.tool==='create_calendar_events');assert.equal(saved.calendarBatchWrite.counts.created,11);assert.equal(saved.calendarBatchWrite.counts.existing,2);assert.equal(saved.calendarBatchWrite.complete,true);}
+  if(round===5){const saved=body.messages.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content)).find(row=>row.tool==='create_calendar_events');assert.equal(saved.calendarBatchWrite.counts.created,11);assert.equal(saved.calendarBatchWrite.counts.existing,0);assert.equal(saved.calendarBatchWrite.complete,true);}
   const calls=selected.map((row,index)=>({id:`native_${round}_${index}`,type:'function',function:{name:row.name,arguments:JSON.stringify(row.arguments)}}));
   return Response.json({choices:[{index:0,finish_reason:calls.length?'tool_calls':'stop',message:{role:'assistant',content:null,...(calls.length?{tool_calls:calls}:{})}}]});
  }});
  const auditEvents=[];const app=createApp({config,provider,googleTools,auth:()=>principal,audit:{recordEvent:async event=>auditEvents.push(event)}});
  const messages=[{role:'user',content:'Add everyone from the takeover sheet to the club calendar on the exact listed dates, all day, with title "[Name]\'s takeover". Skip dates without an assigned name.'},{role:'assistant',content:'I will read the sheet.'},{role:'user',content:'Go do it; keep going.'}];
  const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages,timeZone:'America/New_York'})});
- const records=(await response.text()).trim().split('\n').map(JSON.parse);assert.equal(records.at(-1).type,'done');assert.equal(modelBodies.length,4);assert.equal(f.posts.length,11);assert.equal(f.events.size,12);
+ const records=(await response.text()).trim().split('\n').map(JSON.parse);assert.equal(records.at(-1).type,'done');assert.equal(modelBodies.length,5);assert.equal(f.posts.length,11);assert.equal(f.events.size,12);
  assert.equal(records.find(row=>row.type==='meta').retrieval.filter(row=>row.tool==='create_calendar_events'&&row.status==='ready').length,1,'one backend tool execution can safely complete more than eight rows');
  assert(finalSystem.includes('"calendarBatchWrite"'));assert(finalSystem.includes('first_sheet_only'),'answer must disclose only the first sheet was read');
  assert.equal(googleCalls.filter(url=>url.pathname.endsWith('/export')).length,1);
- assert.deepEqual(auditEvents.find(event=>event.kind==='tool_finished'&&event.tool==='create_calendar_events').counts,{sequence:2,requested:13,created:11,existing:2,failed:0,unattempted:0});
+ assert.deepEqual(auditEvents.find(event=>event.kind==='tool_finished'&&event.tool==='create_calendar_events').counts,{sequence:3,requested:11,created:11,existing:0,failed:0,unattempted:0});
  assert(!JSON.stringify(auditEvents).includes('Member 12'),'operational tool audits contain counts, not source-sheet rows');
  // Scripted extraction verifies source delivery and execution plumbing; actual
  // configured-model checks separately verify semantic interpretation/autonomy.

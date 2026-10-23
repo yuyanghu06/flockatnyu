@@ -9,9 +9,9 @@ const at='2026-10-21T22:00:00.000Z',normalSource='22222222-2222-4222-8222-222222
 const types=()=>['study','meeting','event','social','other'].map((code,i)=>({code,name:code,description:'Synthetic type',icon_key:code,sort_order:(i+1)*10}));
 const event=(patch={})=>({id:F.eventId,name:F.name,notes:'Synthetic UI preview',kind:F.kind,type_id:F.typeId,status:F.status,time_kind:F.timeKind,starts_at:'2026-10-21T21:30:00Z',ends_at:'2026-10-21T22:30:00Z',starts_on:null,ends_on:null,time_zone:'America/New_York',source_id:F.sourceId,source_url:F.sourceUrl,source_record_id:F.sourceRecordId,reported_at:'2026-10-21T21:30:00Z',url:null,...patch});
 const fixture=(e=event(),building=F.buildingId,participants=[])=>({event_types:types(),buildings:[{id:building,name:building===F.buildingId?'Go Greek':'Bobst'}],people:participants.length?[{id:personId,display_name:'Synthetic Person',avatar_url:'/assets/avatars/Synthetic.png',is_trackable:true}]:[],events:[e],event_buildings:[{event_id:e.id,building_id:building,location_notes:''}],event_people:participants});
-async function project(value,{production=false,principal={id:'local-development',allowedSourceIds:[F.sourceId,normalSource,MAP_DEBUG_EVENTS_SOURCE_ID]},authorizeSource=async()=>true,now=at}={}) {
+async function project(value,{production=false,principal={id:'local-development',allowedSourceIds:[F.sourceId,normalSource,MAP_DEBUG_EVENTS_SOURCE_ID]},authorizeSource=()=>true,now=at}={}) {
   let authorizerCalls=0;
-  const result=await createMapPresenceService({store:{configured:true,read:async()=>value},production,now:()=>new Date(now),authorizeSource:async args=>{authorizerCalls++;return authorizeSource(args);}}).read({principal});
+  const result=await createMapPresenceService({store:{configured:true,read:async()=>value},production,now:()=>new Date(now),authorizeSource:Object.assign(args=>{authorizerCalls++;return authorizeSource(args);},{localOnly:true})}).read({principal});
   return {result,authorizerCalls};
 }
 
@@ -53,7 +53,7 @@ test('Guard itself requires exact event object/no participant and bounded finite
 
 test('Normal source authorization and existing Bobst debug scope remain unchanged; every event kind is projected truthfully',async()=>{
   const normal=event({source_id:normalSource,source_url:'https://example.test/normal',source_record_id:'normal',name:'Normal fixture'});
-  for(const allowed of [false,true]){const {result,authorizerCalls}=await project(fixture(normal),{production:true,authorizeSource:async()=>allowed});assert.equal(result.buildings[0].events.length,allowed?1:0);assert.equal(authorizerCalls,1);}
+  for(const allowed of [false,true]){const {result,authorizerCalls}=await project(fixture(normal),{production:true,authorizeSource:()=>allowed});assert.equal(result.buildings[0].events.length,allowed?1:0);assert.equal(authorizerCalls,1);}
   const blocked=await project(fixture(normal),{production:true,principal:{id:'member',allowedSourceIds:[]}});assert.deepEqual(blocked.result.buildings[0].events,[]);assert.equal(blocked.authorizerCalls,0);
   const bobst=event({source_id:MAP_DEBUG_EVENTS_SOURCE_ID,source_url:MAP_DEBUG_EVENTS_SOURCE_URL,source_record_id:'bobst-ui-debug-v1-test',name:'[UI TEST] Existing Bobst fixture'});
   assert.equal((await project(fixture(bobst,'bobst-library'))).result.buildings[0].events.length,1);

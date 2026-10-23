@@ -1,3 +1,92 @@
+## Web package uploaded — live verification pending
+
+Reviewed web deployment `33f90fb7-0134-4489-b6cf-aa0e9b576ac4` is uploaded; build/health checks and planner-worker upload remain. Current final integrity check passed184currentcases with no failures and one unavailable private historical replay. No live outcome is claimed yet.
+
+[Upload](history/2026-10-23_16-28-33-101543-orchestrator-isolated-web-uploaded.md)
+
+## Isolated tools accepted and integrated — deployment underway
+
+All twelve audited operation paths are corrected. Ordinary source, map, Calendar/Member Plan and task tools stay on their own service or saved data; prompts choose workflows. Successful initial finish retains the separately named/audited/budgeted sync exception. Final actual-model workflows pass semantic review, including source-down saved-map reads, attendance/preservation/conflict, Member Plans, Miro fallback, spreadsheet duplicates and graceful source-outage pending-task retention.95inference dispatches include retained failures; they are not a passing-test count.
+
+Independent final current behavior check184passes/0failures/1unavailable private historical replay. Final evaluator ACCEPT; accepted source safely integrated into original checkout with existing edits preserved. Older private/hash-linked experimental checks remain separately unclaimed. Web/worker packages are ready; user authorized live deployment next. No release is claimed until upload/health/read-only checks finish.
+
+[Verification report](../docs/tool-isolation-verification-2026-10-23.md)
+
+[Current workflow checks pass](history/2026-10-23_16-27-43-806066-tester-final-current-workflow-and-legacy-checks.md) · [Isolated tools accepted for integration and deployment](history/2026-10-23_16-27-43-806067-evaluator-tool-isolation-final-accepted.md) · [Accepted isolated tools integrated; release ready](history/2026-10-23_16-27-43-806068-orchestrator-tool-isolation-integrated-release-ready.md)
+
+## Saved-task regression checks pass; final model retry pending
+
+The initial prompt can now see exact saved-task queue coverage. Tests confirm it does not complete omitted inputs or expose task contents, and checkpointing preserves one existing task. Changed/expired/removed originals remain protected. Final outage retry will use a freshly retained fixture and cap10; prior87dispatches remain closed. Legacy fixture maintenance continues. No deployment yet.
+
+[Regression pass](history/2026-10-23_16-17-18-472228-tester-saved-task-coverage-regressions-pass.md)
+
+## Final common workflows pass; outage fix under verification
+
+Miro fallback and duplicate-aware spreadsheet copy pass independent semantic review. A genuine outage case exposed missing initial saved-task coverage and duplicate unfinished checkpoints; bounded correction now exposes only exact queue coverage and preserves one existing task without completing omitted inputs.87model dispatches are closed/retained. Dedicated regression/model check and legacy-fixture refresh underway. No deployment yet.
+
+[Final common workflows pass; outage accounting requests fixes](history/2026-10-23_16-13-53-063261-tester-final-common-workflows-and-outage-findings.md) · [Expose saved task coverage and avoid duplicate unfinished checkpoints](history/2026-10-23_16-13-53-063262-coder-initial-task-coverage-and-checkpoint-reuse.md)
+
+## Tool isolation resumed — final checks, then deploy
+
+User resumed testing and authorized deployment after acceptance. Implementation remains in the isolated `codex/tool-isolation` worktree. Independent reviewer accepted the final two-case test setup; actual-model Miro/Drive checks are running with simulated business storage and hard24request cap. Historical Member Plan sync/forged signature/revoked-runner checks now pass. Source-outage completion error remains under review; pending data is protected. Root runtime is not integrated or deployed yet.
+
+[Resume pass](history/2026-10-23_16-07-19-827953-orchestrator-tool-isolation-resumed-final-checks.md)
+
+## Resume isolated tools after restart
+
+- [x] Save source changes, closed model results, incomplete-state handoff and root backup.
+- [ ] Verify old signed Member Plan movement/local-source guards after latest callback fix.
+- [ ] Fresh-pin and run final Miro/Drive two-case24cap model gate; inspect actual workflow/results.
+- [ ] Independent final acceptance and safe root integration; no deployment claimed.
+- [ ] Keep unrelated local RAM work separate from the Flock isolated worktree.
+
+## Expanded local workflow verification — October23
+
+- [x] Implement isolated map/source/worker paths and separate post-finish sync; focused boundary checks pass.
+- [x] Fix partial-sync receipts, configured stage cap and same-input mutation-aware sync identity found during independent review.
+- [ ] Complete exact local Discord/Miro source metadata binding correction without provider originals or write-time DB reads.
+- [ ] Freeze source; run six fresh actual-model simulated-service cases under48dispatch cap.
+- [ ] Run uncovered common tasks from last night's milestone examples under separate predeclared32dispatch cap; verify actual tool workflow, not merely answer wording.
+- [ ] Independent final evaluation, safe integration and truthful deployment/verification limits.
+
+## Implement isolated tools — October23
+
+- [x] Accept bounded plan and preserve latest candidate in separate checkout.
+- [ ] Implement DB-only map tools, Calendar-only Calendar/Member Plans tools, local task completion and bookkeeping-only finish/caps.
+- [ ] Remove hidden Discord summarization/Calendar duplicate matching; rewrite workflows as chat/planner prompts.
+- [ ] Independently test actual adapters/runner boundaries, preservation/errors and bounded configured-model behavior on simulated services.
+- [ ] Evaluate/fix/retest and safely integrate without overwriting separate work.
+
+## All-agent tool isolation audit — October23
+
+- [x] Inventory32chat and25staged-planner names (43distinct), plus candidate-only participation patch (44distinct).
+- [x] Complete independent source/map/worker audits and count review:11root violations,12candidate; full name ledger and exact paths recorded.
+- [x] Distinguish variant-specific behavior, authentication/local/version checks, runner-cap sync and source-only/deployment limits.
+- Runtime fixes remain unimplemented by this audit; preserve separate managed candidate work.
+
+## Isolated tools instruction — October23
+
+- [x] Record the user's rule in AGENTS.md: isolate tool operations and put multi-tool workflows in prompts; supersede conflicting hidden source-read requirements.
+- Runtime follow-up remains unimplemented: remove hidden cross-service original fetches from map tools and inspect other tools against this rule when implementation is requested.
+
+## Requested chat map log diagnosis — October23
+
+- [x] Inspect web Railway logs and trace chat map timeout/duplicate retries; distinguish person lookup, confirmed failure and suspected provider bottleneck.
+- [x] Independently check code and17offline map read/diagnostic scenarios; report limits without replaying live chat or changing business data.
+- Follow-up identified, not implemented in this diagnostic request: content-free map phase timings and narrower/reused provider verification with access/revocation checks preserved.
+
+## Active worktree handoff
+
+Continue the October23 GoGreek repair and exact seven-case test gate in `/Users/yuyang/.codex/worktrees/agent-use-case-tests/flockatnyu`. Its milestone/checklist are authoritative for ongoing application changes; preserve both checkouts and local setup notes.
+
+## Resumed GoGreek attendance repair — October23
+
+- [x] Locate latest codex/dev handoff, preserve local setup notes and verify screenshot originals are queued with attendance still missing.
+- [ ] Fix redundant live checks around local task/context tools and repeated follow-up context; preserve access, ownership and budgets.
+- [ ] Independently model-test short contextual multi-person RSVPs and latest UTC/null-inheritance/parent-revision chat corrections using simulated business stores.
+- [ ] Review, isolated release without rolling back newer production changes, verify actual attendance/projection and exact cleanup.
+- Historical STOPPED wording below is superseded by the user's October23 resume.
+
 ## Git checkpoint
 
 - [x] Save the complete nonignored working tree in checkpoint `1fd5122` for user-requested Git publication; retain all documented handoff limitations.
@@ -456,6 +545,16 @@ User requested documentation only and no other work. [Read exact state/IDs](live
 
 - [x] Chat budget coder pass: twenty minute private bridge implemented; evidence in current milestone.
 - [x] Chat budget orchestrator pass: twenty minute discord plan; evidence in current milestone.
+## Repository synchronization
+
+- [x] Pull the current main branch from GitHub and preserve all local developer-setup notes; 22 commits integrated at 9a4b037 with documentation conflicts resolved.
+
+## Current Mac developer connections
+
+- [x] Install the exact project-restricted Supabase MCP connection, complete read-only OAuth and verify live tools plus a read-only database response.
+- [x] Confirm Railway CLI is absent from PATH and common install locations.
+- [x] Complete the user-authorized Railway CLI installation, browser login and read-only project access checks; link the existing tech-nyu production environment without a default service.
+
 - [x] Chat budget orchestrator pass: thirty call rollout blocked; evidence in current milestone.
 ## Shared chat budget rollout pending
 

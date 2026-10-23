@@ -73,14 +73,15 @@ async function adapterFixture({calendarStatus='ready',discordPatch={},envPatch={
  return {adapters,calls,writes:()=>writes};
 }
 
-test('Bundled authorizer enforces Gmail identity and current Discord guild/channel/source/enabled/exclusion policy',async()=>{
+test('saved-policy authorizer enforces input scope while explicit Discord tools own live provider checks',async()=>{
  const f=await adapterFixture(),a=f.adapters,authorize=event=>a.authorizeEvent({event,principal:a.principal});
  assert.equal(await authorize(row().raw_response),true);
  for(const event of [{...row().raw_response,source_id:randomUUID()},{...row().raw_response,event_type:'email_deleted'},{...row().raw_response,source:'drive'}])assert.equal(await authorize(event),false);
  const event={source:'discord',source_id:sourceId,event_type:'message_created',payload:{guild_id:'100',channel_id:'200'}};assert.equal(await authorize(event),true);
- for(const patch of [{policy:{paused:true}},{policy:{excludedChannelIds:['200']}},{channel:{enabled:false}},{channel:{sourceId:randomUUID()}},{liveChannel:{guild_id:'999'}}]){
+ for(const patch of [{policy:{paused:true}},{policy:{excludedChannelIds:['200']}},{channel:{enabled:false}},{channel:{sourceId:randomUUID()}}]){
   const denied=await adapterFixture({discordPatch:patch});assert.equal(await denied.adapters.authorizeEvent({event,principal:denied.adapters.principal}),false);
  }
+ const liveOnlyChange=await adapterFixture({discordPatch:{liveChannel:{guild_id:'999'}}});assert.equal(await liveOnlyChange.adapters.authorizeEvent({event,principal:liveOnlyChange.adapters.principal}),true,'Unrelated per-tool authorization uses saved DB policy, not a hidden provider read');
  assert.equal(await authorize({...event,payload:{...event.payload,guild_id:'999'}}),false);assert.equal(await authorize({...event,payload:{...event.payload,channel_id:'999'}}),false);
  const revoked=await adapterFixture({envPatch:{AGENT_GMAIL_SOURCE_ID:randomUUID()}});assert.equal(await revoked.adapters.authorizeEvent({event:row().raw_response,principal:revoked.adapters.principal}),false);
 });

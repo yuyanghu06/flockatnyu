@@ -37,7 +37,7 @@ export function createMapPresenceService({store=createMapPresenceStore(),product
       try {return await boundedWork(async readSignal=>{
         const date=new Date(now()),at=date.getTime();if(!Number.isFinite(at))throw Error('invalid_observation_time');
         const observedAt=date.toISOString(),data=validateSnapshot(await store.read({observedAt,signal:readSignal}));
-        const readAuthorizer=typeof authorizeSource?.createReadScope==='function'?authorizeSource.createReadScope({principal,snapshot:data,signal:readSignal}):authorizeSource;
+        const readAuthorizer=typeof authorizeSource?.createReadScope==='function'?await authorizeSource.createReadScope({principal,snapshot:data,signal:readSignal}):authorizeSource;
         const eventTypes=new Map(data.event_types.map(type=>[type.code,type]));
         const people=new Map(data.people.filter(p=>uuid(p.id)&&text(p.display_name,200,1)&&p.is_trackable===true).map(p=>[p.id,p]));
         const linksByEvent=new Map(),peopleByEvent=new Map();

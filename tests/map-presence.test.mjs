@@ -11,7 +11,7 @@ const person=(patch={})=>({id:pid,display_name:'Synthetic Person',avatar_url:'/a
 const event=(patch={})=>({id:eid,name:'Studying',notes:'Original activity',kind:'personal_plan',type_id:'other',status:'confirmed',time_kind:'timed',starts_at:'2026-10-18T15:00:00Z',ends_at:'2026-10-18T17:00:00Z',starts_on:null,ends_on:null,time_zone:'America/New_York',source_id:MAP_DEBUG_SOURCE_ID,source_url:MAP_DEBUG_SOURCE_URL,source_record_id:'synthetic-event',url:null,reported_at:'2026-10-18T15:00:00Z',created_at:at,updated_at:at,...patch});
 const participant=(patch={})=>({event_id:eid,person_id:pid,attendance_status:'going',presence_basis:'planned',label:'Studying',starts_at:null,ends_at:null,source_id:MAP_DEBUG_SOURCE_ID,source_url:MAP_DEBUG_SOURCE_URL,reported_at:'2026-10-18T15:00:00Z',...patch});
 const data=(ep={},pp={},extra={})=>({event_types:eventTypes(),buildings:[{id:'bobst-library',name:'Bobst Library'}],people:[person()],events:[event(ep)],event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:'Room 101'}],event_people:[participant(pp)],...extra});
-const service=(value=data(),options={})=>createMapPresenceService({store:{configured:true,read:async()=>value},production:false,now:()=>new Date(at),...options});
+const service=(value=data(),options={})=>createMapPresenceService({store:{configured:true,read:async()=>value},production:false,now:()=>new Date(at),...options,...(typeof options.authorizeSource==='function'?{authorizeSource:Object.assign(options.authorizeSource,{localOnly:true})}:{})});
 const read=(s,p=principal)=>s.read({principal:p});
 
 test('normalized projection preserves safe UI fields and no provenance or provider identities',async()=>{
@@ -26,9 +26,9 @@ test('authentication precedes storage; legacy JSON never serves as fallback',asy
 });
 test('event and participation provenance independently require allowlist and positive current policy',async()=>{
   const ep={source_id:sid,source_url:'https://example.com/event'},pp={source_id:sid,source_url:'https://example.com/person'};
-  for(const authorizeSource of [null,async()=>false,async()=>1])assert.deepEqual((await read(service(data(ep,pp),{authorizeSource}))).buildings[0].people,[]);
-  for(const blocked of ['event','person'])assert.deepEqual((await read(service(data(ep,pp),{authorizeSource:async a=>!a.sourceUrl.endsWith(blocked)}))).buildings[0].people,[]);
-  let calls=0;const s=service(data(ep,pp),{authorizeSource:async a=>{calls++;assert.equal(a.principal,principal);assert.equal(a.buildingId,'bobst-library');assert(a.signal instanceof AbortSignal);return true;}});
+  for(const authorizeSource of [()=>false,()=>1])assert.deepEqual((await read(service(data(ep,pp),{authorizeSource}))).buildings[0].people,[]);
+  for(const blocked of ['event','person'])assert.deepEqual((await read(service(data(ep,pp),{authorizeSource: a=>!a.sourceUrl.endsWith(blocked)}))).buildings[0].people,[]);
+  let calls=0;const s=service(data(ep,pp),{authorizeSource: a=>{calls++;assert.equal(a.principal,principal);assert.equal(a.buildingId,'bobst-library');assert(a.signal instanceof AbortSignal);return true;}});
   assert.equal((await read(s)).buildings[0].people.length,1);assert.equal(calls,2);assert.equal((await read(s,{id:'member',allowedSourceIds:[]})).buildings[0].people.length,0);
 });
 test('all people display at all event buildings and same-building overlaps deduplicate deterministically',async()=>{
@@ -36,8 +36,8 @@ test('all people display at all event buildings and same-building overlaps dedup
     buildings:[{id:'bobst-library',name:'Bobst'},{id:'courant-institute',name:'Courant'}],people:[person(),person({id:other})],events:[event(),event({id:second,name:'Project',ends_at:'2026-10-18T16:30:00Z',reported_at:'2026-10-18T15:30:00Z'})],
     event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:''},{event_id:eid,building_id:'courant-institute',location_notes:''},{event_id:second,building_id:'bobst-library',location_notes:''}],event_people:[participant(),participant({person_id:other}),participant({event_id:second,label:'Working on project'})]});
   for(const e of [...value.events,...value.event_people])Object.assign(e,{source_id:sid,source_url:'https://example.com/evidence'});
-  const r=await read(service(value,{authorizeSource:async()=>true}));assert.deepEqual(r.buildings.map(b=>b.people.length),[2,2]);assert.equal(r.buildings[0].people[0].label,'Working on project');assert.equal(r.buildings[0].people[0].activities.length,2);assert.equal(r.buildings[0].people[0].expiresAt,'2026-10-18T17:00:00.000Z');
-  assert.deepEqual(await read(service({...value,events:[...value.events].reverse()},{authorizeSource:async()=>true})),r);
+  const r=await read(service(value,{authorizeSource:()=>true}));assert.deepEqual(r.buildings.map(b=>b.people.length),[2,2]);assert.equal(r.buildings[0].people[0].label,'Working on project');assert.equal(r.buildings[0].people[0].activities.length,2);assert.equal(r.buildings[0].people[0].expiresAt,'2026-10-18T17:00:00.000Z');
+  assert.deepEqual(await read(service({...value,events:[...value.events].reverse()},{authorizeSource:()=>true})),r);
 });
 test('overlap captions choose newest authorized active nonblank label without inferring from event names',async()=>{
   const newerId='33333333-3333-3333-3333-333333333334';
@@ -46,7 +46,7 @@ test('overlap captions choose newest authorized active nonblank label without in
     event_buildings:[{event_id:eid,building_id:'bobst-library',location_notes:''},{event_id:newerId,building_id:'bobst-library',location_notes:''}],
     event_people:[participant({label:oldLabel,source_id:sid,source_url:'https://example.com/allowed',...oldParticipant}),participant({event_id:newerId,label:newLabel,reported_at:'2026-10-18T15:30:00Z',source_id:sid,source_url:'https://example.com/allowed'})],
   });
-  const project=async value=>read(service(value,{authorizeSource:async a=>!a.sourceUrl.endsWith('/denied')}));
+  const project=async value=>read(service(value,{authorizeSource: a=>!a.sourceUrl.endsWith('/denied')}));
   for(const newestBlank of ['', ' \t\n ']) {
     const result=await project(overlap(newestBlank));
     assert.equal(result.buildings[0].people[0].label,'  working on flock@nyu  ','Preserve the supplied nonblank activity verbatim');
@@ -83,17 +83,17 @@ test('unknown times, cancellations, tentative participation and malformed interv
 });
 test('scheduled events and attendees have separate authorization; active confirmed attendance places avatars',async()=>{
   const ep={kind:'scheduled_event',source_id:sid,source_url:'https://example.com/event'},pp={source_id:sid,source_url:'https://example.com/person'};
-  const r=await read(service(data(ep,pp),{authorizeSource:async()=>true}));assert.equal(r.buildings[0].events.length,1);assert.equal(r.buildings[0].events[0].location,'Room 101');assert.equal(r.buildings[0].events[0].attendees.length,1);assert.equal(r.buildings[0].people.length,1);
-  const denied=await read(service(data(ep,pp),{authorizeSource:async a=>a.sourceUrl.endsWith('event')}));assert.equal(denied.buildings[0].events.length,1);assert.deepEqual(denied.buildings[0].events[0].attendees,[]);assert.deepEqual(denied.buildings[0].people,[]);
-  const tentative=await read(service(data({...ep,status:'tentative'},pp),{authorizeSource:async()=>true}));assert.equal(tentative.buildings[0].events.length,1);assert.equal(tentative.buildings[0].people.length,0);
+  const r=await read(service(data(ep,pp),{authorizeSource:()=>true}));assert.equal(r.buildings[0].events.length,1);assert.equal(r.buildings[0].events[0].location,'Room 101');assert.equal(r.buildings[0].events[0].attendees.length,1);assert.equal(r.buildings[0].people.length,1);
+  const denied=await read(service(data(ep,pp),{authorizeSource: a=>a.sourceUrl.endsWith('event')}));assert.equal(denied.buildings[0].events.length,1);assert.deepEqual(denied.buildings[0].events[0].attendees,[]);assert.deepEqual(denied.buildings[0].people,[]);
+  const tentative=await read(service(data({...ep,status:'tentative'},pp),{authorizeSource:()=>true}));assert.equal(tentative.buildings[0].events.length,1);assert.equal(tentative.buildings[0].people.length,0);
 });
 test('building card lists every normalized event kind with active or future known windows',async()=>{
   for(const kind of ['presence','personal_plan','scheduled_event'])for(const future of [false,true]) {
     const ep={kind,name:'Stored building activity',source_id:sid,source_url:'https://example.com/event',...(future?{starts_at:'2026-10-18T17:00:00Z',ends_at:'2026-10-18T19:00:00Z'}:{})};
     const value=data(ep,{source_id:sid,source_url:'https://example.com/person',label:''},{buildings:[{id:'stern-school-of-business',name:'Stern School of Business'}],event_buildings:[{event_id:eid,building_id:'stern-school-of-business',location_notes:''}]});
-    const result=await read(service(value,{authorizeSource:async()=>true}));assert.equal(result.buildings[0].events.length,1);assert.equal(result.buildings[0].events[0].title,'Stored building activity');assert.equal(result.buildings[0].events[0].attendees[0].id,pid);assert.equal(result.buildings[0].events[0].attendees[0].avatarUrl,person().avatar_url);
+    const result=await read(service(value,{authorizeSource:()=>true}));assert.equal(result.buildings[0].events.length,1);assert.equal(result.buildings[0].events[0].title,'Stored building activity');assert.equal(result.buildings[0].events[0].attendees[0].id,pid);assert.equal(result.buildings[0].events[0].attendees[0].avatarUrl,person().avatar_url);
     assert.equal(result.buildings[0].people.length,future?0:1);assert.equal(result.upcoming.length,future?1:0);
-    const tentative=await read(service({...value,events:[{...value.events[0],status:'tentative'}]},{authorizeSource:async()=>true}));assert.equal(tentative.buildings[0].events.length,1);assert.equal(tentative.buildings[0].people.length,0);
+    const tentative=await read(service({...value,events:[{...value.events[0],status:'tentative'}]},{authorizeSource:()=>true}));assert.equal(tentative.buildings[0].events.length,1);assert.equal(tentative.buildings[0].people.length,0);
   }
 });
 test('building event types come only from validated catalogue metadata for each supported classification',async()=>{
@@ -110,15 +110,15 @@ test('personal activities require a current or future authorized participant bef
     const base=data({kind,name:'Private stored activity',source_id:sid,source_url:'https://example.com/event'},{source_id:sid,source_url:'https://example.com/person'});
     const cases=[{...base,event_people:[]},{...base,event_people:[{...base.event_people[0],source_url:'https://example.com/denied'}]},{...base,event_people:[{...base.event_people[0],ends_at:at}]},{...base,event_people:[{...base.event_people[0],attendance_status:'declined'}]},{...base,people:[person({is_trackable:false})]}];
     for(const value of cases) {
-      const result=await read(service(value,{authorizeSource:async a=>!a.sourceUrl.endsWith('/denied')}));assert.deepEqual(result.buildings[0].events,[]);assert(!JSON.stringify(result).includes('Private stored activity'));assert(!JSON.stringify(result).includes(person().avatar_url));
+      const result=await read(service(value,{authorizeSource: a=>!a.sourceUrl.endsWith('/denied')}));assert.deepEqual(result.buildings[0].events,[]);assert(!JSON.stringify(result).includes('Private stored activity'));assert(!JSON.stringify(result).includes(person().avatar_url));
     }
-    for(const patch of [{status:'cancelled'},{status:'superseded'},{ends_at:at},{time_kind:'unknown',starts_at:null,ends_at:null}])assert.deepEqual((await read(service({...base,events:[{...base.events[0],...patch}]},{authorizeSource:async()=>true}))).buildings[0].events,[]);
+    for(const patch of [{status:'cancelled'},{status:'superseded'},{ends_at:at},{time_kind:'unknown',starts_at:null,ends_at:null}])assert.deepEqual((await read(service({...base,events:[{...base.events[0],...patch}]},{authorizeSource:()=>true}))).buildings[0].events,[]);
   }
-  const emptyScheduled=data({kind:'scheduled_event',source_id:sid,source_url:'https://example.com/event'}, {}, {event_people:[]});assert.equal((await read(service(emptyScheduled,{authorizeSource:async()=>true}))).buildings[0].events.length,1,'Scheduled events may still have no attendees');
+  const emptyScheduled=data({kind:'scheduled_event',source_id:sid,source_url:'https://example.com/event'}, {}, {event_people:[]});assert.equal((await read(service(emptyScheduled,{authorizeSource:()=>true}))).buildings[0].events.length,1,'Scheduled events may still have no attendees');
 });
 test('local debug bypass is exact and cannot reach production, another principal, building or reported participation',async()=>{
   assert.equal((await read(service(data(),{production:true}))).buildings[0].people.length,0);assert.equal((await read(service(),{id:'member',allowedSourceIds:[MAP_DEBUG_SOURCE_ID]})).buildings[0].people.length,0);
-  for(const ep of [{source_id:sid},{source_url:'https://example.com/forged'},{kind:'scheduled_event'}])assert.equal((await read(service(data(ep),{authorizeSource:async()=>true}))).buildings[0].people.length,0);
+  for(const ep of [{source_id:sid},{source_url:'https://example.com/forged'},{kind:'scheduled_event'}])assert.equal((await read(service(data(ep),{authorizeSource:()=>true}))).buildings[0].people.length,0);
   assert.equal((await read(service(data({}, {presence_basis:'reported'})))).buildings[0].people.length,0);
   const value=data({}, {},{buildings:[{id:'courant-institute',name:'Courant'}],event_buildings:[{event_id:eid,building_id:'courant-institute',location_notes:''}]});assert.equal((await read(service(value))).buildings[0].people.length,0);
 });
@@ -130,7 +130,7 @@ test('local owner plans retain exact owner and location scope',async()=>{
 test('Bobst event fixtures require legacy stable source-record prefix and display-name prefix',async()=>{
   const ep={kind:'scheduled_event',name:'[UI TEST] Synthetic',source_record_id:'bobst-ui-debug-v1-test',source_id:MAP_DEBUG_EVENTS_SOURCE_ID,source_url:MAP_DEBUG_EVENTS_SOURCE_URL},pp={source_id:MAP_DEBUG_EVENTS_SOURCE_ID,source_url:MAP_DEBUG_EVENTS_SOURCE_URL};
   assert.equal((await read(service(data(ep,pp)))).buildings[0].events.length,1);assert.equal((await read(service(data(ep,pp)))).buildings[0].people.length,1);
-  for(const patch of [{name:'Ordinary event'},{source_record_id:'ordinary'},{source_url:'https://example.com/forged'}])assert.equal((await read(service(data({...ep,...patch},pp),{authorizeSource:async()=>true}))).buildings[0].events.length,0);
+  for(const patch of [{name:'Ordinary event'},{source_record_id:'ordinary'},{source_url:'https://example.com/forged'}])assert.equal((await read(service(data({...ep,...patch},pp),{authorizeSource:()=>true}))).buildings[0].events.length,0);
   assert.equal((await read(service(data(ep,pp),{production:true}))).buildings[0].events.length,0);
 });
 test('labels remain exact plain text; unsafe portrait paths use initials',async()=>{
@@ -140,17 +140,17 @@ test('labels remain exact plain text; unsafe portrait paths use initials',async(
 test('snapshot duplicates, bounds, adapter errors and invalid clocks fail closed',async()=>{
   for(const value of [{},data({}, {}, {people:[person(),person()]}),data({}, {}, {events:Array(2001).fill(event())}),data({}, {},{event_people:Array(20001).fill(participant())})])assert.equal((await read(service(value))).status,'unavailable');
   assert.equal((await read(service(data(),{now:()=>new Date('invalid')}))).status,'unavailable');assert.equal((await read(service(data(),{store:{configured:false}}))).status,'not_configured');
-  assert.equal((await read(service(data({source_id:sid,source_url:'https://example.com/source'}),{authorizeSource:async()=>{throw Error('PRIVATE');}}))).status,'unavailable');
+  assert.equal((await read(service(data({source_id:sid,source_url:'https://example.com/source'}),{authorizeSource:()=>{throw Error('PRIVATE');}}))).status,'unavailable');
 });
 test('large relationship expansion fails unavailable instead of silently truncating upcoming or event copies',async()=>{
   const buildings=Array.from({length:100},(_,i)=>({id:`building-${i}`,name:`Building ${i}`}));
   const events=Array.from({length:2},(_,i)=>event({id:`33333333-3333-3333-3333-${String(i).padStart(12,'0')}`,source_id:sid,source_url:'https://example.com/event',starts_at:'2026-10-19T15:00:00Z',ends_at:'2026-10-19T17:00:00Z'}));
   const people=Array.from({length:251},(_,i)=>person({id:`11111111-1111-1111-1111-${String(i).padStart(12,'0')}`}));
   const value={event_types:eventTypes(),buildings,people,events,event_buildings:events.flatMap(e=>buildings.map(b=>({event_id:e.id,building_id:b.id,location_notes:''}))),event_people:events.flatMap(e=>people.map(p=>participant({event_id:e.id,person_id:p.id,source_id:sid,source_url:'https://example.com/person'})))};
-  assert.equal((await read(service(value,{authorizeSource:async()=>true}))).status,'unavailable');
+  assert.equal((await read(service(value,{authorizeSource:()=>true}))).status,'unavailable');
   const expanded=Array.from({length:50},(_,i)=>event({id:`33333333-3333-3333-3333-${String(i).padStart(12,'0')}`,kind:'scheduled_event',notes:'x'.repeat(4000),source_id:sid,source_url:'https://example.com/event'}));
   const eventCopies={...value,events:expanded,event_people:[],event_buildings:expanded.flatMap(e=>buildings.map(b=>({event_id:e.id,building_id:b.id,location_notes:''})))};
-  assert.equal((await read(service(eventCopies,{authorizeSource:async()=>true}))).status,'unavailable');
+  assert.equal((await read(service(eventCopies,{authorizeSource:()=>true}))).status,'unavailable');
 });
 test('store reads one fixed-origin RPC with service-only headers and no legacy operations',async()=>{
   const calls=[],store=createMapPresenceStore({env:{SUPABASE_URL:'https://synthetic.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'PRIVATE_KEY'},fetchImpl:async(url,options)=>{calls.push({url,options});return Response.json(data());}});assert.deepEqual(await store.read({observedAt:at}),data());assert.equal(calls.length,1);assert.equal(calls[0].url,'https://synthetic.supabase.co/rest/v1/rpc/map_read_events');assert.equal(calls[0].options.method,'POST');assert.deepEqual(JSON.parse(calls[0].options.body),{p_at:at});assert.equal(calls[0].options.redirect,'error');assert.equal(calls[0].options.headers.Authorization,'Bearer PRIVATE_KEY');
@@ -186,48 +186,12 @@ test('API authenticated production access still hides local-only fixtures',async
   assert.equal(response.status,200);const result=await response.json();assert.equal(result.status,'ok');assert.equal(result.buildings[0].people.length,0);
 });
 
-test('one projection shares originals across buildings and chat participants; the next read rechecks access',async()=>{
-  const origin='https://flock.example',sourceUrl='https://discord.com/channels/111/222/333';
-  const actor={id:'member',allowedSourceIds:[sid],liveDiscord:{guildId:'111'}};
-  const roster=Array.from({length:24},(_,i)=>person({id:`11111111-1111-1111-1111-${String(i).padStart(12,'0')}`}));
-  const buildings=Array.from({length:9},(_,i)=>({id:`building-${i}`,name:`Building ${i}`}));
-  const events=[event({kind:'scheduled_event',source_id:sid,source_url:sourceUrl}),event({id:'33333333-3333-3333-3333-333333333334',kind:'scheduled_event',source_id:sid,source_url:sourceUrl})];
-  const value=data({}, {}, {people:roster,buildings,events,event_buildings:events.flatMap(e=>buildings.map(b=>({event_id:e.id,building_id:b.id,location_notes:''}))),
-    event_people:events.flatMap(e=>roster.map(p=>participant({event_id:e.id,person_id:p.id,source_id:sid,source_url:`${origin}/?event=${e.id}#attendance-${p.id}-44444444-4444-4444-4444-444444444444`})))});
-  let reads=0,providerReads=0,access=true;
-  const store={configured:true,read:async()=>{reads++;return value;}};
-  const authorizeSource=createMapSourceAuthorizer({store,publicOrigin:origin,liveDiscordService:{configured:true,readMessages:async()=>{
-    providerReads++;await new Promise(resolve=>setTimeout(resolve,20));
-    return access?{status:'ready',sources:[{sourceId:sid,url:sourceUrl,guildId:'111',channelId:'222',messageId:'333'}]}:{status:'forbidden'};
-  }}});
-  const projection=service(value,{store,authorizeSource,production:true,timeoutMs:1500});
-  const visible=await read(projection,actor);assert.equal(visible.status,'ok');
-  for(const building of visible.buildings) {assert.equal(building.events.length,2);assert.equal(building.people.length,24);assert.equal(building.events[0].attendees.length,24);}
-  assert.equal(reads,1,'markers do not reread storage');assert.equal(providerReads,1,'all exact originals share one real provider check');
-  access=false;const revoked=await read(projection,actor);assert.equal(revoked.status,'ok');assert.equal(reads,2);assert.equal(providerReads,2);
-  for(const building of revoked.buildings){assert.deepEqual(building.events,[]);assert.deepEqual(building.people,[]);}
-});
-test('independent event and participant checks overlap with at most four external checks in flight',async()=>{
-  const events=Array.from({length:8},(_,i)=>event({id:`33333333-3333-3333-3333-${String(i).padStart(12,'0')}`,kind:'scheduled_event',source_id:sid,source_url:`https://example.com/event-${i}`}));
-  const roster=Array.from({length:8},(_,i)=>person({id:`11111111-1111-1111-1111-${String(i).padStart(12,'0')}`}));
-  const value=data({}, {}, {people:roster,events,event_buildings:events.map(e=>({event_id:e.id,building_id:'bobst-library',location_notes:''})),
-    event_people:roster.map(p=>participant({event_id:events[0].id,person_id:p.id,source_id:sid,source_url:`https://example.com/person-${p.id}`}))});
-  let active=0,max=0,calls=0;const eventPhases=[],participantPhases=[];
-  const authorizeSource=async args=>{
-    active++;calls++;max=Math.max(max,active);(args.personId?participantPhases:eventPhases).push(active);
-    await new Promise(resolve=>setTimeout(resolve,20));active--;return true;
-  };
-  const result=await read(service(value,{authorizeSource,timeoutMs:1000}));assert.equal(result.status,'ok');assert.equal(calls,16);
-  assert.equal(result.buildings[0].events.length,8);assert.equal(result.buildings[0].people.length,8);
-  assert.equal(max,4);assert(eventPhases.includes(4));assert(participantPhases.includes(4));
-});
-test('deadline cancellation aborts active checks and never starts queued authorization',async()=>{
-  const events=Array.from({length:8},(_,i)=>event({id:`33333333-3333-3333-3333-${String(i).padStart(12,'0')}`,source_id:sid,source_url:`https://example.com/event-${i}`}));
-  const value=data({}, {}, {events,event_buildings:events.map(e=>({event_id:e.id,building_id:'bobst-library',location_notes:''})),event_people:[]});
-  let calls=0,aborted=0;
-  const result=await read(service(value,{timeoutMs:50,authorizeSource:async({signal})=>{
-    calls++;return new Promise(resolve=>signal.addEventListener('abort',()=>{aborted++;resolve(true);},{once:true}));
-  }}));
-  assert.equal(result.status,'unavailable');await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(calls,4);assert.equal(aborted,4);
+test('browser projection uses one DB snapshot despite unavailable providers and applies current local grants',async()=>{
+  const calendarId='fixed@example.com',sourceUrl=`https://calendar.google.com/calendar/event?eid=${Buffer.from(`event001 ${calendarId}`).toString('base64url')}`;
+  const value=data({kind:'scheduled_event',source_id:sid,source_url:sourceUrl,source_record_id:'event001'},{source_id:sid,source_url:sourceUrl});
+  const actor={id:'member',allowedSourceIds:[sid],googleAccess:true};let reads=0,providerCalls=0;
+  const store={configured:true,read:async()=>{reads++;return structuredClone(value);}},authorizeSource=createMapSourceAuthorizer({calendarSourceId:sid,calendarClient:{configured:false,calendarId,readEvent:()=>{providerCalls++;throw Error('No source read');}}});
+  const projected=createMapPresenceService({store,authorizeSource,production:true,now:()=>new Date(at)});
+  assert.equal((await projected.read({principal:actor})).buildings[0].events[0].attendees.length,1);assert.equal(reads,1);assert.equal(providerCalls,0);
+  actor.allowedSourceIds=[];assert.deepEqual((await projected.read({principal:actor})).buildings[0].events,[]);assert.equal(reads,2);assert.equal(providerCalls,0);
 });

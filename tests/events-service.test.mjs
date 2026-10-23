@@ -1,21 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createMapEventService,createMapEventStore} from '../server/map/events.js';
+import {createMapEventService,createMapEventStore,mapReadContext} from '../server/map/events.js';
 const at='2026-10-18T16:00:00.000Z',id='33333333-3333-3333-3333-333333333333',pid='11111111-1111-1111-1111-111111111111',sid='22222222-2222-2222-2222-222222222222',other='22222222-2222-2222-2222-222222222223';
 const eventTypes=()=>['study','meeting','event','social','other'].map((code,index)=>({code,name:code[0].toUpperCase()+code.slice(1),description:'Synthetic type',icon_key:code,sort_order:(index+1)*10}));
 const principal={id:'member',allowedSourceIds:[sid,other]};
 const event=(patch={})=>({id,name:'Project session',notes:'Original text',kind:'scheduled_event',type_id:'other',status:'confirmed',time_kind:'timed',starts_at:'2026-10-18T15:00:00Z',ends_at:'2026-10-18T17:00:00Z',starts_on:null,ends_on:null,time_zone:'America/New_York',source_id:sid,source_url:'https://example.com/event',source_record_id:'provider:stable-original',url:null,reported_at:'2026-10-18T15:00:00Z',...patch});
 const participant=(patch={})=>({person_id:pid,attendance_status:'going',presence_basis:'planned',label:'Working on project',starts_at:null,ends_at:null,source_id:sid,source_url:'https://example.com/attendance',reported_at:'2026-10-18T15:00:00Z',...patch});
 const snapshot=(patch={})=>({event_types:eventTypes(),buildings:[{id:'bobst-library',name:'Bobst'}],people:[{id:pid,display_name:'Synthetic Person',avatar_url:'/assets/avatars/Synthetic.png',is_trackable:true,email:'PRIVATE_EMAIL'}],events:[],event_buildings:[],event_people:[],...patch});
-function fixture({data=snapshot(),authorizeSource=async()=>true,upsert,lookup}={}) {
+function fixture({data=snapshot(),authorizeSource=()=>true,upsert,lookup}={}) {
   const writes=[];const store={configured:true,read:async()=>data,lookup:lookup??(async()=>data.people[0]),upsert:upsert??(async args=>{writes.push(args);return {status:'applied',event_id:args.event.id,updated_at:at};})};
-  return {writes,service:createMapEventService({store,authorizeSource,now:()=>new Date(at)})};
+  return {writes,service:createMapEventService({store,authorizeSource:typeof authorizeSource==='function'?Object.assign(authorizeSource,{localOnly:true}):null,now:()=>new Date(at)})};
 }
-const write=(service,patch={})=>service.upsert({principal,event:event(),buildings:[{building_id:'bobst-library',location_notes:'Room 101'}],people:[participant()],expectedUpdatedAt:null,...patch});
+const write=async(service,patch={})=>{const actor=patch.principal??principal,read=await service.read({principal:actor});return service.upsert({principal:actor,event:event(),buildings:[{building_id:'bobst-library',location_notes:'Room 101'}],people:[participant()],expectedUpdatedAt:null,...patch,readContext:mapReadContext(read)});};
 
-test('shared service creates one complete normalized event snapshot after repeated current-policy checks',async()=>{
-  let checks=0;const {service,writes}=fixture({authorizeSource:async args=>{checks++;assert(args.signal instanceof AbortSignal);assert.equal(args.principal,principal);return true;}});
-  assert.deepEqual(await write(service),{status:'applied',event_id:id,updated_at:at});assert.equal(writes.length,1);assert.equal(checks,4);
+test('shared service writes one complete snapshot using locally checked grants and prior read',async()=>{
+  let checks=0;const {service,writes}=fixture({authorizeSource:args=>{checks++;assert(args.signal instanceof AbortSignal);assert.equal(args.principal,principal);return true;}});
+  assert.deepEqual(await write(service),{status:'applied',event_id:id,updated_at:at});assert.equal(writes.length,1);assert.equal(checks,2);
   assert.equal(writes[0].event.source_record_id,'provider:stable-original');assert.equal(writes[0].buildings[0].event_id,undefined);assert.equal(writes[0].people[0].event_id,undefined);
 });
 test('create can generate event UUID and defaults without inventing an activity label or timing',async()=>{
@@ -28,7 +28,7 @@ test('all five catalogue classifications roundtrip through trusted write/read wi
     const store={configured:true,read:async()=>data,upsert:async({event,buildings,people})=>{
       data={...data,events:[{...event,updated_at:at,created_at:at}],event_buildings:buildings.map(b=>({...b,event_id:event.id})),event_people:people.map(p=>({...p,event_id:event.id}))};return {status:'applied',event_id:event.id,updated_at:at};
     }};
-    const service=createMapEventService({store,authorizeSource:async()=>true,now:()=>new Date(at)});
+    const service=createMapEventService({store,authorizeSource:Object.assign(()=>true,{localOnly:true}),now:()=>new Date(at)});
     assert.equal((await write(service,{event:event({type_id})})).status,'applied');
     const result=await service.read({principal,eventId:id});assert.equal(result.events[0].type_id,type_id);assert.deepEqual(result.event_types,originalTypes);
     const empty=await service.read({principal,eventId:other});assert.deepEqual(empty.events,[]);assert.deepEqual(empty.event_types,originalTypes,'Event filters never remove the read-only catalogue');
@@ -58,14 +58,17 @@ test('strict input validation rejects extras, unknown identities, malformed date
   const {service,writes}=fixture();
   for(const patch of [{event:event({private:'not accepted'})},{event:event({updated_at:at})},{event:event({starts_at:'2026-02-30T12:00:00Z'})},{event:event({source_record_id:null})},{buildings:[{building_id:'missing-building'}]},{people:[participant({person_id:other})]},{people:[participant(),participant()]},{buildings:[{building_id:'bobst-library'},{building_id:'bobst-library'}]},{people:[participant({building_id:'bobst-library'})]},{people:[participant({starts_at:'2026-10-18T14:00:00Z'})]}])assert.equal((await write(service,patch)).status,'invalid');assert.equal(writes.length,0);
 });
-test('event and every participant require independently authorized current sources',async()=>{
-  for(const authorizeSource of [null,async()=>false,async()=>1,async a=>a.sourceUrl.endsWith('event')]) {
+test('event and every participant require locally authorized source grants',async()=>{
+  for(const authorizeSource of [()=>false,()=>1,a=>a.sourceUrl.endsWith('event')]) {
     const {service,writes}=fixture({authorizeSource});assert.equal((await write(service)).status,'forbidden');assert.equal(writes.length,0);
   }
   const {service,writes}=fixture();assert.equal((await write(service,{principal:{id:'member',allowedSourceIds:[]}})).status,'forbidden');assert.equal(writes.length,0);
 });
-test('source policy revocation during validation prevents the transaction',async()=>{
-  let calls=0;const {service,writes}=fixture({authorizeSource:async()=>++calls<3});assert.equal((await write(service)).status,'forbidden');assert.equal(writes.length,0);
+test('source grant revocation between explicit read and write prevents dispatch without provider reads',async()=>{
+  const {service,writes}=fixture(),actor={...principal,allowedSourceIds:[sid]};
+  const read=await service.read({principal:actor});actor.allowedSourceIds=[];
+  const result=await service.upsert({principal:actor,event:event(),buildings:[],people:[],readContext:mapReadContext(read)});
+  assert.equal(result.status,'forbidden');assert.equal(writes.length,0);
 });
 test('updates require exact optimistic state, preserve source identity and authorize removed participation',async()=>{
   const old=event({updated_at:at}),p={...participant({source_id:other,source_url:'https://example.com/old-participation'}),event_id:id};

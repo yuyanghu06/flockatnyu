@@ -9,13 +9,14 @@ function workerProvider({invalidDefer=false}={}){let step=0;return {toolTurn:asy
   const responses=[turn(call('finish_batch','initial',[workerIds.queue])),turn(call('read_pending_task','task',{taskId:workerIds.task})),turn(call('read_discord_messages','source',{channelId:'200',messageId:'300',context:false,limit:1})),()=>{
     assert(request.messages.some(row=>row.role==='tool'&&JSON.parse(row.content).status==='tool_error'));
     return turn(call('defer_task','defer',{taskId:workerIds.task,summary:'Exact original is unavailable; retain the same unfinished Calendar review',...(invalidDefer?{}:{operation:'source_review'})}));
-  },turn(call('finish_batch','final',[]))];const response=responses[step++];assert(response,'Unexpected model request');return typeof response==='function'?response():response;
+  },...(invalidDefer?[()=>{assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');return turn(call('defer_task','corrected_defer',{taskId:workerIds.task,summary:'Exact original is unavailable; retain the same unfinished Calendar review',operation:'source_review'}));}]:[]),turn(call('finish_batch','final',[]))];const response=responses[step++];assert(response,'Unexpected model request');return typeof response==='function'?response():response;
 }};}
 test('actual staged handler reads saved task, continues after failed normal source read and defers the exact unresolved task',async()=>{
   const f=workerFixture(workerProvider()),result=await f.handler.tick();assertDeferredWorker(f,result);assert.equal(f.tasks.get(workerIds.task).info.request.summary,'Exact original is unavailable; retain the same unfinished Calendar review');
 });
-test('actual required defer schema rejects missing operation without removing the saved task or consuming the queue',async()=>{
-  const f=workerFixture(workerProvider({invalidDefer:true})),result=await f.handler.tick();assert.equal(result.status,'invalid_tool_call');assert.equal(f.tasks.size,1);assert.equal(f.queued.length,1);assert.equal(f.operations.length,0);assert.equal(f.resolutions,0);
+test('actual required defer schema rejects missing operation safely then accepts an exact corrected retry without resolving pending work',async()=>{
+  const f=workerFixture(workerProvider({invalidDefer:true})),result=await f.handler.tick();assert.equal(result.status,'completed');assert.equal(result.followupStatus,'completed');assert.equal(f.tasks.size,1);assert.equal(f.queued.length,0);assert.equal(f.resolutions,0);assert.equal(f.tasks.get(workerIds.task).info.request.operation,'source_review');
+  const writes=f.execution.filter(row=>row.kind==='tool_result'&&row.tool==='defer_task');assert.equal(writes.length,2);assert.equal(writes[0].result.status,'tool_error');assert.equal(writes[1].result.status,'ready');assert.equal(writes[1].arguments.taskId,workerIds.task);assert(f.operations.every(row=>row.task.uuid===workerIds.task));
 });
 const read={name:'read_map_events',arguments:{}},lookup={name:'lookup_map_person',arguments:{}};
 test('after one optimistic conflict the identical map read gets fresh state and a distinct merged proposal preserves human changes',async()=>{

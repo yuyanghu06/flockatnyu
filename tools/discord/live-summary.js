@@ -22,7 +22,7 @@ export function createLiveChatTools({ service, guildId, config, provider } = {})
     if(!validated)return {status:'invalid_request',sources:[]};
     // An exact team channel reuses the window reader's current-source, explicit
     // user-intent and exclusion checks without scanning other team channels.
-    if(args.channelId!==undefined)return execute({...options,name:'read_discord_window',arguments:windowArgs});
+    if(args.channelId!==undefined)return summarizeWindow({...options,name:'read_discord_window',arguments:windowArgs});
     const signal=options.signal?AbortSignal.any([options.signal,AbortSignal.timeout(300000)]):AbortSignal.timeout(300000);
     const scope=args.scope||'eboard';
     const catalogue=await service.getCatalogue({scope,principal:options.principal,signal,...(typeof options.userMessage==='string'?{userMessage:options.userMessage}:{})});
@@ -30,7 +30,7 @@ export function createLiveChatTools({ service, guildId, config, provider } = {})
     const channels=(catalogue.channels||[]).slice(0,30),results=new Array(channels.length);let index=0;
     if(!channels.length)return {status:'unavailable',sources:[],scope,channelCoverage:[],coverage:{complete:false,from:validated.from,to:validated.to,timeZone:validated.timeZone,reason:catalogue.reason||'no_authorized_channels'}};
     while(index<channels.length&&!signal.aborted){const position=index++,channel=channels[position];
-        try{results[position]=await execute({...options,name:'read_discord_window',signal,budgetSignal:options.budgetSignal||options.signal||signal,arguments:{...windowArgs,channelId:channel.channelId??channel.id}});}
+        try{results[position]=await summarizeWindow({...options,name:'read_discord_window',signal,budgetSignal:options.budgetSignal||options.signal||signal,arguments:{...windowArgs,channelId:channel.channelId??channel.id}});}
         catch{results[position]={status:'unavailable',sources:[],coverage:{complete:false,reason:'unavailable'}};}
     }
     const sources=[],channelCoverage=[];let remaining=18000,omitted=false;
@@ -42,8 +42,9 @@ export function createLiveChatTools({ service, guildId, config, provider } = {})
     const complete=catalogue.complete!==false&&!signal.aborted&&!omitted&&channelCoverage.every(row=>row.complete);
     return {status:complete?'ready':'partial',sources,scope,channelCoverage,coverage:{complete,from:validated.from,to:validated.to,timeZone:validated.timeZone,channelCoverageComplete:catalogue.complete!==false&&channelCoverage.every(row=>row.complete),returnedCount:sources.length,matchedCount:channelCoverage.reduce((sum,row)=>sum+row.returnedCount,0),textTruncated:omitted,contentScope:'top_level_text_only',nonTextMessageCount:results.reduce((sum,row)=>sum+(row?.coverage?.nonTextMessageCount||0),0),reason:complete?'authorized_scope_window_only':'bounded_scope_read'},notice:'Coverage applies only to the listed authorized channels and window. Thread contents are included only when independently registered, selected and read; no full-server claim.'};
   }
-  async function execute(options) {
-    if(options.name==='read_discord_summary')return summarizeScope(options);
+  // This separate path is reachable only through the explicitly named summary
+  // tool. Ordinary window reads always return the original-message projection.
+  async function summarizeWindow(options) {
     if (options.name !== 'read_discord_window' || !config?.configured || summaryProvider.configured === false) return reads.execute(options);
     const requestTime = createTimeContext(options.timeContext);
     const args = requestTime && validateLiveDiscordArguments(options.name, options.arguments, guildId, requestTime);
@@ -92,6 +93,9 @@ export function createLiveChatTools({ service, guildId, config, provider } = {})
       if (options.signal?.aborted) throw new DOMException('Stopped', 'AbortError');
       return { status: 'partial', sources: visible.sources, coverage: { ...visible.coverage, complete: false, reason: 'live_summary_unavailable' } };
     }
+  }
+  async function execute(options) {
+    return options.name==='read_discord_summary'?summarizeScope(options):reads.execute(options);
   }
   return Object.freeze({ tools: Object.freeze([...reads.tools,summaryTool]), execute });
 }

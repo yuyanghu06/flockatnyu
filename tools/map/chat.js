@@ -1,13 +1,12 @@
 import {createHash} from 'node:crypto';
 import {validateArguments,canonicalJson} from '../../server/automation/validation.js';
-import {safePerson,text,uuid,validateSnapshot,boundedWork,timestamp} from '../../server/map/events.js';
+import {safePerson,text,uuid,validateSnapshot,boundedWork,timestamp,mapReadContext} from '../../server/map/events.js';
 import {validateChatRequestContext} from '../../server/chat-request-context.js';
 import {validateDiscordUsers} from '../../server/chat-discord-context.js';
 import {CHAT_MAP_SOURCE_ID,chatMapEventUrl} from '../../server/map/source-access.js';
 
 const principalValid=principal=>text(principal?.id,200,1)&&Array.isArray(principal.allowedSourceIds)&&principal.allowedSourceIds.every(uuid);
 const normalized=value=>value.normalize('NFC').trim().replace(/\s+/gu,' ').toLowerCase();
-const strip=row=>Object.fromEntries(Object.entries(row||{}).filter(([key,value])=>!['event_id','created_at','updated_at'].includes(key)&&value!==null));
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const idFor=value=>{const h=sha(value).slice(0,32);return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;};
 const provenanceKeys=['source_id','source_url','source_record_id','reported_at'];
@@ -36,12 +35,12 @@ function appliedSubmission(event,buildings,people) {
 // catalogues, field validation and optimistic revisions remain service checks.
 export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date()}={}) {
   const tools=(mapTools?.tools||[]).map(tool=>{
-    if(tool.name==='read_map_events')return {...tool,description:tool.description+' For genuine event/program/venue-and-day attendance, first match an existing authorized event by title, local date and location. A unique timed match supplies its hours, including a follow-up saying the entire time. ISO times ending in Z or +00:00 are UTC; convert for the actual date and user timezone when reporting, never relabel UTC as local. Null/omitted participant start/end inherits the corresponding event boundary, so existing going participation with both inherited already covers the full event and needs no write to restate it. If no usable map match exists, use normal Calendar list/read tools before asking for hours or proposing a new activity; failed/partial reads do not establish absence. For scheduled-event attendance, retain the exact existing event.id returned by this authorized map read. If no corresponding map event.id is returned, Calendar may supply hours/context but STOP map writes and report attendance unsaved; never create/project a Calendar occurrence or invent IDs/provenance merely for attendance.'};
+    if(tool.name==='read_map_events')return tool;
     if(tool.name==='lookup_map_person')return {...tool,
       description:'Resolve one existing trackable map person by a stated personName (unique exact full name or unique first name), or use empty arguments for the server-verified Discord speaker. Unknown or ambiguous identity returns no person; ask the user who they mean. Optional exact provider/providerUserId remains supported. No original source link or separate linked-author receipt is needed. Never create profiles or guess IDs.',
       parameters:{...tool.parameters,required:[],properties:{...tool.parameters.properties,personName:{type:'string',minLength:1,maxLength:200}}}};
     if(tool.name==='upsert_map_event')return {...tool,
-      description:'Create or update one complete map event and its building/people relationships only for an actual user request or genuine attendance/location report, including an answer to your clarification of that request. Do NOT write for quoted/reported/example text, hypothetical or summary-only/meaning questions, or explicit do-not-save requests; names/dates and verified actor identity do not grant action intent. A genuine cannot-attend report may update declined participation. Read state and resolve the person first. For event/program/venue-and-day attendance, use the existing event match after map lookup and normal Calendar fallback when needed. A unique timed match supplies its hours; a timing clarification saying the entire time inherits that exact event window, never all-day dates by itself. ATTENDANCE REQUIRES an exact existing event.id returned by a current authorized read_map_events result. A Calendar eventId cannot substitute for a map event.id. With a Calendar-only match and no readable corresponding map event.id, DO NOT CALL this tool: stop map writes and explain the known hours and attendance unsaved. Never create/project/reconstruct the occurrence, retry creation, or invent IDs/source metadata/reported_at merely for an RSVP. Explicitly separate or explicitly all-day personal plans remain valid. For an existing going participant, null/omitted starts_at and ends_at inherit the event boundaries and already cover the entire event; do not call this tool merely to restate that interval. If another attendance change is necessary, preserve event starts_at/ends_at byte-for-byte as read, never reinterpret UTC Z/+00:00 times as local or fabricate a timing correction. Use exact event.id and the parent EVENT record updated_at as expectedUpdatedAt, never a participant/relationship updated_at; preserve ALL event facts, buildings, other participants, labels and time overrides. Multiple matching titles/dates require clarification BEFORE writing unless the user supplied a uniquely distinguishing time/place/detail; never choose first/rank/best guess. Omit unchanged event/participant source metadata and existing event.url so the adapter retains stored values; omit new participant provenance for server chat attribution. Unless the user genuinely requests a link change, copy any supplied provider ID/URL or event.url byte-for-byte from the read: never decode, rebuild or re-encode opaque Calendar eid/base64 strings. Ask about unclear identity/event details. Only an applied receipt confirms saving.',
+      description:'Argument shape is {event: event fields, buildings: building rows, people: participant rows, expectedUpdatedAt: the parent event updated_at}. expectedUpdatedAt is a TOP-LEVEL sibling of event, buildings and people, NEVER a field inside event. Write one complete event/building/participant snapshot to the map database. This tool performs no source fetch, identity lookup or Calendar operation. Existing-event updates use the exact parent event id and expectedUpdatedAt from an explicit map read in this request. Omitted unchanged source metadata and event.url are retained from that local read; direct-chat provenance is filled internally. Preserve all unrequested event and relationship facts. Only an applied result confirms saving; conflicts require a separate read.',
       parameters:{...tool.parameters,properties:{...tool.parameters.properties,
         event:optionalProvenance(tool.parameters.properties.event,provenanceKeys),
         people:{...tool.parameters.properties.people,items:{...optionalProvenance(tool.parameters.properties.people.items,personProvenanceKeys),properties:{...optionalProvenance(tool.parameters.properties.people.items,personProvenanceKeys).properties,person_id:{...tool.parameters.properties.people.items.properties.person_id,description:'Existing trackable roster UUID returned by lookup_map_person; resolve a stated name or verified Discord actor, never invent a person ID.'}}}}}}};
@@ -53,7 +52,7 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
     const mappedActor=discordUsers?.users.find(row=>row.discordUserId===requestContext?.actor.userId);
     const discordActor=mappedActor?{...mappedActor,username:requestContext.actor.username,displayName:requestContext.actor.displayName}:undefined;
     const reportedAt=timestamp(context.timeContext?.now)!==null?context.timeContext.now:new Date(now()).toISOString();
-    const snapshots=new Map(),completed=new Map();
+    const snapshots=new Map(),completed=new Map();let latestReadContext;
     const history=Array.isArray(context.messages)?context.messages.filter(row=>row&&['user','assistant'].includes(row.role)&&typeof row.content==='string').map(({role,content})=>({role,content})): [{role:'user',content:context.userMessage||''}];
     let boundPrincipal=context.principal?.id;
     const requestIdentity=principal=>canonicalJson(requestContext?{principal:principal.id,discordRequestId:requestContext.requestId,actorId:requestContext.actor.userId,channelId:requestContext.channelId,threadId:requestContext.threadId,sourceProfileId:requestContext.sourceProfileId}:{principal:principal.id,date:reportedAt.slice(0,10),messages:history});
@@ -90,13 +89,14 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
         }
         if(name!=='upsert_map_event') {
           const result=await mapTools.execute(options);
-          if(name==='read_map_events'&&result?.status==='ready')for(const event of result.events||[])snapshots.set(event.id,{event,people:(result.event_people||[]).filter(row=>row.event_id===event.id)});
+          if(name==='read_map_events'&&result?.status==='ready')latestReadContext=mapReadContext(result);
+          if(name==='read_map_events'&&result?.status==='ready')for(const event of result.events||[])snapshots.set(event.id,{event:structuredClone(event),people:structuredClone((result.event_people||[]).filter(row=>row.event_id===event.id)),readContext:mapReadContext(result)});
           return result;
         }
         return await boundedWork(async workSignal=>{
-          const data=await readRaw(workSignal),event={...args.event};
-          const prior=event.id?(data?.events.find(row=>row.id===event.id)??snapshots.get(event.id)?.event):null;
-          const oldPeople=prior?(data?.event_people.filter(row=>row.event_id===prior.id)??snapshots.get(prior.id)?.people??[]):[];
+          const event={...args.event},observed=event.id?snapshots.get(event.id):null;
+          const prior=observed?.event??null,oldPeople=observed?.people??[];
+          if(args.expectedUpdatedAt!==undefined&&!prior)return {status:'read_required'};
           if(prior)for(const key of provenanceKeys)if(event[key]===undefined)event[key]=prior[key];
           // Keep an existing optional link when only attendance is changing.
           // Stored null already matches the shared service default on omission.
@@ -123,23 +123,9 @@ export function createChatMapTools({mapTools,store,env=process.env,publicOrigin=
             const previous=completed.get(event.source_record_id);
             return previous.signature===signature?previous.result:{status:'conflict',reason:'source_already_written_read_existing_event'};
           }
-          let expectedUpdatedAt=args.expectedUpdatedAt;
-          const replay=!prior&&event.source_id===CHAT_MAP_SOURCE_ID?data?.events.find(row=>row.id===event.id&&row.source_id===event.source_id&&row.source_record_id===event.source_record_id):null;
-          if(replay) {
-            const proposed={...event};
-            if(proposed.ends_at===undefined&&proposed.kind==='presence'&&proposed.starts_at===proposed.reported_at)proposed.ends_at=new Date(Date.parse(proposed.starts_at)+7200000).toISOString();
-            const byId=(rows,key)=>rows.map(strip).sort((a,b)=>String(a[key]).localeCompare(String(b[key])));
-            if(canonicalJson(strip(replay))!==canonicalJson(strip(proposed))
-              ||canonicalJson(byId(data.event_buildings.filter(row=>row.event_id===event.id),'building_id'))!==canonicalJson(byId(args.buildings,'building_id'))
-              ||canonicalJson(byId(data.event_people.filter(row=>row.event_id===event.id),'person_id'))!==canonicalJson(byId(people,'person_id'))
-              ||timestamp(replay.updated_at)===null)return {status:'conflict',reason:'existing_activity_changed_read_existing_event'};
-            // An identical persisted retry still uses the shared conditional
-            // write and current authorization, never an invented success.
-            if(event.ends_at===undefined&&proposed.ends_at!==undefined)event.ends_at=proposed.ends_at;
-            expectedUpdatedAt=replay.updated_at;
-          }
+          const expectedUpdatedAt=args.expectedUpdatedAt;
           if(workSignal.aborted)return {status:'aborted'};
-          let result=await mapTools.execute({...options,arguments:{...args,event,people,...(expectedUpdatedAt!==undefined?{expectedUpdatedAt}:{})},signal:workSignal});
+          let result=await mapTools.execute({...options,arguments:{...args,event,people,...(expectedUpdatedAt!==undefined?{expectedUpdatedAt}:{})},readContext:observed?.readContext??latestReadContext,signal:workSignal});
           if(result?.status==='ready'&&result.sourceStatus==='applied'&&uuid(result.event_id)&&timestamp(result.updated_at)!==null) {
             const submitted=appliedSubmission(event,args.buildings,people);
             if(submitted)result={...result,mapSubmission:submitted};

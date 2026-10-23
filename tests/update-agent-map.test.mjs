@@ -47,12 +47,12 @@ test('fresh existing token is required; read-and-merge preserves unchanged indep
  assert.equal((await f.tool('upsert_map_event').execute({...p,people:[]},f.context)).status,'forbidden_source');
  assert.equal(f.writes(),1);
 });
-test('real handler delivers normalized prompt and pending-safe conflict from bundled map action',async()=>{
+test('real handler preserves successful receipts and pending-safe conflicts from bundled map actions',async()=>{
  for(const resultStatus of ['applied','conflict']) {
-  const f=fixture({resultStatus});let turns=0,finished=false,receipts=0,system;
+  const f=fixture({resultStatus});let turns=0,finished=false,receipts=0;
   const store={configured:true,claim:async()=>({status:'ready',leaseToken:'50000000-0000-4000-8000-000000000005',inputs:[row()]}),renew:async()=>({status:'ready'}),release:async()=>({status:'ready'}),action:async({complete})=>{if(complete)receipts++;return {status:complete?'completed':'execute'};},finish:async()=>{finished=true;return {status:'ready'};}};
-  const handler=createAutomationHandler({...f.a,store,config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),now,provider:{toolTurn:async request=>{system=request.system;turns++;if(turns===3&&resultStatus==='conflict'){const feedback=JSON.parse(request.messages.at(-1).content);assert.equal(feedback.status,'tool_error');assert.equal(feedback.reason,'conflict');return {stopReason:'stop',toolCalls:[]};}return {stopReason:'tool_calls',toolCalls:turns===1?[{id:'lookup',name:'lookup_map_person',arguments:{inputIds:[inputId],arguments:{provider:'discord',providerUserId:'400',sourceId:source,sourceUrl:url}}}]:turns===2?[{id:'write',name:'upsert_map_event',arguments:{inputIds:[inputId],arguments:params()}}]:[{id:'done',name:'finish_batch',arguments:{handledInputIds:[inputId]}}]};}}});
-  assert.equal((await handler.tick()).status,resultStatus==='applied'?'completed':'incomplete_batch');assert.equal(f.writes(),1);assert.equal(finished,resultStatus==='applied');assert.equal(receipts,resultStatus==='applied'?1:0);assert.match(system,/event_buildings/);assert.match(system,/EVERY linked building/);
+  const handler=createAutomationHandler({...f.a,store,config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),now,provider:{toolTurn:async request=>{turns++;if(turns===3&&resultStatus==='conflict'){const feedback=JSON.parse(request.messages.at(-1).content);assert.equal(feedback.status,'tool_error');assert.equal(feedback.reason,'conflict');return {stopReason:'stop',toolCalls:[]};}return {stopReason:'tool_calls',toolCalls:turns===1?[{id:'lookup',name:'lookup_map_person',arguments:{inputIds:[inputId],arguments:{provider:'discord',providerUserId:'400',sourceId:source,sourceUrl:url}}}]:turns===2?[{id:'write',name:'upsert_map_event',arguments:{inputIds:[inputId],arguments:params()}}]:[{id:'done',name:'finish_batch',arguments:{handledInputIds:[inputId]}}]};}}});
+  assert.equal((await handler.tick()).status,resultStatus==='applied'?'completed':'incomplete_batch');assert.equal(f.writes(),1);assert.equal(finished,resultStatus==='applied');assert.equal(receipts,resultStatus==='applied'?1:0);
  }
 });
 

@@ -36,7 +36,7 @@ M12 memory and frame workload tracking lives in m12-memory/.
 
 M13 loading screen tracking lives in m13-loading/.
 
-M14: m14-supabase-setup tracks preparation versus authenticated connection; not complete until scoped connectivity verified.
+M14: m14-supabase-setup records completed current-Mac registration, read-only OAuth and live scoped query verification; earlier Windows preparation is historical.
 
 M15 assistant scaffold and the dev snapshot publication are tracked in the rolling snapshot; Git publication history records the successful origin/codex/dev push.
 
@@ -218,3 +218,17 @@ Completed essential-test priority: 1,627 essential / 548 useful / 139 protected 
 `contextual-event-attendance/` tracks existing-event lookup, contextual timing and the exact GoGreek duplicate repair.
 
 Latest Flock continuation is `live-planner-calendar-tests/handoff-2026-10-22.md`; user requested immediate documentation and stopping all other work. It supersedes earlier acceptance/cleanup assumptions.
+
+The latest GoGreek attendance resume continues the live-planner-calendar-tests milestone from codex/dev; current acceptance remains incomplete.
+
+October23 chat-map diagnosis records current web read timeouts and duplicate suppression; it does not change the separately managed worker repair or claim a deployed fix.
+
+The October23 isolated-tool instruction pass records a project rule only: workflow sequencing belongs in prompts; runtime correction remains separate.
+
+`tool-isolation-audit/` records the complete read-only43name audit and candidate comparison under the October23 isolated-tools rule.
+
+The tool-isolation-audit restart handoff points to the current isolated implementation and accurately records unfinished final workflow tests/integration.
+
+2026-10-23: isolated tool verification resumed; deployment authorized after acceptance. See 2026-10-23_16-07-19-827953-orchestrator-tool-isolation-resumed-final-checks.md.
+
+October23: isolated-tool current workflows accepted/integrated; deployment authorized and next. Verification and immutable tester/evaluator/integration entries are linked from the rolling milestone.

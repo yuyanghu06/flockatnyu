@@ -16,3 +16,12 @@ Tools preserve existing source restrictions; adding a directory never grants a s
 - memory/index.js: chat read_memory/update_memory tools for one shared plain-text note, with current-chat context and optimistic timestamp protection. Updates are proactive for useful durable club facts; no explicit remember request is needed.
 
 - `attio/index.js`: live CRM attribute discovery, fuzzy search, record reads and opt-in create/PATCH tools. Chat uses request-bound read-before-update and duplicate-write protection. Direct authenticated tool routes represent explicit API actions. Source UUID/object allowlists are enforced before provider access; no autonomous-worker registration.
+
+
+October23 isolation: each ordinary tool reads/changes its named service or saved
+store. Map tools are DB-only, Calendar/Member Plans tools are Calendar-only,
+source/member/map workflows are prompt-selected, and task completion is local
+proof plus exact saved-version deletion. sync_calendars_to_map is the explicitly
+user-authorized combined operation, separately dispatched/logged after successful
+initial finish_batch. See docs/tool-isolation-implementation.md and the current
+rolling milestone for implementation and verification state.

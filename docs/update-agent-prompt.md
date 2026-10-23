@@ -1,3 +1,5 @@
+Current prompt workflow: initial `savedTaskCoverage.inputs` gives only matching queue refs and saved-task counts, without task IDs/content or new live evidence. After a source outage, explicitly finish the covered queue ref with `noChangeInputIds:[]`, retain its task, and finish follow-up normally once other ready work is done. The separately named post-finish sync result stays visible after transcript reset.
+
 # Update-agent prompt
 
 The runtime source is [server/automation/prompt.js](../server/automation/prompt.js).
@@ -12,13 +14,12 @@ messages. Chat has separate prompts and keeps its own read-only Miro capability.
 There is no worker Miro integration, board preflight or per-batch board duty.
 Irrelevant inputs may finish without unrelated Calendar scans or map upkeep.
 The model does not perform broad rolling Calendar-to-map reconciliation or repair
-mechanical API failures. Deterministic Calendar APIs own projection and pagination.
+mechanical API failures. Calendar pagination stays inside its named read. Projection is the separately registered `sync_calendars_to_map` operation, explicitly authorized as an exception to isolated service tools.
 
 ## Staged cycle
 
 The existing trigger remains30eligible inputs OR oldest eligible age30minutes.
-One lease covers the initial model phase, deterministic club/Member Plans
-Calendar-to-map APIs and at most10follow-up model turns. Empty polls do not
+One lease covers the initial model phase, a separate recorded `sync_calendars_to_map` call after successful initial `finish_batch`, and at most10follow-up model turns. Empty polls do not
 invoke models. Existing per-turn, phase and run bounds remain unchanged.
 
 The initial phase interprets queued originals and updates the pinned club or
@@ -28,8 +29,7 @@ The deterministic phase copies actual Calendar occurrences, preserves independen
 participants/human edits and uses fixed building aliases. The follow-up phase
 handles source interpretation, participation and ambiguous location tasks using
 actual results. Mechanical API outcomes stay visible without assigning broad
-synchronization repair to the model. Successful follow-up Calendar mutations
-receive deterministic projection.
+synchronization repair to the model. Ordinary Calendar and Member Plans writes do not invoke projection. When a later change needs projection, the prompt directs a separate `sync_calendars_to_map` call or separate Calendar/map reads and an explicit map write. Reaching the initial round cap does not invoke synchronization.
 
 ## Evidence and identity
 
@@ -43,18 +43,19 @@ club/event/scheduled keywords. Club mutations use an observed exact
 `discord:<guildId>:<channelId>:<messageId>` or `gmail:<messageId>` plus its
 canonical original URL. A Gmail search snippet or metadata cannot authorize a
 body-dependent mutation: read_gmail must return actual bounded text for the exact
-authorized queued message. Before a mutation, the adapter rereads the original
-and rejects changed body/sender/source bindings. Same-message revisions retain
+authorized queued message. Source reading is an explicit agent-selected operation. Writes use already returned source/identity facts and local validation; they do not fetch originals or look up people internally. A newer failed explicit read invalidates the corresponding reusable source observation. Same-message revisions retain
 the same identity. Ambiguous cross-source matches defer.
 
-Before a club upsert, read a complete unfiltered full-mode Calendar window
+The prompt directs the agent to read a complete unfiltered full-mode Calendar window before a club upsert
 covering the actual target start, including dates outside the deterministic
 window. Preserve human-created/edited events and defer conflicts. Cancellation
 requires clear current cancellation of the same managed event; missing objects,
 message deletion, partial scans and RSVP declines do not authorize cancellation.
 No attendees, invitations, recurring creations or unrelated source writes.
 
-Map people require successful source-bound lookup_map_person for the actual
+Map reads and identity lookups access only saved map database data. Map writes access only the database write transaction, using the saved snapshot returned by a separate read for preservation and optimistic checks. Source authorization is checked locally against the principal and current saved scope; no provider-original fetch occurs inside a map call.
+
+For a supported participant change, the prompt directs a successful source-bound lookup_map_person for the actual
 Discord author or Gmail sender. Names, organizers, helpers and mentions establish
 no attendance. Read existing state, merge complete snapshots and preserve
 independent people, Calendar-owned facts and optimistic revisions. Do not guess
@@ -103,3 +104,10 @@ retention and completion checks. The compatibility prompt cannot create personal
 activities directly on the map or invoke a Member Plans tool it does not have.
 Drive copying directions name chat-only Calendar tools only in the chat context;
 Drive content does not grant worker write authority.
+
+
+## Isolated completion tools
+
+`resolve_pending_task` uses the exact loaded task version and already returned matching applied-operation evidence. It performs only the task-store compare-and-delete; no Calendar, map or source read happens inside resolution. If additional state is needed, the model chooses a separate read first. Failed, unrelated or stale evidence cannot clear work.
+
+`finish_batch` validates declarations and records queue/lease bookkeeping. The explicit user-authorized exception is a **separate registered and recorded** `sync_calendars_to_map` call after a successful initial finish. It has its own arguments, result, audit/action receipt and tool budget charge and is identified as runner-originated rather than a fabricated model proposal. The subsequent phase transition loads saved tasks only. No automatic synchronization is attached to an ordinary Calendar/Member Plans write or a model-round cap.

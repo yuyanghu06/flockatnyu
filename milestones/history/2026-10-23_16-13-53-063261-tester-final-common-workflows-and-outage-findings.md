@@ -1,0 +1,5 @@
+# Final common workflows pass; outage accounting requests fixes
+
+- Local timestamp / role / milestone: 2026-10-23T16:13:53.063261-04:00 / tester / isolated tools.
+- Scope and actual evidence: Final Miro/Drive gate closed13/24requests with130stablepins. Both semantically pass independent review: Calendar-empty schedule explicitly reads actual Mirocanvas and reports Oct23 3–4PMBobst101,zero writes; Drivecopy reads actualCSV then separately listsCalendar and createsonly missing17–18NYevent, preservinghumanexistingrow/blankrow. RawMiro machineFAIL remains as a time-range regex limitation. Stored-plan positive,forgedsignature,revokedgrant and independent wrongchannel/provider/untrackable negatives pass. A new outage-only gate closed5/10requests with123stablepins and genuinely fails: empty initialfinish leavesoriginalunhandled, genericcheckpoint duplicates existingtask, finalroundlimit. Zero businesswrites, separateaudit/synccorrect.87totalinferencedispatches retained; nothingrunning. No deployment acceptance.
+- Remaining work: finish bounded regressions, model retry under fresh cap, independent acceptance, integration and authorized deployment.

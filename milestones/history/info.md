@@ -243,3 +243,22 @@ Final priority entries reconcile all 2,353 baseline IDs and preserve every per-f
 The immediate Flock testing handoff records a documentation-only userstop, latest liveUTC/inheritance/revision failure, newest unverifiedlocalpromptchanges and pending exactcleanup. See the linked latestsnapshot; do not treat priorreleaseacceptance as finalproductionacceptance.
 
 The working-tree checkpoint entry records the user-requested Git snapshot and its secret/whitespace checks; it does not resume paused product testing or cleanup.
+October 22 developer connection setup records current-Mac scoped Supabase registration, read-only OAuth and a successful live query separately from historical Windows setup and application credentials.
+
+The October 22 Railway CLI setup pass records actual Homebrew installation, user browser login and linked-project reads; it makes no service-health or deployment claim.
+
+The current-Mac main-pull receipt records fast-forward integration and exact preservation of uncommitted developer setup notes; it does not re-verify upstream application releases.
+
+October23GoGreek resume records the stale-main correction, preserved setup notes, pending real RSVP originals and bounded current-source repair; earlier stale-source specialist conclusions are superseded.
+
+October23 chat-map diagnostic entries separate confirmed60second read_map_events failures and duplicate suppression from the suspected repeated provider-check bottleneck; no runtime or business writes were performed.
+
+The October23 isolated-tool rule entry records the explicit user override against hidden cross-service tool workflows, separately from runtime implementation.
+
+October23 tool-isolation audit entries record independent map/worker/source partitions, final count evaluation and integration;11of43root names and12of44candidate names violate, without runtime edits.
+
+The isolated-tools restart checkpoint preserves69closedmodel dispatches, zero-used final gate, source/evidence locations and outstanding checks; no completion or rollout is claimed.
+
+2026-10-23: isolated tool verification resumed; deployment authorized after acceptance. See 2026-10-23_16-07-19-827953-orchestrator-tool-isolation-resumed-final-checks.md.
+
+October23: isolated-tool current workflows accepted/integrated; deployment authorized and next. Verification and immutable tester/evaluator/integration entries are linked from the rolling milestone.

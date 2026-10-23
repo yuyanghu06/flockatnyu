@@ -57,4 +57,11 @@ Cross-channel message preparation uses the bridge-only adapter in `../../tools/d
 
 manual-scope.js is a trusted per-run facade over043selected-node/ancestor metadata and fresh live bot access. It overrides only channel/category exclusions for exact requested queued channels, preserves manual disables/pause/withdrawal/guild/identity checks and never edits published scope or ordinary chat/map visibility.
 
+The facade's server-only `getAuthorizationSnapshot` supplies policy and channels
+from one fresh validated snapshot for each authorization pair. Worker batch
+authorization and live retrieval use it for their opening pair and call it again
+independently for their final recheck. Ordinary stores retain separate policy and
+catalogue reads. There is no persistent or in-flight snapshot cache; live metadata,
+ancestors, permissions, source bindings and final withdrawal checks still run.
+
 `metadata-reconcile.js` checks only a native channel/thread event's exact target and its ancestors through current REST permissions. Its service-only snapshot/publication RPCs preserve existing same-policy publication, source IDs and manual disables. Gateway metadata work and unknown-channel ingestion use this bounded path instead of waiting for archived-thread discovery. Relevant metadata changes fail the snapshot comparison rather than consuming an unresolved original. A changed catalogue fences older scans with `restartRequired`; the next full scanner restarts from the current catalogue, while complete archive promotion still requires every actual cursor. No message-history reads are added. Migration044 must be applied before deploying this collector; a collector predating restart support cannot resume flagged work.

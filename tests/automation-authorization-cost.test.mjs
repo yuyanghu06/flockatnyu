@@ -95,8 +95,8 @@ test('handler batches at every existing boundary and passes isolated original ev
  assert.equal((await f.run()).status,'completed');assert.equal(batchCalls,3);assert.equal(singleCalls,0);assert.equal(f.inputs[0].raw_response.payload.content,'At Bobst studying');
  const legacy=handlerFixture({authorizeEvent:async()=>{singleCalls++;return true;}});assert.equal((await legacy.run()).status,'completed');assert.equal(singleCalls,60);
 });
-test('revocation before initial/model/tool/immediate mutation boundary prevents writes and finish',async()=>{
- for(const revokeAt of [1,2,3,4]){
+test('revocation before initial/model/post-reservation mutation boundary prevents writes and finish',async()=>{
+ for(const revokeAt of [1,2,3]){
   let n=0;const f=handlerFixture({authorizeEvents:async()=>++n<revokeAt,providerTurn:async({inputs})=>({stopReason:'tool_calls',toolCalls:[{id:'save1',name:'save',arguments:{inputIds:[inputs[0].uuid],arguments:{}}}]})});
   assert.equal((await f.run()).status,'forbidden');assert.equal(f.counts.writes,0);assert.equal(f.counts.finish,0);assert.equal(n,revokeAt);assert.equal(f.counts.releases,1);
  }
@@ -114,4 +114,17 @@ test('batch authorization non-boolean results do not fall back to permissive sin
   let legacy=0;const f=handlerFixture({authorizeEvents:async()=>response,authorizeEvent:async()=>{legacy++;return true;}});
   assert.equal((await f.run()).status,'forbidden');assert.equal(legacy,0);assert.equal(f.counts.model,0);assert.equal(f.counts.writes,0);
  }
+});
+
+
+test('local task reads, fragments and bookkeeping skip provider rechecks while the next model boundary still enforces revocation',async()=>{
+ const input={uuid:randomUUID(),raw_response:event()},principal={id:'cache-fixture'};
+ let revoked=false,authorizations=0,modelCalls=0,renewals=0,finished=0;const executed=[];
+ const names=['read_pending_task','read_context_fragment','defer_task'];
+ const tools=names.map(name=>({name,description:'Existing leased local context',...(name==='defer_task'?{idempotent:true}:{readOnly:true}),parameters:{type:'object',properties:{},additionalProperties:false},execute:async(_args,context)=>{
+  assert.equal(context.principal,principal);assert.deepEqual(context.inputIds,[input.uuid]);assert(!context.signal.aborted);executed.push(name);return {status:'ready'};
+ }}));
+ const store={configured:true,claim:async()=>({status:'ready',leaseToken:randomUUID(),inputs:[input]}),renew:async()=>{renewals++;return {status:'ready'};},action:async({complete})=>({status:complete?'completed':'execute'}),release:async()=>({status:'ready'}),finish:async()=>{finished++;return {status:'ready'};}};
+ const handler=createAutomationHandler({store,principal,tools,authorizeEvents:async()=>{authorizations++;return !revoked;},provider:{toolTurn:async()=>{modelCalls++;revoked=true;return {stopReason:'tool_calls',toolCalls:names.map((name,i)=>({id:'local_'+i,name,arguments:{inputIds:[input.uuid],arguments:{}}}))};}},config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),now:clock});
+ assert.equal((await handler.tick()).status,'forbidden');assert.deepEqual(executed,names);assert.equal(modelCalls,1);assert.equal(finished,0);assert.equal(authorizations,3,'Initial claim, initial model, then revoked next model; no provider check for three local operations');assert(renewals>=4,'Local operations still renew the lease before dispatch');
 });

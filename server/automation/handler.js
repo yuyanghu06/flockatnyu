@@ -6,14 +6,17 @@ import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:0,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = code => { throw new Error(code); };
-export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,pipeline,principal,config,now=()=>new Date(),onProgress=()=>{},audit} = {}) {
+// These tools use only leased task/batch data or already-fetched RAM fragments.
+// Their adapters still check principal, source scope and exact task versions.
+const localContextTools=new Set(['read_pending_task','defer_task','read_context_fragment']);
+export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline,principal,config,now=()=>new Date(),onProgress=()=>{},audit} = {}) {
   let running = false;
   let definitions;
   try {
     if (!Array.isArray(tools) || tools.length>32) throw new Error('invalid_tools');
     const names=new Set(['finish_batch']);
     definitions=tools.map(tool=>{
-      if (!validLabel(tool.name)||names.has(tool.name)||tool.readOnly!==true&&tool.idempotent!==true||typeof tool.execute!=='function'||tool.prepareArguments!==undefined&&typeof tool.prepareArguments!=='function'||typeof tool.description!=='string'||tool.description.length>4000||tool.parameters?.type!=='object'||tool.phases!==undefined&&(!Array.isArray(tool.phases)||!tool.phases.length||tool.phases.some(phase=>!['initial','followup'].includes(phase)))) throw new Error('invalid_tools');
+      if (!validLabel(tool.name)||names.has(tool.name)||tool.readOnly!==true&&tool.idempotent!==true||typeof tool.execute!=='function'||tool.prepareArguments!==undefined&&typeof tool.prepareArguments!=='function'||tool.getActionVersion!==undefined&&typeof tool.getActionVersion!=='function'||typeof tool.description!=='string'||tool.description.length>4000||tool.parameters?.type!=='object'||tool.phases!==undefined&&(!Array.isArray(tool.phases)||!tool.phases.length||tool.phases.some(phase=>!['initial','followup'].includes(phase)))) throw new Error('invalid_tools');
       checkSchema(tool.parameters);names.add(tool.name);
       return {name:tool.name,description:`${tool.readOnly===true?'Read-only context tool. ':'Idempotent action tool. '}${tool.description}`,parameters:{type:'object',properties:{
         inputIds:{type:'array',items:{type:'string'},minItems:1,maxItems:20},arguments:structuredClone(tool.parameters),
@@ -64,7 +67,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       emitProgress(`${phase}_done`,publicStatus,tool);
       if(phase==='tool'||phase==='prepare')await auditEvent({kind:'tool_finished',tool:phase==='prepare'?'prepare_batch':tool,status,diagnostics:toolDiagnostics({result,status:status==='ready'?undefined:status,error,dispatched,proposalSequence:sequence,validation,stage:phase==='prepare'?'prepare':undefined}),durationMs:Math.round(performance.now()-started),counts:{sequence:progressCalls}});
     };
-    const rejectProposal=async(call,reason,validation)=>{await auditEvent({kind:'tool_finished',tool:safeDiagnosticTool(call?.name),status:'invalid_tool_call',durationMs:0,diagnostics:toolDiagnostics({status:'invalid_tool_call',reason,stage:'local_validation',dispatched:false,proposalSequence,validation})});};
+    const rejectProposal=async(call,reason,validation,sequence=proposalSequence)=>{await auditEvent({kind:'tool_finished',tool:safeDiagnosticTool(call?.name),status:'invalid_tool_call',durationMs:0,diagnostics:toolDiagnostics({status:'invalid_tool_call',reason,stage:'local_validation',dispatched:false,proposalSequence:sequence,validation})});};
     const controller=new AbortController();
     let timedOut=false,leaseLost=false;
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},config.maxRunMs);timeout.unref?.();
@@ -131,8 +134,37 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       }
       let system=buildAutomationPrompt({timezone:config.timezone,now:now(),phase:pipeline?'initial':undefined});
       let driveSkillActive=false;
-      const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{})})}];
       const inputIds=inputs.map(row=>row.uuid);
+      const claimedInputIds=Object.freeze([...inputIds]);
+      let initialFinishVerdict=null;
+      let phaseInputIds=[...inputIds];
+      // References are transport spelling only. Private maps are built solely
+      // from the claimed queue and the authoritative follow-up snapshot.
+      const referenceTag=pipeline?randomUUID().replaceAll('-','').slice(0,8):null;
+      const referenceMap=(ids,prefix)=>{
+        const bindings=ids.map((uuid,index)=>({ref:`${prefix}_${referenceTag}_${index+1}`,uuid}));
+        return {bindings,toUuid:new Map(bindings.map(row=>[row.ref,row.uuid])),toRef:new Map(bindings.map(row=>[row.uuid,row.ref]))};
+      };
+      const queueReferences=pipeline?referenceMap(inputIds,'q'):null;
+      let phaseReferences=queueReferences;
+      const referenceBindings=()=>({phase:stage,inputIds:phaseReferences.bindings,handledInputIds:queueReferences.bindings,
+        ...(stage==='initial'?{noChangeInputIds:queueReferences.bindings}:{}),
+        notice:'Copy ref values for inputIds and the current taskId. finish_batch handledInputIds uses only the queue refs listed here. Exact listed UUIDs remain compatible; other strings are never repaired.'});
+      const translateReference=(value,map,wire)=>typeof value==='string'?(wire?map.toRef.get(value):map.toUuid.get(value))??value:value;
+      const referenceArguments=(call,wire=false)=>{
+        const args=structuredClone(call.arguments);
+        if(!pipeline)return args;
+        if(call.name==='finish_batch') {
+          if(Array.isArray(args.handledInputIds))args.handledInputIds=args.handledInputIds.map(value=>translateReference(value,queueReferences,wire));
+          if(stage==='initial'&&Array.isArray(args.noChangeInputIds))args.noChangeInputIds=args.noChangeInputIds.map(value=>translateReference(value,queueReferences,wire));
+        } else {
+          if(Array.isArray(args.inputIds))args.inputIds=args.inputIds.map(value=>translateReference(value,phaseReferences,wire));
+          if(stage==='followup'&&['read_pending_task','resolve_pending_task','defer_task'].includes(call.name)&&plainObject(args.arguments)&&Object.hasOwn(args.arguments,'taskId'))
+            args.arguments.taskId=translateReference(args.arguments.taskId,phaseReferences,wire);
+        }
+        return args;
+      };
+      const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{}),...(pipeline?{referenceBindings:referenceBindings()}:{} )})}];
       const callIds=new Set();
       let calls=0,stageCalls=0,stageRounds=0;
       const followupRounds=Math.min(10,config.followupRounds??10);
@@ -151,22 +183,90 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         leaseToken=null;
         return outcome({status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls,followupStatus});
       };
-      const startFollowup=async handledInputIds=>{
+      // Explicit user exception: after a successful initial finish, invoke the
+      // registered synchronization operation as its OWN runner-originated call.
+      // It is not fabricated as a model proposal and does not run on a cap.
+      let initialSyncExecution;
+      const runFinishSync=async()=>{
+        const tool=tools.find(row=>row.name==='sync_calendars_to_map');
+        if(!tool)return;
+        const args={},scopedIds=[...claimedInputIds].sort(),callId=`runner_sync_${randomUUID().replaceAll('-','')}`;
+        const actionKey=createHash('sha256').update(canonicalJson({inputIds:scopedIds,name:tool.name,arguments:args,...(tool.getActionVersion?{actionVersion:tool.getActionVersion()}: {})})).digest('hex');
+        const stageLimit=stage==='followup'?(config.maxFollowupCalls??AUTOMATION_MAX_STAGE_CALLS):(config.maxCalls??AUTOMATION_MAX_STAGE_CALLS);
+        if(stageCalls>=stageLimit) {
+          const result={status:'tool_error',reason:'stage_call_limit',message:'Synchronization was not dispatched because this stage exhausted its tool-call budget.'};
+          await recordExecution({kind:'tool_result',origin:'runner',tool:tool.name,callId,inputIds:scopedIds,arguments:args,result});
+          await auditEvent({kind:'tool_finished',tool:tool.name,status:'call_limit',durationMs:0,diagnostics:toolDiagnostics({status:'call_limit',reason:'call_limit',dispatched:false}),counts:{sequence:progressCalls}});
+          initialSyncExecution={name:tool.name,callId,origin:'runner',arguments:args,result};
+          messages.push({role:'user',content:JSON.stringify({runnerToolExecution:initialSyncExecution})});
+          return;
+        }
+        calls++;stageCalls++;progressCalls=calls;
+        await progressStart('tool',tool.name);await renew();await authorize();
+        const receipt=await guarded(()=>store.action({leaseToken,actionKey,signal:combined}));
+        let result;
+        if(receipt.status==='completed')result={status:'already_succeeded'};
+        else {
+          if(receipt.status!=='execute')failure('stale');
+          await markDispatched();
+          try {result=await guarded(()=>tool.execute(args,{principal,inputIds:scopedIds,idempotencyKey:actionKey,signal:combined,callId,phase:stage,origin:'runner'}));}
+          catch(error) {
+            if(combined.aborted)failure('aborted');
+            if(error?.message==='audit_unavailable'||error?.code==='audit_unavailable')failure('audit_unavailable');
+            result={status:'tool_error',reason:'tool_failed',message:'Synchronization failed. No successful result was confirmed.'};
+          }
+          if(!plainObject(result)||typeof result.status!=='string'||Buffer.byteLength(canonicalJson(result))>16384)
+            result={status:'tool_error',reason:'invalid_result',message:'Synchronization did not return a usable result.'};
+          if(result.status==='audit_unavailable')failure('audit_unavailable');
+          if(['ready','ok','completed'].includes(result.status)) {
+            const saved=await guarded(()=>store.action({leaseToken,actionKey,complete:true,signal:combined}));
+            if(saved.status!=='completed')failure('stale');
+          } else if(!['tool_error','partial'].includes(result.status))result={status:'tool_error',reason:'tool_failed',message:'Synchronization failed. No successful result was confirmed.'};
+        }
+        activeProgress.result=result;
+        await recordExecution({kind:'tool_result',origin:'runner',tool:tool.name,callId,inputIds:scopedIds,arguments:args,result});
+        initialSyncExecution={name:tool.name,callId,origin:'runner',arguments:args,result};
+        messages.push({role:'user',content:JSON.stringify({runnerToolExecution:initialSyncExecution})});
+        await progressDone(['ready','ok','completed','already_succeeded'].includes(result.status)?'ready':'failed');
+      };
+      const startFollowup=async(handledInputIds,{afterFinish=false}={})=>{
         await renew();await authorize();
         initialHandled=[...handledInputIds];
         await recordExecution({kind:'initial_complete',handledInputIds:[...initialHandled]});
+        if(afterFinish)await runFinishSync();
         const next=await guarded(()=>pipeline.afterInitial({handledInputIds:[...initialHandled],inputs:structuredClone(inputs),principal,signal:combined,leaseToken,executionLog:getExecutionLog()}));
-        if(!plainObject(next)||next.status!=='ready'||next.inputIds!==undefined&&(!Array.isArray(next.inputIds)||next.inputIds.length>500||!next.inputIds.every(validUuid)))failure('preflight_failed');
+        if(!plainObject(next)||next.status!=='ready'||next.inputIds!==undefined&&(!Array.isArray(next.inputIds)||next.inputIds.length>500||!next.inputIds.every(validUuid)||new Set(next.inputIds).size!==next.inputIds.length))failure('preflight_failed');
         if(Buffer.byteLength(canonicalJson(next))>262144)failure('context_limit');
         await recordExecution({kind:'deterministic_result',stage:'deterministic',result:next});
         for(const id of next.inputIds||[])if(!inputIds.includes(id))inputIds.push(id);
+        phaseInputIds=[...(next.inputIds||[])];
+        if(pipeline)phaseReferences=referenceMap(phaseInputIds,'t');
         stage='followup';stageCalls=0;stageRounds=0;
         system=buildAutomationPrompt({timezone:config.timezone,now:now(),phase:'followup'});
-        messages.push({role:'user',content:JSON.stringify({stage:'followup',context:next.context??null})});
+        const followupMessage={role:'user',content:JSON.stringify({stage:'followup',context:next.context??null,referenceBindings:referenceBindings(),
+          ...(initialSyncExecution?{runnerToolExecution:structuredClone(initialSyncExecution)}:{})})};
+        const validatedAll=initialFinishVerdict?.status==='ready'
+          &&canonicalJson([...initialFinishVerdict.handledInputIds].sort())===canonicalJson([...handledInputIds].sort())
+          &&canonicalJson([...handledInputIds].sort())===canonicalJson([...claimedInputIds].sort());
+        // Only model visibility changes. Full initial execution/task evidence,
+        // fragments, receipts and every private runtime guard remain intact.
+        if(validatedAll)messages.splice(0,messages.length,followupMessage);
+        else messages.push(followupMessage);
+        if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
         return next.followupRequired!==false;
       };
       if(pipeline){
         await guarded(()=>pipeline.beginCycle({leaseToken,inputs:structuredClone(inputs),principal,signal:combined,recordExecution,getExecutionLog}));
+        if(typeof pipeline.getInitialTaskCoverage==='function') {
+          const coverage=pipeline.getInitialTaskCoverage();
+          if(!Array.isArray(coverage)||coverage.length>claimedInputIds.length
+            ||new Set(coverage.map(row=>row?.inputId)).size!==coverage.length
+            ||coverage.some(row=>!plainObject(row)||!claimedInputIds.includes(row.inputId)||!Number.isSafeInteger(row.taskCount)||row.taskCount<1||row.taskCount>500))failure('preflight_failed');
+          const initial=JSON.parse(messages[0].content);
+          initial.savedTaskCoverage={inputs:coverage.map(row=>({inputRef:queueReferences.toRef.get(row.inputId),taskCount:row.taskCount})),
+            notice:'These claimed originals already have current saved actionable work with exactly matching original data. This is saved-task coverage, not completed action or live-source evidence. Retain blocked tasks; explicitly list their queue refs in handledInputIds with noChangeInputIds empty when finishing initial processing. Unlisted originals remain queued.'};
+          messages[0].content=JSON.stringify(initial);
+        }
         await recordExecution({kind:'batch_context',inputs:structuredClone(inputs),...(batchContext?{batchContext}:{})});
       }
       for(let round=0;round<config.maxRounds+(pipeline?followupRounds:0);round++) {
@@ -175,45 +275,282 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         stageRounds++;
         await renew();await authorize();
         progressRound=round+1;progressCalls=calls;await progressStart('model');
-        const turn=await guarded(()=>provider.toolTurn({system:system+driveSkillPrompt(driveSkillActive),messages:structuredClone(messages),tools:[...visibleDefinitions(),finishTool],maxToolCalls:AUTOMATION_MAX_TOOL_CALLS,signal:combined,auditContext:{...auditContext,round:round+1}}));
+        // Bound copying choices to the exact IDs already disclosed for this
+        // phase. Keep the base schemas and larger/empty catalogues unchanged.
+        const exactIds=phaseInputIds.length>0&&phaseInputIds.length<=20
+          ?(pipeline?phaseReferences.bindings.map(row=>row.ref):[...phaseInputIds]):null;
+        const requestDefinitions=visibleDefinitions().map(definition=>{
+          const copy=structuredClone(definition);
+          if(pipeline)copy.parameters.properties.inputIds.items={type:'string',minLength:1,maxLength:64};
+          if(exactIds) {
+            copy.parameters.properties.inputIds.items.enum=[...exactIds];
+          }
+          const taskId=copy.parameters.properties.arguments.properties?.taskId;
+          if(stage==='followup'&&['read_pending_task','resolve_pending_task','defer_task'].includes(copy.name)&&taskId) {
+            if(pipeline){taskId.minLength=1;taskId.maxLength=64;}
+            if(exactIds)taskId.enum=[...exactIds];
+          }
+          return copy;
+        });
+        const canonicalFinishTool=structuredClone(finishTool);
+        if(pipeline&&stage==='initial')canonicalFinishTool.parameters.properties.noChangeInputIds={type:'array',items:{type:'string'},minItems:0,maxItems:20};
+        const requestFinishTool=structuredClone(canonicalFinishTool);
+        if(pipeline) {
+          requestFinishTool.description='Call alone with bare {handledInputIds}, never the ordinary wrapper. A queue input is handled when its required change succeeded, genuine unfinished actionable work was durably deferred, OR current evidence confirms no required change/already-satisfied intent. Handle that last category directly WITHOUT a write or NEW task; do not save a processing receipt. Copy only listed queue refs (q_...) or their exact UUIDs; task refs never finish queue inputs. [] ends this phase without claiming additional handled originals. Backend action/task completion checks still apply.'
+            +(stage==='initial'?' Initial phase also accepts noChangeInputIds: explicitly list exactly the originals requiring no change/already satisfied, excluding originals covered by an applied source write or current durable task. The two lists together declare handled originals; noChangeInputIds may be separate from handledInputIds or overlap it. Neither list may repeat an original internally. Missing noChangeInputIds means []. Reads/lookups do not cover an original.':'');
+          requestFinishTool.parameters.properties.handledInputIds.items={type:'string',minLength:1,maxLength:64,
+            enum:queueReferences.bindings.map(row=>row.ref)};
+          if(stage==='initial')requestFinishTool.parameters.properties.noChangeInputIds.items=structuredClone(requestFinishTool.parameters.properties.handledInputIds.items);
+        }
+        const matches=(value,schema)=>{try{return validateArguments(value,schema);}catch{return false;}};
+        const idChoices=(call,definition,rejection)=>{
+          if((!pipeline&&!exactIds)||call.name==='finish_batch')return;
+          const schema=definition.parameters,args=call.arguments;
+          const outerInvalid=!Object.hasOwn(args,'inputIds')||!matches(args.inputIds,schema.properties.inputIds)||rejection.reason==='invalid_input_scope';
+          const taskSchema=schema.properties.arguments.properties?.taskId;
+          const taskField=stage==='followup'&&['read_pending_task','resolve_pending_task','defer_task'].includes(call.name)&&taskSchema;
+          const nestedInvalid=taskField&&plainObject(args.arguments)&&(rejection.validation?.field==='arguments.taskId'||(Object.hasOwn(args.arguments,'taskId')
+            ?!matches(args.arguments.taskId,taskSchema):schema.properties.arguments.required?.includes('taskId')));
+          if(!outerInvalid&&!nestedInvalid)return;
+          // Diagnose IDs only when the rest of the proposed arguments is valid.
+          // These copies are never executed or used to repair the proposal.
+          const remaining=structuredClone(args),rest=structuredClone(schema);
+          delete remaining.inputIds;delete rest.properties.inputIds;
+          rest.required=rest.required.filter(field=>field!=='inputIds');
+          if(taskField&&plainObject(remaining.arguments)) {
+            delete remaining.arguments.taskId;delete rest.properties.arguments.properties.taskId;
+            if(rest.properties.arguments.required)rest.properties.arguments.required=rest.properties.arguments.required.filter(field=>field!=='taskId');
+          }
+          if(!matches(remaining,rest))return;
+          return {phase:stage,field:outerInvalid?'inputIds':'arguments.taskId',...(exactIds?{choices:[...exactIds]}:{}),
+            instruction:pipeline?'Copy an exact ref from this phase referenceBindings without changing any characters.':'Copy an exact listed ID without changing any characters.'};
+        };
+        const personIdChoices=async(call,wire,execution,definition,canonicalDefinition,rejection)=>{
+          if(!pipeline||call.name!=='defer_task'||rejection.reason!=='invalid_arguments'||typeof getPersonIdChoices!=='function'
+            ||!plainObject(execution.arguments.arguments)||!Object.hasOwn(execution.arguments.arguments,'personId'))return;
+          const personSchema=canonicalDefinition.parameters.properties.arguments.properties.personId;
+          if(!plainObject(personSchema))return;
+          if(matches(execution.arguments.arguments.personId,personSchema))return;
+          for(const [args,schema] of [[wire.arguments,definition.parameters],[execution.arguments,canonicalDefinition.parameters]]) {
+            const remaining=structuredClone(args),rest=structuredClone(schema);
+            delete remaining.arguments.personId;delete rest.properties.arguments.properties.personId;
+            if(rest.properties.arguments.required)rest.properties.arguments.required=rest.properties.arguments.required.filter(key=>key!=='personId');
+            if(!matches(remaining,rest))return;
+          }
+          const ids=execution.arguments.inputIds,taskId=execution.arguments.arguments.taskId;
+          if(new Set(ids).size!==ids.length||!ids.every(id=>validUuid(id)&&phaseInputIds.includes(id))
+            ||stage==='followup'&&taskId!==undefined&&!phaseInputIds.includes(taskId))return;
+          let choices;
+          try {choices=await guarded(()=>getPersonIdChoices({principal,inputIds:[...ids],phase:stage,signal:combined}));}
+          catch {if(combined.aborted)failure('aborted');return;}
+          if(!Array.isArray(choices)||!choices.length||choices.length>20||new Set(choices).size!==choices.length
+            ||!choices.every(id=>typeof id==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)&&matches(id,personSchema)))return;
+          return {phase:stage,field:'arguments.personId',choices:[...choices],instruction:'Copy the complete exact person.id already returned for this bound original. Resubmit defer_task with a new call ID; no calls in this turn were executed.'};
+        };
+        const turn=await guarded(()=>provider.toolTurn({system:system+driveSkillPrompt(driveSkillActive),messages:structuredClone(messages),tools:structuredClone([...requestDefinitions,requestFinishTool]),maxToolCalls:AUTOMATION_MAX_TOOL_CALLS,signal:combined,auditContext:{...auditContext,round:round+1}}));
         await recordExecution({kind:'model_result',round:progressRound,result:turn??null});
         if (!plainObject(turn)||!Array.isArray(turn.toolCalls)||!turn.toolCalls.length||turn.toolCalls.length>AUTOMATION_MAX_TOOL_CALLS||!['tool_calls','tool_use'].includes(turn.stopReason)) failure('incomplete_batch');
-        const turnIds=new Set();
+        const turnIds=new Set(),rejections=new Map();
+        // Protocol errors and unknown/hidden tools remain fatal for the whole turn.
         for(const call of turn.toolCalls) {
           proposalSequence++;
           if (!plainObject(call)||typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||callIds.has(call.id)||turnIds.has(call.id)||!plainObject(call.arguments)) {await rejectProposal(call,'invalid_tool_call');failure('invalid_tool_call');}
           turnIds.add(call.id);
-          const definition=call.name==='finish_batch'?finishTool:visibleDefinitions().find(t=>t.name===call.name);
+          const definition=call.name==='finish_batch'?requestFinishTool:requestDefinitions.find(t=>t.name===call.name);
+          if(!definition){await rejectProposal(call,'unknown_tool');failure('invalid_tool_call');}
+        }
+        // Keep the provider proposal/native transcript untouched. Only these
+        // private clones enter canonical validation, receipts and tool adapters.
+        const executionCalls=turn.toolCalls.map(call=>({...call,arguments:referenceArguments(call)}));
+        const finish=turn.toolCalls.find(c=>c.name==='finish_batch');
+        for(const [index,call] of turn.toolCalls.entries()) {
+          const definition=call.name==='finish_batch'?requestFinishTool:requestDefinitions.find(t=>t.name===call.name);
+          const canonicalDefinition=call.name==='finish_batch'?canonicalFinishTool:definitions.find(t=>t.name===call.name);
+          const execution=executionCalls[index],wire={...call,arguments:referenceArguments(call,true)};
           const emptyFinish=turn.toolCalls.length===1&&call.name==='finish_batch'&&Object.keys(call.arguments).length===1
             &&Array.isArray(call.arguments.handledInputIds)&&call.arguments.handledInputIds.length===0;
-          if(!definition||!validateArguments(call.arguments,definition.parameters)&&!emptyFinish) {await rejectProposal(call,definition?'invalid_arguments':'unknown_tool',definition?argumentDiagnostic(call.arguments,definition.parameters):undefined);failure('invalid_tool_call');}
-          if(call.name!=='finish_batch'&&(new Set(call.arguments.inputIds).size!==call.arguments.inputIds.length||!call.arguments.inputIds.every(id=>validUuid(id)&&inputIds.includes(id)))) {await rejectProposal(call,'invalid_input_scope',{keyword:'scope',field:'inputIds'});failure('invalid_tool_call');}
+          if(pipeline&&call.name==='finish_batch'&&matches(execution.arguments,canonicalFinishTool.parameters)
+            &&(new Set(execution.arguments.handledInputIds).size!==execution.arguments.handledInputIds.length
+              ||!execution.arguments.handledInputIds.every(id=>validUuid(id)&&claimedInputIds.includes(id))
+              ||stage==='initial'&&(new Set(execution.arguments.noChangeInputIds||[]).size!==(execution.arguments.noChangeInputIds||[]).length
+                ||(execution.arguments.noChangeInputIds||[]).some(id=>!validUuid(id)||!claimedInputIds.includes(id))))) {
+            await rejectProposal(call,'invalid_completion_scope',{keyword:'scope',field:'handledInputIds'});failure('invalid_completion');
+          }
+          let rejection;
+          if(!matches(wire.arguments,definition.parameters)&&!emptyFinish)
+            rejection={reason:'invalid_arguments',validation:argumentDiagnostic(wire.arguments,definition.parameters)};
+          else if(!matches(execution.arguments,canonicalDefinition.parameters)&&!emptyFinish)
+            rejection={reason:'invalid_arguments',validation:argumentDiagnostic(execution.arguments,canonicalDefinition.parameters)};
+          else if(call.name!=='finish_batch'&&(new Set(execution.arguments.inputIds).size!==execution.arguments.inputIds.length||!execution.arguments.inputIds.every(id=>validUuid(id)&&(pipeline?phaseInputIds:inputIds).includes(id))))
+            rejection={reason:'invalid_input_scope',validation:{keyword:'scope',field:'inputIds'}};
+          else if(pipeline&&stage==='followup'&&['read_pending_task','resolve_pending_task','defer_task'].includes(call.name)&&Object.hasOwn(execution.arguments.arguments,'taskId')&&!phaseInputIds.includes(execution.arguments.arguments.taskId))
+            rejection={reason:'invalid_input_scope',validation:{keyword:'scope',field:'arguments.taskId'}};
+          if(rejection) {
+            if(finish){await rejectProposal(call,rejection.reason,rejection.validation,proposalSequence-turn.toolCalls.length+index+1);failure('invalid_tool_call');}
+            rejections.set(call.id,{...rejection,exactIds:idChoices(wire,definition,rejection),
+              exactPersonIds:await personIdChoices(call,wire,execution,definition,canonicalDefinition,rejection)});
+          } else if(pipeline&&stage==='initial'&&call.name==='finish_batch') {
+            // Both explicit lists passed reference, schema and duplicate checks.
+            // Normalize only the private clone; raw proposals remain unchanged.
+            const declared=new Set([...execution.arguments.handledInputIds,...(execution.arguments.noChangeInputIds||[])]);
+            execution.arguments.handledInputIds=claimedInputIds.filter(id=>declared.has(id));
+          }
         }
         await progressDone('ready');
+        const consumeTurn=async()=>{
+          calls+=turn.toolCalls.length;stageCalls+=turn.toolCalls.length;progressCalls=calls;
+          const stageLimit=stage==='followup'?(config.maxFollowupCalls??AUTOMATION_MAX_STAGE_CALLS):(config.maxCalls??AUTOMATION_MAX_STAGE_CALLS);
+          if(stageCalls>stageLimit) {for(const call of turn.toolCalls)await rejectProposal(call,'call_limit');failure('call_limit');}
+          for(const id of turnIds)callIds.add(id);
+        };
+        if(finish&&turn.toolCalls.length!==1) {
+          await consumeTurn();
+          if(!pipeline||turn.toolCalls.filter(call=>call.name==='finish_batch').length!==1) {
+            await rejectProposal(finish,'invalid_completion');failure('invalid_completion');
+          }
+          // All calls already passed protocol, schema and scope validation.
+          // Reject this staged combination atomically; never split or dispatch it.
+          messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)});
+          for(const [index,call] of turn.toolCalls.entries()) {
+            const reason=call.name==='finish_batch'?'invalid_completion':'unattempted';
+            const feedback={status:'tool_error',reason,message:call.name==='finish_batch'
+              ?'Call finish_batch alone. Resubmit the other calls without finish_batch, then finish separately.'
+              :'Turn rejected before execution. No calls in this turn were executed.'};
+            await rejectProposal(call,reason,undefined,proposalSequence-turn.toolCalls.length+index+1);
+            await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
+            messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
+          }
+          if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+          continue;
+        }
+        if(rejections.size) {
+          // Reject atomically: even valid peers get no preparation, receipt or dispatch.
+          await consumeTurn();
+          messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)});
+          for(const [index,call] of turn.toolCalls.entries()) {
+            const rejection=rejections.get(call.id)??{reason:'unattempted'};
+            const sequence=proposalSequence-turn.toolCalls.length+index+1;
+            const diagnostics=toolDiagnostics({status:'invalid_tool_call',reason:rejection.reason,validation:rejection.validation,dispatched:false});
+            const feedback={status:'tool_error',reason:rejection.reason,
+              ...(rejection.validation?{validationCode:diagnostics.validationCode,schemaFieldId:diagnostics.schemaFieldId}:{}),
+              ...(rejection.exactIds?{exactIds:rejection.exactIds}:{}),
+              ...(rejection.exactPersonIds?{exactPersonIds:rejection.exactPersonIds}:{}),
+              message:'Turn rejected before execution. No calls in this turn were executed.'};
+            await rejectProposal(call,rejection.reason,rejection.validation,sequence);
+            await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
+            messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
+          }
+          if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+          continue;
+        }
+        if(pipeline&&stage==='followup') {
+          const groups=new Map();
+          for(const call of executionCalls)if(call.name==='patch_map_participation') {
+            const id=call.arguments.arguments.eventId;
+            if(typeof id!=='string')continue;
+            if(!groups.has(id))groups.set(id,[]);groups.get(id).push(call.id);
+          }
+          const siblings=new Set([...groups.values()].filter(group=>group.length>1).flat());
+          if(siblings.size) {
+            await consumeTurn();
+            // Same-parent patches share one CAS token and are dependent. Reject
+            // the complete validated reply without preparing or dispatching it.
+            messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)});
+            for(const [index,call] of turn.toolCalls.entries()) {
+              const reason=siblings.has(call.id)?'same_event_participation_calls':'unattempted';
+              const feedback={status:'tool_error',reason,message:siblings.has(call.id)
+                ?'Group compatible people for the same event into ONE patch_map_participation call. For separate dependent patches, wait for the first applied result and use its returned updatedAt as the next expectedUpdatedAt.'
+                :'Turn rejected before execution. No calls in this turn were executed.'};
+              await rejectProposal(call,reason,undefined,proposalSequence-turn.toolCalls.length+index+1);
+              await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
+              messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
+            }
+            if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+            continue;
+          }
+          if(typeof pipeline.preflightParticipation==='function') {
+            const unread=new Map();
+            for(const call of executionCalls)if(call.name==='patch_map_participation') {
+              const result=await guarded(()=>pipeline.preflightParticipation({context:{principal,inputIds:call.arguments.inputIds,signal:combined},changes:call.arguments.arguments.changes}));
+              if(result?.status==='read_required') {
+                if(!Array.isArray(result.requiredTaskReads)||!result.requiredTaskReads.length||result.requiredTaskReads.length>20)failure('preflight_failed');
+                const requiredTaskReads=result.requiredTaskReads.map(row=>{
+                  const taskRef=phaseReferences.toRef.get(row.taskId);
+                  if(!taskRef||!call.arguments.inputIds.includes(row.taskId)||typeof row.updatedAt!=='string')failure('preflight_failed');
+                  if(row.fragment&&(!validUuid(row.fragment.id)||!Number.isSafeInteger(row.fragment.nextOffset)||row.fragment.nextOffset<1))failure('preflight_failed');
+                  return {taskRef,updatedAt:row.updatedAt,...(row.fragment?{fragment:{id:row.fragment.id,nextOffset:row.fragment.nextOffset}}:{})};
+                });
+                unread.set(call.id,requiredTaskReads);
+              } else if(result?.status!=='ready')failure('preflight_failed');
+            }
+            if(unread.size) {
+              await consumeTurn();
+              messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)});
+              for(const [index,call] of turn.toolCalls.entries()) {
+                const requiredTaskReads=unread.get(call.id),reason=requiredTaskReads?'participation_task_not_ready':'unattempted';
+                const feedback={status:'tool_error',reason,...(requiredTaskReads?{requiredTaskReads}:{}),message:requiredTaskReads
+                  ?'Turn rejected before execution. Complete each required task read using its taskRef in inputIds: continue the listed fragment id at nextOffset through null, or call read_pending_task with taskId=taskRef when no fragment is listed. Then resubmit the action; do not rewrite unchanged tasks.'
+                  :'Turn rejected before execution. No calls in this turn were executed.'};
+                await rejectProposal(call,reason,undefined,proposalSequence-turn.toolCalls.length+index+1);
+                await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
+                messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
+              }
+              if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+              continue;
+            }
+          }
+        }
         // Validate first, then load the reviewed skill and ask for a fresh plan.
         // No action, receipt, call ID or tool budget is consumed by activation.
         if(!driveSkillActive&&turn.toolCalls.some(call=>isDriveTool(call.name))) {
           driveSkillActive=true;
           continue;
         }
-        calls+=turn.toolCalls.length;stageCalls+=turn.toolCalls.length;progressCalls=calls;
-        const stageLimit=stage==='followup'?(config.maxFollowupCalls??AUTOMATION_MAX_STAGE_CALLS):(config.maxCalls??AUTOMATION_MAX_STAGE_CALLS);
-        if(stageCalls>stageLimit) {for(const call of turn.toolCalls)await rejectProposal(call,'call_limit');failure('call_limit');}
-        for(const id of turnIds)callIds.add(id);
-        const finish=turn.toolCalls.find(c=>c.name==='finish_batch');
+        await consumeTurn();
         if(finish) {
           if(turn.toolCalls.length!==1) {await rejectProposal(finish,'invalid_completion');failure('invalid_completion');}
-          const handledInputIds=finish.arguments.handledInputIds;
+          const handledInputIds=executionCalls.find(call=>call.name==='finish_batch').arguments.handledInputIds;
           if(new Set(handledInputIds).size!==handledInputIds.length||!handledInputIds.every(id=>validUuid(id)&&inputs.some(row=>row.uuid===id))) {await rejectProposal(finish,'invalid_completion_scope',{keyword:'scope',field:'handledInputIds'});failure('invalid_completion');}
           await progressStart('tool','finish_batch');
           await renew();await authorize();
           if(pipeline) {
+            if(stage==='initial'&&typeof pipeline.validateInitialFinish==='function') {
+              const noChangeInputIds=executionCalls.find(call=>call.name==='finish_batch').arguments.noChangeInputIds||[];
+              const completion=await guarded(()=>pipeline.validateInitialFinish({principal,signal:combined,handledInputIds,noChangeInputIds}));
+              if(completion?.status==='pending') {
+                const uncoveredInputRefs=(completion.uncoveredInputIds||[]).map(id=>queueReferences.bindings.find(binding=>binding.uuid===id)).filter(Boolean);
+                if(!uncoveredInputRefs.length||uncoveredInputRefs.length>20)failure('preflight_failed');
+                const response={status:'pending',reason:'uncovered_inputs',uncoveredInputRefs,
+                  message:'These handled originals have neither an applied source write nor a current durable task. For each, perform its supported remaining action, save its genuine unfinished action, or explicitly include it in noChangeInputIds if current evidence confirms no required change/already satisfied. Reads/lookups are not completion. Finish again with an exact disjoint accounting.'};
+                messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)},
+                  {role:'tool',toolCallId:finish.id,content:JSON.stringify(response)});
+                await recordExecution({kind:'tool_result',tool:'finish_batch',result:response});
+                if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+                await progressDone('pending');continue;
+              }
+              if(completion?.status==='invalid_request') {await rejectProposal(finish,'invalid_completion');failure('invalid_completion');}
+              if(completion?.status!=='ready')failure('preflight_failed');
+              initialFinishVerdict=Object.freeze({status:completion.status,handledInputIds:Object.freeze([...handledInputIds])});
+            }
+            if(stage==='followup'&&typeof pipeline.validateFinish==='function') {
+              const completion=await guarded(()=>pipeline.validateFinish({principal,signal:combined}));
+              if(completion?.status==='pending') {
+                const response={...completion,taskRefs:(completion.taskIds||[]).map(id=>phaseReferences.bindings.find(binding=>binding.uuid===id)).filter(Boolean)};
+                if(Buffer.byteLength(canonicalJson(response))>16384)failure('context_limit');
+                messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)},
+                  {role:'tool',toolCallId:finish.id,content:JSON.stringify(response)});
+                await recordExecution({kind:'tool_result',tool:'finish_batch',result:response});
+                if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+                await progressDone('pending');continue;
+              }
+              if(completion?.status!=='ready')failure('preflight_failed');
+            }
             const response={status:'ready',stage,handledInputIds};
             messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)},
               {role:'tool',toolCallId:finish.id,content:JSON.stringify(response)});
             await recordExecution({kind:'tool_result',tool:'finish_batch',result:response});
             await progressDone('ready');
-            if(stage==='initial'){if(!await startFollowup(handledInputIds))return await settleCycle('not_needed');continue;}
+            if(stage==='initial'){if(!await startFollowup(handledInputIds,{afterFinish:true}))return await settleCycle('not_needed');continue;}
             return await settleCycle('completed',handledInputIds);
           }
           let completion;
@@ -245,10 +582,10 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           return outcome({status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls});
         }
         messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)});
-        for(const [proposalIndex,call] of turn.toolCalls.entries()) {
+        for(const [proposalIndex,call] of executionCalls.entries()) {
           await progressStart('tool',call.name);
           activeProgress.proposalSequence=proposalSequence-turn.toolCalls.length+proposalIndex+1;
-          await renew();await authorize();
+          await renew();
           const tool=tools.find(t=>t.name===call.name);
           const scopedIds=[...call.arguments.inputIds].sort();
           let executionArguments=structuredClone(call.arguments.arguments);
@@ -259,8 +596,38 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             const statusReason=toolDiagnostics({status}).reason;
             const reason=['unknown','none'].includes(diagnostics.reason)
               ?(['unknown','none'].includes(statusReason)?'tool_failed':statusReason):diagnostics.reason;
-            const feedback={status:'tool_error',reason,message:'Tool call failed. No successful result was confirmed.'};
-            activeProgress.result={status,diagnostics:{...diagnostics,reason}};
+            let feedback={status:'tool_error',reason,message:'Tool call failed. No successful result was confirmed.'};
+            // Only these private cache outcomes may disclose recovery fields.
+            // Never forward an arbitrary failed body or its message text.
+            const taskBinding=pipeline&&stage==='followup'&&['read_pending_task','read_context_fragment'].includes(call.name)
+              &&result?.status==='invalid_request'&&['pending_task_fragment_scope','pending_task_fragment_offset','pending_task_fragment_stale'].includes(result.reason)
+              &&phaseReferences.bindings.find(binding=>binding.uuid===result.taskId);
+            if(taskBinding)feedback={status:'tool_error',reason:result.reason,taskRef:taskBinding.ref,
+              ...(result.reason==='pending_task_fragment_offset'&&Number.isSafeInteger(result.nextOffset)&&result.nextOffset>=0?{nextOffset:result.nextOffset}:{}),
+              message:result.reason==='pending_task_fragment_stale'?'Read the current task again using this taskRef in inputIds and taskId.'
+                :result.reason==='pending_task_fragment_offset'?'Continue this task fragment with this taskRef in inputIds and the returned nextOffset.'
+                :'Bind this taskRef in inputIds when reading this task or continuing its fragments.'};
+            // Only this fixed internal participation outcome may disclose the
+            // proposed IDs and literal absent endpoint names. Rebuild it from
+            // the call; arbitrary failure bodies/messages remain private.
+            if(pipeline&&stage==='followup'&&call.name==='patch_map_participation'&&plainObject(result)
+              &&result.status==='invalid_request'&&result.reason==='new_participation_window_required'
+              &&Object.keys(result).sort().join(',')==='missingWindows,reason,status'
+              &&Array.isArray(result.missingWindows)&&result.missingWindows.length>0&&result.missingWindows.length<=20
+              &&Array.isArray(executionArguments.changes)&&executionArguments.changes.length<=20) {
+              const changes=executionArguments.changes,missingWindows=[],seen=new Set();
+              for(const row of result.missingWindows) {
+                const proposed=plainObject(row)&&changes.filter(change=>change.personId===row.personId);
+                if(!proposed||proposed.length!==1||seen.has(row.personId)||Object.keys(row).sort().join(',')!=='missingFields,personId'
+                  ||!Array.isArray(row.missingFields)||!row.missingFields.length||row.missingFields.length>2)break;
+                const missingFields=['start','end'].filter(field=>!Object.hasOwn(proposed[0],field));
+                if(canonicalJson(row.missingFields)!==canonicalJson(missingFields))break;
+                seen.add(proposed[0].personId);missingWindows.push({personId:proposed[0].personId,missingFields});
+              }
+              if(missingWindows.length===result.missingWindows.length)feedback={status:'tool_error',reason:'new_participation_window_required',missingWindows,
+                message:'No participation changes were applied. For every new person, explicitly provide both start and end using supported endpoints, including {inherit:true} when inheriting the event boundary. Resubmit the complete corrected patch.'};
+            }
+            activeProgress.result={status,diagnostics:{...diagnostics,reason:feedback.reason}};
             await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,inputIds:scopedIds,
               arguments:structuredClone(executionArguments),result:feedback});
             messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
@@ -275,15 +642,18 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             catch(error){throwIfRunStopped(error);await reportToolFailure({error});continue;}
             if(!validateArguments(executionArguments,tool.parameters)){activeProgress.validation=argumentDiagnostic(executionArguments,tool.parameters);failure('invalid_tool_call');}
           }
-          const actionKey=createHash('sha256').update(canonicalJson({inputIds:scopedIds,name:call.name,arguments:executionArguments})).digest('hex');
+          const actionKey=createHash('sha256').update(canonicalJson({inputIds:scopedIds,name:call.name,arguments:executionArguments,...(tool.getActionVersion?{actionVersion:tool.getActionVersion()}: {})})).digest('hex');
           const receipt=tool.readOnly===true?{status:'execute'}:await guarded(()=>store.action({leaseToken,actionKey,signal:combined}));
           let result;
           if(receipt.status==='completed') result={status:'already_succeeded'};
           else {
             if(receipt.status!=='execute') failure('stale');
-            await authorize();
+            // Business reads/actions retain a fresh check after reservation;
+            // local cache bookkeeping must not wait for live source providers.
+            if(!localContextTools.has(call.name))await authorize();
             await markDispatched();
-            try {result=await guarded(()=>tool.execute(executionArguments,{principal,inputIds:scopedIds,idempotencyKey:actionKey,signal:combined}));}
+            try {result=await guarded(()=>tool.execute(executionArguments,{principal,inputIds:scopedIds,idempotencyKey:actionKey,signal:combined,
+              ...(pipeline?{callId:call.id,phase:stage}:{})}));}
             catch(error){throwIfRunStopped(error);await reportToolFailure({error});continue;}
             throwIfRunStopped();
             let resultStatus,resultBytes;
@@ -296,13 +666,13 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             }
             if(resultStatus==='audit_unavailable')failure('audit_unavailable');
             if(resultBytes>16384){await reportToolFailure({status:'result_too_large'});continue;}
-            if(!['ready','success','succeeded','completed','ok'].includes(resultStatus)) {
+            if(!['ready','success','succeeded','completed','ok'].includes(resultStatus)&&!(call.name==='sync_calendars_to_map'&&resultStatus==='partial')) {
               // Tool-local stale/aborted outcomes do not cancel an active run.
               // Actual lease and whole-run state are checked independently.
               const statusReason=toolDiagnostics({status:resultStatus}).reason;
               await reportToolFailure({status:statusReason==='unknown'?'failed':resultStatus,result});continue;
             }
-            if(tool.readOnly!==true) {
+            if(tool.readOnly!==true&&resultStatus!=='partial') {
               const saved=await guarded(()=>store.action({leaseToken,actionKey,complete:true,signal:combined}));
               if(saved.status!=='completed') failure('stale');
             }
@@ -310,7 +680,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           activeProgress.result=result;
           await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,inputIds:scopedIds,arguments:structuredClone(executionArguments),result});
           messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(result)});
-          await progressDone(result.status==='already_succeeded'?'already_succeeded':'ready');
+          await progressDone(result.status==='already_succeeded'?'already_succeeded':result.status==='partial'?'partial':'ready');
         }
         if(Buffer.byteLength(JSON.stringify(messages))>262144) failure('context_limit');
       }

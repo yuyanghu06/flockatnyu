@@ -84,11 +84,11 @@ function adapterFixture(){
   return {adapters,pending,calls,rows,context,execute,block:()=>{blocked=true;},prepare:async()=>{await adapters.resolveClaimSourceIds(context);await adapters.prepareBatch({...context,inputs:[original()]});await adapters.pipeline.beginCycle({leaseToken,inputs:[original()],recordExecution:async()=>{},getExecutionLog:()=>[]});calls.length=0;}};
 }
 
-test('production adapter catalogue/read/defer perform zero live source/reference/Calendar checks; standard actions still deny revoked originals',async()=>{
+test('production cache and map identity reads do not refresh provider sources; explicit source tools retain their own failure',async()=>{
   const f=adapterFixture();await f.prepare();f.block();
   const next=await bounded(f.adapters.pipeline.afterInitial({handledInputIds:[inputId],inputs:[original()],executionLog:[]}));assert(next.inputIds.includes(f.pending.uuid));
   const read=await f.execute('read_pending_task',{taskId:f.pending.uuid});assert.equal(read.status,'ready');assert.deepEqual(read.task,f.pending);
   const deferred=await f.execute('defer_task',{taskId:f.pending.uuid,summary:'Read cached context and ask normal tools next',operation:'source_review'});assert.equal(deferred.status,'ready');assert.deepEqual(f.calls,[]);
-  assert.equal((await f.execute('lookup_map_person',{provider:'discord',providerUserId:'400',sourceId,sourceUrl:url})).status,'forbidden_source');assert(!f.calls.includes('person lookup'));assert(!f.calls.includes('map write'));assert(f.calls.length>0);
+  assert.equal((await f.execute('lookup_map_person',{provider:'discord',providerUserId:'400',sourceId,sourceUrl:url})).status,'ready');assert.deepEqual(f.calls,['person lookup']);assert(!f.calls.includes('map write'));
   const normalRead=await f.execute('read_discord_messages',{});assert.equal(normalRead.status,'unavailable');assert(f.calls.includes('discord tool'));
 });

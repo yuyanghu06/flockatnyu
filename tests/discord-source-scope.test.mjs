@@ -47,3 +47,14 @@ test('Discord transport dynamic additions stay within its approved audience',asy
 test('combined static and dynamic source bound cannot exceed principal/RPC capacity',async()=>{
  const f=fixture(),principal={...f.principal,allowedSourceIds:Array.from({length:500},(_,i)=>source(i+2))};assert.equal(await f.enrich({principal}),principal);
 });
+
+test('map grants carry exact DB catalogue channel bindings and remove disabled bindings',async()=>{
+ const f=fixture(),foreign={sourceId:source(99),provider:'gmail'};
+ const principal={...f.principal,mapSourceBindings:[foreign,{sourceId:source(8),provider:'discord',guildId,channelId:'999'}]};
+ const approved=await f.enrich({principal});
+ assert.deepEqual(approved.mapSourceBindings,[foreign,{sourceId:source(1),provider:'discord',guildId,channelId:'200'}]);
+ f.state.channels[0].enabled=false;
+ assert.deepEqual((await f.enrich({principal:approved})).mapSourceBindings,[foreign]);
+ f.store.getPolicy=async()=>({status:'unavailable'});
+ assert.deepEqual((await f.enrich({principal:approved})).mapSourceBindings,[foreign]);
+});

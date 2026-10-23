@@ -15,15 +15,24 @@ function fixture({messages=makeMessages(),status='ready',coverage={},providerHan
   const service={async fetchWindow(args){fetched++;assert.deepEqual(args.principal,principal);return fetchHandler?fetchHandler(args):fetchedResult;},async readWindow(){rawRead++;return {status:'ready',sources:sourcesFor(messages),coverage:{complete:messages.length<=8}};}};
   const provider={configured:providerConfigured,async summarize(args){calls.push(args);if(args.stage==='map')mapInputs.push(...args.input);if(providerHandler)return providerHandler(args);const reservation=await args.beforeDispatch({maxCostUsd:cost,inputTokens:100,outputTokens:10});reservations.push(reservation);if(reservation.status!=='ready')return reservation;dispatched++;assert.equal((await args.afterDispatch({reservation,status:'succeeded',usage:{inputTokens:100,outputTokens:10}})).status,'ready');return {status:'ready',summary:summary(args.allowedMessageIds)};}};
   const tools=createLiveChatTools({service,guildId,config:configuration,provider});
-  return {tools,execute:extras=>tools.execute({name:'read_discord_window',arguments:{channelId,from,to},principal,...extras}),calls,mapInputs,reservations,fetched:()=>fetched,rawRead:()=>rawRead,dispatched:()=>dispatched};
+  return {tools,execute:extras=>tools.execute({name:'read_discord_summary',principal,...extras,arguments:{scope:'team',channelId,from,to,...extras?.arguments}}),executeRead:extras=>tools.execute({name:'read_discord_window',arguments:{channelId,from,to},principal,...extras}),calls,mapInputs,reservations,fetched:()=>fetched,rawRead:()=>rawRead,dispatched:()=>dispatched};
 }
 test('small complete windows and empty windows return originals without any summary model call',async()=>{
-  for(const count of [0,1,8]){const f=fixture({messages:makeMessages(count),coverage:{sourceTextTruncated:false}});const r=await f.execute();assert.equal(r.status,'ready');assert.equal(r.sources.length,count);assert.equal(r.coverage.complete,true);assert.equal(f.calls.length,0);assert(!('messages' in r));}
+  for(const count of [0,1,8]){const f=fixture({messages:makeMessages(count),coverage:{sourceTextTruncated:false}});const r=await f.executeRead();assert.equal(r.status,'ready');assert.equal(r.sources.length,count);assert.equal(r.coverage.complete,true);assert.equal(f.calls.length,0);assert(!('messages' in r));}
 });
-test('large complete windows summarize every original in RAM and return original citation provenance',async()=>{
+test('large and long original window reads never fetch full summary input or invoke another model',async()=>{
+  for(const messages of [makeMessages(30),makeMessages(2,6000)]) {
+    const f=fixture({messages,providerHandler:()=>{throw Error('nested model must not run');}});
+    const result=await f.executeRead();
+    assert.equal(result.status,'ready');assert.deepEqual(result.sources,sourcesFor(messages));
+    assert.equal(f.rawRead(),1);assert.equal(f.fetched(),0);assert.equal(f.dispatched(),0);assert.equal(f.calls.length,0);
+    assert.equal(result.coverage.directSummary,undefined);assert.equal(result.sources.some(source=>source.retrievalMode==='live_bot_summary'),false);
+  }
+});
+test('explicit named summaries consume every original in RAM and return original citation provenance',async()=>{
   const messages=makeMessages(30);const f=fixture({messages});const r=await f.execute();assert.equal(r.status,'ready');assert.equal(r.coverage.complete,true);assert.equal(r.coverage.directSummary,true);assert.equal(r.coverage.sourceTextTruncated,false);assert.equal(r.coverage.returnedCount,30);assert.deepEqual(f.mapInputs.map(m=>m.messageId),messages.map(m=>m.id));assert.equal(r.sources[0].retrievalMode,'live_bot_summary');assert.equal(r.sources[0].periodStart,from);assert.equal(r.sources[0].periodEnd,to);assert.equal(r.sources[0].url,`https://discord.com/channels/${guildId}/${channelId}/1000`);assert(!('messages' in r));assert.equal(f.rawRead(),0);
 });
-test('complete fetch with long original triggers direct summary even with <=8 messages',async()=>{
+test('explicit named summary handles long originals even with <=8 messages',async()=>{
   const f=fixture({messages:makeMessages(2,6000),coverage:{sourceTextTruncated:true}});const r=await f.execute();assert.equal(r.coverage.directSummary,true);assert.equal(f.mapInputs.length,2);assert(f.mapInputs[0].content.length>1800);
 });
 test('map/reduce path consumes all original messages and carries original IDs through reduction',async()=>{
@@ -40,7 +49,7 @@ test('missing summary configuration uses bounded live read without model calls',
 });
 test('foreign model citations remain partial without persisted fallback',async()=>{
   const f=fixture({providerHandler:async()=>({status:'ready',summary:summary(['999999'])})});const result=await f.execute();assert.equal(result.status,'partial');assert.equal(result.coverage.complete,false);assert(!result.sources.some(s=>s.url.endsWith('/999999')));
-  let fallback=0,round=0;const retrieved=await retrieveAssistantContext({messages:[{role:'user',content:'Summarize general last week'}],principal,liveTools:f.tools,provider:{planTools:async()=>round++===0?[{name:'read_discord_window',arguments:{channelId,from,to}}]:[]},fallback:async()=>{fallback++;return {status:'ready',sources:[{id:'stored',url:'https://example.com/summary',excerpt:'Stored weekly evidence',tier:'weekly',periodStart:from,periodEnd:to}]};}});assert.equal(fallback,0);assert(!retrieved.sources.some(s=>s.retrievalMode==='stored_summary_fallback'));assert.equal(retrieved.results[0].coverage.complete,false);
+  let fallback=0,round=0;const retrieved=await retrieveAssistantContext({messages:[{role:'user',content:'Summarize general last week'}],principal,liveTools:f.tools,provider:{planTools:async()=>round++===0?[{name:'read_discord_summary',arguments:{scope:'team',channelId,from,to}}]:[]},fallback:async()=>{fallback++;return {status:'ready',sources:[{id:'stored',url:'https://example.com/summary',excerpt:'Stored weekly evidence',tier:'weekly',periodStart:from,periodEnd:to}]};}});assert.equal(fallback,0);assert(!retrieved.sources.some(s=>s.retrievalMode==='stored_summary_fallback'));assert.equal(retrieved.results[0].coverage.complete,false);
 });
 test('summary provider failure returns explicitly partial original evidence without persistence hooks',async()=>{
   const f=fixture({providerHandler:async()=>{throw Error('fixture-provider-private-key');}});const r=await f.execute({store:new Proxy({},{get(){throw Error('Database persistence forbidden');}})});assert.equal(r.status,'partial');assert.equal(r.coverage.complete,false);assert.equal(r.coverage.reason,'live_summary_unavailable');assert(!JSON.stringify(r).includes('fixture-provider-private-key'));assert(r.sources.length<=8);
@@ -54,8 +63,8 @@ test('request-local $0.10 reservation budget stops calls independently of the co
 test('summary cancellation propagates promptly and does not silently replace evidence with fallback',async()=>{
   const abort=new AbortController();const f=fixture({providerHandler:async()=>{abort.abort();return {status:'aborted'};}});await assert.rejects(f.execute({signal:abort.signal}),{name:'AbortError'});
 });
-test('fully summarized live window does not authorize stored-summary fallback',async()=>{
-  const f=fixture();let fallback=0,round=0;const r=await retrieveAssistantContext({messages:[{role:'user',content:'Summarize last week'}],principal,liveTools:f.tools,provider:{planTools:async()=>round++===0?[{name:'read_discord_window',arguments:{channelId,from,to}}]:[]},fallback:async()=>{fallback++;throw Error('No fallback after live summary');}});assert.equal(fallback,0);assert(r.sources.some(s=>s.retrievalMode==='live_bot_summary'));assert.equal(r.results[0].coverage.complete,true);
+test('explicit named summary does not authorize stored-summary fallback',async()=>{
+  const f=fixture();let fallback=0,round=0;const r=await retrieveAssistantContext({messages:[{role:'user',content:'Summarize last week'}],principal,liveTools:f.tools,provider:{planTools:async()=>round++===0?[{name:'read_discord_summary',arguments:{scope:'team',channelId,from,to}}]:[]},fallback:async()=>{fallback++;throw Error('No fallback after live summary');}});assert.equal(fallback,0);assert(r.sources.some(s=>s.retrievalMode==='live_bot_summary'));assert.equal(r.results[0].coverage.complete,true);
 });
 test('two windows in the same request share a reservation budget while a new request gets its own budget',async()=>{
   const f=fixture({cost:0.06}),signal=new AbortController().signal;

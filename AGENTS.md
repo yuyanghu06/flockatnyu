@@ -1,3 +1,42 @@
+# Isolated tools; workflows belong in agent prompts (2026-10-23)
+
+For both chat and the autonomous planner/update agent, each callable tool must
+perform only its named operation against its own service or saved data. Keep
+Discord reads, map reads/lookups/writes, Calendar operations, Gmail reads and Miro
+reads separate. Never bundle them into a compound tool or hide one service's
+operations inside another tool's implementation or wrapper.
+
+In particular, reading a saved map event must not fetch its Discord, Calendar,
+Gmail or Miro original. A stored source link is data, not an instruction to fetch
+that source. The current message does not need an attached Discord original to
+read saved map data. If the agent needs current source content, it must explicitly
+choose the separate source tool and receive its result as a separate tool call.
+
+Document all multi-tool workflows in the agent prompts. Let the model select and
+sequence the individual calls according to the actual request and returned data.
+Do not hardcode business workflows into individual tool turns, composite shortcut
+tools, tool wrappers or mandatory runner call sequences. Calls may be proposed
+together when appropriate, but each retains its own arguments, execution, result
+and failure; one tool must not implicitly dispatch another service's operation.
+
+Preserve authentication and local permission, field and optimistic-version
+checks for each operation. These checks must not become a hidden cross-service
+content-retrieval workflow. This rule supersedes older instructions requiring
+cross-service original reads inside map tools or other combined tool operations.
+It is a development rule; recording it does not mean existing runtime code has
+already been corrected or deployed.
+
+## Explicit finish-to-sync exception (2026-10-23)
+
+The user explicitly retains automatic Calendar-to-map synchronization after a
+successful initial finish_batch. The runner must dispatch it as a separate named
+sync_calendars_to_map tool call with its own arguments, result, audit/log record,
+normal budget/lease checks and visible execution history, then continue follow-up.
+The finish_batch operation itself handles only input/task/queue bookkeeping.
+This is an explicit exception to prompt-only workflow sequencing; do not hide sync
+inside finish_batch, a Calendar/Member Plan write or map operations. A model-round
+cap without successful initial finish must not trigger that automatic sync.
+
 # Prompt-change testing preference (2026-10-22)
 
 For prompt changes, test behavior locally with the actual configured model API
@@ -505,9 +544,9 @@ Ignore MCP-only connection files, never credentials or tokens in tracked docs. K
 - **tech-nyu-supabase**: hosted HTTP Supabase developer MCP.
 - **Endpoint**: https://mcp.supabase.com/mcp?project_ref=jssehnrmqhstcrtxulpa&read_only=true&features=database,docs
 - **Data scope**: only the user's Tech NYU project jssehnrmqhstcrtxulpa; initial read-only database and docs tools.
-- **Intended client scope**: normal Codex account-local registration on this Windows host, not a committed project setting.
-- **Authentication**: browser OAuth required; no pasted PAT, password or service-role key.
-- **Actual state**: User reports completing local setup/auth. Current CLI lists the exact scoped server enabled, auth_status unknown. No Supabase callable tools are exposed to this running chat, so authenticated live connectivity is not verified; do not infer schema-write access. Ignored .mcp.json is only the earlier disabled local preparation, not a Codex installation.
+- **Intended client scope**: normal Codex account-local registration on the current host, with this project-restricted endpoint; not a committed project setting. Current setup is verified on the Mac (2026-10-22); earlier Windows records are historical.
+- **Authentication**: browser OAuth completed for techatnyu on 2026-10-22. Only projects:read, database:read and organizations:read were requested and saved as the server’s OAuth scopes; no pasted PAT, password or service-role key.
+- **Actual state**: On 2026-10-22, installed the missing tech-nyu-supabase registration on this Mac. CLI enabled/OAuth status, live Supabase 0.14.0 tool discovery and a read-only SELECT 1 AS connection_ok query succeeded through this exact scoped server. Its five tools are execute_sql, list_tables, list_extensions, list_migrations and search_docs; the running chat now exposes the scoped tools. An older unscoped internal-tooling-supabase stdio registration was identified and left unchanged; it was not used for this verification. The initial broad OAuth flow was stopped before completion and replaced by read-only consent. Ignored .mcp.json remains historical local preparation.
 - **Product boundary**: developer setup only; no schema, data, scheduled job or deployment changes authorized by this connection setup.
 
 ## Current road scope override (2026-10-10)

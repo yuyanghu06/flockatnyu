@@ -13,7 +13,7 @@ const definition={name:'upsert_map_event',description:'Synthetic bounded write',
 const proposal=(slot,prefix='call',ids=[queueId])=>({id:`${prefix}_${slot}`,name:definition.name,arguments:{inputIds:ids,arguments:{slot}}});
 const finish=(id='finish',ids=[queueId])=>({id,name:'finish_batch',arguments:{handledInputIds:ids}});
 const turn=(...toolCalls)=>({stopReason:'tool_calls',text:'Synthetic planner reply',toolCalls:toolCalls.flat()});
-const block=(count,prefix='call',offset=0)=>Array.from({length:count},(_,index)=>proposal(index+offset,prefix));
+const block=(count,prefix='call',offset=0,ids=[queueId])=>Array.from({length:count},(_,index)=>proposal(index+offset,prefix,ids));
 const providerConfig=provider=>({configured:true,provider,baseUrl:provider==='anthropic'?'https://api.anthropic.com/v1':'https://api.openai.com/v1',model:provider==='anthropic'?'claude-fixture':'gpt-6-luna',apiKey:'synthetic-key',timeoutMs:1000});
 function wire(provider,calls){return provider==='anthropic'?{stop_reason:'tool_use',content:calls.map(row=>({type:'tool_use',id:row.id,name:row.name,input:row.arguments}))}:{choices:[{finish_reason:'tool_calls',message:{role:'assistant',content:'',tool_calls:calls.map(row=>({id:row.id,type:'function',function:{name:row.name,arguments:JSON.stringify(row.arguments)}}))}}]};}
 const history=calls=>[{role:'user',content:'Synthetic source batch'},{role:'assistant',content:'',toolCalls:calls},...calls.map((row,index)=>({role:'tool',toolCallId:row.id,content:JSON.stringify(index===0?{status:'tool_error',reason:'not_found'}:{status:'ready'})}))];
@@ -46,12 +46,13 @@ function worker({staged=false,turns=[],failSlot,authorizeEvent}={}){
   const config=readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),handler=createAutomationHandler({store,tools,pipeline:pipeline?.pipeline,principal,config,authorizeEvent:authorizeEvent??(async()=>true),onProgress:event=>progress.push(event),audit:{recordEvent:async event=>audits.push(event)},now:()=>new Date(stamp),provider:{toolTurn:async request=>{requests.push(request);try{assert.equal(request.maxToolCalls,16);const value=turns[index++];assert(value,'Unexpected model round');return typeof value==='function'?await value(request):value;}catch(error){errors.push(error);throw error;}}}});
   return {executed,requests,progress,audits,receipts,tasks,task,storage,pending:()=>pending,run:async()=>{const result=await handler.tick();if(errors.length)throw errors[0];return result;}};
 }
-const phaseTurns=(prefix,scope=[queueId])=>[16,16,16,15].map((count,index)=>turn(block(count,prefix,(prefix==='followup'?100:0)+index*16))).concat([turn(finish(`${prefix}_finish`,scope))]);
+const followupScope=request=>{const ids=request.tools.find(tool=>tool.name===definition.name).parameters.properties.inputIds.items.enum;assert.equal(ids.length,1);return ids;};
+const phaseTurns=(prefix,scope=[queueId])=>[16,16,16,15].map((count,index)=>prefix==='followup'?request=>turn(block(count,prefix,100+index*16,followupScope(request))):turn(block(count,prefix,index*16))).concat([turn(finish(`${prefix}_finish`,scope))]);
 
 test('real worker executes16 valid calls together but rejects17 or a foreign input scope before any action',async()=>{
   const allowed=worker({turns:[turn(block(16)),turn(finish())]});assert.equal((await allowed.run()).status,'completed');assert.equal(allowed.executed.length,16);assert.equal(allowed.receipts.size,16);assert(!allowed.pending());
   const tooMany=worker({turns:[turn(block(17))]});assert.equal((await tooMany.run()).status,'incomplete_batch');assert.equal(tooMany.executed.length,0);assert(tooMany.pending());
-  const forged=block(16);forged[15].arguments.inputIds=[randomUUID()];const denied=worker({turns:[turn(forged)]});assert.equal((await denied.run()).status,'invalid_tool_call');assert.equal(denied.executed.length,0);assert.equal(denied.receipts.size,0);assert(denied.pending());
+  const forged=block(16);forged[15].arguments.inputIds=[randomUUID()];const denied=worker({turns:[turn(forged),request=>{assert.equal(request.messages.filter(row=>row.role==='tool').length,16);return turn(finish());}]});assert.equal((await denied.run()).status,'completed');assert.equal(denied.executed.length,0);assert.equal(denied.receipts.size,0);assert(!denied.pending());
 });
 
 test('both stages independently complete63 ordinary calls plus finish, retain untouched tasks and expose all128 calls safely',async()=>{
@@ -71,7 +72,13 @@ test('an overflow reply is rejected together before extra writes and the run aud
 });
 
 test('followup65th finish exceeds only its own budget, settles handled originals and preserves unresolved exact tasks',async()=>{
-  const followup=[0,16,32,48].map(offset=>turn(block(16,'followup',100+offset))).concat([turn(finish('followup_finish',[]))]);
+  const followup=[0,16,32,48].map(offset=>request=>turn(block(16,'followup',100+offset,followupScope(request)))).concat([turn(finish('followup_finish',[]))]);
   const h=worker({staged:true,turns:[...phaseTurns('initial'),...followup]}),result=await h.run();
   assert.equal(result.status,'completed');assert.equal(result.followupStatus,'call_limit');assert.equal(result.calls,129);assert.equal(h.executed.length,127);assert.equal(h.receipts.size,127);assert(!h.pending());assert.deepEqual(h.tasks.get(h.task.uuid),h.task);assert(!h.storage.includes('resolve'));assert.equal(h.audits.findLast(row=>row.kind==='run_finished').counts.calls,129);assert(h.progress.length<=320);assert(!JSON.stringify(h.progress).includes(canary));
+});
+
+test('argument recovery charges every rejected ordinary peer to the existing64-call stage budget',async()=>{
+ const turns=[0,16,32,48].map(offset=>{const calls=block(16,'rejected',offset);calls[0].arguments.inputIds=[randomUUID()];return turn(calls);});
+ const h=worker({turns:[...turns,request=>{const errors=request.messages.filter(row=>row.role==='tool');assert.equal(errors.length,64);assert(errors.every(row=>JSON.parse(row.content).status==='tool_error'));return turn(finish());}]});
+ const result=await h.run();assert.equal(result.status,'call_limit');assert.equal(h.executed.length,0);assert.equal(h.receipts.size,0);assert(h.pending());assert.equal(h.requests.length,5);assert.equal(h.audits.findLast(row=>row.kind==='run_finished').counts.calls,65);
 });

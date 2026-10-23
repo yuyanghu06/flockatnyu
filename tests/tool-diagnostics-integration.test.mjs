@@ -28,10 +28,10 @@ function worker(proposals,execute,{prepareArguments}={}){
  const handler=createAutomationHandler({config,store:{claim:async()=>({status:'ready',leaseToken,inputs:[{uuid:inputId,raw_response:{source:'discord',source_id:'fixture',event_type:'created',event_id:'fixture',revision:'1',received_at:'2026-10-21T10:00:00Z',payload:{}}}]}),renew:async()=>({status:'ready'}),finish:async()=>({status:'ready'}),release:async()=>({status:'ready'})},authorizeEvent:async()=>true,provider:{toolTurn:async()=>({stopReason:'tool_calls',toolCalls:round++===0?proposals:[call('finish_batch','done',{handledInputIds:[inputId]})]})},tools:[{...definition,readOnly:true,execute,...(prepareArguments?{prepareArguments}:{})}],audit:{recordEvent:e=>events.push(e)}});return {handler,events};
 }
 
-test('planner prevalidation failures are observable before tool start without changing failure outcome',async()=>{
+test('planner ordinary argument failures recover with undispatched diagnostics while unknown tools remain fatal',async()=>{
  let executions=0;
  for(const [proposal,reason]of [[call('read_discord_messages','one',{inputIds:[inputId],arguments:{'PRIVATE_PROPERTY':'PRIVATE_VALUE'}}),'invalid_arguments'],[call('PRIVATE_TOOL','one',{inputIds:[inputId],arguments:{}}),'unknown_tool'],[call('read_discord_messages','one',{inputIds:['33333333-3333-4333-8333-333333333333'],arguments:{}}),'invalid_input_scope']]){
-  const f=worker([proposal],async()=>{executions++;return {status:'ready'};});assert.equal((await f.handler.tick()).status,'invalid_tool_call');assert.equal(f.events.filter(e=>e.kind==='tool_started').length,0);
+  const f=worker([proposal],async()=>{executions++;return {status:'ready'};});assert.equal((await f.handler.tick()).status,reason==='unknown_tool'?'invalid_tool_call':'completed');assert.equal(f.events.filter(e=>e.kind==='tool_started'&&e.tool!=='finish_batch').length,0);
   const terminal=f.events.find(e=>e.kind==='tool_finished');assert.equal(terminal.diagnostics.reason,reason);assert.equal(terminal.diagnostics.dispatched,0);assert.equal(JSON.stringify(f.events).includes('PRIVATE'),false);
  }
  assert.equal(executions,0);

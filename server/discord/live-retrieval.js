@@ -45,6 +45,14 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
   const maxChannels = bounded(config?.maxChannels,16,30);
   const maxPages = bounded(config?.maxPages,20,100), maxMessages = bounded(config?.maxMessages,2000,10000);
   const maxRuntimeMs = bounded(config?.maxRuntimeMs,SOURCE_TOOL_TIMEOUT_MS,120000), maxInputChars = bounded(config?.maxInputChars,500000,2000000);
+  async function readAuthorizationPair(signal) {
+    if('getAuthorizationSnapshot' in store) {
+      if(typeof store.getAuthorizationSnapshot!=='function')fail('policy_unavailable');
+      const snapshot=await store.getAuthorizationSnapshot({guildId:config.guildId,signal});
+      return [snapshot,snapshot];
+    }
+    return Promise.all([store.getPolicy({guildId:config.guildId,signal}),store.listSyncChannels({signal})]);
+  }
   async function context(principal, signal, userMessage) {
     if (principal?.liveDiscord?.mode !== 'local-operator' || principal.liveDiscord.guildId !== config?.guildId) fail('forbidden');
     const allowed = principal.allowedSourceIds;
@@ -60,8 +68,8 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     }
     if (!configured) fail('not_configured');
     if (signal?.aborted) fail('aborted');
-    const [policyResult,catalogueResult,metadata,application] = await Promise.all([
-      store.getPolicy({guildId:config.guildId,signal}), store.listSyncChannels({signal}), client.getGuildChannels({signal}), client.getCurrentApplication({signal})]);
+    const [[policyResult,catalogueResult],metadata,application] = await Promise.all([
+      readAuthorizationPair(signal), client.getGuildChannels({signal}), client.getCurrentApplication({signal})]);
     if (!Number.isSafeInteger(application?.flags) || application.flags < 0 || !(BigInt(application.flags) & ((1n << 18n) | (1n << 19n)))) fail('permission_denied');
     const policy = policyResult?.policy;
     if (policyResult?.status !== 'ready' || !policy || policy.guildId !== config.guildId || !Number.isSafeInteger(policy.revision) || policy.revision < 1 || !Array.isArray(policy.excludedChannelIds) || !Array.isArray(policy.excludedCategoryIds) || [...policy.excludedChannelIds,...policy.excludedCategoryIds].some(value => !id(value))) fail('policy_unavailable');
@@ -101,8 +109,7 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
       return channels.get(channelId);
     }
     async function verify() {
-      const [latest, refreshed] = await Promise.all([
-        store.getPolicy({guildId:config.guildId,signal}), store.listSyncChannels({signal})]);
+      const [latest, refreshed] = await readAuthorizationPair(signal);
       if (latest?.status !== 'ready' || latest.policy?.revision !== policy.revision || latest.policy?.paused || JSON.stringify(latest.policy.excludedChannelIds) !== JSON.stringify(policy.excludedChannelIds) || JSON.stringify(latest.policy.excludedCategoryIds) !== JSON.stringify(policy.excludedCategoryIds)) fail('policy_changed');
       if (refreshed?.status !== 'ready' || !Array.isArray(refreshed.channels) || refreshed.channels.length > 10000) fail('policy_unavailable');
       const current = new Map(refreshed.channels.filter(row => row?.enabled === true && row.guildId === config.guildId

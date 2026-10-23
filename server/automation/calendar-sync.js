@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {canonicalJson} from './validation.js';
 import {collectCalendarWindow,validCalendarInstant} from '../google/calendar-client.js';
-import {uuid,validParticipation,eventWindow} from '../map/events.js';
+import {uuid,validParticipation,eventWindow,timestamp,mapReadContext} from '../map/events.js';
 const instant=value=>validCalendarInstant(value)?new Date(value).toISOString():null;
 const normalize=value=>String(value||'').normalize('NFKC').toLowerCase().replace(/\bst\.?\b/g,'street').replace(/\bave\.?\b/g,'avenue').replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const eventFields=['id','name','notes','kind','type_id','status','time_kind','starts_at','ends_at','starts_on','ends_on','time_zone','source_id','source_url','source_record_id','url','reported_at'];
@@ -9,6 +9,15 @@ const personFields=['person_id','attendance_status','presence_basis','label','st
 const failureReasons=new Set(['aborted','map_read_failed','building_catalogue_unavailable','missing_calendar_timestamp','invalid_calendar_time','calendar_identity_too_long','calendar_exact_read_failed','calendar_identity_mismatch','member_participation_unverified','participation_time_conflict','map_conflict','map_write_failed']);
 const safeReason=error=>failureReasons.has(error?.message)?error.message:'execution_failed';
 const pick=(row,keys)=>Object.fromEntries(keys.filter(key=>key in row).map(key=>[key,row[key]]));
+const instantColumns=new Set(['starts_at','ends_at','reported_at']);
+// Compare storage/provider spellings only. Outgoing values and CAS tokens stay
+// untouched, and accepted sub-millisecond differences remain meaningful.
+const comparable=row=>canonicalJson(Object.fromEntries(Object.entries(row).map(([key,value])=>{
+  const at=instantColumns.has(key)?timestamp(value):null;
+  if(at===null)return [key,['literal',value]];
+  const fraction=/\.(\d{1,6})(?:Z|[+-])/.exec(value)?.[1]||'';
+  return [key,['instant',(BigInt(at)*1000n+BigInt(fraction.padEnd(6,'0').slice(3))).toString()]];
+})));
 const stableId=(sourceId,eventId)=>{const hex=createHash('sha256').update(canonicalJson([sourceId,eventId])).digest('hex');return `${hex.slice(0,8)}-${hex.slice(8,12)}-4${hex.slice(13,16)}-a${hex.slice(17,20)}-${hex.slice(20,32)}`;};
 export function matchCalendarBuildings(location,buildings=[]) {
   const haystack=` ${normalize(location)} `,hits=new Set();
@@ -50,12 +59,15 @@ function projectEvent(original,target,old) {
 // One run owns API traversal and optimistic projection. It never infers deletion
 // from absence and never discards participants to force a Calendar edit through.
 export function createCalendarMapSync({targets=[],mapService,loadBuildings,authorizeParticipation,now=()=>new Date()}={}) {
-  async function sync({principal,window,signal,onResult,onApiResult}={}) {
+  async function sync({principal,window,extraEventIds={},signal,onResult,onApiResult}={}) {
     const results=[],unresolved=[];
     const api=async(name,args,work)=>{const result=await work();if(onApiResult)await onApiResult({name,arguments:args,result});return result;};
     const emit=async value=>{results.push(value);if(onResult)await onResult(value);};
     if(!principal?.id||!Array.isArray(principal.allowedSourceIds))return {status:'forbidden',complete:false,results,unresolved};
     if(!validCalendarInstant(window?.timeMin)||!validCalendarInstant(window?.timeMax)||Date.parse(window.timeMax)<=Date.parse(window.timeMin))return {status:'invalid_request',complete:false,results,unresolved};
+    if(!extraEventIds||typeof extraEventIds!=='object'||Array.isArray(extraEventIds)
+      ||Object.keys(extraEventIds).some(kind=>!['club','member'].includes(kind))
+      ||Object.values(extraEventIds).some(ids=>!Array.isArray(ids)||ids.length>2000||ids.some(id=>typeof id!=='string'||!/^[a-zA-Z0-9_-]{5,1024}$/.test(id))))return {status:'invalid_request',complete:false,results,unresolved};
     let complete=true;
     for(const target of targets) {
       const {client,sourceId}=target,base={calendarId:client?.calendarId,sourceId,kind:target.kind};
@@ -82,6 +94,14 @@ export function createCalendarMapSync({targets=[],mapService,loadBuildings,autho
           return result.status==='ready'&&result.coverage?.complete!==false;
         }
         if(!await collect(window.timeMin,window.timeMax)){complete=false;unresolved.push({...base,reason:'calendar_window_incomplete'});}
+        // The named sync also covers successful writes from this cycle outside
+        // its rolling window. Ordinary Calendar writes never project implicitly.
+        for(const eventId of new Set(extraEventIds[target.kind]||[]))if(!observations.has(eventId)) {
+          const check=await api('calendar.read_event',{calendarId:client.calendarId,eventId},()=>client.readEvent({eventId,principal:calendarPrincipal,signal}));
+          const exact=check?.status==='ready'&&check.events?.find(row=>row.eventId===eventId);
+          if(exact)observations.set(eventId,exact);
+          else {complete=false;unresolved.push({...base,eventId,reason:'calendar_exact_read_failed'});}
+        }
         // Exact checks catch cancellation and moves outside the rolling window;
         // missing provider rows never authorize deleting prior projections.
         for(const old of initial.events||[])if(!observations.has(old.source_record_id)) {
@@ -124,15 +144,25 @@ export function createCalendarMapSync({targets=[],mapService,loadBuildings,autho
             }
             if(people.some(row=>!validParticipation({...row,event_id:event.id},event)))throw Error('participation_time_conflict');
             item.mapEventId=event.id;
-            const normalizedRows=rows=>rows.map(row=>canonicalJson(row)).sort();
-            if(old&&canonicalJson(pick(old,eventFields))===canonicalJson(event)
+            const normalizedRows=rows=>rows.map(row=>comparable(row)).sort();
+            if(old&&comparable(pick(old,eventFields))===comparable(event)
               &&canonicalJson(normalizedRows(previousBuildings))===canonicalJson(normalizedRows(relationships))
               &&canonicalJson(normalizedRows((snapshot.event_people||[]).map(row=>pick(row,personFields))))===canonicalJson(normalizedRows(people))) {
               await emit({...item,status:'unchanged'});continue;
             }
             if(target.kind==='member'&&original.status!=='cancelled'&&await authorizeParticipation({principal,participation:original.memberPlan.participation,event:original,signal})!==true)throw Error('member_participation_unverified');
             if(signal?.aborted)throw Error('aborted');
-            const response=await api('map.upsert_event',{event,buildings:relationships,people,expectedUpdatedAt:old?.updated_at||null},()=>mapService.upsert({principal,event,buildings:relationships,people,expectedUpdatedAt:old?.updated_at||null,signal}));
+            const write={principal,event,buildings:relationships,people,expectedUpdatedAt:old?.updated_at||null,readContext:mapReadContext(snapshot),signal};
+            // Preserve private chat participation from the already returned map
+            // snapshot. This local preparation performs no storage/provider read.
+            let preservation;
+            if(old&&typeof mapService.preparePreservedEvent==='function') {
+              preservation=await mapService.preparePreservedEvent({principal,eventId:old.id,expectedUpdatedAt:old.updated_at,readContext:write.readContext,mode:'calendar',signal});
+              if(preservation?.status!=='ok')throw Error(preservation?.status==='conflict'?'map_conflict':'map_read_failed');
+            }
+            const response=await api('map.upsert_event',{event,buildings:relationships,people,expectedUpdatedAt:write.expectedUpdatedAt},()=>preservation?.capability
+              ?mapService.upsertPreservedEvent({...write,capability:preservation.capability,mode:'calendar'})
+              :mapService.upsert(write));
             if(!['applied','unchanged'].includes(response?.status))throw Error(response?.status==='conflict'?'map_conflict':'map_write_failed');
             await emit({...item,status:response.status,updatedAt:response.updated_at});
           }catch(error){complete=false;const row={...item,status:'deferred',reason:safeReason(error)};unresolved.push(row);await emit(row);}

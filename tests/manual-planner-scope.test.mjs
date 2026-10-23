@@ -15,15 +15,76 @@ function fixture(selected=[channelId]) {
  const metadata={guildId,policyRevision:1,paused:false,discoveryEnabled:true,publishedGeneration:generation,publishedRevision:1,
   nodes:live.map(r=>({channelId:r.id,guildId,parentId:r.parent_id,type:r.type,sourceId:r.id===categoryId?null:r.id===channelId?sourceId:r.id===siblingId?siblingSource:threadSource,title:r.name,manualDisabled:false,withdrawn:false,accessStatus:'excluded',generation,policyRevision:1}))};
  let reads=0,onRead=null,permissionDenied=false;
- const store={configured:true,getManualScopeMetadata:async()=>({status:'ready',metadata:structuredClone(metadata)}),
-  getPolicy:async()=>({status:'ready',policy:{guildId,revision:1,paused:false,discoveryEnabled:true,excludedChannelIds:[channelId],excludedCategoryIds:[categoryId]}}),
-  listSyncChannels:async()=>({status:'ready',channels:[]})};
- const client={configured:true,getGuildChannels:async()=>structuredClone(live),getChannel:async({channelId:id})=>{if(permissionDenied)throw Object.assign(Error('permission_denied'),{code:'permission_denied'});return structuredClone(live.find(r=>r.id===id));},getCurrentApplication:async()=>({flags:1<<18}),
+ const counts={metadata:0,guildChannels:0,channelDetails:0,policy:0,catalogue:0};
+ const store={configured:true,getManualScopeMetadata:async()=>{counts.metadata++;return {status:'ready',metadata:structuredClone(metadata)};},
+  getPolicy:async()=>{counts.policy++;return {status:'ready',policy:{guildId,revision:1,paused:false,discoveryEnabled:true,excludedChannelIds:[channelId],excludedCategoryIds:[categoryId]}};},
+  listSyncChannels:async()=>{counts.catalogue++;return {status:'ready',channels:[]};}};
+ const client={configured:true,getGuildChannels:async()=>{counts.guildChannels++;return structuredClone(live);},getChannel:async({channelId:id})=>{counts.channelDetails++;if(permissionDenied)throw Object.assign(Error('permission_denied'),{code:'permission_denied'});return structuredClone(live.find(r=>r.id===id));},getCurrentApplication:async()=>({flags:1<<18}),
   getMessage:async({channelId:id})=>{reads++;onRead?.();return {id:'300',channel_id:id,guild_id:guildId,author:{id:'400',username:'Synthetic'},timestamp:'2026-10-22T16:00:00Z',content:'Synthetic queued context'};}};
  const config={configured:true,guildId},manual=createManualDiscordStore({store,client,guildId,channelIds:selected}),service=createLiveDiscordRetrieval({config,store:manual,client}),ordinary=createLiveDiscordRetrieval({config,store,client});
  const principal={id:'worker',allowedSourceIds:[sourceId,siblingSource,threadSource],liveDiscord:{mode:'local-operator',guildId}};
- return {metadata,live,store,manual,service,ordinary,config,client,principal,get reads(){return reads;},set onRead(fn){onRead=fn;},set denied(v){permissionDenied=v;}};
+ return {metadata,live,store,manual,service,ordinary,config,client,principal,counts,get reads(){return reads;},set onRead(fn){onRead=fn;},set denied(v){permissionDenied=v;}};
 }
+
+test('real manual retrieval halves metadata reads while retaining a fresh initial and final authorization pair',async()=>{
+ const paired=fixture(),args={principal:paired.principal,channelId,messageId:'300',context:false};
+ assert.equal((await paired.service.readMessages(args)).status,'ready');
+ assert.deepEqual({metadata:paired.counts.metadata,guildChannels:paired.counts.guildChannels,channelDetails:paired.counts.channelDetails},{metadata:2,guildChannels:3,channelDetails:3});
+ const legacy=fixture(),legacyStore={configured:true,getPolicy:args=>legacy.manual.getPolicy(args),listSyncChannels:args=>legacy.manual.listSyncChannels(args)};
+ const fallback=createLiveDiscordRetrieval({config:legacy.config,store:legacyStore,client:legacy.client});
+ assert.equal((await fallback.readMessages({...args,principal:legacy.principal})).status,'ready');
+ assert.deepEqual({metadata:legacy.counts.metadata,guildChannels:legacy.counts.guildChannels,channelDetails:legacy.counts.channelDetails},{metadata:4,guildChannels:5,channelDetails:5});
+ assert.equal(paired.reads,1);assert.equal(legacy.reads,1);
+});
+
+test('manual retrieval never reuses a snapshot across tool calls or hides a changed source identity during final recheck',async()=>{
+ const f=fixture(),args={principal:f.principal,channelId,messageId:'300',context:false};
+ assert.equal((await f.service.readMessages(args)).status,'ready');assert.equal(f.counts.metadata,2);
+ f.onRead=()=>{f.metadata.nodes.find(node=>node.channelId===channelId).sourceId=randomUUID();};
+ const revoked=await f.service.readMessages(args);assert.notEqual(revoked.status,'ready');assert.deepEqual(revoked.sources,[]);
+ assert.equal(f.reads,2);assert.equal(f.counts.metadata,4,'The next read still performs both current authorization boundaries');
+ const before=f.counts.metadata;f.metadata.paused=true;
+ assert.notEqual((await f.service.readMessages(args)).status,'ready');assert.equal(f.reads,2);assert.equal(f.counts.metadata,before+1,'Paused state is fetched before another original is read');
+});
+
+test('caller abort after source retrieval discards content and does not reuse the successful initial snapshot',async()=>{
+ const f=fixture(),controller=new AbortController();f.onRead=()=>controller.abort();
+ const result=await f.service.readMessages({principal:f.principal,channelId,messageId:'300',context:false,signal:controller.signal});
+ assert.equal(result.status,'aborted');assert.deepEqual(result.sources,[]);assert.equal(f.reads,1);assert.equal(f.counts.metadata,1);
+ const before=f.counts.metadata;
+ const aborted=await f.manual.getAuthorizationSnapshot({guildId,signal:controller.signal});
+ assert.equal(aborted.status,'aborted');assert.equal(aborted.policy,null);assert.deepEqual(aborted.channels,[]);assert.equal(f.counts.metadata,before);
+});
+
+function bundled(f,{manual=true,store=f.store}={}) {
+ return createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:sourceId},config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),
+  dependencies:{googleConfig:{configured:false},googleClient:{configured:false},discordConfig:f.config,discordStore:store,discordClient:f.client,calendarConfig:{configured:false},calendarClient:{configured:false}},
+  ...(manual?{manual:{force:true,channelIds:[channelId]}}:{}),fetchImpl:async()=>{throw Error('No external HTTP');}});
+}
+const queued=(id='300')=>({source:'discord',source_id:sourceId,event_type:'message_created',event_id:id,revision:'1',received_at:'2026-10-22T18:00:00Z',payload:{id,guild_id:guildId,channel_id:channelId,author:{id:'400'},content:'me'}});
+
+test('actual bundled adapter shares one pair per boundary across a batch, but each authorization call remains fresh',async()=>{
+ const f=fixture(),adapters=bundled(f),events=[queued('300'),queued('301'),queued('302')];
+ assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),true);
+ assert.deepEqual({metadata:f.counts.metadata,guildChannels:f.counts.guildChannels,channelDetails:f.counts.channelDetails},{metadata:2,guildChannels:3,channelDetails:3});
+ assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),true);assert.equal(f.counts.metadata,4);
+ const details=f.client.getChannel;let checked=false;
+ f.client.getChannel=async args=>{const result=await details(args);if(f.counts.metadata===5&&!checked){checked=true;f.metadata.nodes.find(node=>node.channelId===channelId).manualDisabled=true;}return result;};
+ assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),false,'Revocation after the initial pair must fail at a later boundary');
+ assert.equal(f.reads,0,'Authorization does not import message bodies');
+});
+
+test('ordinary adapter fallback still reads policy and catalogue twice and rejects paired failures without fallback grants',async()=>{
+ const f=fixture(),policy={guildId,revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]},channels=[{guildId,channelId,sourceId,enabled:true}];
+ f.store.getPolicy=async()=>{f.counts.policy++;return {status:'ready',policy:structuredClone(policy)};};
+ f.store.listSyncChannels=async()=>{f.counts.catalogue++;return {status:'ready',channels:structuredClone(channels)};};
+ const adapters=bundled(f,{manual:false});assert.equal(await adapters.authorizeEvents({events:[queued()],principal:adapters.principal}),true);
+ assert.equal(f.counts.policy,2);assert.equal(f.counts.catalogue,2);
+ const pairedStore={...f.store,getAuthorizationSnapshot:async()=>({status:'forbidden',policy:null,channels:[]})};
+ const denied=bundled(f,{manual:false,store:pairedStore}),before={policy:f.counts.policy,catalogue:f.counts.catalogue};
+ assert.equal(await denied.authorizeEvents({events:[queued()],principal:denied.principal}),false);
+ assert.deepEqual({policy:f.counts.policy,catalogue:f.counts.catalogue},before,'A failed paired snapshot cannot fall back to unrelated successful policy/catalogue reads');
+});
 
 test('manual exact whitelist reads a blacklisted source through real retrieval without changing ordinary access',async()=>{
  const f=fixture(),args={principal:f.principal,channelId,messageId:'300',context:false};

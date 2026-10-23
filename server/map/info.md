@@ -33,19 +33,32 @@ and cancelled records needed for reconciliation. Limits are100buildings,
 instead of truncating. Fixed HTTPS origin, private credentials, streamed response
 bounds, cancellation and a maximum 60-second deadline apply to all event requests.
 
-The service exposes authorized event reads, exact linked Discord/email identity
-lookup and complete optimistic event replacement through `map_upsert_event`.
-Provider IDs are lookup inputs only; safe profiles are returned without email or
-Discord identity fields. Lookup requires authorized supporting provenance.
-Every event and participant source requires the principal's shared allowlist
-and a strictly positive current-policy callback, which defaults to denial.
-Replacement also authorizes removed/replaced old participation and repeats the
-checks immediately before the transaction. Source identity is immutable;
-concurrent changes yield a conflict, with no broad catalogue/profile write API.
-Read responses retain authorized provenance for trusted agent reconciliation;
-browser responses do not. Unknown people/buildings, extra keys, invalid time
-windows and duplicate relationships are rejected. Service writes accept optional
-new event UUIDs but require stable original source-record identity.
+The service exposes database-only event reads, exact linked Discord/email
+roster lookup and complete optimistic event replacement through `map_upsert_event`.
+Provider URLs stored on map rows are attribution, never instructions to fetch
+those providers. Current server-owned source UUID grants, local canonical-link
+checks and fixed field/window rules govern visibility. `source-access.js` checks exact source-to-provider bindings: Discord source UUIDs
+are tied to the current published database catalogue's guild/channel, and fixed
+Calendar/Gmail source UUIDs cannot be reused for another provider. It never calls
+Discord, Calendar, Gmail or live Miro content. For saved Miro references, explicit
+reads additionally load the enabled board/source/team registry through the
+Supabase-only `miro_authorized_board` metadata RPC. Browser readers await the
+same metadata scope. The resulting synchronous checker is retained in the
+private read receipt; writes reuse it without another metadata request.
+Legacy unmarked provider-authorizer callbacks are not dispatched by map tools.
+Safe profiles never include provider identity enrichment fields.
+
+An explicit map read returns its usual public fields plus an internal symbol
+receipt that is absent from JSON/model output. The receipt binds the service,
+principal/source/binding scope and immutable complete database snapshot. A write uses
+that locally held snapshot for catalogue/source/revision checks, then calls only
+the database upsert transaction. It does not reread storage, look up a person,
+fetch an original or perform a readback. An update without the current local
+read receipt returns `read_required`; the agent must choose a separate map read.
+The existing database transaction finally enforces fixed catalogues, source
+identity, lease fencing and optimistic concurrency. Creates without a local
+snapshot still rely on those transaction constraints. Read responses preserve
+only authorized provenance; browser responses omit provenance entirely.
 
 New timed scheduled events with known starts and missing ends use start+7200
 seconds. New explicit current presence reports may use report+7200 only when
@@ -119,7 +132,7 @@ edits. There is no catalogue mutation tool or additional building/profile author
 
 The user subsequently cancelled event icons. The five-type catalogue and required type_id remain;028icon_key/APIiconKey are reserved compatibility metadata and do not cause frontend images or remote requests. All current/future authorized event kinds remain in building cards, with private personal-plan participant gating.
 
-Calendar provenance now verifies the configured allowed Calendar source UUID and exact canonical event link against a current read of the fixed calendar. Source access is rechecked by the shared service. Both agent adapters bind Calendar record identity to the observed eventId; attendance uses separate authorized originals. Worker identity receipts bind changed participants to exact original author/sender evidence; chat uses its verified Discord speaker or a supplied unambiguous roster name through the normal map tools. Building/profile/type catalogues stay fixed.
+Calendar provenance validates the configured allowed Calendar source UUID and exact canonical event link using local configuration and the principal's current grants; it performs no Calendar read. Both agent adapters bind Calendar record identity to the observed eventId; attendance uses separate authorized originals. Worker identity receipts bind changed participants to exact original author/sender evidence; chat uses its verified Discord speaker or a supplied unambiguous roster name through the normal map tools. Building/profile/type catalogues stay fixed.
 
 not an authorization gate or an attendance parser. Chat interprets ordinary
 first-person/named-person event attendance with read_map_events,
@@ -130,15 +143,17 @@ applied normal mapWrite receipt confirms marked going, not physical arrival.
 
 `chat-attendance.js` now contains only chatAttendanceOrigin and
 chatAttendanceReference. source-access.js uses them to validate historical stored
-#attendance links against exact event/person/source bindings and current provider
-visibility. No attendance resolver, separate write service or lexical declaration
+#attendance links against exact event/person/source bindings in the supplied
+database snapshot and current local grants. No attendance resolver, separate write service or lexical declaration
 parser remains. Existing stored links retain their compatibility checks.
 
-Browser projection and trusted event reads each create their own request-local authorization scope using the read's validated snapshot, principal and cancellation signal. Original provider checks share in-flight results by exact source UUID/URL only within that read; app attendance markers still bind the exact event/person/source before reuse. Each later read fetches a fresh snapshot and rechecks providers. Lookup and both write authorization passes remain uncached. Custom authorizers without a scope factory retain their direct callback behavior.
-
-Trusted reads preindex building and participant relationships, authorize filtered events with at most four concurrent workers, then authorize only those events' valid participants with the same concurrency bound. Results preserve snapshot event order and per-event relationship order regardless of provider completion order. Cancellation stops queued work and returns unavailable instead of a partial authorized snapshot. Browser event/building and participant checks likewise use at most four concurrent workers and deterministic projection ordering. Both paths keep the shared 60-second total deadline.
-
-Map event storage, source verification, browser presence and chat map operations default to 60 seconds through `../source-timeout.js`. The bounded-work ceiling is also 60 seconds, so production wiring cannot silently clamp verification to the old 15-second maximum. Explicit shorter deadlines and caller cancellation are preserved; source checks and write authorization are unchanged.
+Browser projection and trusted event reads apply local source checks to the
+read's validated database snapshot, principal and cancellation signal. Event and
+participant relationships remain independently scoped; malformed, cross-event or
+cross-person attendance declarations fail locally. Each explicit read fetches a
+fresh snapshot. No provider request concurrency or cached provider authorization
+is part of a map operation. The shared storage/operation deadline remains60seconds;
+shorter configured budgets and caller cancellation remain effective.
 
 The shared record prompt explicitly creates source-backed map-only presence or
 personal-plan events when no stable source record exists. It resolves fixed
@@ -183,6 +198,19 @@ Calendar source authorization accepts explicit trusted pinned targets, including
 
 ## Chat map tool authorization
 
-Authenticated chat uses the existing map operations without source-content proof or phrase-matching gates. `source-access.js` exposes a small application-origin reference for internally attributed chat updates, enabled only in the web/Discord runtime. Other provider authorization and worker defaults are unchanged. The normal event service still validates fixed catalogues, timestamps and optimistic revisions. Model prompts decide conversational intent and missing details; no separate report grammar, pending cache or resolver/save modules remain.
+Authenticated chat uses the existing map operations without source-content proof or phrase-matching gates. `source-access.js` exposes a small application-origin reference for internally attributed chat updates, enabled only in the web/Discord runtime. Other providers remain separate callable tools; worker source/identity interpretation is handled by its prompt and locally observed tool results. The normal event service still validates fixed catalogues, timestamps and optimistic revisions. Model prompts decide conversational intent and missing details; no separate report grammar, pending cache or resolver/save modules remain.
 
 Chat no longer has a keyword detector that injects a map-write command. The model interprets the actual request, quotations and clarification. An applied normal map write exposes a bounded submitted snapshot, explicitly not an independent database readback; omitted defaults/relationships stay unknown. After a confirmed optimistic conflict, the chat runner permits one repeated read of that target per request while preserving mutation deduplication, budgets and normal authorization.
+
+The October23 service preserves an existing trackable participant whose internal
+chat attribution belongs to the same configured Calendar occurrence, even when
+the worker cannot read that participant's source. `preparePreservedEvent` uses
+only the private receipt from a previous explicit map read: it compares the
+complete saved target with the authorized view and binds eligible hidden rows to
+a single-use capability. It does no database or provider request. The subsequent
+`upsertPreservedEvent` uses the ordinary local validation and one conditional
+write, carrying those hidden rows unchanged. Raw hidden fields and capabilities
+never enter model JSON. A readback is a separate explicit operation; applied
+receipts attest the successful database transaction, not an automatic reread.
+Participation mode preserves parent/building facts; the separately named Calendar
+synchronization operation may use calendar mode for the same occurrence.

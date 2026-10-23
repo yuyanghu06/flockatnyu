@@ -88,13 +88,13 @@ restricted to the trusted RPC, with a fixed SQL search path and explicit execute
 grants; backend source authorization remains necessary. Source UUIDs deliberately
 have no knowledge_sources foreign key: Discord uses a separate metadata catalogue.
 
-`server/map/source-access.js` checks current backend source permissions for every
-ordinary event/participant. Discord uses the existing live bot service and its
-channel/thread/exclusion/final-catalogue checks. Miro uses current authorized board
-scope and exact source URLs. Gmail uses the configured source/account and an
-original read-only message lookup. Unknown sources fail closed. Exact existing UI
-fixture scopes remain available only to the authenticated local-development
-principal outside production.
+`server/map/source-access.js` validates current server-owned source grants and
+canonical source bindings locally. Map reads and identity lookups read only map
+storage; map writes dispatch only map storage writes. Original Discord/Gmail or
+Calendar content is fetched only by separately chosen source tools. Stored source
+links never cause a map tool to fetch provider originals. Writes reuse the exact
+request-local read context for preservation and optimistic revisions; no global
+snapshot cache or model-visible authorization token is added.
 
 Shared map tools read authorized event state, resolve known linked person
 identities and reconcile events through the same service. Update-agent writes
@@ -199,3 +199,21 @@ Staged worker Calendar projection uses the configured source UUID plus exact occ
 ## Chat map updates
 
 Current location statements and explicit plotting requests use the existing map read/person-lookup/upsert tools. Chat no longer needs a provider original or linked-author proof to save. Verified Discord identity or an unambiguous stated name resolves the fixed person; the prompt asks when essential person/place/time facts are unclear. The existing adapter fills accurate chat attribution when omitted. Current presence may start at server acceptance time with the approved two-hour default when no end is supplied; explicit timing wins. Normal authentication, provider-source visibility, event validation and optimistic revisions remain. Worker source grants are unchanged. No extra parser, resolver/save tools, session HMAC or pending-report cache remains.
+
+
+## Isolated operations and explicit synchronization — October23
+
+Calendar and Member Plans tools read/change only their fixed Calendar. Source
+reads, person lookup and map changes are separate calls selected by the agent
+following its prompt. Large Discord window reads return originals rather than
+starting a hidden model. Bulk Calendar creation writes supplied events; the agent
+lists the relevant dates and decides existing matches separately. Task completion
+uses successful evidence already returned in the run and resolves only the exact
+saved version; it does not fetch sources or read back other services itself.
+
+The user explicitly retains automatic synchronization after a successful initial
+finish_batch, as a separate sync_calendars_to_map tool call with its own arguments,
+result, audit/history and ordinary budgets/lease handling. That named operation
+reads the two configured Calendars and updates map storage. finish_batch itself
+performs bookkeeping; caps and Calendar/Member writes never hide another sync.
+Subsequent needed synchronization can be a separate explicit model-selected call.

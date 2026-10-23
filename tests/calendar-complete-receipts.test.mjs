@@ -96,14 +96,18 @@ test('single wrappers never substitute requested or prewrite fields for absent/p
  for(const key of ['description','location']){assert(!Object.hasOwn(updated.calendarWrite,key));assert(updated.calendarWrite.details.missingFields.includes(key));}
  assert.doesNotMatch(JSON.stringify(updated.calendarWrite),/Requested update|Before description|Before room/);
 });
-test('batch existing, new and duplicate rows retain every actual saved detail through projection',async()=>{
- const f=fixture({existing:[raw()]}),request=f.request();
- const result=await execute(request,'create_calendar_events',{events:[{title:'Saved provider title',date:'2026-11-03',description:'Requested replacement',location:'Wrong room'},{title:'Added event',date:'2026-11-03',description:'A'.repeat(3000),location:'New room'},{title:'Added event',date:'2026-11-03',description:'Later different request'}]});assert.equal(result.status,'ready');
+test('batch creations and same-operation retries retain actual details without selecting unrelated human events',async()=>{
+ const original=raw(),f=fixture({existing:[original]}),request=f.request();
+ const added={title:'Added event',date:'2026-11-03',description:'A'.repeat(3000),location:'New room'};
+ const result=await execute(request,'create_calendar_events',{events:[{title:'Saved provider title',date:'2026-11-03',description:'Requested replacement',location:'New separate room'},added,{...added}]});assert.equal(result.status,'ready');
  for(const batch of [result.calendarBatchWrite,projectCalendarBatchWrite(result.calendarBatchWrite)]){
-  assert.deepEqual(batch.counts,{requested:3,created:1,existing:2,failed:0,unattempted:0});assert.equal(batch.items[0].calendarWrite.description,'D'.repeat(2900));assert.equal(batch.items[0].calendarWrite.location,'Actual saved room');
+  assert.deepEqual(batch.counts,{requested:3,created:2,existing:1,failed:0,unattempted:0});
+  complete(batch.items[0].calendarWrite,{description:'Requested replacement',location:'New separate room'});
+  assert.notEqual(batch.items[0].calendarWrite.eventId,original.id);
   for(const item of batch.items.slice(1))complete(item.calendarWrite,{title:'Added event',description:'A'.repeat(3000),location:'New room',start:allDay.start,end:allDay.end});
  }
- assert.equal(f.writes(),1);
+ assert.deepEqual(f.events.get(original.id),original);assert.equal(f.writes(),2);
+ assert.equal(f.calls.filter(call=>call.url.pathname.endsWith('/events')&&call.options.method==='GET').length,0);
 });
 test('batch title-only updates and unchanged rows use actual full saved snapshots',async()=>{
  const f=fixture({existing:[raw()]}),result=await execute(f.request(),'update_calendar_events',{events:[{eventId:'existing_event',title:'New actual title'},{eventId:'existing_event',title:'New actual title'},{eventId:'existing_event',description:'',location:''}]});assert.equal(result.status,'ready');
