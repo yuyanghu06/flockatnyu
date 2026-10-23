@@ -80,6 +80,46 @@ Current source scope and cache expiry still apply. The normal action tools retai
 their own checks; reading cache creates no fresh identity or write receipt.
 Resolve only after required work succeeds; untouched/unresolved versions survive errors, crashes and caps.
 
+Follow-up keeps one or two distinct tasks active at a time. The complete lightweight
+catalogue and numbered task references have the same order: current-cycle tasks
+first, then participation within each group. The model finishes those ready
+actions and resolutions before loading more tasks. An actual missing fact,
+unavailable source or unmatched identity leaves that task pending and frees its
+slot for another ready task. Blocked current-cycle work must not prevent ready
+peers from proceeding. Older work follows current-cycle ready work within the
+existing bounds; this selection belongs to the prompt, without a new runner
+workflow or cross-service call.
+
+For those selected tasks, the prompt batches independent missing original,
+own-author identity and exact-map reads when their arguments are already known.
+The first patch for a new participant includes both endpoints; attendance for the
+whole event explicitly uses `start:{inherit:true}, end:{inherit:true}` when both
+boundaries match that person's intent. An optimistic map conflict keeps the task
+active: reread the exact map event, preserve concurrent human fields and retry the
+supported patch against its fresh parent revision. A stale map revision alone
+does not justify rewriting or rereading an unchanged task. Genuine changed
+originals or targets still require the normal task update and new-version proof.
+
+`read_pending_task` accepts `taskId` and optional `detail: "compact" | "full"`.
+Compact is the default and preserves the exact task UUID/timestamps, version,
+source IDs/references, request and original inputs. It includes only the small
+saved Calendar routing fields needed to choose separate tools. It does not repeat
+historical batch context or execution logs. A returned notice gives the retained
+history count and explains how to request full detail. This is a read projection:
+the stored task, originals and history remain unchanged. The model requests full
+detail only for a specific necessary conversational fact missing from compact and
+current returned results. Full detail returns the unchanged saved task, losslessly.
+
+Either selected view may fragment when genuinely large. Read every returned piece
+of that view before relying on it. A complete compact view establishes the normal
+exact-task-version read prerequisite; optional historical logs need not be loaded
+before acting. Read receipts remain bound privately to the complete canonical
+saved snapshot, while disclosure checks compare actual result/fragment bytes with
+the selected projection. Starting or partially reading optional full history does
+not revoke or refresh an existing compact receipt for the same snapshot. Changed
+snapshots still require a new complete read and new successful action evidence.
+No cache read fetches source, Calendar or map data.
+
 Ordinary tools use `{inputIds,arguments}`. `finish_batch` instead takes bare
 `{handledInputIds}`. Use actual queue/task UUIDs supplied by the
 runtime, exact returned provider IDs and actual fragment continuations. Tool

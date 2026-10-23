@@ -133,7 +133,7 @@ test('full cached context can bind original speaker/source through task UUID wit
   const task=pendingTask(),current=input();current.uuid=randomUUID();current.raw_response.payload.author.id='500';current.raw_response.payload.id='301';current.raw_response.event_id='301';current.raw_response.payload.content='Other queued work';
   const f=fixture({pending:[task],currentInput:current});await f.prepare();const next=await f.adapters.pipeline.afterInitial({handledInputIds:[current.uuid],inputs:[current],executionLog:[]});assert(next.inputIds.includes(task.uuid));
   assert.equal((await f.execute('lookup_map_person',lookup,[task.uuid])).status,'forbidden_source');assert.equal(f.lookups.length,0);
-  const read=await f.execute('read_pending_task',{taskId:task.uuid},[task.uuid]);assert.equal(read.status,'ready');assert.deepEqual(read.task.info.batchContext,task.info.batchContext);
+  const read=await f.execute('read_pending_task',{taskId:task.uuid,detail:'full'},[task.uuid]);assert.equal(read.status,'ready');assert.deepEqual(read.task.info.batchContext,task.info.batchContext);
   await f.execute('read_discord_messages',{},[task.uuid]);assert.equal((await f.execute('lookup_map_person',lookup,[task.uuid])).status,'ready');assert.equal((await f.execute('lookup_map_person',{...lookup,providerUserId:task.uuid},[task.uuid])).status,'forbidden_source');
   assert.equal(f.lookups.at(-1).providerUserId,'400');f.revoke();assert.equal((await f.execute('read_pending_task',{taskId:task.uuid},[task.uuid])).status,'ready');assert.notEqual((await f.execute('lookup_map_person',lookup,[task.uuid])).status,'ready');await f.adapters.resolveClaimSourceIds({principal:f.context.principal});assert.equal((await f.execute('read_pending_task',{taskId:task.uuid},[task.uuid])).status,'forbidden');assert(f.tasks.has(task.uuid));
 });
@@ -314,7 +314,7 @@ test('model reads saved task without original I/O, chooses normal Discord tool a
   const task=pendingTask();task.info.request={summary:'Interpret the saved personal plan',operation:'source_review'};task.info.inputs[0].raw_response.payload.content='';const f=fixture({pending:[task],currentInput:structuredClone(task.info.inputs[0]),originalUnavailable:true});let cacheBoundary;
   const result=await f.run([
     turn(call('finish_batch','initial',[inputId])),
-    ()=>{cacheBoundary=f.chronology.length;return turn(call('read_pending_task','cached',{taskId:task.uuid},[task.uuid]));},
+    ()=>{cacheBoundary=f.chronology.length;return turn(call('read_pending_task','cached',{taskId:task.uuid,detail:'full'},[task.uuid]));},
     request=>{const cached=JSON.parse(request.messages.at(-1).content);assert.equal(cached.status,'ready');assert.deepEqual(cached.task,task);assert(!f.chronology.slice(cacheBoundary).some(row=>row.kind==='discord_original'||row.kind==='discord_tool'));return turn(call('read_discord_messages','normal_read',{},[task.uuid]));},
     request=>{const failed=JSON.parse(request.messages.at(-1).content);assert.equal(failed.status,'tool_error');assert.equal(failed.reason,'unavailable');assert(f.chronology.some(row=>row.kind==='discord_tool'));return turn(call('lookup_map_person','known_sender',lookup,[task.uuid]));},
     turn(call('upsert_member_plan','unavailable_write',plan,[task.uuid])),

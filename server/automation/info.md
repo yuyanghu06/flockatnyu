@@ -1,5 +1,25 @@
 Current isolated-tool follow-up corrections: initial context exposes only queue-reference/count coverage for exact current saved originals. Checkpoint bookkeeping reuses an existing exact task without completing omitted queue inputs. Named runner sync results retain name/call ID/origin/arguments/result through follow-up transcript reset; fragmented partial results remain partial and cannot complete action receipts. These are local bookkeeping/result changes, with no added source fetch or workflow dispatch.
 
+Follow-up task selection keeps one or two tasks active and completes their ready
+actions/resolutions before loading others. Current-cycle ready work comes first;
+an actual blocked task releases its slot so ready peers can proceed. The complete
+lightweight manifest and phase input IDs now use the same current-cycle, then
+participation ordering, so numbered references match the displayed tasks. This is
+prompt-directed work selection; the runner adds no cross-service workflow.
+
+`read_pending_task` defaults to `detail:"compact"`: exact UUID/timestamps,
+info.version/sourceIds/references/request/inputs plus small saved Calendar routing
+fields. A notice identifies retained optional historical context and log count.
+`detail:"full"` returns the complete unchanged saved task for a specific missing
+conversational fact. Stored history and original text are never truncated or
+rewritten by reading. Either view uses normal lossless fragments if too large.
+Each view's disclosure compares actual returned bytes to that projection; private
+read receipts bind the complete canonical task snapshot. Unfinished full history
+cannot revoke or refresh a same-snapshot compact receipt/action proof. Changed
+snapshots require their own complete read/action proof. Cache operations still
+perform no provider, Calendar or map calls. Existing16/64call limits,10follow-up
+turns, time/token bounds and exact-resolution guards remain.
+
 # Autonomous update agent
 
 The current attendance repair preserves each original speaker, exact map occurrence, human edits and existing participation. A successful own-author lookup is required; unmatched speakers keep their firm intent pending without an invented person. Model results and live release status are tracked in [the milestone](../../milestones/milestone.md).

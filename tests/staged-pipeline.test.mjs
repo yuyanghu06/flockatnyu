@@ -74,7 +74,63 @@ test('complete eligible manifest includes every task and lossless fragments reta
   assert.deepEqual((await full(next.context.executionHistory,h.fragments)).history,apiRows,'Only new deterministic API evidence is repeated in stage context, losslessly');
   assert.deepEqual(h.history.slice(0,-1),[initialModel,...apiRows],'The original execution log retains initial model output and every API body');
   assert.equal(sync.results[0].details,'回'.repeat(14000));assert.equal(h.history.at(-1).tool,'sync_calendars_to_map');assert.match(next.context.apiResults.notice,/separately recorded/);
-  const read=await h.execute('read_pending_task',{taskId:tasks[199].uuid},[tasks[199].uuid]);assert.deepEqual((await full(read,h.fragments)).task,tasks[199]);
+  const read=await h.execute('read_pending_task',{taskId:tasks[199].uuid,detail:'full'},[tasks[199].uuid]);assert.deepEqual((await full(read,h.fragments)).task,tasks[199]);
+});
+
+test('manifest and numbered reference inputs share current-cycle then participation ordering',async()=>{
+  const oldParticipation=task(),oldReview=task({operation:'source_review'}),currentReview=task({operation:'source_review'}),currentParticipation=task();
+  for(const row of [oldParticipation,oldReview])row.info.inputs[0].uuid=randomUUID();
+  const h=harness({pending:[oldReview,oldParticipation,currentReview,currentParticipation]});await h.begin();const next=await h.after();
+  assert.deepEqual(next.inputIds,[currentParticipation.uuid,currentReview.uuid,oldParticipation.uuid,oldReview.uuid]);
+  assert.deepEqual(next.inputIds,next.context.tasks.map(row=>row.uuid));
+  assert.deepEqual(next.context.tasks.map(row=>row.currentCycle),[true,true,false,false]);
+});
+
+test('default compact task retains exact intent/originals/routing and lossless full history stays optional',async()=>{
+  const t=task({summary:'🙂 Exact intent and limits — do not shorten. '.repeat(40)});
+  t.info.references=[{sourceId,sourceUrl:'https://discord.com/channels/100/200/300'}];
+  t.info.batchContext={status:'ready',calendarId:'club@example.test',calendarMap:{configured:true,sourceId:calendarSourceId,notice:'Historical routing prose'},
+    memberPlans:{configured:true,calendarId:'member@example.test',sourceId},reconciliationWindow:{timeMin:stamp,timeMax:'2026-10-23T20:00:00.000Z',notice:'Window explanation'},
+    priorHour:[{content:'Historical conversational fact. '.repeat(3000)}]};
+  t.info.executionHistory=[{kind:'tool_result',tool:'read_discord_messages',result:{status:'ready',sources:[{sourceId,content:'Prior source body. '.repeat(4000)}]}}];
+  const h=harness({pending:[t]});await h.begin();await h.after();const result=await h.execute('read_pending_task',{taskId:t.uuid},[t.uuid]);
+  assert.equal(result.detail,'compact');assert(!result.fragment);assert.equal(result.task.info.executionHistory,undefined);
+  for(const key of ['version','sourceIds','references','request','inputs'])assert.deepEqual(result.task.info[key],t.info[key]);
+  for(const key of ['uuid','created_at','updated_at','expires_at'])assert.equal(result.task[key],t[key]);
+  assert.deepEqual(result.task.info.batchContext,{status:'ready',calendarId:'club@example.test',calendarMap:{configured:true,sourceId:calendarSourceId},memberPlans:{configured:true,calendarId:'member@example.test',sourceId},reconciliationWindow:{timeMin:stamp,timeMax:'2026-10-23T20:00:00.000Z'}});
+  assert.equal(result.retainedContext.executionHistoryEntries,1);assert.match(result.retainedContext.notice,/detail="full"/);
+  assert(Buffer.byteLength(JSON.stringify(result))<Buffer.byteLength(JSON.stringify(t))/10);
+  assert.deepEqual((await full(await h.execute('read_pending_task',{taskId:t.uuid,detail:'full'},[t.uuid]),h.fragments)).task,t);
+  assert.deepEqual(h.rows.get(t.uuid),t);assert.equal(h.calls.filter(row=>row.method==='save'||row.method==='resolve').length,0);
+});
+
+test('unfinished optional full history does not revoke or refresh compact same-version action proof',async()=>{
+  const t=task({}, {executionHistory:[{kind:'model_result',result:{text:'Historical outcome retained. '.repeat(3000)}}]});
+  const h=harness({pending:[t]});await h.begin();await h.after();
+  const read=await h.execute('read_pending_task',{taskId:t.uuid},[t.uuid]);assert(!read.fragment);
+  h.history.push({kind:'tool_result',stage:'followup',tool:'read_pending_task',inputIds:[t.uuid],arguments:{taskId:t.uuid},result:structuredClone(read)});
+  h.history.push(confirmedParticipation(t));
+  const extra=await h.execute('read_pending_task',{taskId:t.uuid,detail:'full'},[t.uuid]);assert(extra.fragment);
+  assert.equal(h.bound.length,1,'An optional partial view does not bind again');
+  const repeated=await h.execute('read_pending_task',{taskId:t.uuid},[t.uuid]);assert.equal(repeated.alreadyRead,true);
+  assert.equal((await h.execute('resolve_pending_task',{taskId:t.uuid,outcome:'completed'},[t.uuid])).status,'ready');
+  assert.equal(h.calls.find(row=>row.method==='resolve').expectedUpdatedAt,t.updated_at);
+});
+
+test('large original compact fragments require every exact byte before task actions',async()=>{
+  const t=task();t.info.inputs[0].raw_response.payload.content='Large original 🙂漢字 '.repeat(1500);
+  const h=harness({pending:[t]});await h.begin();await h.after();
+  const first=await h.execute('read_pending_task',{taskId:t.uuid},[t.uuid]);assert(first.fragment);assert.equal(h.bound.length,0);
+  assert.equal(h.staged.participationTasks(patchSelection(h,t)),null);
+  const args={id:first.fragment.id,offset:first.fragment.nextOffset},context={principal:h.principal,inputIds:[t.uuid]};
+  const forged=await h.staged.readTaskFragment(args,context,async value=>{
+    const result=await h.fragments.tool.execute(value);result.fragment.data='X'+result.fragment.data.slice(1);return result;
+  });
+  assert.equal(forged.status,'invalid_request');assert.equal(h.bound.length,0);
+  let piece=first,text=first.fragment.data;
+  while(piece.fragment.nextOffset!==null){const next={id:first.fragment.id,offset:piece.fragment.nextOffset};piece=await h.staged.readTaskFragment(next,context,value=>h.fragments.tool.execute(value));assert.equal(piece.status,'ready');text+=piece.fragment.data;}
+  assert.deepEqual(JSON.parse(text).task.info.inputs,t.info.inputs);assert.equal(h.bound.length,1);
+  assert(h.staged.participationTasks(patchSelection(h,t)));
 });
 
 test('untouched and read-only tasks survive byte-for-byte with no refresh of timestamps or JSON',async()=>{
@@ -333,9 +389,10 @@ for(const variant of ['metadata then body','conflicting senders','duplicate From
 });
 
 async function recordedPendingTask(h,taskUuid,record) {
-  let piece=await h.execute('read_pending_task',{taskId:taskUuid},[taskUuid]);
+  const args={taskId:taskUuid,detail:'full'};
+  let piece=await h.execute('read_pending_task',args,[taskUuid]);
   assert.equal(piece.status,'ready');
-  record({kind:'tool_result',tool:'read_pending_task',callId:randomUUID(),inputIds:[taskUuid],arguments:{taskId:taskUuid},result:structuredClone(piece)});
+  record({kind:'tool_result',tool:'read_pending_task',callId:randomUUID(),inputIds:[taskUuid],arguments:args,result:structuredClone(piece)});
   if(!piece.fragment)return {task:piece.task,fragmentId:null};
   const id=piece.fragment.id;let text='';
   while(true){text+=piece.fragment.data;if(piece.fragment.nextOffset===null)break;

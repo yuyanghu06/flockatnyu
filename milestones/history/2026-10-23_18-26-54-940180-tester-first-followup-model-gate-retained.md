@@ -1,0 +1,8 @@
+# First followup model gate retained
+
+- Local timestamp / role / milestone: 2026-10-23T18:26:54.940180-04:00 / tester / planner-followup-focus.
+- Scope: current-cycle first, one/two tasks, compact reads, existing16/64/10budgets and actualconfiguredmodel tests.
+- Work/checks/evidence/result: First actual configuredgpt-6-luna follow-up gate is CLOSED with26/32dispatches,percase6/8/4/8,pinsstable. Currentready+121old and unavailablemap cases pass; two-current peer case correctly applies/resolves ready task and retains unknownidentity but8dispatchtestcap stops finalfinish. Conflict case preserveshumanedit/task but stalls by unnecessarydefer/rereads afterfreshmap; no successfulretry beforecap. All actualreturnedturns max3calls, atmost2currenttaskloads,nofullhistory,nooldtaskreads. Original machinephase-filter assertion was ineffective because fixture used unexported pipeline.phase; independent rawtrace confirmsobservedcallcounts. Original ledger/sourcecopies are immutable; separate strictaudit handles source-ID denial classification. No livebusinessoperations.
+- Parent regression evidence:206available focused/integration cases pass withzero failures after explicitfullmode adaptation. One older ignored private replay lacks case.json and is deliberately excluded by standard test-skip-pattern,notclaimedpassing. See /tmp/flock-followup-available-integration.tap.
+- State/limitations: first26inferences are not26passingtests. Follow-up decisions realmodel; initialsetup and allbusinessservices simulated. No production mutation,deploymentorcredentialoutput. Unrelatedchatworkpreserved.
+- Next: correctedfreshsnapshot/offlinepreflight,declared20dispatchfailed-casegate,independentsemanticevaluationandfix/retestbeforeacceptance.
