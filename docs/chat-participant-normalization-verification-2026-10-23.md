@@ -17,4 +17,8 @@ Private synthetic ledgers and failed runs are retained under ignored `evidence/c
 
 ## Release
 
-Prepared web package contains 278 files from accepted HEAD 267e7f7 plus only the final chat overlay; adapter SHA256 `8fcdc9ad16dc0a9ee023a308258aea8fee3a8796638dda3086410c0cffdb7706`. All ten previously verified frontend bundles match. Release status and hosted checks are recorded in the current milestone; preparation alone is not deployment confirmation.
+Source/test commit **dc8024f** is pushed. Railway web deployment **e9ec8d37-1f87-429d-9bb0-0b9b78d800b5** is **SUCCESS**.
+
+The source-only package contains 278 files from accepted HEAD267e7f7 plus only the final chat overlay, SHA256 `8fcdc9ad16dc0a9ee023a308258aea8fee3a8796638dda3086410c0cffdb7706`. Every reachable packaged server/tool file matches the final model snapshot. All ten previously verified frontend bundles match; root frozen-release checks pass 90/90.
+
+Hosted acceptance passes 31 checks: health, anonymous API denial, login/logout, authenticated optional-label/preservation/inheritance/version contract and exact ten frontend JS/CSS bundles. Hosted verification makes no model calls or business writes. No worker/collector/schema/settings change was dispatched for this chat release. Earlier failed chats or saved entries are not automatically replayed/repaired.

@@ -4,4 +4,4 @@ Goal: save valid chat map updates when participant labels are omitted or identic
 
 Scope: chat-only label completion and conservative duplicate removal. Different facts, strict versions/source permissions and duplicate-building validation remain.
 
-Status: implemented and independently accepted. Component checks pass; actual gpt-6-luna scenarios pass with 14 requests including a retained time-copy failure. Tested storage is synthetic. Reviewed web package prepared; live release verification pending. Current truth is in ../milestone.md.
+Status: COMPLETE. Implemented, independently accepted and deployed to web e9ec8d37-1f87-429d-9bb0-0b9b78d800b5. Component and frozen-release checks pass; configured-model scenarios pass with 14 requests including a retained failure, using synthetic storage. Hosted tool/access/asset verification passes with no business writes. Current truth is in ../milestone.md and the linked final history.
