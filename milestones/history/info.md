@@ -241,3 +241,5 @@ The essential-test review records a complete prioritization of the accepted 2,35
 Final priority entries reconcile all 2,353 baseline IDs and preserve every per-file historical count: 1,627 essential, 548 useful, 139 historical, 39 review. No test deletion or new execution was performed by this assessment.
 
 The immediate Flock testing handoff records a documentation-only userstop, latest liveUTC/inheritance/revision failure, newest unverifiedlocalpromptchanges and pending exactcleanup. See the linked latestsnapshot; do not treat priorreleaseacceptance as finalproductionacceptance.
+
+The working-tree checkpoint entry records the user-requested Git snapshot and its secret/whitespace checks; it does not resume paused product testing or cleanup.

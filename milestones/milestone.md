@@ -1,3 +1,7 @@
+## Working tree checkpoint requested
+
+The user authorized commit/push of the complete working tree. Checkpoint `1fd5122` saves416changed paths, including the handoff and newest unverified prompt changes. Credentials/private evidence remain ignored; staged credential and whitespace checks passed. [Checkpoint record](history/2026-10-22_20-45-40-035965-orchestrator-working-tree-checkpoint.md). Git publication does not resume the stopped application work or complete pending testing/cleanup below.
+
 ## STOPPED at user request — Flock testing handoff is ready
 
 The user requested immediate documentation for another agent and **no other work**. Active tester/observer were interrupted. Read the **[complete handoff](live-planner-calendar-tests/handoff-2026-10-22.md)** before resuming. It contains every main finding, exact IDs, releases/local hashes, verification limits, cleanup state and next steps. [This pass](history/2026-10-22_20-43-27-863281-orchestrator-flock-live-testing-handoff.md).

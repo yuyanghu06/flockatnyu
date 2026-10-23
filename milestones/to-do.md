@@ -1,3 +1,7 @@
+## Git checkpoint
+
+- [x] Save the complete nonignored working tree in checkpoint `1fd5122` for user-requested Git publication; retain all documented handoff limitations.
+
 ## STOPPED — next agent starts with the Flock handoff
 
 User requested documentation only and no other work. [Read exact state/IDs](live-planner-calendar-tests/handoff-2026-10-22.md). Do not interpret previous pending tasks as permission to ignore this stop.
