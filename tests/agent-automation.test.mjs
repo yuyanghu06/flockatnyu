@@ -16,8 +16,8 @@ const enabled=()=>readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'});
 test('automation defaults are disabled and trigger/run limits fail closed',()=>{
  const c=readAutomationConfig({});
  assert.equal(c.enabled,false);assert.equal(c.minEvents,30);assert.equal(c.maxAgeSeconds,1800);assert.equal(c.cooldownSeconds,60);assert.equal(c.pollMs,5000);assert.equal(c.maxInputs,20);
- assert.equal(c.maxRounds,16);assert.equal(c.maxCalls,32);assert.equal(c.maxRunMs,180000);
- for(const env of [{AGENT_AUTOMATION_MAX_ROUNDS:'17'},{AGENT_AUTOMATION_MAX_CALLS:'33'},{AGENT_AUTOMATION_MIN_EVENTS:'0'},{AGENT_AUTOMATION_MAX_INPUTS:'21'},{AGENT_AUTOMATION_MAX_RUN_MS:'600001'},{AGENT_AUTOMATION_COOLDOWN_SECONDS:'59'},{AGENT_AUTOMATION_TIMEZONE:'Not/AZone'}]){
+ assert.equal(c.maxRounds,16);assert.equal(c.maxCalls,64);assert.equal(c.maxRunMs,180000);
+ for(const env of [{AGENT_AUTOMATION_MAX_ROUNDS:'17'},{AGENT_AUTOMATION_MAX_CALLS:'65'},{AGENT_AUTOMATION_MAX_FOLLOWUP_CALLS:'65'},{AGENT_AUTOMATION_MIN_EVENTS:'0'},{AGENT_AUTOMATION_MAX_INPUTS:'21'},{AGENT_AUTOMATION_MAX_RUN_MS:'600001'},{AGENT_AUTOMATION_COOLDOWN_SECONDS:'59'},{AGENT_AUTOMATION_TIMEZONE:'Not/AZone'}]){
   assert.throws(()=>readAutomationConfig(env),/invalid_automation_config/);
  }
 });
@@ -25,7 +25,7 @@ test('automation defaults are disabled and trigger/run limits fail closed',()=>{
 test('production may configure a bounded ten-minute run without enlarging tool or input defaults',()=>{
  const extended=readAutomationConfig({NODE_ENV:'production',AGENT_AUTOMATION_ENABLED:'true',AGENT_AUTOMATION_MAX_RUN_MS:'600000',AGENT_AUTOMATION_MAX_INPUTS:'5'});
  assert.equal(extended.enabled,true);assert.equal(extended.maxRunMs,600000);assert.equal(extended.maxInputs,5);
- assert.equal(extended.maxRounds,16);assert.equal(extended.maxCalls,32);assert.equal(extended.leaseSeconds,120);assert.equal(extended.cooldownSeconds,60);
+ assert.equal(extended.maxRounds,16);assert.equal(extended.maxCalls,64);assert.equal(extended.leaseSeconds,120);assert.equal(extended.cooldownSeconds,60);
  assert.equal(readAutomationConfig({NODE_ENV:'production'}).maxRunMs,180000);
  assert.throws(()=>readAutomationConfig({NODE_ENV:'production',AGENT_AUTOMATION_MAX_RUN_MS:'600001'}),/invalid_automation_config/);
 });
@@ -166,10 +166,12 @@ test('successful tool actions precede explicit subset finish and later arrivals 
  assert(!h.calls.some(c=>c.kind==='release'),'Successful finish releases its lease in SQL');
 });
 
-test('failed/oversized/throwing actions retain all inputs and never mark receipt complete',async()=>{
+test('failed/oversized/throwing actions return safe feedback without completing receipts or implicitly finishing',async()=>{
  for(const execute of [async()=>({status:'failed'}),async()=>({status:'ready',body:'x'.repeat(17000)}),async()=>{throw Error('SECRET_PRIVATE_PROVIDER_BODY');}]){
-  const h=harness({turns:[turn(call('set_plan',{building:'bobst'}))],execute});const result=await h.handler.tick();
-  assert(['tool_failed','unavailable'].includes(result.status));assert(!JSON.stringify(result).includes('SECRET'));assert.equal(h.queue().length,1);assert(!h.calls.some(c=>c.kind==='finish'||c.kind==='action'&&c.complete));
+  const h=harness({turns:[turn(call('set_plan',{building:'bobst'})),request=>{
+   assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');assert(!JSON.stringify(request.messages).includes('SECRET_PRIVATE_PROVIDER_BODY'));return {stopReason:'stop',toolCalls:[]};
+  }],execute});const result=await h.handler.tick();
+  assert.equal(result.status,'incomplete_batch');assert.equal(h.queue().length,1);assert(!h.calls.some(c=>c.kind==='finish'||c.kind==='action'&&c.complete));
  }
 });
 
@@ -288,13 +290,13 @@ test('unfinished or malformed completion fences never remove inputs and obey pro
  }
 });
 
-test('production defaults permit twelve bounded tool turns and recover only read-only invalid requests',async()=>{
+test('production defaults permit twelve bounded tool turns and return read/write invalid requests to the model',async()=>{
  const input=row();let reads=0;
  const tool={name:'read_context',description:'Read',readOnly:true,parameters:{type:'object',properties:{},additionalProperties:false},execute:async()=>++reads===1?{status:'invalid_request'}:{status:'ready'}};
- const turns=Array.from({length:11},(_,i)=>request=>{if(i===1)assert.equal(JSON.parse(request.messages.at(-1).content).status,'invalid_request');return turn(call('read_context',{},`read_${i}`));});
+ const turns=Array.from({length:11},(_,i)=>request=>{if(i===1)assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');return turn(call('read_context',{},`read_${i}`));});
  turns.push(turn(call('finish_batch',{handledInputIds:[input.uuid]})));
  const h=harness({inputs:[input],tools:[tool],turns});assert.equal((await h.handler.tick()).status,'completed');assert.equal(reads,11);
- const denied=harness({execute:async()=>({status:'invalid_request'}),turns:[turn(call('set_plan',{building:'bobst'}))]});assert.equal((await denied.handler.tick()).status,'tool_failed');assert.equal(denied.queue().length,1);
+ const denied=harness({execute:async()=>({status:'invalid_request'}),turns:[turn(call('set_plan',{building:'bobst'})),request=>{assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');return {stopReason:'stop',toolCalls:[]};}]});assert.equal((await denied.handler.tick()).status,'incomplete_batch');assert.equal(denied.queue().length,1);
 });
 
 test('sole exact empty finish gets bounded correction and actual queued IDs without finishing or saving receipts',async()=>{

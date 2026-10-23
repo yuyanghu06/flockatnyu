@@ -7,6 +7,9 @@ import { createAuditLogger } from './model-audit.js';
 import { createChatRunner } from './chat-runner.js';
 import {avatarProxyPath} from './map/avatars.js';
 import {withDiscordSourceScope} from './discord/source-scope.js';
+import {validateManualRunInput} from './automation/manual-runs.js';
+import {createManualPlannerAuth} from './automation/manual-auth.js';
+import {validUuid} from './automation/validation.js';
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
@@ -34,7 +37,7 @@ export function developmentAuth(c, config) {
     const originHeader = c.req.header('origin');
     // Same-origin GET fetches generally omit Origin. Only the exact read-only
     // routes below receive this exemption; mutation requests still require Origin.
-    if (!originHeader && c.req.method === 'GET' && (['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname) || (!requestUrl.search && /^\/api\/map\/people\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\/avatar$/.test(requestUrl.pathname)))) {
+    if (!originHeader && c.req.method === 'GET' && (['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname) || (!requestUrl.search && (/^\/api\/map\/people\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\/avatar$/.test(requestUrl.pathname) || /^\/api\/planner\/runs\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(requestUrl.pathname))))) {
       return { id: 'local-development', allowedSourceIds: [...config.allowedSourceIds], isAdmin: config.devAdminEnabled === true,
         ...(config.devLiveDiscordEnabled && /^[0-9]{1,20}$/.test(config.discordGuildId) ? { liveDiscord: { mode: 'local-operator', guildId: config.discordGuildId } } : {}),
         ...(config.devGoogleEnabled ? { googleAccess: true } : {}) };
@@ -59,7 +62,7 @@ async function readJSON(request, timeoutMs, maxBytes = 32768) {
       if (expired) throw new Error('invalid');
       if (done) break;
       length += value.byteLength;
-      if (length > maxBytes) { await reader.cancel(); throw new Error('invalid'); }
+      if (length > maxBytes) { void reader.cancel().catch(() => {}); throw new Error('invalid'); }
       chunks.push(value);
     }
   } finally { clearTimeout(timer); reader.releaseLock(); }
@@ -90,7 +93,7 @@ async function readConversation(request, timeoutMs) {
   return { messages, buildingId: value.buildingId, timeZone };
 }
 
-export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, attioTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, mapAvatarService = null, auth = developmentAuth, now = () => new Date() } = {}) {
+export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, attioTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, mapAvatarService = null, plannerRuns = null, plannerAuth = createManualPlannerAuth(), auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
   const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,now});
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
@@ -114,6 +117,37 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
   });
   const apiError = (c, code, status) => c.json({ status: code, error: { message: errorMessages[code] || 'This operation is unavailable.' } }, status);
   const resultStatus = status => ({ forbidden: 403, forbidden_source:403, invalid_request: 400, invalid:400, conflict:409, not_configured: 503, unavailable: 503, aborted: 408, stale: 409, rate_limited: 429, timeout:504, not_found:404, reauthorization_required:401, permission_denied:403, invalid_response:502, response_too_large:502, read_required:409 })[status] || 200;
+  app.post('/api/planner/runs', async c => {
+    c.header('cache-control', 'no-store');
+    if (!plannerAuth.authorizeRequest(c.req.raw)) return apiError(c, 'access_denied', 403);
+    if (new URL(c.req.url).search) return apiError(c, 'invalid_request', 400);
+    let input;
+    try { input = validateManualRunInput(await readJSON(c.req.raw, Math.min(config.timeoutMs || 10000, 10000), 4096)); }
+    catch { return apiError(c, 'invalid_request', 400); }
+    if (!input) return apiError(c, 'invalid_request', 400);
+    if (!plannerRuns?.start) return apiError(c, 'not_configured', 503);
+    try {
+      const result = await plannerRuns.start({...input, signal:c.req.raw.signal});
+      if (result.status === 'queued' && validUuid(result.runId)) {
+        const statusUrl = `/api/planner/runs/${result.runId}`;
+        c.header('location', statusUrl);
+        return c.json({status:'queued', runId:result.runId, statusUrl}, 202);
+      }
+      return c.json({status: ['capacity','rate_limited','invalid_request','not_configured','aborted'].includes(result?.status) ? result.status : 'unavailable'},
+        ['capacity','rate_limited'].includes(result?.status) ? 429 : result?.status === 'invalid_request' ? 400 : result?.status === 'aborted' ? 408 : 503);
+    } catch { return c.json({status:'unavailable'}, 503); }
+  });
+  app.get('/api/planner/runs/:runId', async c => {
+    c.header('cache-control', 'no-store');
+    if (!plannerAuth.authorizeRequest(c.req.raw)) return apiError(c, 'access_denied', 403);
+    const runId = c.req.param('runId');
+    if (!validUuid(runId) || new URL(c.req.url).search) return apiError(c, 'invalid_request', 400);
+    if (!plannerRuns?.read) return apiError(c, 'not_configured', 503);
+    try {
+      const result = await plannerRuns.read({runId, signal:c.req.raw.signal});
+      return c.json(result, result?.status === 'not_found' ? 404 : result?.status === 'ready' ? 200 : 503);
+    } catch { return c.json({status:'unavailable'}, 503); }
+  });
   app.get('/api/map/people/:personId/avatar', async c => {
     c.header('cache-control', 'private, no-store');
     c.header('x-content-type-options', 'nosniff');

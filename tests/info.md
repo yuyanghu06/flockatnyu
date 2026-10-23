@@ -1,3 +1,69 @@
+## Further current-rule phase-out
+
+See [the32-case phase-out](../docs/test-phaseout.md) and [current inventory](../docs/test-suite-inventory-after-phaseout.csv). Prompt wording, unused fallback injection and overlapping catalogue/constant checks were retired; actual orchestration, write receipts, permissions, cancellation, partial evidence and historical SQL remain. Real Miro cases verify guide delivery in both prompt phases. The source-compaction test checks actual size reduction and lossless data rather than an old total-prompt percentage.
+
+## Worker tool-call budgets
+
+`agent-call-limits.test.mjs` exercises both provider HTTP formats with16worker
+calls, all16paired results on the next request, and rejection of17calls. Ordinary
+chat still rejects9calls and oversized native history. The actual handler runs
+63ordinary actions plus finish in each of two independent64-call stages, reports
+128calls without exposing source data in progress, and leaves untouched tasks intact.
+A65thcall or an overflowing reply performs no extra writes; failed calls consume
+budget without successful receipts. Overflow attempts remain counted in the run
+records. These are scripted-provider/synthetic-store checks, not real-model or
+live-source outcomes. Progress privacy and bounded reporting remain covered by
+`automation-progress.test.mjs`.
+
+## Applied test cleanup
+
+The [cleanup report](../docs/test-suite-cleanup.md) and [after-cleanup inventory](../docs/test-suite-inventory-after-cleanup.csv) record current test structure. Old milestone browser/capture/planner wrappers were removed; useful asset and actual-pointer behavior is consolidated in the current map tests. Historical SQL fixtures remain. Earlier dated acceptance paragraphs below describe their original runs.
+
+## October 22 repository test audit
+
+See [the audit](../docs/test-suite-audit.md) and [per-file counts](../docs/test-suite-inventory.csv) for the complete dated inventory, historical versus current coverage and cleanup recommendations. No tests were removed by the audit. Standalone browser/model/geometry harnesses are counted separately from registered Node cases.
+
+## Plain saved-task reads
+
+`plain-task-cache-read.test.mjs` verifies that catalogue construction,
+`read_pending_task` and defer bookkeeping use saved task rows and local source
+scope, without calling old live source/reference validators—even when those
+callbacks throw or never complete. A 200-task manifest performs no such calls;
+full fragmented task contents remain lossless and read-only tasks keep their
+original contents and timestamps. Wrong scope, expiry, malformed bindings,
+unknown/mixed input IDs and unread task IDs cannot manufacture task authority.
+
+Production adapter checks block every live source/reference/Calendar dependency
+while cached reads/defer succeed. Ordinary tools afterward still enforce current
+access and identity. Scripted actual-handler integration reads a saved task, lets
+the model choose the normal Discord tool, receives an unavailable-source error,
+and verifies that a subsequent Member Plans write is denied and the task remains.
+Exact completed-outcome checks, version conflicts, leases and failed-tool feedback
+remain covered by staged pipeline/runtime and pending-task SQL tests. All providers,
+source data and storage are synthetic; no live model/source calls occur here.
+
+## Planner tool failure continuation
+
+`agent-tool-error-continuation.test.mjs` exercises the actual worker handler with
+scripted models and memory stores. Returned denials/conflicts/not-found/unavailable,
+tool-local aborted/stale results, thrown errors, null/cyclic/non-JSON and oversized
+results become bounded `tool_error` feedback with the original call ID. Failed
+bodies and exception secrets never reach model feedback, retained task history or
+operational records. Successful sibling calls continue; failed writes receive no
+success receipt and a retry of the same action can succeed.
+
+Actual OpenAI-compatible and Anthropic provider serializers preserve matching
+failed/successful tool-result IDs. The real staged task resolver refuses to count
+an error as a completed task. Current authorization loss, queue lease/receipt loss,
+caller cancellation, overall deadlines and required audit failures still stop the
+run. Existing phase/call limits remain bounded. `agent-automation`,
+`agent-staged-handler`, `model-audit-integration`, `update-agent-map` and
+`staged-runtime-integration` retain these boundaries while testing model continuation.
+`automation-progress` and `tool-diagnostics-integration` also verify a failed tool
+keeps its safe failure progress/dispatch record while the next model turn continues;
+invalid prepared arguments still stop before tool dispatch.
+All source/model/HTTP responses are synthetic; this suite performs no live writes.
+
 ## Discord request-local image context
 
 `discord-chat-images.test.mjs` exercises the production Discord REST client,
@@ -44,9 +110,9 @@ empty pages, duplicate identities, malformed/repeated cursors, late failures,
 account/access revocation, shared60second cancellation and20page/200event/UTF-8
 output ceilings. Model schemas reject cursors while the low-level single-page
 client remains compatible. Native completed scans recheck access before release.
-Worker sync tests require gap-free unfiltered full-mode coverage, recursively
-narrow incomplete windows, reuse bulk map observations and invalidate them after
-conflicts or fresh reads showing vanished records. No source/provider writes run.
+Worker Calendar writes require complete unfiltered full-mode coverage of the actual
+target date. Deterministic projection owns rolling windows and pagination; unrelated
+messages do not force model scans or mechanical repair tasks. No source/provider writes run.
 Single-create HTTP checks also verify the production client's saved start/end,
 timezone and exact Calendar URL survive both follow-up planning and final context;
 existing provider stubs without optional timing fields remain supported.
@@ -97,8 +163,8 @@ round thirty. A skipped duplicate leaves unused execution budget without extendi
 the round limit, and three consecutive stalled rounds still stop early. The
 frontend stream tests accept every progress ID through tool-30 and reject tool-31
 and malformed IDs. Drive
-skill activation resolves every skipped native call before replanning. The actual
-attendance declaration gate still ignores instructions in source results.
+skill activation resolves every skipped native call before replanning. Quoted source content remains evidence for the model, rather than an instruction
+to mutate the map. Backend identity, field and revision checks remain independent.
 Full26-tool native requests, the33-tool bound and existing image/PDF multimodal
 fallback are checked. These scripted provider responses verify protocol and
 backend behavior; actual-model semantic decisions require separate evidence.
@@ -123,13 +189,13 @@ reply history and isolation from another member. No live model, Calendar write o
 Discord post occurs; final generated language and hosted rollout need separate
 evidence.
 
-`stable-tool-catalogue.test.mjs` compares complete Calendar/attendance definitions
+`stable-tool-catalogue.test.mjs` compares complete Calendar/map definitions
 across sixteen request shapes in both actual transports, missing history and
 Google grants. It also verifies interpretation/source/receipt prompt policy.
 Calendar semantics are decided by the model; valid provider-selected mutations
 are not blocked by request wording. Backend Calendar grants, fixed targets,
 schema, fresh revisions, idempotency and stateless denial remain tested, as do
-the existing attendance declaration/identity/date/source gates. Actual-model
+ordinary map identity, revision and source checks. Actual-model
 semantic scenarios are separate orchestrator evidence. A four-round actual-runner
 Gmail search/read then Calendar check/create regression verifies source workflows
 continue through the write; global round/call caps and dedup remain checked.
@@ -176,9 +242,25 @@ Fresh M43 evidence is under `evidence/m43-smooth-reveal/`; earlier passes remain
 preserved. `map-input-browser.mjs` and `building-view-browser.mjs` wait for final
 entered state, beyond map readiness, before interacting with the scene.
 
-## Update agent Miro/Calendar verification
+## Simplified update agent verification
 
-`calendar-tools.test.mjs` exercises fixed-target Calendar transport, scope/account/ACL checks, source provenance, source-based retry identities, conditional edits, human changes and managed cancellation. `update-agent-calendar.test.mjs` exercises the real handler/bundled adapter with synthetic clients, per-ready-batch preparation, idle behavior, exact queue preservation, 37-frame headings, current source authorization and lossless UTF-8 fragments. Both are included in `npm run test:agent-automation`. These are simulated transports; live OAuth/target access is recorded separately in the milestone snapshot.
+`update-agent-simplified.test.mjs` runs the production adapter and Calendar client
+against synthetic HTTP/OAuth for exact queued Gmail create/update/cancel grants,
+fresh body/sender/subject/date checks, metadata/snippet denial, duplicate and target-date
+coverage protection, natural announcements and explicit cancellation. `update-agent-mcp`
+and `update-agent-miro-outage` verify worker construction/preparation never touch Miro,
+register board grants or block unrelated work on missing configuration or outages.
+Shared Miro/chat checks remain separate.
+
+`update-agent-calendar` retains handler preparation/idle/queue/fragment and current
+source authorization tests. `update-agent-map` and `update-agent-sync-policy` retain
+exact source, original speaker, successful identity receipts, independent participant,
+optimistic revision and Calendar-owned field controls. `staged-runtime-integration`
+exercises actual handler/Calendar APIs/map projection/cache integration, including
+signed Gmail Member Plans, existing occurrence RSVP updates, one-model-turn irrelevant
+input completion, mechanical failure without model pagination, exact retained task
+versions and lease fencing. All transports and model responses are synthetic; no
+live accounts, business records, source reads or model calls are exercised here.
 
 ## Update agent cadence verification
 
@@ -216,77 +298,41 @@ Citation decoder acceptance:63focused/243integrated, shared allowed-ID enum and 
 
 009final independent local acceptance:233/233 integrated plus latest unchanged695-slice/104MB scale,14genuineSQL/75parity states, APIbuild/diff/hash. Semantic/cache/charged recovery findings closed with original caps/receipts. Final evaluator and actual hosted planning/model/deployment remain pending.
 
-# Browser acceptance checks
+# Current map acceptance checks
 
-`map-browser.mjs` exercises the production campus preview using installed Chrome
-and Playwright. Run after `npm run build` with `npm run preview -- --host 127.0.0.1`
-running; the default URL is http://127.0.0.1:4173. Evidence is saved separately under
-`evidence/m3-campus-details/` by default. M1 and M2 evidence remain immutable.
-These checks use real pointer controls and rendered
-assets, with the read-only debug interface for numeric measurements.
+`map-asset-integrity.test.mjs` uses the actual committed GLBs to check source
+mesh/material/color preservation, Leslie and Coles replacement ownership,
+unchanged neighboring geometry, coordinate alignment and fountain clearance.
+It replaces the useful asset checks from retired milestone scripts.
 
-`source-geometry.mjs` independently reads the source replacement tile and records
-triangle counts, connected shells and world bounds for comparison against the
-loaded map. `map-failures.mjs` checks unavailable assets, resizing during delayed
-loading and unavailable WebGL. `map-performance.mjs` measures the default Chrome
-GPU separately from the explicitly software-rendered acceptance suite.
+`map-focus-framing-browser.mjs` starts an isolated Vite fixture and uses installed
+Chrome with synthetic API responses. It checks actual landmark placement,
+responsive framing, real pointer selection and camera gestures through current
+map behavior. It blocks nonlocal requests and does not need a separate API server,
+website credentials or live club sources. `CHROME_PATH` can select Chrome and
+`MAP_EVIDENCE` redirects its output.
 
-`map-refinement.mjs` covers M2's starting zoom, bounded free camera, expanded
-coverage and procedural Paulson interactions. `map-boundary-zoom.mjs` checks
-maximum wheel zoom at a pan boundary. `map-paulson-views.mjs` captures three sides
-and measures performance for targeted visual fixes without repeating unrelated
-navigation tests.
-
-`map-details.mjs` is the current M3 acceptance: all nine locations, model contracts,
-multiple views, camera regression, mobile layout and hardware performance.
-`details-geometry.mjs` independently decodes source tiles, verifies removals leave
-neighbor triangles unchanged and checks retained source tower vertices.
-`gould-front-view.mjs` captures the low front view needed to inspect stair grounding.
-
-Run from the repository root in a second terminal after starting the preview:
-
-```powershell
-node tests/map-browser.mjs
-node tests/map-failures.mjs
-node tests/source-geometry.mjs
-node tests/map-performance.mjs
-node tests/map-refinement.mjs
-node tests/map-boundary-zoom.mjs
-node tests/map-paulson-views.mjs
-node tests/map-details.mjs
-node tests/details-geometry.mjs
-node tests/gould-front-view.mjs
+```sh
+node --test tests/map-asset-integrity.test.mjs
+node tests/map-focus-framing-browser.mjs
 ```
 
-Browser scripts default to installed Chrome at
-`C:/Program Files/Google/Chrome/Application/chrome.exe`. Set `MAP_URL` to test a
-different local preview URL. Run the performance checks sequentially to avoid
-competing browser workloads. Hardware results reflect the machine under test.
-The baseline scripts accept `MAP_EVIDENCE` for an alternative output directory;
-do not point them at historical M1 or M2 evidence. Fixtures reflect nine current
-landmarks, 700-meter
-navigation range, the 91-meter Paulson model and a Bobst network failure probe
-(Paulson is procedural and does not request its preserved source GLB).
+The old milestone browser scripts and one-off captures were removed after their
+meaningful checks were consolidated. Historical evidence and journal entries
+remain records of their original runs; their commands are not current run guides.
+`map-failures.mjs` remains a separate unavailable-asset/WebGL fixture.
 
-Palette evidence utilities: node tests/palette-capture.mjs captures the real map backdrop; node tests/palette-check.mjs checks and captures the built docs proposals. Run from repository root with preview on4173.
+M8: global-center-geometry.mjs verifies exact replacement ownership and source preservation offline (11 checks).
 
-M4 acceptance: node tests/map-m4.mjs; evidence and report in evidence/m4-campus-details/. Historical milestone scripts retain their original landmark fixtures.
+M9: map-presentation.mjs checks camera samples/actual OrbitControls, effects lifecycle, atmosphere shader hooks and actual projection math without a browser.
 
-M5: node tests/map-m5.mjs uses frozen before poses, verifies source geometry/material hashes and exact palette reuse, and captures final window details. Evidence: evidence/m5-window-details/.
-
-M6: tests/map-m6.mjs covers snapshot projection, baked surface bounds/fountain clearance, before/after street and park views, landmark/camera/mobile behavior. Evidence includes after-results.json (10/10) and after-final-results.json (3/3 final rebake checks).
-
-M8: global-center-geometry.mjs verifies exact replacement ownership, source preservation and static integration offline (12 checks).
-
-M9: map-presentation.mjs checks camera samples/actual OrbitControls, effects lifecycle, atmosphere shader hooks and static UI/context contracts without a browser.
-
-M9: camera-focus.mjs verifies spring motion, front framing, focused-only tilt and equal-time30/60/144Hz behavior; map-interactions.mjs tests wheel/click/drag and native pinch routing. M10: park-vegetation.mjs independently checks placement/exclusions, source hashes and baked geometry. These tests do not launch a browser.
+M9: camera-focus.mjs verifies spring motion, front framing, focused-only tilt and equal-time30/60/144Hz behavior; map-interactions.mjs tests wheel/click/drag and listener cleanup. M10: park-vegetation.mjs independently checks placement/exclusions, source hashes and baked geometry. These tests do not launch a browser.
 
 M11 updates camera-focus/map-interactions/map-presentation for reverse overview, wheel traces, analytic fog/sky and screenshot default. union-square-context.mjs audits the two omitted baked models and preserves adjacent city geometry.
 
 M12: map-memory.mjs verifies exact context attributes, safe ownership and hover transform propagation.
 
-M21 map-startup.mjs replaces the retired loading-screen.mjs with9pure/DOM/source checks for truthful automatic readiness and retry.
+M21 map-startup.mjs replaces the retired loading-screen.mjs with8pure/DOM behavior checks for truthful automatic readiness and retry.
 
 - M15 assistant/provider/knowledge fixture suites last reported 32 passed and 1 Hono dependency skip; real API/SQL/browser acceptance is pending.
 
@@ -521,13 +567,13 @@ assistant-scroll-browser.mjs also checks a fixed18px lower panel gutter at top/i
 
 `discord-rate-pacing.test.mjs` uses fake clocks/transports to verify shared serialization, cancellation ordering,429/header/JSONcooldowns includinglongwaits, retry/deadlinebounds and sequential truthful aggregate coverage without live Discord calls.
 
-Final bundled-handler protocol checks cover invented Calendar pagination, empty finish feedback, subsequent real map projection and exactly one valid completion/receipt, with foreign/unknown/mixed calls still failing closed. The model harness enforces exact fake Miro/Discord selectors and Calendar windows/tokens; previous permissive diagnostic passes are distinguished from strict-fixture reruns.
+Bundled-handler protocol checks reject invented Calendar pagination and preserve exact applied projection receipts. Irrelevant inputs can finish without mandatory model projection; foreign/unknown/mixed calls still fail closed. The model harness enforces exact fake Miro/Discord selectors and Calendar windows/tokens; previous permissive diagnostic passes are distinguished from strict-fixture reruns.
 
 Optimization checks include fresh batch authorization cost, exact answer-context compaction, bounded Miro queue/token owner, web volume bootstrap, production site sessions/static isolation and sanitized runtime deployment. Independent browser evidence lives in evidence/optimization.
 
 scoped-agent-claim.test.mjs runs realSQL mixed-scope trigger/lease/ACL/finish cases and productionstore/handler wiring, preserving historical019fixtures.
 
-planner-workload-model.mjs reuses strict configured-model scenarios with synthetic sources/inert writes and the actual Miro adapter/parser to catch incompatible canvas/table arguments. Its aggregate receipt is evidence/optimization/planner-workload-model.json; this is not a live-source mutation test.
+The retired planner workload model wrapper duplicated shared scenarios and tested the former worker Miro path. It was removed during test cleanup; its ignored evidence remains historical. Current staged runtime and live Miro chat tests cover their respective behavior.
 
 site-auth.test.mjs covers explicit custom-domain login aliases and authenticated
 writes, malformed/insecure alias rejection, foreign/cross-site denial and stable
@@ -541,7 +587,7 @@ clock formatting, one native requestSubmit on Enter and no submission for IME
 composition/ordinary keys. Actual Chrome native form flow is separately checked
 with an isolated synthetic session, never real credentials.
 
-Recovery coverage includes Discord metadata continuation lifecycle/real deadline shapes and Miro navigation outages through the actual handler/parser, including malformed/auth/write-authority negatives. planner-recovery-model.mjs runs five strict configured-model scenarios against synthetic sources/inert writes, preserving prior interrupted diagnostics separately from final frozen-build acceptance.
+Historical recovery evidence includes Discord metadata continuation lifecycle/real deadline shapes and the former worker Miro navigation path. Current workers expose no Miro tools or Miro completion dependency; shared Miro parser/auth tests remain. The retired recovery wrapper was removed during test cleanup because its unique checks required the removed worker Miro dependency. Historical evidence remains separate from current staged-worker behavior checks.
 
 The assistant fake-DOM regression verifies close/cancel preserve active request,
 hidden completion enters history and explicit Stop still aborts. The rapid UI
@@ -554,11 +600,11 @@ Miro quota tests cover metadata-only shared UTC counters, background cadence, pr
 The rapid UI browser check waits for the hover glow transition to settle before
 reading its shadow; streaming animation is checked without hovering the button.
 
-Chat production coverage includes once-only varied bug-report attempts, chat-attendance-orchestration.test.mjs for intent/planning/receipt boundaries, chat-attendance.test.mjs for real service/source/projection behavior, and chat-attachments.test.mjs for bounded file validation/API/provider/history. Independent acceptance/browser evidence is maintained separately under evidence/chat-production-fixes.
+Chat production coverage includes once-only varied bug-report attempts and normal map attendance updates through actual Hono, service and RPC adapters. `chat-attendance-orchestration.test.mjs` uses scripted choices to verify existing-event preservation, verified speaker/name lookup, clarification history, failed receipts, conflicting human edits and refreshed event participation. `chat-attachments.test.mjs` covers bounded file validation/API/provider/history. Historical attendance-link visibility checks live in `map-source-access.test.mjs`; the retired attendance parser/service tests are removed.
 
-Attendance formatting regressions cover full find/write and Hono/RPC flows for compound spacing, punctuation and Unicode compatibility, plus partial-token/invented-query denials and normalized-title ambiguity.
+`chat-attendance-model.mjs --live-model` separately evaluates the configured model on the exact first-person GoGreek request, an unlinked speaker followed by a name-only answer, ambiguous same-day events, conflicting writes and quoted declarations. Its actual chat runner, prompts and ordinary map tools use simulated storage. Only the configured inference endpoint can use the network; model audits stay in memory, request count/time are bounded and results are written to a private temporary JSON file. It makes no calls without the explicit flag. This evaluates model choices and simulated saved outcomes, without claiming live Discord, Calendar or hosted map writes.
 
-Candidate resolution acceptance also tests model-selected returned events, catalogue completeness, full-context ambiguity beyond display bounds, short-name clarification, date/source scope and stale receipt rejection. Actual-model evidence uses real production prompts/tools/core services with synthetic storage and authorization; independent API tests do not claim to prove arbitrary semantic judgment.
+Use repeated `--case=` name prefixes to rerun only affected scenarios and `--max-requests=` to lower the total inference budget. A budget stop is an incomplete evaluation; inspect already executed writes before attributing it solely to the limit.
 
 Map presence/source-access regressions cover projection-local provider reuse, exact attendance marker bindings, fresh request revocation, unchanged general-write authorization, bounded concurrency and cancellation under the total read deadline.
 
@@ -638,3 +684,26 @@ Active-event indicators have source-art/controller/resource/window tests in map-
 `map-focus-framing.test.mjs` checks responsive clear space, smooth capped lens fitting, repeated focus and overview restoration. `map-focus-framing-browser.mjs` verifies all ten real landmark bounds against shared frame and actual card rectangles at desktop/phone sizes; evidence is in ignored evidence/camera-framing.
 
 Discord blacklist coverage includes fresh catalogue resolver/API propagation and independent signed-site/chat/worker/map/Calendar integration. New sources absent environment grants must work, while exclusions, audience permissions and revocations still stop evidence/actions. Empty-scope SQL/runtime tests verify038 retains bounded quarantine cleanup and lease fences without reading pending originals or invoking models.
+
+Discord concurrency checks exercise configured10total/5permember with held overlapping requests, admission before authorization, isolated contexts/reply destinations and slot recovery after success/failure/cancellation. Private bridge checks include ten active calls, HTTP429 above capacity and cancellation recovery.
+
+`discord-draft-tools.test.mjs` independently exercises draft argument/context/destination/permission/blacklist/thread/revocation/cancellation/no-send boundaries with real access fixtures. `discord-draft-integration.test.mjs` checks native and legacy provider propagation, result projection, operational privacy, website absence and unsupported sending.
+
+`calendar-complete-receipts.test.mjs` independently verifies actual saved fields across single/managed/batch writes, clear/missing/sparse/reconciliation outcomes, safe ancillary fields, no private-field leakage, both model paths and realistic/pathological large-batch bounds/reprojection. `calendar-location-receipts.test.mjs` now permits authorized saved descriptions alongside location while still rejecting arbitrary provider fields.
+
+The current scoped-claim runtime test distinguishes malformed/missing scope denial from an explicit empty array: empty scope performs bounded maintenance without originals, source authorization/preparation, tools or model calls. Historical migration032 SQL fixtures keep their original contract;038 coverage tests the current maintenance override.
+
+
+Staged Calendar acceptance: agent-pending-tasks.test.mjs executes039/store scope/lease/version/TTL/capacity; agent-staged-handler.test.mjs checks same-lease phases/10turn cap; calendar-deterministic-sync and member-plans-calendar test pinned target/metadata/location/relationship behavior; staged-pipeline and staged-runtime-integration exercise actual bundled Calendar-first presence, cached RSVP/task progression, untouched retention, multi-calendar visibility and041 map fencing.
+
+`chat-agent-policy.test.mjs` exercises the corrected existing-tool map workflow: source-free actor/name lookup, no lexical/original/linked-author gate, automatic attribution, applied receipts, authorization/schema/conflicts, map visibility and Discord-to-person context at tool time. Rejected resolver/save/parser/cache tests were removed; historical receipts remain append-only.
+
+Final staged adversarial checks cover all200task UUIDs with bounded manifest text and lossless full reads, cross-cycle original context/history, fragmented secondary-source revocation, protected Calendar notes and Unicode/blank title RSVP matching. Member tool source preparation accepts only exact original/lookup receipts and rechecks authority at execution; missing/mismatched/revoked evidence denies. The live-model smoke uses inert synthetic business adapters; whole-tree concurrent chat failures are separate from accepted frozen release tests.
+
+Manual planner tests exercise API-key-only HTTP authorization, wrong/missing/unconfigured key and cookie/admin fallback denial, unchanged ordinary website protection and bounded stream denial, actual042/043SQL ACL/lease/retry/request boundaries, exact temporary whitelist through real live retrieval/task scope, and API-key HTTP→durable SQL→dispatcher→real staged handler→content-free status. All business/provider responses are synthetic; tests do not fetch live history or write real Calendar/map facts.
+
+Prompt audit behavior tests exercise the actual staged handler/cache and normal chat tools, including bounded conflict recovery and retained tasks after a source failure. prompt-audit-model.mjs exports inert fixtures and runs configured inference only with --live-model; case filtering and hard request caps support focused reruns. Source and business storage remain simulated. See ../docs/prompt-audit.md for dated actual results.
+
+`discord-event-metadata.test.mjs` applies the actual migrations to local PostgreSQL and runs production Discord stores, ingestion and Gateway behavior with bounded synthetic transports. It proves that new-channel messages queue before a held archive request finishes, old scans cannot overwrite the result, replay is safe, and permissions/manual flags/policy races remain enforced. This is local behavior evidence; live Discord/Calendar acceptance is separate.
+
+Staged runtime cancellation cases use the actual worker adapter, Calendar client and task resolver against simulated provider/storage. They verify exact successful cancellation cleanup, authorized absence, failed or mismatched results, untouched tasks and concurrent task versions. An optional CANCELLATION_BASELINE_ADAPTER path permits isolated old-code reproduction without changing shared runtime files.

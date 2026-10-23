@@ -1,3 +1,4 @@
+import {calendarEventReceipt} from '../server/google/calendar-receipt.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readCalendarConfig,CALENDAR_REQUIRED_SCOPES} from '../server/google/calendar-config.js';
@@ -91,7 +92,7 @@ test('Cancellation affects only the deterministically managed event and never se
 
 test('Model-visible Calendar tools reject alternate surfaces and unsupported fields before any client invocation',async()=>{
  const {createCalendarTools,CALENDAR_TOOLS}=await import('../tools/calendar/index.js');let invoked=0;
- const tools=createCalendarTools({client:{configured:true,calendarId:target,upsertEvent:async()=>{invoked++;return {status:'ready'};}}});
+ const tools=createCalendarTools({client:{configured:true,calendarId:target,upsertEvent:async()=>{invoked++;return {status:'ready',...calendarEventReceipt({id:'fixture_event'},{calendarId:target,outcome:'created'})};}}});
  assert.deepEqual(CALENDAR_TOOLS.map(t=>t.name),['list_calendar_events','read_calendar_event','upsert_calendar_event','cancel_calendar_event']);
  for(const extra of [{calendarId:'other@example.com'},{attendees:[{email:'person@example.com'}]},{sendUpdates:'all'},{recurrence:['RRULE:FREQ=DAILY']},{conferenceData:{}},{eventId:'human_event'}])assert.equal((await tools.execute({name:'upsert_calendar_event',arguments:{...input,...extra},principal})).status,'invalid_request');
  for(const name of ['delete_calendar_event','send_gmail','update_drive','insert_event'])assert.equal((await tools.execute({name,arguments:{},principal})).status,'invalid_request');
@@ -155,5 +156,26 @@ test('Discord source keys and URLs cannot manufacture trusted source grants',asy
  const actor={...principal,calendarSources:[{provider:'discord',guildId:'100',channelId:'200',messageId:'300',sourceId}]};
  for(const patch of [{principal},{principal:{...actor,allowedSourceIds:[]}},{principal:actor,sourceKey:'discord:999:200:300'},
   {principal:actor,sourceKey:'discord:100:200:301'},{principal:actor,sourceUrl:args.sourceUrl+'?extra=1'}])assert.equal((await f.write({...args,...patch})).status,'forbidden_source');
+ assert.equal(f.writes(),0);
+});
+
+test('Gmail club events require exact runtime source grants and preserve managed identity and human edits',async()=>{
+ const key='gmail:abc123',url='https://mail.google.com/mail/u/0/#all/abc123';
+ const actor={...principal,calendarSources:[{provider:'gmail',sourceId,messageId:'abc123'}]};
+ const f=fixture(),args={sourceKey:key,sourceUrl:url,principal:actor};
+ const created=await f.write(args);assert.equal(created.status,'ready');assert.equal(created.eventId,calendarEventId(target,key));
+ assert.equal(f.events.get(created.eventId).source.title,'Gmail source');assert.equal((await f.write(args)).outcome,'unchanged');
+ assert.equal((await f.write({...args,title:'Supported new title'})).outcome,'updated');assert.equal(f.events.size,1);
+ assert.equal((await f.client.cancelEvent(args)).outcome,'cancelled');
+ f.events.get(created.eventId).summary='Human edit';const count=f.writes();
+ assert.equal((await f.write({...args,title:'Agent attempt'})).status,'human_modified');assert.equal(f.writes(),count);
+});
+
+test('Gmail URL or source key alone never grants club Calendar writes',async()=>{
+ const f=fixture(),args={sourceKey:'gmail:abc123',sourceUrl:'https://mail.google.com/mail/u/0/#all/abc123'};
+ const actor={...principal,calendarSources:[{provider:'gmail',sourceId,messageId:'abc123'}]};
+ for(const patch of [{principal},{principal:{...actor,allowedSourceIds:[]}},{principal:actor,sourceKey:'gmail:def456'},
+  {principal:actor,sourceUrl:args.sourceUrl+'?extra=1'},{principal:actor,sourceKey:'gmail:not-a-message'}])
+  assert.equal((await f.write({...args,...patch})).status,'forbidden_source');
  assert.equal(f.writes(),0);
 });

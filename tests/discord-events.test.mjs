@@ -194,6 +194,23 @@ test('failed metadata refresh prevents that checkpoint and stops later queue dis
   assert.equal(f.saves.length,0);assert.equal(f.handled.length,0);assert.equal(f.gateway.status().status,'failed');assert(!JSON.stringify(f.logs).includes('private-metadata-error'));await f.gateway.stop();
 });
 
+test('failed foreground reconciliation preserves the metadata checkpoint and stops later native originals',async()=>{
+  const f=await gatewayFixture({reconcileMetadata:async()=>{throw Error('metadata_reconcile_failed');}});
+  f.dispatch('CHANNEL_CREATE',2,{guild_id:guild,id:channel});f.dispatch('MESSAGE_CREATE',3);await f.gateway.drain();
+  assert.deepEqual(f.saves,[]);assert.equal(f.handled.length,0);assert.equal(f.failures,1);assert.equal(f.gateway.status().status,'failed');
+  await f.gateway.stop();
+});
+
+test('foreground listener distinguishes malformed foreign scope from a verified permission denial',async()=>{
+  for(const code of ['channel_scope_denied','permission_denied']){
+    const data=fixture();data.client.getChannel=async()=>{throw Object.assign(Error('inert upstream detail'),{code});};
+    const f=await gatewayFixture({listener:data.make({reconcileMetadata:async()=>assert.fail('Failed REST check must not publish metadata')})});
+    f.dispatch('MESSAGE_CREATE',2);await f.gateway.drain();assert.equal(data.queue.size,0);
+    assert.deepEqual(f.saves.map(s=>s.session.sequence),code==='permission_denied'?[2]:[]);
+    assert.equal(f.failures,code==='permission_denied'?0:1);await f.gateway.stop();
+  }
+});
+
 test('ordered durable enqueue gates checkpoint; restart uses committed sequence and replay is duplicate',async()=>{
   const listenerFixture=fixture(),listener=listenerFixture.make(),gate=deferred();let first=true;
   listenerFixture.onEnqueue=async()=>{if(first){first=false;await gate.promise;}};

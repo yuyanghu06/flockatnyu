@@ -55,6 +55,16 @@ export function createAutomationStore({env = process.env,fetchImpl = globalThis.
       if (result.status==='ready' && (!validUuid(result.leaseToken) || !Array.isArray(result.inputs) || !result.inputs.length || result.inputs.length>20 || result.inputs.some(r=>!validUuid(r.uuid)||!plainObject(r.raw_response)))) return {status:'unavailable'};
       return result;
     },
+    async claimForced({config,allowedSourceIds,signal}={}) {
+      if (!configured) return {status:'not_configured'};
+      if (!Array.isArray(allowedSourceIds)||allowedSourceIds.length>500||!allowedSourceIds.every(validUuid)
+        ||new Set(allowedSourceIds.map(id=>id.toLowerCase())).size!==allowedSourceIds.length) return {status:'not_configured'};
+      if (!config) return {status:'invalid_request'};
+      const result=await objectCall('agent_automation_claim_forced',{p_allowed_source_ids:[...allowedSourceIds],p_min_events:config.minEvents,p_max_age_seconds:config.maxAgeSeconds,
+        p_cooldown_seconds:config.cooldownSeconds,p_lease_seconds:config.leaseSeconds,p_max_inputs:config.maxInputs,p_max_bytes:config.maxBytes},signal);
+      if (result.status==='ready' && (!validUuid(result.leaseToken)||!Array.isArray(result.inputs)||!result.inputs.length||result.inputs.length>config.maxInputs||result.inputs.some(r=>!validUuid(r.uuid)||!plainObject(r.raw_response)))) return {status:'unavailable'};
+      return result;
+    },
     renew({leaseToken,leaseSeconds=120,signal}={}) { return leaseCall('renew',{leaseToken,p_lease_seconds:leaseSeconds,signal}); },
     action({leaseToken,actionKey,complete=false,signal}={}) {
       if (!validUuid(leaseToken) || typeof actionKey!=='string' || !/^[a-f0-9]{64}$/.test(actionKey) || typeof complete!=='boolean') return Promise.resolve({status:'invalid_request'});

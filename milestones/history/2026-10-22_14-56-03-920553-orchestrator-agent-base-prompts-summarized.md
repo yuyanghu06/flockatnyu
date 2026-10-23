@@ -1,0 +1,10 @@
+# Agent base prompt audit
+
+- Local timestamp / acting role / milestone: 2026-10-22T14:56:03.920553-04:00 / orchestrator / read-only prompt clarification.
+- Requested scope: Summarize the base instructions received by website chat, Discord chat and the autonomous update agent and explain their purpose.
+- Starting repository state: Existing uncommitted Discord concurrency/draft implementation and journals; draft hosted release remains unverified in the latest recorded evaluator pass.
+- Work performed / changed files: Traced shared chat planning/final-answer assembly, Discord actor/recent/reply/image/name context, memory and conditional Drive guidance, worker prompt and batch assembly. Only this entry and shared journal indexes were edited by this audit.
+- Decisions: Explain the two shared chat phases separately from the autonomous worker. Distinguish backend authorization from prompt instructions and committed/released behavior from the local draft-only addition. No prompt/runtime changes requested or made.
+- Checks and evidence: Read server/assistant-context.js, server/chat-behavior.js, server/chat-runner.js, server/chat-request-context.js, server/chat-discord-context.js, server/automation/prompt.js and handler.js, server/memory.js, server/google/calendar-chat-prompt.js, server/miro/navigation.js, server/map/contracts.js and server/skills/drive.js plus its fixed skill asset. Inspected Git diff and current release/evaluation records. No model calls, live prompt capture, source reads, tests or deployment performed.
+- Resulting state / acceptance: Code-based summary ready. Website and Discord share tool-selection/action and final-reporting prompts; Discord adds transport-specific context. Worker reconciles authorized originals into Calendar and map with completion fencing. Shared chat currently retains explicit source/identity requirements even with Discord actor context.
+- Remaining work and handoff: Existing draft-release and personal-map follow-ups remain unchanged. Do not treat this audit as fresh hosted verification or an authorization to change prompts.

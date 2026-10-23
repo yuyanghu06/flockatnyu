@@ -1,3 +1,4 @@
+import {calendarEventReceipt} from '../server/google/calendar-receipt.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -18,16 +19,16 @@ function handlerHarness({prepareBatch,claimStatus='ready',providerTurn,adapters=
  return {handler,input,events,finished:()=>finished,preparations:()=>preparations};
 }
 
-test('No eligible queue claim means no Miro preparation or model invocation',async()=>{
+test('No eligible queue claim means no preparation or model invocation',async()=>{
  for(const claimStatus of ['empty','waiting','busy','cooldown']){
   const h=handlerHarness({claimStatus});assert.equal((await h.handler.tick()).status,claimStatus);assert(!h.events.includes('prepare'));assert(!h.events.includes('model'));assert(!h.finished());
  }
 });
 
-test('Each eligible run prepares fresh Miro context before model, supplies prompt constraints, and expires it',async()=>{
+test('Each eligible run prepares fresh batch context before model and expires it',async()=>{
  let generation=0;const h=handlerHarness({prepareBatch:async()=>({status:'ready',generation:++generation}),providerTurn:(request,input)=>{
   const payload=JSON.parse(request.messages[0].content);assert.equal(payload.batchContext.generation,generation);
-  assert.match(request.system,/untrusted evidence/);assert.match(request.system,/Miro/i);assert.match(request.system,/calendar/i);assert.match(request.system,/cancel/i);
+  assert.match(request.system,/untrusted evidence/);assert.doesNotMatch(request.system,/reconcile Miro|read_miro_/i);assert.match(request.system,/calendar/i);assert.match(request.system,/cancel/i);
   return {stopReason:'tool_calls',toolCalls:[{id:'done_'+generation,name:'finish_batch',arguments:{handledInputIds:[input.uuid]}}]};
  }});
  assert.equal((await h.handler.tick()).status,'completed');assert.equal((await h.handler.tick()).status,'completed');assert.equal(generation,2);
@@ -40,7 +41,7 @@ test('Failed, malformed, or oversized batch preparation preserves inputs without
  }
 });
 
-test('A concurrent tick does not prepare a second board read while the first model run is busy',async()=>{
+test('A concurrent tick does not prepare a second batch while the first model run is busy',async()=>{
  let resume;const h=handlerHarness({prepareBatch:async()=>({status:'ready'}),providerTurn:()=>new Promise(resolve=>{resume=resolve;})});
  const first=h.handler.tick();while(!resume)await new Promise(resolve=>setTimeout(resolve,0));assert.equal((await h.handler.tick()).status,'busy');assert.equal(h.preparations(),1);resume({stopReason:'stop',toolCalls:[]});assert.equal((await first).status,'incomplete_batch');
 });
@@ -58,75 +59,19 @@ test('UTF-8 bounded result fragments preserve original status, complete content,
  const id=fragment.fragment.id;b.clear();assert.equal((await b.tool.execute({id,offset:0})).status,'invalid_request');
 });
 
-async function adapterFixture({calendarStatus='ready',items=[],miroFailure=false,scopeRevoked=false,discordPatch={},envPatch={}}={}) {
+async function adapterFixture({calendarStatus='ready',discordPatch={},envPatch={}}={}) {
  const {createAutomationAdapters}=await import('../server/automation/adapters.js');
- const {createMiroMcpTools}=await import('../tools/miro/mcp.js');
- const {createCalendarTools}=await import('../tools/calendar/index.js');
- const calls=[];let writes=0,boardReads=0;
- const miroConfig={configured:true,boardIds:['board_1'],teamId:'team_1'};
- const miroStore={configured:true,authorizedBoard:async()=>({status:scopeRevoked?'forbidden':'ready',data:{board_id:'board_1',source_id:sourceId,title:'Planning',team_id:'team_1'}})};
- const liveClient={configured:true,callTool:async(name,args)=>{
-  calls.push({kind:'miro-mcp',name,args});boardReads++;if(miroFailure)throw Error('synthetic fetch failure');
-  if(name==='canvas_search')return {structuredContent:{total_items:items.length,total_results:items.length,results:items.map(item=>({id:item.id,type:item.type,title:item.data?.title||'',sample:item.data?.content||''}))}};
-  const escape=value=>String(value||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-  const selected=items.filter(item=>args.widget_ids.includes(item.id));
-  return {structuredContent:{success:true,miro_url:'https://miro.com/app/board/board_1/',svg:'<svg>'+selected.map(item=>'<g data-miro-id="'+item.id+'" data-type="'+item.type+'"><text>'+escape(item.data?.content||item.data?.title)+'</text></g>').join('')+'</svg>',item_count:selected.length,skipped_count:0}};
- }};
- const miroTools=createMiroMcpTools({config:miroConfig,store:miroStore,client:liveClient,now:clock});
- const calendarClient={configured:true,calendarId:'fixture@group.calendar.google.com',preflight:async()=>{calls.push('calendar-preflight');return {status:calendarStatus,calendarId:'fixture@group.calendar.google.com',accessRole:'writer'};},upsertEvent:async args=>{writes++;calls.push({kind:'write',args});return {status:'ready',eventId:'fixture_event',outcome:'created'};},cancelEvent:async()=>{writes++;return {status:'ready'};},listEvents:async()=>({status:'ready',events:[]}),readEvent:async()=>({status:'ready',events:[]})};
+ const calls=[];let writes=0;
+ const calendarClient={configured:true,calendarId:'fixture@group.calendar.google.com',preflight:async()=>{calls.push('calendar-preflight');return {status:calendarStatus,calendarId:'fixture@group.calendar.google.com',accessRole:'writer'};},upsertEvent:async args=>{writes++;calls.push({kind:'write',args});return {status:'ready',...calendarEventReceipt({id:'fixture_event',summary:args.title,start:args.start,end:args.end},{calendarId:'fixture@group.calendar.google.com',outcome:'created'})};},cancelEvent:async()=>{writes++;return {status:'ready',...calendarEventReceipt({id:'fixture_event',status:'cancelled'},{calendarId:'fixture@group.calendar.google.com',outcome:'cancelled'})};},listEvents:async()=>({status:'ready',events:[]}),readEvent:async()=>({status:'ready',events:[]})};
  const policy={guildId:'100',revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]};
  const channel={id:'200',guild_id:'100',parent_id:null,type:0};
  const discordConfig={configured:true,guildId:'100'};
  const discordStore={getPolicy:async()=>({status:'ready',policy:{...policy,...discordPatch.policy}}),listSyncChannels:async()=>({status:'ready',channels:[{enabled:true,guildId:'100',channelId:'200',sourceId,...discordPatch.channel}]})};
  const discordClient={getGuildChannels:async()=>[channel],getChannel:async()=>({...channel,...discordPatch.liveChannel})};
  const env={ASSISTANT_ALLOWED_SOURCE_IDS:sourceId,AGENT_GMAIL_SOURCE_ID:sourceId,...envPatch};
- const adapters=createAutomationAdapters({env,config:enabled(),now:clock,fetchImpl:async()=>{throw Error('No unmocked network allowed');},dependencies:{miroConfig,miroStore,miroTools,googleConfig:{configured:true},googleClient:{configured:true},calendarConfig:{configured:true,calendarId:calendarClient.calendarId},calendarClient,calendarTools:createCalendarTools({client:calendarClient}),discordConfig,discordStore,discordClient,discordTools:{tools:[],execute:async()=>({status:'ready'})}}});
- return {adapters,calls,writes:()=>writes,boardReads:()=>boardReads};
+ const adapters=createAutomationAdapters({env,config:enabled(),now:clock,fetchImpl:async()=>{throw Error('No unmocked network allowed');},dependencies:{googleConfig:{configured:true},googleClient:{configured:true},calendarConfig:{configured:true,calendarId:calendarClient.calendarId},calendarClient,discordConfig,discordStore,discordClient,discordTools:{tools:[],execute:async()=>({status:'ready'})}}});
+ return {adapters,calls,writes:()=>writes};
 }
-const named=(adapters,name)=>{const tool=adapters.tools.find(t=>t.name===name);assert(tool,name);return tool;};
-const calendarArgs={sourceKey:'miro:board_1:item_1',sourceUrl:'https://miro.com/app/board/board_1/?moveToWidget=item_1',title:'Meeting',start:{date:'2026-10-20'},end:{date:'2026-10-21'}};
-const toolCall=(name,args,input,id)=>({id,name,arguments:{inputIds:[input.uuid],arguments:args}});
-
-test('Real handler and bundled adapter prepare Miro before model; observed evidence gates Calendar writes and cleanup',async()=>{
- const f=await adapterFixture({items:[{id:'item_1',type:'sticky_note',data:{title:'Meeting October20 2026'}}]});let n=0;
- const h=handlerHarness({adapters:f.adapters,providerTurn:(request,input)=>{
-  n++;assert(f.boardReads()>0);assert(request.tools.some(t=>t.name==='upsert_calendar_event'));
-  if(n===1)return {stopReason:'tool_calls',toolCalls:[toolCall('read_miro_item',{boardId:'board_1',itemId:'item_1',type:'canvas'},input,'read1')]};
-  if(n===2)return {stopReason:'tool_calls',toolCalls:[toolCall('upsert_calendar_event',calendarArgs,input,'write1')]};
-  assert.equal(JSON.parse(request.messages.at(-1).content).outcome,'created');return {stopReason:'tool_calls',toolCalls:[{id:'done',name:'finish_batch',arguments:{handledInputIds:[input.uuid]}}]};
- }});
- assert.equal((await h.handler.tick()).status,'completed');assert.equal(f.writes(),1);
- assert.equal((await named(f.adapters,'upsert_calendar_event').execute(calendarArgs,{principal:f.adapters.principal})).status,'forbidden');
-});
-
-test('Bundled adapter rejects Calendar permission denial or revoked Miro scope before model and keeps queue pending',async()=>{
- for(const options of [{calendarStatus:'permission_denied'},{scopeRevoked:true}]){
-  const f=await adapterFixture(options),h=handlerHarness({adapters:f.adapters});assert.notEqual((await h.handler.tick()).status,'completed');assert(!h.finished());assert(!h.events.includes('model'));assert.equal(f.writes(),0);
- }
-});
-
-test('Bundled adapter completes unrelated input while Miro navigation outage remains explicitly deferred',async()=>{
- const f=await adapterFixture({miroFailure:true}),h=handlerHarness({adapters:f.adapters});
- const result=await h.handler.tick();assert.equal(result.status,'completed');assert(h.finished());assert(h.events.includes('model'));
- assert.deepEqual(result.miroReconciliation,{status:'deferred',boardCount:1,syncComplete:false});assert.equal(f.writes(),0);assert.equal(f.boardReads(),1);
-});
-
-test('Bundled adapter rejects unobserved or stale Miro source identity and supports truthful empty/partial reads',async()=>{
- const f=await adapterFixture();const a=f.adapters,c={principal:a.principal};await a.prepareBatch(c);
- assert.equal((await named(a,'upsert_calendar_event').execute(calendarArgs,c)).status,'forbidden_source');assert.equal(f.writes(),0);
- const empty=await named(a,'read_miro_board').execute({boardId:'board_1',mode:'search',patterns:['Fixture']},c);assert.equal(empty.status,'ready');assert.equal(empty.coverage.returnedCount,0);
- const unsupported=await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'table_1',type:'frame'},c);assert.equal(unsupported.status,'invalid_request');
- const other=await named(a,'read_miro_board').execute({boardId:'other',mode:'overview'},c);assert.equal(other.status,'forbidden');
- a.cleanupBatch();assert.equal((await named(a,'read_miro_board').execute({boardId:'board_1'},c)).status,'forbidden');
-});
-
-test('Real Miro item reads wrapped for automation retain UTF-8 fragments within 16KiB with original coverage',async()=>{
- const f=await adapterFixture({items:[{id:'item_1',type:'text',data:{content:'界🗽'.repeat(8000)}}]});const a=f.adapters,c={principal:a.principal};await a.prepareBatch(c);
- let result=await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'item_1',type:'canvas'},c),serialized='';
- assert(Buffer.byteLength(JSON.stringify(result))<=16384);assert.equal(result.coverage.complete,false);
- while(result.fragment){serialized+=result.fragment.data;if(result.fragment.nextOffset===null)break;result=await named(a,'read_context_fragment').execute({id:result.fragment.id,offset:result.fragment.nextOffset},c);assert(Buffer.byteLength(JSON.stringify(result))<=16384);}
- const original=JSON.parse(serialized);assert.equal(original.boardContext.format,'miro-mcp-json-fragment-v1');assert(original.boardContext.nextOffset>0);assert.equal(original.coverage.complete,false);
-});
 
 test('Bundled authorizer enforces Gmail identity and current Discord guild/channel/source/enabled/exclusion policy',async()=>{
  const f=await adapterFixture(),a=f.adapters,authorize=event=>a.authorizeEvent({event,principal:a.principal});
@@ -138,27 +83,4 @@ test('Bundled authorizer enforces Gmail identity and current Discord guild/chann
  }
  assert.equal(await authorize({...event,payload:{...event.payload,guild_id:'999'}}),false);assert.equal(await authorize({...event,payload:{...event.payload,channel_id:'999'}}),false);
  const revoked=await adapterFixture({envPatch:{AGENT_GMAIL_SOURCE_ID:randomUUID()}});assert.equal(await revoked.adapters.authorizeEvent({event:row().raw_response,principal:revoked.adapters.principal}),false);
-});
-
-test('Fresh batch exposes all 37 duplicate-month/future-year frame headings without assuming board completeness',async()=>{
- const items=Array.from({length:37},(_,i)=>({id:'frame_'+i,type:'frame',data:{title:i<36?'October 2026':'October 2027'},position:{x:i*100,y:0},geometry:{width:100,height:100}}));
- const f=await adapterFixture({items}),a=f.adapters,context=await a.prepareBatch({principal:a.principal});
- assert.equal(context.miro.boards[0].contextSummary.payload.results.length,37);assert.deepEqual(context.miro.boards[0].contextSummary.payload.results.map(item=>item.title),items.map(item=>item.data.title));assert.equal(context.miro.coverage.complete,false);assert.equal(context.miro.boards[0].result.coverage.wholeBoardComplete,false);assert.equal(f.calls.find(c=>c?.kind==='miro-mcp').name,'canvas_search');
-});
-
-test('A new eligible batch invalidates previous live item evidence before any Calendar action',async()=>{
- const f=await adapterFixture({items:[{id:'item_1',type:'sticky_note',data:{title:'Meeting'}}]}),a=f.adapters,c={principal:a.principal};
- await a.prepareBatch(c);await named(a,'read_miro_item').execute({boardId:'board_1',itemId:'item_1',type:'canvas'},c);
- assert.equal((await named(a,'upsert_calendar_event').execute(calendarArgs,c)).status,'ready');assert.equal(f.writes(),1);
- await a.prepareBatch(c);assert.equal((await named(a,'upsert_calendar_event').execute(calendarArgs,c)).status,'forbidden_source');assert.equal(f.writes(),1);
-});
-
-test('Worker defaults to bundled adapters without loading custom code; explicit trusted custom modules remain supported',async()=>{
- const {createAutomationRuntime}=await import('../server/automation/cli.js');let imports=0,requests=0;
- const env={AGENT_AUTOMATION_ENABLED:'true',SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'synthetic-service',LLM_PROVIDER:'openai-compatible',LLM_MODEL:'fixture-model',LLM_API_KEY:'synthetic-key'};
- const fetchImpl=async()=>{requests++;throw Error('No network during construction');};
- const base=await createAutomationRuntime({env,fetchImpl,loadModule:async()=>{imports++;throw Error('Custom module not requested');}});
- assert.equal(base.status,'ready');assert.equal(imports,0);assert.equal(requests,0);
- const custom=await createAutomationRuntime({env:{...env,AGENT_AUTOMATION_ADAPTER_MODULE:'./fixture-custom.mjs'},fetchImpl,loadModule:async url=>{imports++;assert.match(url,/fixture-custom\.mjs$/);return {createAutomationAdapters:async()=>({principal:{id:'trusted-custom'},tools:[{name:'read_custom',description:'read',readOnly:true,parameters:{type:'object',properties:{},additionalProperties:false},execute:async()=>({status:'ready'})}],authorizeEvent:async()=>true})};}});
- assert.equal(custom.status,'ready');assert.equal(imports,1);assert.equal(requests,0);
 });

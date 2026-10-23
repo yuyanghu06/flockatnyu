@@ -1,0 +1,8 @@
+# Full prompt audit deployed and verified
+
+- Local timestamp / role: 2026-10-22T19:36:56.400687-04:00 / orchestrator
+- Requested scope: Attendance repair followed by audit and update of all active application prompts.
+- Starting state: Reviewed frozen packages uploaded; unrelated dirty tree and side-conversation changes preserved.
+- Work / checks / acceptance: Web a87b4929-1311-4488-b76f-68f827c3f48c and update worker6434b07e-2e98-4bc8-a134-9e449dc305a0 are both Railway SUCCESS. Public production health200, root303/login, unauthenticated tool/planner APIs403. Worker startup logs show lease-busy polls followed by prepare_start/prepare_done ready; this is startup/preparation evidence, not a completed source-to-Calendar/map update. Collectors retain their previous releases; no environment/schema changes were made. Old superseded web container removal is normal cleanup. All active application instruction surfaces inventoried; fourteen concrete corrections include initial no-action completion discovered by real-model evaluation. Five final applicable model scenarios pass against simulated storage,35inference requests across retained runs; tester116, independentchat90 andworker185scripted checks pass (overlapping separate runs). Both evaluator domains ACCEPT. API build/source package hashes/syntax/whitespace pass. No live Discord attendance save or production Calendar/map mutation is claimed by this work. Separate source_review cancellation-completion verification limitation is recorded for backend follow-up, not hidden as a prompt fix.
+- Result: Prompt-audit milestone complete.
+- Remaining work: Separately tracked backend cancellation-completion issue; unrelated active tasks remain in the shared to-do list.

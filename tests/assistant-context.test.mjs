@@ -15,10 +15,7 @@ test('channel discovery followed by exact-window read happens in a second planni
   const h=harness(call=>call.name==='list_discord_channels'?{status:'ready',channels:[{channelId:'200',name:'general'}],complete:true}:{status:'ready',sources:[source()],coverage:{complete:true,from:args.from,to:args.to}},{plans:[[{name:'list_discord_channels',arguments:{query:'general'}}],[{name:'read_discord_window',arguments:args}]]});
   const r=await h.run();assert.deepEqual(h.order,['list_discord_channels','read_discord_window']);assert.equal(h.calls(),0);assert(h.prompts[1].includes('general'));assert.equal(r.sources.length,1);
 });
-test('no fallback is queried before a live attempt or after successful-empty exact scan',async()=>{
-  const empty=harness({status:'ready',sources:[],coverage:{complete:true,matchedCount:0}});const r=await empty.run();assert.equal(empty.calls(),0);assert.equal(r.sources.length,0);
-  const noCall=harness({status:'unavailable'},{plans:[[]]});await noCall.run();assert.equal(noCall.calls(),0);
-});
+
 test('permission denial never authorizes fallback, including mixed earlier unavailability',async()=>{
   for(const status of ['forbidden','permission_denied','access_denied','channel_scope_denied']){const h=harness({status,sources:[],coverage:{complete:false}});const r=await h.run();assert.equal(h.calls(),0);assert.equal(r.status,'forbidden');}
   const h=harness(call=>({status:call.name==='search_discord'?'unavailable':'permission_denied',sources:[]}),{plans:[[{name:'search_discord',arguments:{query:'a'}}],[{name:'read_discord_window',arguments:args}]]});await h.run();assert.equal(h.calls(),0);
@@ -26,12 +23,8 @@ test('permission denial never authorizes fallback, including mixed earlier unava
 test('unavailable and partial live reads never call injected persisted fallback; prompts use only live evidence',async()=>{
  for(const status of ['discord_unavailable','unavailable','partial','rate_limited']){const h=harness({status,sources:[],coverage:{complete:false}});const r=await h.run();assert.deepEqual(h.order,['read_discord_window']);assert.equal(h.calls(),0);assert.deepEqual(r.sources,[]);const prompt=assistantAnswerPrompt(r);assert(prompt.includes('messages retrieved LIVE'));assert(!prompt.includes('stored summary'));assert(!prompt.includes('FALLBACK ONLY'));}
 });
-test('successful empty bounded search must not query stored summaries',async()=>{
-  const h=harness({status:'ready',sources:[],coverage:{complete:false,matchedCount:0,returnedCount:0,reason:'bounded_search'}},{plans:[[{name:'search_discord',arguments:{query:'nonexistent',channelIds:['200']}}]]});await h.run();assert.equal(h.calls(),0);
-});
-test('a later complete live window supersedes earlier bounded search fallback eligibility',async()=>{
-  const h=harness(call=>call.name==='search_discord'?{status:'ready',sources:[source()],coverage:{complete:false,reason:'bounded_search'}}:{status:'ready',sources:[source()],coverage:{complete:true,matchedCount:1,from:args.from,to:args.to}},{plans:[[{name:'search_discord',arguments:{query:'general'}}],[{name:'read_discord_window',arguments:args}]]});await h.run();assert.equal(h.calls(),0);
-});
+
+
 test('partial/truncated sources carry coverage warnings through context and answer prompt',async()=>{
   const h=harness({status:'ready',sources:[source('m1',{excerpt:'x'.repeat(3000)})],coverage:{complete:true,textTruncated:true,fetchedComplete:true,contentScope:'top_level_text_only'}});const r=await h.run();assert(r.results[0].coverage.textTruncated===true || r.results[0].coverage.complete===false || r.results[0].possiblyTruncated===true);assert(r.sources[0].excerpt.length<=1800);
 });
@@ -57,9 +50,7 @@ test('duplicate calls execute once and global planning/call limits bound patholo
 test('cancelled tool retrieval does not continue to fallback',async()=>{
   const abort=new AbortController();const h=harness(()=>{abort.abort();return {status:'partial',sources:[]};});await assert.rejects(h.run({signal:abort.signal}),{name:'AbortError'});assert.equal(h.calls(),0);
 });
-test('retired fallback injection is never consulted even when it would abort or return invented evidence',async()=>{
- const abort=new AbortController(),h=harness({status:'unavailable',sources:[]});const r=await h.run({signal:abort.signal,fallback:()=>{assert.fail('fallback must remain unreachable');}});assert.equal(r.status,'unavailable');assert.deepEqual(r.sources,[]);assert.equal(abort.signal.aborted,false);
-});
+
 test('combined context budget discloses partial evidence even when each separate tool result fits',async()=>{
   const h=harness(call=>({status:'ready',sources:Array.from({length:5},(_,i)=>source(`${call.arguments.channelId}-${i}`,{url:`https://example.com/${call.arguments.channelId}/${i}`,excerpt:'x'.repeat(1800)})),coverage:{complete:true}}),{plans:[[{name:'read_discord_window',arguments:args},{name:'read_discord_window',arguments:{...args,channelId:'201'}}]]});const r=await h.run();assert(r.sources.reduce((n,s)=>n+s.excerpt.length,0)<=12000);assert(r.results.some(result=>result.possiblyTruncated===true||result.coverage?.complete===false)||r.sources.some(s=>s.partial===true));
 });

@@ -264,7 +264,7 @@ responses retained in history. Explicit Stop, loading failure and disposal still
 abort. Send/Stop hover/focus adds a subtle glow; color rotation is driven by active
 streaming rather than hover, and reduced motion remains static.
 
-The assistant supports a file picker, removable attachment chips/image previews, image paste and file drop using chat-attachments.js and the browser-safe server contract. PNG/JPEG/WebP, PDF and small UTF8 text/code are retained only in in-memory conversation/draft state; current attachments survive send failure. A successful map/attendance tool completion emits campus-map-updated so map-presence.js refreshes immediately. Closing the dialog still preserves in-flight streaming.
+The assistant supports a file picker, removable attachment chips/image previews, image paste and file drop using chat-attachments.js and the browser-safe server contract. PNG/JPEG/WebP, PDF and small UTF8 text/code are retained only in in-memory conversation/draft state; current attachments survive send failure. A normal upsert_map_event completion emits campus-map-updated so map-presence.js refreshes immediately. Closing the dialog still preserves in-flight streaming.
 
 The assistant transcript appears above its composer footer. Only the transcript
 scrolls through long conversations; input, upload chips and errors have bounded

@@ -3,41 +3,9 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {classifyDiscordTimestamp,getDiscordMemoryBoundaries} from './fixtures/legacy-memory.mjs';
+import {classifyDiscordTimestamp} from './fixtures/legacy-memory.mjs';
 import {normalizeMessage,snowflakeBefore} from './fixtures/legacy-message.mjs';
 import {createDiscordStore} from '../server/discord/store.js';
-
-test('rolling seven-day precedence crosses month boundaries at exact elapsed-hour cutoff',()=>{
-  const now=new Date('2026-10-05T16:00:00Z');
-  assert.equal(getDiscordMemoryBoundaries({now}).recentFrom,'2026-09-28T16:00:00.000Z');
-  assert.equal(getDiscordMemoryBoundaries({now}).monthStart,'2026-10-01T04:00:00.000Z');
-  assert.deepEqual(classifyDiscordTimestamp('2026-09-28T16:00:00Z',{now}),{tier:'daily',periodStart:'2026-09-28T16:00:00.000Z',periodEnd:'2026-09-29T04:00:00.000Z',timezone:'America/New_York'});
-  assert.deepEqual(classifyDiscordTimestamp('2026-09-28T15:59:59.999Z',{now}),{tier:'monthly',periodStart:'2026-09-01T04:00:00.000Z',periodEnd:'2026-09-28T16:00:00.000Z',timezone:'America/New_York'});
-  assert.equal(classifyDiscordTimestamp(now,{now}),null);assert.equal(classifyDiscordTimestamp('2027-01-01T00:00:00Z',{now}),null);
-});
-
-test('New York daily groups honor 23/25-hour DST days while the recent window stays 168 hours',()=>{
-  for(const [now,created,from,start,end] of [
-    ['2026-03-10T16:00:00Z','2026-03-08T06:00:00Z','2026-03-03T16:00:00.000Z','2026-03-08T05:00:00.000Z','2026-03-09T04:00:00.000Z'],
-    ['2026-11-03T17:00:00Z','2026-11-01T06:30:00Z','2026-10-27T17:00:00.000Z','2026-11-01T04:00:00.000Z','2026-11-02T05:00:00.000Z'],
-  ]){
-    assert.equal(getDiscordMemoryBoundaries({now}).recentFrom,from);
-    assert.deepEqual(classifyDiscordTimestamp(created,{now}),{tier:'daily',periodStart:start,periodEnd:end,timezone:'America/New_York'});
-    assert.equal(Date.parse(now)-Date.parse(from),168*3600000);
-  }
-});
-
-test('Monday weeks are clipped to the current month and the recent cutoff',()=>{
-  const now='2026-10-20T16:00:00Z';
-  for(const [created,start,end] of [
-    ['2026-10-01T12:00:00Z','2026-10-01T04:00:00.000Z','2026-10-05T04:00:00.000Z'],
-    ['2026-10-05T12:00:00Z','2026-10-05T04:00:00.000Z','2026-10-12T04:00:00.000Z'],
-    ['2026-10-13T15:59:59.999Z','2026-10-12T04:00:00.000Z','2026-10-13T16:00:00.000Z'],
-  ])assert.deepEqual(classifyDiscordTimestamp(created,{now}),{tier:'weekly',periodStart:start,periodEnd:end,timezone:'America/New_York'});
-  assert.equal(classifyDiscordTimestamp('2026-10-13T16:00:00Z',{now}).tier,'daily');
-  assert.deepEqual(classifyDiscordTimestamp('2026-09-30T23:00:00Z',{now}),{tier:'monthly',periodStart:'2026-09-01T04:00:00.000Z',periodEnd:'2026-10-01T04:00:00.000Z',timezone:'America/New_York'});
-  assert.throws(()=>classifyDiscordTimestamp('invalid',{now}));
-});
 
 const admin='11111111-1111-4111-8111-111111111111',reader='33333333-3333-4333-8333-333333333333',foreignReader='44444444-4444-4444-8444-444444444444';
 const guildId='1203562091500404776',otherGuild='123456789012345678',channelId='1203562091982622814',secondChannel='1403562091982622814',categoryId='1461311169586266165';

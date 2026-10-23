@@ -57,14 +57,7 @@ check('At most eight merged material batches; meaningful graduated screen apertu
   assert.equal(a.densityCounts.reduce((x,y)=>x+y,0),a.screenPanels);
   assert.equal(a.densityCounts.reduce((n,c,i)=>n+c*i,0),a.foliageApertures);
 });
-const config=fs.readFileSync('src/config.js','utf8'),main=fs.readFileSync('src/main.js','utf8');
-check('Static integration registers GCASL among eleven unique landmarks',()=>{
-  const ids=[...config.matchAll(/\{ id: '([^']+)'/g)].map(m=>m[1]);assert.equal(ids.length,11);assert.equal(new Set(ids).size,11);assert(ids.includes('nyu-global-center'));
-  assert(main.includes("registerLandmark('nyu-global-center', globalCenter)"));assert(main.includes('scene.add(globalCenter)'));
-  assert(main.indexOf('createKimmelModel(model)')<main.indexOf('createGlobalCenterModel(model)'));
-});
 check('Original GLB bytes are unchanged',()=>assert.equal(digest(fs.readFileSync(file)),initialHash));
 results.geometry={original:2598,kimmelRemoved:k,globalCenterRemoved:g,remaining:count(original),meshes:modelMeshes.length,triangles:count(model),bounds:{min:bounds.min.toArray(),max:bounds.max.toArray()},architecture:model.userData.architecture};
-fs.mkdirSync('evidence/m8-gcasl',{recursive:true});
-fs.writeFileSync('evidence/m8-gcasl/tester-geometry-results.json',JSON.stringify(results,null,2)+'\n');
+const evidence=process.env.MAP_EVIDENCE??'evidence/m8-gcasl';fs.mkdirSync(evidence,{recursive:true});fs.writeFileSync(evidence+'/tester-geometry-results.json',JSON.stringify(results,null,2)+'\n');
 console.log(JSON.stringify(results,null,2));

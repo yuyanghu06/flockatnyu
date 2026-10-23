@@ -16,9 +16,6 @@ import {MIRO_MCP_TOOLS} from '../tools/miro/mcp.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
 import {validateArguments} from '../server/automation/validation.js';
-import {createAutomationAdapters} from '../server/automation/adapters.js';
-import {createAutomationHandler} from '../server/automation/handler.js';
-import {readAutomationConfig} from '../server/automation/config.js';
 
 // Explicitly opt in. Run with Node's --env-file-if-exists flags; no source
 // credentials are inspected, persisted or used by this fixture harness.
@@ -29,12 +26,6 @@ if(!process.argv.includes('--live-model')) {
 const config=readConfig();
 if(!config.configured)throw Error('Configured model unavailable; no credentials printed.');
 const CASE_TIMEOUT_MS=config.requestTimeoutMs||300000, MAX_MODEL_CALLS=180, MODEL_MIN_INTERVAL_MS=1000;
-// Enable only the synthetic handler invocation; retain the actual configured
-// worker budgets/defaults so smoke coverage cannot hide production limits.
-const automationConfig=readAutomationConfig({...process.env,AGENT_AUTOMATION_ENABLED:'true'});
-assert.equal(automationConfig.maxRounds,16,'Smoke run must use the effective production round budget');
-assert.equal(automationConfig.maxCalls,32,'Smoke run must use the effective production tool-call budget');
-assert.equal(automationConfig.maxRunMs,180000,'Smoke run must use the effective production runtime budget');
 const now='2026-10-18T16:00:00.000Z', zone='America/New_York';
 const ids={discord:'20000000-0000-4000-8000-000000000002',miro:'10000000-0000-4000-8000-000000000001',
   calendar:'30000000-0000-4000-8000-000000000003',gmail:'40000000-0000-4000-8000-000000000004',
@@ -202,29 +193,7 @@ function assertPresence(write){
   assert.match(write.people[0].label,/study/i);
 }
 
-async function runAutomation(options={}) {
-  const f=sources(options);
-  const env={ASSISTANT_ALLOWED_SOURCE_IDS:[ids.discord,ids.miro,ids.calendar,ids.gmail].join(','),AGENT_GMAIL_SOURCE_ID:ids.gmail,AGENT_CALENDAR_SOURCE_ID:ids.calendar};
-  const adapters=createAutomationAdapters({env,config:automationConfig,now:()=>new Date(now),fetchImpl:async()=>{throw Error('Real source network forbidden');},dependencies:{
-    googleConfig:{configured:true},googleClient:{configured:true,
-      searchGmail:async({query})=>{activeCase.sourceReads.push({provider:'gmail',operation:'search',query});return {status:'ready',sources:[],possiblyTruncated:false};},
-      readGmail:async()=>({status:'not_found',sources:[]})},calendarConfig:{configured:true,calendarId},calendarClient:f.calendarClient,
-    miroConfig:{configured:true,boardIds:[boardId],teamId:'synthetic-team'},
-    miroStore:{configured:true,authorizedBoard:async({boardId:requestedBoardId})=>requestedBoardId===boardId
-      ?{status:'ready',data:{board_id:boardId,source_id:ids.miro,team_id:'synthetic-team'}}:{status:'forbidden'}},
-    miroTools:f.miroTools,discordConfig:{configured:true,guildId},discordStore:f.discordStore,discordClient:f.discordClient,
-    liveDiscordService:f.liveDiscordService,discordTools:createLiveRetrievalTools({service:f.liveDiscordService,guildId}),mapEventService:f.mapEventService}});
-  const input={uuid:ids.input,raw_response:{source:'discord',source_id:ids.discord,event_type:options.eventType||'message_created',event_id:messageId,revision:options.eventType==='message_updated'?'2':'1',received_at:now,payload:f.original}};
-  let finished=[];
-  const store={configured:true,claim:async()=>({status:'ready',leaseToken:ids.lease,inputs:[input]}),renew:async()=>({status:'ready'}),release:async()=>({status:'ready'}),
-    action:async({complete})=>({status:complete?'completed':'execute'}),finish:async({handledInputIds})=>{finished=handledInputIds;return {status:'ready'};}};
-  const tools=adapters.tools.map(tool=>({...tool,execute:async(args,context)=>record(tool.name,args,await tool.execute(args,context))}));
-  const handler=createAutomationHandler({...adapters,tools,store,provider,config:automationConfig,now:()=>new Date(now)});
-  const result=await handler.tick();
-  activeCase.outcome=result;activeCase.handledInputIds=finished;activeCase.mapWrites=copy(f.state.mapWrites);activeCase.calendarWrites=copy(f.state.calendarWrites);
-  assert.equal(result.status,'completed',`Automation outcome: ${result.status}`);assert.deepEqual(finished,[ids.input]);
-  return f;
-}
+
 
 const cases=[
   ['chat-broad-discord',async()=>{await runChat('Give me a calm, concise update on what is going on in our Discord server.');
@@ -250,52 +219,6 @@ const cases=[
     assert(!/map(?:[- ]writing)? tool[^.]{0,50}(?:isn.t|is not|not) available/i.test(activeCase.answer),'The listed map tool was falsely described as unavailable');
     assert.equal(f.state.mapWrites.length,1);assertPresence(f.state.mapWrites[0]);assert(f.state.lookups.some(row=>row.providerUserId==='400'));
     assert(activeCase.retrieval.some(row=>row.mapWrite?.outcome==='applied'));assert.match(activeCase.answer,/map|added|updated|recorded/i);}],
-  ['chat-unsupported-self-assertion',async()=>{const {f}=await runChat('I am at Bobst studying. Put me on the map right now.');
-    assert.equal(f.state.mapWrites.length,0);assert(!/i(?:.ve| have)? (?:added|updated|saved|recorded)/i.test(activeCase.answer));}],
-  ['automation-discord-presence',async()=>{const f=await runAutomation({events:[]});assert.equal(f.state.mapWrites.length,1);assertPresence(f.state.mapWrites[0]);assert.equal(f.state.calendarWrites.length,0,'Informal study presence must not create a Calendar event');}],
-  ['automation-calendar-occurrence',async()=>{const f=await runAutomation({content:'FYI: the club calendar is available. No location or attendance claim.'});
-    const write=f.state.mapWrites.find(row=>row.event.source_id===ids.calendar);assert(write,'Missing Calendar map event');
-    assert.equal(write.event.source_record_id,occurrenceId);assert.equal(write.event.source_url,calendarUrl);
-    assert.equal(write.event.kind,'scheduled_event');assert.equal(instant(write.event.reported_at),instant(calendarEvent.updatedAt));
-    assert.equal(instant(write.event.starts_at),instant(calendarEvent.start.dateTime));assert.equal(instant(write.event.ends_at),instant(calendarEvent.end.dateTime));
-    assert.equal(write.people.length,0);assert.equal(f.state.calendarWrites.length,0);}],
-  ['automation-discord-rsvp-existing-calendar',async()=>{const f=await runAutomation({content:'I am going to Synthetic Workshop at Bobst Library on October 20, 2026, 6–8pm America/New_York.'});
-    assert.equal(f.state.calendarWrites.length,0,'An RSVP must not create or edit a Calendar event');
-    assert(f.state.mapWrites.length>0);assert(f.state.mapWrites.every(row=>row.event.source_id===ids.calendar),'RSVP must attach to existing Calendar projection');
-    const write=f.state.mapWrites.at(-1);assert.equal(write.event.source_record_id,occurrenceId);
-    assert.equal(write.people.length,1);assert.equal(write.people[0].person_id,ids.person);assert.equal(write.people[0].attendance_status,'going');
-    assert.equal(write.people[0].source_url,discordUrl);assert.equal(write.people[0].presence_basis,'planned');}],
-  ['automation-discord-calendar-announcement-create',async()=>{const f=await runAutomation({events:[],content:'Tech@NYU event: Synthetic Workshop is scheduled for October 20, 2026, from 6pm to 8pm America/New_York at Bobst Library room 204. This announcement does not state anyone’s attendance.'});
-    assert.equal(f.state.calendarWrites.length,1);const calendarWrite=f.state.calendarWrites[0];
-    assert.equal(calendarWrite.sourceKey,`discord:${guildId}:${eboard}:${messageId}`);assert.equal(calendarWrite.sourceUrl,discordUrl);
-    assert.equal(instant(calendarWrite.start.dateTime),'2026-10-20T22:00:00.000Z');assert.equal(instant(calendarWrite.end.dateTime),'2026-10-21T00:00:00.000Z');
-    assert(f.state.mapWrites.length>0);assert(f.state.mapWrites.every(row=>row.event.source_id===ids.calendar),'Club announcement must project Calendar occurrence rather than duplicate Discord event');
-    const write=f.state.mapWrites.at(-1);assert.equal(write.event.source_record_id,occurrenceId);assert.equal(write.event.source_url,calendarUrl);assert.equal(write.people.length,0,'Announcing/organizing does not establish attendance');}],
-  ['automation-discord-calendar-announcement-edit',async()=>{
-    const priorToken='2026-10-18T14:00:00.000Z';
-    const snapshot=catalogue();snapshot.events=[{id:ids.event,name:calendarEvent.title,notes:'',kind:'scheduled_event',type_id:'event',status:'confirmed',time_kind:'timed',
-      starts_at:calendarEvent.start.dateTime,ends_at:calendarEvent.end.dateTime,time_zone:zone,source_id:ids.calendar,source_url:calendarUrl,source_record_id:occurrenceId,reported_at:priorToken,created_at:priorToken,updated_at:priorToken}];
-    snapshot.event_buildings=[{event_id:ids.event,building_id:'bobst-library',location_notes:'room 204'}];
-    const f=await runAutomation({events:[{...copy(calendarEvent),managed:true,sourceUrl:discordUrl}],mapSnapshot:snapshot,eventType:'message_updated',editedAt:now,
-      content:'Tech@NYU event UPDATE: Synthetic Workshop has been rescheduled to October 21, 2026, from 6pm to 9pm America/New_York at Bobst Library room 204. This announcement does not state anyone’s attendance.'});
-    assert.equal(f.state.calendarWrites.length,1);const calendarWrite=f.state.calendarWrites[0];
-    assert.equal(calendarWrite.sourceKey,`discord:${guildId}:${eboard}:${messageId}`);assert.equal(calendarWrite.sourceUrl,discordUrl);
-    assert.equal(instant(calendarWrite.start.dateTime),'2026-10-21T22:00:00.000Z');assert.equal(instant(calendarWrite.end.dateTime),'2026-10-22T01:00:00.000Z');
-    assert(f.state.mapWrites.length>0);const write=f.state.mapWrites.at(-1);
-    assert.equal(write.event.id,ids.event);assert.equal(write.expectedUpdatedAt,priorToken);assert.equal(write.event.source_record_id,occurrenceId);assert.equal(write.event.source_url,calendarUrl);
-    assert.equal(instant(write.event.starts_at),'2026-10-21T22:00:00.000Z');assert.equal(instant(write.event.ends_at),'2026-10-22T01:00:00.000Z');assert.equal(write.people.length,0);
-  }],
-  ['automation-miro-calendar-map-rsvp',async()=>{const f=await runAutomation({events:[],miroEvent:true,content:'I am going to Synthetic Workshop at Bobst Library on October 20, 2026, 6–8pm America/New_York.'});
-    assert.equal(f.state.calendarWrites.length,1);assert.equal(f.state.calendarWrites[0].sourceKey,`miro:${boardId}:${itemId}`);
-    assert.equal(f.state.calendarWrites[0].sourceUrl,miroUrl);
-    const write=f.state.mapWrites.findLast(row=>row.event.source_id===ids.calendar);assert(write,'Missing reconciled Calendar map event');
-    assert(f.state.mapWrites.every(row=>row.event.source_id===ids.calendar),'RSVP must merge into the Calendar-derived map event, not create a duplicate Discord event');
-    assert.equal(write.event.source_record_id,occurrenceId);assert.equal(instant(write.event.starts_at),'2026-10-20T22:00:00.000Z');
-    assert.equal(instant(write.event.ends_at),'2026-10-21T00:00:00.000Z');assert.equal(write.event.source_url,calendarUrl);
-    assert(write.event.notes.includes(miroUrl),'Miro origin link must survive Calendar-to-map projection');
-    assert.equal(write.people.length,1);assert.equal(write.people[0].person_id,ids.person);assert.equal(write.people[0].attendance_status,'going');
-    assert.equal(write.people[0].presence_basis,'planned');assert.equal(write.people[0].source_id,ids.discord);assert.equal(write.people[0].source_url,discordUrl);
-    assert.equal(instant(write.people[0].reported_at),posted);}],
 ];
 const selector=process.argv.find(arg=>arg.startsWith('--case='))?.slice(7);
 const repeats=Number(process.argv.find(arg=>arg.startsWith('--repeat='))?.slice(9)||1);
@@ -310,7 +233,7 @@ const monitoredPaths=['scripts/verify-agent-prompts.mjs','server/app.js','server
   'server/map/contracts.js','server/map/source-access.js','server/map/chat-intent.js','tools/map/chat.js','tools/map/index.js',
   'server/discord/channel-scope.js','server/discord/live-retrieval.js','server/discord/live-client.js','server/discord/live-config.js','server/discord/client.js','server/discord/request-pacing.js','tools/discord/index.js','tools/discord/live-summary.js',
   'server/miro/navigation.js',
-  'server/google/calendar-chat-prompt.js','server/google/calendar-client.js','tools/calendar/chat-intent.js','tools/calendar/chat.js','tools/calendar/index.js'];
+  'server/google/calendar-chat-prompt.js','server/google/calendar-client.js','tools/calendar/chat-boundaries.js','tools/calendar/chat.js','tools/calendar/index.js'];
 const hashSources=async()=>Object.fromEntries(await Promise.all(monitoredPaths.map(async path=>
   [path,createHash('sha256').update(await readFile(new URL('../'+path,import.meta.url))).digest('hex')])));
 const sourceHashes=await hashSources();
@@ -319,14 +242,13 @@ const results={syntheticOnly:true,provider:config.provider,model:config.model,st
   fixtureVersion:'runtime-discord-read-tools-actual-budgets-v2',
   sourceHashes,
   command:'node --env-file-if-exists=.env --env-file-if-exists=.env.google scripts/verify-agent-prompts.mjs --live-model'+(selector?' --case='+selector:'')+(repeats>1?' --repeat='+repeats:''),
-  limits:{maxModelCalls:MAX_MODEL_CALLS,modelMinIntervalMs:MODEL_MIN_INTERVAL_MS,chatCaseTimeoutMs:CASE_TIMEOUT_MS,providerTimeoutMs:config.timeoutMs,automationMaxRounds:automationConfig.maxRounds,automationMaxCalls:automationConfig.maxCalls,automationMaxRunMs:automationConfig.maxRunMs},
+  limits:{maxModelCalls:MAX_MODEL_CALLS,modelMinIntervalMs:MODEL_MIN_INTERVAL_MS,chatCaseTimeoutMs:CASE_TIMEOUT_MS,providerTimeoutMs:config.timeoutMs},
   limitations:['Synthetic source boundaries and in-memory write stores; no real Discord/Gmail/Miro content or Calendar/map database writes.',
     'Source excerpts and SVG bodies are omitted from the artifact; synthetic final answers and proposed mutation facts are retained for review.',
-    'Real configured model calls with runtime chat prompts/component schemas and complete automation adapter schemas; finite behavioral smoke coverage, not a reliability estimate.',
+    'Configured model calls with runtime chat prompts/component schemas; finite chat smoke coverage, not a reliability estimate or a staged worker evaluation.',
     'Chat fixtures exercise Discord, Calendar, Miro and map tools; unrelated Gmail/Drive/memory/bug-report tools are not exercised.',
-    'Automation may incidentally search an inert empty Gmail fixture; Gmail bodies and Drive remain unexercised.',
     'Tone requires human review of recorded synthetic answer text; automated guard only rejects selected overtly scolding phrases.',
-    'Automation queue is synthetic, immediately claimable; scheduler cadence/worker activation not exercised.'],cases:[],
+    'Scheduler cadence and worker activation are not exercised.'],cases:[],
   ...(prior?{previousRuns:[...(prior.previousRuns||[]),{...prior,previousRuns:undefined}]}:{})};
 await mkdir(fileURLToPath(new URL('../evidence/agent-prompts/',import.meta.url)),{recursive:true});
 for(const [name,run] of selected){

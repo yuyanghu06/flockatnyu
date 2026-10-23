@@ -99,14 +99,26 @@ test('032 real SQL filters source scope before trigger counting, oldest age and 
  }finally{await db.close();}
 });
 
-test('real store refuses empty/malformed scope before HTTP; handler refuses missing production principal scope',async()=>{
- let requests=0;
- const store=createAutomationStore({env:{SUPABASE_URL:'https://db.fixture.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic'},fetchImpl:async()=>{requests++;return new Response(null,{status:404});}});
- for(const allowedSourceIds of [undefined,[],['channel:123'],[allowed,allowed],Array.from({length:501},()=>randomUUID()),[null]])assert.equal((await store.claim({config,allowedSourceIds})).status,'not_configured');
- assert.equal(requests,0);assert.equal((await store.claim({config,allowedSourceIds:scope})).status,'unavailable');assert.equal(requests,1);
- for(const principal of [undefined,{}, {allowedSourceIds:[]},{allowedSourceIds:['invalid']}]){
-  const handler=createAutomationHandler({config,store,principal,tools:[{name:'inert',description:'inert read',readOnly:true,parameters:{type:'object',properties:{}},execute:async()=>({status:'ready'})}],authorizeEvent:async()=>true,provider:{toolTurn:async()=>{throw Error('No model allowed');}}});
-  assert.equal((await handler.tick()).status,'not_configured');
- }
- assert.equal(requests,1);
+test('real store permits empty-scope maintenance, rejects malformed scope before HTTP and preserves handler scope gates',async()=>{
+ const requests=[];
+ const store=createAutomationStore({env:{SUPABASE_URL:'https://db.fixture.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic'},fetchImpl:async(url,init)=>{
+  const body=JSON.parse(init.body);requests.push({url,body});
+  assert.equal(url,'https://db.fixture.test/rest/v1/rpc/agent_automation_claim_scoped');
+  assert.equal(init.method,'POST');assert.equal(init.redirect,'error');
+  assert.deepEqual(body,{p_allowed_source_ids:body.p_allowed_source_ids,p_min_events:config.minEvents,p_max_age_seconds:config.maxAgeSeconds,
+   p_cooldown_seconds:config.cooldownSeconds,p_lease_seconds:config.leaseSeconds,p_max_inputs:config.maxInputs,p_max_bytes:config.maxBytes});
+  assert(body.p_max_inputs>=1&&body.p_max_inputs<=20);assert(body.p_max_bytes>=1024&&body.p_max_bytes<=65536);
+  return body.p_allowed_source_ids.length===0?Response.json({status:'empty'}):new Response(null,{status:404});
+ }});
+ for(const allowedSourceIds of [undefined,['channel:123'],[allowed,allowed],Array.from({length:501},()=>randomUUID()),[null]])assert.equal((await store.claim({config,allowedSourceIds})).status,'not_configured');
+ assert.equal(requests.length,0,'Malformed scopes never reach HTTP');
+ const empty=await store.claim({config,allowedSourceIds:[]});assert.deepEqual(empty,{status:'empty'});assert(!Object.hasOwn(empty,'inputs'),'Maintenance exposes no queued original inputs');
+ assert.equal(requests.length,1);assert.deepEqual(requests[0].body.p_allowed_source_ids,[],'Empty scope must not restore static or legacy source grants');
+ assert.equal((await store.claim({config,allowedSourceIds:scope})).status,'unavailable');assert.equal(requests.length,2);assert.deepEqual(requests[1].body.p_allowed_source_ids,scope);
+ let models=0,toolCalls=0,preparations=0,authorizations=0;
+ const handlerFor=principal=>createAutomationHandler({config,store,principal,tools:[{name:'inert',description:'inert read',readOnly:true,parameters:{type:'object',properties:{}},execute:async()=>{toolCalls++;return {status:'ready'};}}],prepareBatch:async()=>{preparations++;throw Error('No source preparation allowed');},authorizeEvent:async()=>{authorizations++;return true;},provider:{toolTurn:async()=>{models++;throw Error('No model allowed');}}});
+ for(const principal of [undefined,{}, {allowedSourceIds:['invalid']}])assert.equal((await handlerFor(principal).tick()).status,'not_configured');
+ assert.equal(requests.length,2,'Missing or malformed production principal scope never polls storage');
+ assert.equal((await handlerFor({id:'trusted-worker',allowedSourceIds:[]}).tick()).status,'empty');assert.equal(requests.length,3);assert.deepEqual(requests[2].body.p_allowed_source_ids,[]);
+ assert.deepEqual({models,toolCalls,preparations,authorizations},{models:0,toolCalls:0,preparations:0,authorizations:0},'Empty maintenance cannot authorize/read sources or start model processing');
 });

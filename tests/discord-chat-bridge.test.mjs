@@ -6,6 +6,7 @@ import {createDiscordChatRunner} from '../server/runtime-app.js';
 import {createApp} from '../server/app.js';
 import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
 import {createDiscordChatContextLoader,createDiscordUserDirectory} from '../server/discord/chat-context.js';
+import {readDiscordChatConfig} from '../server/discord/chat-config.js';
 
 const secret='synthetic-bridge-secret-00000000000000000000';
 const principal={id:'discord:100:300',isAdmin:false,allowedSourceIds:['00000000-0000-4000-8000-000000000001'],liveDiscord:{mode:'local-operator',guildId:'100'}};
@@ -73,6 +74,30 @@ test('bridge concurrency admission recovers after pending generation completes',
  let finish,began;const started=new Promise(r=>began=r),gate=new Promise(r=>finish=r),f=setup({maxConcurrent:1});
  f.runner.run=async({onRecord})=>{began();await gate;onRecord({type:'done'});};
  const pending=f.bridge.handle(request());await started;assert.equal((await f.bridge.handle(request())).status,429);finish();assert.equal((await pending).status,200);assert.equal((await f.bridge.handle(request())).status,200);
+});
+test('bridge admits ten overlapping generations, rejects eleven before source work and recovers after cancellation',{timeout:5000},async()=>{
+ const slots=Array.from({length:11},()=>{
+  let release,began;return {work:new Promise(resolve=>release=resolve),started:new Promise(resolve=>began=resolve),release,began};
+ }),controllers=slots.map(()=>new AbortController()),pending=[],runs=[],authorizations=[];
+ const maxConcurrent=readDiscordChatConfig({DISCORD_CHAT_MAX_CONCURRENT:'10',DISCORD_CHAT_PER_USER_CONCURRENT:'5'}).maxConcurrent;
+ const f=setup({maxConcurrent,access:{authorize:async args=>{authorizations.push(args);return structuredClone(approved);}},runner:{run:async args=>{
+  runs.push(args);const index=Number(args.requestContext.requestId)-1400;slots[index].began();await slots[index].work;
+  args.onRecord({type:'delta',text:`answer ${index}`});args.onRecord({type:'done'});
+ }}});
+ const input=index=>({...payload(),requestId:String(1400+index),channelId:String(2400+index)});
+ try {
+  for(let i=0;i<10;i++)pending.push(f.bridge.handle(request(input(i),{signal:controllers[i].signal})));
+  await Promise.all(slots.slice(0,10).map(slot=>slot.started));
+  const overflow=await f.bridge.handle(request(input(10)));assert.equal(overflow.status,429);assert.deepEqual(await overflow.json(),{status:'busy'});
+  assert.equal(authorizations.length,10);assert.equal(runs.length,10);
+  controllers[0].abort();const cancelled=await pending[0];assert.equal(cancelled.status,503);assert.deepEqual(await cancelled.json(),{status:'aborted'});
+  pending.push(f.bridge.handle(request(input(10),{signal:controllers[10].signal})));await slots[10].started;assert.equal(runs.length,11);
+  for(const slot of slots)slot.release();
+  for(let i=1;i<pending.length;i++) {
+   const response=await pending[i];assert.equal(response.status,200);assert.deepEqual(await records(response),[{type:'delta',text:`answer ${i}`},{type:'done'}]);
+   const run=runs.find(value=>value.requestContext.requestId===String(1400+i));assert.equal(run.requestContext.channelId,String(2400+i));
+  }
+ } finally {for(const controller of controllers)controller.abort();for(const slot of slots)slot.release();await Promise.allSettled(pending);}
 });
 function realRunnerFixture() {
  const f={plans:[],streams:[],privateCalls:[]};

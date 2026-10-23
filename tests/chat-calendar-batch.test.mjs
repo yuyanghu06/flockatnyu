@@ -9,7 +9,6 @@ import {createGoogleClient} from '../server/google/client.js';
 import {readGoogleConfig,GOOGLE_SCOPES} from '../server/google/config.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';
 import {createProvider} from '../server/providers/index.js';
-import {assistantPlanningPrompt,assistantAnswerPrompt} from '../server/assistant-context.js';
 
 const calendarId='synthetic-club@group.calendar.google.com';
 const principal={id:'synthetic-batch-user',googleAccess:true,allowedSourceIds:[]};
@@ -189,18 +188,6 @@ test('partial batch receipts and exact counts survive actual HTTP answer generat
  assert.deepEqual(batch.counts,{requested:4,created:3,existing:0,failed:1,unattempted:0});assert.equal(batch.items.filter(row=>row.calendarWrite).length,3);assert.equal(batch.items[1].calendarWrite,undefined);assert.equal(batch.complete,false);
 });
 
-test('both prompts preserve pending source constraints and act on clear requests without repeated permission',()=>{
- for(const prompt of [assistantPlanningPrompt({now:'2031-03-01T15:00:00Z',timeZone:'America/New_York'}),assistantAnswerPrompt({now:'2031-03-01T15:00:00Z',timeZone:'America/New_York'})]) {
-  assert.match(prompt,/clear request is authorization.*do not ask for approval again/i);
-  assert.match(prompt,/Carry forward.*source\/scope, naming rules, dates and skip constraints/i);
-  assert.match(prompt,/never roll an explicit date forward because it has passed/i);
-  assert.match(prompt,/Skip blank, unassigned or TBD source rows.*after completing the clear rows/i);
-  assert.match(prompt,/Overlaps do not block requested creates/i);
-  assert.match(prompt,/Names in titles are labels, not attendees or provider identities/i);
-  assert.match(prompt,/respect textTruncated and firstSheetOnly/i);
-  assert.match(prompt,/partial batches can contain real completed changes/i);
- }
-});
 
 test('source-to-batch native chat retains late sheet rows, skips unassigned rows and completes over eight creations',async()=>{
  const rows=items.map((item,index)=>`Member ${index+1},${item.date}`);

@@ -1,4 +1,162 @@
+# Prompt-change testing preference (2026-10-22)
+
+For prompt changes, test behavior locally with the actual configured model API
+and the production chat or planner runner and tool adapters, using simulated
+source responses and in-memory Calendar/map storage. Network access should be
+limited to the configured inference endpoint; the evaluation must not write to
+live Discord, Calendar, databases or other business services.
+
+Use a small set of realistic conversations, including the reported failure and
+meaningful ambiguity, unavailable-data and preservation cases. Check proposed
+tool calls, attempted and applied writes, exact saved fields and the final answer.
+Scripted model replies and prompt-text assertions do not establish that the real
+model understands the change. Set a hard inference-request cap, keep credentials
+private, and record the model, scenarios, outcomes and limitations. A temporary
+Node harness is fine; durable tests should be added only when they provide useful
+regression coverage.
+
+This is the default verification method for prompt changes. Live Chrome/Discord
+or production-data tests are separate checks when requested or needed to verify
+an integration; distinguish them clearly from real-model tests on simulated data.
+
+# Worker call limits override (2026-10-22)
+
+The user selected16tool calls per model reply and64per initial/followup stage
+for the update/planner worker and requested deployment. Keep provider response
+parsing, replayed assistant history, runner enforcement, prompt and live worker
+settings consistent. Chat retains its existing default limits. No timeout,
+model-round or output-token changes follow from this request. This supersedes
+prior no-new-call-limit notes only. Current release truth is in the milestone.
+
+# Testing and evaluation preference (2026-10-22)
+
+Prioritize actual user tasks, meaningful edge cases, correct responses and
+observable results. For example, check whether a scheduling request produces the
+right Calendar change, whether a failed Discord read lets useful work continue,
+and whether an unsuccessful write is reported honestly.
+
+Use normal compiler, type-checker, lint and build checks for the errors they
+already catch. Do not add custom tests merely to check syntax, restate the code,
+assert incidental implementation details or inflate the passing-test count.
+Prefer a smaller set of meaningful behavior checks; consolidate overlapping tests
+when working in the affected area. Choose regression checks according to what
+changed and broaden them when failures or shared behavior justify it.
+
+Evaluation agents may call the configured model and application APIs to simulate
+realistic user requests and inspect actual responses, tool choices and outcomes.
+Use bounded scenarios and existing authorized credentials/source access. Scripted
+model responses are useful for repeatable failure cases, but do not establish
+that a real model understands or completes the task. Clearly distinguish scripted
+checks, real-model API evaluations and verified live application outcomes. Report
+what was tested and what remains unverified, rather than leading with a large
+passing-test total. This permits relevant API evaluation; it does not require API
+calls for every change or authorize unrelated external writes.
+
+# Plain task-cache read override (2026-10-22)
+
+The user authorized replacing bundled task-cache operations with plain saved-data
+reads. Do not recheck original inputs, all retained source references or Calendar
+access inside the task catalogue, read_pending_task or defer bookkeeping. Preserve
+service-only scope, expiry, principal, trusted input bindings, leases and exact
+versions locally. The model chooses normal Discord/Gmail, Calendar, map and person
+lookup tools afterward; those tools retain their own authorization and write
+checks. Resolving a task still verifies actual completion before deleting its exact
+version. No new compound cache/source tool, timeout or call-limit changes. This
+supersedes the earlier staged-cycle requirement to perform live source checks
+inside cache operations only. Current implementation/release truth is in the
+milestone snapshot.
+
+# Runner tool-error override (2026-10-22)
+
+The user authorized failed tool results, ordinary tool exceptions and null, malformed
+or oversized results to return a small generic tool_error with a safe reason to
+the model. Continue other valid calls and later model turns within existing
+budgets. Do not log or echo raw failed bodies/exception text, claim write success
+or complete successful-action receipts for failures. Actual run cancellation,
+overall deadline, lost ownership/receipt, backend run authorization and required
+audit failures remain stopping conditions. A tool-local stale/aborted result alone
+is not proof that the run lost its lease; actual renewal checks remain mandatory.
+Invalid model-proposed arguments remain a separate rejection path. The user asked
+for an audit of the8calls-per-reply cap; no cap increase was selected. Actual
+implementation/release state lives in milestones/milestone.md.
+
+# Manual planner start override (2026-10-22)
+
+Both planner start/status routes require the dedicated server-only
+`PLANNER_API_KEY` in `Authorization: Bearer <key>`. Website login cookies and
+admin/session privileges do not authorize them. This supersedes the earlier
+website-session gating; ordinary website authentication remains unchanged.
+
+The user authorized an authenticated API that forces one standard planner cycle
+regardless of the ordinary input-count/age threshold and cooldown. It processes
+**queued originals only**, never imports channel history. Optional exact Discord
+channel IDs restrict that run; omitted/empty uses the normal blacklist and source
+scope. An explicit whitelist overrides channel/category blacklist exclusions only
+for that run, with no implicit descendants or global policy/publication changes.
+Preserve configured guild, real bot permissions, manual disables, paused policy,
+source identity, current rechecks, retry/quarantine limits and global lease. Empty
+selected queues return empty without fabricated inputs/model work. Ordinary
+triggers, Calendar/Member Plans/map stages and budgets remain unchanged. Actual
+implementation/release truth lives in milestones/milestone.md.
+
+# Simplified update-agent override (2026-10-22)
+
+The user resumed implementing the corrected update-agent scope: interpret cached
+authorized Discord/Gmail messages for corresponding Calendar changes, then update
+people/location/participation at appropriate existing map events. Remove automatic
+worker Miro reads/reconciliation and mandatory model rolling Calendar/map upkeep.
+Preserve the completed deterministic two-calendar projection, Member Plans routing,
+temporary task cache, source/identity checks, human edits and leased cycle below.
+Mechanical pagination/API failures remain visible deterministic outcomes, not new
+model tasks. Existing mechanical tasks are preserved without entering the model
+catalogue. Gmail club writes require an exact queued authorized original body and
+fresh recheck; metadata/snippets alone grant no writes. Shared read-only Miro chat
+tools remain separate. No new timeout or call-limit values were selected. This
+supersedes earlier mandatory worker Miro/broad model synchronization duties and the
+note-only deferral; actual implementation and release truth live in the milestone.
+
+# Staged update-agent override (2026-10-22)
+
+The user authorized implementing and deploying the complete staged update cycle,
+including required table changes. Preserve the existing30eligible-input OR
+oldest30minute trigger. A single leased cycle runs initial agent Calendar updates,
+deterministic club and Member Plans Calendar-to-map APIs, then at most10follow-up
+model turns. All new worker personal plans/current-presence activities originate
+in the separately pinned Member Plans Calendar; no worker map-only creation path.
+The user explicitly authorized temporary task context retaining original input
+IDs/channel/speaker/timestamps, actually observed preceding context and actual
+agent/API execution outcomes. This is a bounded service-only task buffer, never
+a durable source archive or operational-audit retrieval. Recheck current source
+access, retain independent participation and original identity checks. Delete only
+confirmed resolved exact task versions; untouched/unresolved tasks survive caps,
+errors and crashes. Full implementation/release truth lives in the milestone.
+
 # Project instructions
+
+## Flock live testing permission (2026-10-22)
+
+The user authorizes computer use to open the Tech@NYU Discord server and test
+Flock in #flock-test, including sending routine test messages and inspecting the
+bot's replies when relevant to requested verification. This permission persists
+for future testing; do not ask again for those routine tests. It does not expand
+source access or authorize messages to other channels. The user clarified that
+no live test is needed now; this turn records permission only.
+
+## Chat map update override (2026-10-22)
+
+The user rejected the separate direct-report resolver/save architecture. Use the
+existing map read/person-lookup/upsert tools; remove chat lexical-action,
+original-source-read, user-pasted-link and linked-author receipt gates. The prompt
+interprets current requests to plot someone or statements such as “im at bobst”
+and completes the update during chat. Use the verified Discord actor or a clear
+existing roster name; ask if the person or essential details are unclear and do
+not guess. Preserve details through normal conversational clarification. Keep the
+Discord-to-person table in context when map tools are called. Backend field,
+fixed-catalogue, authentication and optimistic-write validation remain; provider
+source visibility and autonomous-worker source authorization are independent.
+Source attribution is filled internally when omitted. No extra report grammar,
+resolver/save tools, pending-report cache or session HMAC is wanted. Current
+implementation and release state live in the milestone.
 
 ## Discord blacklist access override (2026-10-22)
 

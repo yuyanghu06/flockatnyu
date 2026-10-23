@@ -1,0 +1,10 @@
+# Collector repair deployed; fresh native ingestion verified
+
+- Local timestamp / acting role / milestone: 2026-10-22T19:49:36.456106-04:00 / orchestrator / live-planner-calendar-tests.
+- Requested scope: live verification after accepted discovery repair; natural messages and sole replacement-channel manual whitelist.
+- Starting state: reviewed044 applied/service-only ACLs verified; collector release building; no natural Calendar/map writes.
+- Work performed / evidence: Railway collector974cb14c-60ef-43bc-a2fe-9d2e06ee092f SUCCESS. Logs show startup23:46:13UTC, session_reset possible_gap_no_backfill23:46:18, gateway_ready23:46:19 and listening. No original replay occurred; native input count stayed0. Old scanner had already published replacement channel23:42:06 before this release; exact app reads of two originals succeed23:45:35 without text truncation (bounded single-message context). Root edited the same two disposable originals in Chrome, natural wording/no mention, generating actual message_updated events. Both exact originalIDs enter cache at23:47:56 and23:48:19 with correct channel source3339cecf. Native source/channel IDs retained privately. Manual adf8ba5a accepted with solechannel1562966336932413602. No history import/cachefabrication or source-policy/budget change.
+- Decisions: record actual Discord resume gap as a failure; fresh edits are explicitly recovery/test events, not successful replay. Another member's6-7 message is genuine context, not an operator fixture. Rootverified every packaged module and SQL hash unchanged; source current26module package.
+- Changed files: journal/report and ignored evidence only; no additional runtime edits.
+- Resulting state / acceptance: deployed collector ready and fresh native ingestion verified. Existing-original recovery failed due session reset. Natural planner semantics and Calendar/map effects remain pending.
+- Remaining work and handoff: independently observe scoped run, inspect actual Calendar/member/map results, corrections/uncertainty/cancellation, exact finalcleanup while preserving unrelated source work/lease/catalogues.

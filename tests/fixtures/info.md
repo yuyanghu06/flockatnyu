@@ -9,3 +9,9 @@ local evidence, so the test also works in a fresh checkout.
 These seven small fixtures preserve only algorithms and SQL-adapter contracts needed to verify immutable historical migrations: legacy-message, legacy-memory, legacy-summaries, legacy-summary-config, legacy-summary-schedule, legacy-summary-store and legacy-live-summary-store.
 
 They are imported only by historical migration tests. They contain no runnable archive CLI, collector worker, vector provider or stored-summary fallback. Production server code and isolated deployment contexts must never import this folder. Current behavior is verified by the live Discord, event listener, catalogue, manual-disable and collector deployment suites.
+
+## Current map configuration
+
+`map-config.mjs` loads the actual map configuration for Node-only navigation and presentation tests. It inlines JSON that Vite normally imports and resolves JavaScript imports against their real file location. It contains no copied configuration values or production runtime fallback.
+
+`chat-map-attendance.mjs` supplies simulated map storage and normal map tools for attendance checks, shared by repeatable orchestration cases and bounded real-model evaluations. It contains no live business data or credentials.

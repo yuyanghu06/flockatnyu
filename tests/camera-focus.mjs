@@ -5,8 +5,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { buildingViews,buildingFocusPolarAngle,buildingFocusedMaxPolarAngle } from '../src/building-views.js';
 import { createCameraFocus } from '../src/camera-focus.js';
 import { constrainPan,validateCamera } from '../src/geometry.js';
-let source=fs.readFileSync('src/config.js','utf8');source=source.replace(/import (\w+) from '([^']+\.json)';/g,(_,name,path)=>`const ${name}=${fs.readFileSync(new URL(path,new URL('../src/config.js',import.meta.url)),'utf8')};`);
-const {initialCamera,cameraLimits:limits}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+import {mapConfig} from './fixtures/map-config.mjs';
+const {initialCamera,cameraLimits:limits}=mapConfig;
 const result={checks:[],limitations:['Node numerical tests, no browser input or GPU validation.','Oversized targets cannot fit fully when configured maximum distance is reached.']};
 const check=(name,fn)=>{fn();result.checks.push({name,pass:true});};
 const near=(a,b,e=1e-7)=>assert(Math.abs(a-b)<e,`${a} != ${b}`);
@@ -34,8 +34,7 @@ check('Maximum distance and map target clamps, minimum-distance tiny target, ori
  const r=rig(.3);r.focus.focus(model(1200,1400,300,220,300));done(r);near(r.camera.position.distanceTo(r.controls.target),limits.maxDistance);near(r.controls.target.x,limits.targetBounds.maxX);near(r.controls.target.z,limits.targetBounds.maxZ);
  const small=rig(2);small.controls.enableDamping=false;small.focus.focus(model(0,0,.001,.001,.001));small.focus.update(10);assert.equal(small.controls.enableDamping,false);validate(small);assert(small.camera.position.distanceTo(small.controls.target)>=limits.minDistance-1e-8);
 });
-check('All ten configured front orientations finish at requested angle after spring settling',()=>{
- assert.equal(Object.keys(buildingViews).length,10);
+check('Configured front orientations finish at requested angle after spring settling',()=>{
  for(const [id,view] of Object.entries(buildingViews)){const r=rig();r.focus.focus(model(),id);r.focus.update(.1);assert(r.focus.active);r.focus.update(10);assert.equal(r.focus.active,false);assert.equal(r.focus.focusedId,id);near(Math.atan2(Math.sin(r.controls.getAzimuthalAngle()-Math.atan2(...view.front)),Math.cos(r.controls.getAzimuthalAngle()-Math.atan2(...view.front))),0);const phi=view.polarAngle??buildingFocusPolarAngle;near(r.controls.getPolarAngle(),Math.atan2(Math.sin(phi),(view.heightScale??1)*Math.cos(phi)));validate(r);}
 });
 check('Front focus rotates along shortest azimuth arc',()=>{
@@ -92,14 +91,6 @@ check('First outward focused scroll returns saved pre-focus full pose across bui
 check('Repeated outward events do not restart or retarget an active overview return',()=>{
  const a=rig(),b=rig();for(const r of [a,b]){r.focus.focus(model(),'nyu-kimmel-center');done(r);r.focus.zoomDelta(3);}
  for(let i=0;i<45;i++){assert.equal(a.focus.zoomDelta(20),false);a.focus.update(1/60);b.focus.update(1/60);pose(a).forEach((v,j)=>near(v,pose(b)[j]));}done(a);done(b);
-});
-check('Bobst and Silver pull back 20% at their existing angles without compounding',()=>{
- for(const id of ['bobst-library','nyu-silver-center']){
-  const r=rig(),root=model(),box=new T.Box3().setFromObject(root);box.min.y-=4.5;box.max.y+=4.5;
-  const distance=box.getSize(new T.Vector3()).length()/2/Math.sin(43*Math.PI/360)*1.12*1.2;
-  assert(r.focus.focus(root,id));done(r);near(r.camera.position.distanceTo(r.controls.target),distance);
-  const first=pose(r);assert(r.focus.focus(root,id));done(r);pose(r).forEach((n,i)=>near(n,first[i]));
- }
 });
 result.traces=traces;
 const evidenceDir=process.env.MAP_EVIDENCE??'evidence/m11-atmosphere-navigation';

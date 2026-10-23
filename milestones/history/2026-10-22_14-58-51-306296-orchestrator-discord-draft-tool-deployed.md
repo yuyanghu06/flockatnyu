@@ -1,0 +1,10 @@
+# Discord draft tool deployed
+
+- Local timestamp / acting role / milestone: 2026-10-22T14:58:51.306296-04:00 / orchestrator / discord-drafts.
+- Requested scope: Expose draft-only preparation for another eligible Discord destination; map unchanged.
+- Starting repository state: Independent implementation/test/evaluation accepted; 63new/413focused checks pass, API build and whitespace pass. Separate Calendar receipt implementation underway after frozen draft package.
+- Work performed / changed files: Integrated usage/folder guides, production frontend build and source-only sanitized web context (275 files,83 runtime modules). Deployed frozen reviewed context via Railway MCP to web only as908d744d-7e17-41f3-97e2-79ba997f0e56; no env/schema/collector/worker changes.
+- Decisions: No live model request or Discord send for verification. Existing target eligibility and invoking reply delivery remain. Draft bodies are request-local and follow existing private model-audit output policy only when model-generated.
+- Checks and evidence: Railway deployment SUCCESS; hosted health200, anonymous draft-tool API403 and authenticated Discord authorization200/ready. Exact frozen runtime SHA256 manifest stored in ignored evidence/discord-drafts/deploy-context.json; build package includes new draft module and no unfinished Calendar changes. Direct local production-settings probe first had a provider failure, then reached registered draft execution but was aborted by its60second caller budget; extended read-only check is separate. No source-content fetches or business writes in hosted auth probe. Full real-model wording/delivery not tested.
+- Resulting state / acceptance: Draft adapter is deployed and runtime factory/provider propagation independently verified; ordinary Discord mention/reply delivery stays unchanged. Hosted checks verify service/access availability, not an actual generated draft reply.
+- Remaining work and handoff: No required draft implementation remains. Extended metadata-only draft probe may refine live adapter evidence. Finish separate Calendar receipt milestone; preserve map follow-up and concurrency work.

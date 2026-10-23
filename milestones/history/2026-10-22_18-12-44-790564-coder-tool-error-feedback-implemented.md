@@ -1,0 +1,8 @@
+# Tool error feedback implemented
+
+- Local timestamp / acting role / milestone: 2026-10-22T18:12:44.790564-04:00 / coder / tool-error-continuation.
+- Requested scope: Return safe generic tool failures to the model and separately investigate the eight-call cap; no cap increase requested.
+- Starting state: Concurrent manual planner API/auth/release work and simplified worker preserved.
+- Work performed / changed files, decisions and checks: Runtime coder changed handler/prompt/automation guide only. Ordinary preparation/execution exceptions, failed/null/malformed/nonserializable/oversized results become one bounded tool_error response under original call ID; siblings and next model turns continue. Fixed safe reasons exclude raw failed bodies/exception text from model/task history. Canonical validation catches NaN/undefined/functions/cycles/BigInt before receipts. Only confirmed successful writes complete receipts. Actual run cancellation/deadline, authorization/ownership/receipt failure and required audit failure remain fatal; target-local stale/aborted may continue under real lease checks. Argument schemas and budgets unchanged. Focused98checks and API build passed; two expanded obsolete assertions handed to tester. No external writes/deploy.
+- Resulting state / acceptance: Bounded pass accepted; actual final parent integration/release remains separately recorded.
+- Remaining work and handoff: Parent finishes broader regression/package checks and release verification, preserving unrelated work. Slow task checks, malformed model arguments and whole-run deadlines remain separate pending issues.

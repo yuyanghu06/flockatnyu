@@ -1,0 +1,10 @@
+# Preserve an existing event link when omitted from a normal map update
+
+- Local timestamp / acting role / milestone: 2026-10-22T19:13:29.652662-04:00 / orchestrator contract amendment after tester/evaluator findings / chat-attendance-normal-tools.
+- Requested scope: complete natural attendance without losing existing event details; preserve the ordinary map tool architecture.
+- Starting repository state: quote-scope prompt correction frozen; no web rollout. Previous real cases passed ambiguity/conflict and preserved primary source identity.
+- Work performed / changed files: final16-request real-model run saved the correct attendance in both linked and name-only cases but omitted event.url, clearing the existing link. The final quoted case could not finish within the remaining request allowance, so it is incomplete. Tester reproduced URL loss deterministically by adjusting the existing positive test; evaluator confirmed the failure.
+- Decisions: permit one narrow change to the existing map adapter: inherit prior event.url when proposed URL is undefined and a prior value exists, matching its existing provenance inheritance. Explicitly supplied values and new records retain their current semantics/validation. No broad merge, new tool, parser, permissions check, URL reconstruction or source/revision change. Keep all prompt ambiguity, quote-scope and exact-value instructions.
+- Checks and evidence: /tmp/chat-attendance-model-1792710676973.json and /tmp/chat-attendance-omitted-url.log. Data and writes were simulated. No live activity changed.
+- Resulting state / acceptance: URL inheritance fix and final verification required; prior package remains superseded. This is a data-preservation correction in the existing tool, not a new attendance path.
+- Remaining work and handoff: after source freeze, run only positive, name-only and quoted scenarios under a20-request cap (the earlier16 cap was insufficient for both positive flows plus final answer). Preserve prior ambiguity/conflict passes. Then independent acceptance, fresh package/build and web release; full prompt audit afterward.

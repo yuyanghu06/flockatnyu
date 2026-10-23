@@ -1,0 +1,10 @@
+# Update-agent replay mechanisms independently reviewed
+
+- Local timestamp / acting role / milestone: 2026-10-22T15:41:42.456262-04:00 / planner / model-audit operational diagnosis.
+- Requested scope: Independent read-only explanation of historical update-agent synchronization overhead, input replay and completion behavior.
+- Starting state: Concurrent uncommitted staged pipeline and chat prompt work preserved; historical behavior reviewed from HEAD and audit-introduction commit37bec69 rather than attributed to unfinished new code.
+- Work performed / changed files: Specialist inspected automation handler/adapters/prompt/config/store/cli, model audit, SQL018/019/032/036/038 and release receipts. No specialist edits or external/model calls; parent changes journal only.
+- Decisions: Distinguish trigger threshold from actual batch cap; preparation and mandatory rolling Calendar/map reconciliation recur per batch, even irrelevant inputs. Growing per-run history and fresh retries amplify context. Exact write-action receipts do not deduplicate fresh reads or prove useful changes. Miro-deferred completion does not prove synchronization. Retry quarantine036 was applied only on October22 at17:14:07Z; earlier019 retries had no failure cap. Do not apply unfinished staged-pipeline semantics to earlier spend.
+- Checks and evidence: Read-only git show, rg, sed, nl and history inspection. Exact baseline references: HEAD server/automation/adapters.js192-244,401-431; handler.js121-128,158-175,194-245; prompt.js17-24; 019 failure deferral and036 failure counters/quarantine. No runtime tests warranted or claimed.
+- Resulting state / acceptance: Independent source report accepted with production causality reserved for parent hosted audit correlation. Existing active implementation/release work unchanged.
+- Remaining work / handoff: Parent correlates retained proposals, metadata, lifecycle events and current event relations; exact prompts/raw tool responses were never logged, so full original wording is not universally reconstructible.

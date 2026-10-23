@@ -42,6 +42,34 @@ export function createDiscordStore({env = process.env,fetchImpl = globalThis.fet
     const r = await rpc('discord_sync_channels',{},signal);
     return r.status === 'ready' && Array.isArray(r.data) ? {status:'ready',channels:r.data.map(channelRow)} : {status:r.status==='ready'?'unavailable':r.status,channels:[]};
   }
+  async function getManualScopeMetadata({guildId,channelIds,signal} = {}) {
+    if(!snowflake(guildId)||!Array.isArray(channelIds)||!channelIds.length||channelIds.length>30
+      ||channelIds.some(value=>!snowflake(value))||new Set(channelIds).size!==channelIds.length)return {status:'invalid_request',metadata:null};
+    const r=await rpc('discord_manual_scope_metadata',{p_guild_id:guildId,p_channel_ids:channelIds},signal);
+    if(r.status!=='ready'||!r.data||!Array.isArray(r.data.nodes))return {status:r.status==='ready'?'not_found':r.status,metadata:null};
+    const row=r.data;
+    return {status:'ready',metadata:{guildId:row.guild_id,policyRevision:Number(row.policy_revision),paused:row.paused,
+      discoveryEnabled:row.discovery_enabled,publishedGeneration:row.published_generation,
+      publishedRevision:Number(row.published_revision),nodes:row.nodes.map(n=>({channelId:n.channel_id,guildId:n.guild_id,
+        parentId:n.parent_id,type:n.channel_type,sourceId:n.source_id,title:n.title,manualDisabled:n.manual_disabled,
+        withdrawn:n.discovery_withdrawn,accessStatus:n.access_status,generation:n.generation,policyRevision:Number(n.policy_revision)}))}};
+  }
+  async function getEventMetadataSnapshot({guildId,expectedPolicyRevision,signal}={}) {
+    if(!snowflake(guildId)||!revision(expectedPolicyRevision))return {status:'invalid_request'};
+    const r=await rpc('discord_event_metadata_snapshot',{p_guild_id:guildId,p_expected_policy_revision:expectedPolicyRevision},signal);
+    return r.status==='ready'&&r.data?.generation?{status:'ready',snapshot:r.data}:{status:r.status==='ready'?'stale':r.status};
+  }
+  async function reconcileEventMetadata({guildId,expectedPolicyRevision,expectedSnapshot,channelId,channels=[],withdraw=false,signal}={}) {
+    if(!snowflake(guildId)||!revision(expectedPolicyRevision)||!snowflake(channelId)||typeof withdraw!=='boolean'
+      ||!expectedSnapshot||!uuid(expectedSnapshot.generation)||JSON.stringify(expectedSnapshot).length>2000000
+      ||!Array.isArray(channels)||channels.length>3||withdraw&&channels.length
+      ||channels.some(c=>!snowflake(c.channelId)||c.guildId!==guildId||c.parentId!=null&&!snowflake(c.parentId)
+        ||typeof c.title!=='string'||!c.title.trim()||c.title.length>300||typeof c.eligible!=='boolean'))return {status:'invalid_request'};
+    const r=await rpc('discord_reconcile_event_metadata',{p_guild_id:guildId,p_expected_policy_revision:expectedPolicyRevision,
+      p_channel_id:channelId,p_channels:channels,p_withdraw:withdraw,p_expected_snapshot:expectedSnapshot},signal);
+    return r.status==='ready'&&r.data?.status==='ready'&&typeof r.data.allowed==='boolean'
+      ?{status:'ready',allowed:r.data.allowed}:{status:r.status==='ready'?'stale':r.status};
+  }
   async function getPolicy({guildId,signal} = {}) {
     if (!snowflake(guildId)) return {status:'invalid_request',policy:null};
     const r=await rpc('discord_get_policy',{p_guild_id:guildId},signal);
@@ -71,5 +99,5 @@ export function createDiscordStore({env = process.env,fetchImpl = globalThis.fet
     const r=await rpc('discord_complete_discovery',{p_guild_id:guildId,p_generation:generation,p_expected_policy_revision:expectedPolicyRevision,p_expected_state:expectedState,p_state:state},signal);
     return {status:r.status==='ready'?(r.data===true?'ready':'stale'):r.status};
   }
-  return Object.freeze({configured,listChannels,configureChannel,listSyncChannels,getPolicy,configurePolicy,getDiscoveryState,persistDiscovery,completeDiscovery});
+  return Object.freeze({configured,listChannels,configureChannel,listSyncChannels,getManualScopeMetadata,getPolicy,configurePolicy,getDiscoveryState,persistDiscovery,completeDiscovery,getEventMetadataSnapshot,reconcileEventMetadata});
 }

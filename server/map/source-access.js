@@ -3,8 +3,20 @@
 import {createMapEventStore,validateSnapshot,validEvent,text} from './events.js';
 import {chatAttendanceOrigin,chatAttendanceReference} from './chat-attendance.js';
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
-export function createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, gmailSourceId, calendarClient, calendarSourceId,
-  env=process.env,store=createMapEventStore({env}),publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date()} = {}) {
+// Application attribution for map changes requested directly in authenticated
+// chat. It carries no claim of provider authorship and requires no source read.
+export const CHAT_MAP_SOURCE_ID='f7ecf134-d11d-45b0-b933-4b9cff102606';
+export function withChatMapSource(principal) {
+  if(typeof principal?.id!=='string'||!principal.id||!Array.isArray(principal.allowedSourceIds))return principal;
+  return {...principal,allowedSourceIds:[...new Set([...principal.allowedSourceIds,CHAT_MAP_SOURCE_ID])]};
+}
+export function chatMapEventUrl(eventId,publicOrigin=process.env.PUBLIC_ORIGIN) {
+  const origin=chatAttendanceOrigin(publicOrigin);
+  return origin&&uuid(eventId)?`${origin}/?event=${eventId.toLowerCase()}#chat-map`:null;
+}
+export function createMapSourceAuthorizer({liveDiscordService, miroStore, googleClient, gmailSourceId, calendarClient, calendarSourceId, calendarTargets=[],
+  allowChatMapUpdates=false,env=process.env,store=createMapEventStore({env}),publicOrigin=env.PUBLIC_ORIGIN,now=()=>new Date()} = {}) {
+  const targets=[...(calendarClient?[{client:calendarClient,sourceId:calendarSourceId}]:[]),...calendarTargets];
   const attendanceOrigin=chatAttendanceOrigin(publicOrigin);
   async function authorizeSource({principal, sourceId, sourceUrl, eventId, personId, signal} = {}, scope=null) {
     if (signal?.aborted || typeof principal?.id !== 'string' || !principal.id || !uuid(sourceId)
@@ -13,6 +25,7 @@ export function createMapSourceAuthorizer({liveDiscordService, miroStore, google
     try {
       const url = new URL(sourceUrl);
       if (url.protocol !== 'https:' || url.username || url.password) return false;
+      if(sourceId===CHAT_MAP_SOURCE_ID)return allowChatMapUpdates===true&&sourceUrl===chatMapEventUrl(eventId,attendanceOrigin);
       if(attendanceOrigin&&url.origin===attendanceOrigin) {
         const reference=chatAttendanceReference(sourceUrl,attendanceOrigin);
         // Bind this declaration to the actual relation being read/written;
@@ -42,9 +55,11 @@ export function createMapSourceAuthorizer({liveDiscordService, miroStore, google
   async function authorizeOriginal({principal,sourceId,sourceUrl,signal},url) {
     try {
       if (url.origin === 'https://calendar.google.com') {
+        const target=targets.find(row=>row.sourceId===sourceId);
+        const calendarClient=target?.client,calendarSourceId=target?.sourceId;
         if (!uuid(calendarSourceId) || sourceId !== calendarSourceId || !calendarClient?.configured
           || typeof calendarClient.calendarId !== 'string' || !calendarClient.calendarId || calendarClient.calendarId === 'primary'
-          || !(principal.googleAccess === true || principal.calendarAccess === true && principal.calendarId === calendarClient.calendarId)
+          || !(principal.googleAccess === true || principal.calendarAccess === true && principal.calendarId === calendarClient.calendarId || principal.calendarTargets?.some(row=>row.calendarId===calendarClient.calendarId&&row.sourceId===sourceId))
           || url.pathname !== '/calendar/event' || url.hash || [...url.searchParams.keys()].join(',') !== 'eid') return false;
         const encoded = url.searchParams.get('eid');
         if (!encoded || !/^[A-Za-z0-9_-]+$/.test(encoded)) return false;

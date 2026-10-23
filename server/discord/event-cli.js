@@ -5,6 +5,7 @@ import {readDiscordEventConfig} from './event-config.js';
 import {createDiscordStore} from './store.js';
 import {createDiscordClient} from './client.js';
 import {createDiscordMetadataRefresh} from './metadata-refresh.js';
+import {createDiscordMetadataReconcile} from './metadata-reconcile.js';
 import {createAutomationStore} from '../automation/store.js';
 import {createDiscordEventState} from './event-state.js';
 import {createDiscordEventListener} from './event-listener.js';
@@ -18,7 +19,7 @@ export function collectorExitCode(status,currentExitCode) {
 
 export async function runDiscordEvents({args=process.argv.slice(2),env=process.env,
   write=value=>process.stdout.write(`${JSON.stringify(value)}\n`),createGateway=createDiscordGateway,
-  createMetadataRefresh=createDiscordMetadataRefresh,createChatTransport=createDiscordChatTransport,
+  createMetadataRefresh=createDiscordMetadataRefresh,createMetadataReconcile=createDiscordMetadataReconcile,createChatTransport=createDiscordChatTransport,
   createHttpServer=createServer,createState=createDiscordEventState,createListener=createDiscordEventListener}={}) {
   if(args.length!==1||args[0]!=='serve')return {status:'invalid_command'};
   const config=readDiscordEventConfig(env);
@@ -51,11 +52,12 @@ export async function runDiscordEvents({args=process.argv.slice(2),env=process.e
   try {
     state=createState({env});
     startupStage='startup';metadataRefresh=createMetadataRefresh({config,store,client,signal:controller.signal});
+    const {reconcile:reconcileMetadata}=createMetadataReconcile({config,store,client});
     try {chat=await createChatTransport({env,log,signal:controller.signal});}
     catch(error){diagnostic({status:'discord_chat_unavailable',stage:'chat_startup',error});}
-    const listener=createListener({config:{...config,ignoredAuthorIds:chat?[chat.botUserId]:[]},store,inputStore,client,refreshMetadata});
+    const listener=createListener({config:{...config,ignoredAuthorIds:chat?[chat.botUserId]:[]},store,inputStore,client,refreshMetadata,reconcileMetadata});
     startupStage='gateway_create';
-    gateway=await createGateway({config,listener,state,refreshMetadata,signal:controller.signal,log,
+    gateway=await createGateway({config,listener,state,refreshMetadata,reconcileMetadata,signal:controller.signal,log,
       ...(chat?{onDispatch:event=>chat.handle(event)}:{}),onFailure:()=>{void stop(true,'collector_failure');}});
     startupStage='server_startup';
     server=createHttpServer((request,response)=>{

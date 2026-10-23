@@ -1,257 +1,159 @@
-# Update agent input processing
+# Autonomous update agent
 
-The update agent is the backend autonomous processor. This opt-in local worker drains shared source inputs through server-owned tools. The conversational assistant is the chat agent; module paths and configuration keys retain their existing technical names.
-It has no public endpoint, durable-memory writer or automatic source subscription.
-The model worker runs only when `AGENT_AUTOMATION_ENABLED=true`, reviewed
-migrations018/019/032/036 are applied and model/source/Calendar configuration is ready.
-The bundled adapter supplies live Miro/Gmail/Discord reads and narrowly scoped
-Calendar reconciliation and normalized map event tools. This local implementation does not activate a worker
-or establish OAuth consent, live Calendar access or deployed operation.
+This folder collects authorized provider inputs and runs the bounded update
+cycle. The worker interprets cached Discord/Gmail messages for Calendar changes,
+then source-backed people/location updates on appropriate existing map events.
+It has no Miro construction, tools, preflight or per-batch board work. Shared
+chat Miro modules are independent and unchanged.
 
-`config.js` defaults to thirty eligible deduplicated events or oldest age thirty minutes, a
-one-minute cooldown, one lease, twenty inputs/64KiB per fresh claim, sixteen model rounds,
-thirty-two calls, a three-minute run bound and America/New_York worker time.
-`cli.js once` checks once; `cli.js serve` polls every five seconds. Empty, young,
-busy and cooldown queues do not invoke the model. Existing LLM environment
-configuration chooses the provider/model; this worker selects no model.
+## Modules and lifecycle
 
-`events.js` exposes `createEventUpdater(...).enqueue({source,sourceId,eventType,
-eventId,revision,payload,signal})`. Immutable deterministic UUIDs include every
-identity component, so edits require a different revision and retries deduplicate.
-Authorization defaults to deny and is supplied by trusted backend code through
-`authorizeEvent({event,principal,signal})`. The source's JSON cannot grant access.
-Receipt timestamps are server-owned. Raw provider bodies stay only in the
-two-column cache; queue identities, successful-action receipts, cooldowns and
-subscription checkpoints live in migration019's separate metadata table.
+- `events.js` authorizes and deduplicates immutable source revisions into the
+  temporary input cache. Collection does not invoke models.
+- `store.js` calls fixed-origin service-only queue/lease/receipt RPCs.
+- `handler.js` claims scoped inputs and keeps one leased, bounded processing run.
+- `adapters.js` provides the trusted principal, source authorization and tools.
+  Construction performs no network I/O. `resolveClaimSourceIds` refreshes eligible
+  Discord IDs before each claim and adds only the explicitly allowed Gmail source.
+- `prompt.js` defines initial/follow-up responsibilities and legacy compatibility.
+- `staged-pipeline.js` orchestrates initial Calendar updates, deterministic API
+  projection and at most10follow-up model turns, retaining actual outcomes.
+- `calendar-sync.js` projects the pinned club/Member Plans calendars using fixed
+  building aliases and preserves independently sourced people and human edits.
+- `member-plans.js` validates/signs linked-person activity metadata. New personal
+  plans and current presence originate in Member Plans, never worker map-only
+  creation.
+- `task-store.js` manages bounded service-only temporary tasks with exact-version
+  completion, expiry and lease fencing. Task lists/reads use stored contents and
+  current local source scope only; they do not reread Discord/Gmail originals,
+  check reference URLs or perform Calendar preflights. Mechanical projection failures remain API
+  outcomes; source interpretation/participation/ambiguous locations may need model
+  follow-up. Existing unsupported work is not silently deleted.
+- `bounded-result.js` transports large JSON results as batch-local lossless RAM
+  fragments; `validation.js` enforces the supported bounded schema vocabulary.
 
-`handler.js` exposes `createAutomationHandler({store,provider,tools,authorizeEvent,
-prepareBatch,cleanupBatch,principal,config,now}).tick({signal})`. Source authorization is rechecked before
-each model call, action and cleanup. A durable fenced lease plus heartbeat guards
-concurrent/restarted workers. Explicit `finish_batch({handledInputIds})` is the
-only completion path. Invalid calls, failed actions, text-only answers, timeouts
-and exhausted loops retain inputs. Cleanup deletes exact snapshot UUIDs/hashes,
-preserving arrivals, edits and unhandled inputs.
-An optional trusted `prepareBatch({inputs,principal,signal})` hook runs after a
-ready claim, heartbeat and event authorization, before the first model call.
-It returns plain `{status:'ready',...context}` bounded to64KiB. Context is included
-only as untrusted JSON in the user message. Hook failures release the lease and
-retain inputs without invoking the model, action tools or completion. Custom
-fixtures without a hook keep their prior behavior. The bundled adapter clears
-all batch-local source fragments and observed provenance in `cleanupBatch`.
-Migration036 records fixed safe outcomes and at most five failed attempts per
-input. Failed mixed batches and unhandled partial completions move to isolated
-singleton retries after the existing five-minute deferral. Only a failed singleton
-at the fifth attempt enters quarantine, so a failing peer cannot quarantine
-healthy inputs. Explicit caller cancellation defers without increasing attempts;
-the configured run timeout counts as `timeout`, and heartbeat loss as `stale`.
-A failed settlement RPC never falls back to shutdown release: the next scoped
-claim accounts for the expired token once. Delayed fail/release/finish callbacks
-cannot alter an expired or replacement lease. `handler.js` preserves its public
-`aborted` result for cancellation/timeouts; durable failure metadata distinguishes
-them. Production stores always implement `fail`; injected legacy fixture stores
-without that method retain release compatibility.
+The trigger remains30eligible queued inputs OR oldest eligible age30minutes,
+with the existing cooldown, claim caps and run/tool bounds. Empty scopes still
+perform bounded quarantine/expired-lease maintenance without selecting originals.
+No empty-queue timer starts model synchronization. Irrelevant inputs can finish
+without broad Calendar scans or map projection duties.
 
-Scoped claims alternate fresh batches and retry singletons when both have eligible
-work. `runner.last_lane` survives completion and release. The aggregate30-input
-or oldest30-minute trigger,60-second cooldown, allowed sources, source/hash
-snapshots and count/byte caps remain. A retry is only eligible after its deferral;
-source reauthorization still runs throughout each claimed batch.
+The update worker accepts at most16tool calls in one model reply and64calls in
+each model phase, including finish_batch. Initial and follow-up counts reset
+independently, for at most128accepted calls in a staged cycle. Configured lower
+phase limits remain supported. Progress counts retain attempted-call semantics, including one rejected overflow
+reply: at most144for staged processing or80for legacy processing. Rejected calls
+are audited without execution. Progress emits at most320bounded events; rounds, deadlines, token limits and tool catalogue size are unchanged.
+The worker passes a trusted maxToolCalls:16 parser option. Shared chat keeps its
+usual8-call reply limit.
 
-Tools are trusted objects `{name,description,parameters,execute,idempotent:true}`.
-Explicit `readOnly:true` tools fetch fresh context on every call and bypass
-durable write receipts; the trusted registry must classify these correctly.
-The model sees each tool wrapped as `{inputIds,arguments}`; `parameters` describes
-the inner arguments. Execution receives `execute(arguments,{principal,inputIds,
-idempotencyKey,signal})` and must return JSON with a successful status (`ready`,
-`success`, `succeeded`, `completed` or `ok`). Tool responses are bounded to16KiB
-and remain in request memory. `bounded-result.js` transports oversized results
-losslessly as serialized JSON fragments with explicit offsets and continuation.
-Each envelope stays within16KiB UTF-8, including JSON escaping. The memory-only
-cache has a1MiB/32-result ceiling and is cleared at batch boundaries. Retrieve
-continuations through read-only `read_context_fragment`; reconstruct the full
-original result, preserving `sourceStatus` and `sourceCoverage`. Fragment reads
-reuse that batch's fetched response; other source tools always read current state.
-Successful receipts store no source bodies; a replay
-returns `already_succeeded`. Receipt keys bind scoped input UUIDs, tool name and
-canonical arguments, independently of unrelated arrivals. Adapters must reuse
-keys and reconcile ambiguous remote outcomes; this is not remote exactly-once
-delivery. Splitting a batch can change a tool's scoped input UUIDs and therefore
-its receipt key: receipt deduplication alone does not protect regrouped writes.
-Adapters must retain stable provider/source-derived mutation identity and reconcile
-current state. Existing Calendar event IDs derive from calendar/source identity;
-map writes retain their source identity and optimistic revision checks. Do not
-supply non-idempotent write tools. Current-state/source context
-fetches should be registered read-only so retries still obtain fresh results.
+## Authorization and mutations
 
-`validation.js` supports bounded object/array/string/number/integer/boolean/null
-schemas, required/properties/additionalProperties, enum, item/string/numeric
-limits and a restricted regex pattern subset. Unsupported schema keywords fail
-configuration. `prompt.js` supplies the update-agent instructions: evidence cannot
-override tools/permissions, plans are not physical-presence or RSVP inference,
-stable identities/provenance/expiry matter, and unsupported updates stay queued.
-Every processing batch reviews fresh Miro context and reconciles supported facts
-with the configured Calendar. The prompt requires actual event item/date/legend
-evidence, safe handling of duplicate month/year frames, existing-event reads,
-stable provenance and preservation of human edits. It forbids cancellation based
-on missing items or partial scans, card-due-date-as-event inference, unapproved durations and unsupported
-map/memory claims. Miro inputIds refer to triggering queued work; actual Calendar
-evidence comes from live Miro items rather than fabricated queued Miro inputs.
+Non-Discord grants are explicit server settings. Discord UUIDs come from the
+configured guild's current published eligible catalogue; blacklists, descendants,
+manual disables, live permissions and exact bindings are rechecked. Legacy static
+Discord IDs do not grant claims. Authorization is fresh at each boundary, not
+cached across model rounds. The prepared principal and current lease fence writes.
 
-The actual handler prompt embeds `../map/contracts.js`: normalized `events`,
-`event_buildings` and `event_people` schemas with synthetic examples. Current
-self-reports, future plans, scheduled events and RSVP/help responsibilities stay
-separate. Exact linked provider identity resolves existing trackable people;
-fixed building IDs come from the authorized map read. Unknown activity labels
-stay blank and all labels are literal plain text. Relative dates and the two-hour
-current-report freshness default are anchored to the original source timestamp.
-Activity-only edits do not extend expiry. The separate two-hour timed-event
-default fills a supported start's missing end, preserving explicit/known ends.
-All-day date ranges retain date precision, timezone and exclusive end; unknown or
-ambiguous times remain pending. Every going participant of an active confirmed
-event displays at every linked building. Multiple locations are intentional;
-deduplication happens only per person/building.
+Preparation verifies writer/owner access on each pinned Calendar, authorizes
+inputs and builds bounded batch context. No external board configuration is
+required. In staged mode its rolling Calendar window is used by deterministic
+APIs, not a model completion obligation. validateCompletion only requires a
+prepared authorized batch; the staged pipeline separately enforces task/phase
+completion.
 
-The bundled adapter registers shared `read_map_events`, `lookup_map_person` and
-`upsert_map_event` from `tools/map`. All require the prepared server-owned
-principal. Reads use the shared current-source authorization callback. Identity
-lookups and writes additionally require exact supporting queued input IDs and
-original source URLs, or an actual live Miro item observed in this batch with
-current board/source scope. Metadata-only Gmail needs an explicit successful
-body-read first. Deletion inputs never authorize new presence facts. Current
-Discord/Gmail policy is rechecked, and batch evidence clears on cleanup/restart.
+Club Calendar source keys are exact observed Discord message identities or
+`gmail:<messageId>` with canonical original URLs. Gmail scope is registered only
+after read_gmail returns actual bounded body text for the exact authorized queued
+message, with a valid sender matching cached From headers when present. A fresh
+body/sender/title/date reread must match before mutation. Metadata/search snippets,
+foreign inputs, changed sender/body or revoked grants do not authorize a write.
+Discord mutations also reread and match the current exact original and author.
 
-An update replaces one event and complete relationships, using `expectedUpdatedAt`
-from a fresh read. Partial facts are merged with existing rows first. The wrapper
-preserves unchanged independently sourced participation, requires event-source evidence for changed event/building relationships and new
-scoped evidence for changed participants, and rejects omission of prior participants;
-explicit decline or departure overrides can express supported changes. The
-service independently authorizes old/new provenance and validates fixed IDs.
-Stale/conflict/denied writes remain failures and cannot finish the batch. No
-profile/building edits or cross-event removal is exposed. The existing mandatory
-Calendar/Miro preparation and disabled-worker default are unchanged.
+The planner interprets natural event announcements without rigid club/event
+keyword requirements. Narrow attendance/speculation/cancellation safety negatives
+remain. Club upserts require a complete unfiltered full-mode prior Calendar
+window covering the target start and preserve duplicate/cross-source conflict
+checks. Calendar client independently enforces target/account/ACL, managed source
+identity and human-edit preservation. Cancel only on clear current cancellation,
+never deletion/absence. No invitations, attendees or arbitrary Calendar writes.
 
-`store.js` uses fixed-origin, redirect-denying, timeout/size-bounded Supabase RPCs
-with sanitized errors. Subscription get/CAS RPCs are restricted to `subscription:`
-keys and metadata JSON. Direct cache inserts bypassing the updater are retained
-but not scheduled: adapters must use the atomic enqueue path. Metadata receipts
-and dedup identities remain; quarantined original bodies expire after24hours.
-Every scoped claim performs bounded maintenance before busy/empty/cooldown checks,
-deleting at most100 expired matching quarantine source/hash snapshots from the
-existing cache, without calling a model. Only minimal metadata/dedup survives.
-This is a retention deletion, never a processing-success receipt. Replaced bodies
-are not deleted: mismatches become `quarantine_changed` for private service review.
-That replacement exception is not covered by the original snapshot's24-hour TTL;
-no general pending-input TTL or new content archive is introduced.
+Map tools share `server/map/events.js`. Changed people require successful
+source-bound identity receipts and independently authorized original statements.
+Complete snapshots retain prior participants; explicit decline/end updates may
+change participation. Optimistic conflicts require fresh reads. Follow-up writes
+amend existing exact Calendar projections, preserving Calendar-owned event fields.
+The non-staged compatibility path retains narrow observed occurrence validation,
+without mandatory global projection bookkeeping.
 
-Service operators may call `store.requeue({inputId,allowedSourceIds,expectedHash})`
-with the exact UUID, current configured source allowlist and the stored32-character
-MD5 snapshot hash, only before quarantine expiry and while no lease is active.
-Both metadata/raw source IDs and current/stored hashes must match. Recovery resets
-attempts to zero and keeps singleton isolation; it cannot recover expired or changed
-payloads. This method has no public endpoint or model-tool registration. SQL036
-restricts fail/settle/requeue to service_role and revokes the unused unscoped claim
-RPC so it cannot bypass recovery protections. No new arbitrary error text, source
-bodies or credentials are stored in queue metadata.
+Original timestamps anchor relative dates and current-report expiry. Explicit
+current presence without end uses original start +2hours; partial edits do not
+refresh it. Future personal plans need supported ends. Club known timed starts
+may use approved +2hours only for a missing end, preserving existing ends.
+All-day ends remain exclusive. Fixed people/buildings/categories are not editable.
 
-Without `AGENT_AUTOMATION_ADAPTER_MODULE`, `cli.js` loads bundled `adapters.js`.
-An explicit local `.js`/`.mjs` override still takes precedence and exports
-`createAutomationAdapters({env,config,store,provider,fetchImpl,now})`, returning
-principal, tools, authorizeEvent and optionally resolveClaimSourceIds/prepareBatch/cleanupBatch. This
-is trusted server code, never selected from source content. Disabled workers
-return before loading either adapter. Constructors perform no source requests.
+## Tool, storage and operational contracts
 
-The bundled principal combines immutable server-configured grants for other
-providers with fresh Discord source UUIDs from the configured guild's guarded
-published catalogue. New eligible discovered channels need no environment edit.
-Gmail requires the exact statically allowed AGENT_GMAIL_SOURCE_ID and supported
-email event types, with account verification in the underlying Google client.
-Discord events recheck the current enabled registered channel, live
-guild/channel/thread ancestry, exclusions and unchanged policy/catalogue. Exact
-verified bindings can also authorize enqueue before the first processing tick;
-they never discover/register a channel or grant another provider access.
-The existing DISCORD_LIVE_READ_ENABLED switch controls live bot context tools.
+Trusted tools expose `{name,description,parameters,execute}` with `readOnly:true`
+or stable idempotent mutation handling. Ordinary model tools receive `{inputIds,arguments}`; finish_batch instead takes
+`{handledInputIds}` and must run alone. Empty lists claim no handled input; staged
+phases can advance with unfinished work retained, while legacy mode remains pending.
+New and updated deferred tasks require summary and operation; context is retained
+automatically. Only completed task resolution is advertised.
+The executor receives the prepared principal, exact scoped IDs, idempotency key and
+abort signal. Provider read tools fetch current state; pending-task reads return saved cache contents
+and fragments return an earlier batch result. Receipts store no source bodies.
+Regrouped input subsets change receipt keys, so stable provider identities and
+optimistic writes remain necessary for replay safety.
 
-For each ready batch, the bundled preflight verifies the exact configured
-Calendar's current writer/owner access and then fetches a fresh live frame
-navigation for each configured authorized Miro board through official MCP. Board/source registry and configured team pins are checked before and after reads, and again before mutations. At most eight boards and64KiB preflight context are accepted. Search/catalogue output locates evidence; concrete calendar cells/headings or table rows must be read through shared MCP tools. Partial coverage never establishes absence. Large results have bounded hash-checked continuations.
+read_pending_task returns the saved task from the service-only snapshot, using
+local row/input/source-scope/expiry checks and a read-version receipt. Binding its
+original inputs in memory is not a live observation or write grant. defer_task
+bookkeeping also uses local inputs only: every supplied UUID must belong to this
+cycle or an eligible task already read at its current version. Unknown/mixed IDs
+cannot silently omit unsupported originals. Actual task saving and deletion keep
+lease/scope/version checks. The model chooses the usual Discord/Gmail, Calendar,
+person-lookup and map tools after reading. Those tools retain their normal live
+permission, original identity and write checks; resolve_pending_task still verifies
+actual confirmed work before deleting an exact version. Cache reads themselves
+make no claim that originals remain current or readable.
 
-Calendar tools target only GOOGLE_CALENDAR_ID. Calendar writes require successful
-batch preparation, a currently authorized board/source pair, and actual live item
-provenance observed through a source read during this batch. Frame catalogue
-metadata alone does not enable a write. Source keys and original item URLs are
-checked server-side; calendar-client independently enforces target, account,
-scope/ACL, idempotent managed event identity and human-edit preservation. No
-Gmail/Discord-based Calendar writes, invitations or other Google mutations are
-exposed by this adapter. The Miro snapshot sync is retired; both agents fetch live MCP content directly.
+Unsuccessful tool results, thrown preparation/execution errors, malformed results
+and results over16KiB return one small tool_error response to the model with the
+same call ID. Its reason comes from the fixed safe diagnostic list; failed tool
+bodies and raw exception text never enter model or temporary task history. The
+model may continue sibling calls and later turns. Failed writes never receive
+successful action receipts, so a later valid retry uses normal stable identity.
+Actual tool failures remain failures in operational diagnostics. Required model
+audit failures, actual lease loss, global authorization/receipt failures,
+whole-run cancellation/timeouts and argument/schema rejects still stop the run.
+Tool-error handling does not alter deadlines or source checks.
 
-Source ingestion has independent switches: GMAIL_EVENTS_ENABLED for Gmail and DISCORD_EVENTS_ENABLED for Discord. Shared events.js receives the trusted collector switch, without activating the model worker.
+Fragment results stay within16KiB envelopes, with a1MiB/32-result RAM ceiling.
+Only actual returned fragment IDs/offsets may be read. Reconstruct full JSON and
+preserve sourceStatus/coverage; transport-ready does not mean complete evidence.
+Batch cleanup clears observations, identities, sources and fragments.
 
-Current Miro override: prepareBatch and follow-up tools use shared live MCP navigation/canvas/table reads only; no REST fixture fallback or snapshot worker remains. Concrete observed item/row source keys gate fixed-target Calendar writes. See docs/miro-sync.md for OAuth and registry details.
+Queue failures isolate retries and quarantine after the existing bounded attempt
+policy. Matching quarantined source/hash snapshots expire after24hours, with at
+most100 removals per scoped poll. Replaced bodies are preserved for service
+review. Maintenance is not successful processing. Service-only requeue requires
+exact UUID/current source scope/hash and no active lease. See
+[agent-automation.md](../../docs/agent-automation.md).
 
-Date read correction: empty textual date search never authorizes absence/cancellation or writes. Search the requested month/year heading as areas and read the correctly titled returned frame canvas. Overview is sampled and can omit IDs; unrelated or stale-year frames cannot substitute.
+Private model audits retain durable pre-dispatch metadata and returned model
+outputs for seven days; never prompts, uploads, raw source responses or secrets.
+Progress diagnostics contain safe phase/status/tool counters only. Temporary task
+context has separate bounded task semantics and is not audit retrieval.
 
-Miro navigation is shared with chat through ../miro/navigation.js. Structure hints require live section/grid/legend verification; ambiguous years and promotional/unconfirmed entries defer affected Calendar changes.
+`cli.js` uses this bundled adapter unless an explicit trusted local
+AGENT_AUTOMATION_ADAPTER_MODULE overrides it. Disabled workers do not construct
+adapters. Shared read-only Drive tools and the Tech@NYU Drive skill remain
+available for relevant supporting context; reads do not create write provenance.
+Release/schema/verification truth is in milestones/milestone.md.
 
-## Planner/update reconciliation and identity
+Manual requests use manual-runs.js for bounded service-only metadata RPCs and validation, manual-worker.js for existing-worker dispatch, and the dedicated042forced scoped claim. A request runs one normal bounded staged cycle; no source history is fetched and ordinary trigger/budgets remain. Manual runtimes share audit maintenance with the base runtime.
 
-The user's autonomous planner is this existing update agent. Each batch prioritizes eboard activity and explicit Discord attendance, reconciles concrete Miro plans and fresh explicit Discord club-event originals into the fixed Calendar, then projects actual Calendar instances into normalized map events. `AGENT_CALENDAR_SOURCE_ID` is the stable allowed source UUID; exact returned eventId is source_record_id, including recurrence instances. Batch context defaults to now minus24hours through now plus8days; this is a rolling window, not all-history/full-calendar coverage. Follow relevant page tokens and keep unfinished actionable inputs pending. Original Calendar createdAt/updatedAt supply reported_at; missing timestamps or IDs over200characters defer.
+manual-auth.js checks PLANNER_API_KEY for both manual start/status routes, using a timing-safe comparison of hashes. No cookie, source grant or worker budget is derived from the key. Missing/invalid configuration denies access.
 
-Observed original Discord followups can support changes with fresh policy checks. Changed participants require successful source-bound identity receipts for the original Discord author or parsed actual Gmail sender. Existing unchanged relationships are retained. Calendar selected fields and Miro titles cannot establish attendees. No empty-queue periodic sync or worker activation follows from these prompt changes.
-
-`validateCompletion` is a deterministic per-batch finish check. The handler passes a bounded pending-work result back to the model instead of deleting inputs when the required Calendar window/pages or projections are incomplete. Calendar mutations require an exact read of the returned Calendar event ID before map projection. Existing current map snapshots may satisfy unchanged source occurrences without redundant writes. Only read-only invalid_request results are recoverable tool feedback; unknown calls, schema violations and failed actions still fail closed.
-
-Discord Calendar mutations require a fresh full original reread matching the observed body/author, exact stable message identity, conservative event intent and complete prior Calendar window. Informal activity and attendance stay map-only. New-source corrections and known cross-source conflicts defer. Trusted prepareArguments derives canonical projection URLs/location/origin from an already observed authorized Calendar occurrence before receipt hashing; model text cannot select another source.
-
-A sole `finish_batch` with exactly an empty handledInputIds list receives bounded
-pending feedback with actual batch IDs and deterministic remaining-work actions.
-It cannot complete inputs or record an applied receipt; every retry still counts
-toward call/round/time bounds. Foreign IDs, arbitrary malformed arguments, unknown
-tools and mixed completion calls remain rejected. Calendar continuation tokens
-must match an observed unfinished page for the same window before HTTP. Declared
-Miro boardId choices are restricted to configured boards; current authorization
-is independently rechecked.
-
-Batch authorization reuses only facts within each existing fresh authorization boundary, including preparation, while maintaining fresh checks before tools/mutations and completion. No authorization cache spans agent rounds.
-
-Before every production claim, the handler runs the trusted resolveClaimSourceIds
-hook within its existing cancellation and run deadline. The hook resolves fresh
-enabled same-guild Discord IDs plus only the explicitly allowed Gmail source.
-Obsolete static Discord UUIDs cannot select queue rows. A paused/disabled policy
-or empty scope skips Discord claims; catalogue failures clear dynamic Discord
-grants while preserving independently authorized Gmail processing. Empty scopes
-still call scoped SQL for bounded quarantine/expired-lease maintenance, including
-during a catalogue outage; they cannot select pending input bodies or call a
-model. Migration038 permits the exact empty UUID array while retaining036's
-maintenance, source/hash guards and lease fences. UUID lists must be unique and bounded to500. Scoped
-RPC032 still filters counts/oldest/candidates before bodies leave the queue;
-later fresh authorization still applies before model turns, tools and completion.
-Deferred outside-scope rows remain untouched. Custom injected adapters without
-the optional hook retain their existing static principal scope.
-
-Planner workload starts from queued originals, prioritizes eboard and fetches exact current messages before actionable changes. Extra reply/context reads are targeted; routine historical sweeps and repeated catalogue discovery are avoided. Calendar/Miro reconciliation and projection completion remain required.
-
-Calendar projection preparation binds reported_at to the observed Calendar timestamp before action hashing, after existing identity/access checks. This does not replace the map optimistic revision or participant timestamps; sparse cancellations preserve known facts.
-
-Optional Miro navigation outages are explicit per-batch deferrals after mandatory source checks, never empty-board evidence. Deferred reads recheck access and return only unavailable metadata. Calendar completion/projection remains mandatory; successful queue completion can include sanitized Miro deferred boardCount/syncComplete:false without source IDs. Auth/config/malformed failures remain fatal.
-
-The retained Miro client uses the background quota lane and starts one opaque
-session before each batch's board navigation. Quota, budget, cadence and shared
-quota-state failures explicitly defer the affected board. Follow-up reads recheck
-current access and return no content without calling Miro again in that batch;
-retryAt remains available when validated. A mid-batch deferral removes that
-board's previously observed mutation evidence. Deferred boards remain incomplete
-in completion reports while mandatory Calendar projection and unrelated authorized
-Discord work proceed. Authentication, configuration and malformed content still
-fail closed. No provider error bodies or durable board snapshots are retained.
-
-Each claimed planner batch now has an independent audit run UUID and per-round model context. Run/tool events preserve actual safe failure codes and counts without source bodies; prepare_batch is separately visible. The shared audit logger runs before every production model dispatch and prunes seven-day private records hourly. No lease tokens enter logs. See ../../docs/model-audit.md.
-
-## Tech@NYU Drive skill
-
-The bundled adapter also exposes read-only Drive search, folder listing and bounded file reads under its existing prepared-batch and Google access gates. These reads do not register Calendar/map write provenance. `handler.js` activates the shared `server/skills/techatnyu-drive/SKILL.md` after a valid first Drive proposal, replans before execution and retains it for that batch. Activation consumes a model round, without executing or charging a source-tool call. Other workflows keep the existing prompt.
-
-The shared schema validator retains its restricted regular-expression rules. Its sole reviewed group/assertion exception is the exact opaque Drive cursor pattern exported by this folder’s pure validation.js module, which rejects terminal newlines while permitting printable ASCII punctuation. Other lookaheads, groups and near-match patterns remain rejected.
-
-Tool-failure diagnostics distinguish rejected proposals from dispatched adapter work, preserve sourceStatus and Miro deferral coverage, and correlate fixed causes to run/round without changing leases, budgets or idempotency. Existing private audit storage retains encoded primary causes; detailed failed Calendar batch items are mirrored to Railway without extra model-attempt records.
-
-Agent-facing Calendar reads now traverse bounded provider pages internally. Completion coverage requires contiguous complete unfiltered full-mode windows; partial scans lead to progressively narrower unattempted windows, with no provider cursors exposed to the model. One source-filtered map read can supply state for multiple Calendar occurrences. Observed missing/stale projections require merged upserts, while conflicts invalidate the observation and require a fresh matching read. Later reads replace covered snapshots; optimistic writes and source/participant gates remain authoritative.
+Saved source-review tasks recognize confirmed club/Member Plans cancellations separately from creates/updates. Removal requires the exact task-bound original, pinned Calendar/event, successful cancellation receipt and fresh matching cancelled state; an explicit authorized already-absent receipt requires a successful exact empty read. Failed, partial, active or mismatched outcomes retain the task. Current release state is in the milestone.

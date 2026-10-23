@@ -1,40 +1,47 @@
 # Shared map event tools
 
-`index.js` defines the shared `read_map_events`, `lookup_map_person` and
-`upsert_map_event` interfaces reusable by trusted chat/update-agent adapters. The
-service under `server/map/events.js` validates records and current source access.
-Identity lookup accepts exact linked provider identifiers, never names or profile
-creation. Writes replace one complete event snapshot and use the existing
-`updated_at` optimistic token; callers read and merge partial evidence first.
-Building and person catalogues are fixed. Every event participant can appear at
-every linked building, and simultaneous locations are intentional.
+`index.js` defines read_map_events, lookup_map_person and upsert_map_event for
+trusted chat and update-worker adapters. The shared service validates fixed
+catalogues, complete event/building/person snapshots, current source visibility
+and fresh optimistic revisions. Existing unrelated relationships must survive
+edits; stale writes require rereading. Every participant can appear at every
+linked building, with intentional simultaneous locations.
 
-Definitions alone grant no access. Automation additionally binds writes/identity
-lookups to supporting queued input IDs or live Miro evidence in the prepared
-batch and rechecks current source scope. Both the bundled update-agent and request-local chat adapters register these tools. Errors and
-optimistic conflicts remain unsuccessful tool results so inputs stay pending.
+`chat.js` exposes those same three operations. Person lookup accepts a supplied
+unambiguous roster name or empty arguments for the verified Discord speaker.
+Direct chat updates may omit source metadata, which the server fills internally.
+Existing event.url also survives omission when updating an event; explicitly
+supplied values still follow ordinary validation, and new events inherit no link.
+No separate attendance tools, declaration parser, source-link requirement or
+linked-author receipt gate is exposed. The model interprets ordinary location and
+participation statements and asks when essential identity/event details are
+unclear, retaining the conversation through clarification. Request-local calls
+remain authenticated; stateless mutations and profile/building edits are denied.
 
-`read_map_events` also returns the full immutable event_types catalogue regardless
-of event filters. Agent event writes require type_id from study, meeting, event,
-social or other. Classify using source evidence, choose other when unknown and
-preserve existing type on unrelated changes. Category is independent of event kind.
-No type creation/edit tool exists; this adds no broader write permissions.
+For attendance at an existing event, read its complete snapshot, resolve the
+person and merge going/planned participation using upsert_map_event. Preserve the
+event facts, source identity, other participants and optimistic revision. An RSVP
+does not create another event or modify Calendar. Only an applied mapWrite receipt
+confirms saving, and going does not mean verified physical arrival. Historical
+#attendance links remain readable through strict source-access validation; new
+chat writes use the normal map tools and attribution.
 
-`chat.js` creates fresh request-local evidence/snapshot/identity receipts around these shared tools. Stateless mutation/lookup cannot supply receipts. Original Discord author or parsed actual Gmail sender must match exact successful identity lookup for changed participation. Configured Calendar originals may establish event facts only, with exact occurrence ID; navigation, untrusted chat identity assertions and Calendar fields cannot establish attendees. Partial snapshots are withheld whole rather than permitting destructive replacement.
+The worker has separate original-source and person-identity checks. Its new
+personal activities originate in Member Plans and deterministic Calendar-to-map
+projection. Cache reads grant no live-source or mutation authority. Shared chat
+Miro retrieval remains separate from worker scope.
 
-Chat additionally gates mutations on affirmative current-turn intent, exact user-supplied originals for personal requests, source-bound identity lookup and a timed window for newly created presence. Request-local duplicate guards prevent renamed copies of the same Discord activity after a successful write.
+read_map_events returns fixed event_types: study, meeting, event, social and
+other. Unknown classification uses other; preserve an existing type on unrelated
+edits. No profile, building or category creation/edit tool exists. Current presence
+without an explicit end follows the two-hour policy; future plans need supported
+times. Partial read snapshots are withheld rather than presented as safe complete
+replacements.
 
-`chat-attendance.js` exposes find_map_attendance_targets and set_map_attendance in every configured request-local catalogue regardless of user wording. Visibility does not bypass the actual service declaration, identity, date, source or revision checks. A unique current-message named person/event declaration is required; target IDs and revisions must come from the same request. Stateless calls are denied. This narrow going-attendance path is separate from generic provider-backed updates and cannot create events, profiles or buildings. The runtime composes both adapters under the map tool catalogue.
+Trusted reads share provider checks only within the same read and use bounded
+concurrency. Later reads and writes recheck access. Discord-to-person label
+context accompanies normal map-tool results without granting additional access.
 
-Event phrases use NFKC/case normalization and contiguous whole alphanumeric token matching, so AWS Hackday and AWS Hack Day can resolve the same occurrence despite spaces, hyphens or punctuation. The same rule binds the current declaration and rechecks the event before writing. This formatting normalizer does not infer synonyms or match fragments of larger tokens; catalogue-based model resolution below handles aliases. Person/date/source/concurrency checks remain unchanged.
+Applied chat upserts return a bounded mapSubmission from the actual arguments after attribution/inheritance. The model sees it as mapWrite.submitted only with a valid applied receipt. Its basis is submitted_values_not_readback; complete=false marks omitted relationships and it does not invent service defaults. Failed or conflicting writes have no such applied snapshot.
 
-When normalized titles do not resolve, lookup returns the authorized, unexpired, date-filtered catalogue with fuzzy bigram ranking and bounded notes/location context. The model resolves clear typos or aliases from those actual events; rank alone is not confidence. All candidates are returned up to20, with explicit truncation and no write receipts for incomplete lists. Exact duplicate matches, multiple matching full contexts and unsupported single short names require clarification. Complete candidate selections bind the exact returned event name/source/revision and recheck authorization before an attendance-only write. Person matching remains exact.
-
-Prompt guidance for both agents covers creating a complete map-only personal
-activity when an authorized original has no existing stable source record;
-creation omits event.id for trusted UUID assignment. Explicit location windows
-and exact author/building resolution remain required, and updates keep their
-source identity and fresh optimistic token. A hypothetical example or bare
-website first-person claim cannot supply original-source/identity evidence.
-
-Trusted event reads deduplicate exact provider-original checks within one read, reuse its validated snapshot for bound attendance declarations, and authorize at most four rows concurrently in each event/participant phase. Relationship indexes preserve snapshot ordering while avoiding repeated array scans. A later read uses a fresh snapshot and access checks; identity lookups and both write authorization passes remain uncached. Reuse a complete source-filtered map read when reconciling multiple records; missing or stale records require a merged upsert rather than identical rereads.
+Chat descriptions require existing occurrence lookup and preserve its timed window for “the entire time”; Calendar fallback cannot fabricate a duplicate when map projection is unavailable.

@@ -10,7 +10,7 @@ const fail = code => { throw new Error(code); };
 
 /** Event content is never hydrated/backfilled. Partial edits and deletion IDs
  * remain exactly as Discord delivered them in payload. */
-export function createDiscordEventListener({config, store, inputStore, client, refreshMetadata, now} = {}) {
+export function createDiscordEventListener({config, store, inputStore, client, refreshMetadata, reconcileMetadata, now} = {}) {
   const principal = Object.freeze({id:'discord-events',guildId:config.guildId});
   async function policy(signal) {
     const result=await store.getPolicy({guildId:config.guildId,signal});
@@ -54,7 +54,7 @@ export function createDiscordEventListener({config, store, inputStore, client, r
     } catch(error) {
       // Access can disappear between Gateway delivery and this fresh check.
       // Skip that inaccessible event without stalling every other channel.
-      if(['permission_denied','not_found','channel_scope_denied'].includes(error?.code))return {status:'ignored'};
+      if(['permission_denied','not_found',...(!reconcileMetadata?['channel_scope_denied']:[])].includes(error?.code))return {status:'ignored'};
       throw error;
     }
     const validMetadata=(row,expectedId)=>row&&row.id===expectedId&&id(row.id)&&row.guild_id===config.guildId
@@ -71,15 +71,23 @@ export function createDiscordEventListener({config, store, inputStore, client, r
       if(listedParent&&(listedParent.type!==parent.type||listedParent.parent_id!==parent.parent_id))fail('metadata_changed');
       metadata.set(parent.id,parent);
     }
+    if(reconcileMetadata&&isDiscordChannelExcluded({channel,channels:metadata,policy:{...p,excludedChannelIds:[],excludedCategoryIds:[]}}))fail('invalid_metadata');
     if(isDiscordChannelExcluded({channel,channels:metadata,policy:p}))return {status:'ignored'};
-    let rows=await sources(signal), row=rows.find(row=>row.channelId===d.channel_id&&row.guildId===config.guildId&&row.enabled);
+    let refreshed, rows=await sources(signal), row=rows.find(row=>row.channelId===d.channel_id&&row.guildId===config.guildId&&row.enabled);
     if(!row) {
       // New channels/threads enter via the existing metadata-only reconciliation,
       // retaining stable UUIDs and manual disabled states. Never register blindly.
-      await refreshMetadata?.({signal});rows=await sources(signal);
+      refreshed=reconcileMetadata?await reconcileMetadata({channelId:d.channel_id,signal}):await refreshMetadata?.({signal});
+      if(reconcileMetadata&&refreshed?.status!=='ready')fail('metadata_unavailable');
+      rows=await sources(signal);
       row=rows.find(row=>row.channelId===d.channel_id&&row.guildId===config.guildId&&row.enabled);
     }
-    if(!row)return {status:'ignored'};
+    if(!row){
+      // A verified denial is safe to consume; an unresolved eligible source must
+      // retain its Gateway checkpoint so restart replay can retry the original.
+      if(reconcileMetadata&&(refreshed?.status!=='ready'||refreshed.allowed!==false))fail('metadata_unavailable');
+      return {status:'ignored'};
+    }
     if(!validUuid(row.sourceId))fail('catalogue_unavailable');
     const current=await policy(signal);
     if(current.revision!==p.revision||current.paused)fail('policy_changed');

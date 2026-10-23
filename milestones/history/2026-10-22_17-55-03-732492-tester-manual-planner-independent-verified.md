@@ -1,0 +1,10 @@
+# Independent manual API and worker tests passed
+
+- Local timestamp / acting role / milestone: 2026-10-22T17:55:03.732490-04:00 / tester, serialized by orchestrator / manual-planner-start.
+- Requested scope: force one existing staged planner cycle, optional channel whitelist overriding policy blacklist, queued originals only.
+- Starting repository state: accepted independent contract; simplified/staged pipeline and concurrent dirty work preserved.
+- Work performed / changed files: Owns three new manual-planner route/dispatch/scope tests and only site-security principal expectation. Signed HTTP to actual durable SQL/Node store/dispatcher/forced SQL claim/real handler initial-API-followup sequencing verified with inert business adapters. Tests cover ordinary/forced overlap, cooldown, backoff/quarantine/snapshot limits, exact selected queued sources, current revocation, default blacklist/Gmail, task isolation, request token races/expiry/capacity, status privacy and real signed-site CSRF/capability denial. Found channel validator mismatch and oversized stream-cancel hang; coder/parent fixed and retained adversarial regressions.
+- Decisions: one configured bounded batch, no live history import or invented originals; omitted/empty whitelist retains normal sources. Ordinary map visibility for excluded-source participants stays unchanged.
+- Checks and evidence: node --test tests/manual-planner-dispatch.test.mjs tests/manual-planner-route.test.mjs tests/manual-planner-scope.test.mjs tests/site-security.test.mjs tests/scoped-agent-claim.test.mjs tests/agent-staged-handler.test.mjs tests/staged-runtime-integration.test.mjs tests/discord-blacklist-integration.test.mjs:130/130pass,0skip. /tmp/manual-independent-final.log; assigned whitespace pass.
+- Resulting state / acceptance: component/local test acceptance; independent final evaluation and hosted deployment not claimed by this pass.
+- Remaining work and handoff: finish evaluator review and reviewed forward migrations/source-isolated rollout; preserve untouched tasks, ordinary source policies, budgets and concurrent work.

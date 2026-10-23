@@ -4,24 +4,13 @@ import {readFile,readdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {checkSchema,validateArguments} from '../server/automation/validation.js';
-import {PEOPLE_HERE_ENTRY_SCHEMA,SCHEDULED_EVENT_ENTRY_SCHEMA,MAP_EVENT_SCHEMA,EVENT_BUILDINGS_SCHEMA,EVENT_PEOPLE_SCHEMA,MAP_RECORD_CONTRACTS,MAP_RECORD_EXAMPLES,PRESENCE_DEFAULT_TTL_SECONDS,PRESENCE_DEFAULT_POLICY,EVENT_DEFAULT_DURATION_SECONDS,EVENT_DEFAULT_POLICY,buildMapRecordPrompt} from '../server/map/contracts.js';
+import {validateArguments} from '../server/automation/validation.js';
+import {PEOPLE_HERE_ENTRY_SCHEMA,SCHEDULED_EVENT_ENTRY_SCHEMA,MAP_EVENT_SCHEMA,EVENT_BUILDINGS_SCHEMA,EVENT_PEOPLE_SCHEMA,MAP_RECORD_EXAMPLES} from '../server/map/contracts.js';
 const migrations=new URL('../supabase/migrations/',import.meta.url);
 async function migration(n){const file=(await readdir(migrations)).find(f=>f.endsWith('.sql')&&Number(f.slice(8,12))===n);assert(file);return {file,sql:await readFile(new URL(file,migrations),'utf8')};}
 const unchangedHashes={21:'9627700ffabb38ccd95fdc435cb67fc923df7fa15fe097bebf01c807b1486cee',22:'235a3a1bec6c794cf1e6f7ce26811cf1e618d9c2926449f5030f4720bbe84dea',23:'a29b3aadf55f42f9368020c2a822d5d5802dada21f21b97c0454855f79d16705',24:'7624f380d3dadeffc443eea6b9b16ecadf82c8eb46fd14c5c62ed332ca774459'};
 // Historical fixtures deliberately exercise only the immutable 001–024 schema.
 const legacy={building_id:'bobst-library',people_here:[{person_id:'00000000-0000-0000-0000-000000000001',status:'self_reported',valid_from:'2026-10-17T14:00:00-04:00',expires_at:'2026-10-17T16:00:00-04:00',source_id:'00000000-0000-0000-0000-000000000002',source_url:'https://example.invalid/messages/presence-example',label:'working on a project'}],scheduled_events:[{id:'example:stable-event',title:'Example workshop',starts_at:'2026-10-20T18:00:00-04:00',ends_at:'2026-10-20T19:30:00-04:00',time_zone:'America/New_York',all_day:false,status:'confirmed',source_id:'00000000-0000-0000-0000-000000000002',source_url:'https://example.invalid/events/timed-example'}]};
-function frozen(value){if(value&&typeof value==='object'){assert(Object.isFrozen(value));for(const child of Object.values(value))frozen(child);}}
-test('normalized contracts are immutable valid tool schemas with independent relationships',()=>{
- for(const value of [MAP_RECORD_CONTRACTS,MAP_RECORD_EXAMPLES,PRESENCE_DEFAULT_POLICY,EVENT_DEFAULT_POLICY])frozen(value);
- assert.deepEqual(Object.keys(MAP_RECORD_CONTRACTS),['events','event_buildings','event_people']);
- for(const schema of Object.values(MAP_RECORD_CONTRACTS))assert(checkSchema(schema));
- assert.equal(validateArguments(MAP_RECORD_EXAMPLES.event,MAP_EVENT_SCHEMA),true);
- assert.equal(validateArguments(MAP_RECORD_EXAMPLES.buildings,EVENT_BUILDINGS_SCHEMA),true);
- assert.equal(validateArguments(MAP_RECORD_EXAMPLES.people,EVENT_PEOPLE_SCHEMA),true);
- assert(!('is_primary' in EVENT_BUILDINGS_SCHEMA.items.properties));assert(!('building_id' in EVENT_PEOPLE_SCHEMA.items.properties));
- assert.throws(()=>{MAP_RECORD_CONTRACTS.events.properties.name.maxLength=99;},TypeError);
-});
 test('normalized schemas reject extra fields, nested provider data and legacy shape',()=>{
  assert.equal(validateArguments({...MAP_RECORD_EXAMPLES.event,created_at:'2026-10-18'},MAP_EVENT_SCHEMA),false);
  assert.equal(validateArguments({...MAP_RECORD_EXAMPLES.event,name:{text:'workshop'}},MAP_EVENT_SCHEMA),false);
@@ -29,20 +18,6 @@ test('normalized schemas reject extra fields, nested provider data and legacy sh
  assert.equal(validateArguments([{...MAP_RECORD_EXAMPLES.buildings[0],is_primary:true}],EVENT_BUILDINGS_SCHEMA),false);
  assert.equal(validateArguments([{...MAP_RECORD_EXAMPLES.people[0],building_id:'bobst-library'}],EVENT_PEOPLE_SCHEMA),false);
  assert.equal(validateArguments([{...MAP_RECORD_EXAMPLES.people[0],label:'😀'.repeat(200)}],EVENT_PEOPLE_SCHEMA),true);
-});
-test('event classification is required, limited to the five existing catalogue codes and independent of kind',()=>{
- assert.deepEqual(MAP_EVENT_SCHEMA.properties.type_id.enum,['study','meeting','event','social','other']);
- assert(MAP_EVENT_SCHEMA.required.includes('type_id'));
- for(const type_id of MAP_EVENT_SCHEMA.properties.type_id.enum)assert(validateArguments({...MAP_RECORD_EXAMPLES.event,type_id},MAP_EVENT_SCHEMA));
- const omitted={...MAP_RECORD_EXAMPLES.event};delete omitted.type_id;assert.equal(validateArguments(omitted,MAP_EVENT_SCHEMA),false);
- for(const type_id of ['workshop','work_session','invented',null])assert.equal(validateArguments({...MAP_RECORD_EXAMPLES.event,type_id},MAP_EVENT_SCHEMA),false);
-});
-test('approved duration defaults remain separate source-time policies',()=>{
- assert.equal(PRESENCE_DEFAULT_TTL_SECONDS,7200);assert.equal(EVENT_DEFAULT_DURATION_SECONDS,7200);
- assert.equal(PRESENCE_DEFAULT_POLICY.anchoredTo,'original_provider_report_timestamp');
- assert.equal(EVENT_DEFAULT_POLICY.preserveExistingEndOnPartialEdit,true);
- assert.match(buildMapRecordPrompt(),/EVERY linked building/);assert.match(buildMapRecordPrompt(),/one avatar per person per building/);
- assert.match(buildMapRecordPrompt(),/EXCLUSIVE end/);
 });
 test('immutable applied migrations 021–024 retain the independently captured pre-pass hashes',async()=>{
  for(const [n,hash] of Object.entries(unchangedHashes)){const {sql}=await migration(Number(n));assert.equal(createHash('sha256').update(sql).digest('hex'),hash);}

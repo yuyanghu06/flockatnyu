@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {boundedWork, createMapEventService, createMapEventStore} from '../server/map/events.js';
 import {createMapPresenceService} from '../server/map/presence.js';
-import {createChatAttendanceService} from '../server/map/chat-attendance.js';
+import {createMapTools} from '../tools/map/index.js';
 import {createGoogleClient} from '../server/google/client.js';
 import {createCalendarClient} from '../server/google/calendar-client.js';
 import {createGoogleOAuth} from '../server/google/oauth.js';
@@ -45,13 +45,13 @@ for(const kind of ['events','presence'])test(`${kind} source checks can exceed 5
   assert.equal(kind==='events'?state.value.events.length:state.value.buildings[0].events.length,10,'the denied original stays hidden despite the larger deadline');
 });
 
-test('attendance target lookup waits beyond the old 15s ceiling for authorized map reads',async t=>{
+test('standard map read waits beyond the old 15s ceiling for its authorized event snapshot',async t=>{
   const advance=clock(t),data=snapshot();let reads=0;
   const service={configured:true,read:async()=>{reads++;await new Promise(resolve=>setTimeout(resolve,20000));return {status:'ok',...data};}};
-  const request=createChatAttendanceService({store:{configured:true,read:async()=>data},service,publicOrigin:'https://flock.example',now:()=>new Date(at)}).createRequest({userMessage:'alex will be going to synthetic event today',principal});
-  const state=observe(request.find({personName:'alex',eventQuery:'synthetic event',principal}));await flush();
+  const tools=createMapTools({service});
+  const state=observe(tools.execute({name:'read_map_events',arguments:{},principal}));await flush();
   assert.equal(reads,1);await advance(19999);assert.equal(state.done,false);await advance(1);await state.promise;
-  assert.equal(state.value.status,'ok');assert.equal(state.value.attendanceTargets.selection,'not_found');
+  assert.equal(state.value.status,'ready');assert.equal(state.value.events.length,data.events.length);
 });
 
 for(const requested of [undefined,60000])test(`map work ${requested===undefined?'default':'explicit 60s'} survives the old 15s ceiling and expires at 60s`,async t=>{

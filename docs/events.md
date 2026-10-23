@@ -153,10 +153,10 @@ from original source time and supported timezone context. Unknown activity leave
 the participant label blank, uses type `other` and a neutral presence/plan title.
 
 A screenshot discussing a hypothetical feature or example statement does not
-establish a real location report. Chat generic writes still require an affirmative
-current-user map action, request-local supported originals and exact identity
-receipts. A bare website “I” statement does not identify a provider account; the
-separate named-person attendance path still updates existing events only.
+establish a real location report. Chat interprets the current user's request through the normal map tools.
+The verified Discord speaker or a supplied unambiguous roster name resolves the
+person; a bare website “I” needs a name when no verified identity is available.
+Provider-backed records retain their source visibility and revision checks.
 These are prompting instructions backed by existing tools, not a guarantee that
 a model will interpret every message correctly or a time-selector implementation.
 
@@ -172,12 +172,30 @@ Rows show the stored title, bold weekday/date/time, separate room/area notes and
 
 ## Chat-declared attendance
 
-An explicit current message naming a person and existing event, such as “Yuyang will be going to help with AWS on Tuesday,” can mark that person going without a Discord reference. Dedicated target lookup resolves a unique trackable roster full name or first-name token and a unique authorized, unexpired scheduled occurrence. Ambiguity, first-person identity, hypothetical/negated/quoted text and attachment contents cannot authorize this path. The service preserves event facts, buildings, other participants and individual timing, checks current access and uses optimistic concurrency. It cannot create events or edit Calendar/catalogues.
+A clear current request such as “ill be going to gogreek tomorrow” uses
+`read_map_events`, `lookup_map_person` and `upsert_map_event`. The model resolves
+the verified Discord speaker or a supplied unique roster name and inspects the
+actual existing events. It asks when the intended person or occurrence is
+unclear, retaining the supplied date/place through ordinary clarification.
+There is no separate attendance parser, target resolver or attendance-write tool.
 
-Participation inherits the original event source UUID only as its access scope. Its server-generated source URL is a distinct app marker, PUBLIC_ORIGIN/?event=<eventUUID>#attendance-<personUUID>-<requestUUID>, identifying the chat declaration rather than provider authorship. Current canonical app origin, existing trackable person/event and current access to the event's supported original are rechecked when displaying or preserving participation. No raw transcript or new account identity is stored; marker links open the existing map but do not implement event navigation. Worker and web must use the same PUBLIC_ORIGIN. Generic map upserts retain original-provider evidence and exact identity receipts.
+An attendance update preserves the event's identity, timing, locations, unrelated
+participants and existing source attribution. It uses the current revision and
+normal source visibility checks. The adapter fills application chat attribution
+for new participant facts when omitted. Only an applied `mapWrite` receipt
+confirms “marked going”; a lookup alone does not save anything, and going does
+not establish physical arrival. An RSVP does not create a Calendar event.
 
-Successful chat writes trigger an immediate frontend map refresh. Future going participants appear on the event card/upcoming list and become map avatars only in the event's valid active window.
+Previously stored `#attendance-…` links remain supported through compatibility
+validation and current access to the linked event's original source. They are
+historical provenance, not a separate tool path. No bulk rewrite is performed.
 
-Event phrases use NFKC/case normalization and contiguous whole alphanumeric token matching, so AWS Hackday and AWS Hack Day can resolve the same occurrence despite spaces, hyphens or punctuation. The same rule binds the current declaration and rechecks the event before writing. This formatting normalizer does not infer synonyms or match fragments of larger tokens; catalogue-based model resolution below handles aliases. Person/date/source/concurrency checks remain unchanged.
+Successful normal map writes trigger an immediate frontend map refresh. Future
+participants appear on event cards/upcoming lists and become map avatars only
+in the event's active window.
 
-When normalized titles do not resolve, lookup returns the authorized, unexpired, date-filtered catalogue with fuzzy bigram ranking and bounded notes/location context. The model resolves clear typos or aliases from those actual events; rank alone is not confidence. All candidates are returned up to20, with explicit truncation and no write receipts for incomplete lists. Exact duplicate matches, multiple matching full contexts and unsupported single short names require clarification. Complete candidate selections bind the exact returned event name/source/revision and recheck authorization before an attendance-only write. Person matching remains exact.
+Staged worker Calendar projection uses the configured source UUID plus exact occurrence ID for both club and Member Plans events. New worker personal/current-presence activities originate in Member Plans with signed independently verified person/source metadata. Existing historical map-only rows are preserved; no bulk provenance migration. Independent RSVP/source relationships remain intact across deterministic updates.
+
+## Chat map updates
+
+Current location statements and explicit plotting requests use the existing map read/person-lookup/upsert tools. Chat no longer needs a provider original or linked-author proof to save. Verified Discord identity or an unambiguous stated name resolves the fixed person; the prompt asks when essential person/place/time facts are unclear. The existing adapter fills accurate chat attribution when omitted. Current presence may start at server acceptance time with the approved two-hour default when no end is supplied; explicit timing wins. Normal authentication, provider-source visibility, event validation and optimistic revisions remain. Worker source grants are unchanged. No extra parser, resolver/save tools, session HMAC or pending-report cache remains.

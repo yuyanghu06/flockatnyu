@@ -12,7 +12,8 @@ test('web and worker upload contexts contain exact reachable code, pinned manife
   for (const service of ['web', 'agent-worker']) {
     const result = await prepareRuntimeDeployment({service, temporaryRoot:temp}); contexts.push(result);
     assert.ok(result.files.includes(service === 'web' ? 'server/web.js' : 'server/automation/cli.js'));
-    assert.ok(result.files.includes('server/miro/mcp-auth.js'));
+    assert.equal(result.files.includes('server/miro/mcp-auth.js'),service === 'web');
+    if(service==='agent-worker')assert(!result.files.some(name=>name.startsWith('server/miro/')||name.startsWith('tools/miro/')));
     assert.ok(result.files.includes('server/automation/adapters.js') === (service === 'agent-worker'));
     assert.equal(result.files.some(name => name.startsWith('dist/')), service === 'web');
     for (const name of result.files) assert.ok(!/(?:^|\/)(?:\.env[^/]*|\.git|node_modules|evidence|history|\.miro[^/]*)\b/.test(name), name);

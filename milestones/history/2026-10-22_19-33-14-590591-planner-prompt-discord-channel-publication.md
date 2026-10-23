@@ -1,0 +1,10 @@
+# Prompt Discord channel publication contract
+
+- Local timestamp / acting role / milestone: 2026-10-22T19:33:14.590591-04:00 / planner / live-planner-calendar-tests.
+- Requested scope: fix discovery-induced ingestion delay and continue natural Chrome tests.
+- Starting state: existing full-generation publication requires all archives; freshness alone cannot resolve latency. No implementation changes in this planning pass.
+- Work performed: read current discovery, Gateway, listener, store and SQL contracts; bounded design supplied to coder/tester.
+- Decisions: add a dedicated service-only exact-channel/ancestor reconciliation RPC in migration044, using fresh REST permissions and current policy. Require existing same-revision publication; preserve source UUIDs/manual flags, blacklist/ancestry and descendant revocations. No source bodies/history import, tables, columns, timeout or budget changes. Reconciled rows use current published generation so existing readers/manual scope remain compatible. Set restartRequired in discovery state on changed observations; reject old generation continuation/completion and allow next scanner restart from current catalogue. Full archive promotion still requires actual completion. Gateway awaits bounded reconciliation, listener uses same fallback; network/DB failures must not silently checkpoint originals.
+- Checks/evidence: read-only planner report; implementation, PGlite behavior and live publication are not yet verified. Coder owns runtime/new044; independent tester owns meaningful SQL/Gateway tests. Root owns guides/migration/deployment/live tests.
+- Resulting state / acceptance: plan accepted for implementation. Existing source work and concurrent changes preserved.
+- Remaining work and handoff: implement/test/evaluate, apply migration via MCP, sanitized collector deployment, verify native replay or Chrome updates if session gap, continue actual Calendar/map cases and exact cleanup. Older collector rollback is not assumed compatible with flagged restart state.

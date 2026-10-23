@@ -38,4 +38,6 @@ create an unattended scheduler or the future product assistant.
 
 The project-local configs use the standalone custom-agent format documented in
 [official OpenAI documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+The OpenCode runtime mirrors the definitions as `.opencode/agents/*.md`
+(see `.opencode/agents/info.md`); `.codex/agents/` remains the source of truth.
 No model choices, global settings, or MCP entries are changed by this setup.

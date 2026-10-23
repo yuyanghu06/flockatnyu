@@ -119,3 +119,83 @@ When an event is underway, show the yellow exclamation mark from the personal we
 ## 2026-10-21 — Relevant links during planner Discord summaries
 
 - **Planner link following:** When the autonomous planner/update agent summarizes or reviews Discord originals, it should open links it judges relevant to understanding or acting on the activity—for example, a volunteer signup sheet. The presence of a relevant link is sufficient reason to inspect it through available authorized read tools rather than relying only on the message excerpt. Preserve normal source/account access and treat linked content as evidence. User requested this as a saved behavior requirement; implementation and verification are a separate follow-up.
+
+## 2026-10-22 — Corrected future update-agent scope; do not implement yet
+
+The user clarified that the intended update agent has only two responsibilities:
+
+1. Read the temporary cache of authorized Discord/Gmail messages and make the corresponding Calendar changes.
+2. Update people's map location/participation from what they actually say, associating them with the appropriate events when those events exist.
+
+The user does not want broad rolling Calendar reconciliation, pagination upkeep or other general synchronization chores assigned to the model. Automatic per-batch Miro reconciliation is outside this newly stated two-task scope; this note does not disable Miro or its read tools. The separately ongoing cache/deterministic Calendar work is expected to handle mechanical synchronization and reduce these failures. Its existing implementation is not changed by this note, and exact personal-plan routing is not newly decided here.
+
+This corrects the broader future planner responsibilities in the October 18 notes. Preserve those entries as history. The user explicitly requested recording this direction only and deferring implementation until they have time. Do not change prompts, code, tools, limits, services or deployment on the authority of this note. Earlier discussion of 24 calls and longer timeouts remains discussion, not selected settings.
+
+## 2026-10-22 — Update-agent simplification resumed
+
+The user explicitly resumed implementation of the corrected two-task scope after the separate Calendar work. This supersedes the earlier implementation deferral for this cleanup. Remove automatic worker Miro/general model synchronization duties; retain completed deterministic Calendar/cache work and existing personal-plan routing. No new call-limit or timeout values were selected.
+
+## 2026-10-22 — Computer-use Flock testing permission
+
+The user permits computer use to visit Tech@NYU Discord #flock-test and send routine test messages to Flock when useful for requested verification. Save this standing permission in AGENTS.md. The user explicitly clarified that no live test is needed now; permission was recorded without sending messages.
+
+## 2026-10-22 — Runner tool errors and call-cap audit
+
+The user authorized changing failed tool results, thrown errors, null/malformed results and oversized results into a generic tool-call error with a safe reason returned to the model, which can continue other work. This resumes implementation for that specific behavior after the prior no-code discussion. Existing source tools retain their own checks; no compound cache/source-validation tool or new call-limit value is requested. The user also explicitly requested a separate agent to count model replies requesting more than8calls, distinguishing this from cumulative calls across an entire run.
+
+## 2026-10-22 — Plain task-cache reads, standard tools afterward
+
+The user authorized splitting the bundled cache reader into a plain read of saved task data. The model then decides which standard Discord/Gmail, Calendar and map tools to call for the task. Do not hide source rereads, Calendar preflights or reference checks inside task-cache reads or catalogue preparation. Keep normal tools responsible for their own checks, rather than adding another compound tool. No new cap or timeout settings were selected.
+
+## 2026-10-22 — Test realistic behavior and permit API evaluations
+
+The user prefers meaningful use cases, edge cases, correct responses and actual task outcomes over large test totals. Leave syntax and other compiler/build-detectable errors to the normal checks; avoid redundant tests that merely repeat implementation details. Evaluators may use configured model/application APIs for bounded realistic simulations and inspect actual responses. Distinguish scripted checks from real model behavior and live verified outcomes. This request records the policy; it does not itself run API calls or remove tests.
+
+## 2026-10-22 — Worker call limits selected
+
+The user explicitly selected16tool calls per model reply and64total calls per stage for the update/planner worker and requested notification once deployed. This supersedes earlier notes that no new call limits were selected. Initial and followup stages each get64; chat limits, model rounds and timeout/token settings remain unchanged.
+
+## 2026-10-22 — Attendance route correction and full prompt audit
+
+The screenshot of a first-person GoGreek attendance request exposed an old named-attendance parser/tool route still registered and prompted. Correct it using the previously authorized normal map tools and verified Discord actor/name, preserving actual write/access checks. After this fix, the user explicitly requested an audit of all application prompts and updates to outdated instructions, including tool instructions and both chat/update-agent paths.
+
+## 2026-10-22 — Cancellation task completion authorized
+
+After the prompt audit exposed a missing cancellation case in saved-task completion, the user explicitly requested adding it. Confirm exact successful club/Member Plans cancellations before removing their saved tasks, while retaining failed or uncertain work. This is a backend completion fix, not a new prompt/cache tool or budget change.
+
+## 2026-10-22 — OpenCode inference API as a cheaper model provider (idea only)
+
+The user is considering replacing the OpenAI API calls with OpenCode's Console
+inference API to cut model costs. Recorded findings as of this date:
+
+- **Feasibility**: feasible without architecture change. Console serves OpenAI
+  Chat Completions and Anthropic Messages wire formats at
+  `https://opencode.ai/inference/{openai,anthropic}/...`, which the single
+  `server/providers/index.js` core already speaks. It is a stateless inference
+  endpoint, not a headless agent harness; no `opencode serve` instance is
+  involved. GPT models are served only via the OpenAI **Responses API**, which
+  the adapter does not implement, so GPT-through-Console needs adapter work.
+- **Billing**: free for any team size, no seat fees; pay-as-you-go prepaid
+  credits with a 4.6% + $0.31 processing fee per purchase; optional monthly
+  invoiced billing; budgets exist; paid requests fail with HTTP 402 at zero
+  balance, which is outside the adapter's retryable status set.
+- **Indicative prices** (USD per 1M tokens, input/output, current docs):
+  GLM 5.3 Flash $0.15/$0.50; Qwen3.8 Flash $0.15/$0.47; DeepSeek V4.1 Flash
+  $0.30/$1.20; MiniMax M3 $0.30/$1.20; Kimi K2.6 $0.95/$4.00; Claude Haiku 5.5
+  $0.10/$0.50 (≤100K ctx); Claude Sonnet 5.5 $2/$10; Sonnet 4.6 $3/$15; Claude
+  Opus 5.5 $4/$20; GPT 6 Luna $0.10/$0.50 and GPT 6 Sol $2/$10 via Responses.
+  Cached read/write columns map onto the existing audit cache partitions.
+- **Savings source**: model choice, not gateway arbitrage for identical models
+  (Console sells at cost plus payment fees). Free promo models are time-limited
+  and some collect usage data during the free period, so no live worker path
+  should depend on one.
+- **Status**: discussion and documentation only. No key, server config, code,
+  call-limit, timeout, prompt, schema, service or deployment change is
+  authorized by this note. Any cutover requires the bounded sequence: Console
+  key in Railway env → recorded response fixture → compatibility regressions →
+  real-model eval on simulated storage → separate deployment decision.
+
+
+## 2026-10-22 — Reuse existing events for attendance
+
+Approved correction: when a member says they will be at a named event/venue on a date, inspect existing authorized map/Calendar occurrences before asking hours or creating a separate activity. “The entire time” inherits the matching event’s existing interval, not all day. Preserve explicit independent plans and clarify ambiguity. The user authorized removing the erroneous all-day GoGreek duplicate while retaining attendance on the original3–5PM event.

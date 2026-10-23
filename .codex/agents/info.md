@@ -11,3 +11,8 @@ resolve before falling back to the parent's values.
 
 The orchestrator dispatches bounded assignments using `docs/templates/` and
 serializes journal writes. Specialists return reports and do not spawn children.
+
+These TOML role definitions are the source of truth for the five-role workflow.
+The OpenCode runtime mirrors them as Markdown agents in `.opencode/agents/`
+(documented there); refresh that mirror in the same pass whenever a role here
+changes. No model or reasoning effort is pinned on either side.

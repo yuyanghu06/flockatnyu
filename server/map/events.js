@@ -142,7 +142,7 @@ async function boundedJson(response, signal) {
   } finally {signal.removeEventListener('abort',cancel);await reader.cancel().catch(()=>{});reader.releaseLock();}
 }
 
-export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,timeoutMs=SOURCE_TOOL_TIMEOUT_MS}={}) {
+export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,timeoutMs=SOURCE_TOOL_TIMEOUT_MS,getLeaseToken}={}) {
   let origin=null;try{const u=new URL(env.SUPABASE_URL);if(u.protocol==='https:'&&!u.username&&!u.password&&!u.search&&!u.hash&&['','/'].includes(u.pathname))origin=u.origin;}catch{}
   const key=env.SUPABASE_SERVICE_ROLE_KEY?.trim(),configured=Boolean(origin&&key);
   const request=(path,body,signal)=>boundedWork(async requestSignal=>{
@@ -168,7 +168,10 @@ export function createMapEventStore({env=process.env,fetchImpl=globalThis.fetch,
     },
     async upsert({event,buildings,people,expectedUpdatedAt=null,signal}={}) {
       try {
-        const result=await request('rpc/map_upsert_event',{p_event:event,p_buildings:buildings,p_people:people,p_expected_updated_at:expectedUpdatedAt},signal);
+        const leaseToken=typeof getLeaseToken==='function'?getLeaseToken():undefined;
+        if(getLeaseToken&&!uuid(leaseToken))return {status:'conflict'};
+        const result=await request(getLeaseToken?'rpc/map_automation_upsert_event':'rpc/map_upsert_event',{
+          ...(getLeaseToken?{p_token:leaseToken}:{}),p_event:event,p_buildings:buildings,p_people:people,p_expected_updated_at:expectedUpdatedAt},signal);
         if(!object(result)||!['applied','conflict'].includes(result.status)||(result.status==='applied'&&(!uuid(result.event_id)||timestamp(result.updated_at)===null)))throw Error('invalid_event_write_response');return result;
       }catch(error){if(error.code==='40001')return {status:'conflict'};if(['23514','23503','23505','22023'].includes(error.code))return {status:'invalid'};throw error;}
     },

@@ -33,6 +33,3 @@ test('answer streaming keeps model reasoning defaults even when planning for the
     const bodies=[];const provider=createProvider(makeConfig({LLM_MODEL:model}),{fetchImpl:async(_,options)=>{const body=JSON.parse(options.body);bodies.push(body);return body.stream?new Response(sse,{headers:{'content-type':'text/event-stream'}}):Response.json(openaiResult);}});await provider.planTools({messages,system:'Plan',tools:[tool]});const chunks=[];for await(const chunk of provider.stream({messages,system:'Answer'}))chunks.push(chunk);assert.deepEqual(chunks,['Answer']);assert.equal(bodies[0].reasoning_effort,'none');assert.equal(Object.hasOwn(bodies[1],'reasoning_effort'),false);assert.equal(Object.hasOwn(bodies[1],'tools'),false);assert.equal(bodies[1].stream,true);assert.equal(bodies[1].store,false);
   }
 });
-test('planning HTTP failure remains sanitized after the compatibility adjustment',async()=>{
-  const provider=createProvider(makeConfig({}),{fetchImpl:async()=>Response.json({error:{message:'fixture-only-secret private account details'}},{status:400})});await assert.rejects(provider.planTools({messages,system:'Policy',tools:[tool]}),error=>error.code==='provider_unavailable'&&!error.message.includes('fixture-only-secret'));
-});

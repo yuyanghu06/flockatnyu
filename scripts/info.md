@@ -54,7 +54,7 @@ The 2026-10-18 normalized-events revision replaces the legacy map fixture script
 
 miro-connect.mjs performs app-owned Miro MCP OAuth consent with private refresh credentials. The old Miro REST snapshot deployment preparer is removed.
 
-`verify-agent-prompts.mjs` is an explicit --live-model behavioral harness: it calls the configured provider using production prompts and controlled synthetic sources/inert write adapters. It must not enable the worker, mutate club events or print credentials.
+`verify-agent-prompts.mjs` is an explicit --live-model chat harness: seven current chat scenarios use the configured provider, production prompts and synthetic sources/inert write adapters. Retired non-staged worker scenarios and obsolete self-identity denial were removed. It does not evaluate the staged worker, enable services, mutate club events or print credentials.
 
 The agent harness enforces exact synthetic provider selectors/window pagination and gently spaces actual model requests. Interrupted diagnostics and per-case hashes remain explicit; latestCases merges runs and must not be described as one all-case final-build run.
 

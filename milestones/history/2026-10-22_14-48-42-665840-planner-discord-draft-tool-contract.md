@@ -1,0 +1,10 @@
+# Discord draft tool contract accepted
+
+- Local timestamp / acting role / milestone: 2026-10-22T14:48:42.665840-04:00 / planner (independent discord_draft_plan, journaled by orchestrator) / discord-drafts.
+- Requested scope: Expose a Flockbot tool to draft a message for another eligible Discord channel, displaying it in the current conversation for review. User explicitly selected drafting only; do not fix map behavior in this task.
+- Starting repository state: Concurrent Discord concurrency changes/release in progress, unrelated map diagnosis recorded. Preserve all existing changes.
+- Work performed / changed files: Independent read-only planner traced runtime bridge, shared runner and result projection, destination access and read-source audience isolation. Journal/scope files only changed by parent.
+- Decisions: Add Discord-only draft_discord_message with exact target ID/mention/name and nonblank content bounded to 2000 characters. Validate target using current published eligibility and existing actor/bot destination access without merging target grants or fetching messages. Return request-local labeled review text and sent=false, never native Discord persistence or delivery. Separate adapter is absent website/stateless/worker. Preserve same-channel reply transport.
+- Checks and evidence: Planner inspected actual repository source/instructions and returned bounded acceptance contract; no tests or external calls by planner. Coder owns draft adapter/runtime/shared result wiring; independent tester owns two new test suites. No source/database writes/model calls/deployment in this pass.
+- Resulting state / acceptance: Implementation contract accepted; exclusive coder/tester scopes assigned. Parent owns docs and journals. A fresh independent evaluation follows implementation/testing.
+- Remaining work and handoff: Implement, verify invalid/context/eligibility/ambiguity/revocation/no-send/source-scope/privacy paths and provider propagation, evaluate, update guides and integrate. Map identity and unsolicited bug-report fixes remain separate.

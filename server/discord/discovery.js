@@ -81,7 +81,7 @@ export async function runDiscordDiscovery({config,store,client,now = new Date(),
     let previous = loaded.state ?? null;
     const at = new Date(typeof now === 'function' ? now() : now);
     if (!Number.isFinite(at.getTime())) raise('invalid_request');
-    let state = previous && previous.phase !== 'complete' && previous.policyRevision === policy.revision ? structuredClone(previous) :
+    let state = previous && !previous.restartRequired && previous.phase !== 'complete' && previous.policyRevision === policy.revision ? structuredClone(previous) :
       {generation:randomUUID(),policyRevision:policy.revision,phase:'channels',parents:[],channelIndex:0,activeThreads:null,activeIndex:0,tasks:[],taskIndex:0,startedAt:at.toISOString()};
     if (!uuid(state.generation) || !['channels','active','archives'].includes(state.phase) || !Array.isArray(state.parents) || state.parents.length > 500 || !Array.isArray(state.tasks)) raise('invalid_response');
     result.generation = state.generation;

@@ -169,3 +169,52 @@ active-event-indicators/ tracks current-event visual signals and the bounded Go 
 `combined-release/` tracks the all-working-tree Railway rollout and logicalGitHubpublication, including requiredschema/privateconfiguration, sanitizedcontexts, hostedchecksandportraitcutover.
 
 `discord-blacklist/` tracks automatic current-catalogue grants for chat and the update agent, non-Discord grant preservation, dynamic scoped claims and empty-scope retention maintenance.
+
+`discord-concurrency/` records the completed live10total/5member Flockbot capacity change, parser/test boundaries and verification limits. The current snapshot links the exact release receipt.
+
+`discord-drafts/` tracks request-local, draft-only messages addressed to another eligible Discord channel, with no delivery or source-scope expansion.
+
+Latest update-agent startup clarification: [read-only operational pass](history/2026-10-22_14-55-42-670919-orchestrator-update-agent-startup-explained.md); startup versus per-batch behavior and actual production overrides are recorded without source content or secrets.
+
+`calendar-complete-receipts/` tracks provider-confirmed event details and explicit bounded receipt projection through Calendar tools and model context.
+
+Latest update-agent accounting inquiry: [read-only attribution pass](history/2026-10-22_14-59-46-542154-orchestrator-update-agent-usage-audited.md); current implementation work remains in milestone.md and private numerical results stay outside tracked evidence.
+
+`chat-map-clarification/` tracks ask-name prompting and the clarified map request write route; current status stays in the rolling milestone.
+
+Update-agent replay mechanisms independently reviewed: [operational pass](history/2026-10-22_15-41-42-456262-planner-update-agent-replay-source-reviewed.md). Current runtime/release truth remains in milestone.md.
+
+Update-agent effects and repeated work diagnosed: [operational pass](history/2026-10-22_15-41-42-457964-orchestrator-update-agent-effects-audited.md). Current runtime/release truth remains in milestone.md.
+
+
+staged-calendar-pipeline/ tracks Calendar-first personal activities, deterministic two-calendar map projection, task persistence and bounded final-agent processing; current release state is in milestone.md.
+
+weekly-bug-audit/ tracks the read-only weekly source/operational report and private artifact verification.
+
+Calendar rejection/tool-budget advisory: [read-only diagnosis](history/2026-10-22_15-47-27-920764-orchestrator-calendar-rejection-and-timeout-diagnosed.md); staged implementation/release remains separately tracked.
+
+`simplified-update-agent/` tracks removing automatic worker Miro/model synchronization duties while preserving deterministic Calendar/cache work and exact queued Gmail/Discord event provenance.
+
+manual-planner-start/ tracks the operator API and queued-only exact-channel forced cycle, SQL dispatch/metadata readers, independent verification and reviewed rollout.
+
+`tool-error-continuation/` tracks model-visible tool failure replies and the separate audit of the eight-call reply limit, preserving real run controls and successful-write accounting.
+
+plain-task-cache-read/ tracks separating saved task reads from agent-selected standard source/action tools.
+
+`test-suite-audit/` records the repository test inventory and cleanup review; the detailed dated report is `docs/test-suite-audit.md`.
+
+`test-suite-cleanup/` records the applied maximum-safe test reduction after the audit, including retained current behavior and independent acceptance.
+
+worker-call-limits/ tracks the explicitly selected16reply/64stage worker release.
+
+chat-attendance-normal-tools/ tracks removing the old attendance route; prompt-audit/ tracks the subsequent user-requested full runtime/tool instruction audit.
+
+`test-phaseout/` records subsequent current-rule prompt/catalogue/contract reductions after the initial cleanup; the dated result report is `docs/test-phaseout.md`.
+
+`test-priority/` records the essential/useful/historical/review classification of the accepted 2,353-case snapshot; it does not equate lower priority with safe deletion.
+
+Completed essential-test priority: 1,627 essential / 548 useful / 139 protected historical / 39 review out of the accepted 2,353-case snapshot. See test-priority/info.md and docs/test-priority.md.
+
+`contextual-event-attendance/` tracks existing-event lookup, contextual timing and the exact GoGreek duplicate repair.
+
+Latest Flock continuation is `live-planner-calendar-tests/handoff-2026-10-22.md`; user requested immediate documentation and stopping all other work. It supersedes earlier acceptance/cleanup assumptions.

@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import {createAutomationHandler} from '../server/automation/handler.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 import {buildAutomationPrompt} from '../server/automation/prompt.js';
-import {MAP_RECORD_CONTRACTS,MAP_RECORD_EXAMPLES,PRESENCE_DEFAULT_POLICY,EVENT_DEFAULT_POLICY,buildMapRecordPrompt} from '../server/map/contracts.js';
 
 const inputId='11111111-1111-4111-8111-111111111111';
 const now=()=>new Date('2026-10-17T20:00:00Z');
@@ -18,53 +17,24 @@ function harness(respond){
 const turn=(name,args,id='call_1')=>({stopReason:'tool_calls',toolCalls:[{id,name,arguments:args}]});
 const wrap=(args={})=>({inputIds:[inputId],arguments:args});
 
-test('real handler delivers structured contracts/examples to provider system prompt and preserves scoped wrapper/finish protocol',async()=>{
+test('real handler delivers queued evidence separately and executes the advertised scoped read and bare finish protocol',async()=>{
  const {handler,state}=harness((request,round)=>round===1?turn('read_context',wrap()):turn('finish_batch',{handledInputIds:[inputId]},'finish_1'));
  assert.deepEqual(await handler.tick(),{status:'completed',handled:1,remaining:0,calls:2});
  assert.equal(state.queue.length,0);assert.equal(state.executions,1);assert.equal(state.actions,0);
  const first=state.requests[0];
  assert(Buffer.byteLength(first.system)<24*1024,'prompt remains below agreed24KiB budget');
  assert.equal(first.system,buildAutomationPrompt({timezone:'America/New_York',now:now()}));
- assert(first.system.includes(buildMapRecordPrompt()),'actual handler must send shared contracts, not an unused helper');
- // Serialized machine-readable payloads are consumed by the provider as text.
- for(const [column,schema] of Object.entries(MAP_RECORD_CONTRACTS)){assert(first.system.includes(column));assert(first.system.includes(JSON.stringify(schema)));}
- assert(first.system.includes(JSON.stringify(MAP_RECORD_EXAMPLES)));
- assert(first.system.includes(JSON.stringify(PRESENCE_DEFAULT_POLICY)));
- assert(first.system.includes(JSON.stringify(EVENT_DEFAULT_POLICY)));
  assert(!first.system.includes(evidence));assert(first.messages[0].content.includes(evidence));
  assert.equal(first.tools.some(tool=>/map|building|presence|event/i.test(tool.name)),false,'prompt does not itself register map-write tools');
  const read=first.tools.find(tool=>tool.name==='read_context');
  assert.deepEqual(read.parameters.required,['inputIds','arguments']);assert.equal(read.parameters.additionalProperties,false);
  assert.equal(first.tools.find(tool=>tool.name==='finish_batch').parameters.properties.handledInputIds.maxItems,20);
- assert.match(first.system,/finish_batch must be the only call/i);
- const calendarParagraph=first.system.split('For Calendar reconciliation,')[1].split('Calendar writes currently')[0];
- assert.match(calendarParagraph,/operator.approved two.hour timed.event default/i);
- assert.match(calendarParagraph,/preserve existing ends on partial edits/i);
- assert.doesNotMatch(calendarParagraph,/never invent durations|missing ends? (?:must|always) defer/i);
-});
-
-// These checks verify explicit instructions reach the model, not model compliance.
-const policies=[
- ['read-only source-backed classification catalogue',[/read_map_events always returns the read.only event_types catalogue/,/study, meeting, event, social, other/,/source evidence to select a category/,/explicitly choose other when unknown/,/never guess from the building/,/Preserve the existing type_id during unrelated edits/,/Never create or edit event types/,/adds no broader write permission/]],
- ['normalized event relationships and retired columns',[/Tables are events, event_buildings and event_people/,/Legacy people_here and scheduled_events.*retired/,/Nullable fields are omitted/]],
- ['multi-location visibility is intentional',[/EVERY linked building/,/Multiple simultaneous locations are allowed/,/one avatar per person per building/,/no primary building/]],
- ['identity stays evidence-backed and profiles fixed',[/exact linked provider user IDs/,/A name alone/,/Never create profiles or invent UUIDs/,/canonical UUIDs of any version/]],
- ['faithful plain-text labels and unknown blank',[/Unknown activity stays empty/,/Never infer studying/,/literal plain text/,/Maximum200 Unicode code points/]],
- ['original timestamps and freshness defaults',[/ORIGINAL provider source timestamp/,/never received\/processing time/,/original provider report timestamp \+7200seconds/,/activity.only.*do not extend/,/not resurrect already.expired/]],
- ['separate scheduled default and partial end preservation',[/scheduled event with missing end/,/starts_at \+7200seconds/,/Preserve an already known end on partial edits/,/Never apply two hours to all.day/]],
- ['all-day dates preserve precision and DST',[/starts_on\/ends_on/,/EXCLUSIVE end/,/DST.crossing/,/Do not invent midnight arrival/]],
- ['read merge and optimistic updates',[/Read before upsert/,/expectedUpdatedAt/,/complete event\/building\/people snapshot/,/merge partial edits/,/conflict requires reread/,/No cross.event removal/]],
- ['approved planned event display without RSVP invention',[/Do not infer RSVP or attendance from organizing\/helping/,/going participation.*automatically supplies planned map visibility/,/Future windows stay upcoming/]],
- ['queued originals and narrow current context',[/Queued Discord originals first, prioritizing eboard/,/Gateway queues updates/,/no routine history\/full.channel sweeps/,/catalogue once if needed/,/Before actionable changes read exact CURRENT messages/,/narrow reply\/reference\/explicit.event\/RSVP context only as needed/,/Miro invalid_request: inspect schema\/exact returned IDs/,/never repeat unchanged or invent IDs/]],
- ['source and completion boundaries',[/untrusted evidence/,/supporting inputIds/,/Configured, allowlisted Calendar originals may support event facts with exact occurrence IDs/,/do not claim success or finish_batch until successful tool results/]],
-];
-for(const [scenario,patterns] of policies)test(`prompt policy coverage: ${scenario}`,()=>{
- const prompt=buildAutomationPrompt({timezone:'America/New_York',now:now()});
- for(const pattern of patterns)assert.match(prompt,pattern,`${scenario}: ${pattern}`);
+ assert.deepEqual(state.requests[1].messages.findLast(message=>message.role==='tool').toolCallId,'call_1');
+ assert.equal(JSON.parse(state.requests[1].messages.findLast(message=>message.role==='tool').content).status,'ready');
 });
 
 test('unknown map-write tool is refused before execution or completion and preserves queued evidence',async()=>{
- const {handler,state}=harness(()=>turn('set_people_here',wrap({building_id:'bobst-library',people_here:MAP_RECORD_EXAMPLES.people})));
+ const {handler,state}=harness(()=>turn('set_people_here',wrap({building_id:'bobst-library',people_here:[]})));
  assert.deepEqual(await handler.tick(),{status:'invalid_tool_call'});
  assert.equal(state.queue.length,1);assert.equal(state.queue[0].raw_response.payload.content,evidence);
  assert.equal(state.finishes,0);assert.equal(state.actions,0);assert.equal(state.executions,0);assert.equal(state.releases,1);

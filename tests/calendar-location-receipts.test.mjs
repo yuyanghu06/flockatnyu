@@ -7,7 +7,7 @@ import {createChatCalendarTools} from '../tools/calendar/chat.js';
 import {projectCalendarBatchWrite} from '../tools/calendar/chat-batch.js';
 import {createApp} from '../server/app.js';
 
-const calendarId='fixed@example.com',privateText='PRIVATE_PROVIDER_ACCOUNT_OR_DESCRIPTION';
+const calendarId='fixed@example.com',privateText='PRIVATE_PROVIDER_FIELD',descriptionText='Saved event description requested for complete receipts';
 const start={date:'2026-10-23'},end={date:'2026-10-24'};
 const url=id=>`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${id} ${calendarId}`).toString('base64url')}`;
 const actor={id:'operator',googleAccess:true,allowedSourceIds:[]};
@@ -31,7 +31,7 @@ function fixture({existing=[],omitLocation=false,providerLocation}={}) {
   const tools=createChatCalendarTools({client});
   return {client,events,calls,tools,writes:()=>writes,request:()=>tools.createRequest({principal:actor,operationId:'location-test'})};
 }
-const human=(id='existing_event',location='Human room')=>({id,summary:'Existing title',location,start,end,status:'confirmed',etag:'"human-revision"',description:privateText});
+const human=(id='existing_event',location='Human room')=>({id,summary:'Existing title',location,start,end,status:'confirmed',etag:'"human-revision"',description:descriptionText});
 const execute=(request,name,args)=>request.execute({name,arguments:args});
 const read=(request,eventId)=>execute(request,'read_calendar_event',{eventId});
 function location(result,expected){assert.equal(result.status,'ready');assert.equal(result.calendarWrite.location,expected);assert(!JSON.stringify(result.calendarWrite).includes(privateText));}
@@ -97,7 +97,7 @@ test('batch creates, existing matches and duplicate rows preserve saved venues t
   const projected=projectCalendarBatchWrite(result.calendarBatchWrite);
   assert.deepEqual(projected.items.map(row=>row.calendarWrite.location),['Human room','New actual room','New actual room']);
   assert.equal(f.events.get('existing_event').location,'Human room');assert.equal(f.writes(),1);
-  assert(!JSON.stringify(projected).includes(privateText));assert(!JSON.stringify(projected).includes('Requested replacement'));
+  assert(!JSON.stringify(projected).includes(privateText));assert.equal(projected.items[0].calendarWrite.description,descriptionText);assert(!JSON.stringify(projected).includes('Requested replacement'));
 });
 
 test('batch title-only updates preserve human venue and clearing stays explicit',async()=>{

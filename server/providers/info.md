@@ -36,6 +36,15 @@ streaming now enforce the configured timeout directly, as native tool turns do.
 neither the production attempt limit nor the deadline checks. No runtime setting,
 provider SDK, model choice or deployment is introduced by this change.
 
-Native toolTurn response validation now records fixed parser causes, including more than eight proposed calls, malformed argument JSON, invalid shapes and reused IDs. These remain failures under the existing cap and are never retried after a successful response. Only sanitized operational correlation and codes enter agent_model_failure logs; private model audit retains the fixed diagnostic alongside its already-authorized returned output.
+Native toolTurn response validation now records fixed parser causes, including proposals above the caller-selected limit, malformed argument JSON, invalid shapes and reused IDs. These remain failures under the selected cap and are never retried after a successful response. Only sanitized operational correlation and codes enter agent_model_failure logs; private model audit retains the fixed diagnostic alongside its already-authorized returned output.
 
 The native planning catalogue accepts at most 64 tool definitions so the full source catalogue including opt-in Attio fits. This is a definition bound only: response call parsing and the shared chat call/round budgets retain their existing limits.
+
+
+Native toolTurn accepts a trusted local maxToolCalls option: default8, integer1
+through16. It validates both previous assistant tool-call messages and the new
+provider reply using the same limit for OpenAI-compatible and Anthropic formats.
+The option is never sent in the HTTP request body. The update worker selects16;
+ordinary chat remains at8. planTools retains its independent8-call parser limit.
+Malformed arguments, duplicate/reused IDs, response bounds, audits and retries
+retain their existing behavior.

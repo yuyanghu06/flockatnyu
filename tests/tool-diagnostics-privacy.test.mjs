@@ -159,8 +159,7 @@ test('fixed Discord, Miro and map outcomes retain exact reason in durable and Ra
     ['read_discord_messages','policy_changed','policy_denied'],['read_discord_messages','paused','policy_denied'],
     ['read_miro_board','indexing','pending'],['read_miro_item','invalid_cursor','rejected'],['read_miro_item','auth_required','policy_denied'],
     ['read_miro_item','invalid_mcp_result','failed'],['read_miro_item','invalid_svg','failed'],
-    ['lookup_map_person','invalid','rejected'],['upsert_map_event','unverified_chat_identity','failed'],
-    ['set_map_attendance','request_local_attendance_required','failed']];
+    ['lookup_map_person','invalid','rejected'],['upsert_map_event','unverified_chat_identity','failed']];
   for(const [tool,status,outcome] of samples){
     await f.logger.recordEvent({eventId:randomUUID(),context,kind:'tool_finished',tool,status,diagnostics:toolDiagnostics({result:{status}})});
     assert.equal(f.rows.at(-1).status,status);assert.equal(f.rows.at(-1).counts.reasonCode,C.reason[status]);

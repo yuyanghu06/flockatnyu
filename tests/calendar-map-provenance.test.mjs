@@ -75,11 +75,10 @@ function timestampFixture(patch={}) {
  let revoked=false;const writes=[];
  const a=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:[sourceId,calendarSource].join(','),AGENT_GMAIL_SOURCE_ID:sourceId,AGENT_CALENDAR_SOURCE_ID:calendarSource},config,now:clock,fetchImpl:async()=>{throw Error('No network allowed');},dependencies:{
   googleConfig:{configured:true},googleClient:{configured:true},calendarConfig:{configured:true,calendarId},calendarClient:{configured:true,calendarId,preflight:async()=>({status:'ready',calendarId,accessRole:'owner'}),listEvents:async()=>({status:'ready',events:[original],coverage:{complete:true},nextPageToken:null}),readEvent:async()=>({status:revoked?'permission_denied':'ready',events:[original]})},
-  miroConfig:{configured:true,boardIds:['board']},miroStore:{configured:true,authorizedBoard:async()=>({status:'ready',data:{board_id:'board',source_id:sourceId,team_id:null}})},miroTools:{configured:true,transport:'mcp',tools:[],prepareBoard:async()=>({status:'ready',boardContext:{format:'synthetic'}}),execute:async()=>({status:'ready',boardContext:{boards:[{boardId:'board',sourceId,teamId:null}]}})},
   discordConfig:{configured:false},discordTools:{tools:[]},mapEventService:{configured:true,read:async()=>({status:'ok',events:[{...proposal.event,status:'confirmed',updated_at:oldTimestamp,created_at:oldTimestamp}],event_people:[],event_buildings:proposal.buildings.map(b=>({...b,event_id:mapId})),buildings:[{id:'bobst-library',name:'Bobst Library'}]}),upsert:async args=>{writes.push(structuredClone({...args,signal:undefined}));return {status:'applied',event_id:mapId,updated_at:currentTimestamp};}},
  }});
  const context={principal:a.principal,inputIds:[queuedId]},tool=name=>a.tools.find(t=>t.name===name);
- const prepare=async()=>{const batch=await a.prepareBatch({...context,inputs:[input]});await tool('list_calendar_events').execute({timeMin:batch.reconciliationWindow.timeMin,timeMax:batch.reconciliationWindow.timeMax},context);await tool('read_map_events').execute({sourceId:calendarSource,sourceRecordId:eventId},context);return batch;};
+ const prepare=async()=>{const batch=await a.prepareBatch({...context,inputs:[input]});await tool('list_calendar_events').execute({timeMin:'2026-10-21T00:00:00Z',timeMax:'2026-10-23T00:00:00Z'},context);await tool('read_map_events').execute({sourceId:calendarSource,sourceRecordId:eventId},context);return batch;};
  return {a,config,clock,input,context,proposal,original,writes,tool,prepare,revoke:()=>{revoked=true;}};
 }
 test('Calendar timestamp preparation uses observed updatedAt or createdAt without touching map token or participants',async()=>{
@@ -112,7 +111,7 @@ test('actual handler hashes corrected Calendar reported_at before action receipt
  const store={configured:true,claim:async()=>({status:'ready',leaseToken:randomUUID(),inputs:[f.input]}),renew:async()=>({status:'ready'}),release:async()=>({status:'ready'}),finish:async()=>({status:'ready'}),action:async({actionKey,complete})=>{receipts.push({actionKey,complete});return {status:complete?'completed':'execute'};}};
  const provider={toolTurn:async request=>{
   round++;batch??=JSON.parse(request.messages[0].content).batchContext;let name,args;
-  if(round===1){name='list_calendar_events';args={timeMin:batch.reconciliationWindow.timeMin,timeMax:batch.reconciliationWindow.timeMax};}
+  if(round===1){name='list_calendar_events';args={timeMin:'2026-10-21T00:00:00Z',timeMax:'2026-10-23T00:00:00Z'};}
   else if(round===2){name='read_map_events';args={sourceId:calendarSource,sourceRecordId:eventId};}
   else if(round===3){name='upsert_map_event';args=structuredClone(f.proposal);}
   else{name='finish_batch';args={handledInputIds:[queuedId]};}

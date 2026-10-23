@@ -212,10 +212,10 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
   };
 
   return {
-    async toolTurn({messages,system,tools,signal,auditContext}) {
+    async toolTurn({messages,system,tools,signal,auditContext,maxToolCalls=8}) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic=config.provider==='anthropic';
-      if (!Array.isArray(messages)||!Array.isArray(tools)||tools.length>64||typeof system!=='string') throw new ProviderError('invalid_provider_request');
+      if (!Number.isInteger(maxToolCalls)||maxToolCalls<1||maxToolCalls>16||!Array.isArray(messages)||!Array.isArray(tools)||tools.length>64||typeof system!=='string') throw new ProviderError('invalid_provider_request');
       const native=[];let pending=new Set();const seen=new Set();
       for(const message of messages) {
         if(message.role==='tool') {
@@ -229,7 +229,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
         } else {
           if(pending.size||!['user','assistant'].includes(message.role)||typeof message.content!=='string') throw new ProviderError('invalid_provider_request');
           const calls=message.toolCalls||[];
-          if(!Array.isArray(calls)||calls.length>8||message.role!=='assistant'&&calls.length) throw new ProviderError('invalid_provider_request');
+          if(!Array.isArray(calls)||calls.length>maxToolCalls||message.role!=='assistant'&&calls.length) throw new ProviderError('invalid_provider_request');
           for(const call of calls) {
             if(typeof call.id!=='string'||!/^[a-zA-Z0-9_-]{1,200}$/.test(call.id)||seen.has(call.id)) throw new ProviderError('invalid_provider_request');
             seen.add(call.id);pending.add(call.id);
@@ -268,7 +268,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
           rawCalls=data.choices[0].message.tool_calls||[];text=data.choices[0].message.content??'';
         }
         if(!Array.isArray(rawCalls))throw responseFailure('invalid_tool_shape');
-        if(rawCalls.length>8)throw responseFailure('too_many_tool_calls');
+        if(rawCalls.length>maxToolCalls)throw responseFailure('too_many_tool_calls');
         if(typeof text!=='string')throw responseFailure('invalid_response_shape');
         if(Boolean(rawCalls.length)!==['tool_calls','tool_use'].includes(reason))throw responseFailure('finish_reason_mismatch');
         const callIds=new Set();

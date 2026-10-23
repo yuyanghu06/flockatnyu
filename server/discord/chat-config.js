@@ -7,7 +7,7 @@ export function readDiscordChatConfig(env = process.env) {
   const discord = readDiscordConfig(env);
   return Object.freeze({...discord, enabled: env.DISCORD_CHAT_ENABLED === 'true',
     maxConcurrent: bounded(env.DISCORD_CHAT_MAX_CONCURRENT, 3, 1, 10),
-    perUserConcurrent: bounded(env.DISCORD_CHAT_PER_USER_CONCURRENT, 1, 1, 2),
+    perUserConcurrent: bounded(env.DISCORD_CHAT_PER_USER_CONCURRENT, 1, 1, 5),
     requestsPerUserHour: bounded(env.DISCORD_CHAT_REQUESTS_PER_USER_HOUR, 20, 1, 100),
     requestTimeoutMs: bounded(env.DISCORD_CHAT_TIMEOUT_MS, 1200000, 1000, 1200000),
     historyTtlMs: bounded(env.DISCORD_CHAT_HISTORY_TTL_MS, 1800000, 1000, 3600000),

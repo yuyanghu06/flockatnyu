@@ -1,67 +1,127 @@
-# Update agent and Gmail events
+## Manual planner API (2026-10-22)
 
-The **update agent** is the backend autonomous processor. The user-facing conversational assistant is the **chat agent**. Existing automation module paths, commands and configuration keys retain their technical names.
+POST `/api/planner/runs` accepts JSON `{}` or `{"channelIds":["DISCORD_CHANNEL_ID"]}`. Both start and status require `Authorization: Bearer <PLANNER_API_KEY>`. Set PLANNER_API_KEY privately on the web service to32–512 URL-safe characters. Website login cookies/admin sessions do not authorize these routes; callers do not need a cookie or Origin header. Missing/invalid server keys or missing/wrong request keys return403. Unknown fields, duplicate/malformed IDs, queries and more than30IDs are rejected. No lookback, history import, client source UUID, guild, model or budget parameters exist.
 
-## Current agent prompt behavior
+For example, after configuring the same private key on the server and in your terminal:
 
-The user's autonomous planner is the existing update agent. Chat behavior and source routing are in [chat-agent-prompt.md](chat-agent-prompt.md); the autonomous prompt is in [update-agent-prompt.md](update-agent-prompt.md). Defaults now permit sixteen model rounds and thirty-two tool calls within a three-minute run bound, so required source reads, identity resolution, map writes and explicit completion can fit. The thirty-input/oldest-thirty-minute trigger, one-minute cooldown, five-second polls and disabled-by-default worker remain.
+```sh
+curl -X POST https://flock.techatnyu.org/api/planner/runs \
+  -H "Authorization: Bearer $PLANNER_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{"channelIds":["DISCORD_CHANNEL_ID"]}'
+```
 
-A trusted completion check prevents finish_batch from clearing inputs while required Calendar window pagination or actual-occurrence map projection remains unfinished. Exact source/occurrence identity, original timestamps and linked participation still apply. Calendar-to-map requires its own allowed AGENT_CALENDAR_SOURCE_ID; Miro remains read-only, Calendar mutations remain scoped to supported managed Miro/Discord club-event originals, and direct personal chat assertions cannot invent identity. Configured-model verification uses synthetic sources and inert write adapters; operational activation is separate.
+Use the same Authorization header when fetching the returned statusUrl. Never put the key in the URL, source files, frontend or logs.
 
-## Synchronization contract
+The API returns202 with runId/statusUrl. Authenticated GET `/api/planner/runs/:runId` returns queued/running/completed/failed state, timestamps and a finite content-free result/counts. The existing worker checks durable manual requests before ordinary polls. A manual request bypasses the30-input/oldest30-minute threshold and cooldown, shares the existing global runner lease and runs one configured batch through the standard initial Calendar -> deterministic two-calendar map APIs -> bounded follow-up procedure. It waits/requeues if another cycle is active. Empty selected queues complete empty without invoking a model; retry backoff/quarantine and input/time/call limits remain.
 
-Calendar is the scheduled club-event view. Clear authorized Discord event
-announcements or changes and concrete Miro plans feed reconciliation into the
-fixed Calendar. The map projects Calendar occurrences and separately holds
-informal studying, co-working, presence and personal plans. An RSVP changes
-participation on the matching event; it does not create a new Calendar event.
+Omitted/empty channelIds uses ordinary Discord blacklist plus explicitly allowed Gmail. A nonempty list selects only exact queued Discord channel/thread sources, excludes Gmail/unrelated task dependencies, and overrides configured channel/category exclusions for that run. Parents do not select descendants. Fresh bot permission, configured guild/ancestry, published metadata, manual disable/withdrawal, paused/discovery-disabled policy and final source/identity checks still apply. The stored blacklist/catalogue is never enabled or edited. Previously excluded channels may have no queued messages or stable source UUID; the route does not fetch history or invent inputs. Ordinary map visibility remains governed by its existing source policy, so excluded-source participant details can remain hidden outside that run.
 
-Miro remains a read-only planning source. This is source-to-Calendar-to-map
-reconciliation, with separate Discord participation, rather than bidirectional
-Miro editing. Preserve human Calendar edits, stable provider identities and
-source links. Ambiguous matches or conflicting sources stay pending. Actual
-implementation and model acceptance are recorded in the milestone snapshot.
+042 adds FORCE-RLS metadata-only agent_manual_runs with24hour retention,20active requests and15minute fenced request reservation, plus a dedicated service-only forced queue claim.043 adds a read-only selected-node/ancestor metadata RPC. Tokens, channel selections and source/model bodies never appear in the public status response. Ordinary agent:tick and automatic triggering retain their prior behavior. Actual release status lives in milestones/milestone.md.
 
-## Local implementation and boundaries
+# Autonomous update-agent cycle
 
-Migration018 creates `public.agent_input_cache(uuid, raw_response)` only. The raw
-JSON can represent Discord, email or other provider events. Migration019 adds a
-separate service-only metadata table for queue identities, leases, cooldowns,
-successful-action receipts and mailbox checkpoints. Source bodies remain in the
-cache. Hosted018/019 are verified at versions20261017182014 and20261017182143.
-001–017 stay immutable and must not be replayed with ordinary db push.019
-committed despite an API400; its missing history receipt was restored only after
-independent exact-schema verification. Prior tables/data/functions are preserved.
+The update agent reads the temporary authorized Discord/Gmail input cache,
+updates the corresponding Calendar activities and then associates source-backed
+people/location with appropriate existing map events. It does not reconcile
+Miro, scan boards or require broad model-driven Calendar/map upkeep for each
+input. Chat's separate read-only Miro capability remains available.
 
-The source updater is `createEventUpdater` in server/automation/events.js. It
-stamps receipt time, requires a backend-owned source authorizer, derives a stable
-UUID from source/event/revision identity and atomically deduplicates enqueue.
-New revisions are new immutable entries. It does not install a Discord Gateway
-listener. Existing Discord live-only read tools and policy enforcement are intact.
+## Processing stages
 
-`createAutomationHandler` in server/automation/handler.js claims a bounded batch,
-prepares fresh authorized Miro context, builds the update prompt, executes registered tools and deletes only explicitly
-finished snapshot UUIDs. Empty, young, cooldown and busy queues make no model
-request. The default trigger is 30 eligible queued inputs OR oldest age 30 minutes,
-a one-minute cooldown and one active leased run. Discord messages/events and Gmail emails count together toward this threshold. The trigger count is separate from the existing per-claim cap of 20 inputs/64KiB. `serve` checks every five seconds.
-The 30-minute threshold is measured from the oldest eligible pending input, not from the last run or fixed clock times. An empty queue never triggers model processing. Collection does not use an LLM.
+The existing trigger is30eligible inputs OR oldest eligible age30minutes, with
+one cooldown/lease and unchanged claim, tool and run budgets. Empty queues do not
+invoke a model. Fresh Discord source IDs come from the published eligible guild
+catalogue; only the explicitly allowed Gmail source joins queue scope. Empty-scope
+polls still perform bounded quarantine/expired-lease maintenance.
 
-`server/automation/prompt.js` defines source interpretation and Miro-to-Calendar reconciliation. It treats source text as evidence, preserves identities/time/provenance and defers unsupported work. Stated location plans/help responsibilities remain distinct from confirmed presence.
-No RSVP inference or claim of verified physical location is introduced.
+With AGENT_AUTOMATION_STAGED_ENABLED=true, one leased cycle runs:
 
-## Tools and running the update agent
+1. The initial model interprets queued originals and updates the pinned club or
+   Member Plans Calendar.
+2. Deterministic Calendar APIs project actual club/Member Plans occurrences into
+   map events, handling provider pages, fixed aliases, versions and safe retries.
+3. At most10follow-up model turns resolve source interpretation, participation or
+   ambiguous location tasks using actual execution/API outcomes. Successful
+   follow-up Calendar mutations receive deterministic projection.
 
-Use the existing server-only LLM settings and opt-in environment variables in
-.env.example. The bundled `server/automation/adapters.js` supplies trusted source checks, read tools, fixed-target Calendar tools and mandatory per-batch Miro preparation. An optional trusted local `.js`/`.mjs` override selected by
-`AGENT_AUTOMATION_ADAPTER_MODULE` exports
-`createAutomationAdapters({env,config,store,provider})`, returning a server-owned
-principal, current source-policy authorizer and tools. Each tool supplies name,
-description, an argument schema and its actual executor. See
-[the module guide](../server/automation/info.md) for exact contracts.
+New personal plans/current presence still originate in the separate Member Plans
+Calendar with verified person/source metadata. RSVPs attach to existing club
+events. No worker map-only personal activity creation path is introduced.
+Mechanical API failures remain actual diagnostics for deterministic retry, not
+model instructions to repair broad projection. Irrelevant inputs can complete
+without unrelated model scans or upserts. Legacy non-staged compatibility retains
+narrow source/occurrence protections without mandatory rolling completion.
 
-Calendar tools require GOOGLE_CALENDAR_ID, additional Google Calendar consent and verified writer/owner access. Normalized map event writes are implemented; durable memory remains unavailable and unsupported work stays queued. Missing required runtime/source configuration fails closed. Source IDs in cache JSON never grant access. Authorizers
-must recheck current allowlists/provider policy. Keep credentials in ignored
-environment files or service secrets, never in adapter output or source payloads.
+## Source safety and Calendar behavior
+
+The adapter prepares pinned Calendar writer/owner access and current input
+permissions; it requires no Miro service, board catalogue or navigation request.
+Discord source access preserves blacklists, manual disables, descendants, exact
+bindings and current live permissions. Non-Discord source UUIDs remain explicit.
+Source text and cached context never grant permission or override instructions.
+
+Clear club announcements/changes are interpreted semantically without mandatory
+club/event/scheduling keywords. Calendar writes use exact observed Discord keys
+or gmail:<messageId> and canonical original links. Gmail requires an authorized
+read_gmail body for that exact queued input, valid matching sender and a fresh
+unchanged body/title/date/sender reread before mutation. Metadata/search snippets
+do not grant write scope. Discord writes reread unchanged exact originals/authors.
+
+Before club upserts, read a complete unfiltered full-mode Calendar window covering
+the actual target start, including dates outside the deterministic rolling
+window. Preserve duplicate/cross-source checks and human-created/edited events.
+Explicit cancellation affects only the same managed source event; deletions,
+missing objects, absence and RSVP declines are not cancellation. Do not send
+invitations, add attendees, create recurring events or mutate unrelated sources.
+
+Changed map participants require successful exact source-bound person lookups
+and independent original participation evidence. Existing people and Calendar-
+owned fields survive complete-snapshot merges. Conflicts require fresh state.
+Original provider timestamps anchor relative dates/current-report expiry. Current
+presence without an end expires original start +2hours; partial edits cannot
+refresh it. Future personal plans need supported ends. Club known timed starts
+may use approved +2hours when end is missing, preserving existing ends. All-day
+ends are exclusive. Unsupported/ambiguous facts defer rather than inventing data.
+
+## Temporary tasks and tool results
+
+Migration039 adds a bounded service-only task cache;040 supplies fixed building
+aliases and041 fences worker map writes with the live lease. Tasks may retain
+original input UUIDs/channel/speaker/timestamps, preceding context actually read
+and actual agent/API results. This is temporary pending work, never a durable
+source archive or assistant-facing operational-audit retrieval. Exact confirmed
+resolved task versions alone are deleted; untouched/unresolved tasks survive
+caps, errors and crashes. Mechanical projection outcomes do not create new broad
+model-repair duties.
+
+The task catalogue and `read_pending_task` use the saved database snapshot only.
+They do not reread Discord/Gmail originals, open every retained source link or
+preflight Calendar access. Saving deferred work also uses the bound cached inputs.
+These operations still check the worker's current source scope, expiry, principal
+and trusted input bindings locally; the database retains lease/version checks.
+Reading a task does not supply a fresh source observation or identity receipt.
+After reading it, the model chooses the normal Discord/Gmail, Calendar, map and
+person-lookup tools needed for the work. Those tools retain their own permission,
+original-message and write checks. Task resolution separately verifies actual
+completion before deleting its exact saved version.
+
+Ordinary tools take {inputIds,arguments}; use actual supporting queue/task UUIDs
+and exact returned provider IDs. finish_batch instead takes bare {handledInputIds},
+is the sole call in its turn and names only queue UUIDs. An empty follow-up list
+settles no queued original. defer_task requires summary and operation even when
+updating taskId; the runtime captures retained context automatically. Initial completion transitions stages; only confirmed handling or
+durable task transfer permits queue settlement. Failed/unsupported work remains
+pending. Lossless bounded fragments live only in batch RAM; coverage warnings
+remain authoritative after reconstruction. Successful mutation receipts contain
+no source bodies and do not guarantee remote exactly-once delivery.
+
+## Running and documentation
+
+Server credentials belong in ignored environment files/service secrets. Required
+Calendar consent, fixed target IDs, allowed source UUIDs, Member Plans source and
+private signing configuration remain server-only. Missing configuration fails
+closed. No deployment or enablement follows merely from editing these modules.
 
 ```
 npm run agent:tick
@@ -69,14 +129,11 @@ npm run worker:agent
 npm run test:agent-automation
 ```
 
-Only successful actions followed by explicit `finish_batch` permit successful
-processing cleanup. Separately,036 expires matching quarantined raw snapshots
-after24hours; expiry never reports successful processing.
-Tool adapters must support the provided stable idempotency key and reconcile an
-ambiguous remote outcome. Source/context reads should be refreshed on retries.
-Source bodies and tool result bodies are not copied into receipt metadata. Pending
-inputs survive errors, unknown tools, incomplete model turns and exhausted bounds.
-Metadata receipts remain; no extra source archive or embeddings are created.
+An explicitly configured trusted local AGENT_AUTOMATION_ADAPTER_MODULE may
+replace bundled adapters; source content cannot choose implementations. See
+[the module guide](../server/automation/info.md),
+[prompt](update-agent-prompt.md), [private audit](model-audit.md) and the rolling
+milestone for actual implementation, migrations and release evidence.
 
 ## Bounded queue recovery (036)
 
@@ -199,44 +256,8 @@ References: [Gmail push](https://developers.google.com/workspace/gmail/api/guide
 [Gmail history synchronization](https://developers.google.com/workspace/gmail/api/guides/sync),
 [authenticated Pub/Sub delivery](https://docs.cloud.google.com/pubsub/docs/authenticate-push-subscriptions).
 
-## M36 collector deployment update
+## Tool errors returned to the model
 
-Discord and Gmail are independently deployed thin ingestion services sharing the pending cache and metadata state. Native Discord creates and a real Gmail email have been observed in the queue. Discord ingress uses the eligible guild catalogue except inherited blacklists/manual disables, independently of assistant read scopes. Its startup never backfills message history. Collection does not invoke the inactive agent. Migration020 (hosted20261017184647) only preserves manual channel-disable intent in existing JSONB; no prompt/memory table was added.
+A tool that fails, throws an ordinary exception, returns null/malformed data or exceeds the result size limit returns a small `tool_error` with a fixed safe reason. The runner supplies it under the original call ID and continues other valid calls. Raw error text and failed response bodies are excluded. Failed writes do not receive successful action receipts; an unclear external write outcome requires checking actual state before retrying. Global cancellation/deadline, real lease/receipt failure, current run authorization failure and unavailable required audit storage still stop processing. Invalid model-proposed arguments remain a separate existing rejection path. Worker call limits are16per model reply and64per stage, including finish_batch; initial/followup stage totals reset independently (up to128across both). Shared chat defaults remain unchanged. Model rounds, overall deadlines and output-token allowance are unchanged.
 
-Implemented: callable tools grouped by capability under tools/, development utilities under scripts/, and independent Gmail/Discord ingestion switches. GMAIL_EVENTS_ENABLED controls Gmail collection; AGENT_AUTOMATION_ENABLED controls model processing.
-
-Still planned: independently deployed chat agent and update agent processes sharing tool code; agent-owned short/long-term context through update_memory, with core instructions operator-controlled. No memory migration or memory tool has been implemented.
-
-## Per-batch Miro and Calendar behavior
-
-Each eligible claimed batch must perform trusted Miro preparation after authorization and lease acquisition, before the first model call. Empty/waiting/cooldown/busy polls do not fetch boards or invoke models. Preparation failure releases the lease and preserves pending inputs. Fresh MCP navigation context is untrusted evidence and never certifies full-board coverage. Use MCP search followed by actual canvas calendar cells/headings or native table rows to establish event dates and meaning. Partial/skipped content and duplicate month frames remain explicit. No board content is stored; the old REST reader and snapshot worker are removed.
-
-The bundled adapter reuses existing scoped source reads and bounds large results with ephemeral, batch-local continuation fragments. Successful partial/empty reads retain their original status/coverage. Calendar actions require actual MCP item or stable native-table-row evidence observed during the current batch, the authorized board/source pair and a canonical original link. Queue inputIds identify the triggering batch for Miro-only work; stable Miro sourceKey/sourceUrl record the actual evidence independently.
-
-Calendar writes target only the configured calendar and managed source-based events. Re-read relevant calendar state, preserve human changes, and defer ambiguous dates or unsupported times; a supported timed start with a missing end uses the approved two-hour default, while explicit and existing ends take priority. No absence-based cancellation, RSVP/presence inference, attendees, source writes or durable-memory claims are authorized by this wiring. Local implementation and consent do not themselves deploy or enable the worker.
-
-The runtime system prompt now imports structured people_here/scheduled_events contracts, synthetic examples and approved7200second current-presence/timed-event policies from server/map/contracts.js. See update-agent-prompt.md for exact limits, overrides, source-time semantics, label rules and test coverage. This does not register map tools, grant scheduled_events writes, remove Calendar preflight or activate the worker.
-
-## Normalized map tools (2026-10-18; supersedes legacy map prompt/storage above)
-
-The bundled adapter now registers read_map_events, lookup_map_person and upsert_map_event from tools/map. They share server/map/events.js with the map read path. Identity resolution is exact linked provider identity; write scope must match selected eligible batch input IDs and original source URLs, or observed live Miro evidence. Each participant carries independently checked provenance; unchanged participants may be retained after an authorized read, while removals require explicit participation state/end updates. New records receive approved deterministic two-hour defaults only where applicable. Optimistic conflicts remain failed actions and leave inputs pending. Hosted026/027now provide events/event_buildings/event_people and remove old building JSON/RPCs. The system prompt describes these actual contracts. Worker enablement, Railway deployment, pending Calendar sharing/preflight and a bounded real model pilot remain separate unfinished work.
-
-Miro live-only cutover: both runtimes use the same official MCP reader. Migration030preserves only existing registry identity/status and enabled/team metadata, removing miro_boards and sync RPCs. Calendar writes retain their own fixed-target Google API tools and require current-batch concrete MCP evidence.
-
-## Chat memory implementation (2026-10-18)
-
-The previously planned long-term note is now implemented for the chat agent through agent_memory and read_memory/update_memory. It is proactively maintained from useful club context in any chat without explicit remember requests. This pass does not register memory tools in the update agent or activate its worker; its prior no-memory capability boundary remains until separately wired.
-
-Before each production claim, the worker resolves Discord source UUIDs from the configured guild’s current published eligible catalogue and adds only the explicitly authorized Gmail source. Existing scoped RPC032 filters counts and candidates by that fresh list; legacy static Discord UUIDs cannot restore disabled-channel claims. New eligible channels need no environment edits or restart. Outside-scope ingestion remains independent and deferred; it cannot trigger/starve valid work. Fresh policy, exact source/channel binding, ancestry and live permission checks still run before model dispatch and actions, including a revocation after scope resolution. Non-Discord tool grants remain explicit; deferred input retention is unchanged.
-
-Live rollout pacing: five inputs per batch and configured600second maximum run, with unchanged16round/32call limits and fresh authorization. Library default180seconds stays unchanged; configurable ceiling is600seconds. The first20-input180second live pilot aborted safely and kept its inputs pending.
-
-Optional AGENT_AUTOMATION_LOG_PROGRESS=true emits bounded safe phase/status/counter/registered-tool-name metadata. Source contents, IDs, arguments, URLs, results and private errors never enter logs. Default CLI final-status-only behavior remains unchanged.
-
-## Backend Calendar traversal and map-read reuse
-
-Agent-facing Calendar listings traverse provider continuation pages internally; model arguments do not include pageToken. Low-level client single-page reads remain available to bounded batch duplicate checks. The traversal retains bounded partial evidence when it cannot finish, and partial or filtered results cannot establish absence or full reconciliation coverage. Complete unfiltered full-mode subwindows may cover the reconciliation interval only without gaps. Completion feedback requests narrower unattempted windows after an incomplete scan.
-
-The worker can read map records for the configured Calendar source once and reuse the returned complete snapshots across occurrences. Missing or stale observed projections need a merged upsert; an unchanged reread does not reconcile them. Conflicts require fresh state before retrying. Per-read source-original deduplication and bounded authorization concurrency reduce work while preserving later fresh reads and write-time checks. Current local verification and release status live in milestones/milestone.md.
-
-The dynamic-source worker uses forward038 to poll with an empty UUID scope when no eligible Discord/Gmail sources exist, including a Discord catalogue outage. This performs the existing bounded expired-quarantine cleanup and expired-lease settlement, then returns before selecting pending originals or creating a lease. Retention therefore continues while channel access is paused or disabled. Applied036 remains immutable.
+Saved source-review task completion also recognizes actual club/Member Plans cancellation receipts. It confirms the task-bound original, pinned Calendar and exact event/person plus fresh matching cancelled state before exact-version removal. Explicit already-absent needs its own authorized receipt and a successful exact empty read. Uncertain, failed, active or mismatched results retain the task. This backend fix does not change plain-cache reads or model budgets; see milestones for release truth.

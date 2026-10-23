@@ -9,7 +9,7 @@ import {chromium} from 'playwright-core';
 
 const out=new URL('../evidence/production-map-refresh/',import.meta.url);
 await fs.mkdir(out,{recursive:true});
-const vite=await createServer({configFile:false,server:{host:'127.0.0.1',port:0},logLevel:'error'});
+const vite=await createServer({configFile:false,cacheDir:'node_modules/.vite/map-refresh-browser',server:{host:'127.0.0.1',port:0},logLevel:'error'});
 await vite.listen();
 const assetBase=`http://127.0.0.1:${vite.httpServer.address().port}`;
 const report={mode:'Actual campus/assistant in local Chrome; native synthetic NDJSON HTTP and map API',checks:[],limitations:['Software WebGL in headless desktop Chrome; no physical mobile device or live deployment verification.','Visibility lifecycle is exercised using a controlled document.visibilityState getter and real visibilitychange events.','Synthetic people only; no real source/model requests or hosted writes.']};
@@ -67,7 +67,13 @@ try {
   report.browser=browser.version();
   page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(15000);
   const errors=[],assets=[];page.on('pageerror',error=>errors.push(error.message));page.on('requestfailed',request=>{if(!request.url().includes('/api/'))assets.push(new URL(request.url()).pathname);});
-  await page.addInitScript(()=>{window.fixtureHidden=false;Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>window.fixtureHidden?'hidden':'visible'});});
+  await page.addInitScript(()=>{
+    window.fixtureHidden=false;window.fixturePollsEnabled=true;
+    Object.defineProperty(document,'visibilityState',{configurable:true,get:()=>window.fixtureHidden?'hidden':'visible'});
+    // Retry assertions measure retry requests, independently of ordinary polling.
+    const nativeInterval=window.setInterval.bind(window);
+    window.setInterval=(callback,delay,...args)=>nativeInterval(delay===30000?()=>{if(window.fixturePollsEnabled)callback(...args);}:callback,delay,...args);
+  });
   await check('Campus loads configured landmarks with empty authorized activity and no failed assets',async()=>{
     const started=Date.now();await page.goto(base,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__map?.snapshot().status==='ready'&&document.querySelector('#app').dataset.state==='entered',null,{timeout:120000});
     await page.waitForFunction(()=>window.__map.presence.snapshot().status==='ok');assert.equal((await snapshot()).landmarks.length,expectedLandmarkCount);assert.equal(await people().count(),0);assert.deepEqual(errors,[]);assert.deepEqual(assets,[]);return {loadMs:Date.now()-started,landmarks:expectedLandmarkCount};
@@ -91,9 +97,9 @@ try {
     stream.send({type:'delta',text:'The synthetic activity is saved.'});stream.finish();await page.waitForFunction(()=>document.querySelector('.assistant-announcement').textContent==='Reply complete.');return {readsAdded:1,avatarVisibleBeforeDone:true,selectionPreserved:true};
   });
   await check('Attendance completion refreshes while minimized; future event attendees stay off current map',async()=>{
-    const n=reads.length;await begin('set_map_attendance');await page.getByRole('button',{name:'Close assistant'}).click();await page.locator('dialog.assistant-panel').waitFor({state:'hidden'});
+    const n=reads.length;await begin('upsert_map_event');await page.getByRole('button',{name:'Close assistant'}).click();await page.locator('dialog.assistant-panel').waitFor({state:'hidden'});
     const active=person('Alpha'),future=person('Future');future.validFrom=iso(now+3600000);future.expiresAt=iso(now+7200000);current=payload([active,future],[event('current',[active]),event('future',[future],true)]);
-    stream.send({type:'tool',id:'tool-1',name:'set_map_attendance',status:'completed'});await page.waitForFunction(()=>document.querySelectorAll('.map-presence__event-avatar').length===2);
+    stream.send({type:'tool',id:'tool-1',name:'upsert_map_event',status:'completed'});await page.waitForFunction(()=>document.querySelectorAll('.map-presence__event-avatar').length===2);
     assert.equal(reads.length,n+1);assert.equal(await people().count(),1);assert.equal(await page.locator('.map-presence__event-avatar[aria-label="Fixture Future"]').count(),1);assert.equal(await page.locator('.assistant-announcement').textContent(),'Assistant is responding…');
     await page.screenshot({path:new URL('future-attendance-no-current-avatar.png',out).pathname});stream.finish();await page.waitForFunction(()=>document.querySelector('.assistant-announcement').textContent==='Reply complete.');return {freshCardAttendees:2,currentAvatars:1,hiddenChatCompletion:true};
   });
@@ -111,8 +117,9 @@ try {
     await page.waitForFunction(()=>window.__map.presence.snapshot().status==='ok',null,{timeout:6000});assert.equal(reads.length,n+3);const gaps=reads.slice(n).map((x,i,arr)=>i?x.at-arr[i-1].at:0).slice(1);assert(gaps[0]>=850&&gaps[0]<2000);assert(gaps[1]>=2800&&gaps[1]<4200);assert.equal(await people().count(),2);assert.doesNotMatch(await page.locator('.map-presence__building-card').innerText(),/unavailable/);await page.screenshot({path:new URL('automatic-recovery.png',out).pathname});return {attempts:3,retryGapsMs:gaps,stalePeopleCleared:true,recoveredWithoutUserAction:true};
   });
   await check('Transient retries stop after two attempts and authorization denial does not retry',async()=>{
+    await page.evaluate(()=>{window.fixturePollsEnabled=false;});
     mode='503';const n=reads.length;await fresh();await page.waitForTimeout(4600);assert.equal(reads.length,n+3);await page.waitForTimeout(3500);assert.equal(reads.length,n+3,'Transient retry budget exhausted');
-    mode='403';const forbidden=reads.length;await fresh();await page.waitForTimeout(4400);assert.equal(reads.length,forbidden+1);assert.equal((await presence()).status,'unavailable');mode='ok';await fresh();return {maxAttempts:3,forbiddenAttempts:1};
+    mode='403';const forbidden=reads.length;await fresh();await page.waitForTimeout(4400);assert.equal(reads.length,forbidden+1);assert.equal((await presence()).status,'unavailable');mode='ok';await fresh();await page.evaluate(()=>{window.fixturePollsEnabled=true;});return {maxAttempts:3,forbiddenAttempts:1};
   });
   await check('Hidden page defers write refresh and recovers on foreground visibility change',async()=>{
     await page.evaluate(()=>{window.fixtureHidden=true;document.dispatchEvent(new Event('visibilitychange'));});const n=reads.length;await notify(8);await page.waitForTimeout(1300);assert.equal(reads.length,n);

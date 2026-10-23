@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
 import {validateChatRequestContext} from '../server/chat-request-context.js';
+import {readDiscordChatConfig} from '../server/discord/chat-config.js';
 
 const message=(id='10',extra={})=>({t:'MESSAGE_CREATE',d:{id,guild_id:'1',channel_id:'2',type:0,content:'<@99> hello',author:{id:'5',username:'verified-user',global_name:'Discord Name'},member:{nick:'Server Nick'},...extra}});
 function fixture(options={}) {
@@ -149,4 +150,76 @@ test('active request dedup survives eviction from the completed replay cache',as
   assert.equal(calls.authorize.length,2);
   assert.equal((await adapter.handle(message('100'))).status,'duplicate');
   adapter.stop();assert.deepEqual((await Promise.all([first,second])).map(value=>value.status),['aborted','aborted']);
+});
+
+function deferred() {
+  let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});
+  return {promise,resolve,reject};
+}
+function heldRequests(ids) {
+  const gates=new Map(ids.map(id=>[id,{work:deferred(),started:deferred()}])),runs=[];
+  return {gates,runs,runChat:async value=>{
+    runs.push(value);const gate=gates.get(value.requestContext.requestId);assert.ok(gate);
+    gate.started.resolve();await gate.work.promise;
+    value.onRecord({type:'delta',text:`answer for ${value.requestContext.requestId}`});value.onRecord({type:'done'});
+  }};
+}
+const increasedConcurrency=()=>{
+  const {maxConcurrent,perUserConcurrent}=readDiscordChatConfig({DISCORD_CHAT_MAX_CONCURRENT:'10',DISCORD_CHAT_PER_USER_CONCURRENT:'5'});
+  return {maxConcurrent,perUserConcurrent};
+};
+
+test('ten overlapping requests enforce five per member across channels and retain isolated replies/history',{timeout:5000},async()=>{
+  const ids=Array.from({length:10},(_,i)=>String(1000+i)),held=heldRequests([...ids,'1100','1101']),authorizations=[],pending=[];
+  const {adapter,calls}=fixture({config:increasedConcurrency(),runChat:held.runChat,authorize:async value=>{
+    authorizations.push(value);return {principal:{id:`discord:${value.userId}`},sourceProfileId:'profile',threadId:null};
+  }});
+  const event=(id,index,userId)=>message(id,{channel_id:String(2000+index),author:{id:userId,username:`member${userId}`},content:`<@99> question ${id}`});
+  try {
+    for(let i=0;i<5;i++)pending.push(adapter.handle(event(ids[i],i,'5')));
+    await Promise.all(ids.slice(0,5).map(id=>held.gates.get(id).started.promise));
+    assert.equal((await adapter.handle(event('1200',20,'5'))).status,'busy');
+    assert.equal(authorizations.length,5);assert.equal(held.runs.length,5);assert.equal(calls.send.length,0);
+    for(let i=5;i<10;i++)pending.push(adapter.handle(event(ids[i],i,'6')));
+    await Promise.all(ids.slice(5).map(id=>held.gates.get(id).started.promise));
+    assert.equal((await adapter.handle(event('1201',21,'7'))).status,'busy');
+    assert.equal((await adapter.handle(event(ids[0],0,'5'))).status,'duplicate');
+    assert.equal(authorizations.length,10);assert.equal(held.runs.length,10);assert.equal(calls.send.length,0);
+    for(let i=0;i<10;i++) {
+      const run=held.runs.find(value=>value.requestContext.requestId===ids[i]);
+      assert.equal(run.requestContext.channelId,String(2000+i));assert.equal(run.requestContext.actor.userId,i<5?'5':'6');
+      assert.equal(run.principal.id,`discord:${i<5?'5':'6'}`);
+      assert.deepEqual(run.conversation.messages,[{role:'user',content:`question ${ids[i]}`}]);
+    }
+    // Complete in reverse order to expose destination/context mixing.
+    for(let i=9;i>=0;i--) {held.gates.get(ids[i]).work.resolve();assert.equal((await pending[i]).status,'sent');}
+    assert.equal(calls.send.length,10);
+    for(let i=0;i<10;i++) {
+      const sent=calls.send.find(value=>value.replyTo===ids[i]);assert.equal(sent.channelId,String(2000+i));assert.equal(sent.content,`answer for ${ids[i]}`);
+    }
+    const followup=adapter.handle(event('1100',0,'5'));pending.push(followup);await held.gates.get('1100').started.promise;
+    assert.deepEqual(held.runs.at(-1).conversation.messages,[{role:'user',content:'question 1000'},{role:'assistant',content:'answer for 1000'},{role:'user',content:'question 1100'}]);
+    held.gates.get('1100').work.resolve();assert.equal((await followup).status,'sent');
+    const otherMember=adapter.handle(event('1101',0,'6'));pending.push(otherMember);await held.gates.get('1101').started.promise;
+    assert.deepEqual(held.runs.at(-1).conversation.messages,[{role:'user',content:'question 1101'}]);
+    held.gates.get('1101').work.resolve();assert.equal((await otherMember).status,'sent');
+  } finally {adapter.stop();for(const gate of held.gates.values())gate.work.resolve();await Promise.allSettled(pending);}
+});
+
+for(const outcome of ['success','failure','abort'])test(`five-member admission releases a slot after ${outcome}`,{timeout:5000},async()=>{
+  const ids=['1300','1301','1302','1303','1304','1305'],held=heldRequests(ids),controller=new AbortController(),pending=[];
+  const {adapter,calls}=fixture({config:increasedConcurrency(),runChat:held.runChat});
+  const event=index=>({...message(ids[index],{channel_id:String(2300+index)}),...(index===0?{signal:controller.signal}:{})});
+  try {
+    for(let i=0;i<5;i++)pending.push(adapter.handle(event(i)));
+    await Promise.all(ids.slice(0,5).map(id=>held.gates.get(id).started.promise));
+    assert.equal((await adapter.handle(event(5))).status,'busy');assert.equal(calls.authorize.length,5);
+    if(outcome==='abort')controller.abort();else if(outcome==='failure')held.gates.get(ids[0]).work.reject(Error('synthetic model failure'));else held.gates.get(ids[0]).work.resolve();
+    assert.equal((await pending[0]).status,{success:'sent',failure:'failed',abort:'aborted'}[outcome]);
+    const replacement=adapter.handle(event(5));pending.push(replacement);await held.gates.get(ids[5]).started.promise;
+    assert.equal(calls.authorize.length,6);assert.equal(held.runs.length,6);
+    for(const gate of held.gates.values())gate.work.resolve();
+    assert.ok((await Promise.all(pending.slice(1))).every(value=>value.status==='sent'));
+    if(outcome==='abort')assert.ok(calls.send.every(value=>value.replyTo!==ids[0]));
+  } finally {adapter.stop();for(const gate of held.gates.values())gate.work.resolve();await Promise.allSettled(pending);}
 });

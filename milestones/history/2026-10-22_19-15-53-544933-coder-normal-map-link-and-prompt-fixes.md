@@ -1,0 +1,9 @@
+# normal map link and prompt fixes
+
+- Local timestamp / acting role / milestone: 2026-10-22T19:15:53.544933-04:00 / coder report integrated by orchestrator / chat-attendance-normal-tools.
+- Requested scope: fix natural attendance through ordinary map tools, retain event details and avoid interpreting quoted text as an action; audit all prompts afterward.
+- Starting repository state: prior real-model findings held release; no live data changed.
+- Work performed / changed files, decisions and checks: Only the existing map adapter, chat instructions and descriptions changed: omitted non-null prior event.url is inherited; explicit values/new records keep normal validation. Quote/summary-only intent is separated from genuine requests, clarification context remains, multiple events require a distinguishing detail, and stored opaque values are preserved. No new tool, parser, gate, URL reconstruction, worker or source-authorizer changes. Targeted checks and whitespace pass; source frozen.
+- Evidence: final /tmp/chat-attendance-model-1792710837954.json; supporting realistic ambiguity/conflict cases in /tmp/chat-attendance-model-1792710477655.json. The original duplicate-source ambiguity fixture was invalid and is excluded from conclusions. Browser evidence under ignored evidence/production-map-refresh/. Parent API/web builds pass; final277-file web package klknqH matches86 source files and passes syntax/dependency closure. Map chunk only changes its main import hash; other assets unchanged.
+- Resulting state / acceptance: bounded pass accepted, source/tests frozen and reviewed web release ready.
+- Remaining work and handoff: upload exact package, verify web startup/authentication and record real deployment separately. Do not claim a live Discord attendance save. Worker b30c41da and16/64 limits remain untouched. Then perform the full application-prompt audit.

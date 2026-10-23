@@ -193,3 +193,51 @@ Attio entries record independent planning, implementation, verification and revi
 October 21 all-building framing correction records direct implementation and actual30-case viewport verification; it supersedes the earlier selected-mobile card-occlusion limitation.
 
 October22combined-releaseentriesrecordentireworking-treeinventory,collectorpackagingfixes,2150test/55browseracceptance,036MCPapply,privateconfiguration,allfourhealthyRailwayreleases,27portraitcutoverandlogicalGitHubpublication. Correctingreceiptsremainappend-only.
+
+October22 base-prompt audit traces the shared chat phases and worker reconciliation instructions; it changes no runtime and does not claim fresh hosted verification. See [2026-10-22_14-56-03-920553-orchestrator-agent-base-prompts-summarized.md](2026-10-22_14-56-03-920553-orchestrator-agent-base-prompts-summarized.md).
+
+Update-agent accounting inquiry: [2026-10-22_14-59-46-542154-orchestrator-update-agent-usage-audited](2026-10-22_14-59-46-542154-orchestrator-update-agent-usage-audited.md) records aggregate-only operational verification; private numerical results are excluded from tracked evidence.
+
+Update-agent replay mechanisms independently reviewed: [2026-10-22_15-41-42-456262-planner-update-agent-replay-source-reviewed](2026-10-22_15-41-42-456262-planner-update-agent-replay-source-reviewed.md). Private audit values and source content are excluded from tracked evidence.
+
+Update-agent effects and repeated work diagnosed: [2026-10-22_15-41-42-457964-orchestrator-update-agent-effects-audited](2026-10-22_15-41-42-457964-orchestrator-update-agent-effects-audited.md). Private audit values and source content are excluded from tracked evidence.
+
+October22 direct-chat map passes replace the original-link identity question with ask-name/insufficient-information behavior and implement a separate authenticated chat-declaration namespace. Prompt-only, direct-save, synthetic runtime verification and actual hosted state are recorded separately; worker source authorization is unchanged.
+
+Weekly-bug-audit entries record source coverage and artifact verification without private source contents or operational output bodies.
+
+Calendar rejection/tool-budget advisory: [2026-10-22_15-47-27-920764-orchestrator-calendar-rejection-and-timeout-diagnosed](2026-10-22_15-47-27-920764-orchestrator-calendar-rejection-and-timeout-diagnosed.md); private audit/source details stay outside tracked evidence.
+
+The October 22 future-scope clarification records the user's two-task update-agent intent and explicit implementation deferral, separately from deployed legacy behavior and concurrent staged work.
+
+The later chat-map correction explicitly supersedes the separate resolver/save architecture: those runtime modules, grammar/cache/session additions and dedicated tests were removed. Existing tools now omit conversational source-proof gates and retain Discord-to-person context when called; original acceptance entries remain historical, not current implementation.
+
+The staged Calendar release entries record independent component fixes, adversarial/context/source tests, final source/package acceptance, exact hosted039–041 receipts and a configured-model synthetic business flow. They distinguish immutable release packages from concurrent dirty-tree chat edits and their test failures.
+
+The resumed simplified-update-agent passes record removal of worker Miro/model rolling duties, exact queued Gmail provenance, preserved deterministic projection/cache, independent checks and the reviewed worker release. Release history also records corrected temporary-project upload/deletion and unrelated chat-test exclusions.
+
+Manual planner entries distinguish queued-only explicit selection, forced versus ordinary shared claims, independent HTTP/SQL/source verification, hosted042/043 receipts, complete reviewed web dependency closure and actual deployed empty-run checks.
+
+Tool-error continuation entries record ordinary failure feedback, preserved write/control rules, independent continuation/progress/privacy checks and a separate aggregate call-cap audit.
+
+Plain-task-cache entries record removal of hidden live reads from catalogue/read/defer, local eligibility and explicit-read bindings, scripted normal-tool failure outcomes and independent review.
+
+October 22 test-suite audit entries record independent historical/current review, full local Node execution, standalone harness limitations and conservative deletion recommendations. They authorize no deletion or deployment.
+
+The final plain-cache/tool-error release receipt records the combined reviewed worker deployment, old-worker request requeue, new-worker preparation and the limits of live evidence.
+
+October 22 cleanup entries record actual obsolete-script/case deletions, retained historical SQL, consolidated GLB/browser behavior and independent current-hash regression acceptance.
+
+Worker-call-limit passes record the explicit16reply/64stage selection, provider response/history agreement, bounded progress and separately verified live settings/release.
+
+The worker-call-limits final receipt records b30c41daSUCCESS, both live64stage settings, configured startup/polling and the distinction between scripted boundary tests and live operation.
+
+Further October22phase-out entries distinguish exact32case removals from concurrent attendance work, preserve historical SQL, and correct a measurement-only prompt-percentage assertion without deleting its data-integrity case.
+
+October 22 prompt-audit entries record the complete runtime inventory, independent chat/worker findings, corrections, actual behavioral evidence and affected releases. Attendance release evidence distinguishes simulated model writes from production startup checks.
+
+The essential-test review records a complete prioritization of the accepted 2,353 individual cases, separate from safe-deletion evidence and concurrent product changes.
+
+Final priority entries reconcile all 2,353 baseline IDs and preserve every per-file historical count: 1,627 essential, 548 useful, 139 historical, 39 review. No test deletion or new execution was performed by this assessment.
+
+The immediate Flock testing handoff records a documentation-only userstop, latest liveUTC/inheritance/revision failure, newest unverifiedlocalpromptchanges and pending exactcleanup. See the linked latestsnapshot; do not treat priorreleaseacceptance as finalproductionacceptance.

@@ -225,3 +225,10 @@ without suspending queue retention. Tests execute the full chain in
 reviewed release step recorded in the rolling milestone.
 
 Hosted038 is `20261022182039_agent_empty_scope_maintenance`, applied through Supabase MCP on2026-10-22. Exact function-body MD5 `693db56a3489e011782cc396ee75a1d8` matches the reviewed SQL; security-invoker, empty search path and service-only execute ACL are verified. No table/data migration; current runtime release evidence remains in milestones/milestone.md.
+
+
+039 agent_pending_tasks adds service-only temporary UUID/JSON tasks,24h expiry,200active/256KiB bounds and current queue lease/exact-version scoped RPCs.040 adds read-only building alias catalogue RPC.041 fences automation map upsert within a locked active queue lease; existing applied migrations remain immutable.
+
+042adds service-only metadata manual dispatch and a separate forced scoped claim preserving038maintenance/retry/global lease behavior while skipping trigger/cooldown.043reads only exact requested Discord metadata and ancestry for isolated override validation; it performs no policy/source identity writes.
+
+044 adds service-only event-local Discord metadata snapshot/reconciliation RPCs and guards full discovery against newer event observations. It changes no tables/columns or source-content storage. Current publication proof, policy/ancestry, manual disables and stable IDs remain required. Apply before the matching restart-aware collector; older collectors fail safely but cannot resume a flagged scan.

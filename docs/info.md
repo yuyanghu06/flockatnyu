@@ -1,3 +1,13 @@
+The [essential-test review](test-priority.md) classifies every case in the accepted 2,353-case phase-out snapshot; [the complete CSV](test-priority.csv) records reasons. Priority judgments are separate from safe-deletion proof and from later concurrent suite changes.
+
+The [application prompt audit](prompt-audit.md) inventories active chat, worker, helper, skill and tool instructions, records corrected mismatches, real-model behavior checks and separate backend follow-up.
+
+The [further phase-out](test-phaseout.md) records the next32case removals and retained behavior. Its [current CSV](test-suite-inventory-after-phaseout.csv) supersedes prior inventories for current counts.
+
+The [test cleanup](test-suite-cleanup.md) records applied removals, retained behavior and current verification. The [after-cleanup CSV](test-suite-inventory-after-cleanup.csv) supersedes the earlier inventory for current case counts.
+
+The [test-suite audit](test-suite-audit.md) records the October 22 case inventory, historical tests, safe deletion candidates and actual failures. Its [CSV](test-suite-inventory.csv) gives per-file counts; these are dated audit evidence, not a promise that later edits keep the same count.
+
 # Project documentation
 
 The [milestone snapshot](../milestones/milestone.md) and [to-do list](../milestones/to-do.md) hold current implementation/evidence and unfinished work. [Immutable history](../milestones/history/info.md) preserves previous decisions. Guides describe current contracts; historical commands are not operational instructions.
@@ -83,3 +93,26 @@ Tool reliability guides distinguish historical failure diagnosis from current lo
 `camera-navigation.md` describes the shared unobscured focus area and responsive activity-card positioning, complete-bound perspective fit and temporary lens widening within unchanged distance limits.
 
 Discord access guides describe automatic blacklist-based catalogue grants for chat and the update agent. Non-Discord source grants remain explicit; queue claims use fresh eligible Discord IDs and the configured authorized Gmail source. See `discord-live-only.md` and `discord-chat.md`; actual release evidence remains in the milestone snapshot.
+
+The [Discord conversation guide](discord-chat.md) documents explicit10total/5permember production configuration on web and discord-events, fallback3/1, supported ranges and overlapping history snapshots. Actual release verification remains in the milestone snapshot.
+
+The [Discord conversation guide](discord-chat.md) documents `draft_discord_message`: request-local text for another eligible channel, displayed for review in the invoking reply with sent=false. It adds no sending, native draft persistence, source-read expansion or website/worker capability.
+
+The [Google connector guide](google-connector.md) documents complete provider-confirmed Calendar write receipts, safe detail fields, missing/clear/truncation semantics and large-batch context limits. Receipt expansion preserves existing write/source/revision boundaries.
+
+The chat-prompt and events guides distinguish direct chat-reported map saves from provider-backed autonomous updates. Direct chat asks for unclear identity/details and requires a successful receipt; it no longer asks for an original message merely to identify the speaker.
+
+
+agent-automation.md and update-agent-prompt.md describe the staged two-calendar worker and temporary task context; events.md retains normalized data/source boundaries.
+
+agent-automation.md documents the authenticated queued-only manual start/status API, exact per-run blacklist override, durable worker dispatch and existing lease/budget/visibility boundaries.
+
+The automation, update-agent prompt and tool-failure guides explain safe tool-error replies and continued model work, while distinguishing actual run cancellation, invalid arguments and unchanged call limits.
+
+The automation and update-agent prompt guides distinguish plain saved-task reads from agent-selected normal source/action tools and confirmed task completion checks.
+
+Worker call-limit guidance records16calls per reply and64per stage, including finish_batch, while retaining shared chat defaults and existing time/round limits.
+
+The chat, event and Discord guides now describe attendance through the ordinary map tools. Historical attendance-link validation is retained separately from tool exposure.
+
+`flock-live-behavior-review-2026-10-22.md` records Chrome Discord behavior, actual Calendar/map checks, planner latency, user-corrected natural-message tests and exact cleanup status. Private raw source contents and credentials are excluded.

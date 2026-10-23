@@ -1,0 +1,8 @@
+# plain cache behavior verified
+
+- Local timestamp / acting role / milestone: 2026-10-22T18:24:42.453417-04:00 / tester report integrated by orchestrator / plain-task-cache-read.
+- Requested scope: independent verification of plain saved-task reads followed by model-selected standard source/action tools.
+- Starting repository state: coder source frozen; accepted tool-error work preserved; no combined deployment.
+- Work performed / changed files, decisions, checks and evidence: Independent tester verified zero hidden live checks with throwing/stalled callbacks,200-task complete catalogue/lossless read and unchanged read-only tasks. Scripted actual handler reads cache, chooses normal Discord read, receives unavailable, attempted Member Plans write denies and task survives. Local scope/expiry/malformed/unknown/unread binding denials and exact task completion/version/lease protections pass. Bounded193checks pass exit0, then one superficial keyword assertion test removed under new preference; no runtime changes. Owned tests/info frozen. Synthetic services/scripted model replies only, no real-model or live source/business calls.
+- Resulting state / acceptance: bounded pass accepted. Parent API build and122separate regressions pass. Reviewed58-file package matches53sourcefiles, contains no Miro modules; only pipeline/adapters/prompt differ from earlier tool-error package.
+- Remaining work and handoff: final broad regression in progress, then reviewed worker-only upload and actual startup verification. Task/source tool independence does not remove normal global run authorization or targeted completion verification. No new cap/timeout/schema changes.

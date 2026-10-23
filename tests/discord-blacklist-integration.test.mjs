@@ -1,3 +1,4 @@
+import {calendarEventReceipt} from '../server/google/calendar-receipt.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createApp} from '../server/app.js';
@@ -121,7 +122,7 @@ function workerFixture() {
   const adapters=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:miroSource},config,now:clock,fetchImpl:async()=>{throw Error('Unexpected network');},dependencies:{
     googleConfig:{configured:false},googleClient:{configured:false},discordConfig:f.config,discordStore:f.store,discordClient:f.client,liveDiscordService:f.service,
     calendarConfig:{configured:true,calendarId},calendarClient:{configured:true,calendarId,preflight:async()=>({status:'ready',calendarId,accessRole:'owner'}),
-      listEvents:async()=>({status:'ready',events:[],nextPageToken:null,coverage:{complete:true}}),upsertEvent:async args=>{calendarWrites.push(args);return {status:'ready',outcome:'created',eventId:'synthetic_event'};}},
+      listEvents:async()=>({status:'ready',events:[],nextPageToken:null,coverage:{complete:true}}),upsertEvent:async args=>{calendarWrites.push(args);return {status:'ready',...calendarEventReceipt({id:'synthetic_event',summary:args.title,description:args.description,location:args.location,start:args.start,end:args.end,status:'confirmed'},{calendarId,outcome:'created'})};}},
     miroConfig:{configured:true,boardIds:['board']},miroStore:{configured:true,authorizedBoard:async()=>({status:'ready',data:{board_id:'board',source_id:miroSource,team_id:null}})},
     miroTools:{configured:true,transport:'mcp',tools:[],prepareBoard:async()=>({status:'ready',boardContext:{format:'synthetic'}}),execute:async()=>({status:'ready',boardContext:{boards:[{boardId:'board',sourceId:miroSource,teamId:null}]}})},
   }});

@@ -1,0 +1,10 @@
+# Complete Calendar receipt contract accepted
+
+- Local timestamp / acting role / milestone: 2026-10-22T14:56:23.161815-04:00 / independent planner, journaled by orchestrator / calendar-complete-receipts.
+- Requested scope: Include actual saved name, description, location, time and other event details in Calendar write tool receipts, addressing incomplete confirmation shown in screenshot.
+- Starting repository state: Discord draft tool independently accepted, frozen sanitized web package deploying separately; unrelated concurrency changes preserved. User excluded map fixes.
+- Work performed / changed files: Planner traced provider client, chat/managed/batch wrappers and planning/answer/native projections; identified repeated field dropping, requested-value timing/title fallbacks and legacy response-body discard. Parent only changes journal/scope docs in this pass.
+- Decisions: Shared safe bounded provider-event receipt projector, backward-compatible identity/outcome fields plus actual returned title/description/location/boundaries/timezones/status and safe ancillary details. Missing/truncated fields explicit; requested/prewrite state never becomes saved proof. Preserve clears, all-day exclusive ends, sparse cancellations, managed absent state, existing source/revision/permission/no-invitation boundaries. Compact large batches explicitly while retaining every row's core identity/outcome/title/timing. No schema/configuration changes.
+- Checks and evidence: Independent source inspection only; implementation/tests assigned exclusive files. No model calls, live Calendar edits or deployment in planner pass.
+- Resulting state / acceptance: Plan accepted. Coder owns receipt helper/client/wrappers/projection; tester owns new receipt suite and obsolete location-receipt expectations. Shared draft source ownership released before Calendar edits.
+- Remaining work and handoff: Implement and independently test/evaluate all write paths and native/legacy/final projection; document then integrate/release. Draft deployment remains separate and carries no unfinished Calendar changes.

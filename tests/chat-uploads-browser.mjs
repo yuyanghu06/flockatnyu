@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 import { chromium } from 'playwright-core';
-const server = await createServer({ configFile: false, server: { host: '127.0.0.1', port: 0 }, logLevel: 'error' });
+const server = await createServer({ configFile: false, cacheDir: 'node_modules/.vite/chat-uploads-browser', server: { host: '127.0.0.1', port: 0 }, logLevel: 'error' });
 let browser;
 try {
   await server.listen();
@@ -20,7 +20,7 @@ try {
       if (url === '/api/status') return Response.json({ chat: { configured: true }, access: { allowed: true } });
       const body = JSON.parse(options.body); window.uploadCalls.push({ body, signal: options.signal });
       if (window.mode === 'fail') return Response.json({ type: 'error', message: 'Fixture upload rejected' }, { status: 400 });
-      const events = [{type:'tool',id:'tool-1',name:'set_map_attendance',status:'running'}, {type:'tool',id:'tool-1',name:'set_map_attendance',status:'completed'}, {type:'delta',text:'Files read successfully.'}, {type:'done'}];
+      const events = [{type:'tool',id:'tool-1',name:'upsert_map_event',status:'running'}, {type:'tool',id:'tool-1',name:'upsert_map_event',status:'completed'}, {type:'delta',text:'Files read successfully.'}, {type:'done'}];
       if (window.mode === 'hold') return new Response(new ReadableStream({start(controller) {
         window.finishReply = () => { for (const event of events) controller.enqueue(new TextEncoder().encode(JSON.stringify(event)+'\\n')); controller.close(); };
         options.signal.addEventListener('abort', () => controller.error(new DOMException('Stopped', 'AbortError')));

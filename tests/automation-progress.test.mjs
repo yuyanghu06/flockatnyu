@@ -23,8 +23,8 @@ function fixture({onProgress,prepare=true,prepareBatch,turns=[turn(toolCall()),t
 const phases=new Set(['prepare_start','prepare_done','model_start','model_done','tool_start','tool_done']);
 const statuses=new Set(['started','ready','pending','completed','aborted','forbidden','failed','already_succeeded','invalid_request']);
 function safe(events){
- assert(events.length<=128);assert(!JSON.stringify(events).includes(canary));assert(!JSON.stringify(events).includes(sourceId));assert(!JSON.stringify(events).includes(inputId));assert(!JSON.stringify(events).includes('https://'));
- for(const event of events){assert(phases.has(event.phase));assert(statuses.has(event.status));assert.deepEqual(Object.keys(event).sort(),['calls','elapsedMs','phase','round','status',...(event.tool?['tool']:[])].sort());assert(Number.isInteger(event.round)&&event.round>=0&&event.round<=16);assert(Number.isInteger(event.calls)&&event.calls>=0&&event.calls<=32);assert(Number.isInteger(event.elapsedMs)&&event.elapsedMs>=0&&event.elapsedMs<=900000);if(event.tool)assert(['read_context','finish_batch'].includes(event.tool));}
+ assert(events.length<=320);assert(!JSON.stringify(events).includes(canary));assert(!JSON.stringify(events).includes(sourceId));assert(!JSON.stringify(events).includes(inputId));assert(!JSON.stringify(events).includes('https://'));
+ for(const event of events){assert(phases.has(event.phase));assert(statuses.has(event.status));assert.deepEqual(Object.keys(event).sort(),['calls','elapsedMs','phase','round','status',...(event.tool?['tool']:[])].sort());assert(Number.isInteger(event.round)&&event.round>=0&&event.round<=16);assert(Number.isInteger(event.calls)&&event.calls>=0&&event.calls<=80);assert(Number.isInteger(event.elapsedMs)&&event.elapsedMs>=0&&event.elapsedMs<=900000);if(event.tool)assert(['read_context','finish_batch'].includes(event.tool));}
 }
 test('handler progress identifies preparation/model/registered tools with metadata only',async()=>{
  const f=fixture();assert.equal((await f.handler.tick()).status,'completed');safe(f.events);
@@ -41,17 +41,23 @@ test('throwing, rejecting or mutating diagnostic callbacks cannot change executi
 test('prepare/model/tool errors and aborts emit fixed safe statuses without private errors',async()=>{
  const cases=[{prepareBatch:async()=>{throw Error(canary);},phase:'prepare_done',status:'failed'},
   {turns:[()=>{throw Error(canary);}],phase:'model_done',status:'failed'},
-  {execute:async()=>{throw Error(canary);},phase:'tool_done',status:'failed'},
-  {execute:async()=>({status:canary,body:canary}),phase:'tool_done',status:'failed'},
+  {execute:async()=>{throw Error(canary);},phase:'tool_done',status:'failed',continues:true},
+  {execute:async()=>({status:canary,body:canary}),phase:'tool_done',status:'failed',continues:true},
   {turns:[turn(toolCall(canary))],phase:'model_done',status:'failed'}];
- for(const {phase,status,...options}of cases){const f=fixture(options);assert.notEqual((await f.handler.tick()).status,'completed');safe(f.events);assert.equal(f.events.at(-1).phase,phase);assert.equal(f.events.at(-1).status,status);assert.equal(f.state.finish,0);}
+ for(const {phase,status,continues=false,...options}of cases){
+  if(continues)options.turns=[turn(toolCall()),request=>{const reply=request.messages.at(-1);assert.equal(reply.toolCallId,'read_1');assert.equal(JSON.parse(reply.content).status,'tool_error');assert(!reply.content.includes(canary));return turn(finishCall());}];
+  const f=fixture(options),result=await f.handler.tick();safe(f.events);
+  if(continues){assert.equal(result.status,'completed');assert(f.events.some(event=>event.phase===phase&&event.status===status));assert.equal(f.events.at(-1).status,'completed');assert.equal(f.state.model,2);}
+  else {assert.notEqual(result.status,'completed');assert.equal(f.events.at(-1).phase,phase);assert.equal(f.events.at(-1).status,status);}
+  assert.equal(f.state.finish,continues?1:0);
+ }
  const controller=new AbortController(),f=fixture({turns:[()=>new Promise(()=>{})]});const running=f.handler.tick({signal:controller.signal});setTimeout(()=>controller.abort(),5);assert.equal((await running).status,'aborted');safe(f.events);assert.equal(f.events.at(-1).phase,'model_done');assert.equal(f.events.at(-1).status,'aborted');assert.equal(f.state.execute,0);
  const denied=fixture({authorize:async()=>false});assert.equal((await denied.handler.tick()).status,'forbidden');assert.deepEqual(denied.events,[]);
 });
-test('completion repair uses pending status and event cap stays128 under oversized injected limits',async()=>{
+test('completion repair uses pending status and event cap stays320 under oversized injected limits',async()=>{
  const f=fixture({turns:[turn(finishCall([])),turn({...finishCall(),id:'finish2'})]});assert.equal((await f.handler.tick()).status,'completed');safe(f.events);assert(f.events.some(e=>e.phase==='tool_done'&&e.tool==='finish_batch'&&e.status==='pending'));
- const turns=Array.from({length:40},(_,i)=>turn(toolCall('read_context',{query:canary},`read_${i}`)));turns.push(turn(finishCall()));
- const large=fixture({turns,configPatch:{maxRounds:41,maxCalls:41}});assert.equal((await large.handler.tick()).status,'completed');safe(large.events);assert.equal(large.events.length,128);assert.equal(large.state.execute,40);
+ const turns=Array.from({length:100},(_,i)=>turn(toolCall('read_context',{query:canary},`read_${i}`)));turns.push(turn(finishCall()));
+ const large=fixture({turns,configPatch:{maxRounds:101,maxCalls:101}});assert.equal((await large.handler.tick()).status,'completed');safe(large.events);assert.equal(large.events.length,320);assert.equal(large.state.execute,100);
 });
 
 function cliFixture(){

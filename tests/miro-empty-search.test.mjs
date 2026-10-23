@@ -59,7 +59,7 @@ test('real chat orchestration reaches month canvas after the exact omitted-resul
  assert(context.sources.some(source=>source.itemId===eventId&&source.url===url+'?moveToWidget=300'));
 });
 
-test('update adapter accepts the same zero-match result while granting no Calendar write evidence',async()=>{
+test('update adapter has no Miro read tools or Miro Calendar write grants',async()=>{
  const f=fixture();let writes=0;
  const adapters=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:sourceId},config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),
   fetchImpl:async()=>{throw Error('Unexpected network call');},
@@ -70,10 +70,7 @@ test('update adapter accepts the same zero-match result while granting no Calend
  const execute=(name,args)=>adapters.tools.find(tool=>tool.name===name).execute(args,context);
  try {
   await adapters.prepareBatch(context);
-  const result=await execute('read_miro_board',{boardId,mode:'search',patterns:['2026-10-18']});
-  assert.equal(result.status,'ready');assert.equal(result.sourceStatus,'ready');assert.equal(result.coverage.returnedCount,0);
-  assert.equal(result.coverage.wholeBoardComplete,false);assert.equal(result.coverage.complete,false);
-  assert(result.sources.every(source=>!source.contentAvailable&&!source.sourceKey));
+  assert(!adapters.tools.some(tool=>tool.name.includes('miro')));
   const key=`miro:${boardId}:${eventId}`,sourceUrl=url+'?moveToWidget='+eventId;
   assert.equal((await execute('upsert_calendar_event',{sourceKey:key,sourceUrl,title:'Synthetic workshop',start:{date:'2026-10-18'},end:{date:'2026-10-19'}})).status,'forbidden_source');
   assert.equal((await execute('cancel_calendar_event',{sourceKey:key,sourceUrl})).status,'forbidden_source');

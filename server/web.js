@@ -8,6 +8,7 @@ import {readConfig} from './config.js';
 import {createRuntimeApp,createRuntimeServices,createRuntimeDiscordChatBridge} from './runtime-app.js';
 import {createSiteAuth} from './site-auth.js';
 import {createMiroTokenBroker} from './miro/token-broker.js';
+import {isManualPlannerRoute} from './automation/manual-auth.js';
 
 const types = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8',
   '.json':'application/json', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg',
@@ -120,7 +121,7 @@ export function createWebsite({apiApp, siteAuth, miroTokenBroker, discordChatBri
       return reply(null, 303, {'location':'/', 'set-cookie':sessionCookie});
     }
     const publicIcon = ['/favicon.ico', '/favicon.svg'].includes(url.pathname) && ['GET', 'HEAD'].includes(request.method);
-    if (!publicIcon && !siteAuth.session(request)) {
+    if (!publicIcon && !isManualPlannerRoute(url.pathname) && !siteAuth.session(request)) {
       if (url.pathname.startsWith('/api/') || !['GET', 'HEAD'].includes(request.method)) return reply('{"status":"access_denied"}', 403, {'content-type':'application/json'});
       return reply(null, 303, {'location':'/login'});
     }

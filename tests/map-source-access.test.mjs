@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createMapEventService} from '../server/map/events.js';
+import {createMapPresenceService} from '../server/map/presence.js';
 import {createMapSourceAuthorizer} from '../server/map/source-access.js';
 
 const sourceId = '12345678-1234-1234-1234-123456789abc';
@@ -103,4 +105,22 @@ test('cancellation denies cached and in-flight scoped authorization',async()=>{
   const pending=g.scope({...args,signal:g.signal});g.controller.abort();
   release({status:'ready',sources:[{sourceId,url:discordUrl,guildId:'111',channelId:'222',messageId:'333'}]});
   assert.equal(await pending,false);
+});
+
+test('historical attendance markers remain exact and cannot recurse or borrow another source after the old writer is retired',async()=>{
+  const f=scopedFixture(),sourceUrl=marker(),args={principal,sourceId,sourceUrl,eventId,personId};assert.equal(await f.authorize(args),true);
+  for(const candidate of [sourceUrl.replace(publicOrigin,'https://evil.example'),sourceUrl.replace(`event=${eventId}`,`event=${otherEventId}`),sourceUrl.replace(`attendance-${personId}`,`attendance-${otherPersonId}`),sourceUrl.replace('#attendance','&extra=1#attendance'),sourceUrl.replace('/?event','/other?event'),sourceUrl+'-extra',sourceUrl.replace('/?event','/?event=x&event'),sourceUrl.replace('https://','http://'),sourceUrl.replace(publicOrigin,'https://user@flock.example')])assert.equal(await f.authorize({...args,sourceUrl:candidate}),false,candidate);
+  assert.equal(await f.authorize({...args,principal:{...principal,allowedSourceIds:[sourceId,otherSourceId]},sourceId:otherSourceId}),false);
+  f.snapshot.events[0].source_url=sourceUrl;assert.equal(await f.authorize(args),false,'An old declaration cannot authorize itself recursively');
+});
+
+test('historical attendance marker cannot be copied to another person during ordinary writes, reads or map projection',async()=>{
+  const f=scopedFixture();let writes=0;const at='2026-10-18T15:30:00Z',token='2026-10-18T15:00:00Z';
+  f.snapshot.events=f.snapshot.events.slice(0,1).map(row=>({...row,updated_at:token,created_at:token}));f.snapshot.buildings=[{id:'bobst-library',name:'Bobst Library'}];f.snapshot.event_buildings=[{event_id:eventId,building_id:'bobst-library',location_notes:''}];
+  const person=id=>({event_id:eventId,person_id:id,attendance_status:'going',presence_basis:'planned',label:'',starts_at:null,ends_at:null,source_id:sourceId,source_url:marker(),reported_at:token});
+  const store={configured:true,read:async()=>structuredClone(f.snapshot),upsert:async()=>{writes++;return {status:'applied'};}},authorize=createMapSourceAuthorizer({...f.dependencies,store,publicOrigin});
+  const service=createMapEventService({store,authorizeSource:authorize,now:()=>new Date(at)}),strip=row=>Object.fromEntries(Object.entries(row).filter(([key])=>!['created_at','updated_at','event_id'].includes(key)));
+  assert.equal((await service.upsert({principal,event:strip(f.snapshot.events[0]),buildings:[{building_id:'bobst-library',location_notes:''}],people:[strip(person(otherPersonId))],expectedUpdatedAt:token})).status,'forbidden');assert.equal(writes,0);
+  f.snapshot.event_people=[person(personId),person(otherPersonId)];const read=await service.read({principal});assert.deepEqual(read.event_people.map(row=>row.person_id),[personId]);
+  const projected=await createMapPresenceService({store,authorizeSource:authorize,production:true,now:()=>new Date(at)}).read({principal});assert.deepEqual(projected.buildings[0].events[0].attendees.map(row=>row.id),[personId]);
 });

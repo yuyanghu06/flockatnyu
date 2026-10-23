@@ -1,0 +1,3 @@
+# Cancellation task completion
+
+Recognize confirmed club and Member Plans cancellations when completing saved source-review tasks. Use actual authorized tool receipts and exact current Calendar state. Preserve failed/uncertain work, independent tasks, source/identity checks and exact-version deletion. No cache-read, prompt, schema or budget change. Completion requires meaningful integration tests, independent review and verified worker deployment. Status: complete. Independent149regressions and reviewer ACCEPT; isolated adapter-only worker8ee19715 deployed SUCCESS, startup/no-pending-deployment checks pass. No live business cancellation was performed.

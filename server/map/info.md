@@ -119,23 +119,26 @@ edits. There is no catalogue mutation tool or additional building/profile author
 
 The user subsequently cancelled event icons. The five-type catalogue and required type_id remain;028icon_key/APIiconKey are reserved compatibility metadata and do not cause frontend images or remote requests. All current/future authorized event kinds remain in building cards, with private personal-plan participant gating.
 
-Calendar provenance now verifies the configured allowed Calendar source UUID and exact canonical event link against a current read of the fixed calendar. Source access is rechecked by the shared service. Both agent adapters bind Calendar record identity to the observed eventId; attendance uses separate authorized originals. Request-local chat and batch-local update identity receipts bind changed participants to exact original author/sender evidence. Building/profile/type catalogues stay fixed.
+Calendar provenance now verifies the configured allowed Calendar source UUID and exact canonical event link against a current read of the fixed calendar. Source access is rechecked by the shared service. Both agent adapters bind Calendar record identity to the observed eventId; attendance uses separate authorized originals. Worker identity receipts bind changed participants to exact original author/sender evidence; chat uses its verified Discord speaker or a supplied unambiguous roster name through the normal map tools. Building/profile/type catalogues stay fixed.
 
-`chat-intent.js` recognizes affirmative current-turn map action clauses and rejects negated actions for chat write authorization; source content cannot supply that intent.
+not an authorization gate or an attendance parser. Chat interprets ordinary
+first-person/named-person event attendance with read_map_events,
+lookup_map_person and upsert_map_event, preserving the existing event snapshot,
+other participants and fresh revision. It asks for unclear identity/event details
+and carries supplied facts through normal conversational clarification. Only an
+applied normal mapWrite receipt confirms marked going, not physical arrival.
 
-`chat-attendance.js` implements the separate current-chat named-person attendance path: unique fixed roster/event resolution, request-bound selections, current source checks and optimistic complete-snapshot preservation. It writes going/planned participation only and generates strict app provenance. `source-access.js` recognizes that marker only under configured PUBLIC_ORIGIN and reauthorizes the referenced event's supported original; no provider identity is invented. Web and worker need matching origin configuration. Generic upserts and provider identity receipts remain unchanged.
-
-App attendance markers also require the actual caller eventId/personId to match the encoded IDs. Authorization context travels through both map service writes/reads and browser projection, so another existing roster member cannot reuse a valid marker. Request-local attendance tools are omitted entirely when the current message lacks a configured affirmative named attendance declaration.
-
-Event phrases use NFKC/case normalization and contiguous whole alphanumeric token matching, so AWS Hackday and AWS Hack Day can resolve the same occurrence despite spaces, hyphens or punctuation. The same rule binds the current declaration and rechecks the event before writing. This formatting normalizer does not infer synonyms or match fragments of larger tokens; catalogue-based model resolution below handles aliases. Person/date/source/concurrency checks remain unchanged.
-
-When normalized titles do not resolve, lookup returns the authorized, unexpired, date-filtered catalogue with fuzzy bigram ranking and bounded notes/location context. The model resolves clear typos or aliases from those actual events; rank alone is not confidence. All candidates are returned up to20, with explicit truncation and no write receipts for incomplete lists. Exact duplicate matches, multiple matching full contexts and unsupported single short names require clarification. Complete candidate selections bind the exact returned event name/source/revision and recheck authorization before an attendance-only write. Person matching remains exact.
+`chat-attendance.js` now contains only chatAttendanceOrigin and
+chatAttendanceReference. source-access.js uses them to validate historical stored
+#attendance links against exact event/person/source bindings and current provider
+visibility. No attendance resolver, separate write service or lexical declaration
+parser remains. Existing stored links retain their compatibility checks.
 
 Browser projection and trusted event reads each create their own request-local authorization scope using the read's validated snapshot, principal and cancellation signal. Original provider checks share in-flight results by exact source UUID/URL only within that read; app attendance markers still bind the exact event/person/source before reuse. Each later read fetches a fresh snapshot and rechecks providers. Lookup and both write authorization passes remain uncached. Custom authorizers without a scope factory retain their direct callback behavior.
 
 Trusted reads preindex building and participant relationships, authorize filtered events with at most four concurrent workers, then authorize only those events' valid participants with the same concurrency bound. Results preserve snapshot event order and per-event relationship order regardless of provider completion order. Cancellation stops queued work and returns unavailable instead of a partial authorized snapshot. Browser event/building and participant checks likewise use at most four concurrent workers and deterministic projection ordering. Both paths keep the shared 60-second total deadline.
 
-Map event storage, source verification, browser presence and chat attendance default to 60 seconds through `../source-timeout.js`. The bounded-work ceiling is also 60 seconds, so production wiring cannot silently clamp verification to the old 15-second maximum. Explicit shorter deadlines and caller cancellation are preserved; source checks and write authorization are unchanged.
+Map event storage, source verification, browser presence and chat map operations default to 60 seconds through `../source-timeout.js`. The bounded-work ceiling is also 60 seconds, so production wiring cannot silently clamp verification to the old 15-second maximum. Explicit shorter deadlines and caller cancellation are preserved; source checks and write authorization are unchanged.
 
 The shared record prompt explicitly creates source-backed map-only presence or
 personal-plan events when no stable source record exists. It resolves fixed
@@ -172,3 +175,14 @@ this module creates no buckets, profiles, storage writes or public policies.
 Map operational diagnostics preserve deadline/caller cancellation, storage HTTP and response-validation causes while retaining existing result statuses, SQL conflict/validation mapping and authorization behavior. Fixed codes and observed numbers only are forwarded; provider bodies, URLs, identities and raw errors remain excluded.
 
 Presence projections include the actual event kind. `event-preview.js` grants only the exact reserved two-hour Go Greek UI fixture a nonproduction/local-development display exception; no participants or normal source read/write permissions follow. Production excludes this fixture. See docs/active-event-indicators.md for identity, expiry and guarded cancellation.
+
+
+
+
+Calendar source authorization accepts explicit trusted pinned targets, including Member Plans. Automation uses an optional getLeaseToken store hook to route map writes through041 transaction fencing. Personal associations retain independently checked original Discord/Gmail provenance; arbitrary Calendar metadata cannot invent identity.
+
+## Chat map tool authorization
+
+Authenticated chat uses the existing map operations without source-content proof or phrase-matching gates. `source-access.js` exposes a small application-origin reference for internally attributed chat updates, enabled only in the web/Discord runtime. Other provider authorization and worker defaults are unchanged. The normal event service still validates fixed catalogues, timestamps and optimistic revisions. Model prompts decide conversational intent and missing details; no separate report grammar, pending cache or resolver/save modules remain.
+
+Chat no longer has a keyword detector that injects a map-write command. The model interprets the actual request, quotations and clarification. An applied normal map write exposes a bounded submitted snapshot, explicitly not an independent database readback; omitted defaults/relationships stay unknown. After a confirmed optimistic conflict, the chat runner permits one repeated read of that target per request while preserving mutation deduplication, budgets and normal authorization.

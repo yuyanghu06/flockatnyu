@@ -2,302 +2,51 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
-import {createMapEventStore,createMapEventService} from '../server/map/events.js';
-import {createMapSourceAuthorizer} from '../server/map/source-access.js';
-import {createMapPresenceService} from '../server/map/presence.js';
-import {createChatAttendanceService} from '../server/map/chat-attendance.js';
-import {createChatAttendanceTools} from '../tools/map/chat-attendance.js';
-import {createMapTools} from '../tools/map/index.js';
-import {createChatMapTools} from '../tools/map/chat.js';
-import {createBugReportTools} from '../tools/bug-reports/index.js';
 import {createProvider} from '../server/providers/index.js';
+import {createBugReportTools} from '../tools/bug-reports/index.js';
+import {fixture,snapshot,attendanceArguments,assertAttendance,scriptedProvider,ids,now,principal} from './fixtures/chat-map-attendance.mjs';
 
-const ids={source:'10000000-0000-4000-8000-000000000001',event:'20000000-0000-4000-8000-000000000001',person:'30000000-0000-4000-8000-000000000001',other:'30000000-0000-4000-8000-000000000002',request:'40000000-0000-4000-8000-000000000001'};
-const now='2026-10-18T22:00:00.000Z',updated='2026-10-18T21:00:00.000Z',origin='https://club.test',calendarId='club@example.test',providerId='awsevent123';
-const providerUrl=`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${providerId} ${calendarId}`).toString('base64url')}`;
-const declaration='yuyang will be going to help with aws on tuesday';
-const config=readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'offline-fixture',LLM_API_KEY:'fixture-only'});
-const principal={id:'test-member',allowedSourceIds:[ids.source],googleAccess:true};
-const find={name:'find_map_attendance_targets',arguments:{personName:'yuyang',eventQuery:'aws'}};
-const set={name:'set_map_attendance',arguments:{eventId:ids.event,personId:ids.person,expectedUpdatedAt:updated}};
-const bug=summary=>({name:'bug_reports',arguments:{summary,observedBehavior:'The user reports a broken composer.'}});
-function initial(){return {
-  buildings:[{id:'bobst-library',name:'Bobst'}],
-  people:[{id:ids.person,display_name:'Yuyang Hu',is_trackable:true,avatar_url:null},{id:ids.other,display_name:'Alex Example',is_trackable:true,avatar_url:null}],
-  event_types:[{code:'other',name:'Other',description:'Fixture',icon_key:'other',sort_order:0}],
-  events:[{id:ids.event,name:'AWS Workshop',notes:'Human notes',kind:'scheduled_event',type_id:'other',status:'confirmed',time_kind:'timed',starts_at:'2026-10-20T22:00:00Z',ends_at:'2026-10-21T00:00:00Z',starts_on:null,ends_on:null,time_zone:'America/New_York',source_id:ids.source,source_url:providerUrl,source_record_id:providerId,url:null,reported_at:updated,created_at:updated,updated_at:updated}],
-  event_buildings:[{event_id:ids.event,building_id:'bobst-library',location_notes:'Room 101'}],
-  event_people:[{event_id:ids.event,person_id:ids.other,attendance_status:'going',presence_basis:'planned',label:'Existing helper',starts_at:'2026-10-20T22:15:00Z',ends_at:'2026-10-20T23:00:00Z',source_id:ids.source,source_url:providerUrl,reported_at:updated}],
-};}
-function fixture({rounds=[[find],[set],[]],reportStatus='ready',data=initial(),beforeWrite,provider:customProvider}={}) {
-  let state=structuredClone(data),allowed=true,plans=0,answerSystem='';
-  const writes=[],reports=[],memory=[],requests=[];
-  const store=createMapEventStore({env:{SUPABASE_URL:'https://offline.test',SUPABASE_SERVICE_ROLE_KEY:'fixture-only'},fetchImpl:async(url,options)=>{
-    const path=new URL(url).pathname,body=JSON.parse(options.body);requests.push({path,body});
-    if(path.endsWith('/map_read_events'))return Response.json(state);
-    assert(path.endsWith('/map_upsert_event'));
-    beforeWrite?.(state,body);
-    const old=state.events.find(row=>row.id===body.p_event.id);
-    if(old.updated_at!==body.p_expected_updated_at)return Response.json({status:'conflict'});
-    writes.push(body);
-    const at='2026-10-18T22:00:00.001Z';
-    state.events=state.events.map(row=>row.id===body.p_event.id?{...body.p_event,created_at:row.created_at,updated_at:at}:row);
-    state.event_people=[...state.event_people.filter(row=>row.event_id!==body.p_event.id),...body.p_people.map(row=>({...row,event_id:body.p_event.id}))];
-    state.event_buildings=[...state.event_buildings.filter(row=>row.event_id!==body.p_event.id),...body.p_buildings.map(row=>({...row,event_id:body.p_event.id}))];
-    return Response.json({status:'applied',event_id:body.p_event.id,updated_at:at});
-  }});
-  const authorizeSource=createMapSourceAuthorizer({store,publicOrigin:origin,calendarSourceId:ids.source,calendarClient:{configured:true,calendarId,readEvent:async()=>allowed?{status:'ready',events:[{eventId:providerId,url:providerUrl}]}:{status:'forbidden'}}});
-  const service=createMapEventService({store,authorizeSource,now:()=>new Date(now)});
-  const generic=createChatMapTools({mapTools:createMapTools({service})}),attendance=createChatAttendanceTools({service:createChatAttendanceService({store,service,publicOrigin:origin,now:()=>new Date(now)})});
-  const mapTools={tools:[...generic.tools,...attendance.tools],execute:options=>attendance.tools.some(row=>row.name===options.name)?attendance.execute(options):generic.execute(options),createRequest:context=>{
-    const g=generic.createRequest(context),a=attendance.createRequest(context);return {tools:[...g.tools,...a.tools],observe:g.observe,execute:options=>a.tools.some(row=>row.name===options.name)?a.execute(options):g.execute(options)};
-  }};
-  const bugReportTools=createBugReportTools({store:{configured:true,record:async args=>{reports.push(args);if(reportStatus==='throw')throw Error('PRIVATE_FAILURE');return reportStatus==='ready'?{status:'ready',reportId:args.reportId,createdAt:now,outcome:'created'}:{status:reportStatus};}}});
+const config=readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'fixture-only',LLM_API_KEY:'synthetic'}),read={name:'read_map_events',arguments:{}},lookup={name:'lookup_map_person',arguments:{personName:'Tony Example'}},write={name:'upsert_map_event',arguments:attendanceArguments()};
+function api({steps=[[read,lookup],[write],[]],provider,answer='Saved your attendance.',...options}={}){
+  const f=fixture({rpc:true,...options}),p=provider??scriptedProvider(steps,{answer}),app=createApp({config,provider:p,auth:()=>principal,mapTools:f.mapTools,mapPresenceService:{read:()=>f.projection()},now:()=>new Date(now)});
+  return {f,p,app,chat:async(content='Tony Example will attend GoGreek tomorrow',attachments)=>{const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[{role:'user',content,...(attachments?{attachments}:{})}],timeZone:'America/New_York'})});assert.equal(response.status,200);const events=(await response.text()).trim().split('\n').map(JSON.parse);if(p.errors?.length)throw p.errors[0];return events;}};
+}
+
+test('Hono and actual RPC adapter save attendance through ordinary tools and the refreshed map shows the participant',async()=>{
+  const {f,app,chat}=api(),events=await chat();assert.equal(events.at(-1).type,'done');assertAttendance(f);
+  assert.deepEqual(events.filter(row=>row.type==='tool'&&row.status!=='running').map(row=>row.name),['read_map_events','lookup_map_person','upsert_map_event']);
+  assert(f.calls.some(row=>row.name==='rpc'&&row.path.endsWith('/map_upsert_event')));const projected=await (await app.request('/api/map/presence')).json();assert(projected.buildings[0].events[0].attendees.some(row=>row.id===ids.person));
+  f.revoke();const hidden=await (await app.request('/api/map/presence')).json();assert.deepEqual(hidden.buildings[0].events,[]);
+});
+
+for(const reportStatus of ['ready','conflict','throw'])test(`bug report ${reportStatus} is attempted once while memory and ordinary map updates continue`,async()=>{
+  const f=fixture(),reports=[],memory=[],bug=summary=>({name:'bug_reports',arguments:{summary,observedBehavior:'Broken composer'}}),bugReportTools=createBugReportTools({store:{configured:true,record:async args=>{reports.push(args);if(reportStatus==='throw')throw Error('PRIVATE_EXCEPTION');return reportStatus==='ready'?{status:'ready',reportId:args.reportId,createdAt:now,outcome:'created'}:{status:reportStatus};}}});
   const memoryTools={tools:[{name:'update_memory'}],execute:async call=>{memory.push(call);return {status:'ready',outcome:'updated',memory:{updated_at:now}};}};
-  const provider=customProvider||{planTools:async context=>typeof rounds==='function'?rounds(context,plans++):rounds[plans++]||[],async *stream({system}){answerSystem=system;yield 'Fixture complete.';}};
-  const mapPresenceService=createMapPresenceService({store,authorizeSource,production:true,now:()=>new Date(now)});
-  const app=createApp({config,auth:()=>principal,provider,mapTools,mapPresenceService,bugReportTools,memoryTools,now:()=>new Date(now)});
-  return {app,writes,reports,memory,requests,mapTools,authorizeSource,get state(){return state;},get answerSystem(){return answerSystem;},revoke(){allowed=false;},async chat(content=declaration,attachments){
-    const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[{role:'user',content,...(attachments?{attachments}:{})}],timeZone:'America/New_York'})});
-    const text=await response.text();assert.equal(response.status,200,text);return text.trim().split('\n').map(JSON.parse);
-  }};
-}
-
-test('Hono -> combined adapters -> actual RPC adapter persists screenshot attendance and refresh read sees it',async()=>{
-  const f=fixture(),before=initial(),events=await f.chat();
-  assert.deepEqual(events.filter(row=>row.type==='tool').map(row=>[row.name,row.status]),[[find.name,'running'],[find.name,'completed'],[set.name,'running'],[set.name,'completed']]);
-  assert.equal(events.at(-1).type,'done');assert.equal(f.writes.length,1);
-  assert.deepEqual(f.state.event_people.find(row=>row.person_id===ids.other),before.event_people[0]);
-  const added=f.state.event_people.find(row=>row.person_id===ids.person);
-  assert.equal(added.attendance_status,'going');assert.equal(added.presence_basis,'planned');assert(added.source_url.startsWith(`${origin}/?event=${ids.event}#attendance-${ids.person}-`));
-  assert.deepEqual(f.state.event_buildings,before.event_buildings);assert.equal(f.state.events[0].notes,'Human notes');assert.equal(f.state.events[0].ends_at,before.events[0].ends_at);
-  const response=await f.app.request('/api/map/presence');const projected=await response.json();
-  assert(projected.buildings[0].events[0].attendees.some(person=>person.id===ids.person));
-  assert.match(f.answerSystem,/"attendanceWrite":\{"outcome":"applied"/);
-  f.revoke();const hidden=await (await f.app.request('/api/map/presence')).json();assert.deepEqual(hidden.buildings[0].events,[]);
+  const p=scriptedProvider([[bug('Composer broken'),bug('Reworded bug')],[read,lookup],[write],[bug('Another retry'),{name:'update_memory',arguments:{content:'A supplied club preference'}}],[]]);
+  const result=await f.run(p,{messages:[{role:'user',content:'The composer is broken; Tony Example will attend GoGreek tomorrow; remember our supplied club preference.'}],bugReportTools,memoryTools});if(p.errors.length)throw p.errors[0];assert.equal(result.result.status,'succeeded');assert.equal(reports.length,1);assert.equal(memory.length,1);assertAttendance(f);
+  const events=result.records.filter(row=>row.type==='tool'&&row.name==='bug_reports');assert.equal(events.length,2);assert.equal(events[1].status,reportStatus==='ready'?'completed':'failed');
 });
 
-for(const reportStatus of ['ready','conflict','throw'])test(`full API attempts a ${reportStatus} report once despite changed retries; memory and attendance continue`,async()=>{
-  const f=fixture({reportStatus,rounds:[[bug('Composer broken'),bug('Reworded broken composer')],[find],[set],[bug('Yet another wording'),{name:'update_memory',arguments:{content:'A supplied club preference'}}],[]]});
-  const events=await f.chat(`The composer is broken; ${declaration}; remember our supplied club preference.`);
-  assert.equal(f.reports.length,1);assert.equal(f.memory.length,1);assert.equal(f.writes.length,1);
-  const reportEvents=events.filter(row=>row.type==='tool'&&row.name==='bug_reports');assert.equal(reportEvents.length,2);assert.equal(reportEvents[1].status,reportStatus==='ready'?'completed':'failed');
-  assert.equal(reportStatus==='ready',f.answerSystem.includes('"bugReport":'));assert.equal(events.at(-1).type,'done');
+test('RPC conflict preserves the concurrent human edit and provides no saved receipt',async()=>{
+  const {f,chat}=api({beforeWrite:state=>{state.events[0].updated_at='2026-10-22T20:00:00.005Z';state.events[0].notes='Concurrent human correction';},answer:({system})=>{assert(!system.includes('"mapWrite":{"outcome":"applied"'));return 'I could not confirm the update.';}});
+  const events=await chat();assert.equal(f.writes.length,0);assert.equal(f.state.events[0].notes,'Concurrent human correction');assert.equal(events.find(row=>row.type==='tool'&&row.name==='upsert_map_event'&&row.status!=='running').status,'failed');
 });
 
-for(const content of [
-  'Yuyang will not attend AWS on Tuesday',
-  'If Yuyang will attend AWS on Tuesday, tell me.',
-  'Alex will attend orientation; quote:\n"\nYuyang will attend AWS on Tuesday\n"',
-  'Alex will attend orientation; example:\n```text\nYuyang will attend AWS on Tuesday\n```',
-  'Alex will attend AWS on Tuesday; Yuyang is helping to organize the event.',
-])test(`full API rejects fabricated attendance authority: ${content.split('\n')[0]}`,async()=>{
-  const f=fixture();const events=await f.chat(content);assert.equal(f.writes.length,0);assert.notEqual(events.find(row=>row.name===set.name&&row.status!=='running')?.status,'completed');
-  assert(!f.answerSystem.includes('"attendanceWrite":'));
+test('stateless lookup/upsert endpoints cannot substitute for an authenticated chat request',async()=>{
+  const {app,f}=api();for(const [name,args] of [['lookup-map-person',lookup.arguments],['upsert-map-event',write.arguments]]){const response=await app.request(`/api/tools/${name}`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(args)});assert.equal(response.status,403);}assert.equal(f.writes.length,0);
 });
 
-test('RPC optimistic conflict preserves a concurrent human edit and never emits successful write progress',async()=>{
-  const f=fixture({beforeWrite:state=>{state.events[0].updated_at='2026-10-18T22:00:00.005Z';state.events[0].notes='Concurrent human correction';}});
-  const events=await f.chat();assert.equal(f.writes.length,0);assert.equal(f.state.events[0].notes,'Concurrent human correction');
-  assert.equal(events.find(row=>row.name===set.name&&row.status!=='running').status,'failed');assert(!f.answerSystem.includes('"attendanceWrite":'));
+test('uploaded or retrieved attendance text stays evidence when the current user only asks for a summary',async()=>{
+  const {f,chat}=api({steps:[[]],answer:'The file says Tony plans to attend GoGreek.'});await chat('Summarize this file.',[{name:'notes.txt',mimeType:'text/plain',data:Buffer.from('Tony Example will attend GoGreek tomorrow').toString('base64')}]);assert.equal(f.writes.length,0);assert.deepEqual(f.state,snapshot());
 });
 
-test('stateless attendance and generic identity endpoints cannot use current-chat attendance as provider identity',async()=>{
-  const f=fixture();
-  for(const [name,args] of [['set-map-attendance',set.arguments],['find-map-attendance-targets',find.arguments],['lookup-map-person',{provider:'email',providerUserId:'guessed@example.test',sourceId:ids.source,sourceUrl:providerUrl}]]) {
-    const response=await f.app.request(`/api/tools/${name}`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(args)});
-    assert.equal(response.status,403);assert.equal(f.writes.length,0);
-  }
-});
-
-test('valid upload text cannot become attendance authority through full request parsing',async()=>{
-  const f=fixture(),attachment={name:'notes.txt',mimeType:'text/plain',data:Buffer.from(declaration).toString('base64')};
-  await f.chat('Summarize this file.',[attachment]);assert.equal(f.writes.length,0);assert(!f.answerSystem.includes('"attendanceWrite":'));
-});
-
-test('full API attachment-only image and PDF requests reach actual provider multimodal conversion',async()=>{
-  const wire=[];
-  const provider=createProvider(config,{fetchImpl:async(url,options)=>{
-    wire.push(JSON.parse(options.body));return new Response('data: {"choices":[{"index":0,"delta":{"content":"Offline answer"},"finish_reason":null}]}\n\ndata: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
-  }});
-  // No tool schemas means no planning fetch; only the answer call is intercepted.
-  const app=createApp({config,auth:()=>principal,provider,now:()=>new Date(now)});
+test('attachment-only image and PDF requests still reach actual provider multimodal conversion',async()=>{
+  const wire=[],provider=createProvider(config,{fetchImpl:async(_url,options)=>{wire.push(JSON.parse(options.body));return new Response('data: {"choices":[{"index":0,"delta":{"content":"Offline answer"},"finish_reason":null}]}\n\ndata: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\ndata: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});}}),app=createApp({config,auth:()=>principal,provider,now:()=>new Date(now)});
   const files=[{name:'image.png',mimeType:'image/png',data:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aKAAAAABJRU5ErkJggg=='},{name:'paper.pdf',mimeType:'application/pdf',data:Buffer.from('%PDF-1.4\n%%EOF').toString('base64')}];
-  const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'',attachments:files}]})});
-  const stream=await response.text();assert.equal(response.status,200);assert.match(stream,/Offline answer/);assert.equal(wire.length,1);
-  const user=wire[0].messages.find(row=>row.role==='user');assert.deepEqual(user.content.map(part=>part.type),['text','image_url','file']);
-  assert.match(user.content[1].image_url.url,/^data:image\/png;base64,/);assert.equal(user.content[2].file.filename,'paper.pdf');assert.match(user.content[2].file.file_data,/^data:application\/pdf;base64,/);
+  const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'',attachments:files}]})});assert.equal(response.status,200);assert.match(await response.text(),/Offline answer/);assert.equal(wire.length,1);const user=wire[0].messages.find(row=>row.role==='user');assert.deepEqual(user.content.map(part=>part.type),['text','image_url','file']);assert.match(user.content[1].image_url.url,/^data:image\/png;base64,/);assert.equal(user.content[2].file.filename,'paper.pdf');
 });
 
-test('map projection rejects a chat provenance marker copied to another existing roster person',async()=>{
-  const data=initial();data.event_people[0].source_url=`${origin}/?event=${ids.event}#attendance-${ids.person}-${ids.request}`;
-  const f=fixture({data});const response=await f.app.request('/api/map/presence');const body=await response.json();
-  assert(!body.buildings[0].events[0].attendees.some(person=>person.id===ids.other),'A marker naming Yuyang must not authorize Alex attendance');
-});
-
-for(const [title,phrase,query] of [
-  ['AWS Hack Day','AWS Hackday','AWS Hackday'],
-  ['AWS Hackday','AWS Hack Day','AWS Hack Day'],
-  ['AWS—Hack-Day','AWSHackday','AWSHackday'],
-  ['AWSHackday','AWS Hack-Day','AWS Hack-Day'],
-  ['ＡＷＳ Hack Day','aws hackday','AWS Hack Day'],
-])test(`formatting-equivalent attendance resolves and persists through service and API: ${title} / ${phrase}`,async()=>{
-  const data=initial();data.events[0].name=title;
-  const content=`Yuyang will be at ${phrase} on Tuesday`;
-  const lookup={name:find.name,arguments:{personName:'Yuyang',eventQuery:query}};
-  const serviceFixture=fixture({data});
-  const request=serviceFixture.mapTools.createRequest({userMessage:content,principal});
-  const targets=await request.execute({...lookup,principal});assert.equal(targets.attendanceTargets?.selection,'unique');
-  assert.equal((await request.execute({...set,principal})).attendanceWrite?.outcome,'applied');
-  const apiFixture=fixture({data,rounds:[[lookup],[set],[]]});
-  const events=await apiFixture.chat(content);assert.equal(apiFixture.writes.length,1);
-  assert.equal(events.find(row=>row.name===set.name&&row.status!=='running')?.status,'completed');
-  assert.equal(apiFixture.state.event_people.find(row=>row.person_id===ids.person)?.attendance_status,'going');
-});
-
-for(const [title,phrase,query] of [
-  ['PAWS Hack Day','AWS','AWS'],
-  ['AWSHackday','AWS','AWS'],
-  ['AWS Hack Day2','AWS Hackday','AWS Hackday'],
-  ['AWS Hack Day Beginner','AWS Hackday','AWS Hackday Beginner'],
-  ['AWS','AWSHackday','AWS'],
-])test(`nonexact prefixes return suggestions or ambiguity; invented query narrowing remains denied: ${title} / ${phrase} / ${query}`,async()=>{
-  const data=initial();data.events[0].name=title;
-  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:query}}],[]]});
-  const events=await f.chat(`Yuyang will be at ${phrase} on Tuesday`);
-  assert.equal(f.writes.length,0);assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
-  if(['PAWS Hack Day','AWSHackday'].includes(title))assert.match(f.answerSystem,/"selection":"ambiguous"/);
-  if(title==='AWS Hack Day2')assert.match(f.answerSystem,/"selection":"candidates"/);
-});
-
-test('formatting-equivalent titles stay ambiguous and cannot persist through the full API',async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';
-  data.events.push({...data.events[0],id:'20000000-0000-4000-8000-000000000002',name:'AWS-Hackday'});
-  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:'AWSHackday'}}],[set],[]]});
-  const events=await f.chat('Yuyang will attend AWS Hackday on Tuesday');
-  assert.equal(f.writes.length,0);assert.match(f.answerSystem,/"selection":"ambiguous"/);
-  assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
-});
-
-test('formatting matching still respects the declared Tuesday rather than another matching day',async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';
-  data.events[0].starts_at='2026-10-22T22:00:00Z';data.events[0].ends_at='2026-10-23T00:00:00Z';
-  data.event_people=[];
-  const f=fixture({data,rounds:[[{name:find.name,arguments:{personName:'Yuyang',eventQuery:'AWSHackday'}}],[set],[]]});
-  await f.chat('Yuyang will be at AWS Hackday on Tuesday');assert.equal(f.writes.length,0);assert.match(f.answerSystem,/"selection":"not_found"/);
-});
-
-const candidateLookup=query=>({name:find.name,arguments:{personName:'Yuyang',eventQuery:query}});
-const previousResults=system=>JSON.parse(system.split('UNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n').at(-1));
-function extraEvent(data,index,patch={}) {
-  const row={...data.events[0],id:`20000000-0000-4000-8000-${String(index).padStart(12,'0')}`,...patch};
-  data.events.push(row);data.event_buildings.push({event_id:row.id,building_id:'bobst-library',location_notes:'Room 102'});return row;
-}
-
-test('full API misspelling returns a complete candidate, then a scripted model selects the actual returned event',async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';
-  const f=fixture({data,rounds:({system},round)=>{
-    if(round===0)return [candidateLookup('AWS Hckday')];
-    const targets=previousResults(system).find(row=>row.tool===find.name).attendanceTargets;
-    assert.equal(targets.selection,'candidates');assert.equal(targets.complete,true);assert.equal(targets.totalEvents,1);assert.equal(targets.truncated,false);
-    if(round===1)return [{name:set.name,arguments:{eventId:targets.events[0].id,personId:targets.people[0].id,expectedUpdatedAt:targets.events[0].updated_at}}];
-    return [];
-  }});
-  await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.state.events[0].name,'AWS Hack Day');
-  assert.equal(f.state.event_people.find(row=>row.person_id===ids.person).attendance_status,'going');
-});
-
-test('full API semantic alias exposes actual notes/location and permits a contextual nonfirst candidate choice',async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';data.events[0].notes='Cloud build sprint: the club AWS hands-on hackathon.';
-  const decoy=extraEvent(data,2,{name:'Cloud Build Planning',notes:'An unrelated administrative planning meeting.'});
-  const f=fixture({data,rounds:({system},round)=>{
-    if(round===0)return [candidateLookup('cloud build sprint')];
-    const targets=previousResults(system).find(row=>row.tool===find.name).attendanceTargets;
-    assert.equal(targets.selection,'candidates');assert.equal(targets.complete,true);assert.equal(targets.events[0].id,decoy.id,'Similarity ranks the decoy first, so model context must be available');
-    const chosen=targets.events.find(row=>row.notes==='Cloud build sprint: the club AWS hands-on hackathon.');
-    assert(chosen);assert.equal(chosen.location_notes,'Room 101');
-    if(round===1)return [{name:set.name,arguments:{eventId:chosen.id,personId:targets.people[0].id,expectedUpdatedAt:chosen.updated_at}}];
-    return [];
-  }});
-  await f.chat('Yuyang will be at cloud build sprint on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.writes[0].p_event.id,ids.event);
-});
-
-test('candidate lookup alone never writes or acknowledges attendance when the scripted model asks for clarification',async()=>{
-  const data=initial();data.events[0].name='Robotics social';
-  const f=fixture({data,rounds:[[candidateLookup('AWS Hckday')],[]]});
-  const events=await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);
-  assert.match(f.answerSystem,/"selection":"candidates"/);assert(!f.answerSystem.includes('"attendanceWrite":'));
-  assert(!events.some(row=>row.name===set.name));
-});
-
-for(const change of ['title','revision','source','sourceRecord','person'])test(`candidate selection cannot bypass changed ${change} between lookup and write`,async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';let f;
-  f=fixture({data,rounds:(_context,round)=>{
-    if(round===0)return [candidateLookup('AWS Hckday')];
-    if(round===1){
-      if(change==='title')f.state.events[0].name='Renamed unrelated event';
-      if(change==='revision')f.state.events[0].updated_at='2026-10-18T22:00:00.005Z';
-      if(change==='source')f.state.events[0].source_id='10000000-0000-4000-8000-000000000002';
-      if(change==='sourceRecord')f.state.events[0].source_record_id='different-provider-record';
-      return [{...set,arguments:{...set.arguments,...(change==='person'?{personId:ids.other}:{})}}];
-    }return [];
-  }});
-  const events=await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
-});
-
-test('a real event excluded from returned date-filtered candidates has no write receipt',async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';
-  const hidden=extraEvent(data,2,{name:'AWS Thursday',starts_at:'2026-10-22T22:00:00Z',ends_at:'2026-10-23T00:00:00Z'});
-  const f=fixture({data,rounds:[[candidateLookup('AWS Hckday')],[{...set,arguments:{...set.arguments,eventId:hidden.id}}],[]]});
-  await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);assert(!f.answerSystem.includes('"attendanceWrite":'));
-});
-
-test('more than20candidate events are explicitly incomplete and cannot grant any candidate write',async()=>{
-  const data=initial();data.events[0].name='Candidate Event 1';
-  for(let index=2;index<=21;index++)extraEvent(data,index,{name:`Candidate Event ${index}`});
-  const f=fixture({data,rounds:[[candidateLookup('AWS Hckday')],[set],[]]});
-  await f.chat('Yuyang will attend AWS Hckday on Tuesday');assert.equal(f.writes.length,0);
-  const context=JSON.parse(f.answerSystem.split('UNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n').at(-1));
-  const targets=context.results.find(row=>row.tool===find.name).attendanceTargets;
-  assert.equal(targets.events.length,20);assert.equal(targets.totalEvents,21);assert.equal(targets.complete,false);assert.equal(targets.truncated,true);
-});
-
-for(const contextField of ['notes','location'])for(const chooseSecond of [false,true])test(`generic workshop cannot authorize either candidate using full ${contextField} beyond display bounds: choose${chooseSecond?2:1}`,async()=>{
-  const data=initial();data.events[0].name='Cloud Lab';data.events[0].notes='Club event';
-  const second=extraEvent(data,2,{name:'AI Lab',notes:'Another club event'});
-  if(contextField==='notes')for(const event of data.events)event.notes='x'.repeat(510)+'\nA workshop on Tuesday';
-  else for(const link of data.event_buildings)link.location_notes='x'.repeat(210)+'\nWorkshop area';
-  const selectedId=chooseSecond?second.id:ids.event;
-  const f=fixture({data,rounds:[[candidateLookup('the workshop')],[{...set,arguments:{...set.arguments,eventId:selectedId}}],[]]});
-  const events=await f.chat('Yuyang will attend the workshop on Tuesday');assert.equal(f.writes.length,0);
-  const context=JSON.parse(f.answerSystem.split('UNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n').at(-1));
-  const targets=context.results.find(row=>row.tool===find.name).attendanceTargets;
-  assert.equal(targets.selection,'ambiguous');assert.equal(targets.complete,true);assert.equal(targets.events.length,2);
-  assert(targets.events.every(event=>!(contextField==='notes'?event.notes:event.location_notes).toLowerCase().includes('workshop')),'Ambiguity must use full stored context before display truncation');
-  assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
-});
-
-for(const excludedBy of ['date','source'])test(`generic context ambiguity only counts currently authorized date-eligible events: ${excludedBy}`,async()=>{
-  const data=initial();data.events[0].name='Cloud Lab';data.events[0].notes='A workshop about cloud tools';
-  extraEvent(data,2,{name:'AI Lab',notes:'A workshop about AI',...(excludedBy==='date'?{starts_at:'2026-10-22T22:00:00Z',ends_at:'2026-10-23T00:00:00Z'}:{source_id:'10000000-0000-4000-8000-000000000002'})});
-  const f=fixture({data,rounds:[[candidateLookup('the workshop')],[set],[]]});
-  await f.chat('Yuyang will attend the workshop on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.writes[0].p_event.id,ids.event);
-});
-
-for(const reference of ['PAWS','paws'])for(const chooseSecond of [false,true])test(`unsupported short reference ${reference} cannot authorize either similarity suggestion: choose${chooseSecond?2:1}`,async()=>{
-  const data=initial();data.events[0].name='AWS Hack Day';
-  const second=extraEvent(data,2,{name:'Product Demo',notes:'A club project showcase'});
-  const f=fixture({data,rounds:[[candidateLookup(reference)],[{...set,arguments:{...set.arguments,eventId:chooseSecond?second.id:ids.event}}],[]]});
-  const events=await f.chat(`Yuyang will attend ${reference} on Tuesday`);assert.equal(f.writes.length,0);
-  const context=JSON.parse(f.answerSystem.split('UNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n').at(-1));
-  const targets=context.results.find(row=>row.tool===find.name).attendanceTargets;
-  assert.equal(targets.selection,'ambiguous');assert.equal(targets.complete,true);assert.equal(targets.events.length,2);
-  assert(!events.some(row=>row.name===set.name&&row.status==='completed'));
-});
-
-test('a short reference with a real authorized full-context anchor remains selectable',async()=>{
-  const data=initial();data.events[0].name='Cloud Lab';data.events[0].notes='PAWS is the name of this cloud learning session';
-  extraEvent(data,2,{name:'Product Demo',notes:'A club project showcase'});
-  const f=fixture({data,rounds:[[candidateLookup('PAWS')],[set],[]]});
-  await f.chat('Yuyang will attend PAWS on Tuesday');assert.equal(f.writes.length,1);assert.equal(f.writes[0].p_event.id,ids.event);
+test('ordinary map reads retain semantic notes and multiple candidates without selecting or mutating an event',async()=>{
+  const data=snapshot();data.events[0].name='Cloud Lab';data.events[0].notes='AWS cloud build sprint';data.events.push({...data.events[0],id:'20000000-0000-4000-8000-000000000002',name:'AI Lab',notes:'A different workshop'});
+  const {f,chat}=api({data,steps:[[read],[]],answer:({system})=>{assert(system.includes('AWS cloud build sprint'));assert(system.includes('A different workshop'));return 'Which workshop do you mean?';}});await chat('Tony Example will attend the workshop tomorrow');assert.equal(f.writes.length,0);assert.deepEqual(f.state,data);
 });

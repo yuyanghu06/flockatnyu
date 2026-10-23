@@ -1,3 +1,301 @@
+## STOPPED — next agent starts with the Flock handoff
+
+User requested documentation only and no other work. [Read exact state/IDs](live-planner-calendar-tests/handoff-2026-10-22.md). Do not interpret previous pending tasks as permission to ignore this stop.
+
+- [x] Document confirmed bugs, released/local changes, real-model and live limits, cleanup and attribution boundaries.
+- [x] Stop active tester/observer; freeze newest3promptfiles without rollout.
+- [ ] On user resume, observe DesignSessionterminal and finish exactMCPcleanup (activeinput/lateoperatorinput/tasks/ownaudits), preserving genuineGoGreekattendance/globallease/unattributeddata.
+- [ ] On user resume, actual-shape configured-model tests for newest UTC/nullinheritance/parentrevision instructions; independentreview and NEW isolatedwebpackage onlyifaccepted.
+- [ ] Afteracceptedrollout, boundedliveattendancecheck and finalmainbug/cleanupsummary. Performance/projectionfixremainsseparate.
+
+## Contextual attendance and final live tests
+
+- [x] Remove exact genuine Go Greek all-day duplicate and retain attendance on original3–5PM occurrence.
+- [x] Accept independent existing-event/entire-time prompt contract.
+- [x] Implement and independently model-test/review bounded prompt change;62inferencecallsincludingretainedfailures, evaluatorACCEPT.
+- [ ] Verify web4eb34f43deployment/health and actualDiscordexisting-eventattendance.
+- [ ] Verify disposable live attendance, current Workshop map correction, uncertainty/cancellation as feasible.
+- [ ] Remove all exact synthetic Calendar/map/cache/task/job/audit artifacts; preserve genuine GoGreek attendance.
+- [ ] Summarize confirmed main bugs, fixes and remaining failures.
+
+## OpenCode role mirror
+
+- [x] Port the five `.codex/agents/` managed roles to OpenCode-native `.opencode/agents/*.md` definitions with documented permissions and no model pins.
+- [x] Record the always-mirror rule in `~/.config/opencode/AGENTS.md`; cross-reference `.codex/agents/info.md` and `docs/agent-workflow.md`.
+- [ ] Verify OpenCode discovers the five project agents in a fresh session/service restart.
+
+## Essential test review
+
+- [x] Reconstruct the exact 2,353-case accepted baseline, exclude parents and assign complete independent review partitions.
+- [x] Review and validate platform partition: 658 IDs, 417 essential / 207 useful / 26 historical / 8 review.
+- [x] Review and validate Calendar/map/worker partition: 801 IDs, 615 essential / 122 useful / 40 historical / 24 review.
+- [x] Review and validate Discord partition: 894 IDs, 595 essential / 219 useful / 73 historical / 7 review.
+- [x] Validate all 2,353 unique IDs and historical per-file totals; save report/CSV. Final recommendation: 1,627 essential, 548 useful, 139 historical, 39 review. No test deletion or execution in this assessment.
+
+## New-channel discovery repair — user authorized
+
+- [x] Accept bounded exact-channel publication and old-scan fence plan; runtime/SQL implementation and independent meaningful tests assigned.
+
+- [x] Implement bounded exact-channel publication, relevant metadata CAS and old-scan restart fence; source frozen pending independent acceptance. Preserve permissions, policy, stable IDs and budgets.
+- [x] Independently test/review exact-channel metadata repair;80focused checks and evaluatorACCEPT.
+- [x] Apply044 via MCP/deploy974cb14cSUCCESS; fresh nativeedits queue normally. Original replay failed after Discordsessionreset; recorded without historyimport.
+- [ ] Resume natural Calendar/Member Plans/map cases with sole manual whitelist1562966336932413602; perform final exact cleanup.
+
+## Prompt audit corrections
+
+- [x] Implement identified chat/worker instruction mismatches, truthful applied map details, bounded conflict reads and explicit irrelevant-input completion.
+- [x] Independently verify actual behavior and accept final corrections; all five configured-model scenarios pass on simulated stores.
+- [x] Verify web a87b4929 and worker6434b07e SUCCESS, worker ready preparation and production health/login/access checks.
+- [x] Implement, independently test/review and deploy cancellation completion fix as worker8ee19715 SUCCESS; matching confirmed cancellations resolve saved tasks, failed/mismatched outcomes retain them.
+
+## Natural-message testing correction and cleanup
+
+- Superseded: labeled QA/planner announcements as evidence of ordinary automatic pickup; user requires natural wording.
+- [x] Post plain Bobst presence and workshop announcement in exact replacement channel; trigger only that channel.
+- [x] Cancel explicit chat map fixture and verify it is hidden.
+- [x] Complete Supabase MCP auth; delete exact canceled chat fixture, two obsolete jobs and seven old synthetic input/state pairs through MCP; verified absent. Direct database fallback remains declined.
+- [ ] Verify natural originals reach worker, then actual Calendar/Member Plans/map changes, corrections, uncertainty safety, cancellation and final cleanup.
+- [ ] Review ten-minute timeout/requeue starvation and performance failures; testing pass does not implement fixes.
+
+## Separate current-source findings observed during test phase-out
+
+- [x] Attendance owner restored omitted existing event.url; its actual preservation test remains and passes.
+- [x] Independently trace prompt percentage to an old measurement; retain complete compaction test with actual prompt/evidence shrinkage plus lossless reconstruction. Final frozen-source run passes; old failed30percent observation remains recorded.
+
+## Further current-rule test phase-out — authorized
+
+- [x] Inspect exact redundancy and capture fresh baseline; preserve139historicalcases.
+- [x] Remove4overlappingcontract/provider cases and trim phrase-only assertions from2mixed tests.
+- [x] Complete28prompt/catalogue/retired-fallback case removals; combined32total with contract/provider removals.
+- [x] Independently verify final frozen-source behavior, exact32case reduction,139historicalcases/43SQLhashes, evaluatorACCEPT and refreshed report/CSV. No remaining work for this phase-out.
+
+- [x] Verify live identity, clarification, actual chat map save and future-only display.
+- [x] Fix chat map receipt/confirmation through full prompt audit: actual applied submitted snapshot reaches answer; real-model positive confirmation passes.
+- [ ] Finish exact fixture cleanup and timed club/Member Plans/unknown-date planner tests.
+
+- [x] Independently measure deployed planner latency and verify chat identity/clarification responses.
+- [ ] Investigate misleading finish_batch ready versus rejected/unknown diagnostics; no fix requested in this testing pass.
+
+## Future test phase-out — advisory
+
+- [x] Explain rough further-reduction target and distinguish current-rule review candidates from protected historical cases. No further deletion implemented or newly certified safe.
+
+## Natural chat attendance — fix underway
+
+- [x] Diagnose screenshot/liveoldtoolrejection andacceptnormal-map-tools plan.
+- [x] Retire old attendance exposure/parser/routing; preserve historical references and normal tool access, identity and write checks.
+- [x] Verify mixed tool integration, privacy/timeouts and actual browser map/card refresh.
+- [x] Correct opaque-link preservation; real-model attendance, name clarification, realistic ambiguity and conflict checks pass on simulated storage.
+- [x] Correct quoted/summary-only instruction conflict in planning and tool descriptions.
+- [x] Preserve an omitted existing event.url; final positive/name/quote real-model checks and independent acceptance pass.
+- [x] Build, review and deploy attendance web delta; public health/access checks pass.
+
+## Full prompt audit — user requested after attendance fix
+
+- [x] Complete active runtime prompt/tool/skill/result-notice inventory and independent chat/worker reviews.
+- [ ] Checkagainstcurrentimplemented tools/scope/limits/identity/cache/failurebehavior; removeoutdated/conflictinginstructions.
+- [ ] Testmeaningfulaffectedflows, independentreview anddeployaffectedservices; documentcoverage/limits.
+
+## Chrome Flock and planner behavior tests
+
+- [x] Independent plan for chat, timed Calendar, Member Plans, corrections, unknown dates, duplication and cancellation.
+- [ ] Review relevant Discord history; execute synthetic cases; record performance and failures; independently evaluate evidence.
+
+## Worker call limits — implementation and deployment authorized
+
+- [x] Plan all response/history/runner/config/progress limit changes and preserve chat defaults.
+- [x] Implement16calls/reply,64initial/followupstage and accurate bounded progress; source frozen.
+- [x] Independently verify16/17 and64/65behavior, stage reset, protocol history and existing controls; ACCEPT.
+- [x] Set both live worker stage variables64, deployb30c41daSUCCESS/no pendingwork and verify configured startup/polling; user notification is final handoff.
+
+## Live planner verification progress
+
+- [x] Verify one complete #flock-test-only cycle and actual existing Calendar-to-map projection.
+- [ ] Finish the remaining5older originals (one accepted run active, two queued), then exercise the prepared synthetic cases.
+- [ ] Verify new timed creation, no duplicate on correction, Member Plans routing, undecided-date handling and exact-fixture cleanup; none claimed passed yet.
+
+## Maximum safe test cleanup — authorized
+
+- [x] Remove13confirmed duplicate/retired-helper Node cases; preserve historical SQL.
+- [x] Remove4obsolete capturetools,4obsolete opt-in model scenarios and stale/static checks; retain useful mixed-file behavior.
+- [x] Verify replacement asset checks and coder browser behavior; remove17obsolete standalone programs after preserving useful coverage.
+- [x] Independent full Node run, focused asset/personal-location/76standalone checks, build and current inventory pass.
+- [x] Seal final independent nine-scenario browser receipt, evaluator ACCEPT and completed cleanup journal; current after-cleanup inventory saved.
+
+## Repository test-suite audit
+
+- [x] Independently review historical tests and current behavior; preserve SQL fixtures and useful mixed tests.
+- [x] Finish complete case count, standalone harness inventory, broad run and independently accepted deletion report: docs/test-suite-audit.md and per-file CSV.
+- [x] Superseded by user-authorized completed cleanup: removed 13 redundant/retired-helper cases; historical SQL fixtures preserved.
+- [x] Completed after user resumed cleanup: stale personal-location assertions/optional model scenarios retired, camera configuration loader shared/repaired and useful checks moved before deleting seven legacy browser harnesses. Original audit itself made no deletions.
+
+## Live Calendar verification (side conversation)
+
+- [x] Review recent scheduling cases, confirm API key and two-Calendar access, and record empty synthetic baselines.
+- [ ] Observe whitelisted older-message run and process the remaining older #flock-test queue first.
+- [ ] Send bounded synthetic scheduling cases; verify actual Calendar/map changes and clean up exact new fixtures.
+
+## Plain task-cache read — implementation authorized
+
+- [x] Accept plain-cache contract: remove task-related live checks from catalogue/read/defer; preserve normal tools and exact completion verification.
+- [x] Implement local cache checks, explicit-read input binding and remove unused live callback wiring.
+- [x] Prompt the agent to use standard Discord/Gmail, Calendar and map tools after inspecting saved task contents.
+- [x] Independently test/evaluate cache isolation, ordinary-tool failures/write denial and task/version preservation; ACCEPT.
+- [x] Build/repackage/deploy combined worker1c33c414; SUCCESS/no pending work and organic prepare_done ready verified.
+
+## Tool failures returned to model — implementation resumed
+
+- [x] Accept bounded implementation plan and explain8calls/reply versus32calls/phase. No cap increase selected.
+- [x] Return sanitized generic errors for failed/throwing/null/malformed/oversized tools, preserve failed write receipts and continue siblings/model turns.
+- [x] Independently test/evaluate/integrate ordinary/manual staged behavior; combined worker1c33c414 deployed and startup verified.
+- [x] Separately audit >8reply proposals:409confirmed historical rejects/5763model requests (7.10percent); no cap-specific errors in recent897lifecycle rows. Exact recent successful proposal counts remain unavailable.
+- Schema-error repair and task-validation/deadline restructuring remain separately pending; this authorization covers tool failure continuation.
+
+## Manual planner API-key auth correction
+
+- [x] Replace start/status session/capability gating with dedicated PLANNER_API_KEY bearer checks; deny cookie/admin fallback.
+- [x] Verify130focused/integration/security regressions and API build locally.
+- [x] Package/recheck/deploy API-key auth delta to webc83f2495; live missing/wrong-key denials and ordinary website protection verified.
+- [ ] User setup: add PLANNER_API_KEY to Railway web and apply variables; successful real-key dispatch remains unverified. No key was generated/set by the deployment pass.
+
+## General runner behavior inventory
+
+- [x] Explain all major runner stopping conditions, ordinary waiting exits and limited preservation of initial work after final-phase failures.
+- Authorized tool-error and plain-cache changes above are complete; malformed argument feedback and broader time-budget work remain pending.
+
+## Discord read failure continuation — clarification only
+
+- [x] Trace exact-message failure handling: base retrieval returns empty failed result; update handler prevents model continuation.
+- [x] Return safe failed-read outcomes to model; remove bundled live checks from cache reads/bookkeeping. Whole-run cancellation and actual tool write checks remain.
+
+## Update-agent sustained failures — diagnosed, fixes pending
+
+- [x] Confirm live streak and last settlement; distinguish whole-run timeout from per-source/model limits and identify missing-required defer fields.
+- [x] Independently reproduce fatal schema rejection/no correction opportunity and failure to settle handled inputs after follow-up abort.
+- [ ] Add bounded validation feedback with accurate fixed field diagnostics; preserve invalid-input/source denial.
+- [ ] Make stage budgets/checkpoint/settlement robust when follow-up runs out of time; preserve exact leases/tasks and unfinished work.
+- [x] Remove live original/reference checks from task catalogue/cache bookkeeping; standard source/action tools keep their checks.
+- [ ] Verify actual backlog, quarantines and retained proposal shape through Supabase MCP when available. No data-loss conclusion established.
+- Original diagnosis was read-only. Subsequent plain-cache/tool-error changes above are deployed; no budget increase was selected.
+
+## Manual planner API
+
+- [ ] Operational follow-up: observe request4fced205-4b6f-45e3-b9d0-ac37c54f5a7a finish empty after the active ordinary cycle; no implementation remains.
+
+- [x] Accept independent plan and user correction: queued-only, explicit whitelist overrides exclusions for that run.
+- [x] Implement operator start/status routes, metadata request dispatch and same-lease forced claim.
+- [x] Propagate exact whitelist through fresh source/original/action/task checks; preserve default blacklist behavior.
+- [x] Independently test/evaluate, resolve findings and verify reviewed hosted rollout; bothSUCCESS, live auth/validation/start/status and correct waiting behavior pass.
+
+## Flock Discord testing permission
+
+- [x] Record permission in AGENTS.md and notes.md for future computer-use tests in Tech@NYU #flock-test.
+- Live testing is deferred per the user's clarification; no test run or message sent in this pass.
+
+## Simplified update agent — resumed implementation
+
+- [x] Accept bounded independent plan against deployed staged Calendar pipeline.
+- [x] Remove worker Miro/preflight and obsolete model rolling-sync obligations; retain deterministic sync and source controls.
+- [x] Enable exact authorized queued Gmail body-backed club Calendar writes, preserving personal-plan and human-edit protections.
+- [x] Keep mechanical API failures out of model follow-up; preserve existing tasks and diagnostic status.
+- [x] Independently test/evaluate, integrate fixes and deploy worker2d5ae565; SUCCESS/no pending rollout/live preparation ready.224tester/163evaluator and2407broad checks pass; unrelated chat-map file explicitly excluded.
+- Earlier note-only deferral is superseded by the user's explicit implementation resumption. Existing budget values remain unchanged.
+
+## Corrected future update-agent scope — implementation deferred by user
+
+- [x] Save the user's two responsibilities and compare deployed planner versus local staged pipeline.
+- [x] Superseded by explicit resumption and completed simplified-update-agent implementation/release above; earlier note-only limitation is historical.
+- Earlier broader planner duties are superseded as future intent only. Preserve existing independent pipeline work and current services; no limit changes or Miro disable performed.
+
+## Calendar rejection follow-up identified
+
+- [x] Reproduce rigid explicit scheduling/cancellation intent rejects and trace missing target-date duplicate-check windows; distinguish pipeline improvements from retained guards.
+- [x] Clarify shared source deadlines versus Discord aggregate/request/run budgets and per-turn versus total call caps; advise without changing settings.
+- [ ] Address and verify these Calendar intent/window blockers within the separately authorized staged pipeline; this advisory pass makes no runtime edits.
+- [x] Superseded by resumed two-task cleanup: automatic worker Miro removed; shared chat read-only access retained. No connector/configuration disable applied.
+
+## Weekly FlockBot forensic report
+
+- [x] Read all currently eligible Eboard nodes with final access rechecks; private derived evidence only.
+- [x] Integrate Eboard Teams and operational/model/transport evidence; preserve incomplete attribution.
+- [x] Produce, visually verify and independently review the requested private report and exception ledger; delivered outside Git with retention/attribution limits.
+
+## Update-agent effects and repeated work diagnosed
+
+- [x] Explain historical update-agent workload, repeat/failure amplification and visible-effect limits; deliver a private reconciled per-run audit without changing runtime.
+
+## Update-agent replay mechanisms independently reviewed
+
+- [x] Independently trace historical batching, sync, retry/idempotency and audit limits; distinguish current staged work from deployed historical behavior.
+
+## Chat map identity clarification — corrected scope
+
+- Superseded: previous separate resolver/save/report parser/cache/session architecture and its local acceptance; user explicitly rejected it. Deleted its two runtime modules and dedicated test file; historical journal remains append-only.
+- [x] Use only existing map read/person-lookup/upsert tool names and remove chat lexical/source-original/pasted-link/linked-author proof gates.
+- [x] Tighten shared prompts to execute current location/plotting requests, asking only for unclear person or essential missing facts; normal conversation carries clarification.
+- [x] Preserve Discord-to-person table in both prompts and map-tool results when called.
+- [x] Restore site-auth/session implementation and tests; preserve worker/provider source authorization and unrelated pipeline edits.
+- [x] Resolve freshness/parity/stale-receipt/prompt-size findings;394parent,217tester,56evaluator checks pass and final evaluator ACCEPT.
+- [x] Record corrected local acceptance; no deployment/hosted changes in this pass.
+
+## Staged Calendar pipeline
+
+- [x] Accept independent architecture/ownership plan; user authorizes full plan and table updates.
+- [x] Implement service-only temporary task cache, two pinned calendars, deterministic projection and same-lease staged lifecycle.
+- [x] Independently test source/identity/retry/expiry/phase/cap and participant-preservation paths, evaluate and resolve findings; final source/package ACCEPT.
+- [x] Apply reviewed039–041 migrations, configure pinned Member Plans/source/private key, deploy reviewed source-isolated worker/web; both SUCCESS, hosted health/auth/map and actual cached-task/final-phase progression verified. First organic settlement remains an operational observation, not claimed complete.
+
+## Member Plans Calendar setup
+
+- [x] Create and verify Member Plans under the existing Tech@NYU account in America/New_York; preserve sharing defaults.
+- [x] Follow-up superseded by authorized staged implementation: second Calendar/source, personal/current-location routing, deterministic sync and bounded task phase are implemented and reviewed.
+
+## Deferred-work cache discussion
+
+- [x] Compare proposed compact deferred-task cache against existing input/retry queue; design discussion only, no implementation selected.
+
+## Update-agent accounting inquiry
+
+- [x] Attribute retained model tokens and estimated spend to planner/update agent separately from chat; disclose missing accounting and historical coverage without runtime changes.
+
+## Complete Calendar write receipts
+
+- [x] Trace all provider/client/wrapper/projection paths and accept independent plan.
+- [x] Implement safe provider-confirmed saved-event receipts across single, managed and batch writes without request/prewrite fallback.
+- [x] Independently test full saved details, sparse/missing/cleared fields, private-data exclusion and large-batch compaction; tester296checks and evaluator289checks pass, ACCEPT.
+- [x] Guides/integration complete:2297full tests pass,1optional skip; web10f3a363 and update-agentc6e09917 SUCCESS with hosted health/auth/login and worker preparation verified, without Calendar test writes.
+
+## Agent base prompt clarification
+
+- [x] Summarize actual web/Discord shared prompt phases, Discord-specific context and autonomous update-agent instructions; distinguish local draft addition from verified release state.
+
+## Update-agent operational clarification
+
+- [x] Explain startup versus eligible processing, verify selected live model/batch/budget settings and qualify recent Miro-deferred completion; no runtime changes.
+
+## Discord message drafting tool
+
+- [x] Accept independent plan and assign exclusive implementation/test ownership; user confirms drafting only, leave map unchanged.
+- [x] Implement Discord-only draft tool and faithful planning/answer result projection without send/persistence/source expansion.
+- [x] Independently verify target access, ambiguity, cancellation, privacy and both provider modes; tester413focused checks and final evaluator ACCEPT.
+- [x] Integrate documentation and deploy reviewed web draft adapter; Railway SUCCESS plus hosted health/auth checks pass. Real generated draft wording/delivery untested.
+
+## Discord personal-map diagnosis
+
+- [x] Correlate screenshot with Railway/model audit, establish first-person guard denial before database lookup, and verify same-channel reply-only capability.
+- Superseded in part: existing chat map tools now accept verified Discord actor or clarified roster name without original-message/link/linked-author proof or lexical gates; the rejected separate declaration-tool architecture is removed. Normal provider-source visibility remains. Unsolicited bug-report selection beyond the clarified map path remains a separate follow-up.
+
+## Discord identity prompt clarification
+
+- [x] Trace automatic roster/actor prompt injection and confirm complete live directory plus current actor inclusion; historical screenshot failure remains undiagnosed.
+
+## Discord concurrency increase
+
+- [x] Trace config/admission/history and verify production currently uses defaults.
+- [x] Permit per-member5 and document explicit production10/5.
+- [x] Independently test total/member bounds, reply isolation and slot recovery; evaluator ACCEPT (193 focused checks).
+- [x] Deploy sanitized web/discord-events with10/5; both SUCCESS, selected variables verified, web health/protection and collector chat/Gateway readiness pass.
+
 ## Discord blacklist GitHub publication
 
 - [x] Review all pending files, existing test/deployment evidence and remote branch; independent publication ACCEPT and no credential findings.
@@ -1815,3 +2113,7 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 
 - [x] Complete all four Railway rollouts, hosted chat/API checks, the 27-portrait cutover and logical GitHub publication.
 - [ ] Optional private-network SSH health probe needs a registered Railway SSH key; none was created during release. Observe user-initiated Discord delivery without sending unsolicited test messages.
+
+## Testing preference (side conversation)
+
+- [x] Record meaningful behavior testing and evaluator API-call permission in AGENTS.md and notes.md. No test-suite cleanup or API run requested by this documentation pass.

@@ -19,6 +19,19 @@ test('chat budgets clamp extreme values and reject nonintegral inputs', () => {
   assert.equal(config.requestsPerUserHour,20); assert.equal(config.typingIntervalMs,5000);
 });
 
+test('Discord concurrency explicitly supports ten total and five per member while preserving defaults',()=>{
+  const defaults=readDiscordChatConfig({});
+  assert.equal(defaults.maxConcurrent,3);assert.equal(defaults.perUserConcurrent,1);
+  const increased=readDiscordChatConfig({DISCORD_CHAT_MAX_CONCURRENT:'10',DISCORD_CHAT_PER_USER_CONCURRENT:'5'});
+  assert.equal(increased.maxConcurrent,10);assert.equal(increased.perUserConcurrent,5);
+  for(const [value,expected] of [['1',1],['2',2],['3',3],['4',4],['5',5],['6',5],['9999',5],['0',1],['-1',1]]) {
+    assert.equal(readDiscordChatConfig({DISCORD_CHAT_PER_USER_CONCURRENT:value}).perUserConcurrent,expected,value);
+  }
+  for(const value of [undefined,'','NaN','Infinity','five','5ms','1.5']) {
+    assert.equal(readDiscordChatConfig({DISCORD_CHAT_PER_USER_CONCURRENT:value}).perUserConcurrent,1,String(value));
+  }
+});
+
 
 test('Discord total deadline defaults to twenty minutes, preserves shorter overrides and clamps beyond twenty minutes',()=>{
   for(const [value,expected] of [[undefined,1200000],['',1200000],['1200000',1200000],['1199999',1199999],['180000',180000],['300000',300000],['1000',1000],['0',1000],['-1',1000],['1200001',1200000],['99999999',1200000]]) {

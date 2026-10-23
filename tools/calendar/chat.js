@@ -1,7 +1,8 @@
+import {projectCalendarReceipt} from '../../server/google/calendar-receipt.js';
 import { createCalendarTools } from './index.js';
 import { googleDiagnostics, googleError } from '../../server/google/oauth.js';
 import { validateArguments } from '../../server/automation/validation.js';
-import {CHAT_CALENDAR_BATCH_TOOL,CHAT_CALENDAR_BATCH_UPDATE_TOOL,createCalendarBatch,updateCalendarBatch,calendarReceiptLocation} from './chat-batch.js';
+import {CHAT_CALENDAR_BATCH_TOOL,CHAT_CALENDAR_BATCH_UPDATE_TOOL,createCalendarBatch,updateCalendarBatch} from './chat-batch.js';
 
 const names = new Set(['list_calendar_events', 'read_calendar_event']);
 const string = maxLength => ({type:'string',maxLength});
@@ -88,9 +89,9 @@ export function createChatCalendarTools({ client, sourceId } = {}) {
         const expectedUrl=validEventId(result.eventId)?`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${result.eventId} ${client.calendarId}`).toString('base64url')}`:null;
         if(!expectedUrl||result.url!==expectedUrl||!['created','updated','cancelled','unchanged','reconciled'].includes(result.outcome)||name!=='create_calendar_event'&&result.eventId!==args.eventId)return {status:'invalid_response',sources:[]};
         if(args.eventId)revisions.delete(args.eventId);
-        return {status:'ready',sources:[],calendarWrite:{outcome:result.outcome,eventId:result.eventId,url:result.url,...calendarReceiptLocation(result),
-          ...(result.start&&result.end?{start:result.start,end:result.end,...(result.timeZone?{timeZone:result.timeZone}:{})}:{}),
-          ...(typeof result.updatedAt==='string'?{updatedAt:result.updatedAt}:{})}};
+        const receipt=projectCalendarReceipt(result);
+        if(!receipt)return {status:'invalid_response',sources:[]};
+        return {status:'ready',sources:[],calendarWrite:receipt};
       }catch(error){const safe=googleError(error,signal);return {status:safe.code,sources:[],diagnostics:safe.diagnostics};}
     }
     return Object.freeze({configured:calendar.configured,tools,execute});

@@ -1,3 +1,633 @@
+## STOPPED at user request — Flock testing handoff is ready
+
+The user requested immediate documentation for another agent and **no other work**. Active tester/observer were interrupted. Read the **[complete handoff](live-planner-calendar-tests/handoff-2026-10-22.md)** before resuming. It contains every main finding, exact IDs, releases/local hashes, verification limits, cleanup state and next steps. [This pass](history/2026-10-22_20-43-27-863281-orchestrator-flock-live-testing-handoff.md).
+
+- **Live:** discovery collector974cb14c/migration044; chat prompt web4eb34f43 SUCCESS. Lookup/Calendar-only stop behavior was independently accepted with62inference requests on simulated stores.
+- **Latest live failure:** same GoGreek event found/no duplicate, but UTC19–21 was relabeled7–9PMNY; null participant boundaries were mistaken for missing attendance; attempted write used the participant revision instead of parentevent revision and conflicted. Originalevent/attendance remains correct3–5PM; genuineallDayduplicate physicallyremoved.
+- **Local only, unverified:** three promptfiles now explain UTC/local conversion/rawtimepreservation, inheritedparticipantbounds/alreadyfullno-write, and exactparentEVENT.updated_at. Finalhashes andchecktiminginhandoff. Notdeployed, notnewmodeltested/evaluated; olddeploymentpackagecontainspreviousrevision.
+- **Other confirmedbugs:** presenceendfourhourslate plusfailedcorrection; repeated600splannertimeouts; mapstaleaftercorrectCalendarmove; misleadingreceipts/diagnostics. Historicalobservations anduncertaincasesareseparatedinhandoff.
+- **Cleanup incomplete:** exactsyntheticmapevents/relations0; WorkshopCalendarcancelled/DELETE410alreadygonewithprovidertombstone; exactsavedWorkshoptaskandallownmanualrequestsremoved. ActiveDesignSessioninput/possiblefuturetask, lateoperatorGoGreekinput andownmodel/auditrowsstillneedguardedMCPcleanup. LastobservedDesignSessioncyclewasactive00:38:40UTC; terminalnotobserved. Preserveglobalrunnerleaseandgenuine/unattributeddata.
+
+No further implementation, testing, cleanup or deployment should run until the user resumes the work.
+
+## Contextual attendance accepted; web release verifying
+
+CorrectedpromptcandidateACCEPTED byindependentevaluator. Configuredgpt-6-lunaproductionrunnerchecksuse simulatedbusinessstorage: keyentiretimecasepreservesexisting3–5PM andclearlyconfirmssave; Calendar-onlynowzeroattempts, ambiguityclarifies, conflictpreserveshumanedits.62totalinferencecallsincludingretainedfirstfailureandinconclusives. Web4eb34f43 uploadedonly3reviewedpromptfilesovera87; deployment/health/livecasepending.
+
+Single-inputWorkshopplannerhandleralsohit600swithoutprojectingnewCalendarfacts; savedtaskandinputretaineduntiltargetedcleanup. Mapstayedold6–7PMBobstversusCalendar7–8GCASL. GenuineGoGreekoriginal+attendancearecorrect; duplicategone. Finalsyntheticcleanupstillrequired.
+
+[Pass](history/2026-10-22_20-32-58-830984-tester-contextual-attendance-model-accepted.md) · [Pass](history/2026-10-22_20-32-58-831569-evaluator-contextual-attendance-final-accepted.md) · [Pass](history/2026-10-22_20-32-58-831710-orchestrator-contextual-attendance-web-uploaded.md)
+
+Calendar-only attendance [coder correction](history/2026-10-22_20-30-24-191817-coder-calendar-only-attendance-stop.md) frozen: missing authorized map UUID now explicitlystopswrites; no inventedprojection/provenance/retries. Existing11checks/buildpass; finalmodel/evaluatoracceptance pending.
+
+Contextual attendance [first evaluation](history/2026-10-22_20-29-12-737504-evaluator-contextual-calendar-only-fix-required.md) REQUESTSFIXES: keyphrase cases pass, but Calendar-only model proposed two blocked newevents. No datawritten/no deployment. Explicit missing-map stopcondition and bounded retests underway. GenuineGoGreek attendance is now verified in appupcoming3–5PM, duplicateabsent.
+
+Contextual attendance [coder pass](history/2026-10-22_20-26-07-777906-coder-contextual-attendance-prompts.md): prompt text frozen in three owned files; API build and11existing checks pass. Independent gpt-6-luna evaluations underway against simulated stores. No deployment yet.
+
+## Contextual attendance correction and live behavior testing
+
+The genuine Go Greek all-day duplicate is removed through exact guarded Supabase MCP repair; Yuyang now attends the original October23 3–5PM event. The approved prompt-only correction must look up existing events and interpret “the entire time” as the matching event interval. Implementation and independent model testing are underway.
+
+Natural planner testing found a600s no-write timeout; direct chat saved Bobst presence four hours late and failed an explicit end correction. Workshop Calendar create/update passes without duplicates, but its map projection was initially stale. Sole-channel single-input projection request is running. Final fixture cleanup and bug summary remain required.
+
+[Live results](history/2026-10-22_20-25-04-749207-tester-natural-planner-timeout-chat-calendar-results.md) · [Attendance plan](history/2026-10-22_20-25-04-750875-planner-contextual-event-attendance-contract.md) · [Exact duplicate repair](history/2026-10-22_20-25-04-751543-orchestrator-gogreek-duplicate-repaired.md).
+
+## Cancellation task completion fixed and deployed
+
+Worker **8ee19715-041f-4ad4-b26c-3c0f10d74019** is SUCCESS, startup confirmed and no deployments remain pending. Confirmed club/Member Plans cancellations now remove the exact matching saved source-review task after receipt/current-state checks. Failed, mismatched, uncertain and newer-version work remains protected.
+
+Independent149checks pass with the actual client/adapter/handler against simulated sources/storage; old deployed code reproduced the defect. Evaluator ACCEPT. This is an adapter-only release over6434; chat, collectors, schema, configuration, cache reads and16/64limits were unchanged. No real event was cancelled for verification. The earlier cancellation-completion follow-up is resolved. [Evidence](../evidence/cancellation-task-completion/results.json) · [Release](history/2026-10-22_20-00-48-511337-orchestrator-cancellation-completion-live-verified.md).
+
+Cancellation worker **8ee19715-041f-4ad4-b26c-3c0f10d74019** uploaded from the accepted adapter-only package. Deployment/startup verification pending. [Upload](history/2026-10-22_19-59-19-369495-orchestrator-cancellation-worker-uploaded.md) · [Evidence](../evidence/cancellation-task-completion/results.json).
+
+## Cancellation completion accepted; worker release ready
+
+Adapter-only fix and exact-person correction are accepted. Independent149checks pass; real adapter/client/handler cases show confirmed club/Member Plans cancellations remove only matching tasks, while failed/mismatched/uncertain/newer-version work survives. Old deployed adapter reproduces missing-case failure. All business operations were simulated; no live cancellation was performed.
+
+Isolated57-file package is deployed6434worker plus only adapters.js. Packaged51JSmodules pass syntax/import closure; no secrets/config/schema/chat/collector changes. [coder](history/2026-10-22_19-58-44-657919-coder-cancellation-task-person-binding.md) · [tester](history/2026-10-22_19-58-44-658374-tester-cancellation-completion-behavior-verified.md) · [evaluator](history/2026-10-22_19-58-44-658499-evaluator-cancellation-completion-accepted.md). Deployment is next.
+
+Cancellation completion [coder pass](history/2026-10-22_19-55-22-355141-coder-cancellation-completion-implemented.md): Only server/automation/adapters.js changed. Added source_review cancellation branch for pinned club/Member Plans, using actual normalized cancellation receipts, task-original source/key, exact deterministic eventID/canonicalURL, optional recorded target, and fresh matching cancelled state. Explicit authorized already_absent requires exact successful empty read. Failed/unknown/partial/active/sparse/mismatched outcomes keep tasks. Existing upsert/map checks, source identity/leases/version/cache-only reads and16/64 unchanged. Existing62regressions passed; final syntax/whitespace passed. Independent new cancellation tests and review pending. Prepared isolated57-file worker context from deployed6434 package with exactly adapters.js replaced; concurrent Discord discovery/store work deliberately excluded from this release, preserving it in repository. No live writes or deployment.
+
+## OpenCode role agents mirrored
+
+`.codex/agents/` five-role definitions now have a documented OpenCode mirror in
+`.opencode/agents/` (orchestrator `mode: all` with a restricted subagent catalog;
+planner read-only; evaluator read-only with shell at `ask`; coder/tester deny
+child spawning; models inherited). Global `~/.config/opencode/AGENTS.md` records
+the always-mirror rule with `.codex/agents/` as source of truth. No worker,
+prompt, deployment or live product behavior changed. Live agent-discovery
+verification in a fresh session remains. [Pass](history/2026-10-22_19-55-44-145887-orchestrator-opencode-role-mirror.md).
+
+## Cancellation task completion fix underway
+
+User authorized adding successful cancellations to saved-task completion. A bounded adapters.js correction will recognize exact confirmed club/Member Plans cancellations and explicit verified already-absent results. Failed, mismatched or uncertain outcomes must preserve the saved task. Existing source/identity/lease/version controls and plain cache reads remain. [Plan](history/2026-10-22_19-53-36-254409-planner-cancellation-completion-contract.md).
+
+Coder and independent tester have separate files. Review and worker-only rollout remain pending; no new live changes yet.
+
+## Essential test review complete — protect 1,627 of 2,353 cases
+
+The accepted 2,353-case snapshot is fully classified: **1,627 essential (69%), 548 useful, 139 protected historical, 39 needing retirement review**. All 2,353 IDs occur exactly once across 169 baseline files, with every per-file historical count reconciled. Three separate reviewers inspected actual assertions/fixtures/runtime references; parent checked combined counts and samples.
+
+Essential cases protect access/privacy/identity, correct Calendar/map changes, human edits, retained queued work, truthful outcomes, bounded execution and main user flows. Lower priority does not prove a safe deletion or a minimal sufficient suite. **No tests or runtime were changed, and no new tests/model/API calls ran in this assessment.** Concurrent product additions and changes are separate from this fixed baseline.
+
+[Recommendation](../docs/test-priority.md) · [All case priorities](../docs/test-priority.csv) · [Discord review](history/2026-10-22_19-51-32-165985-evaluator-discord-test-priority-reviewed.md) · [Integration](history/2026-10-22_19-51-32-165986-orchestrator-essential-test-priority-complete.md). No required priority-review work remains.
+
+Discovery repair [live verification](history/2026-10-22_19-49-36-456106-orchestrator-discord-repair-live-ingestion-verified.md): collector974cb14c SUCCESS/gateway ready/listening. Discord reset session; original replay failed and no history was imported. Same natural originals edited in Chrome now enqueue normally (two exact nativeupdate rows). New-channel manual adf8ba5a accepted with sole whitelist1562966336932413602. Actual Calendar/Member Plans/map results and finalcleanup pending.
+
+## Calendar/map/worker priority review complete
+
+Of 801 baseline cases: **615 essential, 122 useful, 40 protected historical, 24 review**. Exact IDs and historical counts verified. Together with platform, 1,459 baseline cases are classified; final Discord results and combined validation remain. No tests, runtime or external sources changed by this review. [Pass](history/2026-10-22_19-49-05-673159-tester-calendar-map-worker-priority-reviewed.md).
+
+## Platform priority review complete; full breakdown pending
+
+Of 658 platform cases: **417 essential, 207 useful, 26 protected historical, 8 review candidates**. Parent checked exact IDs and historical counts; no tests or runtime changed. Remaining Discord and Calendar/map/worker partitions are being finalized before any whole-suite claim. Priority is a judgment, not a safe-deletion certificate. [Pass](history/2026-10-22_19-48-38-655421-planner-platform-test-priority-reviewed.md).
+
+Discovery repair [rollout started](history/2026-10-22_19-45-11-999823-orchestrator-discord-metadata-migration-release-started.md): reviewed044 applied through MCP; hosted service-only/invoker ACLs verified. Sanitized26-module collector deployment974cb14c INITIALIZING; no environment/budget changes or other service deployment. Actual bot permission read for new channel passes. Verify startup/native replay before Calendar/map acceptance.
+
+Discovery repair [independent evaluator](history/2026-10-22_19-44-32-824798-evaluator-discord-event-metadata-accepted.md) ACCEPTS migration/collector rollout. Source/SQL/tests frozen with80focused checks and independent full-chain SQL probes. No material findings; hosted migration and collector deployment are next, followed by actual native ingestion and Calendar/map tests.
+
+Discovery repair [independent tester pass](history/2026-10-22_19-44-17-567978-tester-discord-event-metadata-verified.md):80focused checks pass on frozen source, including actual44-migration PostgreSQL/production-store/Gateway flow before archive release, replay/failure checkpoints, access/descendant/manual/CAS/ACL and safe scanner restart. No implementation blocker; evaluator final decision/hosted migration/collector rollout next.
+
+Discovery repair [coder pass](history/2026-10-22_19-38-25-352101-coder-discord-event-metadata-implemented.md): exact-target reconciliation, service-only snapshot/publication RPCs and restart fence implemented/frozen. Existing69case run/API build/fresh44migration PGlite load pass. Independent behavior tests/review pending; no hosted migration/deployment yet.
+
+## Essential test review underway
+
+Classifying the accepted **2,353 individual-case snapshot** by current product importance. Three separate reviewers own Discord (894), Calendar/map/worker (801) and platform (658) cases, inspecting test bodies and relevant runtime behavior. Essential means access/identity/privacy, correct writes, retained work, truthful outcomes and main user flows. Useful coverage, protected historical cases and possible redundancy remain distinct; lower priority does not establish safe deletion. No tests or runtime changed by this review. [Plan](history/2026-10-22_19-38-25-138135-orchestrator-essential-test-review-started.md) · [Scope](test-priority/info.md).
+
+## Full prompt audit complete and deployed
+
+Attendance repair and the full active prompt audit are accepted and live. Web **a87b4929-1311-4488-b76f-68f827c3f48c** and worker **6434b07e-2e98-4bc8-a134-9e449dc305a0** are SUCCESS. Production health/login/access-denial checks pass; worker started and prepared a batch successfully. Collectors, environment settings, schema and16/64limits were unchanged by this rollout.
+
+All five representative configured-model scenarios pass using simulated business storage, with35inference requests across preserved runs. Tester116, independent chat90 and worker185checks pass; counts overlap. Both independent reviews ACCEPT. No live attendance save or completed production Calendar/map mutation is claimed. Separate cancellation-task completion verification remains backend follow-up. [Audit](../docs/prompt-audit.md) · [Evidence](../evidence/prompt-audit/results.json) · [Release pass](history/2026-10-22_19-36-56-400687-orchestrator-full-prompt-audit-live-verified.md).
+
+## Full prompt audit accepted; releases uploaded
+
+All active application instruction sources inventoried and corrected. Five representative real-model scenarios pass against simulated storage; earlier worker failures are retained and the initial no-action completion instruction is fixed. Independent reviewers ACCEPT chat and worker. Tester116, chat evaluator90 and worker evaluator185 scripted checks pass. API build/package/source hashes pass.
+
+Web **a87b4929-1311-4488-b76f-68f827c3f48c** and worker **6434b07e-2e98-4bc8-a134-9e449dc305a0** uploaded; deployment verification pending. No environment/schema/collector changes. [Audit](../docs/prompt-audit.md) · [Evidence](../evidence/prompt-audit/results.json) · [tester](history/2026-10-22_19-33-24-710330-tester-full-prompt-behavior-verified.md) · [evaluator](history/2026-10-22_19-33-24-710647-evaluator-full-worker-model-review-accepted.md) · [orchestrator](history/2026-10-22_19-33-24-710759-orchestrator-prompt-audit-releases-uploaded.md)
+
+Discovery repair [planner contract](history/2026-10-22_19-33-14-590591-planner-prompt-discord-channel-publication.md) accepted: freshly verify and publish only a changed channel/ancestor chain through service-only migration044; fence old scans with restartRequired and let next scan restart from current catalogue. Preserve complete archive promotion, existing access/manual flags/UUIDs/budgets and checkpoint replay. Runtime/SQL coder and independent tester now assigned; no migration/deployment yet.
+
+## Prompt audit: real-model worker completion correction
+
+Four real-model chat cases passed using simulated storage. Worker correctly read the saved task, received an ordinary source failure, saved valid defer_task arguments against the same task and finished follow-up without false success. Initial phase nevertheless used finish[] for a clearly irrelevant greeting, leaving the queue unsettled and creating unnecessary review work; this was reproduced after correcting the initially ambiguous fixture. Both failed traces remain in /tmp/prompt-audit-model-1792711753720.json and ...1792711827765.json. No destructive write occurred. Parent corrected only the staged initial prompt to explicitly count inspected irrelevant inputs as handled without source reads/writes/tasks. Runner and permission checks unchanged. Two runs used30requests; a focused additional8request ceiling is authorized for this new concrete finding (audit total<=38 of revised40). Independent review and worker-only retest pending; deployment held. [Pass](history/2026-10-22_19-31-48-464098-tester-prompt-worker-no-action-completion-finding.md).
+
+## New-channel discovery repair authorized; MCP cleanup verified
+
+Natural run4d07501a failed unavailable before model work. New-channel ingestion/readability is blocked by full archive discovery and an old-snapshot freshness defect. User authorized fixing it and continuing natural tests. Supabase MCP authentication succeeded; exact old fixture/map relations, two obsolete jobs and seven input/state pairs are deleted and verified absent. No real source work or global lease changed. Current natural originals remain for retest; final cleanup remains required. Planner proposes safe freshness handling; practical prompt-publication design is underway. No collector code/deployment yet. [tester](history/2026-10-22_19-31-14-952440-tester-discord-discovery-blocker-verified.md) · [planner](history/2026-10-22_19-31-14-952742-planner-discord-refresh-freshness-contract.md) · [orchestrator](history/2026-10-22_19-31-14-952869-orchestrator-mcp-cleanup-and-natural-run-failure.md)
+
+Prompt audit [worker prompt audit accepted](history/2026-10-22_19-30-48-969289-evaluator-worker-prompt-audit-accepted.md). Read-only evaluator ACCEPT after verifying returned task.uuid wording. All seven worker/helper findings resolved; previous185behavioral tests pass, whitespace clean. Access/identity/retention/completion/16/64 intact. Real-model worker retrial and deployment remain pending.
+
+Prompt audit [chat prompt audit accepted](history/2026-10-22_19-30-48-967997-evaluator-chat-prompt-audit-accepted.md). Read-only evaluator ACCEPT: all six chat findings resolved. Independently90tests pass, whitespace clean, additional Calendar reproduction confirms one relevant repeated read and unrelated duplicates remain suppressed. Four configured-model chat cases passed in /tmp/prompt-audit-model-1792711753720.json: quote no mutation, positive applied confirmation, explicit25hour DST bounds and concurrent human edit preserved. Worker fixture retrial remains separate; no live business writes.
+
+Prompt audit [evaluator pass](history/2026-10-22_19-28-58-361653-evaluator-worker-prompt-controls-verified.md): Independent worker evaluator reviewed all six changed files and passed185 scripted cases, zero failures. All seven original findings fixed and existing source/identity/lease/retention/completion controls preserved. Requested one exact wording correction: returned task.uuid rather than returned taskId. Parent applied it with syntax pass; real-model evidence and release remain pending.
+
+Prompt audit [coder pass](history/2026-10-22_19-28-58-360494-coder-chat-prompt-corrections.md): Removed lexical map hint/parser; aligned Discord direct-chat identity guidance, Calendar timestamp advice and Miro content flag. Actual applied adapter submission now reaches final-answer map receipt with explicit non-readback basis and bounded completeness. One repeated relevant read after observed conflict per request; write dedup, authorization and budgets preserved. API build/syntax/whitespace pass; obsolete forced-hint assertion assigned to tester. Source frozen; no deployment/live writes.
+
+Prompt audit: [coder pass](history/2026-10-22_19-27-09-886558-coder-worker-prompt-corrections.md). Corrected six owned instruction/schema files: exact defer arguments/context capture, bare finish shape/empty semantics, supported completed-only resolution, chat-only Drive copying, worker Discord/Gmail evidence, compatibility personal-plan restrictions and truthful fragment notice. Existing source/identity/lease/completion/retention/16/64 controls preserved. Targeted run 136 pass and one obsolete buildMapRecordPrompt phrase assertion failed; independent tester owns its meaningful replacement. Five JS syntax checks and scoped whitespace pass. Source frozen; real-model verification and independent review pending.
+
+Prompt audit: [planner pass](history/2026-10-22_19-27-09-884119-planner-prompt-behavior-contract.md). Read-only planner defined five bounded real-model cases using simulated stores: worker cache/read-failure/defer/empty-finish retention; quoted map command no write; positive attendance plus confirmation; DST Calendar bounds; bounded conflict fresh read preserving human changes. Reuse existing fixtures and a hard inference request cap. No model calls or edits performed.
+
+## Attendance deployed; full prompt corrections underway
+
+Web **c48a900a-7e4e-4200-b38d-5df9c8e929fc** is SUCCESS. Public health, login redirect and unauthenticated API denial pass. The accepted attendance behavior has real-model evidence using simulated storage; this does not claim a live Discord save. Worker and collectors are unchanged.
+
+The full runtime inventory and two independent domain reviews are complete. Chat and worker coders have separate files for the concrete mismatches documented in [prompt audit](../docs/prompt-audit.md). Verification and affected-service deployment remain pending. A separate cancellation-task completion gap is tracked as backend follow-up.
+
+[release](history/2026-10-22_19-24-41-216596-orchestrator-attendance-live-verified.md) · [inventory](history/2026-10-22_19-24-41-216993-planner-full-prompt-inventory-complete.md) · [chat review](history/2026-10-22_19-24-41-217116-evaluator-prompt-domain-a-findings.md) · [worker review](history/2026-10-22_19-24-41-217226-evaluator-prompt-domain-b-findings.md)
+
+## Further test phase-out complete — 32 more cases removed
+
+Removed **32 redundant individual cases across eight files**, with zero new cases or parent groups. Detailed review retained distinct behavior and all **139 historical cases**; all **43 migration SQL files** remain unchanged. Mixed tests retain actual serialization, configuration and handler-delivery checks after phrase assertions were trimmed. The retained prompt-compaction case now checks real size reduction and exact data preservation instead of an incidental old percentage target.
+
+Final independent full run on unchanged source/test hashes: **2,353 individual cases plus 40 parents = 2,393 reported results across 169 files; 2,392 passes, zero failures, one optional Miro-schema skip**, exit 0 in 81.245 seconds. Independent evaluator and tester ACCEPT. Web/API builds and scoped whitespace checks pass. Only the exact 32-case reduction from the fresh 2,385-case baseline is credited here; concurrent attendance/worker changes belong to their own work. The separate attendance owner resolved the intermediate event-URL finding; earlier failed measurements remain recorded.
+
+[Report](../docs/test-phaseout.md) · [Current inventory](../docs/test-suite-inventory-after-phaseout.csv) · [evaluator](history/2026-10-22_19-23-15-180209-evaluator-test-phaseout-independently-accepted.md) · [tester](history/2026-10-22_19-23-15-180212-tester-test-phaseout-frozen-suite-verified.md) · [orchestrator](history/2026-10-22_19-23-15-180213-orchestrator-further-test-phaseout-complete.md)
+
+This phase-out changes tests and documentation only. No deployment, live-source action or model inference was performed by this pass; no required phase-out work remains. Other active work below is preserved.
+
+## Natural Discord tests queued; Supabase MCP auth requested
+
+User corrected sources to natural messages without QA/planner wording and supplied replacement channel1562966336932413602 after deleting the old one. Two plain originals are posted; manual4d07501a uses only that exact channel and is queued behind older timeout/requeued work. No natural planner result is claimed. Explicit chat map fixture is confirmed cancelled/hidden but row deletion remains pending. User declined direct database fallback; existing Supabase MCP OAuth authorization is open for user completion. [Behavior report](../docs/flock-live-behavior-review-2026-10-22.md) · [Pass](history/2026-10-22_19-19-17-422320-orchestrator-natural-discord-tests-and-mcp-auth-pending.md).
+
+## Attendance fix uploaded; full prompt audit underway
+
+Reviewed web deployment **c48a900a-7e4e-4200-b38d-5df9c8e929fc** is building from the frozen attendance fix. No rollout success or live attendance save is claimed yet. Worker16/64 and collectors remain unchanged.
+
+The accepted fix is packaged, so read-only inventory and independent chat/runtime prompt audits have started while Railway deploys it. Coverage includes system/planning/answer/worker/helper prompts, tool/schema descriptions, result notices, attachments and injected skills. Corrections will follow the completed inventory and findings. [Pass](history/2026-10-22_19-19-05-308380-orchestrator-attendance-upload-prompt-audit-started.md).
+
+## Natural attendance fix accepted; web release ready
+
+The real configured model now saves first-person attendance and name-only follow-ups while preserving the existing occurrence, link and other participants. A quoted summary request makes no mutation attempt. Ambiguity and conflict checks also have supporting real-model results from the prior iteration. All storage was simulated; no live attendance save is claimed.
+
+Independent review accepts the retired old route, normal tool flow, narrow link inheritance and intent instructions. Browser refresh and API/web/package checks pass. The frozen277-file web release klknqH matches86 source files; deployment is next. Full prompt audit follows. [coder](history/2026-10-22_19-15-53-544933-coder-normal-map-link-and-prompt-fixes.md) · [tester](history/2026-10-22_19-15-53-544934-tester-normal-attendance-real-model-verified.md) · [evaluator](history/2026-10-22_19-15-53-544935-evaluator-normal-attendance-independently-accepted.md).
+
+## 32-case phase-out implemented; full verification has separate source findings
+
+All32planned redundant cases are removed without new case/parent scaffolding. Coder focused76pass, evaluator focused88pass, parent mixed-case25pass and web/API builds pass. Full independent run currently reports two failures outside edited suites following concurrent attendance/prompt changes: total prompt-byte savings29.897percent misses30percent and an attendance update omits preserved event.url. Both tests remain intact; no runtime fix or test relaxation was made here. Historical SQL/139cases remain protected. Final counts, stable-hash focused reproduction and documentation pending. [Coder pass](history/2026-10-22_19-15-20-101965-coder-prompt-catalogue-cases-phased-out.md).
+
+## Normal map update must retain an omitted event link
+
+The real model saved the correct attendance but omitted an existing event link. The ordinary map adapter is being corrected to retain that link when omitted, as it already retains source metadata. Explicit values, source access and revision checks remain unchanged. Quote-scope instructions are corrected; a complete bounded positive/name/quote evaluation is pending. No web deployment or live activity changes yet. [Correction](history/2026-10-22_19-13-29-652662-planner-map-link-inheritance-correction.md).
+
+## Further test phase-out underway
+
+User approved reviewing the estimated current-rule pool. Detailed review supports 32 registered removals, rather than forcing the rough 40–80 estimate: four contract/provider cases implemented; 28 overlapping wording/catalogue/retired-fallback cases assigned. Two mixed cases retain their actual data/config checks after phrase assertions were trimmed. All 139 historical cases remain protected.
+
+Fresh independent pre-change baseline: 2,385 individual cases plus40parents (2,425results),169files,2,424pass/0fail/1optionalskip. Other concurrent attendance/worker work explains changes since the earlier2,450inventory; those changes are not credited to this phase-out. Test definitions were stable during baseline; separate runtime edits will be rechecked at final verification. [planner](history/2026-10-22_19-11-06-681980-planner-prompt-and-catalogue-phaseout-plan.md) · [planner](history/2026-10-22_19-11-06-682377-planner-contract-phaseout-plan.md) · [coder](history/2026-10-22_19-11-06-682517-coder-four-contract-cases-phased-out.md) · [orchestrator](history/2026-10-22_19-11-06-682631-orchestrator-mixed-prompt-assertions-trimmed.md)
+
+## Quote-only real-model check found a conflicting map instruction
+
+Natural attendance, name clarification, realistic ambiguity and conflict honesty passed against simulated storage. A summary-only quoted statement still caused a simulated map update, so deployment remains held. The prompt is being corrected to distinguish the user's request from quoted text while retaining genuine clarification context. No live activity changed. [Findings](history/2026-10-22_19-10-27-706445-tester-quoted-attendance-prompt-fix-required.md).
+
+## Live chat map facts verified; confirmation defect reproduced
+
+Chrome identity and unknown-person clarification pass. Clarified self plan saved correct Bobst/Oct24 2–3PM New York facts, participant and label; application map shows future only, no current avatar. Bot nevertheless says unconfirmed because its applied receipt lacks details. Cleanup and two new plain planner originals are queued; older manual work remains ahead. Independent logs verify map read53.4s/save1.27s and live maxInputs2. [Evidence](history/2026-10-22_19-07-48-531528-tester-live-chat-map-save-and-receipt-verified.md).
+
+## Real-model attendance check requires a prompt correction
+
+The exact linked-speaker GoGreek request passed. Name clarification retained its date/place, but the model rewrote an opaque Calendar link and the backend correctly rejected the write. Deployment is held while instructions are tightened to preserve stored links and event facts. The ambiguity fixture is also being corrected to use two realistic provider identities before rerun.
+
+Scripted and browser checks pass, but they do not substitute for this real-model result. The next bounded evaluation uses simulated storage only; no live activity is changed. Previous package is superseded. [Findings](history/2026-10-22_19-07-08-890416-tester-real-model-attendance-fixes-required.md).
+
+## Attendance browser and mixed-tool checks accepted
+
+Normal upserts refresh the actual campus map and future event cards while preserving selection, camera and model bounds. Mixed tool, privacy, timeout, upload, recovery and revision-related checks pass on frozen test files. No live business data changed. Parent web build and focused277-file package checks pass; the map chunk only changes its import hash.
+
+Primary behavior tests, real-model evaluation against simulated storage and final review remain underway. Web release is pending; the full prompt audit follows. [Browser/integration pass](history/2026-10-22_19-02-56-210368-tester-normal-map-mixed-browser-verified.md).
+
+## Live planner latency independently measured
+
+A completed three-call cycle took9m26s active after4m41s waiting, with8.3s of model generation. Setup/source/other backend work dominates observed latency. Partial source reads and inconsistent finish_batch diagnostics are recorded separately from verified Calendar/map outcomes. New Chrome identity test passed; ambiguous-person clarification passed; follow-up save pending. [Tester](history/2026-10-22_19-02-27-183062-tester-live-planner-latency-measured.md).
+
+## Chat attendance now uses normal map tools; verification underway
+
+The old named-attendance tools, service, parser and prompt routing are removed. Chat uses `read_map_events`, `lookup_map_person` and `upsert_map_event`, resolving the verified Discord speaker or an unambiguous supplied name. Existing event details, other participants, source access and revision checks remain. Historical attendance-link validation remains compatible.
+
+Source is frozen. Runtime/auth/source tests and API build pass; independent behavior, real-model evaluation against simulated storage, browser refresh and final review are underway. No web deployment yet. The user-requested full prompt audit follows this fix. [Implementation](history/2026-10-22_19-01-01-844569-coder-normal-map-attendance-implemented.md).
+
+## Future test phase-out estimate — advisory only
+
+User asked for judgment after completed cleanup. Sample-based future review target: roughly 180–220 cases, including 139 historical cases only after replacement migration-upgrade coverage and changing the explicit preservation rule. Under current rules, roughly 40–80 prompt/text/overlapping contract cases merit detailed consolidation review. These are estimates, not additional certified deletions; no tests or runtime changed and no new tests were run. Completed cleanup evidence below remains current. [Advisory pass](history/2026-10-22_19-00-40-691865-orchestrator-future-test-phaseout-estimate.md).
+
+## First-person attendance bug diagnosed; normal-tool fix underway
+
+At18:52EDT chat calledoldfind_map_attendance_targets andwasdenied beforelookup becauseits literalparser rejectsfirstperson. Oldtoolregistration andpromptrouting remaininlivewebc83f2495; sourcefingerprints match. Thisis independentofnewworker16/64limits.
+
+Acceptedfix retiresoldattendance route andusesnormalread_map_events/lookup_map_person/upsert_map_event withverifiedDiscordactor orsuppliedname, preservingexistingeventfacts/participants/access/revision andoldstoredattendanceprovenance. Coder/twotesters haveexclusivefiles; boundedrealmodel evaluationwilluseinertstorageonly. Webreleasepending. Userrequestedfullpromptauditafterthisfix; queued. [Plan](history/2026-10-22_18-58-31-225083-planner-chat-attendance-normal-tools-contract.md).
+
+## Chrome Discord and planner behavior testing underway
+
+Independent read-only planning complete. Parent is reviewing relevant live Discord conversations and testing disposable originals in #flock-test. No application/configuration/deployment changes. Actual Calendar and application map reads will verify results; Supabase MCP is unavailable. Older manual requests are still active/queued. [Plan](history/2026-10-22_18-57-29-116567-planner-chrome-flock-behavior-test-plan.md).
+
+## Worker16reply/64stage limits deployed and verified
+
+Worker **b30c41da-3cab-4961-a683-66b06b1824d3 SUCCESS**, no pending Railway rollout. Both explicit live worker stage variables verified64. Configured worker startup/polling observed; currently waiting on an existing manual request lease. Web/collectors unchanged.
+
+Worker accepts16calls per model reply and64per initial/followup stage includingfinish_batch (128acrossboth). Provider response/history and runner agree; chat defaults remain8. Existing rounds/timeouts/tokenlimits and cache/error/source/write controls unchanged. Meaningful scripted boundary/history/stage checks and independent review accept; build/package checks pass. Live evidence covers startup/settings, not a live maximum-size run or reliability/cost improvement. [Release](history/2026-10-22_18-53-33-718550-orchestrator-worker-call-limits-deployed.md) · [Scope](worker-call-limits/info.md).
+
+## Worker call-limit package uploaded; rollout pending
+
+Both explicit update-agent stage settings verified64. Reviewed58-file package uploaded asb30c41da-3cab-4961-a683-66b06b1824d3, currentlyinitializing. Implementation16reply/64stage independently accepted; provider history/parser and worker enforcement agree, chat default8 remains. Actual deployment/startup pending, no new-success claim yet. [Upload](history/2026-10-22_18-49-59-443103-orchestrator-worker-call-limits-uploaded.md).
+
+## Worker16reply/64stage independently accepted; release starting
+
+Meaningful scripted behavior tests and independent reviewACCEPT. Both protocols preserve16-call replies/history,17rejects, defaultchat8 remains, and both stages can separately finish at64calls. Failed/overflow calls preserve write/task controls; successful progress reaches128. Parent related regressions/APIbuild/package checks pass. Frozen58-file package pLmiTf has onlyfourruntimechanges from live1c33c414; settings/update/deployment/startup remain the final step. [tester](history/2026-10-22_18-48-49-418120-tester-worker-call-limits-verified.md) · [evaluator](history/2026-10-22_18-48-49-418121-evaluator-worker-call-limits-accepted.md).
+
+## Worker call-limit implementation frozen; verification underway
+
+Worker config/runner/prompt allow16calls per reply and64per stage. Shared provider enforces the worker allowance for new replies and history; default chat/planTools stay8. Existing budgets/checks/cache/error behavior preserved. Independent tests/review underway; API build and58-file package/hash/syntax checks pass. Live worker still1c33c414 with explicit32stage settings; no env/upload change yet. [Coder](history/2026-10-22_18-47-13-918691-coder-worker-call-limits-implemented.md).
+
+## Worker16reply/64stage limits authorized; implementation underway
+
+User explicitly selected16calls per model reply and64per stage, with a deployment notification requested. Provider response and history validators, worker budgets/prompt and progress must agree; chat defaults stay8. Two explicit Railway worker stage variables must become64. No timeout/round/token/schema changes. Coder/tester have exclusive files and preserve concurrent cleanup/live-test work. [Plan](history/2026-10-22_18-45-30-352819-planner-worker-call-limit-contract.md).
+
+## Maximum safe test cleanup complete
+
+**Implemented and independently accepted.** Removed 17 obsolete standalone test/debug programs, 13 redundant registered Node cases, six stale/static standalone cases and 13 distinct obsolete optional model scenarios. Four real-asset tests and nine current browser scenarios preserve useful geometry, source colors/placement, neighboring buildings, fountain clearance and actual map pointer/camera behavior. The 139 historical SQL cases and all 43 migration files remain intact. Shared model verifier retains seven chat scenarios and specialized location verifier three; no current staged-worker model evaluation is claimed.
+
+Current inventory: **2,450 individual Node cases across 169 files**, plus 40 parent tests (2,490 reported results), and 37 standalone programs. Independent full run: **2,489 reported passes, zero failures, one optional Miro-schema skip**. Final async asset/personal-location/interactions reruns and 76 retained standalone checks pass. Independent Chrome nine/nine groups passes on stable hashes: 30 complete-building/card frames, 20 actual desktop/phone hover/click selections, three opposite-side selections and actual orbit/pan/limits/saved-overview wheel return; screenshots inspected, no JavaScript errors or nonlocal requests. Production build, syntax and scoped whitespace checks pass. Test-only changes during the broad run were reconciled with focused stable-hash reruns; production source did not change.
+
+[Cleanup report](../docs/test-suite-cleanup.md) · [After-cleanup CSV](../docs/test-suite-inventory-after-cleanup.csv). Earlier audit/CSV remain before-cleanup evidence. No production source/assets/migrations were modified, no live sources or hosted data were changed, no model inference was performed and nothing was deployed by this cleanup. No required cleanup remains; other active product/release work below is preserved.
+
+[tester](history/2026-10-22_18-44-31-157949-tester-test-cleanup-independently-verified.md) · [evaluator](history/2026-10-22_18-44-31-158401-evaluator-test-cleanup-preservation-accepted.md) · [orchestrator](history/2026-10-22_18-44-31-158574-orchestrator-maximum-safe-test-cleanup-complete.md)
+
+## Test cleanup implemented; independent browser receipt pending
+
+17obsolete standalone programs deleted;13redundant registered cases removed and4meaningful asset cases added. Current2450individual cases/169files; full2490reported run2489pass/0fail/1optional skip. Historical SQL fixtures and43migration files preserved. Six stale/static standalone cases and13distinct obsolete opt-in model scenarios removed. Shared model verification now retains7chat scenarios, specialized3chat scenarios; no model inference performed. Coder9browser scenarios pass; independent current-hash rerun/evaluator final acceptance pending. [coder](history/2026-10-22_18-43-06-701600-coder-map-test-consolidation-implemented.md) · [orchestrator](history/2026-10-22_18-43-06-701986-orchestrator-obsolete-model-harnesses-retired.md)
+
+## Live Calendar-to-map case verified; older queue draining
+
+Whitelisted job65bc0857 completed (handled2, calls3); #flock-test queue is down from7to5. Exact provider-ID verification found one matching map event with the Calendar title/times and Stern building, updated during the cycle. This verifies an existing-event projection, not new appointment creation. A first unavailable attempt and deployment-interrupted/requeued attempt are recorded separately; worker1c33c414 is now live. One older-only job is running and two queued. New synthetic cases remain unposted until older work finishes; native Discord draft preserved. [Live case](history/2026-10-22_18-40-21-325846-orchestrator-live-calendar-map-sync-verified.md).
+
+## Test cleanup authorized and underway
+
+User requested maximum safe removal. Exactly13confirmed redundant/retired-helper Node cases removed; historical SQL preserved. Four capture-only tools, four obsolete opt-in scenarios and six stale/static standalone checks removed. Useful personal-location SQL checks now pass; shared config fixture restores useful camera checks. Map coder is consolidating10old scripts into3asset cases and the current browser harness; source diagnostic deletion follows coverage verification. Independent full-run/browser/evaluator acceptance and refreshed counts pending. [planner](history/2026-10-22_18-33-32-169066-planner-map-test-consolidation-plan.md) · [coder](history/2026-10-22_18-33-32-169414-coder-thirteen-redundant-tests-removed.md) · [orchestrator](history/2026-10-22_18-33-32-169535-orchestrator-obsolete-test-assertions-cleaned.md)
+
+## Plain task-cache reads and safe tool errors deployed
+
+Worker **1c33c414-dd44-4f51-b28e-09ca24663544 SUCCESS**, no pending Railway rollout. Old worker stopped/requeued its unfinished manual request; new worker acquired work and completed preparation ready at2026-10-22 18:31:47EDT. Web/collectors/config/schema unchanged.
+
+Task catalogue/read/defer use saved rows and local scope/expiry/bindings, without rereading every original/reference or checking Calendar access. The model explicitly reads a task, then chooses normal Discord/Gmail, Calendar, map and person tools; those tools retain their own checks. Ordinary tool errors now reach the model with a safe reason; failed writes earn no success receipt. Only confirmed exact task versions delete. Caps8reply/32stage, deadlines and invalid-argument rejection remain unchanged.
+
+Independent behavioral tests/review ACCEPT; parent regression/build/package/whitespace pass. Final broad regression passes with the known unrelated chat-location file excluded. Tests use simulated services/scripted replies; live evidence establishes startup/preparation only. Full live cycle, performance/cost/backlog effect remain unverified. Separate cap audit found409historical oversized replies (7.10percent of5763requests), none in the later checked lifecycle window; exact recent proposal counts remain unavailable. [Final release](history/2026-10-22_18-32-58-296794-orchestrator-plain-cache-tool-errors-live-verified.md) · [Scope](plain-task-cache-read/info.md).
+
+## Repository test-suite audit complete
+
+**2,459 individual Node cases across 168 files**, plus 40 parent tests (2,499 reported results). Reconciled verification: 2,496 pass, 2 fail, 1 optional skip. Full baseline run plus stable-hash reruns/new-file verification accounts for concurrent changes; no frozen-tree all-green claim. Another 54 standalone validation scripts are inventoried separately; 31 define 347 fixed-loop expanded checks.
+
+147 individual cases intentionally test retired implementations/old schemas (160 results including their 13 parents). Conservative safe removal: 13 cases (8 retired-helper-only and 5 redundant no-Miro variants); preserve 139 historical SQL cases and their fixtures. Two failing mixed chat-location cases need updating; 56 checks in 7 old browser scripts need useful geometry/pointer checks moved before removal. Four capture-only scripts have no test cases. No tests, runtime, live sources or deployments changed by this audit.
+
+[Detailed report](../docs/test-suite-audit.md) · [Per-file inventory](../docs/test-suite-inventory.csv). Next action only if requested: scoped cleanup and stale-harness repairs. Other active implementation/release state below is preserved.
+
+[Legacy browser harness review](history/2026-10-22_18-28-08-695238-evaluator-legacy-browser-test-review.md) · [Complete repository test inventory and local execution](history/2026-10-22_18-28-08-695716-tester-repository-test-count-verified.md) · [Test audit report independently accepted](history/2026-10-22_18-28-08-695853-evaluator-test-audit-report-accepted.md) · [Repository test-suite audit integrated](history/2026-10-22_18-28-08-695958-orchestrator-repository-test-audit-complete.md)
+
+## Plain cache and safe tool errors ready for release
+
+Final broad regression passes (one known unrelated chat-location file excluded), API build and whitespace pass. Independent behavioral tests/review accept cache-only catalogue/read/defer, model-selected ordinary tools, failure continuation and preserved write/task safeguards. Frozen58-file package matches53sourcefiles; web/collectors/config/schema remain unchanged. Upload starting with explicit production worker pins; no actual new deployment claim yet. [Integration](history/2026-10-22_18-26-13-104959-orchestrator-plain-cache-release-ready.md).
+
+## Plain task-cache behavior independently accepted
+
+Tester verifies cache isolation, complete saved contents, unchanged untouched tasks and normal tool failures/write denials; evaluator ACCEPT with no material findings. Scripted handler demonstrates cache read → chosen ordinary Discord read fails → attempted write denies → task remains. These are synthetic/model-scripted checks, not a live model outcome. Parent API build and122regressions pass;58-file package/source hashes verified. Broad run and actual worker release pending. [tester](history/2026-10-22_18-24-42-453417-tester-plain-cache-behavior-verified.md) · [evaluator](history/2026-10-22_18-24-42-453418-evaluator-plain-cache-independently-accepted.md).
+
+## Test-suite audit: historical and current review recorded
+
+Audit only; tests and runtime remain unchanged. Independent review identifies147historical leaf cases,8retired-helper deletion candidates and5duplicate current cases. Two mixed chat-location tests need updating rather than deletion; full-suite count/run and standalone harness inventory remain in progress. Other implementation/release work below is preserved. [planner](history/2026-10-22_18-23-58-918503-planner-retired-test-audit.md) · [evaluator](history/2026-10-22_18-23-58-919726-evaluator-current-test-audit.md)
+
+## Plain saved-task reads implemented; independent verification underway
+
+Task catalogue/read/defer no longer call the removed original/reference/Calendar validation callbacks. Local task checks and pure in-memory input binding remain; the prompt asks the agent to choose normal source/Calendar/map tools afterward. Standard tools and exact completion/version checks remain. Parent122regressions/build pass; coder new cases pass with3obsolete test expectations being corrected independently. Source frozen; no upload. [Coder](history/2026-10-22_18-23-17-654000-coder-plain-task-cache-implemented.md).
+
+## Live Calendar testing preflight; older test-channel originals first
+
+Both Calendars are accessible; synthetic Calendar/map baselines are empty. Seven older #flock-test originals remain pending. Whitelisted run `9e47fa48-bdea-4d63-aaad-0de95090a438` was accepted (202) and is queued behind the existing worker lease. No new fixture messages or Calendar/map facts yet. Native Discord draft is preserved. Runtime/configuration/deployment changes remain with the separate main task. [Preflight](history/2026-10-22_18-22-13-590512-orchestrator-live-calendar-test-preflight.md).
+
+## Plain task-cache contract accepted; implementation underway
+
+Catalogue, read and defer bookkeeping will check saved task shape/scope/expiry and trusted input bindings locally, without live source/reference/Calendar checks. Standard source/action tools retain their own checks. Task deletion still needs matching successful work and an exact version. Coder/tester have exclusive runtime/test files; parent owns docs and release. No schema or budget changes. [Plan](history/2026-10-22_18-20-22-191383-planner-plain-task-cache-contract.md).
+
+## Plain task-cache reads authorized; worker release held
+
+User wants the cache tool to read the saved task only. The agent should choose normal Discord/Gmail, Calendar, identity and map tools afterward. Planning is underway to remove hidden live-source reads from cache reads/catalogue while preserving standard tools' checks, service scope, task versions and leases. No cache-source compound replacement tool or new budgets.
+
+Tool-error continuation is locally accepted: independent191checks, evaluatorACCEPT, broad2480pass/0fail/1optional skip (separate known chat-location file excluded), API build and frozen package hashes pass. No worker upload occurred; the prior live worker remains unchanged. Combined release awaits this cache correction. [Pass](history/2026-10-22_18-19-19-084944-orchestrator-tool-error-release-held-cache-read-scope.md).
+
+## Tool-error follow-up checks accepted
+
+Independent combined191checks pass; parent progress/diagnostic/site-auth follow-up passes. API build, whitespace and frozen58-file worker package checks pass; broad regression and actual worker rollout remain pending. [2026-10-22_18-18-13-613716-tester-tool-error-progress-diagnostics-verified.md](history/2026-10-22_18-18-13-613716-tester-tool-error-progress-diagnostics-verified.md).
+
+## Tool-error replies implemented and independently accepted
+
+Tool failures/ordinary exceptions/null/malformed/oversized outputs now become bounded safe tool_error replies, letting siblings and later model turns continue. Failed writes earn no success receipt; actual global cancellation/ownership/backend authorization/audit stops remain. Invalid model arguments and8reply/32stage limits are unchanged. Tester180checks and evaluator140checks pass/ACCEPT. Parent focused76checks pass; broad regression/build/frozen worker package pending. No release claimed yet.
+
+Separate cap audit confirms409historical >8reply rejects (7.10percent of5763model requests), latest13:21EDT; recent897decoded lifecycle rows show no cap-specific failure, with timeout/deferargs dominating the recent streak. Fresh current model-proposal completeness remains unavailable. [coder](history/2026-10-22_18-12-44-790564-coder-tool-error-feedback-implemented.md) · [tester](history/2026-10-22_18-12-44-791280-tester-tool-error-continuation-independently-verified.md) · [evaluator](history/2026-10-22_18-12-44-791495-evaluator-tool-error-continuation-accepted.md) · [planner](history/2026-10-22_18-12-44-791648-planner-tool-call-cap-log-audit-completed.md).
+
+## Planner API-key authentication deployed
+
+Web **c83f2495-ef51-4197-bebc-8f8f54dd30e4 SUCCESS**, no pending Railway rollout. Only the API-key auth delta was overlaid on the prior accepted web release;273baseline files remain byte-identical. The existing workerf1ab15c2 and collectors are unchanged. Live health200, missing/wrong-key planner start403, missing-key status403, ordinary tools403 and homepage login redirect pass. No manual job/model/business test action was created.
+
+**User will configure PLANNER_API_KEY on Railway web.** This pass generated/set no key or environment values. Both planner routes require its Bearer header and reject cookie/admin fallback; positive real-key dispatch awaits that setup. Prior130scoped/security/integration tests and API build pass, frozen package integrity/syntax/dependency closure pass. Concurrent tool-failure/backlog work remains separately pending and unmodified.
+
+[API-key deployment receipt](history/2026-10-22_18-11-09-028642-orchestrator-planner-api-key-web-deployed.md).
+
+## Tool-error continuation implementation underway
+
+User authorized generic tool failure/reason replies to the model, allowing unrelated calls and subsequent turns to continue. Runtime coder/tester have exclusive files; parent preserves concurrent manual API-key changes. Existing per-reply8 and per-phase32 limits remain unchanged. Actual run cancellation/ownership/backend authorization/audit failures stay fatal; ordinary tool target failures do not become run failures. Invalid model arguments and slow task validation are separate pending work. A separate user-requested agent is auditing historical/current >8reply proposals. [Plan](history/2026-10-22_18-09-57-340991-planner-tool-error-continuation-contract.md).
+
+## Manual planner API deployed and verified
+
+**Implemented and live.** Workerf1ab15c2-aaef-4129-856c-5b827fff514f and web60e855b0-d31d-41bf-b261-bd062c805953 areSUCCESS; no pending rollout. POST /api/planner/runs accepts optional exactchannelIds and returns202/runId/statusUrl; authenticatedGETreturns bounded state/counts. Existing website operator login is required; anonymous/wrong-origin requests deny. One request runs one standard batch (currently2inputs) through initial Calendar work → direct two-calendar map sync → bounded follow-up, skipping trigger/cooldown while waiting safely behind an active cycle. Queued originals only; default/no whitelist retains normal blacklist/Gmail and explicit whitelist temporarily overrides channel/category exclusions only for selected Discord sources. Other originals and unresolved tasks remain untouched.
+
+Hosted042/043 receipts20261022215800/20261022215802 and service-only/RLS/eightfunctionbody checks verified. Independent130feature checks and final2443regressions pass with1optional skip; two legacycases in separate personal-location-behavior file are explicitly excluded. Source/package evaluatorACCEPT and API build pass. Website release retains the previously accepted chat-map correction; no global source-policy changes or fake Calendar/map facts were made.
+
+LiveHTTPhealth200/login303/auth and source-free metadata preflight pass; validstart202 and status200. Testrequest4fced205-4b6f-45e3-b9d0-ac37c54f5a7a is currentlyqueued behind an ordinary run that already held the worker. Its eventual empty result is still an operational observation, not claimed complete. No verification model/Calendar/map writes or Git publication. [Live receipt](history/2026-10-22_18-06-56-105712-orchestrator-manual-planner-api-live-verified.md) · [API guide](../docs/agent-automation.md) · [Scope](manual-planner-start/info.md).
+
+## Manual planner authentication changed to API key locally
+
+User explicitly replaced website-session gating with a dedicated API key. Both POST /api/planner/runs and GET /api/planner/runs/:runId now require `Authorization: Bearer <PLANNER_API_KEY>`; cookies/admin sessions cannot substitute. Only these exact routes bypass the website cookie gate, and wrong/missing/unconfigured keys deny403. API-key HTTP→actual SQL→worker handler tests and existing scope/security regressions pass130/130; API build passes. This was a minimal local side-conversation change with sequential checks, no agent interaction, real business calls, secret generation/configuration or deployment. **Main rollout must include/recheck this auth delta and configure the private key; earlier cookie-auth package acceptance does not cover it.**
+
+[Auth correction](history/2026-10-22_18-05-45-454447-orchestrator-manual-planner-api-key-auth.md).
+
+## General runner stopping rules explained — no implementation
+
+Read-only inventory distinguishes normal queue waiting from failed attempts and details model/tool argument, source access, lease, preparation, completion, result-size, provider and budget checks. Most tool errors stop model continuation; only selected final-phase failures attempt to settle initial work. User has not resumed code changes. [Pass](history/2026-10-22_18-04-11-953565-orchestrator-runner-stopping-rules-inventoried.md).
+
+## Discord read failure handling clarified — no code changes
+
+The existing message-read tool already returns explicit failure status, empty sources and incomplete coverage. The update-agent handler rejects most failure results before returning them to the model, so it cannot simply move on; literal null also fails validation. Existing Discord/automation synthetic checks pass. User has not resumed implementation. [Pass](history/2026-10-22_18-02-38-949214-orchestrator-discord-read-failure-handling-traced.md).
+
+## Manual planner release gates accepted; rollout starting
+
+Independent local and frozen-package evaluator ACCEPT. Final broad2443pass/0fail/1optional skip (separate legacy personal-location-behavior file explicitly excluded),130independent feature checks and API build pass. Hosted042/043 receipts20261022215800/20261022215802 verified: eight function bodies match, ownerpostgres, FORCE RLS and service-only intended RPC access. Real excluded-channel metadata preflight yields zero queued grants without inventing an identity. Web277files includes the previously accepted chat-map correction; worker58files adds only manual control to the accepted simplified release. Deployment/live route checks pending.
+
+[evaluator manual-local-accepted](history/2026-10-22_18-01-07-284810-evaluator-manual-local-accepted.md) · [tester manual-auth-expectations-corrected](history/2026-10-22_18-01-07-284811-tester-manual-auth-expectations-corrected.md) · [evaluator manual-frozen-packages-accepted](history/2026-10-22_18-01-07-284812-evaluator-manual-frozen-packages-accepted.md) · [orchestrator manual-hosted-schema-verified](history/2026-10-22_18-01-07-284813-orchestrator-manual-hosted-schema-verified.md)
+
+## Manual planner route implemented; independent130checks pass
+
+Operator POST /api/planner/runs and content-free GET status use durable24hour metadata dispatch to the existing worker. One forced queued-input batch retains the global lease and all retry/source guards; threshold/cooldown are bypassed only for that manual request. Exact whitelist overrides channel/category exclusions through current source/action/task checks, without importing history or modifying stored blacklist/grants. Empty/no whitelist keeps default source behavior. Independent130checks and coder suites/API build pass; final evaluation and hosted rollout remain pending.
+
+[coder manual-dispatch-implemented](history/2026-10-22_17-55-03-732490-coder-manual-dispatch-implemented.md) · [coder manual-whitelist-implemented](history/2026-10-22_17-55-03-732491-coder-manual-whitelist-implemented.md) · [tester manual-planner-independent-verified](history/2026-10-22_17-55-03-732492-tester-manual-planner-independent-verified.md) · [orchestrator manual-route-integrated](history/2026-10-22_17-55-03-732493-orchestrator-manual-route-integrated.md)
+
+## Update-agent failure streak confirmed; diagnosis only
+
+As of2026-10-22 17:42EDT, last completed batch remains16:26:33EDT (with followupStatus tool_failed), then11ended failures:7whole600second timeouts and4missing-required-field defer_task rejects. Worker/Discord collector remain running and collector event_queued continues. Valid initial finish_batch transitions stages without settling queue; slow deterministic/task authorization and fatal malformed proposals can prevent eventual settlement. Successful task reads77–155seconds and initial-to-follow-up gaps187–428seconds are observed. No source/model/runtime/database/deployment changes by this inquiry.
+
+Exact missing field is summary or operation; diagnostic dictionary cannot distinguish them. Supabase MCP unavailable here, so backlog/quarantine counts, retained proposals and data loss are unverified. Queue retry/quarantine/expiry rules still apply. Recorded release hashes match core handler/pipeline/prompt/store/diagnostics; current adapter differs, limiting exact live callback attribution. [planner](history/2026-10-22_17-47-14-437171-planner-planner-task-failure-paths-diagnosed.md) · [orchestrator](history/2026-10-22_17-47-14-437386-orchestrator-planner-live-failure-streak-confirmed.md).
+
+## Manual planner API implementation underway
+
+User authorized forced start of the existing staged procedure with optional exact channel whitelist and explicitly selected **queued messages only**. Empty/default whitelist uses normal blacklist and explicit Gmail grants; nonempty selection is Discord-only and temporarily overrides channel/category exclusions while preserving actual permissions, source identity, manual disables and global lease. Existing worker will consume durable metadata-only requests; forced claim bypasses threshold/cooldown, without changing ordinary trigger/budgets or fetching history. Route/auth integration and independent dispatch/source/test passes are in progress.
+
+[Accepted plan](history/2026-10-22_17-45-56-222144-planner-manual-planner-start-contract.md) · [Scope](manual-planner-start/info.md).
+
+## Future Flock Discord testing permission saved
+
+AGENTS.md and notes.md now record standing permission to use computer interaction with Tech@NYU #flock-test for relevant routine bot tests. User clarified no live test is needed now. Only surface inventory was read; no channel opened, message sent or application/runtime changed. [Pass](history/2026-10-22_17-27-08-325162-orchestrator-flock-test-permission-recorded.md).
+
+## Simplified update agent deployed and startup verified
+
+Worker **2d5ae565-1460-47dc-97d6-b8f7eda6d488 SUCCESS**, no pending rollout; live prepare_done ready after initial lease busy. Automatic worker Miro/preflight/tools and mandatory model rolling upkeep are removed. Cached authorized Discord/Gmail drive supported Calendar changes; source-backed people/location enrich existing events. Completed deterministic two-calendar projection, Member Plans, task cache and source/identity/human-edit/lease controls remain. Mechanical failures retain partial outcomes without model pagination tasks; old mechanical tasks remain stored. Budgets unchanged.
+
+Independent tester224checks, evaluator163checks ACCEPT, parent broad2407pass/0fail/1optional skip and API build/whitespace pass. Broad run explicitly excludes the separate personal-location-behavior chat-map file with two old-gate failures; no whole-tree green claim. Frozen55-file package matches50reviewed runtime files and contains no Miro modules. No manual business test writes or verification model calls. Actual backlog effects/cost improvement remain unmeasured. CLI accidental temporary project deletion was accepted and API now reports it absent; production worker was deployed with explicit project pinning. [Integration and release](history/2026-10-22_16-16-38-877365-orchestrator-simplified-update-agent-live-verified.md).
+
+## Update-agent simplification independently accepted
+
+Independent tester224checks and evaluator163checks pass; no material source findings. Parent shared Miro/chat separation and sanitized deployment-closure15checks pass; worker package55files has zero Miro modules. Initial whole-tree run exposed obsolete fixtures and two separate chat-map expectations; corrected worker regression run is in progress with the unrelated chat-map file excluded explicitly. No cleanup release claimed yet. [tester](history/2026-10-22_16-13-05-568308-tester-update-agent-simplification-verified.md) · [evaluator](history/2026-10-22_16-13-05-568766-evaluator-update-agent-simplification-accepted.md).
+
+## Update-agent runtime simplified; verification underway
+
+Worker Miro construction/preflight/tools and broad model rolling completion are removed. Exact queued Gmail body grants/fresh rereads and natural event intent support are implemented, retaining source/person/duplicate/human-edit controls. Deterministic two-calendar projection, Member Plans, cache/leases and budget values remain. Coder104focused checks, parent92checks and API build pass. Full regression and independent evaluation underway; no cleanup release yet. [Coder](history/2026-10-22_16-11-22-038034-coder-update-agent-runtime-simplified.md).
+
+## Update-agent simplification resumed
+
+User resumed the saved two-task implementation. Independent plan accepted: remove worker Miro and mandatory model rolling reconciliation; preserve deployed deterministic Calendar/cache/Member Plans flow and source/identity/human-edit controls. Add exact queued Gmail club provenance and stop mechanical projection errors becoming model chores. Runtime coder and independent tester have exclusive files; parent integrates shared Gmail/task selection. No new budget settings. [Plan](history/2026-10-22_16-07-25-693249-planner-update-agent-simplification-contract.md).
+
+## Staged Calendar pipeline deployed and live phases verified
+
+**Implementation complete and independently accepted.** Railway worker8758027d-1bf6-4736-900f-95284d6ced61 and web410e0e67-d8bd-4793-9e4c-b91bb0f8740e are SUCCESS; no pending rollout. Hosted health/auth/login/map checks pass.039temporary pending tasks,040fixed building aliases and041transactional worker map lease fence are applied/verified. The existing account owns the separately pinned Member Plans Calendar; private configuration is verified on both services.
+
+One existing eligible queue claim runs initial Calendar interpretation → deterministic club/Member Plans Calendar-map APIs → at most10follow-up model turns under one lease/deadline. Original/context dependencies, prior model/tool outcomes and selected API responses reach final task work. Untouched tasks remain unchanged; exact completed tasks delete, unresolved work checkpoints within24hour retention/200task capacity. Fixed building/alias matching defers uncertainty; original identities and independent map participants stay protected. All new worker personal/current-presence activities start in Member Plans; this scope does not rewrite historical records or independent chat behavior. Trigger30eligibleinputs/oldest30minutes,2input claims and600second runtime remain unchanged.
+
+Production ordinary run has saved a real pending task with original inputs/history and reached the final model phase after APIs. Its first complete organic settlement was still in progress at this receipt; complete source synchronization is not claimed. Configured-model synthetic integration passed with correct person/building and no live business test writes. Focused/integration/independent reviews and builds pass. Eight dirty-tree test failures belong to concurrent chat edits excluded from the source-isolated release; no whole-tree green or Git publication claim. Future simplified-planner notes remain deferred and independent.
+
+[Final live receipt](history/2026-10-22_16-03-59-141831-orchestrator-staged-pipeline-live-verified.md) · [Pipeline scope](staged-calendar-pipeline/info.md) · [Runtime guide](../docs/agent-automation.md).
+
+## Chat map correction complete locally
+
+The rejected resolver/save modules, grammar parser, pending cache, session HMAC and dedicated tests are removed. Existing **read_map_events / lookup_map_person / upsert_map_event** now work without chat lexical-action, original-source-read, pasted-link or linked-author receipt gates. Prompts direct the model to update on plotting requests or current-location statements such as “im at bobst,” asking only for unclear identity/essential facts. Verified Discord actor or supplied-name lookup uses the fixed roster; internal attribution is automatic when omitted. Normal authentication, schema/catalogue/concurrency and provider visibility remain; worker authorization is unchanged.
+
+The existing Discord-to-person mapping stays in system context and is attached/projected when map tools run, including verified current-actor username labels. No extra mapping-derived permission is granted. **394parent regressions pass,217independent tester checks pass,56evaluator checks pass; evaluator ACCEPT, API build and whitespace pass.** Auth/session files have no remaining diff. Scripted model and synthetic storage verify native/legacy runtime saves and presence projection; no real-model, hosted mutation, deployment or browser-visual claim. Earlier separate-flow acceptance below is explicitly superseded. [tester](history/2026-10-22_16-03-11-753923-tester-existing-chat-map-tools-verified.md) · [evaluator](history/2026-10-22_16-03-11-754268-evaluator-existing-chat-map-tools-accepted.md) · [orchestrator](history/2026-10-22_16-03-11-754381-orchestrator-existing-chat-map-correction-complete.md).
+
+## Staged pipeline final review and hosted preparation accepted
+
+Initial agent → deterministic two-calendar projection → up to10follow-up turns is complete and independently accepted. New worker personal/presence writes use Member Plans; exact existing club occurrences retain RSVPs. Cache carries source dependencies, observed context and prior execution outcomes, preserves untouched tasks, and deletes only exact confirmed completion. Hosted039/040/041 and private pinned configuration verified. Real configured-model fixture completed the full personal-plan flow with correct person/building and no live source/Calendar/map test writes. Existing30input/oldest30minute trigger,2input claim and600second run bound remain unchanged.
+
+Accepted frozen packages exclude concurrent direct-chat implementation. Latest dirty-tree full suite2395pass/8concurrent-chatfail/1optional skip; release-focused checks and builds pass. No whole-tree clean/green or Git publication claim. Live release verification follows.
+
+[coder calendar-sync-review-fixes](history/2026-10-22_16-02-28-782295-coder-calendar-sync-review-fixes.md) · [tester staged-adversarial-followup](history/2026-10-22_16-02-28-782296-tester-staged-adversarial-followup.md) · [tester member-source-binding-delta](history/2026-10-22_16-02-28-782297-tester-member-source-binding-delta.md) · [evaluator staged-final-local-accepted](history/2026-10-22_16-02-28-782298-evaluator-staged-final-local-accepted.md) · [evaluator staged-frozen-release-accepted](history/2026-10-22_16-02-28-782299-evaluator-staged-frozen-release-accepted.md) · [orchestrator staged-schema-config-model-verified](history/2026-10-22_16-02-28-782300-orchestrator-staged-schema-config-model-verified.md)
+
+## Correction: existing chat map tools unblocked
+
+The user rejected the previous separate report workflow. Its two runtime modules, resolver/save tools, parser, pending cache, session HMAC changes and dedicated33-case test file have been removed. Existing chat read_map_events/lookup_map_person/upsert_map_event now bypass lexical-action, pasted-link, observed-original and linked-author receipt gates. The model interprets requests and asks only for unclear person/essential facts; verified Discord actor/name lookup and internal attribution use the existing adapter. The Discord-to-person mapping is retained in prompts and included in map-tool results. Ordinary auth, data/catalogue/revision and current provider visibility remain; worker source authorization is unchanged.
+
+API build/whitespace and corrected focused204checks pass. Parent broader393run has391pass/2obsolete parity expectations assigned for correction. Final fresh-current-report identity fix and evaluation remain. No deployment, hosted changes or live model calls. Earlier separate-flow local acceptance below is superseded. [Correction plan](history/2026-10-22_16-01-12-305128-planner-existing-map-tools-correction.md) · [Coder](history/2026-10-22_16-01-12-305439-coder-existing-map-chat-gates-removed.md).
+
+## Weekly FlockBot report completed
+
+Requested report and complete non-success/partial metadata ledger ready for private delivery. No application/source edits, model dispatch, schema/configuration changes, messages, deployment, commit or push by this task. Retention gaps, current-edits-only history, unread attachments and incomplete historical request correlation are explicitly documented. [Pass](history/2026-10-22_15-57-40-020907-orchestrator-weekly-report-artifacts-verified.md).
+
+## Weekly report independently accepted
+
+Independent review accepted; no source/model/business/runtime calls or mutations by this review. [Pass](history/2026-10-22_15-57-40-019668-evaluator-weekly-report-independent-review.md).
+
+## Future update-agent scope corrected; implementation deferred
+
+User explicitly requests notes only: cached authorized Discord/Gmail messages -> corresponding Calendar changes, then source-backed people/location/participation on appropriate existing map events. Broad rolling synchronization/model pagination and automatic per-batch Miro upkeep exceed that future scope. Separate deterministic Calendar/cache work is preserved; no personal-plan routing or limit changes are newly selected. Recorded in notes.md; no runtime/configuration/deployment edits by this pass.
+
+Read-only comparison confirms live worker remains c6e09917-f346-4174-a96f-eaa04c264aa6 (SUCCESS, no pending Railway work), matching the previously verified pre-staged release. Its required Miro/rolling Calendar-map work and Gmail club-write restriction differ materially from the clarified intent. Local staged work moves projection to APIs but retains Miro, Member Plans routing and follow-up tasks; it is not yet that simplified future scope. [Pass](history/2026-10-22_15-55-21-515930-orchestrator-update-agent-future-scope-recorded.md).
+
+## Weekly operational forensics complete
+
+Retained model/lifecycle aggregates and complete exception ledger were correlated with bounded selected source incidents. Exact causes are distinguished from temporal matches and legacy unknowns. No runtime/source/permission change occurred. Private operational metadata accepted; no source bodies, prompts, model-output bodies or credentials in committed documentation. Report artifact and independent final review remain pending. [Pass](history/2026-10-22_15-51-56-936351-evaluator-weekly-operational-failure-audit.md).
+
+## Eboard Teams original review complete
+
+82eligible nodes,87pages and876native messages; retained text fully reviewed. Seven source-derived groups contain15occurrences, not seven proven causes. The full31candidate-assessment register includes29invocations and2non-request mentions. Private source-review accepted; parent is integrating operational corroboration and report artifact review. [Pass](history/2026-10-22_15-51-56-935363-tester-weekly-eboard-teams-source-audit.md).
+
+## Calendar rejection and tool budgets clarified
+
+Read-only historical/source probes identify rigid Discord intent/cancellation wording and missing target-date Calendar coverage as concrete write blockers. The current staged flow retains these guards, so deterministic Calendar-map projection alone does not resolve them. Shared low-level source deadlines remain60seconds; the earlier300second change covers the aggregate Discord summary only. Per-turn provider proposal cap8 is distinct from total phase/request budgets. Larger bounded proposal batches, selective deadlines and optional/on-demand Miro are recommendations only; no runtime/configuration/hosted changes. [Pass](history/2026-10-22_15-47-27-920764-orchestrator-calendar-rejection-and-timeout-diagnosed.md).
+
+## Weekly FlockBot bug report in progress
+
+Read-only Eboard source review covers all78eligible nodes/188native records with final access rechecks. Private derived findings remain outside Git; Teams and operational review plus report verification are pending. Concurrent application work is preserved. [Source pass](history/2026-10-22_15-47-02-555598-coder-weekly-eboard-source-audit.md).
+
+## Direct chat map updates accepted locally
+
+**Superseded by the user-requested existing-tool correction; the separate report architecture was rejected and removed.**
+
+Independent evaluator **ACCEPT**: no material findings remain. Clear direct user reports now save during chat without the old pasted-original/linked-author requirement; unclear identity asks for a name, insufficient or conflicting essential details cause no write. Chat reports use their own server-owned namespace; provider/worker authorization remains separate. Tester207focused checks, evaluator51checks, parent broader regressions, API build and whitespace pass. Actual runtime factory, native/legacy continuation, HTTP denial and map projection use synthetic HTTP. No deployment, hosted data changes or live-model wording verification. Pending name context lasts ten minutes in process memory; unsupported place/time wording requests a complete report. [Final evaluation](history/2026-10-22_15-45-50-012963-evaluator-direct-chat-map-save-accepted.md). The separately active staged Calendar pipeline below is preserved.
+
+## Direct chat map saves implemented and tested locally
+
+**Superseded by the user-requested existing-tool correction; the separate report architecture was rejected and removed.**
+
+User chose saving during chat. Web/Discord now have dedicated resolver/save tools: unclear identity asks for a name, insufficient/conflicting person/place/time leaves the map unchanged, and a complete direct report saves without a pasted provider original or linked-author receipt. Accurate application-owned declaration provenance preserves separate worker/provider authorization. Website sessions isolate pending name context; ten-minute process metadata retains original report time. Verified Discord actors resolve by exact ID; unlinked actors may give a uniquely matched name. Only applied activity receipts confirm saving.
+
+Independent33new cases plus174focused regressions pass (207total); actual runtime/shared-runner/native name-only continuation and authorized map projection are exercised with synthetic HTTP, plus anonymous/stateless403. Parent broader related suite and API build/whitespace pass. No live model/source calls, schema/env changes, hosted database writes, deployment or Git publication. Final evaluator verdict pending. Unsupported timing/place forms require a complete clarified report; expired/missing process context needs a fresh report. [tester](history/2026-10-22_15-45-16-799666-tester-chat-map-prompt-clarification-verified.md) · [planner](history/2026-10-22_15-45-16-800131-planner-direct-chat-map-save-contract.md) · [coder](history/2026-10-22_15-45-16-800258-coder-direct-chat-map-save-implemented.md) · [tester](history/2026-10-22_15-45-16-800356-tester-direct-chat-map-save-verified.md) · [orchestrator](history/2026-10-22_15-45-16-800449-orchestrator-direct-chat-map-runtime-integrated.md).
+
+## Staged pipeline components implemented; integration fixes underway
+
+Independent cache/handler/Calendar coders and tester completed bounded passes. Cache17checks, handler84checks plus final18stage cases, Calendar62checks and integrated tester180checks passed at their cited snapshots. Initial evaluator requests focused cancellation/personal-end/name/ambiguity fixes and final frozen review; source/context/task-proof integration fixes are in progress. Live read-only preflight confirms existing OAuth account owns the new Member Plans Calendar. No new hosted migrations/configuration/deployment yet.
+
+[coder pending-task-store](history/2026-10-22_15-44-20-225534-coder-pending-task-store.md) · [coder staged-handler](history/2026-10-22_15-44-20-225535-coder-staged-handler.md) · [coder calendar-sync-foundation](history/2026-10-22_15-44-20-225536-coder-calendar-sync-foundation.md) · [tester staged-pipeline-independent](history/2026-10-22_15-44-20-225537-tester-staged-pipeline-independent.md) · [evaluator staged-pipeline-initial-review](history/2026-10-22_15-44-20-225538-evaluator-staged-pipeline-initial-review.md)
+
+## Update-agent effects and repeated work diagnosed
+
+Historical hosted diagnosis correlates repeated input references, rejected oversized tool-call proposals, failed completion, Calendar source denials, Miro deferrals and limited map effects. Private per-run report reconciles with prior token/cost attribution; selected live originals were read only where available. No runtime/schema/configuration/source writes, model calls or deployment by this pass. Concurrent staged Calendar/chat work remains active below. [Pass](history/2026-10-22_15-41-42-457964-orchestrator-update-agent-effects-audited.md).
+
+## Update-agent replay mechanisms independently reviewed
+
+Independent read-only source review confirms per-batch preparation/mandatory Calendar-map reconciliation, repeated context on failed retries and incomplete Miro completion as historical amplification mechanisms. Applied retry quarantine timing is distinguished from earlier uncapped deferral; unfinished staged pipeline is excluded. No runtime changes or external calls by specialist; parent operational correlation follows. [Pass](history/2026-10-22_15-41-42-456262-planner-update-agent-replay-source-reviewed.md).
+
+## Chat map ask-name prompts implemented locally
+
+**Superseded by the user-requested existing-tool correction; the separate report architecture was rejected and removed.**
+
+Shared web/Discord planning and answer instructions now ask for an unclear person's name, retain supplied place/time/activity and withhold writes with insufficient facts. Original-link demands merely to identify the speaker were removed. Coder51focused checks pass; one old attendance assertion expects removed wording and is assigned to independent tester. No backend gate or hosted behavior changed; immediate-save versus worker handoff is awaiting user clarification. [Coder](history/2026-10-22_15-33-46-682929-coder-chat-map-name-clarification.md).
+
+## Chat map routing plan received
+
+**Superseded by the user-requested existing-tool correction; the separate report architecture was rejected and removed.**
+
+Independent expanded planner confirms actual direct declarations require a genuine backend provenance route, beyond removing a prompt/wrapper gate. Proposed Member Plans/worker handoff aligns with the concurrent staged pipeline; direct save would require a separate server-owned declaration namespace. User routing question remains pending. Prompt clarification continues independently with no backend edits. [Routing plan](history/2026-10-22_15-32-14-949812-planner-chat-map-declaration-routing.md).
+
+## Chat map identity clarification in progress
+
+**Superseded by the user-requested existing-tool correction; the separate report architecture was rejected and removed.**
+
+User requests asking who a person is when unclear and withholding map updates with insufficient information, superseding the old original-link identity question. Independent initial prompt plan received; shared prompt prose implementation underway. Follow-up expands removal of previous gates; worker handoff versus direct-chat save is pending clarification because existing backend source checks and the concurrent Member Plans pipeline determine the write route. No backend, hosted or schema changes by this pass. [Plan](history/2026-10-22_15-31-24-055482-planner-chat-map-identity-clarification.md).
+
+## Staged Calendar pipeline implementation underway
+
+User authorized full implementation and required table updates. Independent plan accepted: existing30-input/oldest30minute trigger, initial agent Calendar changes, deterministic club+Member Plans map projection, up to10follow-up model turns and temporary source-scoped task context. No map-only personal/presence writes in the new flow. Three specialists own cache039, Calendar/sync/alias040 and handler stages; parent owns adapter/context/web wiring. Existing working tree/release changes preserved. Hosted schema-only preflight confirms no pending-task table; no new migration/runtime rollout yet. [Plan](history/2026-10-22_15-28-12-880432-planner-staged-calendar-pipeline-contract.md) · [Scope](staged-calendar-pipeline/info.md).
+
+## Member Plans Calendar created; pipeline still design-only
+
+Created Member Plans in the existing Tech@NYU Google account, timezone America/New_York. UI creation success and saved owner/name/timezone verified; exact non-secret ID is in the [creation receipt](history/2026-10-22_15-21-48-437457-orchestrator-member-plans-calendar-created.md). Default visibility is organization event details, public access off; no sharing settings changed. No events, runtime/configuration changes, second source/write grant, schema, sync or deployment. Personal/current-presence Calendar routing and staged agent/API/follow-up design remain unimplemented.
+
+## Calendar complete receipts and Discord drafts deployed
+
+Web10f3a363-811c-4bd9-a86c-f4bef6caa553 and update-agentc6e09917-f346-4174-a96f-eaa04c264aa6 are SUCCESS; all4services online,0issues and no pending rollout. Hosted health200, anonymous Calendar/draft API403, password login303 and trusted Discord authorization200/ready pass. Worker entered ready preparation. Full2297tests passed/0failed/1optional skip, builds and independent review ACCEPT; all138runtime copies match reviewed source. Calendar receipts preserve actual saved names/descriptions/locations/times/safe details with explicit missing/clear/omission states; draft tool remains review-only in invoking reply. No Calendar test edits/model verification calls/Discord sends, env/schema/map changes or Git publication. Actual real-provider mutation wording remains untested. [Final release](history/2026-10-22_15-16-02-969044-orchestrator-calendar-complete-receipts-live-verified.md).
+
+## Complete Calendar receipts fully verified; rollout underway
+
+Full Node suite2297pass/0fail/1optional skip, API/production frontend builds and whitespace pass; independent reviews ACCEPT. Parent preserved30percent evidence-size savings by excluding absent draft-tool guidance. Frozen reviewed web276files/worker60files contain full saved receipt helper and current source hashes match. Railway web10f3a363 and update-agentc6e09917 started via MCP; hosted SUCCESS still pending. No Calendar test edits, Discord sends, new model calls, env/schema or map changes. [Integration](history/2026-10-22_15-13-32-192657-orchestrator-calendar-receipts-full-verified-release-started.md).
+
+## Calendar integration test corrections accepted
+
+Independent evaluator verifies all four test-only fixes and55affected tests pass. Existing source/revocation/completion checks and historical032 assertions preserved; empty maintenance exposes no originals or model/source work. No runtime changes. Root full rerun/release pending. [Review](history/2026-10-22_15-11-59-672335-evaluator-calendar-integration-followups-accepted.md).
+
+## Calendar integration tester followup accepted
+
+Updated only the stale final scoped-agent-claim case to match deployed038 maintenance. Empty arrays dispatch exact bounded maintenance and return no originals; malformed/missing scope remains rejected before HTTP and no source/model/tool work occurs. Historical032 SQL assertions preserved. 8owned and66focused maintenance/scope/handler cases passed with zero skips; whitespace passed. First full run found2292pass/5fail/1skip; these test-only corrections address all five failures. Frozen full rerun/release pending. [Pass](history/2026-10-22_15-11-18-826415-tester-empty-scope-current-contract-verified.md).
+
+## Calendar integration coder followup accepted
+
+Updated only three newly owned integration fixtures to return canonical provider-confirmed saved receipts, including explicit absent cancellation. Existing source/revocation/completion assertions remain. 69 assigned integration/receipt cases and whitespace passed. First full run found2292pass/5fail/1skip; these test-only corrections address all five failures. Frozen full rerun/release pending. [Pass](history/2026-10-22_15-11-18-824312-coder-calendar-canonical-fixtures-integrated.md).
+
+## Calendar receipts: evaluator pass accepted
+
+Read-only review accepted final helper/client/wrapper/model/worker serialization and documentation. Verified unchanged fixed target/source/revision/human-edit/invitation boundaries and content-free action/audit storage. 289 relevant tests and whitespace passed. Extreme failed-row repro now57848bytes with idempotent repeated projections. Conditional draft guidance preserves existing30percent prompt-size requirement. No unresolved material findings. [Pass](history/2026-10-22_15-08-34-237594-evaluator-calendar-full-receipts-local-accepted.md). Full integration and hosted rollout remain separate; no live Calendar edits.
+
+## Calendar receipts: tester pass accepted
+
+Added22new complete-receipt tests and updated14location cases to permit saved descriptions while excluding arbitrary/private fields. Covered actual client outcomes, clears/omissions/sparse cancellation, both provider modes, duplicate receipts and realistic/pathological50row compaction. 296 focused tests passed with zero skips/failures; API build and owned whitespace checks passed. Earlier read-budget, strict mocked receipt and compaction findings were reproduced and resolved. [Pass](history/2026-10-22_15-08-34-237124-tester-calendar-full-receipts-independent-verified.md). Full integration and hosted rollout remain separate; no live Calendar edits.
+
+## Calendar receipts: coder pass accepted
+
+Added shared provider-confirmed receipt projector, updated client/chat/managed/batch paths, model projection/native/duplicate handling and receipt guidance. Updated only three owned obsolete managed-write fixtures; preserved ordinary read payloads. 268 scoped checks/API build/whitespace passed. Additional prompt-size ratio issue was handed to parent; parent fixed absent-tool prompt overhead without weakening the test. [Pass](history/2026-10-22_15-08-34-236093-coder-calendar-full-saved-receipts-implemented.md). Full integration and hosted rollout remain separate; no live Calendar edits.
+
+## Calendar receipt final compaction corrections underway
+
+Core saved fields pass ordinary client/single/managed/batch/provider tests. Final review found oversized fallback must survive repeated projections, preserve realistic saved core before dropping details, and bound failure-only rows too. Coder/tester/evaluator are resolving these concrete cases before release; no live Calendar edits or receipt rollout. [Findings](history/2026-10-22_15-05-14-258396-evaluator-calendar-extreme-compaction-correction.md). Draft tool remains live.
+
+## Deferred-work cache design discussed
+
+Read-only review confirms existing UUID/JSON agent_input_cache plus separate retry metadata. Discussed temporary deferred tasks referencing original sources and dependencies, bounded expiry/deduplication, and distinguishing dependency waits from failures. Summary text would not establish source facts. No new table, sync implementation or deployment selected. [Discussion](history/2026-10-22_15-05-04-686990-orchestrator-deferred-work-cache-discussed.md). Existing work below remains active.
+
+## Discord draft live adapter verified
+
+Extended production-settings read-only probe returns ready with registered tool, alternate eligible destination, exact content, sent=false and unchanged invoking source principal. No model calls or Discord messages. This resolves the earlier short probe timeout; web908d744d remains SUCCESS with hosted health/auth checks passing. Actual generated wording untested. Calendar receipt milestone remains active. [Probe](history/2026-10-22_15-01-09-140038-orchestrator-discord-draft-live-adapter-verified.md).
+
+## Update-agent token attribution verified
+
+Read-only hosted aggregate audit distinguishes planner/update-agent calls from chat, checks token/cache/cost subtotals and terminal failures, and qualifies missing accounting plus logging/retention coverage. Private numerical results were supplied only to the user, not copied into repository evidence. No model/source calls, database/runtime/configuration changes or deployment; concurrent Calendar/Discord work remains active below. [Operational pass](history/2026-10-22_14-59-46-542154-orchestrator-update-agent-usage-audited.md).
+
+## Discord draft-only tool deployed
+
+Web908d744d-7e17-41f3-97e2-79ba997f0e56 is SUCCESS with frozen reviewed draft source; frontend/API builds and independent63new/413focused tests pass, evaluator ACCEPT. Hosted health200, anonymous draft API403 and authenticated Discord authorization200/ready pass. No real model draft or Discord message was generated; local production-settings adapter probe hit its60second caller timeout, extended check pending. No target messages, grant expansion, native draft persistence, env/schema/map changes. Calendar receipt implementation remains active and was excluded from this package. [Release](history/2026-10-22_14-58-51-306296-orchestrator-discord-draft-tool-deployed.md).
+
+## Complete Calendar receipts underway
+
+User requested saved name/description/location/time and other event details in write receipts. Planner found dropping at client/wrapper/model projections and requested-value fallbacks in batches. Shared provider-derived bounded receipts with explicit missing/truncated fields are assigned to coder/tester; all existing write/source/revision boundaries remain. No live Calendar writes or map fixes. [Plan](history/2026-10-22_14-56-23-161815-planner-calendar-complete-receipt-contract.md); [scope](calendar-complete-receipts/info.md). Draft-only web release908d744d is separate.
+
+## Agent base prompts summarized
+
+Read-only audit traced shared web/Discord planning and final-answer prompts, Discord context additions, conditional Drive/shared-memory instructions and the separate update-agent reconciliation prompt. No prompt/runtime changes, live model calls or fresh hosted verification. Local draft guidance is distinguished from the latest recorded deployed baseline; existing release and map-identity work remains below. [Audit](history/2026-10-22_14-56-03-920553-orchestrator-agent-base-prompts-summarized.md).
+
+## Update-agent startup clarified from live settings
+
+Read-only source/Railway inspection confirms the worker is RUNNING on deployment de011f53, enabled with gpt-6-luna, **2 inputs/batch**,16 rounds/32 calls and **600000ms** maximum run time. Trigger/poll/cooldown use defaults30 inputs OR oldest30minutes,5seconds and60seconds. Startup initializes adapters/audit maintenance and polls; Miro preparation/model processing only follow an eligible scoped claim. Recent logs include completed batches and failures;18:52:27Z completion handled2 but deferred one Miro board with syncComplete=false. No complete synchronization/queue-depth claim, runtime change or direct source/model call by this inspection. [Read-only pass](history/2026-10-22_14-55-42-670919-orchestrator-update-agent-startup-explained.md). Existing active work below remains preserved.
+
+## Discord drafts: evaluator pass accepted
+
+Independent evaluator reviewed actual implementation and tests, found no material issues and ACCEPTED. Follow-up checked parent usage/folder-guide additions and final actual runtime bridge case. Initial412 focused checks and final63new-case suite passed, counts overlap; whitespace passed. Hosted availability and real-model wording unverified. [Pass](history/2026-10-22_14-54-14-112807-evaluator-discord-draft-tool-local-accepted.md). Web release remains separate; no map changes.
+
+## Discord drafts: tester pass accepted
+
+Independent tester added only tests/discord-draft-tools.test.mjs and tests/discord-draft-integration.test.mjs. Actual runtime factory, native/legacy provider propagation, real destination access fixtures, revocation/cancellation, ambiguity, source isolation, no-send and operational privacy covered. 63 new tests; combined413 focused tests passed with zero failures/skips. API build and whitespace checks passed. No live requests/model calls. [Pass](history/2026-10-22_14-54-14-112181-tester-discord-draft-tool-independent-tests.md). Web release remains separate; no map changes.
+
+## Discord drafts: coder pass accepted
+
+Independent coder added tools/discord/draft.js and shared runtime/runner/result/diagnostic wiring. Only trusted Discord requests receive the adapter; target authorization principals are discarded, metadata and body are bounded, sent=false and existing reply routing remain. 161 focused regression tests, API build, syntax and whitespace checks passed; no live source/model calls or deployment by coder. [Pass](history/2026-10-22_14-54-14-110909-coder-discord-draft-tool-implemented.md). Web release remains separate; no map changes.
+
+## Discord draft tool implementation underway
+
+Independent planner accepted a draft-only Discord adapter: exact destination resolution/current actor+bot eligibility, bounded text, sent=false and review in the invoking conversation. No target source reads/grant merges or Discord posting. Coder/tester have exclusive ownership; map fixes explicitly excluded by user. [Plan](history/2026-10-22_14-48-42-665840-planner-discord-draft-tool-contract.md); [scope](discord-drafts/info.md).
+
+## Flockbot concurrency10/5 live
+
+Production web and discord-events now use **10active requests per process and5per member**. Both source deployments are SUCCESS: web8544665c-edfe-465f-b351-879cf5c3b544; collector4ad39354-b53e-4ace-8797-91bc69e7062a. Fresh selected-variable reads and identical packaged parser verification confirm10/5; hourly20 and unrelated variables/services unchanged. Web health/login/API protection pass; collector chat ready, Gateway resumed and listening. Independent862regressions/APIbuild and evaluator193focused checks pass. No live-model load benchmark; same-destination overlapping history retains the last successful snapshot. [Release](history/2026-10-22_14-47-57-556034-orchestrator-discord-concurrency-live-verified.md); [scope](discord-concurrency/info.md). Existing unrelated work below is preserved.
+
+## Discord personal-map failure diagnosed from live logs
+
+Exact screenshot run confirms correct linked actor ID but lookup rejected as forbidden_source/unverified_chat_identity before roster storage. Current first-person map wrapper requires a source URL pasted by the user and ignores trusted Discord actor context; model misreported this as absent linkage. Premature bug report was actually written. Synthetic denial reproduced; no code or production changes. Flockbot can compose drafts in its invoking reply but has no cross-channel/proactive message tool. [Diagnosis](history/2026-10-22_14-44-41-352255-orchestrator-discord-map-denial-railway-diagnosed.md). Preserve concurrent concurrency-release work below.
+
+## Discord concurrency final regressions pass
+
+Independent862Discord/shared-runner regression tests pass with no failures/skips; API build and whitespace checks pass. Local evaluator ACCEPT. Web source rollout8544665c is building with explicit10/5 and unchanged unrelated variables; collector rollout follows. [Tests](history/2026-10-22_14-42-34-603364-tester-discord-concurrency-regressions-verified.md).
+
+## Discord concurrency evaluator acceptance
+
+Independent concurrency_plan evaluator ACCEPT.193tests pass across config/adapter/bridge/access/delivery/pacing/source-scope suites; whitespace passes. Sole runtime change perUser max2→5; source/hourly/pacing unchanged; same-destination history snapshots accurately documented. Explicit10/5 variables and web/collector source deployment remain. [Pass](history/2026-10-22_14-41-18-156581-evaluator-discord-concurrency-accepted.md).
+
+## Discord concurrency tester acceptance
+
+Independent concurrency_test owns three test suites. Final files add exact10/5 parsing and clamping, five/member and ten/global overlap, admission before authorization, reply/context/history isolation, success/failure/abort cleanup and bridge429/cancellation/recovery. Focused103tests pass; broader regressions pending. No external/model calls. [Pass](history/2026-10-22_14-41-18-143360-tester-discord-concurrency-accepted.md).
+
+## Discord concurrency implementation ready
+
+Per-member parser now supports5; explicit production10/5 documented with unchanged fallback3/1. Coder97baseline tests pass; expanded independent admission/routing/cleanup tests underway. [Implementation](history/2026-10-22_14-39-33-561853-coder-discord-concurrency-configured.md). No live settings changed yet.
+
+## Discord automatic identity context confirmed
+
+Current runtime loads Discord ID-to-roster-name mapping for bot requests and includes it in both planning and answer prompts; trusted actor context separately supplies username and ID. Fresh directory/projection probe: complete, 27 rows, current actor included. Exact map identity/source lookup remains required; screenshot failure cause is unverified. No runtime/source writes. [Clarification](history/2026-10-22_14-38-04-222722-orchestrator-discord-identity-prompt-traced.md).
+
+## Discord concurrency increase underway
+
+User authorized live10total/5permember. Independent plan accepted: raise the per-member parser cap to5 while keeping fallback3/1, set explicit10/5 on web and discord-events, test overlap and deploy sanitized source contexts. Existing same-destination snapshot-history semantics will be documented. CLI authenticated; Railway MCP unauthorized. [Plan](history/2026-10-22_14-37-55-779075-planner-discord-concurrency-contract.md); [scope](discord-concurrency/info.md).
+
 ## Discord blacklist changes published to GitHub
 
 Implementation/tests/guides committed as4fc9a10 and milestone records as5f07d08, pushed to origin/codex/dev. Remote SHA5f07d08b0ebba2640934f3131aae06dd39501579 matched local with a clean tree before this documentation receipt. Independent publication review and credential/whitespace checks pass; functional tests and live release remain verified above. No additional deployment/configuration changes. [Publication receipt](history/2026-10-22_14-37-36-017832-orchestrator-discord-blacklist-github-publication-verified.md).
@@ -3382,3 +4012,7 @@ RoutineRailwayCLIauthorization renewed inexistingaccount. SupabaseMCP freshprefl
 ## Combined web release building
 
 Combined web package273files/78182292bytes uploaded asRailway deployment046b9fd4-1d66-4adb-bd8c-ec0c54102170 afterfinal independentacceptance. StatusprogressedINITIALIZING->BUILDING; this doesnotestablishhealthyrollout. Remainingworker/collector contexts frozen/source-parity/private-scanverified. GitHubpublication deferreduntilRailwayphase peruserorder. Required036applied andprivatewebconfigurationreadiness alreadyverified. [Pass](history/2026-10-22_13-19-30-874858-orchestrator-combined-web-uploaded.md).
+
+## Testing preference recorded (side conversation)
+
+AGENTS.md now prioritizes real tasks, meaningful edge cases, correct responses and outcomes; discourages redundant syntax/implementation tests; and permits bounded configured model/application API evaluations. No tests were removed and no API calls or runtime changes were made for this documentation request. Active implementation/release state above is unchanged. [Record](history/2026-10-22_18-22-46-403630-orchestrator-testing-evaluation-preference-recorded.md).

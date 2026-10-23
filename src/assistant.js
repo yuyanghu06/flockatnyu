@@ -323,7 +323,7 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     try {
       const answer = await streamAssistant({ messages, buildingId: building?.id, signal: controller.signal, onEvent(event) {
         if (disposed || id !== generation || controller.signal.aborted) return;
-        if (event.type === 'tool' && event.status === 'completed' && ['set_map_attendance', 'upsert_map_event'].includes(event.name)) document.dispatchEvent(new CustomEvent('campus-map-updated'));
+        if (event.type === 'tool' && event.status === 'completed' && event.name === 'upsert_map_event') document.dispatchEvent(new CustomEvent('campus-map-updated'));
         if (event.type === 'done') { flush(partial || 'The assistant returned an empty reply.'); return; }
         if (event.type === 'delta') partial += event.text;
         else if (event.type === 'tool') events.push(event);

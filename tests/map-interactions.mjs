@@ -4,6 +4,7 @@ import * as T from 'three';
 import { createCameraFocus } from '../src/camera-focus.js';
 import { constrainPan } from '../src/geometry.js';
 import { createMapInteractions } from '../src/map-interactions.js';
+import {mapConfig} from './fixtures/map-config.mjs';
 class Events {
   handlers=new Map(); options=new Map();clientHeight=600;
   addEventListener(name,fn,options){this.handlers.set(name,fn);this.options.set(name,options);}
@@ -14,8 +15,8 @@ function rig(){const element=new Events(),controls=new Events(),calls={focus:[],
 const results={checks:[],limitations:['Synthetic event dispatch only; actual browser propagation, pointer capture and touch interaction remain unverified.']};
 const check=(name,fn)=>{fn();results.checks.push({name,pass:true});};
 const click=r=>{r.element.emit('pointerdown');r.element.emit('pointerup');};
-check('All ten configured IDs focus immediately on click; blank click only deselects',()=>{
- const ids=[...fs.readFileSync('src/config.js','utf8').matchAll(/\{ id: '([^']+)'/g)].map(m=>m[1]);assert.equal(ids.length,9);assert(!ids.includes('lipton-hall'),'Lipton remains non-selectable campus context');const r=rig();for(const id of ids){r.setId(id);click(r);}assert.deepEqual(r.calls.focus,ids);assert.deepEqual(r.calls.select,ids);r.setId(null);click(r);assert.equal(r.calls.select.at(-1),null);assert.equal(r.calls.focus.length,ids.length);
+check('Every configured building focuses on click; blank click only deselects',()=>{
+ const ids=mapConfig.buildings.map(row=>row.id);assert(!ids.includes('lipton-hall'),'Lipton remains non-selectable campus context');const r=rig();for(const id of ids){r.setId(id);click(r);}assert.deepEqual(r.calls.focus,ids);assert.deepEqual(r.calls.select,ids);r.setId(null);click(r);assert.equal(r.calls.select.at(-1),null);assert.equal(r.calls.focus.length,ids.length);
 });
 check('Drag-away-return, threshold move, right button, secondary pointer and cancel never click',()=>{
  for(const scenario of ['return','threshold','right','secondary','cancel']){const r=rig();r.element.emit('pointerdown',{button:scenario==='right'?2:0,isPrimary:scenario!=='secondary'});if(scenario==='return'){r.element.emit('pointermove',{clientX:100,buttons:1});r.element.emit('pointermove',{clientX:10,buttons:1});}if(scenario==='threshold')r.element.emit('pointermove',{clientX:15,buttons:1});if(scenario==='cancel')r.element.emit('pointercancel');r.element.emit('pointerup');assert.equal(r.calls.focus.length,0,scenario);assert.equal(r.calls.select.length,0,scenario);}
@@ -35,8 +36,8 @@ check('Manual control start cancels navigation; stationary pointer rechecks chan
 check('Outward overview-return gesture tails suppressed even after transition completes until fresh gesture',()=>{
  const r=rig();r.navigation.zoomDelta=function(d){r.calls.zoom.push(d);this.returning=true;};r.element.emit('wheel',{deltaY:1});r.time(50);r.element.emit('wheel',{deltaY:10});r.navigation.returning=false;r.time(100);r.element.emit('wheel',{deltaY:.1});assert.equal(r.calls.zoom.length,1);r.time(281);r.element.emit('wheel',{deltaY:2});assert.equal(r.calls.zoom.length,2);
 });
-check('Capture nonpassive wheel, native pinch enabled in integration; disposal removes every listener',()=>{
- const r=rig();assert.deepEqual(r.element.options.get('wheel'),{capture:true,passive:false});assert(fs.readFileSync('src/main.js','utf8').includes('controls.enableZoom = true'));r.api.dispose();assert.equal(r.element.handlers.size,0);assert.equal(r.controls.handlers.size,0);
+check('Wheel listeners capture without passive handling; disposal removes every listener',()=>{
+ const r=rig();assert.deepEqual(r.element.options.get('wheel'),{capture:true,passive:false});r.api.dispose();assert.equal(r.element.handlers.size,0);assert.equal(r.controls.handlers.size,0);
 });
 check('Real navigation preserves primary click-switch snapshot but secondary touch pan invalidates it',()=>{
  const make=()=>{const element=new Events(),controls=new Events(),camera=new T.PerspectiveCamera(43,1.6,.5,6000);controls.target=new T.Vector3(74,12,116);controls.enableDamping=true;controls.minPolarAngle=.006885420692679254;controls.maxPolarAngle=.8434529930137906;controls.update=()=>camera.lookAt(controls.target);camera.position.copy(controls.target).add(new T.Vector3(0,250,250));

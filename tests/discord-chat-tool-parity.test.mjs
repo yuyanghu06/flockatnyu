@@ -41,22 +41,36 @@ test('actual bug adapter receives current Discord message and records at most on
  const f=fixture({adapters:{bugReportTools},question,plan:(_,round)=>round===1?[call('bug_reports',{summary:'Card broken',observedBehavior:'Never opens'}),call('bug_reports',{summary:'Second duplicate',observedBehavior:'Still broken'})]:[]});
  assert.equal((await f.run()).status,'succeeded');assert.equal(stored.length,1);assert.equal(stored[0].report.user_message,question);assert.match(stored[0].reportId,/^[a-f0-9-]{36}$/);assert.match(f.answers[0].system,/"bugReport"/);
 });
-test('actual map request adapter never treats trusted Discord actor or name as original evidence for writes',async()=>{
- let writes=0,reads=0;const mapTools=createChatMapTools({mapTools:createMapTools({service:{configured:true,read:async()=>{reads++;return {status:'ok',events:[],event_buildings:[],event_people:[],buildings:[],people:[],event_types:[]};},upsert:async()=>{writes++;return {status:'applied'};}}})});
- const args=structuredClone({event:MAP_RECORD_EXAMPLES.event,buildings:MAP_RECORD_EXAMPLES.buildings,people:[]});
- const f=fixture({adapters:{mapTools},question:'Add this study plan to the map.',plan:(_,round)=>round===1?[call('read_map_events')]:round===2?[call('upsert_map_event',args)]:[]});
- assert.equal((await f.run()).status,'succeeded');assert.equal(reads,1);assert.equal(writes,0);assert.match(f.answers[0].system,/"status":"forbidden_source"/);assert.doesNotMatch(f.answers[0].system,/"mapWrite":/);
-});
-test('live Miro originals flow through actual map evidence observer and preserve a non-Discord source UUID',async()=>{
- for(const contentAvailable of [true,false]){
-  let writes=0;const miroSource={id:'miro:item',kind:'miro',retrievalMode:'live',contentAvailable,evidenceKind:'item',sourceId:source(3),sourceKey:'miro:board=:100',boardId:'board=',itemId:'100',url:'https://miro.com/app/board/board%3D/?moveToWidget=100',title:'Synthetic study plan',excerpt:'A real source fixture'};
-  const miroTools={tools:[define('read_miro_item')],execute:async({principal:actor})=>{assert.ok(actor.allowedSourceIds.includes(source(3)));return {status:'ready',sources:[miroSource]};}};
-  const mapTools=createChatMapTools({mapTools:createMapTools({service:{configured:true,read:async()=>({status:'ok',events:[],event_buildings:[],event_people:[],buildings:[],people:[],event_types:[]}),upsert:async()=>{writes++;return {status:'applied',event_id:source(9),updated_at:'2026-10-19T16:00:00.000Z'};}}})});
-  const args=structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_id:source(3),source_url:miroSource.url},buildings:MAP_RECORD_EXAMPLES.buildings,people:[]});
-  const f=fixture({adapters:{miroTools,mapTools},question:'Add this study plan to the map.',plan:(_,round)=>round===1?[call('read_miro_item',{boardId:'board=',itemId:'100',type:'canvas'})]:round===2?[call('read_map_events')]:round===3?[call('upsert_map_event',args)]:[]});
-  assert.equal((await f.run()).status,'succeeded');assert.equal(writes,contentAvailable?1:0);assert.equal(f.answers[0].system.includes('"mapWrite":'),contentAvailable);
+test('authenticated Discord map calls need no original-read proof while actual service denials remain authoritative',async()=>{
+ for(const allowed of [true,false]) {
+  let writes=0,reads=0;const mapTools=createChatMapTools({mapTools:createMapTools({service:{configured:true,read:async()=>{reads++;return {status:'ok',events:[],event_buildings:[],event_people:[],buildings:[],people:[],event_types:[]};},upsert:async args=>{
+   writes++;assert.equal(args.principal,principal);assert.equal(args.event.source_id,MAP_RECORD_EXAMPLES.event.source_id);
+   return allowed?{status:'applied',event_id:source(9),updated_at:'2026-10-19T16:00:00.000Z'}:{status:'forbidden'};
+  }}})});
+  const args=structuredClone({event:MAP_RECORD_EXAMPLES.event,buildings:MAP_RECORD_EXAMPLES.buildings,people:[]});
+  const f=fixture({adapters:{mapTools},question:'Add this study plan to the map.',plan:(_,round)=>round===1?[call('read_map_events')]:round===2?[call('upsert_map_event',args)]:[]});
+  assert.equal((await f.run()).status,'succeeded');assert.equal(reads,1);assert.equal(writes,1);assert.equal(f.answers[0].system.includes('"mapWrite":'),allowed);
+  if(!allowed)assert.match(f.answers[0].system,/"status":"forbidden"/);
+  const anonymous=fixture({adapters:{mapTools},actor:null,plan:()=>[call('upsert_map_event',args)]});
+  assert.equal((await anonymous.run()).status,'failed');assert.equal(writes,1);
  }
 });
+
+test('Miro-backed chat writes preserve the non-Discord source UUID without an observed-original receipt gate',async()=>{
+ for(const contentAvailable of [true,false])for(const allowed of [true,false]){
+  let writes=0;const miroSource={id:'miro:item',kind:'miro',retrievalMode:'live',contentAvailable,evidenceKind:'item',sourceId:source(3),sourceKey:'miro:board=:100',boardId:'board=',itemId:'100',url:'https://miro.com/app/board/board%3D/?moveToWidget=100',title:'Synthetic study plan',excerpt:'A real source fixture'};
+  const miroTools={tools:[define('read_miro_item')],execute:async({principal:actor})=>{assert.ok(actor.allowedSourceIds.includes(source(3)));return {status:'ready',sources:[miroSource]};}};
+  const mapTools=createChatMapTools({mapTools:createMapTools({service:{configured:true,read:async()=>({status:'ok',events:[],event_buildings:[],event_people:[],buildings:[],people:[],event_types:[]}),upsert:async args=>{
+   writes++;assert.equal(args.principal,principal);assert.equal(args.event.source_id,source(3));assert.equal(args.event.source_url,miroSource.url);
+   return allowed?{status:'applied',event_id:source(9),updated_at:'2026-10-19T16:00:00.000Z'}:{status:'forbidden'};
+  }}})});
+  const args=structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_id:source(3),source_url:miroSource.url},buildings:MAP_RECORD_EXAMPLES.buildings,people:[]});
+  const f=fixture({adapters:{miroTools,mapTools},question:'Add this study plan to the map.',plan:(_,round)=>round===1?[call('read_miro_item',{boardId:'board=',itemId:'100',type:'canvas'})]:round===2?[call('read_map_events')]:round===3?[call('upsert_map_event',args)]:[]});
+  assert.equal((await f.run()).status,'succeeded');assert.equal(writes,1);assert.equal(f.answers[0].system.includes('"mapWrite":'),allowed);
+  if(!allowed)assert.match(f.answers[0].system,/"status":"forbidden"/);
+ }
+});
+
 function googleAdapter(client) {return {tools:GOOGLE_TOOLS,execute:request=>executeGoogleTool({...request,client})};}
 test('actual Google tool gate permits Gmail only with the same trusted Google grant',async()=>{
  for(const enabled of [true,false]){

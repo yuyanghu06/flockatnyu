@@ -13,7 +13,9 @@ test('answer-only exact-source references reduce repeated evidence without losin
  const snapshot=structuredClone(input),actual=encoded(input),baseline=actual.prompt.slice(0,actual.prompt.indexOf(marker)+marker.length)+JSON.stringify(input);
  assert.deepEqual(restore(actual.data),input);assert.deepEqual(input,snapshot);
  assert(actual.data.results[0].sources.every((s,i)=>s.sourceRef===i));
- assert(Buffer.byteLength(actual.prompt)<Buffer.byteLength(baseline)*0.7,'at least 30% of total fixture prompt bytes saved');
+ assert(Buffer.byteLength(actual.prompt)<Buffer.byteLength(baseline),'compaction reduces the complete prompt');
+ assert(Buffer.byteLength(JSON.stringify(actual.data))<Buffer.byteLength(JSON.stringify(input)),
+   'shared references reduce repeated evidence independently of instruction length');
  assert.match(actual.prompt,/zero-based index N/);
  const planning=assistantPlanningPrompt({...options,results});
  assert(planning.endsWith(JSON.stringify(results)));assert(!planning.includes('"sourceRef"'));

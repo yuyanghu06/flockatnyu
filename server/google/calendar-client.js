@@ -4,6 +4,8 @@ import { readCalendarConfig, CALENDAR_REQUIRED_SCOPES } from './calendar-config.
 import { boundedGoogleBody } from './client.js';
 import { createGoogleOAuth, GoogleError, googleError, verifyGoogleToken, waitForGoogleAuth } from './oauth.js';
 import { canonicalJson } from '../automation/validation.js';
+import {encodeMemberPlan,decodeMemberPlan,validMemberParticipation} from '../automation/member-plans.js';
+import {calendarEventReceipt} from './calendar-receipt.js';
 
 const ROOT = 'https://www.googleapis.com/calendar/v3';
 const MANAGER = 'tech-nyu-update-agent-v1';
@@ -35,13 +37,26 @@ function boundary(value) {
 }
 function managedFields(event) {
   return { summary: event.summary || '', description: event.description || '', location: event.location || '',
-    start: boundary(event.start), end: boundary(event.end), status: event.status || 'confirmed', sourceUrl: event.source?.url || '' };
+    start: boundary(event.start), end: boundary(event.end), status: event.status || 'confirmed', sourceUrl: event.source?.url || '',
+    ...(event.extendedProperties?.private?.memberPlan?{memberPlan:event.extendedProperties.private.memberPlan,memberPlanSignature:event.extendedProperties.private.memberPlanSignature}: {}) };
 }
 const fingerprint = event => hash(JSON.stringify(managedFields(event)));
 
 // Only trusted runtime-owned source receipts grant provenance. URLs and model
 // source claims alone never grant Calendar writes.
 function provenance(args, principal) {
+  if(typeof args.sourceKey==='string'&&args.sourceKey.startsWith('gmail:')) {
+    const match=/^gmail:([a-fA-F0-9]{1,64})$/.exec(args.sourceKey),receipt=args.trustedParticipation;
+    const expected=match?`https://mail.google.com/mail/u/0/#all/${match[1]}`:null;
+    // Club-event grants are created by the worker only after an exact queued
+    // original body read. Personal plans keep their separate signed receipt.
+    const clubScope=match&&principal?.calendarSources?.find(row=>row.provider==='gmail'&&row.messageId===match[1]
+      &&principal.allowedSourceIds?.includes(row.sourceId));
+    const personalScope=validMemberParticipation(receipt)&&receipt.provider==='email'&&receipt.sourceUrl===expected
+      &&principal?.allowedSourceIds?.includes(receipt.sourceId)&&principal.memberPlanReceipts?.some(row=>canonicalJson(row)===canonicalJson(receipt));
+    if(!match||args.sourceUrl!==expected||(!clubScope&&!personalScope))throw new GoogleError('forbidden_source');
+    return {sourceHash:hash(args.sourceKey),sourceUrl:expected,sourceTitle:'Gmail source'};
+  }
   if(typeof args.sourceKey==='string'&&args.sourceKey.startsWith('discord:')) {
     const match=/^discord:([0-9]{1,20}):([0-9]{1,20}):([0-9]{1,20})$/.exec(args.sourceKey);
     const expected=match?`https://discord.com/channels/${match[1]}/${match[2]}/${match[3]}`:null;
@@ -64,10 +79,13 @@ function displayBoundary(value) {
   if (!validCalendarInstant(value.dateTime)) throw new GoogleError('invalid_response');
   return {dateTime:new Date(value.dateTime).toISOString(),timeZone:typeof value.timeZone==='string'?value.timeZone.slice(0,100):null};
 }
-function eventOutput(event, calendarId) {
+function eventOutput(event, calendarId, receiptDetails=false, signingKey) {
   if (!eventIdValid(event?.id)) throw new GoogleError('invalid_response');
-  return { eventId: event.id, title: String(event.summary || '').slice(0, 300),
-    description: String(event.description || '').slice(0, 1800), ...savedLocation(event),
+  const receipt=receiptDetails?calendarEventReceipt(event,{calendarId,outcome:'existing'}):{};
+  const {outcome:_,...saved}=receipt;
+  const memberPlan=decodeMemberPlan(event,{calendarId,signingKey});
+  return { ...(memberPlan?{memberPlan}:{}),...saved,eventId: event.id, title: String(event.summary || '').slice(0, 300),
+    description: String(event.description || '').slice(0, receiptDetails?3000:1800), ...savedLocation(event),
     start: displayBoundary(event.start), end: displayBoundary(event.end),
     status: event.status || 'confirmed', managed: event.extendedProperties?.private?.updateAgentManager === MANAGER,
     createdAt: validCalendarInstant(event.created) ? new Date(event.created).toISOString() : null,
@@ -220,22 +238,22 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       return {status:'ready',calendars:page.items.map(row=>({id:String(row.id).slice(0,254),title:String(row.summary||'').slice(0,300),accessRole:row.accessRole})),nextPageToken:page.nextPageToken||null};
     }, undefined, {preflight:true});
   }
-  async function listEventsPage({timeMin,timeMax,pageToken,query,resultMode='full',limit=5,principal,signal}={},windowPage=false) {
+  async function listEventsPage({timeMin,timeMax,pageToken,query,resultMode='full',limit=5,principal,signal,receiptDetails=false}={},windowPage=false) {
     if (!validCalendarInstant(timeMin) || !validCalendarInstant(timeMax) || Date.parse(timeMax)<=Date.parse(timeMin) || Date.parse(timeMax)-Date.parse(timeMin)>366*86400000 || !Number.isInteger(limit) || limit<1 || limit>25 || !['full','identities'].includes(resultMode) || query!==undefined&&!text(query,300,true) || pageToken!==undefined&&!text(pageToken,2000,true)) return {status:'invalid_request',events:[],diagnostics:new GoogleError('invalid_request', {reason:!validCalendarInstant(timeMin)||!validCalendarInstant(timeMax)||Date.parse(timeMax)<=Date.parse(timeMin)||Date.parse(timeMax)-Date.parse(timeMin)>366*86400000?'invalid_time_window':'invalid_request'}).diagnostics};
     return run(signal, async (token, active) => {
-      const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'false',fields:resultMode==='identities'?'items(id,summary,start,end,status),nextPageToken':'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated),nextPageToken'});
+      const params = new URLSearchParams({timeMin,timeMax,maxResults:String(limit),singleEvents:'true',orderBy:'startTime',showDeleted:'true',fields:resultMode==='identities'?'items(id,summary,start,end,status),nextPageToken':receiptDetails?'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated,eventType,visibility,transparency,recurringEventId,originalStartTime,recurrence,attendees,organizer,creator,reminders,guestsCanInviteOthers,guestsCanModify,guestsCanSeeOtherGuests,anyoneCanAddSelf,locked,privateCopy,endTimeUnspecified,sequence),nextPageToken':'items(id,summary,description,location,start,end,status,source,extendedProperties,created,updated),nextPageToken'});
       if(pageToken) params.set('pageToken',pageToken);
       if(query!==undefined)params.set('q',query);
       const page = await request(`${target}?${params}`, token, active);
       const items=page.items===undefined?[]:page.items;
       if (!Array.isArray(items)||items.length>limit||page.nextPageToken!==undefined&&!text(page.nextPageToken,2000,true)) throw new GoogleError('invalid_response');
-      return {status:'ready',events:items.map(event=>resultMode==='identities'?eventIdentityOutput(event,config.calendarId):eventOutput(event,config.calendarId)),nextPageToken:page.nextPageToken||null,coverage:{complete:!page.nextPageToken,windowOnly:true,...(resultMode==='identities'?{contentScope:'event_identities'}:{})}};
-    },principal,{maxOutputBytes:windowPage?131072:16384});
+      return {status:'ready',events:items.map(event=>resultMode==='identities'?eventIdentityOutput(event,config.calendarId):eventOutput(event,config.calendarId,receiptDetails,config.signingKey)),nextPageToken:page.nextPageToken||null,coverage:{complete:!page.nextPageToken,windowOnly:true,...(resultMode==='identities'?{contentScope:'event_identities'}:{})}};
+    },principal,{maxOutputBytes:windowPage?131072:receiptDetails?131072:16384});
   }
   const listEvents=args=>listEventsPage(args);
   async function readEvent({eventId,principal,signal}={}) {
     if(!eventIdValid(eventId)) return {status:'invalid_request',events:[],diagnostics:new GoogleError('invalid_request').diagnostics};
-    return run(signal,async(token,active)=>{const event=await current(eventId,token,active);return {status:'ready',events:event?[eventOutput(event,config.calendarId)]:[]};},principal);
+    return run(signal,async(token,active)=>{const event=await current(eventId,token,active);return {status:'ready',events:event?[eventOutput(event,config.calendarId,false,config.signingKey)]:[]};},principal);
   }
   const etagValid = value => typeof value==='string' && value.length>0 && value.length<=1000 && !/[\r\n]/.test(value);
   const chatUnsupported = event => Boolean(event.attendees?.length || event.recurrence?.length || event.recurringEventId || event.eventType && event.eventType!=='default');
@@ -249,7 +267,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
     if(!eventIdValid(eventId))return {status:'invalid_request',events:[],diagnostics:new GoogleError('invalid_request').diagnostics};
     return run(signal,async(token,active)=>{
       const event=await current(eventId,token,active);
-      return {status:'ready',events:event?[eventOutput(event,config.calendarId)]:[],
+      return {status:'ready',events:event?[eventOutput(event,config.calendarId,false,config.signingKey)]:[],
         chatRevision:event?{eventId,etag:etagValid(event.etag)?event.etag:null,unsupported:chatUnsupported(event)}:null};
     },principal);
   }
@@ -278,9 +296,10 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
   }
   function chatReceipt(event,outcome) {
     if(chatUnsupported(event))throw new GoogleError('unsupported_event');
-    chatTimes(event);
-    const output=eventOutput(event,config.calendarId);
-    return {status:'ready',outcome,eventId:output.eventId,url:output.url,...savedLocation(event),start:output.start,end:output.end,...(output.start.timeZone?{timeZone:output.start.timeZone}:{}),...(output.updatedAt?{updatedAt:output.updatedAt}:{})};
+    if(event.status!=='cancelled')chatTimes(event);
+    const receipt=calendarEventReceipt(event,{calendarId:config.calendarId,outcome});
+    if(!receipt)throw new GoogleError('invalid_response');
+    return {status:'ready',...receipt};
   }
   async function createChatEvent(args={}) {
     if(!object(args)||Object.keys(args).some(key=>!['title','description','location','start','end','operationId','principal','signal'].includes(key)))return {status:'invalid_request',events:[],diagnostics:new GoogleError('invalid_request').diagnostics};
@@ -312,7 +331,7 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
         outcome='reconciled';
       }
       return chatReceipt(response,outcome);
-    },principal,{write:true});
+    },principal,{write:true,maxOutputBytes:32768});
   }
   async function mutateChatEvent(args={},cancel=false) {
     if(!object(args)||Object.keys(args).some(key=>!['eventId','expectedEtag','principal','signal',...(cancel?[]:['title','description','location','start','end'])].includes(key)))return {status:'invalid_request',events:[],diagnostics:new GoogleError('invalid_request').diagnostics};
@@ -344,40 +363,64 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
       const response=await request(`${target}/${encodeURIComponent(eventId)}?sendUpdates=none`,token,active,{method:'PATCH',body:wirePatch,etag:expectedEtag});
       if(response.id!==eventId||!chatMatches(response,patch))throw new GoogleError('invalid_response');
       return chatReceipt(response,cancel?'cancelled':'updated');
-    },principal,{write:true});
+    },principal,{write:true,maxOutputBytes:32768});
   }
-  async function mutate(args, cancel) {
+  async function mutate(args, cancel, member=false) {
     const {principal,signal}=args||{};
     return run(signal,async(token,active)=>{
       const identity=provenance(args,principal), id=calendarEventId(config.calendarId,args.sourceKey);
+      if(config.signingKey&&!member)throw new GoogleError('forbidden');
+      const existing=await current(id,token,active);
+      let memberMetadata;
+      if(member) {
+        if(typeof principal?.memberPlanAuthorize==='function'&&await principal.memberPlanAuthorize()!==true)throw new GoogleError('forbidden_source');
+        if(!validMemberParticipation(args.trustedParticipation)||!principal?.memberPlanReceipts?.some(row=>canonicalJson(row)===canonicalJson(args.trustedParticipation))
+          ||args.sourceUrl!==args.trustedParticipation.sourceUrl)throw new GoogleError('forbidden_source');
+        try {if(!cancel)memberMetadata=encodeMemberPlan({participation:args.trustedParticipation,activityKind:args.activityKind,typeId:args.typeId||'other',calendarId:config.calendarId,eventId:id,sourceHash:identity.sourceHash,signingKey:config.signingKey});}
+        catch {throw new GoogleError('invalid_request');}
+      }
       let desired;
       if (!cancel) {
         if (!text(args.title,300,true)||args.description!==undefined&&!text(args.description,3000)||args.location!==undefined&&!text(args.location,500)) throw new GoogleError('invalid_request');
-        const start=boundary(args.start),end=boundary(args.end);
+        let startInput=args.start,endInput=args.end;
+        if(member) {
+          const report=args.trustedParticipation.reportedAt;
+          if(args.activityKind==='presence'&&(Date.parse(report)>Date.now()||startInput?.dateTime&&Date.parse(startInput.dateTime)!==Date.parse(report)))throw new GoogleError('invalid_request');
+          if(!startInput&&existing?.start)startInput=existing.start;
+          if(args.activityKind==='presence'&&!startInput)startInput={dateTime:report,timeZone:'America/New_York'};
+          if(!endInput&&existing?.end)endInput=existing.end;
+          if(args.activityKind==='presence'&&!endInput&&startInput?.dateTime)endInput={dateTime:new Date(Date.parse(startInput.dateTime)+7200000).toISOString(),timeZone:startInput.timeZone};
+        }
+        const start=boundary(startInput),end=boundary(endInput);
         if (Boolean(start.date)!==Boolean(end.date)||Date.parse(end.date||end.dateTime)<=Date.parse(start.date||start.dateTime)) throw new GoogleError('invalid_request',{reason:'invalid_time_window'});
         desired={summary:args.title,description:args.description||'',location:args.location||'',start,end,status:'confirmed',source:{url:identity.sourceUrl,title:identity.sourceTitle}};
       }
-      const existing=await current(id,token,active);
-      if (!existing && cancel) return {status:'ready',outcome:'already_absent',eventId:id};
+      if(memberMetadata&&!cancel)desired.extendedProperties={private:memberMetadata};
+      if(member&&existing&&!decodeMemberPlan(existing,{calendarId:config.calendarId,signingKey:config.signingKey}))throw new GoogleError('human_modified');
+      if(member&&cancel&&existing)memberMetadata={memberPlan:existing.extendedProperties.private.memberPlan,memberPlanSignature:existing.extendedProperties.private.memberPlanSignature};
+      if (!existing && cancel) return {status:'ready',...calendarEventReceipt(null,{calendarId:config.calendarId,outcome:'already_absent',eventId:id,absent:true})};
       if (existing) {
         owned(existing,identity);
-        if (cancel) desired={...managedFields(existing),source:{url:identity.sourceUrl,title:'Miro source'},status:'cancelled'};
+        if (cancel) desired={...managedFields(existing),...(member?{extendedProperties:{private:existing.extendedProperties.private}}:{}),source:{url:identity.sourceUrl,title:identity.sourceTitle},status:'cancelled'};
         if (!cancel && existing.status==='cancelled') throw new GoogleError('cancelled_event');
-        if (cancel && existing.status==='cancelled'||!cancel&&fingerprint(existing)===fingerprint(desired)) return {status:'ready',outcome:'unchanged',eventId:id};
+        if (cancel && existing.status==='cancelled'||!cancel&&fingerprint(existing)===fingerprint(desired)) return {status:'ready',...calendarEventReceipt(existing,{calendarId:config.calendarId,outcome:'unchanged'})};
       }
       // managedFields uses sourceUrl for hashing only; never send it as a field.
-      if (cancel) { delete desired.sourceUrl; desired.start=boundary(existing.start);desired.end=boundary(existing.end); }
+      if (cancel) { delete desired.memberPlan;delete desired.memberPlanSignature;delete desired.sourceUrl; desired.start=boundary(existing.start);desired.end=boundary(existing.end); }
       const desiredHash=fingerprint(desired);
-      desired.extendedProperties={private:{...(existing?.extendedProperties?.private||{}),updateAgentManager:MANAGER,updateAgentSource:identity.sourceHash,updateAgentHash:desiredHash}};
+      desired.extendedProperties={private:{...(existing?.extendedProperties?.private||{}),...(memberMetadata||{}),updateAgentManager:MANAGER,updateAgentSource:identity.sourceHash,updateAgentHash:desiredHash}};
       gate(principal);provenance(args,principal);
+      if(member&&typeof principal.memberPlanAuthorize==='function'&&await principal.memberPlanAuthorize()!==true)throw new GoogleError('forbidden_source');
       // Recheck scopes/account and exact-calendar ACL immediately before mutation.
       await verify(token,active,true);
+      if(member&&typeof principal.memberPlanAuthorize==='function'&&await principal.memberPlanAuthorize()!==true)throw new GoogleError('forbidden_source');
       if(active.aborted) throw new GoogleError('aborted');
-      let outcome=existing?(cancel?'cancelled':'updated'):'created';
+      let outcome=existing?(cancel?'cancelled':'updated'):'created',saved;
       try {
         const response=await request(existing?`${target}/${id}?sendUpdates=none`:`${target}?sendUpdates=none`,token,active,
           {method:existing?'PATCH':'POST',body:existing?desired:{id,...desired,reminders:{useDefault:false}},etag:existing?.etag});
         if(response.id!==id) throw new GoogleError('invalid_response');
+        saved=response;
       } catch(error) {
         // A deterministic ID closes the lost-response / queue-receipt gap. Do
         // not repeat a write blindly: verify the remote desired state instead.
@@ -386,15 +429,16 @@ export function createCalendarClient({ config = readCalendarConfig(), fetchImpl 
         if(!reconciled) throw error;
         owned(reconciled,identity);
         if(fingerprint(reconciled)!==desiredHash) throw new GoogleError('conflict');
-        outcome='reconciled';
+        outcome='reconciled';saved=reconciled;
       }
-      return {status:'ready',outcome,eventId:id};
-    },principal,{write:true});
+      return {status:'ready',...calendarEventReceipt(saved,{calendarId:config.calendarId,outcome})};
+    },principal,{write:true,maxOutputBytes:32768});
   }
   const listEventsWindow=args=>collectCalendarWindow({...args,client:{listEvents:page=>listEventsPage(page,true)},authorize:signal=>run(signal,async()=>({status:'ready'}),args?.principal)});
   return Object.freeze({configured,calendarId:config.calendarId,status:()=>({configured,oauthVerified,status:lastStatus}),preflight,listCalendars,listEvents,listEventsWindow,readEvent,readChatEvent,createChatEvent,
     updateChatEvent:args=>mutateChatEvent(args,false),cancelChatEvent:args=>mutateChatEvent(args,true),
-    upsertEvent:args=>mutate(args,false),cancelEvent:args=>mutate(args,true)});
+    upsertEvent:args=>mutate(args,false),cancelEvent:args=>mutate(args,true),
+    upsertMemberPlan:args=>mutate(args,false,true),cancelMemberPlan:args=>mutate(args,true,true)});
 }
 
 export {boundary as normalizeCalendarBoundary};

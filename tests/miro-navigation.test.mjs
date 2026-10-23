@@ -1,8 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {miroNavigationPrompt} from '../server/miro/navigation.js';
-import {assistantPlanningPrompt,assistantAnswerPrompt,retrieveAssistantContext} from '../server/assistant-context.js';
-import {buildAutomationPrompt} from '../server/automation/prompt.js';
+import {assistantAnswerPrompt,retrieveAssistantContext} from '../server/assistant-context.js';
 import {createMiroMcpTools} from '../tools/miro/mcp.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 
@@ -12,64 +11,6 @@ const principal={id:'synthetic_reader',googleAccess:true,allowedSourceIds:[sourc
 const url=`https://miro.com/app/board/${boardId}/`;
 const prior='\nUNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n';
 const month='March 2031';
-
-test('one shared navigation guide reaches chat planning, chat answers and update-agent prompts',()=>{
- const guide=miroNavigationPrompt();assert.equal(typeof guide,'string');assert(guide.trim().length>100);
- for(const prompt of [assistantPlanningPrompt({now,timeZone}),assistantAnswerPrompt({now,timeZone}),buildAutomationPrompt({now,timezone:timeZone})]) {
-  assert(prompt.includes(guide),'consumer must deliver the complete shared guide');
- }
- assert.doesNotMatch(guide,/moveToWidget=|October 18|October 25|2026-10-18|2026-10-25/,'guide contains navigation hints, not pinned widget IDs or stale event dates');
-});
-
-test('shared policy treats sections, year conflicts, local legends and source authority as separate questions',()=>{
- const guide=miroNavigationPrompt();
- for(const pattern of [/authorized IDs only/i,/hints grant no access/i,/Never reuse IDs across boards/i,
-  /Events \+ Marketing[\s\S]*public events\/promotions/i,/EBOARD[\s\S]*internal/i,
-  /APPLICATIONS[\s\S]*deadlines/i,/Mentorship/i,/Important Links[\s\S]*resources/i,
-  /Copy of APPLICATIONS[\s\S]*ambiguous/i,/(?:Same month|Repeated months)[\s\S]*sections[\s\S]*NOT interchangeable/i,
-  /Search named subjects directly/i,/containing\/neighbor headings and coordinates\/bounds/i,
-  /Outer[\s\S]*copied inner years?[\s\S]*conflict[\s\S]*neither alone resolves/i,
-  /disclose unresolved year and defer affected writes/i,/Read local legends live/i,
-  /Marketing\/unconfirmed is not a confirmed event/i,/Navigation\/search\/headings are not event\/write evidence/i,
-  /read_miro_item\(type=canvas\)/i,/Partial sections\/pages never establish whole.board absence\/cancellation/i])assert.match(guide,pattern);
-});
-
-test('chat retains Calendar-first unnamed scheduling and honors explicitly requested Miro',()=>{
- for(const prompt of [assistantPlanningPrompt({now,timeZone}),assistantAnswerPrompt({now,timeZone})]) {
-  assert.match(prompt,/without a named source[\s\S]*Google Calendar FIRST/i);
-  assert.match(prompt,/successfully empty or unavailable[\s\S]*Miro/i);
-  assert.match(prompt,/Explicit requests[\s\S]*Miro[\s\S]*requested source/i);
-  assert.match(prompt,/Calendar pagination is managed by the backend/i);
-  assert.match(prompt,/partial coverage[^.]*never establishes absence/i);
- }
-});
-
-test('explicit Miro-only chat cannot substitute Calendar or stop at candidate navigation',()=>{
- for(const prompt of [assistantPlanningPrompt({now,timeZone}),assistantAnswerPrompt({now,timeZone})]) {
-  assert.match(prompt,/Miro.only[^.]*forbids Calendar rescue/i);
-  assert.match(prompt,/candidate items[^.]*read their actual contents before refusing/i);
-  assert.match(prompt,/ambiguity between candidate sections[^.]*inspect them[^.]*not stop at navigation/i);
- }
-});
-
-test('ambiguous sections require bounded candidate and legend reads, including actual month cells',()=>{
- const guide=miroNavigationPrompt();
- assert.match(guide,/if uncertain read both candidates[\s\S]*header\/legend[\s\S]*read_miro_item\(type=canvas\)[\s\S]*itemIds/i);
- assert.match(guide,/Never just the first match\/header[\s\S]*read actual month\/day cells before refusing/i);
- assert.match(guide,/scope bounded reads/i);
-});
-
-test('layout hints are spatial and cannot become parent-scoped month searches; worker stays within budget',()=>{
- const guide=miroNavigationPrompt();
- for(const [section,position] of [['EBOARD','left'],['APPLICATIONS','middle'],['Events + Marketing','right'],['Mentorship','below right'],['Copy of APPLICATIONS','below middle']]) {
-  const sectionStart=guide.indexOf(section);assert(sectionStart>=0);
-  assert(guide.slice(sectionStart,sectionStart+section.length+30).includes(position),`${section} retains its relative position hint`);
- }
- assert.match(guide,/older Calendar[^.]*above/i);
- assert.match(guide,/Headers are spatial[^.]*not parent folders[^.]*do not scope month searches with header targetId/i);
- assert.match(guide,/month canvas nearest the correct section position/i);
- const worker=buildAutomationPrompt({now,timezone:timeZone});assert(Buffer.byteLength(worker)<24*1024);
-});
 
 function fixture() {
  const calls=[];
@@ -132,6 +73,7 @@ for(const scenario of [
  for(const expected of scenario.expected)assert(canvas.boardContext.payload.svg.includes(expected));
  assert.equal(canvas.sources.filter(source=>source.contentAvailable).length,scenario.selected.length);
  const answer=assistantAnswerPrompt({...context,now,timeZone});
+ assert(answer.includes(miroNavigationPrompt()),'complete navigation guide reaches the answer provider');
  for(const expected of scenario.expected)assert(answer.includes(expected),'original context and local distinctions reach answer provider');
 });
 

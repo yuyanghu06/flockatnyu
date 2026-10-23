@@ -63,3 +63,6 @@ it. Development recording is opt-in through `MODEL_AUDIT_ENABLED=true`;
 server credentials are reused. Rollout status lives in `milestones/milestone.md`.
 
 Tool and run diagnostics now add versioned fixed reason/stage/outcome and schema-field codes to existing numeric counts, with safe human-readable Railway mirrors. Predispatch rejects are separate from actual execution. Calendar batches persist the primary item cause and aggregate counts; full sanitized per-item detail is Railway-only. No migration, broader retrieval or changed seven-day retention is introduced. See [tool failure logging](tool-failure-logging.md) for historical coverage, code decoding and failure-rate denominators.
+
+
+Staged-cycle execution history is distinct from these operational audit tables: actual selected API results/source context stay in bounded run memory and temporary039task checkpoints for the final phase. Operational audits retain their existing content-free run/tool outcomes and model outputs only, with no assistant-facing retrieval.

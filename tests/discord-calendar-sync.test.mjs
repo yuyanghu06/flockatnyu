@@ -1,3 +1,4 @@
+import {calendarEventReceipt} from '../server/google/calendar-receipt.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createAutomationAdapters,discordCalendarIntent} from '../server/automation/adapters.js';
@@ -19,8 +20,8 @@ function fixture({body=announcement,liveBody=body,eventType='message_created',ex
  const calendarClient={configured:true,calendarId,preflight:async()=>({status:'ready',calendarId,accessRole:'owner'}),
   listEvents:async()=>({status:'ready',events:existing,nextPageToken:null,coverage:{complete:true}}),
   readEvent:async({eventId})=>({status:'ready',events:existing.filter(event=>event.eventId===eventId)}),
-  upsertEvent:async input=>{writes.push(input);return {status:'ready',eventId:calendarEventId(calendarId,input.sourceKey),outcome:'created'};},
-  cancelEvent:async input=>{writes.push(input);return {status:'ready',eventId:calendarEventId(calendarId,input.sourceKey),outcome:'cancelled'};}};
+  upsertEvent:async input=>{writes.push(input);return {status:'ready',...calendarEventReceipt({id:calendarEventId(calendarId,input.sourceKey),summary:input.title,start:input.start,end:input.end},{calendarId,outcome:'created'})};},
+  cancelEvent:async input=>{writes.push(input);return {status:'ready',...calendarEventReceipt({id:calendarEventId(calendarId,input.sourceKey),status:'cancelled'},{calendarId,outcome:'cancelled'})};}};
  const a=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:[miroSource,discordSource].join(',')},config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),now,
   fetchImpl:async()=>{throw Error('Unmocked network');},dependencies:{googleConfig:{configured:false},googleClient:{configured:false},
    calendarConfig:{configured:true,calendarId},calendarClient,

@@ -1,0 +1,170 @@
+file,area,individual_cases,parent_tests,node_reported_tests,passed_including_parents,failed,skipped,historical_individual_cases
+tests/agent-automation-empty-scope-sql.test.mjs,Autonomous planner and task queue,4,1,5,5,0,0,0
+tests/agent-automation-sql.test.mjs,Autonomous planner and task queue,13,1,14,14,0,0,0
+tests/agent-automation.test.mjs,Autonomous planner and task queue,31,0,31,31,0,0,0
+tests/agent-input-cache-sql.test.mjs,Autonomous planner and task queue,9,1,10,10,0,0,0
+tests/agent-pending-tasks.test.mjs,Autonomous planner and task queue,11,1,12,12,0,0,0
+tests/agent-staged-handler.test.mjs,Autonomous planner and task queue,18,0,18,18,0,0,0
+tests/agent-tool-error-continuation.test.mjs,Autonomous planner and task queue,37,0,37,37,0,0,0
+tests/assistant-connectors-api.test.mjs,Assistant conversation and member tools,7,0,7,7,0,0,0
+tests/assistant-context-size.test.mjs,Assistant conversation and member tools,3,0,3,3,0,0,0
+tests/assistant-context.test.mjs,Assistant conversation and member tools,17,0,17,17,0,0,0
+tests/assistant-markdown.test.mjs,Assistant conversation and member tools,4,0,4,4,0,0,0
+tests/assistant-presentation.test.mjs,Assistant conversation and member tools,4,0,4,4,0,0,0
+tests/assistant.test.mjs,Assistant conversation and member tools,8,0,8,8,0,0,0
+tests/attio-integration.test.mjs,Assistant conversation and member tools,20,0,20,20,0,0,0
+tests/automation-authorization-cost.test.mjs,Autonomous planner and task queue,12,0,12,12,0,0,0
+tests/automation-progress.test.mjs,Autonomous planner and task queue,5,0,5,5,0,0,0
+tests/automation-reliability-sql.test.mjs,Autonomous planner and task queue,14,1,15,15,0,0,0
+tests/automation-reliability.test.mjs,Autonomous planner and task queue,10,0,10,10,0,0,0
+tests/avatar-storage-migration.test.mjs,"Map, events, people and assets",14,0,14,14,0,0,0
+tests/backend-provider.test.mjs,"Shared runtime, providers and diagnostics",13,0,13,13,0,0,0
+tests/broadway-683-geometry.test.mjs,"Map, events, people and assets",3,0,3,3,0,0,0
+tests/bug-reports.test.mjs,Assistant conversation and member tools,6,0,6,6,0,0,0
+tests/calendar-complete-receipts.test.mjs,"Calendar, Gmail and Drive",22,0,22,22,0,0,0
+tests/calendar-deterministic-sync.test.mjs,"Calendar, Gmail and Drive",14,0,14,14,0,0,0
+tests/calendar-location-receipts.test.mjs,"Calendar, Gmail and Drive",14,0,14,14,0,0,0
+tests/calendar-map-provenance.test.mjs,"Calendar, Gmail and Drive",8,0,8,8,0,0,0
+tests/calendar-pagination.test.mjs,"Calendar, Gmail and Drive",12,0,12,12,0,0,0
+tests/calendar-tools.test.mjs,"Calendar, Gmail and Drive",18,0,18,18,0,0,0
+tests/chat-agent-policy.test.mjs,Assistant conversation and member tools,35,0,35,35,0,0,0
+tests/chat-attachments.test.mjs,Assistant conversation and member tools,33,0,33,33,0,0,0
+tests/chat-attendance-orchestration.test.mjs,Assistant conversation and member tools,9,0,9,9,0,0,0
+tests/chat-attendance.test.mjs,Assistant conversation and member tools,35,0,35,35,0,0,0
+tests/chat-calendar-batch.test.mjs,"Calendar, Gmail and Drive",19,0,19,19,0,0,0
+tests/chat-calendar-bulk-update.test.mjs,"Calendar, Gmail and Drive",15,0,15,15,0,0,0
+tests/chat-calendar-followup.test.mjs,"Calendar, Gmail and Drive",32,0,32,32,0,0,0
+tests/chat-calendar-write.test.mjs,"Calendar, Gmail and Drive",19,0,19,19,0,0,0
+tests/chat-calendar.test.mjs,"Calendar, Gmail and Drive",4,0,4,4,0,0,0
+tests/chat-discord-context.test.mjs,Assistant conversation and member tools,10,0,10,10,0,0,0
+tests/chat-drive.test.mjs,"Calendar, Gmail and Drive",9,0,9,9,0,0,0
+tests/chat-native-tools.test.mjs,Assistant conversation and member tools,16,0,16,16,0,0,0
+tests/chat-production-acceptance.test.mjs,Assistant conversation and member tools,47,0,47,47,0,0,0
+tests/chat-request-context.test.mjs,Assistant conversation and member tools,3,0,3,3,0,0,0
+tests/chat-runner.test.mjs,Assistant conversation and member tools,9,0,9,9,0,0,0
+tests/chat-tool-stream.test.mjs,Assistant conversation and member tools,9,0,9,9,0,0,0
+tests/collector-deploy.test.mjs,"Shared runtime, providers and diagnostics",8,0,8,8,0,0,0
+tests/dev-runtime.test.mjs,"Shared runtime, providers and diagnostics",3,0,3,3,0,0,0
+tests/discord-agent-policy.test.mjs,Discord bot and source access,31,0,31,31,0,0,0
+tests/discord-api.test.mjs,Discord bot and source access,10,0,10,10,0,0,0
+tests/discord-blacklist-integration.test.mjs,Discord bot and source access,20,0,20,20,0,0,0
+tests/discord-calendar-sync.test.mjs,Discord bot and source access,6,0,6,6,0,0,0
+tests/discord-catalogue-runtime.test.mjs,Discord bot and source access,2,0,2,2,0,0,0
+tests/discord-catalogue-sql.test.mjs,Discord bot and source access,9,1,10,10,0,0,0
+tests/discord-chat-access.test.mjs,Discord bot and source access,52,0,52,52,0,0,0
+tests/discord-chat-adapter.test.mjs,Discord bot and source access,24,0,24,24,0,0,0
+tests/discord-chat-bridge.test.mjs,Discord bot and source access,74,0,74,74,0,0,0
+tests/discord-chat-config.test.mjs,Discord bot and source access,5,0,5,5,0,0,0
+tests/discord-chat-context.test.mjs,Discord bot and source access,23,0,23,23,0,0,0
+tests/discord-chat-delivery.test.mjs,Discord bot and source access,7,0,7,7,0,0,0
+tests/discord-chat-gateway.test.mjs,Discord bot and source access,6,0,6,6,0,0,0
+tests/discord-chat-images.test.mjs,Discord bot and source access,63,0,63,63,0,0,0
+tests/discord-chat-team.test.mjs,Discord bot and source access,36,0,36,36,0,0,0
+tests/discord-chat-tool-parity.test.mjs,Discord bot and source access,12,0,12,12,0,0,0
+tests/discord-client.test.mjs,Discord bot and source access,5,0,5,5,0,0,0
+tests/discord-collector-diagnostics.test.mjs,Discord bot and source access,47,0,47,47,0,0,0
+tests/discord-discovery-availability.test.mjs,Discord bot and source access,22,1,23,23,0,0,0
+tests/discord-discovery.test.mjs,Discord bot and source access,11,0,11,11,0,0,0
+tests/discord-draft-integration.test.mjs,Discord bot and source access,13,0,13,13,0,0,0
+tests/discord-draft-tools.test.mjs,Discord bot and source access,50,0,50,50,0,0,0
+tests/discord-events.test.mjs,Discord bot and source access,49,0,49,49,0,0,0
+tests/discord-launch.test.mjs,Discord bot and source access,18,0,18,18,0,0,0
+tests/discord-live-chat-summary.test.mjs,Discord bot and source access,16,0,16,16,0,0,0
+tests/discord-live-summaries.test.mjs,Discord bot and source access,4,0,4,4,0,0,0
+tests/discord-live-summary-sql.test.mjs,Discord bot and source access,15,1,16,16,0,0,15
+tests/discord-live-tools.test.mjs,Discord bot and source access,24,0,24,24,0,0,0
+tests/discord-manual-disable-sql.test.mjs,Discord bot and source access,8,1,9,9,0,0,0
+tests/discord-memory.test.mjs,Discord bot and source access,15,1,16,16,0,0,14
+tests/discord-metadata-refresh.test.mjs,Discord bot and source access,9,0,9,9,0,0,0
+tests/discord-provider.test.mjs,Discord bot and source access,3,0,3,3,0,0,0
+tests/discord-rate-pacing.test.mjs,Discord bot and source access,9,0,9,9,0,0,0
+tests/discord-reply-context.test.mjs,Discord bot and source access,37,0,37,37,0,0,0
+tests/discord-search-threads.test.mjs,Discord bot and source access,13,0,13,13,0,0,0
+tests/discord-sliced-planning.test.mjs,Discord bot and source access,14,0,14,14,0,0,14
+tests/discord-source-scope-app.test.mjs,Discord bot and source access,3,0,3,3,0,0,0
+tests/discord-source-scope.test.mjs,Discord bot and source access,19,0,19,19,0,0,0
+tests/discord-sql.test.mjs,Discord bot and source access,8,1,9,9,0,0,8
+tests/discord-store.test.mjs,Discord bot and source access,4,0,4,4,0,0,0
+tests/discord-summary-execution-budget.test.mjs,Discord bot and source access,1,0,1,1,0,0,1
+tests/discord-summary-provider.test.mjs,Discord bot and source access,76,4,80,80,0,0,0
+tests/discord-summary-sql.test.mjs,Discord bot and source access,21,1,22,22,0,0,21
+tests/drive-skill.test.mjs,"Calendar, Gmail and Drive",11,0,11,11,0,0,0
+tests/event-types-sql.test.mjs,"Map, events, people and assets",10,1,11,11,0,0,0
+tests/events-relationships-sql.test.mjs,"Map, events, people and assets",11,1,12,12,0,0,0
+tests/events-service.test.mjs,"Map, events, people and assets",16,0,16,16,0,0,0
+tests/feedback-discord.test.mjs,Discord bot and source access,12,0,12,12,0,0,0
+tests/frontend-optimization.test.mjs,"Shared runtime, providers and diagnostics",4,0,4,4,0,0,0
+tests/gmail-subscription.test.mjs,"Calendar, Gmail and Drive",30,0,30,30,0,0,0
+tests/go-greek-building-sql.test.mjs,"Map, events, people and assets",9,1,10,10,0,0,0
+tests/google-connector.test.mjs,"Calendar, Gmail and Drive",24,0,24,24,0,0,0
+tests/google-failure-diagnostics.test.mjs,"Calendar, Gmail and Drive",21,0,21,21,0,0,0
+tests/google-mailbox.test.mjs,"Calendar, Gmail and Drive",2,0,2,2,0,0,0
+tests/manual-planner-dispatch.test.mjs,Autonomous planner and task queue,13,1,14,14,0,0,0
+tests/manual-planner-route.test.mjs,Autonomous planner and task queue,6,0,6,6,0,0,0
+tests/manual-planner-scope.test.mjs,Autonomous planner and task queue,16,0,16,16,0,0,0
+tests/map-asset-integrity.test.mjs,"Map, events, people and assets",4,0,4,4,0,0,0
+tests/map-avatars.test.mjs,"Map, events, people and assets",46,0,46,46,0,0,0
+tests/map-building-write-scope.test.mjs,"Map, events, people and assets",10,1,11,11,0,0,10
+tests/map-contracts.test.mjs,"Map, events, people and assets",9,1,10,10,0,0,5
+tests/map-event-indicators.test.mjs,"Map, events, people and assets",5,0,5,5,0,0,0
+tests/map-event-preview.test.mjs,"Map, events, people and assets",6,0,6,6,0,0,0
+tests/map-event-read-performance.test.mjs,"Map, events, people and assets",8,0,8,8,0,0,0
+tests/map-event-tools.test.mjs,"Map, events, people and assets",5,0,5,5,0,0,0
+tests/map-events-sql.test.mjs,"Map, events, people and assets",5,1,6,6,0,0,5
+tests/map-failure-diagnostics.test.mjs,"Map, events, people and assets",9,0,9,9,0,0,0
+tests/map-focus-framing.test.mjs,"Map, events, people and assets",3,0,3,3,0,0,0
+tests/map-presence-drag.test.mjs,"Map, events, people and assets",5,0,5,5,0,0,0
+tests/map-presence-labels-sql.test.mjs,"Map, events, people and assets",9,1,10,10,0,0,9
+tests/map-presence.test.mjs,"Map, events, people and assets",26,0,26,26,0,0,0
+tests/map-roster.test.mjs,"Map, events, people and assets",14,0,14,14,0,0,0
+tests/map-schema.test.mjs,"Map, events, people and assets",11,1,12,12,0,0,11
+tests/map-source-access.test.mjs,"Map, events, people and assets",7,0,7,7,0,0,0
+tests/member-plans-calendar.test.mjs,"Calendar, Gmail and Drive",9,0,9,9,0,0,0
+tests/memory.test.mjs,Assistant conversation and member tools,5,0,5,5,0,0,0
+tests/miro-empty-search.test.mjs,Miro tools and migration history,3,0,3,3,0,0,0
+tests/miro-live-only-sql.test.mjs,Miro tools and migration history,7,1,8,8,0,0,0
+tests/miro-mcp-auth.test.mjs,Miro tools and migration history,6,0,6,6,0,0,0
+tests/miro-mcp-queue.test.mjs,Miro tools and migration history,4,0,4,4,0,0,0
+tests/miro-mcp.test.mjs,Miro tools and migration history,15,0,15,14,0,1,0
+tests/miro-navigation.test.mjs,Miro tools and migration history,10,0,10,10,0,0,0
+tests/miro-quota-acceptance.test.mjs,Miro tools and migration history,23,0,23,23,0,0,0
+tests/miro-quota.test.mjs,Miro tools and migration history,10,0,10,10,0,0,0
+tests/miro-sql.test.mjs,Miro tools and migration history,7,1,8,8,0,0,7
+tests/miro-token-broker.test.mjs,Miro tools and migration history,9,0,9,9,0,0,0
+tests/model-audit-cache-cost.test.mjs,"Shared runtime, providers and diagnostics",3,0,3,3,0,0,0
+tests/model-audit-integration.test.mjs,"Shared runtime, providers and diagnostics",15,0,15,15,0,0,0
+tests/model-audit-provider.test.mjs,"Shared runtime, providers and diagnostics",26,0,26,26,0,0,0
+tests/model-audit-sql.test.mjs,"Shared runtime, providers and diagnostics",7,1,8,8,0,0,0
+tests/model-audit-store.test.mjs,"Shared runtime, providers and diagnostics",9,0,9,9,0,0,0
+tests/password-page.test.mjs,"Shared runtime, providers and diagnostics",2,0,2,2,0,0,0
+tests/personal-location-behavior.test.mjs,"Map, events, people and assets",3,0,3,3,0,0,0
+tests/plain-task-cache-read.test.mjs,Autonomous planner and task queue,13,1,14,14,0,0,0
+tests/provider-failure-diagnostics.test.mjs,"Shared runtime, providers and diagnostics",10,0,10,10,0,0,0
+tests/provider-retries.test.mjs,"Shared runtime, providers and diagnostics",43,0,43,43,0,0,0
+tests/provider-tool-compatibility.test.mjs,"Shared runtime, providers and diagnostics",6,0,6,6,0,0,0
+tests/runtime-deploy.test.mjs,"Shared runtime, providers and diagnostics",2,0,2,2,0,0,0
+tests/schema-cleanup-policy-rename.test.mjs,Database cleanup history,5,1,6,6,0,0,5
+tests/schema-cleanup-runtime.test.mjs,Database cleanup history,1,0,1,1,0,0,0
+tests/schema-cleanup-shared-access.test.mjs,Database cleanup history,5,1,6,6,0,0,5
+tests/schema-cleanup-sql.test.mjs,Database cleanup history,9,1,10,10,0,0,9
+tests/scoped-agent-claim.test.mjs,Autonomous planner and task queue,7,1,8,8,0,0,0
+tests/site-auth.test.mjs,"Shared runtime, providers and diagnostics",14,0,14,14,0,0,0
+tests/site-security.test.mjs,"Shared runtime, providers and diagnostics",14,0,14,14,0,0,0
+tests/source-timeouts.test.mjs,"Shared runtime, providers and diagnostics",23,0,23,23,0,0,0
+tests/stable-tool-catalogue.test.mjs,"Shared runtime, providers and diagnostics",7,0,7,7,0,0,0
+tests/staged-pipeline.test.mjs,Autonomous planner and task queue,21,0,21,21,0,0,0
+tests/staged-runtime-integration.test.mjs,Autonomous planner and task queue,32,3,35,35,0,0,0
+tests/tool-diagnostics-integration.test.mjs,"Shared runtime, providers and diagnostics",6,0,6,6,0,0,0
+tests/tool-diagnostics-privacy.test.mjs,"Shared runtime, providers and diagnostics",24,0,24,24,0,0,0
+tests/tool-diagnostics.test.mjs,"Shared runtime, providers and diagnostics",6,0,6,6,0,0,0
+tests/update-agent-calendar.test.mjs,Autonomous planner and task queue,6,0,6,6,0,0,0
+tests/update-agent-discord-scope.test.mjs,Autonomous planner and task queue,6,0,6,6,0,0,0
+tests/update-agent-map.test.mjs,Autonomous planner and task queue,9,0,9,9,0,0,0
+tests/update-agent-mcp.test.mjs,Autonomous planner and task queue,2,0,2,2,0,0,0
+tests/update-agent-miro-outage.test.mjs,Autonomous planner and task queue,1,0,1,1,0,0,0
+tests/update-agent-prompt.test.mjs,Autonomous planner and task queue,16,0,16,16,0,0,0
+tests/update-agent-simplified.test.mjs,Autonomous planner and task queue,26,4,30,30,0,0,0
+tests/update-agent-sync-policy.test.mjs,Autonomous planner and task queue,9,0,9,9,0,0,0
+tests/user-time-zone-api.test.mjs,Assistant conversation and member tools,7,0,7,7,0,0,0
+tests/user-time-zone.test.mjs,Assistant conversation and member tools,16,0,16,16,0,0,0
+tests/web-volume.test.mjs,"Shared runtime, providers and diagnostics",4,0,4,4,0,0,0

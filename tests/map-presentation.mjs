@@ -5,9 +5,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { validateCamera } from '../src/geometry.js';
 import { createLandmarkEffects } from '../src/landmark-effects.js';
 import { createMapAtmosphere,MAP_SKY_GLSL } from '../src/atmosphere.js';
-let config=fs.readFileSync('src/config.js','utf8');
-config=config.replace(/import (\w+) from '([^']+\.json)';/g,(_,name,path)=>`const ${name}=${fs.readFileSync(new URL(path,new URL('../src/config.js',import.meta.url)),'utf8')};`);
-const {initialCamera,cameraLimits:L,palette,mapExtent,atmosphere}=await import('data:text/javascript;base64,'+Buffer.from(config).toString('base64'));
+import {mapConfig} from './fixtures/map-config.mjs';
+const {initialCamera,cameraLimits:L,palette,mapExtent,atmosphere}=mapConfig;
 const results={checks:[],limitations:['No browser, network, server or build execution.','Shader string checks do not establish GPU compilation, visual appearance or draw-call performance.']};
 const check=(name,fn)=>{fn();results.checks.push({name,pass:true});};
 const near=(a,b,e=1e-8)=>assert(Math.abs(a-b)<e,`${a} != ${b}`);
@@ -72,7 +71,6 @@ check('Independent CPU rays give matching sky and full-fog colors across pitch/N
  for(const x of [-1,0,1])for(const y of [-1,0,1]){const cp=new T.Vector3(x,y,1).applyMatrix4(camera.projectionMatrixInverse),skyRay=cp.clone().transformDirection(camera.matrixWorld),world=new T.Vector3(x,y,.5).unproject(camera),fogRay=world.sub(camera.position).normalize();near(skyRay.distanceTo(fogRay),0);for(const channel of ['r','g','b'])near(color(skyRay)[channel],color(fogRay)[channel]);}}
  let prev=color(new T.Vector3(1,-.2,0));for(let i=1;i<=2000;i++){const y=-.2+i*1.2/2000,c=color(new T.Vector3(Math.sqrt(Math.max(0,1-y*y)),y,0));maxStep=Math.max(maxStep,Math.abs(c.r-prev.r),Math.abs(c.g-prev.g),Math.abs(c.b-prev.b));prev=c;}assert(maxStep<.001);assert(MAP_SKY_GLSL.includes('linearToOutputTexel'));assert(a.sky.material.fragmentShader.includes('#include <dithering_fragment>'));
 });
-const main=fs.readFileSync('src/main.js','utf8').replace(/\r\n/g,'\n'),css=fs.readFileSync('src/style.css','utf8'),html=fs.readFileSync('index.html','utf8');
 check('Atmosphere preserves existing shader hooks/cache keys and skips decoration materials',()=>{
  const s=new T.Scene(),m=new T.MeshStandardMaterial();let calls=0;m.onBeforeCompile=shader=>{calls++;shader.uniforms.previous={value:7};};m.customProgramCacheKey=()=> 'prior-key';
  s.add(new T.Mesh(new T.BoxGeometry(),m));const decoration=new T.Mesh(new T.PlaneGeometry(),new T.MeshBasicMaterial());decoration.userData.mapDecoration=true;s.add(decoration);const hook=decoration.material.onBeforeCompile;
@@ -83,18 +81,6 @@ check('Reference-aspect composition keeps park foreground, arch below fountain a
  const camera=new T.PerspectiveCamera(initialCamera.fov,1606/869,initialCamera.near,initialCamera.far);camera.position.fromArray(initialCamera.position);camera.lookAt(new T.Vector3(...initialCamera.target));camera.updateMatrixWorld(true);
  const points={fountain:[-10,1,0],arch:[19,10,-46],bobst:[9.692,28.23,154.508],silver:[146,29,53],kimmel:[-48,27,117]};const screen=Object.fromEntries(Object.entries(points).map(([id,xyz])=>{const p=new T.Vector3(...xyz).project(camera);return [id,[(p.x+1)/2,(1-p.y)/2]];}));
  for(const p of Object.values(screen))assert(p.every(n=>n>0&&n<1));assert(screen.fountain[1]>.7);assert(screen.arch[1]>screen.fountain[1]);assert(screen.bobst[1]<screen.fountain[1]);assert(screen.silver[0]<screen.fountain[0]&&screen.kimmel[0]>screen.fountain[0]);results.composition=screen;
- const reset=main.slice(main.indexOf('function resetView()'),main.indexOf("$('reset').addEventListener"));assert(reset.includes('select(null)'));assert(reset.includes('setHovered(null)'));assert(reset.includes('restoreCamera(initialCamera)'));assert(main.includes('selected: null, hovered: null'));
-});
-check('Static map-only UI, neutral context and complete-root effect integration',()=>{
- assert(html.includes('<body class="map-only">'));assert(css.includes('.map-only #app > :not(#map){display:none!important}'));assert(html.includes('<div id="hover"'));
- assert(main.includes('color: palette.context, vertexColors: false'));assert(/^#[a-f0-9]{6}$/i.test(palette.context));
- assert(main.includes('if (job.tile) {\n      model.traverse(mesh => { if (mesh.isMesh) mesh.material = cityMaterial; });'));assert.equal((main.match(/mesh.material = cityMaterial/g)||[]).length,2);
- assert(/landmarkEffects\.register\(id,\s*model(?:,|\))/.test(main));assert(main.includes('landmarkEffects.setActive(state.hovered,state.selected)'));assert(main.includes('landmarkEffects.update('));
- for(const key of ['maxDistance','minPolarAngle','maxPolarAngle'])assert(main.includes(`controls.${key} = cameraLimits.${key}`));
-});
-check('Both restored Union Square context assets and Lipton use neutral context, without new selectable IDs',()=>{
- const assets=fs.readFileSync('src/assets.js','utf8');for(const id of ['25-union-square-west','235-park-avenue-south']){assert(assets.includes(id+'.glb'));assert(!config.includes("id: '"+id+"'"));}
- assert(main.includes("['lipton-hall','25-union-square-west','235-park-avenue-south'].includes(job.name)"));const block=main.slice(main.indexOf("if (['lipton-hall'"),main.indexOf("if (['lipton-hall'")+450);assert(block.includes('mesh.material = cityMaterial'));
 });
 results.camera={minPolar:L.minPolarAngle,maxPolar:L.maxPolarAngle,maxDistance:L.maxDistance};
 const evidence=process.env.MAP_EVIDENCE??'evidence/m12-memory';fs.mkdirSync(evidence,{recursive:true});fs.writeFileSync(evidence+'/presentation-results.json',JSON.stringify(results,null,2)+'\n');console.log(JSON.stringify(results,null,2));

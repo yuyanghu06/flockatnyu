@@ -11,7 +11,7 @@ function validSession(value) {
 
 /** Gateway SDK owns heartbeat/reconnect; we persist only the sequence whose
  * queued events have reached Supabase. Restart replay is deduplicated by UUID. */
-export async function createDiscordGateway({config,listener,state,refreshMetadata,signal,onDispatch,
+export async function createDiscordGateway({config,listener,state,refreshMetadata,reconcileMetadata,signal,onDispatch,
   createManager=options=>new WebSocketManager(options),createRest=token=>new REST({version:'10',timeout:15000,retries:2}).setToken(token),
   log=()=>{},onFailure=()=>{}}={}) {
   const diagnostic=entry=>logCollectorDiagnostic(log,entry);
@@ -54,7 +54,7 @@ export async function createDiscordGateway({config,listener,state,refreshMetadat
       if(failed||stopping||signal?.aborted)return;
       let result;
       if(messageEvents.has(event.t))result=await listener.handle({...event,signal});
-      else if(metadataEvents.has(event.t)&&event.d?.guild_id===config.guildId){stage='event_metadata_refresh';await refreshMetadata({signal});}
+      else if(metadataEvents.has(event.t)&&event.d?.guild_id===config.guildId){stage='event_metadata_refresh';if(reconcileMetadata)await reconcileMetadata({channelId:event.d.id,eventType:event.t,signal});else await refreshMetadata({signal});}
       if(failed||stopping||signal?.aborted)return;
       // Even an ignored Dispatch advances the consumed frontier, after all
       // prior source writes drain. Quiet guilds must not retain a pre-bootstrap

@@ -55,7 +55,7 @@ test('chat global budget and cancellation identify undispatched proposals and ac
 
 test('planner thrown errors and local prepared-argument rejection have distinct dispatch evidence',async()=>{
  const failed=worker([call('read_discord_messages','one',{inputIds:[inputId],arguments:{}})],async()=>{throw Error('PRIVATE_EXCEPTION_BODY');});
- assert.equal((await failed.handler.tick()).status,'unavailable');const event=failed.events.find(e=>e.kind==='tool_finished');assert.equal(event.diagnostics.reason,'exception');assert.equal(event.diagnostics.dispatched,1);assert.equal(JSON.stringify(failed.events).includes('PRIVATE_EXCEPTION_BODY'),false);
+ assert.equal((await failed.handler.tick()).status,'completed');const event=failed.events.find(e=>e.kind==='tool_finished');assert.equal(event.diagnostics.reason,'exception');assert.equal(event.diagnostics.dispatched,1);assert.equal(JSON.stringify(failed.events).includes('PRIVATE_EXCEPTION_BODY'),false);assert.equal(event.diagnostics.outcome,'failed');assert.equal(failed.events.findLast(e=>e.kind==='tool_finished').tool,'finish_batch');
  let executed=0;const local=worker([call('read_discord_messages','one',{inputIds:[inputId],arguments:{}})],async()=>{executed++;return {status:'ready'};},{prepareArguments:async()=>({query:123})});
  assert.equal((await local.handler.tick()).status,'invalid_tool_call');assert.equal(executed,0);assert.equal(local.events.filter(e=>e.kind==='tool_started').length,0);const rejection=local.events.find(e=>e.kind==='tool_finished');assert.equal(rejection.diagnostics.dispatched,0);assert.equal(rejection.diagnostics.reason,'invalid_arguments');
 });

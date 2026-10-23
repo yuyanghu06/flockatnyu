@@ -63,4 +63,7 @@ export function batchTimingFields(value) {
   const timing=validateBatchTiming(value,true);
   return {...timing,...(timing.start.date?{date:timing.start.date}:{timeZone:timing.start.timeZone})};
 }
+export function savedBatchTimingFields(value) {
+  try {return batchTimingFields(value);} catch {return {};}
+}
 export const batchLocalDate=value=>value.start.date||localText(Date.parse(value.start.dateTime),value.start.timeZone).slice(0,10);

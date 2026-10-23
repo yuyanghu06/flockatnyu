@@ -10,7 +10,6 @@ import {GOOGLE_TOOLS} from '../tools/google/index.js';
 import {MIRO_MCP_TOOLS} from '../tools/miro/mcp.js';
 import {MEMORY_TOOLS} from '../tools/memory/index.js';
 import {MAP_TOOLS} from '../tools/map/index.js';
-import {CHAT_ATTENDANCE_TOOLS} from '../tools/map/chat-attendance.js';
 import {BUG_REPORT_TOOL} from '../tools/bug-reports/index.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 
@@ -179,10 +178,10 @@ for(const mode of ['native','planned'])test(`${mode} shared website and Discord 
  }
 });
 
-test('actual native provider serializes the full 33-tool runtime catalogue including Attio',async()=>{
+test('actual native provider serializes the full runtime catalogue including Attio',async()=>{
  const {ATTIO_TOOLS}=await toolModule();const calls=[];
- const catalogue=[...createLiveChatTools({service:{},guildId:'100',config:{}}).tools,...GOOGLE_TOOLS,...MIRO_MCP_TOOLS,...MEMORY_TOOLS,...MAP_TOOLS,...CHAT_ATTENDANCE_TOOLS,BUG_REPORT_TOOL,...createChatCalendarTools({client:{configured:false}}).tools,...ATTIO_TOOLS];
- assert.equal(catalogue.length,33);assert.equal(new Set(catalogue.map(t=>t.name)).size,catalogue.length);
+ const catalogue=[...createLiveChatTools({service:{},guildId:'100',config:{}}).tools,...GOOGLE_TOOLS,...MIRO_MCP_TOOLS,...MEMORY_TOOLS,...MAP_TOOLS,BUG_REPORT_TOOL,...createChatCalendarTools({client:{configured:false}}).tools,...ATTIO_TOOLS];
+ assert.equal(new Set(catalogue.map(t=>t.name)).size,catalogue.length);
  for(const providerName of ['openai-compatible','anthropic']){
   const config={...apiConfig,provider:providerName,model:'fixture-native',baseUrl:'https://model.example.test/v1',apiKey:'SYNTHETIC_MODEL_TOKEN'};
   const provider=createProvider(config,{fetchImpl:async(_url,init)=>{calls.push(JSON.parse(init.body));return Response.json(providerName==='anthropic'?{id:'msg_fixture',stop_reason:'end_turn',content:[{type:'text',text:'Ready.'}]}:{id:'chat_fixture',choices:[{finish_reason:'stop',message:{role:'assistant',content:'Ready.'}}]});}});

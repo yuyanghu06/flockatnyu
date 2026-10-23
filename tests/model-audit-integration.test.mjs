@@ -113,13 +113,14 @@ test('worker actual toolTurn connects runs, model rounds, source-only inputs and
  assert.equal(f.events().at(-1).status,'completed');assertPrivate(f);
 });
 
-test('planner preflight and deferred Miro outcome retain counts without context or board data',async()=>{
+test('planner preflight retains content-free counts without retired Miro outcome data',async()=>{
  let w;const f=fixture(()=>completion([generatedCall('finish_batch',{handledInputIds:[w.inputId]})]));
  w=worker(f,{prepareBatch:async()=>({status:'ready',private:'PRIVATE_RAW_SOURCE'}),validateCompletion:async()=>({status:'ready',miroReconciliation:{status:'deferred',syncComplete:false,boardIds:['PRIVATE_BOARD_1','PRIVATE_BOARD_2']}})});
  assert.equal((await w.tick()).status,'completed');
  assert.deepEqual(f.events().filter(x=>x.tool==='prepare_batch').map(x=>x.status),['started','ready']);
- assert.equal(f.events().at(-1).counts.miroDeferred,1);
- assert.equal(f.events().at(-1).counts.miroDeferredBoards,2);
+ assert.equal(f.events().at(-1).counts.handled,1);
+ assert.equal(Object.hasOwn(f.events().at(-1).counts,'miroDeferred'),false);
+ assert.equal(Object.hasOwn(f.events().at(-1).counts,'miroDeferredBoards'),false);
  assert.equal(JSON.stringify(f.rows).includes('PRIVATE_BOARD_'),false);assertPrivate(f);
 });
 
@@ -140,17 +141,17 @@ test('production worker bootstrap shares its actual logger across queue, tools, 
  assertPrivate({rows});
 });
 
-test('worker denied, failed model, failed tool and aborted tool receive distinct terminal records',async()=>{
+test('worker hard failures stop while a recoverable tool failure retains failure diagnostics and continues',async()=>{
  for(const scenario of ['denied','model_failed','tool_failed','aborted']){
-  let w;const controller=new AbortController();
-  const f=fixture(()=>scenario==='model_failed'?new Response('PRIVATE_EXCEPTION',{status:503}):completion([generatedCall('read_fixture',{inputIds:[w.inputId],arguments:{}})]));
+  let w,round=0;const controller=new AbortController();
+  const f=fixture(()=>scenario==='tool_failed'&&round++>0?completion([generatedCall('finish_batch',{handledInputIds:[w.inputId]},'finish_after_error')]):scenario==='model_failed'?new Response('PRIVATE_EXCEPTION',{status:503}):completion([generatedCall('read_fixture',{inputIds:[w.inputId],arguments:{}})]));
   w=worker(f,{signal:controller.signal,authorizeEvent:async()=>scenario!=='denied',execute:async()=>{if(scenario==='aborted'){controller.abort();throw Error('PRIVATE_EXCEPTION');}return {status:'unavailable',raw:'PRIVATE_RAW_SOURCE'};}});
-  const result=await w.tick();assert.equal(result.status,{denied:'forbidden',model_failed:'unavailable',tool_failed:'tool_failed',aborted:'aborted'}[scenario]);
-  assert.equal(w.completed(),false);assert.equal(f.events().at(-1).status,result.status);
+  const result=await w.tick();assert.equal(result.status,{denied:'forbidden',model_failed:'unavailable',tool_failed:'completed',aborted:'aborted'}[scenario]);
+  assert.equal(w.completed(),scenario==='tool_failed');assert.equal(f.events().at(-1).status,result.status);
   if(scenario==='denied')assert.equal(f.dispatches.length,0);
   if(scenario==='model_failed')assert.equal(f.finishes()[0].status,'failed');
   if(scenario==='aborted')assert.equal(f.events().find(x=>x.kind==='tool_finished').status,'aborted');
-  if(scenario==='tool_failed')assert.equal(f.events().find(x=>x.kind==='tool_finished').status,'unavailable');assertPrivate(f);
+  if(scenario==='tool_failed'){const failed=f.events().find(x=>x.kind==='tool_finished');assert.equal(failed.status,'unavailable');assert.notEqual(failed.diagnostics?.outcome,'success');assert.equal(f.dispatches.length,2);const replies=f.dispatches[1].messages.filter(message=>message.role==='tool');assert.equal(JSON.parse(replies[0].content).status,'tool_error');assert(!JSON.stringify(replies).includes('PRIVATE_RAW_SOURCE'));}assertPrivate(f);
  }
 });
 

@@ -1,12 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assistantPlanningPrompt,assistantAnswerPrompt,retrieveAssistantContext} from '../server/assistant-context.js';
+import {assistantAnswerPrompt,retrieveAssistantContext} from '../server/assistant-context.js';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
 import {MAP_RECORD_EXAMPLES} from '../server/map/contracts.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
+import {createRuntimeServices} from '../server/runtime-app.js';
+import {createChatRunner} from '../server/chat-runner.js';
+import {CHAT_MAP_SOURCE_ID,withChatMapSource,chatMapEventUrl,createMapSourceAuthorizer} from '../server/map/source-access.js';
+import {createMapEventService} from '../server/map/events.js';
 
 const sourceId = MAP_RECORD_EXAMPLES.event.source_id, personId = MAP_RECORD_EXAMPLES.people[0].person_id;
 const sourceUrl = 'https://discord.com/channels/123/456/789';
@@ -14,8 +18,13 @@ const principal = {id:'chat-fixture',allowedSourceIds:[sourceId]};
 const now = '2026-10-18T16:00:00Z', timeZone = 'America/New_York';
 const messages = [{role:'user',content:'Use this original Discord message to add the study plan to the map.'}];
 const source = {kind:'discord',retrieval:'live',sourceId,url:sourceUrl,guildId:'123',channelId:'456',messageId:'789',authorId:'567',excerpt:'I am studying at Bobst',title:'Study plan'};
-const snapshot = {events:[],event_buildings:[],event_people:[],buildings:[{id:'bobst-library',name:'Bobst Library'}],people:[],event_types:[{code:'study',name:'Study',description:'',icon_key:'study',sort_order:1}]};
+const rosterPerson={id:personId,display_name:'Yuyang Hu',avatar_url:'/assets/avatars/Yuyang.png',is_trackable:true,discord_user_id:'567',email:'PRIVATE_EMAIL'};
+const snapshot = {events:[],event_buildings:[],event_people:[],buildings:[{id:'bobst-library',name:'Bobst Library'}],people:[rosterPerson],event_types:['study','meeting','event','social','other'].map((code,index)=>({code,name:code,description:'',icon_key:code,sort_order:index}))};
 const writeArgs = () => structuredClone({event:{...MAP_RECORD_EXAMPLES.event,source_url:sourceUrl},buildings:MAP_RECORD_EXAMPLES.buildings,people:MAP_RECORD_EXAMPLES.people.map(p=>({...p,source_url:sourceUrl}))});
+const directWriteArgs=()=>{
+  const args=writeArgs();for(const row of [args.event,...args.people])for(const key of ['source_id','source_url','source_record_id','reported_at'])delete row[key];
+  args.event.starts_at=now;args.event.ends_at='2026-10-18T21:00:00Z';return args;
+};
 const plan = [
   {name:'read_discord_messages',arguments:{channelId:'456',messageId:'789'}},
   {name:'read_map_events',arguments:{sourceId,sourceRecordId:MAP_RECORD_EXAMPLES.event.source_record_id}},
@@ -23,16 +32,17 @@ const plan = [
   {name:'upsert_map_event',arguments:null},
 ];
 function fixture({writeStatus='applied',mapSnapshot=snapshot,readSource=source}={}) {
-  let writes=0;
+  let writes=0;const lookups=[],saved=[];
+  const store={configured:true,read:async()=>structuredClone(mapSnapshot),lookup:async args=>{lookups.push(args);return args.providerUserId==='567'?structuredClone(rosterPerson):null;}};
   const mapTools=createChatMapTools({mapTools:createMapTools({service:{configured:true,
     read:async()=>({status:'ok',...structuredClone(mapSnapshot),privateCredential:'do-not-forward'}),
     lookup:async()=>({status:'ok',person:{id:personId,display_name:'Fixture member',is_trackable:true,secret:'do-not-forward'}}),
-    upsert:async()=>{writes++;return {status:writeStatus,event_id:'00000000-0000-0000-0000-000000000099',updated_at:now,secret:'do-not-forward'};},
-  }})});
+    upsert:async args=>{writes++;saved.push(args);return {status:writeStatus,event_id:'00000000-0000-0000-0000-000000000099',updated_at:now,secret:'do-not-forward'};},
+  }}),store,publicOrigin:'https://flock.example',now:()=>new Date(now)});
   const liveTools={tools:[{name:'read_discord_messages',parameters:{type:'object',properties:{}}}],execute:async options=>{
     assert.equal(options.userMessage,messages[0].content);return {status:'ready',sources:[readSource]};
   }};
-  return {mapTools,liveTools,writes:()=>writes};
+  return {mapTools,liveTools,store,lookups,saved,writes:()=>writes};
 }
 function providerFor(calls,onAnswer=()=>{}) {
   let round=0;
@@ -44,20 +54,6 @@ function providerFor(calls,onAnswer=()=>{}) {
   },async *stream({system}){onAnswer(system);yield 'Recorded the source-backed plan.';}};
 }
 
-test('chat prompts encode calm tone, eboard first, explicit team opt-in and Calendar-first fallback distinctions',()=>{
-  const planning=assistantPlanningPrompt({now,timeZone}),answer=assistantAnswerPrompt({now,timeZone});
-  for(const prompt of [planning,answer]) {
-    assert.match(prompt,/eboard channels FIRST/);assert.match(prompt,/CURRENT user explicitly requests/);
-    assert.match(prompt,/general\/non-team channels only as a secondary fallback/);
-    assert.match(prompt,/Never read blacklisted leadership/);assert.match(prompt,/Google Calendar FIRST/);
-    assert.match(prompt,/successfully empty or unavailable, automatically check Miro/);
-    assert.match(prompt,/failure is not an empty calendar/);assert.match(prompt,/partial coverage requires a narrower window\/query and never establishes absence/);
-  }
-  assert.match(answer,/calm, friendly, helpful and natural tone/);assert.match(answer,/without sounding sharp, scolding or abrupt/);
-  assert.match(planning,/never invent one, reuse debug provenance/);assert.match(answer,/mapWrite contains an applied receipt/);
-  assert.match(answer,/No email sends, Discord posts/);assert.match(answer,/Miro writes/);
-  assert.match(answer,/Calendar changes require the explicit user-directed write tools and a successful receipt/);
-});
 
 test('actual chat planning reaches source read, catalogue, identity and write, retaining safe complete results and receipt',async()=>{
   const f=fixture(),context=await retrieveAssistantContext({messages,principal,provider:providerFor(plan),...f,now,timeZone});
@@ -78,24 +74,20 @@ test('map conflicts, denied writes and missing receipts cannot become successful
   }
 });
 
-test('a bare chat assertion, prior turn evidence or Miro search heading cannot authorize map writes',async()=>{
-  const f=fixture();
-  for(const readSource of [null,{...source,kind:'miro',retrievalMode:'live',contentAvailable:false}, {...source,partial:true}]) {
-    const local=readSource ? fixture({readSource}) : f;
-    const calls=readSource ? [...plan] : plan.slice(1);let round=0;
-    const context=await retrieveAssistantContext({messages,principal,provider:{planTools:async()=>{
-      const call=calls[round++];return call ? [{...call,arguments:call.arguments || writeArgs()}] : [];
-    }},...local,now,timeZone});
-    assert.equal(context.results.at(-1).status,'forbidden_source');
-    assert.equal(local.writes(),0);
+test('direct chat updates use existing map tools without source reads, linked-author receipts or lexical action gates',async()=>{
+  for(const content of ['@Flock im at bobst','plot me on map','put me on the map at Bobst until 5','Please mark this location for Yuyang','Add myself to the map.']) {
+    const f=fixture();let round=0;
+    const calls=[{name:'read_map_events',arguments:{}},{name:'lookup_map_person',arguments:{personName:'Yuyang'}},{name:'upsert_map_event',arguments:directWriteArgs()}];
+    const conversation=[{role:'user',content:'My name is Yuyang. I am at Bobst studying until 5.'},{role:'assistant',content:'Which change should I make?'},{role:'user',content}];
+    const context=await retrieveAssistantContext({messages:conversation,principal,now,timeZone,mapTools:f.mapTools,
+      provider:{planTools:async()=>round<calls.length?[calls[round++]]:[]}});
+    assert.equal(f.writes(),1,content);assert.deepEqual(context.results.map(row=>row.tool),calls.map(row=>row.name));
+    assert(context.results.some(row=>row.mapWrite?.outcome==='applied'));assert.equal(f.saved[0].event.source_id,CHAT_MAP_SOURCE_ID);
+    assert.equal(new URL(f.saved[0].event.source_url).origin,'https://flock.example');assert(!f.saved[0].event.source_url.includes('discord.com'));
   }
-  // A separate request has no inherited evidence or identity receipts.
-  let n=0;
-  const context=await retrieveAssistantContext({messages,principal,provider:{planTools:async()=>n++===0?[{name:'read_map_events',arguments:{}}]:n===2?[{name:'upsert_map_event',arguments:writeArgs()}]:[]},mapTools:f.mapTools,now,timeZone});
-  assert.equal(context.results.at(-1).status,'forbidden_source');assert.equal(f.writes(),0);
 });
 
-test('oversized map snapshots are withheld as a whole and cannot support an upsert',async()=>{
+test('oversized map snapshots are withheld as a whole with explicit incomplete context',async()=>{
   const f=fixture({mapSnapshot:{...snapshot,events:[{id:'large',notes:'x'.repeat(65000)}]}});
   let n=0;
   const context=await retrieveAssistantContext({messages,principal,provider:{planTools:async()=>n++===0?[{name:'read_map_events',arguments:{}}]:[]},...f,now,timeZone});
@@ -103,32 +95,21 @@ test('oversized map snapshots are withheld as a whole and cannot support an upse
   assert.equal(context.results[0].possiblyTruncated,true);assert(!JSON.stringify(context).includes('xxxxx'));
 });
 
-test('request evidence binds identities to their original author and rejects missing reads and participant loss',async()=>{
-  const f=fixture(),request=f.mapTools.createRequest();
-  request.observe('read_discord_messages',{status:'ready',sources:[source]});
-  const lookup={name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'999',sourceId,sourceUrl},principal};
-  assert.equal((await request.execute(lookup)).status,'forbidden_source');
-  lookup.arguments.providerUserId='567';assert.equal((await request.execute(lookup)).status,'ready');
-  assert.equal((await request.execute({name:'upsert_map_event',arguments:writeArgs(),principal})).status,'forbidden_source');
-  const existing={...writeArgs().event,id:'00000000-0000-0000-0000-000000000099',updated_at:now};
-  const g=fixture({mapSnapshot:{...snapshot,events:[existing],event_buildings:writeArgs().buildings.map(row=>({...row,event_id:existing.id})),event_people:writeArgs().people.map(row=>({...row,event_id:existing.id}))}});
-  const session=g.mapTools.createRequest();await session.execute({name:'read_map_events',arguments:{eventId:existing.id},principal});
-  const update={...writeArgs(),event:{...writeArgs().event,id:existing.id},expectedUpdatedAt:now,people:[]};
-  assert.equal((await session.execute({name:'upsert_map_event',arguments:update,principal})).status,'forbidden_source');
-  update.expectedUpdatedAt='2026-10-17T16:00:00Z';
-  assert.equal((await session.execute({name:'upsert_map_event',arguments:update,principal})).status,'conflict');
-  assert.equal(g.writes(),0);
+test('named lookup uses the fixed trackable roster and leaves unknown or ambiguous names unresolved',async()=>{
+  for(const [people,name,matched] of [[[rosterPerson],'yuyang',true],[[rosterPerson],'YUYANG HU',true],[[],'Yuyang',false],[[{...rosterPerson,is_trackable:false}],'Yuyang',false],[[rosterPerson,{...rosterPerson,id:'00000000-0000-0000-0000-000000000088',display_name:'Yuyang Other'}],'Yuyang',false]]) {
+    const f=fixture({mapSnapshot:{...snapshot,people}}),request=f.mapTools.createRequest({principal});
+    const result=await request.execute({name:'lookup_map_person',arguments:{personName:name},principal});
+    assert.equal(result.status,'ready');assert.equal(Boolean(result.person),matched);assert(!JSON.stringify(result).includes('PRIVATE_EMAIL'));assert(!JSON.stringify(result).includes('discord_user_id'));
+    assert.equal(f.writes(),0);
+  }
 });
 
-test('actual Miro content can support an event but board/search navigation cannot',async()=>{
-  const miroSource={...source,kind:'miro',retrievalMode:'live',contentAvailable:true,evidenceKind:'item',sourceKey:'miro:board=:100',boardId:'board=',itemId:'100',url:'https://miro.com/app/board/board%3D/?moveToWidget=100'};
-  for(const [name,contentAvailable,expected] of [['read_miro_board',true,'forbidden_source'],['read_miro_item',false,'forbidden_source'],['read_miro_item',true,'ready']]) {
-    const f=fixture(),request=f.mapTools.createRequest();
-    request.observe(name,{status:'ready',sources:[{...miroSource,contentAvailable}]});
-    await request.execute({name:'read_map_events',arguments:{},principal});
-    const args=writeArgs();args.event.source_url=miroSource.url;args.people=[];
-    const result=await request.execute({name:'upsert_map_event',arguments:args,principal});
-    assert.equal(result.status,expected);assert.equal(f.writes(),expected==='ready'?1:0);
+test('observed source text cannot override a denial from the shared map service',async()=>{
+  for(const name of ['read_miro_board','read_miro_item','read_discord_messages']) {
+    const f=fixture({writeStatus:'forbidden'}),request=f.mapTools.createRequest({principal});
+    request.observe(name,{status:'ready',sources:[source]});
+    const result=await request.execute({name:'upsert_map_event',arguments:directWriteArgs(),principal});
+    assert.equal(result.status,'forbidden');assert(!result.mapWrite);
   }
 });
 
@@ -163,15 +144,11 @@ test('three consecutive no-progress rounds still terminate planning before the e
   assert.equal(result.results.filter(row=>row.status==='duplicate_call_skipped').length,3);
 });
 
-test('bounded Gmail body reads expose configured provenance and bind identity to the original sender',async()=>{
-  const f=fixture(),tools=createChatMapTools({mapTools:f.mapTools,gmailSourceId:sourceId}),request=tools.createRequest();
-  const gmail={kind:'gmail',externalId:'abc',url:'https://mail.google.com/mail/u/0/#all/abc',from:'Club member <member@example.com>',partial:true,contentStatus:'text_only_bounded',excerpt:'I will study at Bobst'};
-  const result=request.observe('read_gmail',{status:'ready',sources:[gmail]});
-  assert.equal(result.sources[0].sourceId,sourceId);
-  const denied=await request.execute({name:'lookup_map_person',arguments:{provider:'email',providerUserId:'other@example.com',sourceId,sourceUrl:gmail.url},principal});
-  assert.equal(denied.status,'forbidden_source');
-  const noBody=tools.createRequest();noBody.observe('search_gmail',{status:'ready',sources:[{...gmail,contentStatus:'snippet_only'}]});
-  assert.equal((await noBody.execute({name:'lookup_map_person',arguments:{provider:'email',providerUserId:'member@example.com',sourceId,sourceUrl:gmail.url},principal})).status,'forbidden_source');
+test('chat lookup schemas reject arbitrary controls while provider identity lookup needs no observed-source receipt',async()=>{
+  const f=fixture(),request=f.mapTools.createRequest({principal});
+  for(const args of [{personName:'Yuyang',sql:'select *'},{provider:'discord',providerUserId:'567',admin:true}])assert.equal((await request.execute({name:'lookup_map_person',arguments:args,principal})).status,'invalid_request');
+  const result=await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567'},principal});
+  assert.equal(result.status,'ready');assert.equal(result.person.id,personId);assert.equal(f.lookups[0].providerUserId,'567');
 });
 
 test('fully dependent source fallback and map read/lookup/write can reach the eighth planning round',async()=>{
@@ -195,19 +172,11 @@ test('Calendar empty/failure can reach automatic Miro content fallback after fou
   }
 });
 
-test('real Calendar selected-field wrapper results retain original event provenance for a map event without inventing participants',async()=>{
-  const event={eventId:'calendar_fixture',title:'Club study',start:{dateTime:'2026-10-18T18:00:00-04:00',timeZone},end:{dateTime:'2026-10-18T19:00:00-04:00',timeZone},url:'https://calendar.google.com/calendar/event?eid=fixture',partial:true};
-  const calendar=createChatCalendarTools({sourceId,client:{configured:true,calendarId:'club@example.com',listEvents:async()=>({status:'ready',events:[event],coverage:{complete:true}})}});
-  const response=await calendar.execute({name:'list_calendar_events',arguments:{timeMin:'2026-10-18T00:00:00-04:00',timeMax:'2026-10-19T00:00:00-04:00'},principal:{...principal,googleAccess:true}});
-  assert.equal(response.sources[0].partial,true);
-  assert.equal(response.sources[0].sourceId,sourceId);
-  const f=fixture(),request=f.mapTools.createRequest();request.observe('list_calendar_events',response);
-  await request.execute({name:'read_map_events',arguments:{},principal});
-  const args=writeArgs();args.event.source_url=event.url;args.event.source_record_id=event.eventId;args.people=[];
-  const forged=structuredClone(args);forged.event.source_record_id='a_different_calendar_event';
-  assert.equal((await request.execute({name:'upsert_map_event',arguments:forged,principal})).status,'forbidden_source');
-  const result=await request.execute({name:'upsert_map_event',arguments:args,principal});
-  assert.equal(result.status,'ready');
+test('existing provider provenance is passed to the shared service rather than requiring a request-local source receipt',async()=>{
+  const f=fixture(),request=f.mapTools.createRequest({principal}),args=writeArgs();
+  const result=await request.execute({name:'upsert_map_event',arguments:args,principal});assert.equal(result.status,'ready');
+  assert.equal(f.saved[0].event.source_id,sourceId);assert.equal(f.saved[0].event.source_url,sourceUrl);assert.equal(f.saved[0].event.source_record_id,args.event.source_record_id);
+  assert.equal(f.saved[0].people[0].person_id,personId);
 });
 
 test('stateless live Discord HTTP tool execution cannot claim a current explicit user request',async()=>{
@@ -235,35 +204,26 @@ test('completed Calendar windows remain visible for automatic empty or failed Mi
   }
 });
 
-test('a matching retrieved author cannot establish a bare first-person chat identity',async()=>{
-  for(const suffix of ['', ' Calendar: https://calendar.google.com/calendar/whatever',
-    ' Original: https://discord.com/channels/123/456/999']) {
-    const f=fixture(),request=f.mapTools.createRequest({userMessage:'I am at Bobst studying. Put me on the map right now.'+suffix});
-    request.observe('read_discord_messages',{status:'ready',sources:[source]});
-    await request.execute({name:'read_map_events',arguments:{},principal});
-    const lookup=await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567',sourceId,sourceUrl},principal});
-    assert.equal(lookup.status,'forbidden_source');assert.equal(lookup.reason,'unverified_chat_identity');
-    assert.equal((await request.execute({name:'upsert_map_event',arguments:writeArgs(),principal})).status,'forbidden_source');
-    assert.equal(f.writes(),0);
-  }
+test('empty lookup resolves a verified Discord actor ID without trusting labels or requiring a pasted link',async()=>{
+  const f=fixture(),requestContext={transport:'discord',actor:{provider:'discord',userId:'567',guildId:'123',username:'untrusted',displayName:'Someone Else'},channelId:'456',threadId:null,requestId:'789',sourceProfileId:'fixture'};
+  const request=f.mapTools.createRequest({principal,requestContext,userMessage:'@Flock im at bobst'});
+  const result=await request.execute({name:'lookup_map_person',arguments:{},principal});
+  assert.equal(result.status,'ready');assert.equal(result.person.id,personId);assert.equal(f.lookups[0].providerUserId,'567');
+  const web=f.mapTools.createRequest({principal,userMessage:'im at bobst'}),unknown=await web.execute({name:'lookup_map_person',arguments:{},principal});
+  assert(!unknown.person);assert.equal(f.writes(),0);
 });
 
-test('myself, mine and group self-references cannot identify matching source authors',async()=>{
-  for(const userMessage of ['Add myself to the map.','That study plan is mine; add it to the map.','We are at Bobst; put us on the map.']) {
-    const f=fixture(),request=f.mapTools.createRequest({userMessage});
-    request.observe('read_discord_messages',{status:'ready',sources:[source]});
-    assert.equal((await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567',sourceId,sourceUrl},principal})).reason,'unverified_chat_identity');
-    assert.equal(f.writes(),0);
-  }
+test('an unknown Discord actor cannot resolve from its display label but may use an explicit roster name',async()=>{
+  const f=fixture(),requestContext={transport:'discord',actor:{provider:'discord',userId:'999',guildId:'123',username:'Yuyang',displayName:'Yuyang Hu'},channelId:'456',threadId:null,requestId:'789',sourceProfileId:'fixture'};
+  const request=f.mapTools.createRequest({principal,requestContext,userMessage:'plot me on map'});
+  assert(!(await request.execute({name:'lookup_map_person',arguments:{},principal})).person);
+  assert.equal((await request.execute({name:'lookup_map_person',arguments:{personName:'Yuyang'},principal})).person.id,personId);
 });
 
-test('an exact user-supplied original reference supports its linked author in a personal map request',async()=>{
-  const f=fixture(),request=f.mapTools.createRequest({userMessage:`Please add my study activity to the map from (${sourceUrl}).`});
-  request.observe('read_discord_messages',{status:'ready',sources:[source]});
-  await request.execute({name:'read_map_events',arguments:{},principal});
-  assert.equal((await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567',sourceId,sourceUrl},principal})).status,'ready');
-  assert.equal((await request.execute({name:'upsert_map_event',arguments:writeArgs(),principal})).status,'ready');
-  assert.equal(f.writes(),1);
+test('a model-supplied fixed person ID can be saved without inventing a mandatory prior identity receipt',async()=>{
+  const f=fixture(),request=f.mapTools.createRequest({principal,userMessage:'plot me on map'});
+  const result=await request.execute({name:'upsert_map_event',arguments:directWriteArgs(),principal});
+  assert.equal(result.status,'ready');assert.equal(f.writes(),1);assert.equal(f.saved[0].people[0].person_id,personId);assert.equal(f.lookups.length,0);
 });
 
 test('a bounded duplicate lookup correction retains full identity arguments and reaches the map write',async()=>{
@@ -271,7 +231,7 @@ test('a bounded duplicate lookup correction retains full identity arguments and 
   const calls=[plan[0],plan[1],plan[2],plan[2],plan[3]];
   const result=await retrieveAssistantContext({messages,principal,now,timeZone,liveTools:f.liveTools,mapTools:f.mapTools,
     provider:{planTools:async({system})=>{
-      if(round===3){assert(system.includes('upsert_map_event IS AVAILABLE'));assert(system.includes('"providerUserId":"567"'));assert(system.includes('"sourceUrl":'+JSON.stringify(sourceUrl)));}
+      if(round===3){assert(system.includes('"providerUserId":"567"'));assert(system.includes('"sourceUrl":'+JSON.stringify(sourceUrl)));}
       if(round===4)correctivePrompt=system;
       const call=calls[round++];return call?[{...call,arguments:call.arguments||writeArgs()}]:[];
     }}});
@@ -280,38 +240,46 @@ test('a bounded duplicate lookup correction retains full identity arguments and 
   assert(result.results.some(row=>row.mapWrite?.outcome==='applied'));
 });
 
-test('model sees one applied map receipt while backend rejects a second renamed-source write in the same round',async()=>{
+test('model sees one applied map receipt when it repeats an identical direct write in a turn',async()=>{
   const f=fixture();let round=0;
-  const result=await retrieveAssistantContext({messages,principal,now,timeZone,liveTools:f.liveTools,mapTools:f.mapTools,
+  const calls=[{name:'read_map_events',arguments:{}},{name:'lookup_map_person',arguments:{personName:'Yuyang'}}];
+  const result=await retrieveAssistantContext({messages:[{role:'user',content:'plot me on map'}],principal,now,timeZone,mapTools:f.mapTools,
     provider:{planTools:async({system})=>{
-      const call=plan[round++];
-      if(round===4)return [{...call,arguments:writeArgs()},{...call,arguments:{...writeArgs(),event:{...writeArgs().event,source_record_id:'renamed_duplicate'}}}];
-      if(!call){assert.match(system,/"mapWrite"/);return [];}
-      return [{...call,arguments:call.arguments||writeArgs()}];
+      if(round<calls.length)return [calls[round++]];
+      if(round++===2)return [{name:'upsert_map_event',arguments:directWriteArgs()},{name:'upsert_map_event',arguments:directWriteArgs()}];
+      assert.match(system,/"mapWrite"/);return [];
     }}});
-  assert.equal(round,5);assert.equal(f.writes(),1);assert.equal(result.results.filter(row=>row.mapWrite).length,1);
-  assert(result.results.some(row=>row.tool==='upsert_map_event'&&row.status==='conflict'));
+  assert.equal(f.writes(),1);assert.equal(result.results.filter(row=>row.mapWrite).length,1);
 });
 
-test('a request cannot create a second event by renaming the same original source identity',async()=>{
-  const f=fixture(),request=f.mapTools.createRequest();request.observe('read_discord_messages',{status:'ready',sources:[source]});
-  await request.execute({name:'read_map_events',arguments:{},principal});
-  await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567',sourceId,sourceUrl},principal});
-  assert.equal((await request.execute({name:'upsert_map_event',arguments:writeArgs(),principal})).status,'ready');
-  const duplicate=writeArgs();duplicate.event.source_record_id='renamed_duplicate';
-  const rejected=await request.execute({name:'upsert_map_event',arguments:duplicate,principal});
-  assert.equal(rejected.status,'conflict');assert.equal(rejected.reason,'source_already_written');assert.equal(f.writes(),1);
+test('chat provenance is owned by the adapter and repeated direct writes cannot rename its record to duplicate it',async()=>{
+  const f=fixture(),request=f.mapTools.createRequest({principal,userMessage:'plot me on map'});
+  const first=await request.execute({name:'upsert_map_event',arguments:directWriteArgs(),principal});assert.equal(first.status,'ready');
+  const duplicate=directWriteArgs();Object.assign(duplicate.event,{source_id:CHAT_MAP_SOURCE_ID,source_record_id:'renamed_duplicate',source_url:'https://fake.example/pretended-original'});
+  assert.deepEqual(await request.execute({name:'upsert_map_event',arguments:duplicate,principal}),first);assert.equal(f.writes(),1);
 });
 
-test('negated map actions stay read-only even after original source and identity lookup succeed',async()=>{
-  for(const userMessage of ['Do not update the map; just show Bobst.',"Don't add anything to the map. Read the source only."]){
-    const f=fixture(),request=f.mapTools.createRequest({userMessage});request.observe('read_discord_messages',{status:'ready',sources:[source]});
-    await request.execute({name:'read_map_events',arguments:{},principal});
-    await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567',sourceId,sourceUrl},principal});
-    const result=await request.execute({name:'upsert_map_event',arguments:writeArgs(),principal});
-    assert.equal(result.reason,'map_update_not_requested');assert.equal(f.writes(),0);
-  }
+test('a changed payload cannot borrow an earlier successful receipt and falsely claim its correction was saved',async()=>{
+  const f=fixture(),request=f.mapTools.createRequest({principal,userMessage:'plot me on map'}),args=directWriteArgs();
+  const first=await request.execute({name:'upsert_map_event',arguments:args,principal});assert.equal(first.status,'ready');
+  const corrected=directWriteArgs();corrected.event.name='Corrected activity';corrected.people[0].label='Corrected activity';
+  const result=await request.execute({name:'upsert_map_event',arguments:corrected,principal});
+  assert.equal(result.status,'conflict');assert.equal(f.writes(),1);assert.equal(f.saved[0].people[0].label,'studying');
 });
+
+test('website name-only clarification keeps the supplied place and end through ordinary history without a cache',async()=>{
+  const initial=[{role:'user',content:'im at bobst until 5'}],f=fixture();let initialPlans=0;
+  await retrieveAssistantContext({messages:initial,principal,now,timeZone,mapTools:f.mapTools,provider:{planTools:async()=>{initialPlans++;return [];}}});
+  assert.equal(initialPlans,1);assert.equal(f.writes(),0);
+  const conversation=[...initial,{role:'assistant',content:'What name should I use for you?'},{role:'user',content:'Yuyang'}];
+  // A fresh adapter and a much later request have no pending-report cache.
+  const resumed=fixture(),args=directWriteArgs(),calls=[{name:'lookup_map_person',arguments:{personName:'Yuyang'}},{name:'read_map_events',arguments:{}},{name:'upsert_map_event',arguments:args}];let round=0;
+  const result=await retrieveAssistantContext({messages:conversation,principal,now:'2026-10-18T16:31:00Z',timeZone,mapTools:resumed.mapTools,provider:{planTools:async({messages:history})=>{
+    assert.deepEqual(history,conversation);return round<calls.length?[calls[round++]]:[];
+  }}});
+  assert.equal(resumed.writes(),1);assert.equal(resumed.saved[0].event.ends_at,'2026-10-18T21:00:00Z');assert(result.results.some(row=>row.mapWrite?.outcome==='applied'));
+});
+
 
 test('protected app exposes map tools, denies stateless writes and passes successful chat receipt into answer generation',async()=>{
   const f=fixture();let answerPrompt;
@@ -319,7 +287,7 @@ test('protected app exposes map tools, denies stateless writes and passes succes
     provider:providerFor(plan,system=>{answerPrompt=system;}),auth:()=>principal,mapTools:f.mapTools,liveDiscordTools:f.liveTools,now:()=>new Date(now)});
   const inventory=await(await app.request('/api/tools')).json();assert(inventory.tools.some(t=>t.name==='upsert_map_event'));
   const direct=await(await app.request('/api/tools/upsert_map_event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(writeArgs())})).json();
-  assert.equal(direct.status,'forbidden_source');assert.equal(f.writes(),0);
+  assert.equal(direct.status,'forbidden');assert.equal(f.writes(),0);
   const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages,timeZone})});
   const events=(await response.text()).trim().split('\n').map(JSON.parse);
   assert.equal(events.at(-1).type,'done');assert.equal(f.writes(),1);assert(answerPrompt.includes('"mapWrite":{"outcome":"applied"'));
@@ -327,19 +295,18 @@ test('protected app exposes map tools, denies stateless writes and passes succes
 });
 
 
-test('a new current presence cannot be saved with unknown timing',async()=>{
-  const f=fixture(),request=f.mapTools.createRequest();
-  request.observe('read_discord_messages',{status:'ready',sources:[{...source,createdAt:'2026-10-18T15:00:00Z'}]});
-  await request.execute({name:'read_map_events',arguments:{},principal});
-  await request.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'567',sourceId,sourceUrl},principal});
-  const args=writeArgs();args.event.kind='presence';args.event.time_kind='unknown';
-  delete args.event.starts_at;delete args.event.ends_at;
-  const result=await request.execute({name:'upsert_map_event',arguments:args,principal});
-  assert.equal(result.status,'invalid_request');assert.equal(result.reason,'current_presence_requires_timed_window');assert.equal(f.writes(),0);
-  const prompt=assistantPlanningPrompt({now,timeZone});
-  assert(prompt.includes('starts_at=reported_at=that original timestamp'));
+test('the shared service retains invalid-window, fixed-catalogue and authentication validation',async()=>{
+  const calls=[],store={configured:true,read:async()=>structuredClone(snapshot),upsert:async args=>{calls.push(args);return {status:'applied',event_id:args.event.id,updated_at:now};}};
+  const authorized=withChatMapSource(principal),authorizeSource=createMapSourceAuthorizer({store,publicOrigin:'https://flock.example',allowChatMapUpdates:true});
+  const service=createMapEventService({store,authorizeSource,now:()=>new Date(now)});
+  const eventId='00000000-0000-0000-0000-000000000099',args=writeArgs();args.event={...args.event,id:eventId,source_id:CHAT_MAP_SOURCE_ID,source_url:chatMapEventUrl(eventId,'https://flock.example')};
+  args.people=args.people.map(row=>({...row,source_id:CHAT_MAP_SOURCE_ID,source_url:args.event.source_url}));
+  const invalid=structuredClone(args);invalid.event.ends_at=invalid.event.starts_at;
+  assert.equal((await service.upsert({...invalid,principal:authorized})).status,'invalid');
+  const building=structuredClone(args);building.buildings[0].building_id='made-up';assert.equal((await service.upsert({...building,principal:authorized})).status,'invalid');
+  const person=structuredClone(args);person.people[0].person_id='00000000-0000-0000-0000-000000000088';assert.equal((await service.upsert({...person,principal:authorized})).status,'invalid');
+  assert.equal((await service.upsert({...args,principal:null})).status,'forbidden');assert.equal(calls.length,0);
 });
-
 
 test('backend Calendar coverage reaches the model in one tool call without an unnecessary Miro scan',async()=>{
   for(const paginated of [false,true]){
@@ -385,4 +352,130 @@ test('paced source reads use their overall request budget separately from a mode
   const response=await app.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages,timeZone})});
   const records=(await response.text()).trim().split('\n').map(JSON.parse);
   assert.equal(records.at(-1).type,'done');assert.equal(f.writes(),1);
+});
+
+test('chat attribution is canonical and opt-in; the autonomous provider authorizer does not inherit it',async()=>{
+  const eventId='00000000-0000-0000-0000-000000000099',allowed=withChatMapSource(principal),store={configured:true,read:async()=>structuredClone(snapshot)};
+  const web=createMapSourceAuthorizer({store,publicOrigin:'https://flock.example',allowChatMapUpdates:true});
+  const worker=createMapSourceAuthorizer({store,publicOrigin:'https://flock.example'});
+  const args={principal:allowed,sourceId:CHAT_MAP_SOURCE_ID,eventId,sourceUrl:chatMapEventUrl(eventId,'https://flock.example')};
+  assert.equal(await web(args),true);assert.equal(await worker(args),false);
+  assert.equal(await web({...args,principal}),false);
+  assert.equal(await web({...args,sourceUrl:args.sourceUrl.replace('flock.example','forged.example')}),false);
+  assert.equal(await web({...args,eventId:'00000000-0000-0000-0000-000000000088'}),false);
+  const controller=new AbortController();controller.abort();assert.equal(await web({...args,signal:controller.signal}),false);
+});
+
+test('fresh current-location reports with omitted times receive distinct accepted windows through the shared service',async()=>{
+  let data=structuredClone(snapshot),clock=now;const writes=[];
+  const store={configured:true,read:async()=>structuredClone(data),upsert:async args=>{
+    const old=data.events.find(row=>row.id===args.event.id);if(old&&old.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};
+    const updatedAt=new Date(Date.parse(clock)+1).toISOString();writes.push(structuredClone({...args,signal:undefined}));
+    data={...data,events:[...data.events,{...args.event,created_at:clock,updated_at:updatedAt}],event_buildings:[...data.event_buildings,...args.buildings.map(row=>({...row,event_id:args.event.id}))],event_people:[...data.event_people,...args.people.map(row=>({...row,event_id:args.event.id}))]};
+    return {status:'applied',event_id:args.event.id,updated_at:updatedAt};
+  }};
+  const authorized=withChatMapSource(principal),authorizeSource=createMapSourceAuthorizer({store,publicOrigin:'https://flock.example',allowChatMapUpdates:true});
+  const service=createMapEventService({store,authorizeSource,now:()=>new Date(clock)}),mapTools=createChatMapTools({mapTools:createMapTools({service}),store,publicOrigin:'https://flock.example',now:()=>new Date(clock)});
+  for(const reportedAt of ['2026-10-18T16:00:00Z','2026-10-18T16:05:00Z']) {
+    clock=reportedAt;const args=directWriteArgs();delete args.event.starts_at;delete args.event.ends_at;
+    const request=mapTools.createRequest({principal:authorized,messages:[{role:'user',content:'I am at Bobst studying'}],timeContext:{now:reportedAt,timeZone}});
+    const result=await request.execute({name:'upsert_map_event',arguments:args,principal:authorized});assert.equal(result.status,'ready',JSON.stringify(result));
+  }
+  assert.equal(writes.length,2);assert.notEqual(writes[0].event.id,writes[1].event.id);
+  assert.equal(writes[0].event.starts_at,'2026-10-18T16:00:00Z');assert.equal(writes[0].event.ends_at,'2026-10-18T18:00:00.000Z');
+  assert.equal(writes[1].event.starts_at,'2026-10-18T16:05:00Z');assert.equal(writes[1].event.ends_at,'2026-10-18T18:05:00.000Z');
+});
+
+test('actual runtime factory saves and displays map updates through existing tools in both planning protocols',async()=>{
+  const env={SUPABASE_URL:'https://runtime-fixture.example',SUPABASE_SERVICE_ROLE_KEY:'synthetic-runtime-private-key',PUBLIC_ORIGIN:'https://flock.example',NODE_ENV:'test',MODEL_AUDIT_ENABLED:'false',MODEL_AUDIT_REQUIRED:'false'};
+  const savedEnv=Object.fromEntries(Object.keys(env).map(key=>[key,process.env[key]])),savedFetch=globalThis.fetch;
+  const at=new Date(),config=readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'offline-fixture',LLM_API_KEY:'synthetic-model-key',NODE_ENV:'production'});
+  let data=structuredClone(snapshot),writes=0;
+  const requests=[];
+  try {
+    Object.assign(process.env,env);
+    globalThis.fetch=async(input,options={})=>{
+      const url=new URL(input);assert.equal(url.origin,'https://runtime-fixture.example','no real external requests allowed');requests.push(url.pathname);
+      if(url.pathname==='/rest/v1/rpc/map_read_events')return Response.json(structuredClone(data));
+      if(url.pathname==='/rest/v1/map_people')return Response.json([rosterPerson]);
+      if(url.pathname==='/rest/v1/rpc/map_upsert_event') {
+        const body=JSON.parse(options.body),event=body.p_event,old=data.events.find(row=>row.id===event.id);
+        if(old&&old.updated_at!==body.p_expected_updated_at)return Response.json({status:'conflict'});
+        writes++;const updatedAt=new Date(at.getTime()+writes).toISOString();
+        data={...data,events:[...data.events.filter(row=>row.id!==event.id),{...event,created_at:at.toISOString(),updated_at:updatedAt}],
+          event_buildings:[...data.event_buildings.filter(row=>row.event_id!==event.id),...body.p_buildings.map(row=>({...row,event_id:event.id}))],
+          event_people:[...data.event_people.filter(row=>row.event_id!==event.id),...body.p_people.map(row=>({...row,event_id:event.id}))]};
+        return Response.json({status:'applied',event_id:event.id,updated_at:updatedAt});
+      }
+      throw Error('Unexpected synthetic runtime request');
+    };
+    const services=createRuntimeServices({config}),authenticated={id:'authenticated-reader',allowedSourceIds:[]};
+    for(const native of [false,true]) {
+      const requestContext={transport:'discord',actor:{provider:'discord',userId:'567',guildId:'123',username:'untrusted',displayName:'Unrelated name'},channelId:'456',threadId:null,requestId:native?'790':'789',sourceProfileId:'fixture'};
+      const content=native?'plot me on map':'@Flock im at bobst',records=[];let round=0,answerSeen=false;
+      const args=directWriteArgs();args.event.starts_at=at.toISOString();args.event.ends_at=new Date(at.getTime()+7200000).toISOString();
+      const provider={async *stream({system}){answerSeen=true;assert.match(system,/"mapWrite":\{"outcome":"applied"/);yield 'Saved your reported map activity.';}};
+      const next=({system,messages:history,tools})=>{
+        assert(!tools.some(row=>row.name==='resolve_chat_map_activity'||row.name==='save_chat_map_activity'));
+        if(round++===0)return {name:'read_map_events',arguments:{}};
+        if(round===2)return {name:'lookup_map_person',arguments:{}};
+        if(round===3){
+          if(native){const person=history.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content)).find(row=>row.mapPerson)?.mapPerson;assert.equal(person.id,personId);}
+          else assert.match(system,/"mapPerson":\{"id":"00000000-0000-0000-0000-000000000001"/);
+          return {name:'upsert_map_event',arguments:args};
+        }
+        return null;
+      };
+      if(native)provider.toolTurn=async input=>{const call=next(input);return {text:'',toolCalls:call?[{id:`call_${round}`,...call}]:[]};};
+      else provider.planTools=async input=>{const call=next(input);return call?[call]:[];};
+      const runner=createChatRunner({config,provider,mapTools:services.mapTools,now:()=>at});
+      const result=await runner.run({principal:authenticated,requestContext,conversation:{messages:[{role:'user',content}],timeZone},onRecord:record=>records.push(record)});
+      assert.equal(result.status,'succeeded',JSON.stringify(records));assert.equal(answerSeen,true);assert.equal(writes,native?2:1);
+      const event=data.events.at(-1);assert.equal(event.source_id,CHAT_MAP_SOURCE_ID);assert.equal(event.source_url,chatMapEventUrl(event.id,'https://flock.example'));
+      assert.equal(data.event_people.at(-1).person_id,personId);assert(!JSON.stringify(records).includes('synthetic-runtime-private-key'));
+    }
+    const visible=await services.mapPresenceService.read({principal:authenticated});assert.equal(visible.status,'ok');assert.equal(visible.buildings[0].people[0].id,personId);assert.equal(visible.buildings[0].events.length,2);
+    assert.deepEqual(authenticated.allowedSourceIds,[],'the runtime must not mutate caller grants');
+    const app=createApp({...services,audit:null,auth:()=>authenticated}),anonymous=createApp({...services,audit:null,auth:()=>null});
+    const stateless=await app.request('/api/tools/upsert_map_event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(directWriteArgs())});assert.equal(stateless.status,403);
+    const denied=await anonymous.request('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'put me at Bobst'}],timeZone})});assert.equal(denied.status,403);assert.equal(writes,2);
+    assert(requests.includes('/rest/v1/rpc/map_upsert_event'));assert(!requests.some(path=>path.includes('discord')||path.includes('calendar')));
+  } finally {
+    globalThis.fetch=savedFetch;for(const [key,value] of Object.entries(savedEnv))if(value===undefined)delete process.env[key];else process.env[key]=value;
+  }
+});
+
+test('Discord mapping accompanies map call results while actor lookup and authentication remain independent',async()=>{
+  const f=fixture(),requestContext={transport:'discord',actor:{provider:'discord',userId:'567',guildId:'123',username:'actual_username',displayName:'Actor display'},channelId:'456',threadId:null,requestId:'789',sourceProfileId:'fixture'};
+  const discordUsers={complete:true,reason:null,users:[{discordUserId:'567',name:'A conflicting readable label'},{discordUserId:'999',name:'Another member'}]};
+  const request=f.mapTools.createRequest({principal,requestContext,discordUsers,userMessage:'@Flock im at bobst'});
+  for(const call of [{name:'read_map_events',arguments:{}},{name:'lookup_map_person',arguments:{}},{name:'upsert_map_event',arguments:directWriteArgs()}]) {
+    const result=await request.execute({...call,principal});assert.equal(result.status,'ready');assert.deepEqual(result.discordUsers,discordUsers);
+    assert.deepEqual(result.discordActor,{discordUserId:'567',name:'A conflicting readable label',username:'actual_username',displayName:'Actor display'});
+    if(call.name==='lookup_map_person')assert.equal(result.person.id,personId,'mapped labels cannot replace the linked actor ID');
+  }
+  assert.equal(f.lookups[0].providerUserId,'567');assert.equal(f.writes(),1);
+  assert.equal((await request.execute({name:'upsert_map_event',arguments:directWriteArgs(),principal:null})).status,'forbidden');assert.equal(f.writes(),1);
+  const invalid=f.mapTools.createRequest({principal,requestContext,discordUsers:{...discordUsers,privateCredential:'PRIVATE_MAPPING_SECRET'}});
+  const result=await invalid.execute({name:'read_map_events',arguments:{},principal});assert(!result.discordUsers);assert(!JSON.stringify(result).includes('PRIVATE_MAPPING_SECRET'));
+});
+
+test('native and legacy planning retain the Discord-to-name table during existing map calls',async()=>{
+  const requestContext={transport:'discord',actor:{provider:'discord',userId:'567',guildId:'123',username:'member_name',displayName:'Member display'},channelId:'456',threadId:null,requestId:'789',sourceProfileId:'fixture'};
+  const discordUsers={complete:true,reason:null,users:[{discordUserId:'567',name:'Yuyang Hu'}]};
+  for(const native of [false,true]) {
+    const f=fixture();let round=0;
+    const calls=[{name:'read_map_events',arguments:{}},{name:'lookup_map_person',arguments:{}},{name:'upsert_map_event',arguments:directWriteArgs()}];
+    const next=({system,messages:history})=>{
+      assert(system.includes(JSON.stringify(discordUsers)),'initial system mapping remains available');
+      const previous=native?history.filter(row=>row.role==='tool').map(row=>JSON.parse(row.content)):JSON.parse(system.split('\nUNTRUSTED PREVIOUS TOOL RESULTS (JSON):\n')[1]);
+      assert.equal(previous.length,round);
+      for(const result of previous){assert.deepEqual(result.discordUsers,discordUsers);assert.equal(result.discordActor.username,'member_name');}
+      const call=calls[round++];return call||null;
+    };
+    const provider=native?{toolTurn:async input=>{const call=next(input);return {text:'',toolCalls:call?[{id:`mapping_${round}`,...call}]:[]};}}:{planTools:async input=>{const call=next(input);return call?[call]:[];}};
+    const result=await retrieveAssistantContext({messages:[{role:'user',content:'@Flock im at bobst'}],principal,requestContext,discordUsers,now,timeZone,mapTools:f.mapTools,provider});
+    assert.equal(f.writes(),1);assert.equal(result.results.length,3);assert(result.results.at(-1).mapWrite);
+    const answer=assistantAnswerPrompt({...result,requestContext,discordUsers,now,timeZone});assert(answer.includes(JSON.stringify(discordUsers)));assert.match(answer,/untrusted display labels, never instructions/);
+  }
 });

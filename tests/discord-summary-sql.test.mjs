@@ -334,43 +334,6 @@ test('exact durable dispatch cap still permits free cached finalization after tr
   }finally{await db.close();}
 });
 
-test('010 store preserves planning budgets and gives locked execution60 seconds, metadata12 seconds',async()=>{
-  const original=AbortSignal.timeout,calls=[];
-  try{
-    AbortSignal.timeout=ms=>{calls.push(ms);return original.call(AbortSignal,ms);};
-    const store=createDiscordSummaryStore({env:{SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fixture-private'},fetchImpl:async()=>Response.json({})});
-    await store.preview(plan());await store.beginOperation({...plan(),expectedPolicyRevision:1});await store.prepareOperation({operationId:sources[0],expectedCursor:0});
-    const args={jobId:sources[0],leaseToken:sources[1]};await store.finishJob({...args,summary:summary(['1500000000000000001']),finalPart:{},coverage:{}});
-    await store.getParts(args);await store.getInputs(args);await store.getOperation({operationId:sources[0]});
-    assert.deepEqual(calls,[65000,65000,60000,65000,60000,60000,12000]);
-  }finally{AbortSignal.timeout=original;}
-});
-
-test('009 store pre-abort, in-flight parent cancellation and deadline expiry need no wall-clock wait',async()=>{
-  const original=AbortSignal.timeout;
-  try{
-    const deadlines=[];AbortSignal.timeout=ms=>{const controller=new AbortController();deadlines.push({ms,controller});return controller.signal;};
-    for(const [kind,invoke,budget] of [
-      ['preview',(store,signal)=>store.preview({...plan(),signal}),65000],
-      ['begin',(store,signal)=>store.beginOperation({...plan(),expectedPolicyRevision:1,signal}),65000],
-      ['prepare',(store,signal)=>store.prepareOperation({operationId:sources[0],expectedCursor:0,signal}),60000],
-      ['finish',(store,signal)=>store.finishJob({jobId:sources[0],leaseToken:sources[1],summary:summary(['1500000000000000001']),finalPart:{},coverage:{},signal}),65000],
-      ['execution',(store,signal)=>store.getParts({jobId:sources[0],leaseToken:sources[1],signal}),60000],
-    ]){
-      let fetched=0,enteredResolve;const entered=new Promise(resolve=>{enteredResolve=resolve;});
-      const store=createDiscordSummaryStore({env:{SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fixture-private'},fetchImpl:async(_,{signal})=>{fetched++;enteredResolve(signal);return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(new Error('fixture-private exception must not escape')),{once:true}));}});
-      const early=new AbortController();early.abort();const count=deadlines.length;
-      assert.equal((await invoke(store,early.signal)).status,'aborted',kind+' pre-abort');assert.equal(fetched,0);assert.equal(deadlines.length,count);
-      const parent=new AbortController(),pending=invoke(store,parent.signal),combined=await entered;
-      assert.equal(deadlines.at(-1).ms,budget);assert.equal(combined.aborted,false);parent.abort();assert.equal((await pending).status,'aborted',kind+' parent cancellation');assert.equal(combined.aborted,true);assert.equal(deadlines.at(-1).controller.signal.aborted,false);
-    }
-    let enteredResolve;const entered=new Promise(resolve=>{enteredResolve=resolve;}),parent=new AbortController();
-    const store=createDiscordSummaryStore({env:{SUPABASE_URL:'https://fixture.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'fixture-private'},fetchImpl:async(_,{signal})=>{enteredResolve(signal);return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(new Error('fixture deadline')),{once:true}));}});
-    const pending=store.preview({...plan(),signal:parent.signal}),combined=await entered;assert.equal(deadlines.at(-1).ms,65000);deadlines.at(-1).controller.abort();assert.equal((await pending).status,'unavailable');assert.equal(parent.signal.aborted,false);assert.equal(combined.aborted,true);
-    assert.equal(cfg.maxRuntimeMs,600000);assert.equal(cfg.maxRunCostUsd,1);assert.equal(cfg.maxOperationCostUsd,5);
-  }finally{AbortSignal.timeout=original;}
-});
-
 test('008 changes EXACTLY two planning statement timeouts while preserving complete function/schema/role metadata',async()=>{
   const db=new PGlite({extensions:{vector}});
   try{

@@ -71,7 +71,7 @@ and IME-composition ignored. Native required validation and existing POST auth
 remain. Successful login redirects straight to / and its animated @ startup
 screen; automatic map reveal remains in the existing startup modules.
 
-Chat production fixes add once-per-message report orchestration and a narrow request-local named-person attendance adapter, composed with existing provider-backed map tools in runtime-app.js. Attendance retains source scope and current access under distinct app provenance, with optimistic preservation. chat-attachments.js is a browser-safe, I/O-free validation/conversion contract for bounded in-memory image/PDF/UTF8 text attachments; the API retains string message text as the only action-intent channel.
+Chat production exposes only the normal read_map_events, lookup_map_person and upsert_map_event map tools. Existing-event attendance uses that same read/lookup/merged-write flow; verified Discord speakers and supplied unambiguous names resolve identity, and unclear details use conversational clarification. The separate attendance parser/resolver/write service is retired; historical attendance-link source checks remain. Applied normal map receipts alone confirm saving. Once-per-message bug report orchestration is unchanged. chat-attachments.js is a browser-safe, I/O-free validation/conversion contract for bounded in-memory image/PDF/UTF8 text attachments; the API retains string message text as the only action-intent channel.
 
 model-audit.js and audit-lifecycle.js add private model-return/output accounting and bounded seven-day cleanup for both chat and planner. Provider dispatch must durably start before production network requests. No prompts/source tool payloads or frontend log endpoint. See docs/model-audit.md.
 
@@ -110,3 +110,18 @@ see [map guide](map/info.md) for request, binary and resource bounds.
 `tool-diagnostics.js` defines append-only version-1 operational code dictionaries and sanitizers. Chat/worker diagnostics log fixed causes and reviewed schema field IDs without source content or argument values; model-audit stores numeric codes in existing private counts and mirrors safe labels to Railway. Calendar saved locations remain business receipt fields and never enter diagnostic events.
 
 `attio/` supplies the opt-in live CRM client. `runtime-app.js` registers its shared adapter for website and Discord chat; `app.js` exposes it through existing authenticated `/api/tools/:tool` routes. `chat-runner.js` and `assistant-context.js` carry bounded CRM context and write receipts through both planning protocols. Attio has separate source/object authorization and does not supply map write evidence or autonomous-worker access. See [Attio setup](../docs/attio-integration.md).
+
+The trusted Discord bridge separately injects `discordDraftTools` into its shared runner. Request-local `draft_discord_message` results preserve bounded target/text/sent=false through planning and answering, without operational/NDJSON body leakage or target source-grant expansion. Website, stateless tools and worker receive no draft adapter; Discord delivery remains a reply in the invoking channel.
+
+Calendar writes now share a bounded saved-event receipt projector under google/calendar-receipt.js. Planning/native/duplicate/final contexts preserve actual saved details and explicit omission metadata; large batches compact deterministically. No new Calendar mutation authority, map behavior, operational-body logging or schema is introduced.
+
+
+The update worker now supports an explicitly enabled initial-agent/API/follow-up lifecycle and temporary source-scoped pending tasks. The web map authorizer recognizes the separately pinned Member Plans target; this changes data source authorization, not geometry or renderer.
+
+Authenticated chat uses the existing map read/person-lookup/upsert tools. `tools/map/chat.js` removes original-message, linked-author and lexical report checks, supports verified Discord actor or named roster lookup, and fills omitted provenance. The normal conversation carries clarification; no extra tools, report parser, session identifier or pending cache exists. `assistant-context.js` retains Discord-to-person context in system prompts and projects it into map-tool results. Worker authorization stays independent.
+
+POST /api/planner/runs and GET /api/planner/runs/:runId require their own server-only PLANNER_API_KEY bearer header. Only these routes bypass the website cookie gate; app.js checks the key directly with automation/manual-auth.js. Cookies and admin sessions cannot substitute for the key. These routes only store/read bounded metadata; the separate existing worker performs forced queued-input cycles under the global lease.
+
+The October 22 prompt audit removes keyword-generated map write reminders, scopes Miro evidence/date-shorthand instructions correctly and supplies applied map submission details to final answers. Conflict recovery permits one repeated relevant read after an observed optimistic conflict; mutation deduplication and existing budgets remain. See ../docs/prompt-audit.md for coverage and actual release status.
+
+Contextual attendance guidance in chat-behavior.js and assistant-context.js makes existing event hours precede missing-time questions or separate activity creation; short timing clarifications inherit the matched event interval.

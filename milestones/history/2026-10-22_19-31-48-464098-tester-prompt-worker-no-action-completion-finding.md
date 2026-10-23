@@ -1,0 +1,6 @@
+# Worker no-action completion finding
+
+- Timestamp / role: 2026-10-22T19:31:48.464098-04:00 / tester and orchestrator integration
+- Scope: Actual model prompt behavior using simulated storage.
+- Findings, evidence and correction: Four real-model chat cases passed using simulated storage. Worker correctly read the saved task, received an ordinary source failure, saved valid defer_task arguments against the same task and finished follow-up without false success. Initial phase nevertheless used finish[] for a clearly irrelevant greeting, leaving the queue unsettled and creating unnecessary review work; this was reproduced after correcting the initially ambiguous fixture. Both failed traces remain in /tmp/prompt-audit-model-1792711753720.json and ...1792711827765.json. No destructive write occurred. Parent corrected only the staged initial prompt to explicitly count inspected irrelevant inputs as handled without source reads/writes/tasks. Runner and permission checks unchanged. Two runs used30requests; a focused additional8request ceiling is authorized for this new concrete finding (audit total<=38 of revised40). Independent review and worker-only retest pending; deployment held.
+- Handoff: Independent evaluator reviews one sentence; tester reruns only worker; no chat rerun or release yet.

@@ -1,0 +1,6 @@
+# Cancellation completion implemented
+
+- Timestamp / role: 2026-10-22T19:55:22.355141-04:00 / coder and orchestrator packaging
+- Scope: Add recognized cancellation completion only; dirty tree preserved.
+- Work, checks and decisions: Only server/automation/adapters.js changed. Added source_review cancellation branch for pinned club/Member Plans, using actual normalized cancellation receipts, task-original source/key, exact deterministic eventID/canonicalURL, optional recorded target, and fresh matching cancelled state. Explicit authorized already_absent requires exact successful empty read. Failed/unknown/partial/active/sparse/mismatched outcomes keep tasks. Existing upsert/map checks, source identity/leases/version/cache-only reads and16/64 unchanged. Existing62regressions passed; final syntax/whitespace passed. Independent new cancellation tests and review pending. Prepared isolated57-file worker context from deployed6434 package with exactly adapters.js replaced; concurrent Discord discovery/store work deliberately excluded from this release, preserving it in repository. No live writes or deployment.
+- Handoff: Independent tester/evaluator, then worker-only deployment if accepted.
