@@ -1,0 +1,10 @@
+# Overnight planner status independently reviewed
+
+- Local timestamp / acting role / milestone: 2026-10-24_07-44-17-845613 America/New_York; evaluator; overnight planner status.
+- Requested scope: read-only assessment of operational metadata, denominator and claims; no fixes or external calls.
+- Starting repository state: worker a34ade2f unchanged from reviewed catalogue/read release; branch codex/dev with unrelated local documentation changes preserved.
+- Work performed / changed files: evaluator recounted content-free local event/model metadata, joined run IDs and inspected runner completion semantics and diagnostic definitions. No evaluator edits; orchestrator serializes this report.
+- Decisions: ACCEPT bounded status report. 541 unique starts each have exactly one terminal record. Outcomes:28 completed,36 queued inputs acknowledged;461 unavailable;47 preflight_failed;5 round_limit. Attempts include retries and are not distinct messages/full passes.
+- Checks and evidence:2,473 model HTTP attempts:1,090 succeeded;1,383 failed HTTP429. Each461 unavailable batch has three429 attempts;460 fail at first model turn and one in follow-up. Last completed batch10:31PMNYOct23; first42911:21PMNY. Window7:52PMOct23–7:36AMOct24NY. One participation-patch success and one exact-task resolution verified by parent Railway correlation.78 sync ready results do not establish changed-record counts.
+- Resulting state / acceptance: worker online but unable to complete new batches after sustained provider rejection; earlier checkpoint problems remain. Completion audit alone does not establish completed follow-up. No model error-body subtype is retained; quota/billing/rate cause remains unknown.
+- Remaining work and handoff:31 preflight failures have HTTP200 invalid_request and16 generic preflight failures; do not assign all47 to task size. Automatic/manual origin and unique original count remain unproven. Recent catalogue timing is not an all-night distribution. Parent owns journal and final plain-English status.

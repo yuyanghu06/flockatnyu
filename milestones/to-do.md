@@ -1,3 +1,10 @@
+## Planner overnight status — October 24
+
+- [x] Audit7:52PM–7:36AMNewYork using complete metadata pagination and unique batch/run counts; independent review accepts bounded status.
+- [x] Confirm modelHTTP429, one participation operation/one task resolution, current worker online and recent catalogue success. Distinguish retries, queue acknowledgement and actual saved-task completion.
+- [ ] Investigate provider429 cause and repeated ineffective retries; no change implemented or newly authorized by this status request.
+- [ ] Existing checkpoint-size correction remains outstanding. Do not attribute all47 preflight failures to size without further evidence; preserve original/history/version/source checks.
+
 ## Planner saved-task loading — deployed and verified
 
 - [x] Replace all five whole-backlog loads with service-only catalogue and exact complete-task reads; retain original/version/source/lease checks.

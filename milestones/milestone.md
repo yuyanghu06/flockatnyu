@@ -1,3 +1,13 @@
+## Planner overnight status — October 24, 7:36 AM cutoff
+
+The worker is online, but most overnight attempts failed. Since the7:52PM catalogue/read release: **541 batch attempts,28 marked completed,36 queued inputs acknowledged;461 model-unavailable,47 preflight failures and5 turn-limit outcomes.** Attempts include retries; these are not541 distinct messages or full planner passes. Completion does not establish every follow-up task finished.
+
+The last completed batch was **10:31PM**. From **11:21PM onward**, all model requests returned **HTTP429**:1,383 rejected HTTP attempts across461 batches. The exact rate/quota/billing subtype is not retained. One accepted map participation operation and one successful saved-task resolution are confirmed;78 sync calls ready do not establish78 map changes. Recent catalogue reads still succeed in~1–2.4seconds, but this is not an overnight latency distribution.
+
+No code/settings/deployment/inference changes during this read-only check. Next priorities are investigating429 and repeated ineffective retries, plus the existing task-history size limit.31 preflight failures carry invalid_request/HTTP200;16 are generic and cannot all be assigned to size. Independent review accepts this status report, not planner reliability.
+
+[Evidence and limitations](history/2026-10-24_07-44-17-845613-orchestrator-planner-overnight-status-reviewed.md) · [Independent review](history/2026-10-24_07-44-17-845613-evaluator-planner-overnight-status-accepted.md)
+
 ## Planner saved-task loading deployed; checkpoint limit remains
 
 The reviewed catalogue/exact-read fix is live on worker `a34ade2f-42aa-4c1d-a190-8cc51447d45b`, with hosted migration `20261023234558`. Exact receipt, function bodies, service-only grants, REST access and all60 package hashes verify. Source `23c0e69` and initial evidence `11ecbca` are pushed. Website, collectors and settings were not changed.

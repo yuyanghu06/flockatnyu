@@ -13,3 +13,5 @@ Live observation through 7:58:22 PM: catalogue 0.8–1.5 seconds, exact reads ap
 Status: bounded catalogue/read milestone complete and independently accepted. Overall planner completion remains imperfect because growing checkpoint history can exceed the unchanged per-task limit. No truncation or limit increase was performed. The next work is retention of new history at that limit while preserving originals and prior context.
 
 [Verification and limitations](../../docs/planner-task-storage-verification-2026-10-23.md) · [Current project snapshot](../milestone.md)
+
+October24 overnight status: the loading release remains unchanged and online. Of541 batch attempts through7:36AMNY,28 were marked completed with36 queued inputs acknowledged; one exact task resolution is recorded. From11:21PM, model requests consistently returned429, producing461 unavailable batches. Earlier47 preflight failures and5 round-limit outcomes also occurred. Recent catalogue reads succeed; no all-night latency or broad reliability claim. See the current snapshot and overnight history for exact evidence and caveats.
