@@ -1,30 +1,12 @@
-## Planner storage live release — observation pending
+## Planner saved-task loading — deployed and verified
 
-- [x] Independent/frozen306checks and evaluation; baselineclassify older unrelatedfailures.
-- [x] Apply045, verify exactreceipt/functionbodies/ACL/REST; upload only reviewedworker and observeSUCCESS.
-- [ ] Observe ordinaryqueue processing and populatedcatalogue/read timings; publish scopedsource/final evidence.
+- [x] Replace all five whole-backlog loads with service-only catalogue and exact complete-task reads; retain original/version/source/lease checks.
+- [x] Independently verify actual local PostgreSQL, production-runner large backlogs and preservation; current/frozen306checks pass and evaluator accepts. Record older baseline failures separately.
+- [x] Apply reviewed045 and verify hosted receipt, function bodies, grants and REST endpoints; deploy only reviewed worker.
+- [x] Observe ordinary processing: catalogue0.8–1.5s, exactreads~0.2–0.7s; one full cycle completes with one queued input handled. Publish source and final evidence to origin/codex/dev, then verify the remote commit.
+- [ ] Separate remaining issue: design and verify retention of new execution history at the existing256KiB task limit. Two observed cycles failed checkpoint save; preserve originals/history and exact source/version/lease checks. No truncation or bound increase is approved by this release.
 
-## Planner storage accepted — release steps
-
-- [x] Independent final review and frozen306check gate; exact migration receipt/grants verified locally.
-- [ ] Apply reviewed045atomicwrapper and verify live functions/receipt/service-only RPC access.
-- [ ] Deploy isolated worker, inspect ordinary processing and publish exact reviewed source/evidence.
-
-## Planner storage implementation — final verification
-
-- [x] Implement catalogue/exact reads across all five old list sites and safe storage diagnostics.
-- [x] Verify local SQL/service guards, large simulated backlog, canonical originals, versions/receipts and preservation; API build passes.
-- [x] Measure hosted metadata query shape under existing limits; record scope-helper omission.
-- [ ] Finish independent current fixtures/regressions and exact frozen worker gate; final evaluator acceptance.
-- [ ] Apply reviewed migration plus receipt through existing project dashboard, verify RPC/grants, deploy only reviewed worker, observe ordinary runs.
-
-## Planner task storage fix — active
-
-- [x] Finalize catalogue/exact-read contract and exclusive implementation/test ownership.
-- [ ] Implement runtime and safe storage error details; verify all five old full-list locations.
-- [ ] Independently test large backlogs, exact original/version checks, lost scope/lease, fragments and preservation.
-- [ ] Benchmark proposed hosted query shapes; evaluate the complete reviewed package.
-- [ ] Apply reviewed migration through authorized writable access, then deploy/verify only the worker. Current developer DB connection is read-only; preserve that connection setting.
+[Current release and limits](../docs/planner-task-storage-verification-2026-10-23.md)
 
 ## Spotlight controls and active input — deployed and verified
 
@@ -37,7 +19,7 @@ Source5c0a4cb is pushed. Independent browser/runner/model/evaluator checks pass;
 ## Planner storage recommendation
 
 - [x] Recommend a bounded fix covering startup, phase transitions and completion without loading unrelated histories.
-- [ ] If resumed: implement scoped catalogue/targeted complete reads and safe storage diagnostics; verify versions, leases, source scope, preservation and representative hosted query timing before release.
+- [x] Implemented, verified and deployed as migration045/workera34ade2f. See current release above; the separate checkpoint-size issue remains.
 
 [Recommended scope](history/2026-10-23_19-30-58-739531-orchestrator-planner-storage-fix-recommended.md)
 

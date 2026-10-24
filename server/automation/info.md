@@ -242,8 +242,10 @@ request timeout, permission denial, invalid JSON/shape, oversized responses and
 network/HTTP failures remain distinguishable. Failed response bodies, arguments,
 originals, exception text and credentials are excluded. Startup, phase-transition
 and finish failures retain safe reason/stage/HTTP metadata for operational audits.
-The local catalogue implementation requires migration045 before release; actual
-deployment and verification status remain in the milestone.
+The catalogue implementation is deployed with hosted migration20261023234558
+(local045). Live catalogue and exact reads succeed; an existing256KiB checkpoint
+size limit remains a separate save failure. Current evidence and limitations are
+in docs/planner-task-storage-verification-2026-10-23.md and the milestone.
 
 Unsuccessful tool results, thrown preparation/execution errors, malformed results
 and results over16KiB return one small tool_error response to the model with the

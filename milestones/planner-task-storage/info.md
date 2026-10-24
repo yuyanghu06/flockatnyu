@@ -1,15 +1,15 @@
 # Planner saved-task loading
 
-Goal: remove complete-backlog history transfers from worker startup, phase transitions and completion while retaining all existing authorization and proof checks.
+Goal: remove complete-backlog history transfers from startup, phase transitions and completion while preserving existing authorization, complete original data and exact-version checks.
 
-Scope: new service-only metadata catalogue and exact-task read RPCs, task-store/pipeline wiring, safe storage diagnostics and focused preservation tests. The orchestrator owns migration, journal and release; runtime and tests have separate writers.
+Implemented and deployed: service-only migration 045 adds a small metadata catalogue and exact complete-task reads. All five former full-list sites use them. Safe diagnostics identify operation, error category, HTTP status, time and response size without source bodies or credentials. Prompts, limits, timeouts and separate post-finish Calendar synchronization are unchanged.
 
-Acceptance: real runner with a realistic large synthetic backlog; correct original bindings, snapshots/versions, scopes, leases, fragments and exact resolution; old/mechanical/untouched work survives. Measure hosted query shapes under existing limits. Final evaluator review precedes release.
+Accepted evidence: independent current and frozen-source gates each pass 306 checks; actual local PostgreSQL and scripted production-runner scenarios preserve old/mechanical/untouched tasks and verify source/lease/version/fragment boundaries. Hosted migration receipt, bodies, service-only grants and REST endpoints match. Four older suites have baseline-confirmed unrelated failures.
 
-Status: implementation in progress. Migration045 is local only; writable hosted migration access has not been established. See the rolling milestone for actual verification and release state.
+Release: hosted migration `20261023234558`; Railway worker `a34ade2f-42aa-4c1d-a190-8cc51447d45b` online at 7:52:01 PM New York, October 23. Source `23c0e69` and initial evidence `11ecbca` pushed. Only the isolated reviewed worker package was deployed.
 
-October23 implementation: all five backlog loads replaced; local PostgreSQL/runner checks and API build pass. Hosted metadata query-shape137tasks/88,583B/722.196ms. Final frozen review and migration/worker release remain pending.
+Live observation through 7:58:22 PM: catalogue 0.8–1.5 seconds, exact reads approximately 0.2–0.7 seconds. One ordinary run completed with one input handled. Two failed at checkpoint save under the existing 256 KiB JSONB size check; the read bottleneck did not recur. Saved-task resolution and actual Calendar/map changes are not established.
 
-October23 final evaluator accepts catalogue/exact-read release after306frozenchecks and exact local migration receipt/grants. Hosted migration and worker rollout are next; no hosted success is claimed yet.
+Status: bounded catalogue/read milestone complete and independently accepted. Overall planner completion remains imperfect because growing checkpoint history can exceed the unchanged per-task limit. No truncation or limit increase was performed. The next work is retention of new history at that limit while preserving originals and prior context.
 
-October23: hosted045/receipt/functionACL/RESTverified; isolatedworkera34ade2f isSUCCESSat19:52:01NewYork. Bothcurrent/frozengates306pass. Ordinaryrunobservation andsourcepublication remain.
+[Verification and limitations](../../docs/planner-task-storage-verification-2026-10-23.md) · [Current project snapshot](../milestone.md)

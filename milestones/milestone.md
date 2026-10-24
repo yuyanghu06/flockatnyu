@@ -1,32 +1,12 @@
-## Planner storage migration live; worker online
+## Planner saved-task loading deployed; checkpoint limit remains
 
-Reviewed045 is applied as hosted20261023234558. Both exactfunctionbodies,6020byte receipt, service-onlygrants and RESTresponses verify. Workera34ade2f isSUCCESS/online at7:52:01PM; startup maintenance succeeds and it initially waits on the existing globallease. Ordinaryqueuecycle verification remains.
+The reviewed catalogue/exact-read fix is live on worker `a34ade2f-42aa-4c1d-a190-8cc51447d45b`, with hosted migration `20261023234558`. Exact receipt, function bodies, service-only grants, REST access and all60 package hashes verify. Source `23c0e69` and initial evidence `11ecbca` are pushed. Website, collectors and settings were not changed.
 
-The final current and isolatedfrozen gates bothpass306checks. Four older suites retain24failures; each also fails on prechange runtime, so no full-repositorypassingclaim. Only the isolatedthreefileworker was uploaded.
+Real populated catalogues take **0.8–1.5 seconds** and exact reads approximately **0.2–0.7 seconds**. Through7:58:22PMNewYork, three ordinary runs started after activation: **one completed** with one queued input handled; **two failed final checkpoint saves** under the existing256KiBJSONB limit. All observed catalogue/read calls succeeded. Queue completion does not establish saved-task resolution, backlog clearance or actual Calendar/map changes.
 
-[Independent tests](history/2026-10-23_19-53-06-205193-tester-task-storage-independent-passed.md) · [Migration/worker receipt](history/2026-10-23_19-53-06-205193-orchestrator-task-storage-migration-applied-worker-uploaded.md)
+Independent evaluator accepts the bounded loading fix; current/frozen306checks pass. Older unrelated failures are baseline-confirmed. No history was truncated or size/call/time limits changed. **Next work:** retain new execution history when a task reaches its existing size limit, preserving originals/prior context and exact authorization/version checks. Overall planner completion remains imperfect.
 
-## Planner storage accepted for release
-
-Independent evaluator ACCEPT. Frozenworker gate306/306passes; exactoriginal/version/scope/lease/fragment and preservation checks remain intact. Explicit REST schema refresh is included. A migration receipt formatting error was caught and corrected before any hosted write; reviewed atomicwrapper now passes exact6020byte receipt and actual localSQL verification.
-
-Next: apply only reviewed045wrapper, verify hosted grants/definitions/REST, then deploy the isolated three-fileworker. No hosted application or rollout yet.
-
-[Acceptance and evidence](history/2026-10-23_19-48-38-773242-evaluator-task-storage-release-accepted.md) · [Verification](../docs/planner-task-storage-verification-2026-10-23.md)
-
-## Planner storage implementation and performance checks pass
-
-All five whole-backlog worker loads now use catalogue/exact reads; exact proof and preservation checks remain. Local actualSQL and syntheticrunner checks pass; runtimecoder's scoped gate passes127. A hosted metadata projection of137tasks returned88,583bytes in722.196ms (private scopehelper omitted; query-shape timing only). Final independent/frozen gates remain.
-
-The release candidate contains only three automation changes on deployedworker d56. Correctprojectdashboard access is available; no migration or workerupload has run yet. Read-only connector settings remain unchanged.
-
-[Coder report](history/2026-10-23_19-45-40-969763-coder-task-storage-catalogue-implemented.md) · [Verification and limits](../docs/planner-task-storage-verification-2026-10-23.md)
-
-## Planner task storage fix — implementation underway
-
-User accepted the catalogue/selected-read fix. New migration045 defines service-only saved-task metadata and exact complete reads; runtime changes and independent tests are in progress. Existing checks, data and16/64/10limits stay intact. The developer DB connection is read-only and the separate management account denies access; no hosted migration or worker release has run.
-
-[Scope](planner-task-storage/info.md) · [Planner contract](history/2026-10-23_19-37-45-415021-planner-task-catalogue-interface-accepted.md) · [Implementation start](history/2026-10-23_19-37-45-415022-orchestrator-task-storage-implementation-started.md)
+[Live release and limitations](history/2026-10-23_20-00-54-481110-orchestrator-task-storage-live-release-verified.md) · [Independent acceptance](history/2026-10-23_20-00-54-481110-evaluator-task-storage-live-observations-accepted.md) · [Checkpoint diagnosis](history/2026-10-23_20-00-54-481110-planner-checkpoint-size-branch-diagnosed.md) · [Verification](../docs/planner-task-storage-verification-2026-10-23.md)
 
 ## Spotlight controls and active input — deployed and verified
 
