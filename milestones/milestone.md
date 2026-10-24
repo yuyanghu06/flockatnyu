@@ -1,3 +1,11 @@
+## Model usage since Thursday's first planner rollout — reviewed
+
+From **October 22 at 1:21 PM through October 24 at 10:15 AM New York**, production audit records contain **$4.79 in known cost estimates: $4.33 planner and $0.46 chat**. This is a recorded estimate subtotal, not an account invoice. There are5,840model-audit attempt records, including retries and six with unknownHTTPstatus;1,639lack prices, including1,616HTTP429 rejections. Recorded tokens total129,416,005input and557,551output; cache/reasoning subsets are not counted twice.
+
+Separate evidence documents211local evaluation requests excluded by no-op audit writers (158survivingledger records plus53journal-documented); their billed usage/cost and the complete local inventory remain unknown. Ordinary planner records span1,021batchrunIDs plusone diagnostic, not1,021verifiedfullpasses. Independent recount accepts the bounded report. No inference, application/configuration/billing changes or deployments were made for this review.
+
+[Usage report and limits](model-usage-review/info.md) · [Integrated evidence](history/2026-10-24_10-26-06-121412-orchestrator-thursday-model-usage-reviewed.md) · [Independent recount](history/2026-10-24_10-26-06-121412-evaluator-model-usage-recount-accepted.md) · [Local tests and rollout boundary](history/2026-10-24_10-25-17-513428-planner-usage-boundary-and-local-tests-reviewed.md)
+
 ## Ordered provider fallback — deployed on chat and planner
 
 **Web4f166ae7 and workere8f401b7 are SUCCESS/online**, with no pendingdeploymentwork. Source3accbda is pushed. Private LLM_PROVIDERS_JSON is installed and verified on bothservices plus local.env, currently containing only eachservice'sexistingprimary. Otherconfiguredvariables are unchanged; no backupcredentials were supplied.

@@ -1,3 +1,10 @@
+## Thursday model usage review — complete
+
+- [x] Pin first Thursday worker rollout start and fixed Saturday cutoff; read complete production audit metadata with no prompts/outputs/source bodies.
+- [x] Independently recount planner/chat attempts, known token/cost subtotals and missing usage; distinguish retries, unknown dispatch and full passes.
+- [x] Document separately211local evaluation requests excluded from production audit; preserve ledger-versus-journal evidence and unknown billed cost.
+- Exact account spending and all local testing costs remain unverified; production subtotal is not an invoice. Existing credit/backup-provider/checkpoint recovery work stays below.
+
 ## Ordered provider fallback — deployed and verified
 
 - [x] OrderedprivateURL/key/model list acrosschat/planner; nativeprotocolrouting, oneexistingdeadline, safepreacceptfallback andcompletekeyredaction.

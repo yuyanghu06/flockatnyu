@@ -282,3 +282,5 @@ October23 implementation: all five backlog loads replaced; local PostgreSQL/runn
 October23 final evaluator accepts catalogue/exact-read release after306frozenchecks and exact local migration receipt/grants. Hosted migration and worker rollout are next; no hosted success is claimed yet.
 
 October23: hosted045/receipt/functionACL/RESTverified; isolatedworkera34ade2f isSUCCESSat19:52:01NewYork. Bothcurrent/frozengates306pass. Ordinaryrunobservation andsourcepublication remain.
+
+October24 model-usage entries record the exact Thursday rollout-start boundary, excluded local evaluation inventory, independent metadata recount and the bounded production estimate subtotal; no new inference or live changes.
