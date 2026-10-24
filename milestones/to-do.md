@@ -1,3 +1,13 @@
+## Planner failure diagnosis — October24
+
+- [x] Confirm current provider cause with one audited same-configuration synthetic request: credit_balance_exhausted; preserve historical-cause inference limit.
+- [x] Trace request and batch retries, failure accounting and current quarantine side effect; independently review evidence.
+- [x] Reproduce checkpoint SQL/Node size failures locally with deployed runner and real PostgreSQL; distinguish31 supported cases from16 genericcases.
+- [ ] Restore APIcredits through the account owner; no purchase or billing change made.
+- [ ] Implement safe provider error classification and persistent provider pause/deferral without consuming message failures. Preserve existing limits and exact lease/source/hash checks.
+- [ ] Recover eligible quarantined work through existing exact checks; no automatic bulk requeue performed.
+- [ ] Fix growing checkpoint history without losing originals/prior context. No truncation or cap increase selected.
+
 ## Planner overnight status — October 24
 
 - [x] Audit7:52PM–7:36AMNewYork using complete metadata pagination and unique batch/run counts; independent review accepts bounded status.

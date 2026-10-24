@@ -1,3 +1,15 @@
+## Planner failure diagnosis — API credits exhausted
+
+**Current provider cause confirmed:** one audited diagnostic using the same key/model/endpoint as the running worker returned `credit_balance_exhausted` / `insufficient_quota` at7:47AMNewYorkOctober24. No business data was sent and no retries were made. Historical429bodies were discarded, so this is direct proof of current exhaustion and a strong explanation of the continuous rejection sequence since11:21PM.
+
+Two code problems worsen the outage: all429s are treated as temporary, causing threeHTTPattempts per batch, and no persistent provider pause stops later batches (about65seconds apart). Failures consume message retry counts; at7:50AM,57current queue items were quarantined with unavailable as last outcome. This global snapshot is not an overnight credit-specific count. No billing/settings/requeue/deployment changes were made.
+
+Checkpoint failures are separate. Local deployed-runner/PGlite cases reproduce both SQL-size rejection (257801compactbytes versus262898JSONBbytes) and Node's own over-limit rejection.31overnightRPCfailures support the size cause;16genericcases remain individuallyunproven. Old tasks survive, but newhistory cannot save and queue inputs remain unfinished. Independent evaluator accepts the bounded diagnosis.
+
+Next: restoreAPIcredits; classify approved quota errors and persist a provider pause without penalizing messages; then handle checkpointgrowth and recover eligible quarantines through exact source/hash checks. These fixes are recommended, not implemented by this diagnosis.
+
+[Diagnosis/evidence](history/2026-10-24_07-54-23-059580-orchestrator-planner-credit-exhaustion-confirmed.md) · [Retry paths](history/2026-10-24_07-54-23-059580-planner-provider-and-queue-retry-loop-diagnosed.md) · [Local storage reproduction](history/2026-10-24_07-54-23-059580-tester-checkpoint-size-failure-reproduced.md) · [Independent review](history/2026-10-24_07-54-23-059580-evaluator-planner-failure-diagnosis-accepted.md) · [Scope](planner-failure-diagnosis/info.md)
+
 ## Planner overnight status — October 24, 7:36 AM cutoff
 
 The worker is online, but most overnight attempts failed. Since the7:52PM catalogue/read release: **541 batch attempts,28 marked completed,36 queued inputs acknowledged;461 model-unavailable,47 preflight failures and5 turn-limit outcomes.** Attempts include retries; these are not541 distinct messages or full planner passes. Completion does not establish every follow-up task finished.
