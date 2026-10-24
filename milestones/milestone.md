@@ -1,20 +1,14 @@
-## Ordered provider fallback accepted — release packages verified
+## Ordered provider fallback — deployed on chat and planner
 
-Ordered LLM_PROVIDERS_JSON is implemented for chat and planner. Invalidlists failclosed; blank preserveslegacy. EachURL/key uses its own protocol/model and auditidentity. Allattempts share the originaldeadline. Credit/auth/paymentrejections advance; temporaryerrors retry withinbounds. AnyHTTPsuccess, cancellation, localvalidation or required auditfailure prevents replay.
+**Web4f166ae7 and workere8f401b7 are SUCCESS/online**, with no pendingdeploymentwork. Source3accbda is pushed. Private LLM_PROVIDERS_JSON is installed and verified on bothservices plus local.env, currently containing only eachservice'sexistingprimary. Otherconfiguredvariables are unchanged; no backupcredentials were supplied.
 
-Independent tests and evaluator accept. Relevant185checks pass; independent109 and126 gates overlap. Each exact baseline-isolated web/worker release also passes109checks andAPIbuild. Packages279webfiles/60workerfiles differ only in the four reviewedruntimefiles and pass credentialscan. No frontend/business/schema/collector change.
+The router tries orderedURL/key/model entries, skips knowncredit/auth/paymentrejections and uses boundedtransientretries under one existingdeadline. Allthree modeloperations and bothprotocols are covered. AnyacceptedHTTPresponse, localvalidation, callerabort orrequiredauditfailure prevents replay. Actualattemptidentity is audited andalllistkeysredacted. Existingtool/stage/round/outputlimits remain.
 
-Private local list contains the existingprimary only; backupcredentials were not supplied, so livebackupsuccess and creditrestoration are unverified. Sourcepublication and isolatedweb/worker release next. Persistentproviderpause, quarantine recovery and checkpointgrowth remain outstanding separate work.
+Independenttests/evaluatoraccept; bothbaseline-isolatedreleases pass109checks/APIbuild. Packages contain279web/60workerfiles andonly4reviewedruntimechanges. Hostedhealth/auth/config andunchangedHTML/10JS/CSSchecks pass withzeroverificationinference/businesswrites. The firstobservedordinaryworkerbatch makesoneHTTP429credit_balance_exhausted request, skippingredundantquota retries. Startupprunemaintenanceloggedafailure; laterrequiredauditrecords succeeded.
 
-[Integration/package evidence](history/2026-10-24_08-17-15-982823-orchestrator-provider-fallback-packages-verified.md) · [Evaluator](history/2026-10-24_08-17-15-982823-evaluator-ordered-provider-fallback-accepted.md) · [Configuration guide](../docs/provider-routing.md)
+**Limit:** livebackupsuccess remainsunverified untilvalidsecond/thirdcredentials are added. Currentprimarycreditsremainexhausted; persistentproviderpause, quarantinerecovery andcheckpointlimits areseparate outstandingwork.
 
-## Ordered provider fallback — implementation starting
-
-User requested a server-only ordered provider URL/key list. Accepted contract adds LLM_PROVIDERS_JSON across chat/planner, preserves legacy settings and existing limits/deadline, skips rejected providers before HTTPsuccess, audits actual provider identity and redacts every list key. No replay after accepted responses or partial streams.
-
-Planner pass accepted; independent legacy baseline92checks pass. Runtime/test writers have exclusive ownership. No secondarycredentials supplied and no livefallback claim. Outagepause/quarantinerecovery/checkpointgrowth remain separate.
-
-[Contract](provider-fallback/info.md) · [Planner pass](history/2026-10-24_08-00-55-162213-planner-ordered-provider-fallback-contract.md)
+[Live release/evidence](history/2026-10-24_08-23-49-710620-orchestrator-provider-fallback-live-verified.md) · [Configuration](../docs/provider-routing.md) · [Scope](provider-fallback/info.md)
 
 ## Planner failure diagnosis — API credits exhausted
 

@@ -1,16 +1,9 @@
-## Ordered provider fallback — accepted for release
+## Ordered provider fallback — deployed and verified
 
-- [x] Implement orderedprivateconfiguration, safe pre-response fallback and all-listkey redaction; preserveexistinglimits/deadline.
-- [x] Independentmechanics/runner/security tests, APIbuild and evaluator acceptance; both isolatedfrozens pass109checks.
-- [x] Verify279web/60workerpackagefiles andfourreviewedruntimehashes; privatekeyscanpasses.
-- [ ] Publishsource and deployonlyreviewedweb/workerpackages; verifyprivateprimarylist/settings/health. No backupkey supplied, no livebackupclaim.
-
-## Ordered provider fallback
-
-- [x] Accept bounded configuration/routing/audit contract and establish92-check legacy baseline.
-- [ ] Implement ordered list, safe pre-response fallback and nested-key redaction.
-- [ ] Independently test second/third recovery, all operations/protocols, deadline/abort/audit/secret and no-replay boundaries; evaluate final changes.
-- [ ] Integrate source/environment guidance and publish/release within existing authorization. No secondaryprovider key is supplied; distinguish mechanism from livebackup verification.
+- [x] OrderedprivateURL/key/model list acrosschat/planner; nativeprotocolrouting, oneexistingdeadline, safepreacceptfallback andcompletekeyredaction.
+- [x] Independenttests/evaluator andexactweb/workerfrozens/packagehashes; source3accbda published.
+- [x] Privateprimarylist installed locally andonbothservices; isolatedweb4f166ae7/workere8f401b7 SUCCESS, health/auth/config/unchangedassetsverified.
+- [ ] When backupcredentials are available, addvalidentries privately andverifylivefallback. No credentials were invented oraddedforsecond/thirdproviders.
 
 ## Planner failure diagnosis — October24
 
