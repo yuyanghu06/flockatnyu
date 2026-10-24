@@ -2,6 +2,15 @@
 
 Adapters for OpenAI-compatible chat completions and Anthropic messages normalize streamed text, completion, cancellation and errors. Optional bounded planning calls let the selected model choose up to two server-owned Discord retrieval tools; filters are validated and trusted member scope stays outside model arguments. Configuration is server-only with no chosen model or key. Local protocol and Hono fixture tests pass; real provider calls remain unverified. See [Discord archive setup](../../docs/discord-archive.md).
 
+`LLM_PROVIDERS_JSON` optionally supplies an ordered list of one through eight
+explicit API base URLs/keys, each with a supported protocol and model (or those
+two values inherited from `LLM_PROVIDER`/`LLM_MODEL`). Any invalid nonblank list
+makes model configuration unavailable; absent/blank lists keep legacy settings.
+The public `createProvider` API and injected transport/audit/retry dependencies
+stay unchanged. Chat and planner share its `toolTurn`, `planTools` and `stream`
+router. Each candidate rebuilds its own native request and uses its own parser.
+See [provider routing](../../docs/provider-routing.md) for private configuration.
+
 
 Official-host gpt-6-luna/gpt-6-sol tool planning sets reasoning_effort:none because Chat Completions requires it for function calls. Other hosts/models/providers and answer streaming keep existing behavior. Actual Luna live retrieval smoke and six compatibility regressions verify this boundary.
 
@@ -22,16 +31,34 @@ All three dispatch paths now write private model audit starts/results with run/r
 Actual provider cache_write_tokens is retained separately from cached reads; known direct Luna pricing partitions total input across uncached/read/write categories. Missing counts or inputs above272K remain unpriced.
 
 All three operations share bounded inference retries in `index.js` and `retry.js`:
-at most three HTTP attempts, with one- and three-second backoff, under one original
-configured timeout and caller cancellation signal. Only HTTP 408/429/500/502/503/504
+at most three HTTP attempts per entry, with one- and three-second backoff, under
+one original configured timeout and caller cancellation signal for the entire
+ordered chain. Only HTTP 408/429/500/502/503/504
 (plus Anthropic 529) and explicitly allowlisted pre-response network errors retry.
 A valid Retry-After can lengthen the wait; retries stop when that wait cannot fit
-within the remaining deadline. Response bodies from rejected attempts are cancelled.
+within the remaining deadline. HTTP401/402/403/404, confirmed exhausted credits and
+other5xx advance without extra same-entry retries. Temporary failures advance
+after their bounded retries when budget remains. Other client errors and unknown
+transport failures stop the operation. Rejected429 envelopes are read up to16KiB
+only to recognize exact `credit_balance_exhausted` or `insufficient_quota` values
+under `error.code`, `error.type`, `code` or `type`; ordinary429s keep their retries.
+Only those fixed codes can enter audits; bodies are discarded. This quota
+classification also prevents redundant legacy one-provider retries.
+Response bodies from rejected attempts are cancelled.
 Each attempt has its own durable audit start and finish, with a shared run/round
-context. Credentials, prompts and upstream error bodies remain excluded from audit.
+context and actual provider/model/hostname. Every JSON-list key participates in
+private audit redaction, including bare echoed keys. Credentials, prompts and
+upstream error bodies remain excluded from audit.
 Successful-response decoding, malformed UTF-8/JSON/SSE, generated error responses,
-tool validation/execution and partial answer streams never replay. Planning and
+tool validation/execution and partial answer streams never replay. Any HTTP2xx
+commits to that entry, including failures before the first answer token. Local
+validation/attachment errors, required audit-start failure and caller abort never
+route. Planning and
 streaming now enforce the configured timeout directly, as native tool turns do.
+Audit persistence retains its own existing timeout and mandatory start behavior;
+its latency consumes the inference budget, and dispatch rechecks that deadline
+before every actual HTTP request. No audit timeout is changed. Terminal audit
+failure preserves the original provider result/failure.
 `retrySleep` is an optional dependency-injection seam for local tests; it changes
 neither the production attempt limit nor the deadline checks. No runtime setting,
 provider SDK, model choice or deployment is introduced by this change.

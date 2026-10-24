@@ -1,3 +1,21 @@
+## Ordered provider fallback accepted — release packages verified
+
+Ordered LLM_PROVIDERS_JSON is implemented for chat and planner. Invalidlists failclosed; blank preserveslegacy. EachURL/key uses its own protocol/model and auditidentity. Allattempts share the originaldeadline. Credit/auth/paymentrejections advance; temporaryerrors retry withinbounds. AnyHTTPsuccess, cancellation, localvalidation or required auditfailure prevents replay.
+
+Independent tests and evaluator accept. Relevant185checks pass; independent109 and126 gates overlap. Each exact baseline-isolated web/worker release also passes109checks andAPIbuild. Packages279webfiles/60workerfiles differ only in the four reviewedruntimefiles and pass credentialscan. No frontend/business/schema/collector change.
+
+Private local list contains the existingprimary only; backupcredentials were not supplied, so livebackupsuccess and creditrestoration are unverified. Sourcepublication and isolatedweb/worker release next. Persistentproviderpause, quarantine recovery and checkpointgrowth remain outstanding separate work.
+
+[Integration/package evidence](history/2026-10-24_08-17-15-982823-orchestrator-provider-fallback-packages-verified.md) · [Evaluator](history/2026-10-24_08-17-15-982823-evaluator-ordered-provider-fallback-accepted.md) · [Configuration guide](../docs/provider-routing.md)
+
+## Ordered provider fallback — implementation starting
+
+User requested a server-only ordered provider URL/key list. Accepted contract adds LLM_PROVIDERS_JSON across chat/planner, preserves legacy settings and existing limits/deadline, skips rejected providers before HTTPsuccess, audits actual provider identity and redacts every list key. No replay after accepted responses or partial streams.
+
+Planner pass accepted; independent legacy baseline92checks pass. Runtime/test writers have exclusive ownership. No secondarycredentials supplied and no livefallback claim. Outagepause/quarantinerecovery/checkpointgrowth remain separate.
+
+[Contract](provider-fallback/info.md) · [Planner pass](history/2026-10-24_08-00-55-162213-planner-ordered-provider-fallback-contract.md)
+
 ## Planner failure diagnosis — API credits exhausted
 
 **Current provider cause confirmed:** one audited diagnostic using the same key/model/endpoint as the running worker returned `credit_balance_exhausted` / `insufficient_quota` at7:47AMNewYorkOctober24. No business data was sent and no retries were made. Historical429bodies were discarded, so this is direct proof of current exhaustion and a strong explanation of the continuous rejection sequence since11:21PM.

@@ -1,7 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { AttachmentError, providerChatMessages } from '../chat-attachments.js';
 import { createAuditLogger } from '../model-audit.js';
-import { abortableDelay, retryDelay, transientStatus, transientTransport, untilAborted } from './retry.js';
+import { abortableDelay, fallbackStatus, hardQuotaCode, retryDelay, transientStatus, transientTransport, untilAborted } from './retry.js';
+// Private routing state cannot be authored by model output or an upstream body.
+const operationBudget=Symbol('operationBudget'),fallbackFailures=new WeakSet();
+const sharedBudget=(config,signal)=>{
+  const timeoutMs=config.timeoutMs||30000;
+  return {combined:AbortSignal.any([signal,AbortSignal.timeout(timeoutMs)].filter(Boolean)),deadline:performance.now()+timeoutMs};
+};
 export class ProviderError extends Error {
   constructor(code = 'provider_unavailable') { super(code); this.code = code; }
 }
@@ -119,7 +125,7 @@ function captureToolDelta(state, index, delta) {
   for (const key of ['id', 'name', 'arguments']) appendOutput(state, key, delta[key], target);
 }
 
-export function createProvider(config, { fetchImpl = fetch, audit = createAuditLogger(), retrySleep = abortableDelay, writeDiagnostic=entry=>console.warn(JSON.stringify(entry)) } = {}) {
+function createSingleProvider(config, { fetchImpl = fetch, audit = createAuditLogger(), retrySleep = abortableDelay, writeDiagnostic=entry=>console.warn(JSON.stringify(entry)) } = {}) {
   const newCall = (operation, context, stream = false) => ({
     callId: randomUUID(), operation, context: context || { agent: 'chat', runId: randomUUID() }, stream,
     status: 'cancelled', usage: emptyUsage(), output: {}, responseId: null,
@@ -142,7 +148,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       }
       const result = await audit.finishModel({ callId: state.callId, status: state.status,
         responseId: state.responseId, providerRequestId: state.providerRequestId, httpStatus: state.httpStatus,
-        stopReason: state.stopReason, serviceTier: state.serviceTier, usage: state.usage, output: state.output, errorCode: state.errorCode || null });
+        stopReason: state.stopReason, serviceTier: state.serviceTier, usage: state.usage, output: state.output, errorCode: state.upstreamErrorCode || state.errorCode || null });
       if (result?.status === 'unavailable' || audit.required && result?.status !== 'ready') throw new Error('audit_unavailable');
     } catch {
       // Keep the original provider result/failure; its durable start stays unresolved.
@@ -152,6 +158,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
   const failCall = (state, error, signal, combined) => {
     const safe = signal?.aborted ? new ProviderError('aborted') : combined?.aborted ? new ProviderError('provider_unavailable')
       : error instanceof ProviderError ? error : new ProviderError('provider_unavailable');
+    fallbackFailures.delete(safe); // Only the current dispatch can grant routing after normalization.
     state.status = safe.code === 'aborted' ? 'aborted' : 'failed'; state.errorCode = safe.code;
     if(safe.diagnostics&&responseFailureReasons.has(safe.diagnostics.reason)) {
       state.output.diagnostics=safe.diagnostics;
@@ -166,14 +173,27 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
     state.httpStatus = response.status;
     state.providerRequestId = response.headers.get('x-request-id') || response.headers.get('request-id');
   };
-  const budget = signal => {
-    const timeoutMs = config.timeoutMs || 30000;
-    return { combined: AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)].filter(Boolean)), deadline: performance.now() + timeoutMs };
-  };
+  const budget = signal => sharedBudget(config,signal);
   const cancelResponse = async (response, signal) => {
     try { await untilAborted(response?.body?.cancel(), signal); }
     catch { /* Discard error bodies; cleanup cannot extend the operation deadline. */ }
   };
+  async function quotaCode(response,combined) {
+    // Inspect only rejected429 envelopes, never successful generated text. Keep
+    // just an approved fixed code; discard every body byte after classification.
+    let reader;
+    try {
+      if(!response.body)return null;
+      reader=response.body.getReader();const chunks=[];let bytes=0;
+      while(true) {
+        const {value,done}=await untilAborted(reader.read(),combined);
+        if(done)break;
+        bytes+=value.byteLength;if(bytes>16384)return null;chunks.push(value);
+      }
+      return hardQuotaCode(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks))));
+    }catch{return null;}
+    finally {if(reader){await untilAborted(reader.cancel(),combined).catch(()=>{});reader.releaseLock();}}
+  }
   const dispatch = async ({ operation, context, body, signal, combined, deadline, stream = false }) => {
     // One operation owns one fallback run ID, including every rejected attempt.
     const callContext = context || { agent: 'chat', runId: randomUUID() };
@@ -185,7 +205,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
     for (let attempt = 1; attempt <= 3; attempt++) {
       const state = newCall(operation, callContext, stream);
       await startCall(state);
-      let response, retryable = false, failure;
+      let response, retryable = false, fallbackEligible = false, failure;
       try {
         if (combined.aborted || performance.now() >= deadline) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
         // Only this fetch rejection is eligible for transport retries. Parsing,
@@ -193,18 +213,23 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
         try {
           response = await untilAborted(fetchImpl(`${config.baseUrl.replace(/\/$/, '')}/${anthropic ? 'messages' : 'chat/completions'}`, init), combined,
             value => { void cancelResponse(value, combined); });
-        } catch (error) { retryable = transientTransport(error); throw error; }
+        } catch (error) { retryable = transientTransport(error);fallbackEligible=retryable;throw error; }
         noteResponse(state, response);
         if (combined.aborted) { await cancelResponse(response, combined); throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable'); }
         if (response.ok) return { response, auditState: state };
-        retryable = transientStatus(response.status, config.provider);
+        state.upstreamErrorCode=response.status===429?await quotaCode(response,combined):null;
+        retryable = !state.upstreamErrorCode&&transientStatus(response.status, config.provider);
+        fallbackEligible=fallbackStatus(response.status);
         await cancelResponse(response, combined);
         throw new ProviderError('provider_unavailable');
       } catch (error) { failure = failCall(state, error, signal, combined); }
       await finishCall(state);
       const delay = retryable ? retryDelay(attempt, response?.headers.get('retry-after')) : null;
       if (signal?.aborted) throw new ProviderError('aborted');
-      if (delay === null || combined.aborted || delay >= deadline - performance.now()) throw failure;
+      if (delay === null || combined.aborted || delay >= deadline - performance.now()) {
+        if(fallbackEligible&&!combined.aborted)fallbackFailures.add(failure);
+        throw failure;
+      }
       try { await untilAborted(retrySleep(delay, combined), combined); }
       catch { throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable'); }
       if (combined.aborted || performance.now() >= deadline) throw new ProviderError(signal?.aborted ? 'aborted' : 'provider_unavailable');
@@ -212,7 +237,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
   };
 
   return {
-    async toolTurn({messages,system,tools,signal,auditContext,maxToolCalls=8}) {
+    async toolTurn({messages,system,tools,signal,auditContext,maxToolCalls=8,[operationBudget]:suppliedBudget}) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic=config.provider==='anthropic';
       if (!Number.isInteger(maxToolCalls)||maxToolCalls<1||maxToolCalls>16||!Array.isArray(messages)||!Array.isArray(tools)||tools.length>64||typeof system!=='string') throw new ProviderError('invalid_provider_request');
@@ -245,7 +270,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
         :{model:config.model,messages:[{role:'system',content:system},...native],tools:definitions,tool_choice:'auto',max_completion_tokens:2048,stream:false,store:false,
           ...(['gpt-6-luna','gpt-6-sol'].includes(config.model)&&config.baseUrl.replace(/\/$/,'')==='https://api.openai.com/v1'?{reasoning_effort:'none'}:{})};
       if(Buffer.byteLength(JSON.stringify(body))>350000) throw new ProviderError('invalid_provider_request');
-      const { combined, deadline } = budget(signal);
+      const { combined, deadline } = suppliedBudget??budget(signal);
       const { response, auditState } = await dispatch({ operation: 'toolTurn', context: auditContext, body, signal, combined, deadline });
       let reader;
       const cancel=()=>{void reader?.cancel().catch(()=>{});};
@@ -285,7 +310,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       } catch(e) {throw failCall(auditState,e,signal,combined);}
       finally {combined.removeEventListener('abort',cancel);try {if(reader){await untilAborted(reader.cancel(),combined).catch(()=>{});reader.releaseLock();}} finally {await finishCall(auditState);}}
     },
-    async planTools({ messages, system, tools, signal, auditContext }) {
+    async planTools({ messages, system, tools, signal, auditContext,[operationBudget]:suppliedBudget }) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic = config.provider === 'anthropic';
       let nativeMessages;
@@ -300,7 +325,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
           // Answer streaming retains the configured model's default reasoning.
           ...(['gpt-6-luna', 'gpt-6-sol'].includes(config.model) && config.baseUrl.replace(/\/$/, '') === 'https://api.openai.com/v1'
             ? { reasoning_effort: 'none' } : {}) };
-      const { combined, deadline } = budget(signal);
+      const { combined, deadline } = suppliedBudget??budget(signal);
       const { response, auditState } = await dispatch({ operation: 'planTools', context: auditContext, body, signal, combined, deadline });
       try {
         if (!response.body) throw new ProviderError('provider_unavailable');
@@ -335,7 +360,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       } catch (error) { throw failCall(auditState, error, signal, combined); }
       finally { await finishCall(auditState); }
     },
-    async *stream({ messages, system, signal, auditContext }) {
+    async *stream({ messages, system, signal, auditContext,[operationBudget]:suppliedBudget }) {
       if (!config.configured) throw new ProviderError('not_configured');
       const anthropic = config.provider === 'anthropic';
       let nativeMessages;
@@ -343,7 +368,7 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       const body = anthropic
         ? { model: config.model, system, messages: nativeMessages, max_tokens: 2048, stream: true }
         : { model: config.model, messages: [{ role: 'system', content: system }, ...nativeMessages], stream: true, store: false, stream_options: { include_usage: true } };
-      const { combined, deadline } = budget(signal);
+      const { combined, deadline } = suppliedBudget??budget(signal);
       const { response, auditState } = await dispatch({ operation: 'stream', context: auditContext, body, signal, combined, deadline, stream: true });
       try {
         if (!response.headers.get('content-type')?.includes('text/event-stream')) {
@@ -420,4 +445,29 @@ export function createProvider(config, { fetchImpl = fetch, audit = createAuditL
       }
     },
   };
+}
+
+export function createProvider(config,dependencies={}) {
+  if(!Array.isArray(config.providers))return createSingleProvider(config,dependencies);
+  const adapters=config.providers.map(entry=>createSingleProvider({...config,...entry,configured:config.configured},dependencies));
+  const prepare=args=>{
+    if(!config.configured||!adapters.length)throw new ProviderError('not_configured');
+    return {...args,auditContext:args.auditContext||{agent:'chat',runId:randomUUID()},[operationBudget]:sharedBudget(config,args.signal)};
+  };
+  const canAdvance=(error,args)=>fallbackFailures.has(error)&&!args[operationBudget].combined.aborted
+    &&performance.now()<args[operationBudget].deadline;
+  const routed=operation=>async request=>{
+    const args=prepare(request);
+    for(let index=0;index<adapters.length;index++) {
+      try{return await adapters[index][operation](args);}
+      catch(error){if(index===adapters.length-1||!canAdvance(error,args))throw error;}
+    }
+  };
+  return {toolTurn:routed('toolTurn'),planTools:routed('planTools'),async *stream(request){
+    const args=prepare(request);
+    for(let index=0;index<adapters.length;index++) {
+      try{yield* adapters[index].stream(args);return;}
+      catch(error){if(index===adapters.length-1||!canAdvance(error,args))throw error;}
+    }
+  }};
 }

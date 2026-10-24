@@ -1,3 +1,17 @@
+## Ordered provider fallback — accepted for release
+
+- [x] Implement orderedprivateconfiguration, safe pre-response fallback and all-listkey redaction; preserveexistinglimits/deadline.
+- [x] Independentmechanics/runner/security tests, APIbuild and evaluator acceptance; both isolatedfrozens pass109checks.
+- [x] Verify279web/60workerpackagefiles andfourreviewedruntimehashes; privatekeyscanpasses.
+- [ ] Publishsource and deployonlyreviewedweb/workerpackages; verifyprivateprimarylist/settings/health. No backupkey supplied, no livebackupclaim.
+
+## Ordered provider fallback
+
+- [x] Accept bounded configuration/routing/audit contract and establish92-check legacy baseline.
+- [ ] Implement ordered list, safe pre-response fallback and nested-key redaction.
+- [ ] Independently test second/third recovery, all operations/protocols, deadline/abort/audit/secret and no-replay boundaries; evaluate final changes.
+- [ ] Integrate source/environment guidance and publish/release within existing authorization. No secondaryprovider key is supplied; distinguish mechanism from livebackup verification.
+
 ## Planner failure diagnosis — October24
 
 - [x] Confirm current provider cause with one audited same-configuration synthetic request: credit_balance_exhausted; preserve historical-cause inference limit.

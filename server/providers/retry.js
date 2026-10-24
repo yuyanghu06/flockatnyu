@@ -8,6 +8,14 @@ const TRANSPORT_CODES = new Set([
 ]);
 
 export const transientStatus = (status, provider) => TRANSIENT_STATUS.has(status) || provider === 'anthropic' && status === 529;
+// Only these observed machine-readable codes establish exhausted credits. A
+// message mentioning quota, or an ordinary rate-limit code, does not qualify.
+const HARD_QUOTA_CODES=new Set(['credit_balance_exhausted','insufficient_quota']);
+export function hardQuotaCode(data) {
+  for(const code of [data?.error?.code,data?.error?.type,data?.code,data?.type])if(HARD_QUOTA_CODES.has(code))return code;
+  return null;
+}
+export const fallbackStatus=status=>[401,402,403,404,408,429].includes(status)||Number.isInteger(status)&&status>=500&&status<=599;
 export function transientTransport(error) {
   // Native fetch wraps transport errors in cause. Unknown errors, permission,
   // certificate, malformed-URL and abort errors are intentionally not retried.

@@ -124,3 +124,5 @@ October23 isolated tools: [implementation contract](tool-isolation-implementatio
 October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
 
 [Spotlight steering verification](spotlight-steering-verification-2026-10-23.md) records active-reply input, controls, independent browser/runner/model evidence, cancellation-only final delta and process-local limits.
+
+[Provider routing](provider-routing.md) documents the private ordered URL/key list, fallback boundaries, one shared deadline and per-attempt audit identity. Actual release status remains in the rolling milestone.

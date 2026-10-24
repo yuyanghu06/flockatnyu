@@ -12,8 +12,8 @@ const contextValue=c=>c&&['chat','planner'].includes(c.agent)&&UUID.test(c.runId
  (c.round===undefined||Number.isInteger(c.round)&&c.round>=0&&c.round<=10000)?{agent:c.agent,runId:c.runId,round:c.round??null}:null;
 function secretsFrom(env){
  const values=new Set();
- const collect=v=>{if(typeof v==='string'&&v.length>0)values.add(v);};
- for(const [key,value]of Object.entries(env))if(SECRET_KEY.test(key)&&typeof value==='string'){
+ const collect=v=>{if(typeof v==='string'&&v.length>0){values.add(v);if(v.trim())values.add(v.trim());}};
+ for(const [key,value]of Object.entries(env))if((SECRET_KEY.test(key)||key==='LLM_PROVIDERS_JSON'&&typeof value==='string'&&value.trim())&&typeof value==='string'){
   collect(value);
   try{const walk=(v,depth=0)=>{if(depth>8)return;if(v&&typeof v==='object')for(const [k,x]of Object.entries(v)){if(SECRET_KEY.test(k))collect(x);walk(x,depth+1);}};walk(JSON.parse(value));}catch{/* Non-JSON secret. */}
  }

@@ -53,6 +53,13 @@ role may read them and execute the fixed audit RPCs, with no direct table mutati
 grants. There is no frontend endpoint or model retrieval tool. Operational totals
 must count null usage and unresolved calls alongside any known-cost subtotal.
 
+Ordered provider fallback uses `LLM_PROVIDERS_JSON` (see [provider routing](provider-routing.md)).
+Each actual HTTP attempt records the provider, model and hostname of that entry,
+while retaining the invocation's run, round and operation. All nested API keys in
+the list participate in secret redaction; the list itself and raw failed response
+bodies are never audit content. A fallback chain shares one operation deadline
+and stops once any provider returns HTTP success.
+
 Default retention is seven days, set by the database. Both live runtimes prune
 expired records on startup and hourly using bounded deletion. Expired rows may
 remain until maintenance runs; deletion is not guaranteed to the exact second.

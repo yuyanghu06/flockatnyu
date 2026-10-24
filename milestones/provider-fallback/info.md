@@ -1,0 +1,19 @@
+# Ordered model-provider fallback
+
+Goal: accept an ordered server-only environment list of provider API base URLs and API keys, then use second/third providers when earlier entries cannot accept a request. User requested implementation on October24.
+
+Configuration: `LLM_PROVIDERS_JSON` is an ordered JSON array of1–8 objects with required `baseUrl` and `apiKey`, optional `provider` and `model` inheriting only `LLM_PROVIDER`/`LLM_MODEL`. Unknown fields, invalid URLs/providers, blank keys/models or malformed nonblank lists make model configuration unavailable. Blank/absent JSON retains legacy settings. Do not choose or invent new provider accounts/keys. Root owns .env.example/private environment setup and journal.
+
+Routing contract: apply to toolTurn,planTools and stream, rebuilding native requests and parsing with each entry's protocol. One existing operation deadline covers the full chain/retries/waits. No tool/stage/round/output/timeout setting changes.401/402/403/404 and confirmed exhausted-credit/quota responses advance immediately. Existing transient HTTP/recognized transport failures retry under their existing bounded policy then advance if time remains; other5xx may advance without new same-provider retry behavior. Errors other than those dispatch failures do not route.
+
+HTTP success is the commitment boundary: no fallback after any2xx, parser error, tool-validation error, partial stream or later stream failure. No fallback after caller abort, local validation/attachment failure or required audit-start failure. Terminal audit-write failure preserves existing response behavior. Business operations are never replayed by provider routing. All-providers failure preserves ordinary failed-run handling; provider pauses, quarantine recovery and checkpoint storage are separate.
+
+Audit/security: all HTTP attempts get a unique durable audit record with actual provider/model/host and shared run/operation context. Explicitly extract all JSON-list API keys for redaction even in bare echoed text. Only approved error fields/codes may be retained; never log raw failed response bodies or the list. Existing credentials stay private.
+
+Ownership: runtime coder owns server/config.js,server/providers/index.js,retry.js,info.md and server/model-audit.js plus server/info.md only if needed. Tester owns tests/provider-fallback.test.mjs and specifically approved existing provider/audit tests. Root owns environment templates/private setup, all other guides, milestone and release integration. Writers preserve each other's work; specialists do not spawn agents.
+
+Acceptance: focused synthetic transport tests establish second/third-provider recovery, cross-protocol formatting, all three operations, audit identity/redaction, one deadline/abort, invalid lists, required audit failure and no post-success replay. Legacy baseline92checks pass before edits. Compiler/API build and relevant existing provider/runner checks required. Independent evaluator review before integration/release. Real-model understanding is not a routing-mechanism acceptance criterion; no prompt change is requested.
+
+Status: planner contract accepted; implementation and independent tests starting. Live secondary credentials are not provided, so no live backup success is claimed. Preserve unrelated local work.
+
+Implementation accepted: coder185-checkgate, independenttester109 and evaluator126 overlap; all pass withAPIcompiler and whitespace. Both isolatedrelease roots pass109checks andAPIbuild. Webbaseline273pins and workerbaselinea34 retained, overlayonly4reviewedruntimefiles;279web/60worker packagehashes/credentialscanpass. Existingprimary is inignored.env list, reloadverified. Livebackupcredentials are absent. Sourcepublication/release follow, with final receipts in the snapshot.
