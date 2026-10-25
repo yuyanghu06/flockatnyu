@@ -1,0 +1,9 @@
+# Independent live planner release accepted
+
+- Local timestamp / acting role / milestone: 2026-10-25T17:59:17.754489-04:00 / evaluator-final-live / planner-throughput-fix-2026-10-25.
+- Requested scope: independently evaluate the deployed fixes and five-input live gate; read-only, no files, services, database records or inference mutations.
+- Starting state: source/package and cap-two live gate previously accepted; cap five active on deployment 02cda8db-208b-4434-ad2c-a8365e93036c.
+- Work performed: inspected saved cap-five logs, exact-run operational audit and safe configuration evidence; made one fresh read-only Railway status request.
+- Checks and evidence: run 89674349 claimed and acknowledged five inputs with zero remaining in 199.544 seconds. Three successful final saves preceded completion and acknowledgement. All 22 model requests were HTTP 200. No Discord read/search proposals occurred after the phase transition at round 12. The eight initial Discord request fingerprints were distinct. Deployment is online with one running replica and no pending rollout work.
+- Resulting state / acceptance: ACCEPT for the live release and cap five.
+- Limitations and handoff: follow-up reached its round cap; one identical map-read proposal repeated; the snapshot contains 35 pending input metadata records and one quarantined record. Sustained queue draining and elimination of all repeated reads are not established. Startup audit-retention cleanup failed once in each new-container gate window. HTTP response sizes do not prove an exact same-task compression ratio. The first safe-config snapshot accidentally used MAX_FOLLOWUP_ROUNDS rather than the actual FOLLOWUP_ROUNDS name; the after snapshot correctly shows 10 and the earlier diagnosis confirms the prior value. Only MAX_INPUTS was submitted to the configuration mutation.

@@ -1,10 +1,12 @@
-## Authorized planner throughput fixes
+## Authorized planner throughput fixes — implemented and live
 
-- [x] Research storage/read options, accept bounded plan and reproduce current failure with local PostgreSQL.
-- [x] Implement lossless compressed task history and bounded history/full-task pagination; focused preservation/guard checks pass.
-- [x] Implement current-cycle observation handoff and exact-version old-task retry selection; actual-model behavior verification pending.
-- [x] Independent storage/runner preservation/failure gates and boundedactualmodel40/48requestscenarios pass; exactfrozenoffline40replyreplay andNode22checks accepted.
-- [ ] Evaluator acceptance,isolatedworker rollout,livebatchcap5andordinaryrun verification. Keep existing model/tool/deadline/pacing settings.
+- [x] Reproduce task saving failures using local PostgreSQL and accept the bounded plan.
+- [x] Implement lossless compressed history, paged task reads, current-cycle observations and brief exact-version retry spacing.
+- [x] Pass independent preservation, real-model and exact package checks; evaluator ACCEPT.
+- [x] Deploy the isolated worker, verify live checkpoints and two-input acknowledgement, then raise only the batch cap to five.
+- [x] Verify the first ordinary five-input run: five acknowledged in 199.544 seconds, successful final task saves, no follow-up Discord source-tool repeats; independent live evaluator ACCEPT.
+
+Remaining planner issues: initial/follow-up round caps, source-review completion gaps, occasional repeated map reads and startup audit-retention cleanup. Sustained catch-up needs a longer operational sample; it is not established by one successful larger batch. No new budget or pacing changes are authorized by this record.
 
 ## Thursday model usage review — complete
 

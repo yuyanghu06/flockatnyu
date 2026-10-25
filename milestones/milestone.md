@@ -1,10 +1,10 @@
-## Planner save/read fixes — accepted; live rollout pending
+## Planner save/read fixes live; batch cap increased to five
 
-Lossless history storage, paged full context, current-cycle read-result handoff and exact-version old-task retry spacing are implemented. Existing source/access/version/lease/expiry and SQL/model/tool/deadline/pacing limits remain. All31newchecks pass onNode22; broader288checks retain exactly10baselinefailures.
+The isolated worker is deployed as `02cda8db-208b-4434-ad2c-a8365e93036c`, online with one replica. Its first ordinary five-input batch acknowledged all five in **3 minutes 20 seconds**, after successful final task saves. No task-storage failure appears in either supplied release gate. No Discord source-tool calls were proposed during that run's follow-up phase, supporting reuse of initial reads.
 
-Actualgpt-6-lunatestsused40requests:fivefreshinputscompletedin8requests withzeroequivalentreadrepeats;outage/conflictcasespreservedworkandhumanfields butstillhitfollowupcaps. Theexactisolated62fileworkerreplayedall40repliesofflinewithmatchingresults. Independent evaluator ACCEPT. Two unrelated map/diagnosticfiles are restored only in the isolated package to match the prior worker; no other service is included.
+Only AGENT_AUTOMATION_MAX_INPUTS changed from 2 to 5. Lossless history storage, paged task reads, current-cycle observations and brief exact-version retry spacing are active. Existing model/tool/deadline/pacing and source/access/version/lease/expiry limits remain. All 31 new checks, bounded real-model tests and exact package replay passed. Independent evaluator **ACCEPT** covers source, package and both live gates. Source commit `041b280` is pushed.
 
-Next: deployfixedworkeratcap2,verifyordinarycheckpoint/completion,thenraiseonlyMAX_INPUTSto5andverifylive. No deployment claimed yet. [Scope/evidence](planner-throughput-fix-2026-10-25/info.md).
+Follow-up still hit its round cap in both completed gate runs; one earlier retry hit its initial cap and one map-read request repeated. Startup audit-retention cleanup failed separately from task storage. Unresolved work remains saved. A single larger batch does not establish sustained catch-up. [Scope, evidence and rollback](planner-throughput-fix-2026-10-25/info.md) · [Final live review](history/2026-10-25_17-59-17-754489-evaluator-planner-throughput-fix-live-accepted.md).
 
 ## Model usage since Thursday's first planner rollout — reviewed
 
