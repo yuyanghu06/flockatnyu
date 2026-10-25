@@ -3,6 +3,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {buildAutomationPrompt} from './prompt.js';
 import {AUTOMATION_MAX_TOOL_CALLS,AUTOMATION_MAX_STAGE_CALLS} from './config.js';
 import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
+import {buildObservationHandoff} from './observation-handoff.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:0,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = (code,result) => { const error=new Error(code);if(plainObject(result?.diagnostics))error.diagnostics=result.diagnostics;throw error; };
@@ -243,11 +244,24 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         if(pipeline)phaseReferences=referenceMap(phaseInputIds,'t');
         stage='followup';stageCalls=0;stageRounds=0;
         system=buildAutomationPrompt({timezone:config.timezone,now:now(),phase:'followup'});
-        const followupMessage={role:'user',content:JSON.stringify({stage:'followup',context:next.context??null,referenceBindings:referenceBindings(),
-          ...(initialSyncExecution?{runnerToolExecution:structuredClone(initialSyncExecution)}:{})})};
         const validatedAll=initialFinishVerdict?.status==='ready'
           &&canonicalJson([...initialFinishVerdict.handledInputIds].sort())===canonicalJson([...handledInputIds].sort())
           &&canonicalJson([...handledInputIds].sort())===canonicalJson([...claimedInputIds].sort());
+        const followupPayload={stage:'followup',context:next.context??null,referenceBindings:referenceBindings(),
+          ...(initialSyncExecution?{runnerToolExecution:structuredClone(initialSyncExecution)}:{})};
+        let followupMessage={role:'user',content:JSON.stringify(followupPayload)};
+        // Keep useful already-returned source/map observations when replacing
+        // the initial transcript. This is visibility only: no provider call or
+        // access receipt is replayed, and the existing message budget stays put.
+        if(validatedAll) {
+          const initialHistory=getExecutionLog();
+          for(let budget=65536;budget>=1024;budget=Math.floor(budget/2)) {
+            const observations=buildObservationHandoff(initialHistory,{maxBytes:budget});
+            if(!observations.observations.length)break;
+            const candidate={role:'user',content:JSON.stringify({...followupPayload,currentCycleObservations:observations})};
+            if(Buffer.byteLength(JSON.stringify([candidate]))<=262144){followupMessage=candidate;break;}
+          }
+        }
         // Only model visibility changes. Full initial execution/task evidence,
         // fragments, receipts and every private runtime guard remain intact.
         if(validatedAll)messages.splice(0,messages.length,followupMessage);

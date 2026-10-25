@@ -1,3 +1,11 @@
+## Planner save/read fixes — accepted; live rollout pending
+
+Lossless history storage, paged full context, current-cycle read-result handoff and exact-version old-task retry spacing are implemented. Existing source/access/version/lease/expiry and SQL/model/tool/deadline/pacing limits remain. All31newchecks pass onNode22; broader288checks retain exactly10baselinefailures.
+
+Actualgpt-6-lunatestsused40requests:fivefreshinputscompletedin8requests withzeroequivalentreadrepeats;outage/conflictcasespreservedworkandhumanfields butstillhitfollowupcaps. Theexactisolated62fileworkerreplayedall40repliesofflinewithmatchingresults. Independent evaluator ACCEPT. Two unrelated map/diagnosticfiles are restored only in the isolated package to match the prior worker; no other service is included.
+
+Next: deployfixedworkeratcap2,verifyordinarycheckpoint/completion,thenraiseonlyMAX_INPUTSto5andverifylive. No deployment claimed yet. [Scope/evidence](planner-throughput-fix-2026-10-25/info.md).
+
 ## Model usage since Thursday's first planner rollout — reviewed
 
 From **October 22 at 1:21 PM through October 24 at 10:15 AM New York**, production audit records contain **$4.79 in known cost estimates: $4.33 planner and $0.46 chat**. This is a recorded estimate subtotal, not an account invoice. There are5,840model-audit attempt records, including retries and six with unknownHTTPstatus;1,639lack prices, including1,616HTTP429 rejections. Recorded tokens total129,416,005input and557,551output; cache/reasoning subsets are not counted twice.

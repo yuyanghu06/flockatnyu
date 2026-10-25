@@ -1,0 +1,19 @@
+# Planner throughput fixes
+
+Goal: fix reported task-history save failures and repeated reads, then raise the production batch cap from two to five after verification so the planner can process incoming work more efficiently.
+
+Status: local PostgreSQL, production-runner, actual-model and exact frozen-package gates passed; independent evaluator ACCEPT. Isolated worker upload and live cap-five verification remain pending.
+
+Scope: lossless versioned execution-history compression inside the existing256KiB database limit, bounded history pagination without increasing model/context limits, current-cycle observation handoff, brief version-bound retry spacing for unchanged old tasks, meaningful local PostgreSQL/runner checks and bounded actual-model tests against simulated services. Preserve originals, prior history, source permissions/revocation, exact versions, leases and expiry. No silent truncation or database schema migration. Retain16initial/10follow-up rounds,64toolcalls perstage,600second deadline and1second Discord pacing. Target batch5 only after acceptance.
+
+Ownership: storage coder owns task-store.js and task-history-codec.js; pipeline coder owns staged-pipeline.js; primary owns handler.js,prompt.js and observation-handoff.js. Tester owns new storage/page/model regressions and private evidence. Primary serializes docs, packaging and release. Other frontend/map edits are outside this release.
+
+Acceptance: reproduce old compact/JSONB and Node-size failures with actual local PostgreSQL; save/read every history field exactly; reject corrupt encodings and stale/unauthorized writes without mutation; reconstruct history pages including Unicode and version changes; preserve compact action proof and unrelated tasks; demonstrate current-cycle read reuse and five-input processing through configured real model/production runner and simulated sources; evaluator ACCEPT; isolate worker package, deploy and verify batch5 with normal source/lease/audit checks. No live business writes are used for synthetic tests.
+
+Limits: compression is bounded storage, not unlimited capacity. Incompressible or over-budget content must fail explicitly and preserve prior state. Decoder history guard16MiB and existing aggregate54MiB transport guard remain separate from model/context budgets. New readers support legacy rows; rollback must retain the decoder for newly encoded rows.
+
+Baseline: existing257checks produce247passes/10failures, including9known read/finish RED contracts and1missing ignored historical fixture. Current production modules plus local PGlite reproduce257801compact/262898JSONB and270183compact/275307JSONB rejected saves with no queue acknowledgement; prior task and completed simulated action remain intact. No inference or live-source calls in baseline.
+
+Implementation notes: canonical history serialization preserves SQL creation idempotence across object-key order; whole-task pages retain unknown legacy fields and historical batch context. The first independent storage/page checks and existing scope/runtime gates pass. Early evaluator review accepted the source direction, with final acceptance still pending.
+
+Verification:31newchecks pass onNode22.23.4;broader288/278/10 matchesbaselinefailures exactly. Threeactualgpt-6-lunascenariosused40of48allowedrequests,allHTTP200,syntheticservicesonly;fivefreshcaseacknowledges5andmakeszeroequivalentcompletesourcerepeats. Twoedgecasesreachfollowupcapwhilepreservingwork andhumanfields. Exactisolated62-filepkgrestores2unrelatedmap/diagnosticbaselinefiles;all40modelreplies replayofflinewithmatchingtools/finalfields andzero newrequests. GenericwebAPIcheckisnotapplicabletoworker-onlyclosure;rootAPIbuildandactualNode22workerimports/syntaxpassed. Codec-aware rollback required; first rollback lever is cap2 on the same fixed image.

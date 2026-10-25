@@ -1,3 +1,11 @@
+## Authorized planner throughput fixes
+
+- [x] Research storage/read options, accept bounded plan and reproduce current failure with local PostgreSQL.
+- [x] Implement lossless compressed task history and bounded history/full-task pagination; focused preservation/guard checks pass.
+- [x] Implement current-cycle observation handoff and exact-version old-task retry selection; actual-model behavior verification pending.
+- [x] Independent storage/runner preservation/failure gates and boundedactualmodel40/48requestscenarios pass; exactfrozenoffline40replyreplay andNode22checks accepted.
+- [ ] Evaluator acceptance,isolatedworker rollout,livebatchcap5andordinaryrun verification. Keep existing model/tool/deadline/pacing settings.
+
 ## Thursday model usage review — complete
 
 - [x] Pin first Thursday worker rollout start and fixed Saturday cutoff; read complete production audit metadata with no prompts/outputs/source bodies.

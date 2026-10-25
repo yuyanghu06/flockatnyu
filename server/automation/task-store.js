@@ -1,6 +1,7 @@
 import {plainObject,validUuid} from './validation.js';
+import {MAX_TASK_WIRE_BYTES,encodeTaskInfo,decodeTaskInfo} from './task-history-codec.js';
 
-const MAX_TASK_BYTES=262144;
+const MAX_TASK_BYTES=MAX_TASK_WIRE_BYTES;
 // A complete 200-task snapshot can contain 50 MiB; never silently paginate or truncate it.
 const MAX_RESPONSE_BYTES=54*1024*1024;
 const MAX_SINGLE_RESPONSE_BYTES=MAX_TASK_BYTES+16384;
@@ -9,18 +10,35 @@ const validScope=ids=>Array.isArray(ids)&&ids.length<=500&&ids.every(validUuid)
   &&new Set(ids.map(id=>id.toLowerCase())).size===ids.length;
 const timestamp=value=>typeof value==='string'&&value.length<=64&&Number.isFinite(Date.parse(value));
 function validInfo(info) {
-  try {
-    return plainObject(info)&&validScope(info.sourceIds)&&info.sourceIds.length>0
-      &&Buffer.byteLength(JSON.stringify(info))<=MAX_TASK_BYTES;
-  } catch { return false; }
+  return plainObject(info)&&validScope(info.sourceIds)&&info.sourceIds.length>0;
 }
 const scoped=(info,ids)=>info.sourceIds.every(id=>ids.some(allowed=>allowed.toLowerCase()===id.toLowerCase()));
-function validTask(task,ids) {
-  return plainObject(task)&&validUuid(task.uuid)&&validInfo(task.info)&&scoped(task.info,ids)
+function decodedTask(task,ids) {
+  if(!(plainObject(task)&&validUuid(task.uuid)&&validInfo(task.info)&&scoped(task.info,ids)
     &&timestamp(task.created_at)&&timestamp(task.updated_at)&&timestamp(task.expires_at)
     &&Date.parse(task.updated_at)>=Date.parse(task.created_at)
     &&Date.parse(task.expires_at)>Date.parse(task.created_at)
-    &&Date.parse(task.expires_at)<=Date.parse(task.created_at)+86400000;
+    &&Date.parse(task.expires_at)<=Date.parse(task.created_at)+86400000))return null;
+  try{return {...task,info:decodeTaskInfo(task.info)};}catch{return null;}
+}
+function decodeTaskResult(data,ids,taskId) {
+  const task=decodedTask(data.task,ids);
+  if(!task||task.uuid.toLowerCase()!==taskId.toLowerCase())return false;
+  data.task=task;return true;
+}
+function decodeTaskList(data,ids) {
+  if(!Array.isArray(data.tasks)||data.tasks.length>200)return false;
+  const tasks=[],seen=new Set();
+  let size=Buffer.byteLength('{"status":"ready","tasks":[]}');
+  for(const row of data.tasks) {
+    const task=decodedTask(row,ids);
+    if(!task||seen.has(task.uuid.toLowerCase()))return false;
+    seen.add(task.uuid.toLowerCase());
+    size+=Buffer.byteLength(JSON.stringify(task))+Number(tasks.length>0);
+    if(size>MAX_RESPONSE_BYTES)return false;
+    tasks.push(task);
+  }
+  data.tasks=tasks;return true;
 }
 function validCatalogueTask(task,ids) {
   const request=task?.request;
@@ -91,7 +109,8 @@ export function createPendingTaskStore({env=process.env,fetchImpl=globalThis.fet
       }
       if(!plainObject(data)||!statuses.has(data.status))return done('unavailable',{reason:'invalid_response',stage:'response_parse'});
       if(data.status!=='ready')return done(data.status);
-      if(validateResult&&!validateResult(data))return done('unavailable',{reason:'invalid_response',stage:'response_parse'});
+      try{if(validateResult&&!validateResult(data))return done('unavailable',{reason:'invalid_response',stage:'response_parse'});}
+      catch{return done('unavailable',{reason:'invalid_response',stage:'response_parse'});}
       done('ready');return data;
     }catch{return done(signal?.aborted?'aborted':'unavailable',{reason:signal?.aborted?'aborted':combined.aborted?'request_timeout':'network_error'});}
     finally{combined.removeEventListener('abort',cancel);if(reader){await reader.cancel().catch(()=>{});reader.releaseLock();}}
@@ -108,15 +127,14 @@ export function createPendingTaskStore({env=process.env,fetchImpl=globalThis.fet
     async read({leaseToken,allowedSourceIds,taskId,signal}={}) {
       if(!validUuid(leaseToken)||!validScope(allowedSourceIds)||!validUuid(taskId))return {status:'invalid_request'};
       const result=await rpc('read',{p_token:leaseToken,p_allowed_source_ids:[...allowedSourceIds],p_task_id:taskId},signal,
-        data=>validTask(data.task,allowedSourceIds)&&data.task.uuid.toLowerCase()===taskId.toLowerCase());
+        data=>decodeTaskResult(data,allowedSourceIds,taskId));
       if(result.status!=='ready')return result;
       return {status:'ready',task:result.task};
     },
     async list({leaseToken,allowedSourceIds,signal}={}) {
       if(!validScope(allowedSourceIds)||allowedSourceIds.length>0&&!validUuid(leaseToken))return {status:'invalid_request'};
       const result=await rpc('list',{p_token:validUuid(leaseToken)?leaseToken:null,p_allowed_source_ids:[...allowedSourceIds]},signal,
-        data=>Array.isArray(data.tasks)&&data.tasks.length<=200&&data.tasks.every(task=>validTask(task,allowedSourceIds))
-          &&new Set(data.tasks.map(task=>task.uuid.toLowerCase())).size===data.tasks.length);
+        data=>decodeTaskList(data,allowedSourceIds));
       if(result.status!=='ready')return {status:result.status};
       return {status:'ready',tasks:result.tasks};
     },
@@ -125,9 +143,11 @@ export function createPendingTaskStore({env=process.env,fetchImpl=globalThis.fet
         ||!validUuid(task.uuid)||!validInfo(task.info)||!scoped(task.info,allowedSourceIds)
         ||expectedUpdatedAt!==undefined&&!timestamp(expectedUpdatedAt)
         ||task.expires_at!==undefined&&!timestamp(task.expires_at))return {status:'invalid_request'};
-      const result=await rpc('save',{p_token:leaseToken,p_allowed_source_ids:[...allowedSourceIds],p_task_id:task.uuid,p_info:task.info,
+      let wireInfo;
+      try{wireInfo=encodeTaskInfo(task.info);}catch{return {status:'invalid_request'};}
+      const result=await rpc('save',{p_token:leaseToken,p_allowed_source_ids:[...allowedSourceIds],p_task_id:task.uuid,p_info:wireInfo,
         p_expected_updated_at:expectedUpdatedAt??null,p_expires_at:task.expires_at??null},signal,
-        data=>validTask(data.task,allowedSourceIds)&&data.task.uuid.toLowerCase()===task.uuid.toLowerCase());
+        data=>decodeTaskResult(data,allowedSourceIds,task.uuid));
       if(result.status!=='ready')return result.diagnostics?{status:result.status,diagnostics:result.diagnostics}:{status:result.status};
       return {status:'ready',task:result.task};
     },

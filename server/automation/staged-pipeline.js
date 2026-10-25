@@ -6,6 +6,7 @@ const taskId=value=>{const hash=createHash('sha256').update(value).digest('hex')
 const definition=(name,description,properties,required,readOnly=false)=>({name,description,phases:name==='defer_task'?['initial','followup']:['followup'],
   ...(readOnly?{readOnly:true}:{idempotent:true}),parameters:{type:'object',additionalProperties:false,properties,required}});
 const modelTask=task=>['participation','location','source_review'].includes(task?.info?.request?.operation);
+const HISTORY_PAGE_CHARS=12000,HISTORY_PAGE_BYTES=16384,OLD_TASK_RETRY_MS=300000;
 const taskProperties={taskId:{type:'string',minLength:36,maxLength:36},summary:{type:'string',minLength:1,maxLength:2000},operation:{type:'string',enum:['participation','location','source_review']},
   calendarEventId:{type:'string',minLength:5,maxLength:1024,description:'Exact provider occurrence ID: copy map event.source_record_id or Calendar result.eventId. Never copy the map event.id UUID; no automatic ID conversion.'},calendarKind:{type:'string',enum:['club','member']},personId:{type:'string',minLength:36,maxLength:36,description:'Copy the complete exact person.id from this speaker\'s successful lookup_map_person. Never shorten/rebuild it or use a queue/task ref.'},buildingId:{type:'string',maxLength:120}};
 // This is a temporary work buffer, separate from operational audits. Source
@@ -14,7 +15,10 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
   let cycle,phase='initial';
   // Catalogue entries select work. Only complete saved rows can establish
   // original coverage, model read receipts, action bindings or completion.
-  const catalogue=new Map(),tasks=new Map(),touched=new Set(),receipts=new Map(),taskFragmentOrigins=new Map(),disclosures=new Map(),obligations=new Set(),stopWitnesses=new Map(),createdTaskIds=new Set(),initialTaskIds=new Set();
+  const catalogue=new Map(),tasks=new Map(),touched=new Set(),receipts=new Map(),taskFragmentOrigins=new Map(),disclosures=new Map(),obligations=new Set(),stopWitnesses=new Map(),createdTaskIds=new Set(),initialTaskIds=new Set(),historyPageOrigins=new Map(),attemptedTasks=new Set();
+  // Selection hints only: they retain no source facts and grant no access. The
+  // exact saved version, current originals and normal scope checks still win.
+  const oldTaskRetries=new Map();
   let followupScope=new Set();
   const mapPersonId=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
   function persistedTaskFragment(row) {
@@ -38,6 +42,19 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       } catch { /* Preserve malformed/unknown history unchanged. */ }
     }
     if(row.kind!=='tool_result'||!['read_pending_task','read_context_fragment'].includes(row.tool))return row;
+    const historyPage=row.result?.historyPage;
+    if(row.tool==='read_pending_task'&&currentEntry&&plainObject(historyPage)&&typeof historyPage.data==='string') {
+      const key=canonicalJson([historyPage.taskId,historyPage.updatedAt,historyPage.section,historyPage.offset]);
+      const origin=historyPageOrigins.get(key);
+      if(origin&&origin.totalChars===historyPage.totalChars&&origin.nextOffset===historyPage.nextOffset
+        &&origin.hash===createHash('sha256').update(historyPage.data).digest('hex')) {
+        const {data,...metadata}=historyPage;
+        row.pendingTaskHistoryPage={version:1,taskId:historyPage.taskId,updatedAt:historyPage.updatedAt,section:historyPage.section,offset:historyPage.offset};
+        row.result={...row.result,historyPage:{...metadata,dataChars:data.length,dataBytes:Buffer.byteLength(data,'utf8')},
+          notice:'Saved-history page data remains retained in the task history and is not recursively copied into it.'};
+        return row;
+      }
+    }
     const fragment=row.result?.fragment;
     // Current origins are captured at the actual task read, before its row can
     // change. Persisted markers are server-owned history, never parsed bodies.
@@ -47,8 +64,10 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       row.pendingTaskFragment={version:1,chainId:fragment.id,taskId:origin.taskId,updatedAt:origin.updatedAt};
       row.result={...row.result,fragment:{...metadata,dataChars:data.length,dataBytes:Buffer.byteLength(data,'utf8')},
         notice:'Pending-task fragment body is not repeated in saved execution history. Full task intent, originals and source context remain retained separately.'};
-    } else if(row.tool==='read_pending_task'&&!fragment&&row.result?.alreadyRead!==true)row.result={status:row.result?.status,taskId:row.result?.task?.uuid,
-      updatedAt:row.result?.task?.updated_at,notice:'Full original task context is retained separately; do not recursively duplicate prior execution history.'};
+    } else if(row.tool==='read_pending_task'&&!fragment&&row.result?.alreadyRead!==true)row.result={status:row.result?.status,
+      ...(row.result?.task?.uuid||row.result?.taskId?{taskId:row.result?.task?.uuid??row.result.taskId}:{}),
+      ...(row.result?.task?.updated_at||row.result?.updated_at?{updatedAt:row.result?.task?.updated_at??row.result.updated_at}:{}),
+      notice:'Full original task context is retained separately; do not recursively duplicate prior execution history.'};
     return row;
   }
   function mergeHistory(previous,entries,ownedInputs) {
@@ -90,10 +109,34 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       }
     }
     const info=Object.fromEntries(['version','sourceIds','references','request','inputs'].filter(key=>Object.hasOwn(task.info,key)).map(key=>[key,structuredClone(task.info[key])]));
-    return {status:'ready',detail:'compact',task:{...structuredClone(task),info:{...info,batchContext}},
+    const metadata=Object.fromEntries(Object.entries(task).filter(([key])=>key!=='info').map(([key,value])=>[key,structuredClone(value)]));
+    return {status:'ready',detail:'compact',task:{...metadata,info:{...info,batchContext}},
       retainedContext:{detail:'full',executionHistoryEntries:Array.isArray(task.info.executionHistory)?task.info.executionHistory.length:0,
-        notice:'Historical batch context and executionHistory remain saved unchanged. Use read_pending_task with this taskId and detail="full" only for a specific missing fact; continue its returned fragments if needed. Compact includes the complete request, original inputs and source references; cache data is not a current source check.'}};
+        notice:'Historical batch context and executionHistory remain saved unchanged. Use detail="full" only for a specific missing fact; large histories remain available with detail="history", historyOffset and the exact expectedUpdatedAt from each page. Compact includes the complete request, original inputs and source references; cache data is not a current source check.'}};
   }
+  function historyPageResult(task,args) {
+    const offset=args.historyOffset??0;
+    if(!Number.isSafeInteger(offset)||offset<0||offset>0&&args.expectedUpdatedAt===undefined)return {status:'invalid_request'};
+    const section=args.historySection??'executionHistory',history=task.info.executionHistory??[];
+    if(!['executionHistory','task'].includes(section))return {status:'invalid_request'};
+    if(!Array.isArray(history))return {status:'invalid_request'};
+    const serialized=canonicalJson(section==='task'?task:history);
+    if(offset>=serialized.length||offset>0&&/[\uDC00-\uDFFF]/.test(serialized[offset])&&/[\uD800-\uDBFF]/.test(serialized[offset-1]))return {status:'invalid_request'};
+    const response=data=>({status:'ready',detail:'history',taskId:task.uuid,updated_at:task.updated_at,
+      historyPage:{taskId:task.uuid,updatedAt:task.updated_at,section,encoding:section==='task'?'json-task-page':'json-history-page',offset,
+        nextOffset:offset+data.length<serialized.length?offset+data.length:null,totalChars:serialized.length,data}});
+    let low=0,high=Math.min(HISTORY_PAGE_CHARS,serialized.length-offset);
+    while(low<high) {const mid=Math.ceil((low+high)/2);if(Buffer.byteLength(canonicalJson(response(serialized.slice(offset,offset+mid))))<=HISTORY_PAGE_BYTES)low=mid;else high=mid-1;}
+    if(low&&/[\uD800-\uDBFF]/.test(serialized[offset+low-1])&&/[\uDC00-\uDFFF]/.test(serialized[offset+low]||''))low--;
+    if(!low)return {status:'invalid_request'};
+    const result=response(serialized.slice(offset,offset+low)),page=result.historyPage;
+    historyPageOrigins.set(canonicalJson([task.uuid,task.updated_at,section,offset]),{totalChars:page.totalChars,nextOffset:page.nextOffset,hash:createHash('sha256').update(page.data).digest('hex')});
+    return result;
+  }
+  const historyPaginationRequired=task=>({status:'ready',detail:'full',reason:'history_pagination_required',historyPaginationRequired:true,
+    taskId:task.uuid,updated_at:task.updated_at,historyPage:{taskId:task.uuid,updatedAt:task.updated_at,section:'task',encoding:'json-task-page',
+      offset:0,nextOffset:0,totalChars:canonicalJson(task).length},
+    notice:'The full saved task exceeds the remaining fragment budget. Read detail="compact" for its complete original intent and action binding. For a specific historical fact, use detail="history", historySection="task", historyOffset=0 and expectedUpdatedAt from this response, then continue with each nextOffset and the same exact version. These task pages preserve all historical fields, including batchContext and executionHistory. No full-view or action read proof was granted by this response.'});
   const grantRead=async(task,signal)=>{
     await bindTask(task,signal);
     if(!hasRead(task))receipts.set(task.uuid,{readAt:cycle.getExecutionLog().length,updatedAt:task.updated_at,snapshot:canonicalJson(task)});
@@ -135,6 +178,14 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
   };
   const eligibleCatalogue=task=>task?.modelEligible===true&&Date.parse(task.expires_at)>new Date(now()).getTime()
     &&task.sourceIds?.length>0&&task.sourceIds.every(id=>scope().includes(id));
+  function availableForFollowup(task) {
+    const retry=oldTaskRetries.get(task.uuid),time=new Date(now()).getTime();
+    if(!retry)return true;
+    if(retry.updatedAt!==task.updated_at||retry.until<=time||Date.parse(task.expires_at)<=time||currentCycleTask(task)) {
+      oldTaskRetries.delete(task.uuid);return true;
+    }
+    return false;
+  }
   const catalogueEntry=task=>{
     const request=task.info.request,summary=typeof request.summary==='string'?request.summary:'Deferred source work';
     return {uuid:task.uuid,created_at:task.created_at,updated_at:task.updated_at,expires_at:task.expires_at,
@@ -142,7 +193,7 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       summaryTruncated:[...summary].length>100,request:{...Object.fromEntries(['operation','calendarKind','calendarEventId','personId','buildingId']
         .filter(key=>typeof request[key]==='string'&&(key!=='calendarEventId'||[...request[key]].length<=1024)).map(key=>[key,request[key]])),summary:[...summary].slice(0,100).join('')}};
   };
-  const forgetTask=id=>{tasks.delete(id);receipts.delete(id);disclosures.delete(id);stopWitnesses.delete(id);};
+  const forgetTask=id=>{tasks.delete(id);receipts.delete(id);disclosures.delete(id);stopWitnesses.delete(id);oldTaskRetries.delete(id);};
   const rememberTask=task=>{
     const previous=tasks.get(task.uuid);
     if(previous&&canonicalJson(previous)!==canonicalJson(task)) {
@@ -168,7 +219,7 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     }
     return {status:'ready'};
   }
-  const manifest=()=>[...catalogue.values()].filter(eligibleCatalogue).sort((a,b)=>Number(currentCycleTask(b))-Number(currentCycleTask(a))
+  const manifest=()=>[...catalogue.values()].filter(task=>followupScope.has(task.uuid)&&eligibleCatalogue(task)).sort((a,b)=>Number(currentCycleTask(b))-Number(currentCycleTask(a))
     ||Number(b.request?.operation==='participation')-Number(a.request?.operation==='participation'))
     .map(task=>Object.fromEntries(Object.entries({uuid:task.uuid,currentCycle:currentCycleTask(task),summary:task.request.summary,summaryTruncated:task.summaryTruncated,operation:task.request.operation,
     ...(typeof task.request.calendarEventId==='string'&&task.request.calendarEventId.length<=200?{calendarEventId:task.request.calendarEventId}:{eventIdInTask:Boolean(task.request.calendarEventId)}),calendarKind:task.request.calendarKind,updated_at:task.updated_at,expires_at:task.expires_at}).filter(([,value])=>value!==undefined)));
@@ -358,22 +409,33 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
   const tools=[
     {...definition('defer_task','Save only a genuine unfinished source-supported action or essential unresolved interpretation needed for one. Confirmed no-change/already-satisfied inputs are directly handled: never create a NEW task as a processing receipt, audit/archive or record of a handled decision. summary and operation are required for new tasks AND updates; optional fields are taskId, calendarEventId, calendarKind, personId and buildingId only. The runtime retains supporting originals, observed context and actual execution history; do not supply extra context fields. To update, read_pending_task first and bind its current task ref or exact UUID in inputIds and taskId. Saving progress does not resolve the task or prove a source fact.',taskProperties,['summary','operation']),
       execute:(args,context)=>save(args,context)},
-    {...definition('read_pending_task','Read one selected saved task. Default detail=compact returns the complete request, originals, references and small Calendar routing context without historical execution logs. Use detail=full only for a specific missing historical fact; it returns the unchanged full saved task. Bind its own task ref or UUID in inputIds for this read and every fragment continuation; finish all pieces of the selected view before acting. No live Discord/Gmail/Calendar checks occur. Choose separate source, Calendar, identity or map tools as needed. Untouched tasks survive automatically.',{taskId:{type:'string',minLength:36,maxLength:36},detail:{type:'string',enum:['compact','full'],description:'Defaults to compact. Full historical context is optional and lossless; request it only for a specific missing fact.'}},['taskId'],true),
+    {...definition('read_pending_task','Read one selected saved task. Default detail=compact returns its complete request, originals, references and small Calendar routing context. Use detail=full only for a specific missing historical fact. Large full views return history_pagination_required; detail=history returns a lossless bounded JSON-history page. Continue with historyOffset=nextOffset and the SAME expectedUpdatedAt from the page; pages alone grant no action proof. Bind this task ID in inputIds for reads and fragment continuations. No live source/Calendar checks occur; choose their separate tools as needed. Untouched tasks survive automatically.',{taskId:{type:'string',minLength:36,maxLength:36},detail:{type:'string',enum:['compact','full','history'],description:'Defaults to compact. Full/history views are optional; request only a specific missing historical fact.'},historySection:{type:'string',enum:['executionHistory','task'],description:'For detail=history only. Defaults to executionHistory; task pages preserve the entire saved task, including historical batchContext and metadata.'},historyOffset:{type:'integer',minimum:0,maximum:56623104,description:'UTF-16 character offset for detail=history. Default0; copy nextOffset for continuation.'},expectedUpdatedAt:{type:'string',minLength:1,maxLength:64,description:'Exact saved updatedAt version. Required when historyOffset is greater than0; copy it unchanged from the history page.'}},['taskId'],true),
       execute:async(args,context)=>{
         if(!requireCycle(context)||!eligibleCatalogue(catalogue.get(args.taskId)))return {status:'forbidden'};
         const detail=args.detail??'compact';
-        if(!['compact','full'].includes(detail))return {status:'invalid_request'};
+        if(!['compact','full','history'].includes(detail)||detail!=='history'&&(args.historyOffset!==undefined||args.historySection!==undefined)
+          ||args.expectedUpdatedAt!==undefined&&(typeof args.expectedUpdatedAt!=='string'||args.expectedUpdatedAt.length>64||!Number.isFinite(Date.parse(args.expectedUpdatedAt))))return {status:'invalid_request'};
         if(!context.inputIds?.includes(args.taskId))return {status:'invalid_request',reason:'pending_task_fragment_scope',taskId:args.taskId,
           message:'Read this saved task using its own task ID in inputIds.'};
         const selected=await taskStore.read({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:args.taskId,signal:context.signal});
         if(selected?.status!=='ready'){if(selected?.status==='not_found')forgetTask(args.taskId);return selected??{status:'unavailable'};}
         const task=selected.task;if(!current(task)){forgetTask(args.taskId);return {status:'forbidden'};}
         rememberTask(task);
+        if(args.expectedUpdatedAt!==undefined&&args.expectedUpdatedAt!==task.updated_at)return {status:'conflict'};
+        if(detail==='history') {
+          const result=historyPageResult(task,args);
+          if(result.status==='ready')attemptedTasks.add(task.uuid);
+          return result;
+        }
         // Reuse only complete disclosure of this entire exact cache snapshot in
         // this phase. This does not bind a task again or refresh any read proof.
         if(disclosed(task,detail))return {status:'ready',alreadyRead:true,detail,taskId:task.uuid,updated_at:task.updated_at,
           request:Object.fromEntries(['operation','calendarKind','calendarEventId','personId','buildingId'].filter(key=>Object.hasOwn(task.info.request,key)).map(key=>[key,structuredClone(task.info.request[key])])),notice:'This exact task view was completely read earlier in this phase. Reuse its earlier data; no new read/action proof.'};
-        const readAt=cycle.getExecutionLog().length,projection=detail==='full'?{status:'ready',task:structuredClone(task)}:compactTaskResult(task),serialized=canonicalJson(projection),result=fragments.bound(projection);
+        const readAt=cycle.getExecutionLog().length,projection=detail==='full'?{status:'ready',task:structuredClone(task)}:compactTaskResult(task),serialized=canonicalJson(projection);
+        let result;
+        try {result=fragments.bound(projection);}
+        catch(error) {if(detail!=='full'||error?.message!=='context_limit')throw error;attemptedTasks.add(task.uuid);return historyPaginationRequired(task);}
+        attemptedTasks.add(task.uuid);
         if(result.fragment?.encoding==='json-fragment'&&validUuid(result.fragment.id)) {
           // Optional history never revokes or refreshes a valid compact read of
           // this same private canonical snapshot, even if it stays fragmented.
@@ -409,7 +471,7 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
           return {status:'conflict'};
         }
         const result=await taskStore.resolve({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),taskId:task.uuid,expectedUpdatedAt:task.updated_at,signal:context.signal});
-        if(result.status==='ready'){tasks.delete(task.uuid);catalogue.delete(task.uuid);receipts.delete(task.uuid);disclosures.delete(task.uuid);touched.delete(task.uuid);obligations.delete(task.uuid);stopWitnesses.delete(task.uuid);createdTaskIds.delete(task.uuid);}
+        if(result.status==='ready'){tasks.delete(task.uuid);catalogue.delete(task.uuid);receipts.delete(task.uuid);disclosures.delete(task.uuid);touched.delete(task.uuid);obligations.delete(task.uuid);stopWitnesses.delete(task.uuid);createdTaskIds.delete(task.uuid);oldTaskRetries.delete(task.uuid);}
         return result;
       }},
   ];
@@ -520,11 +582,15 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     },
     recordApiResult:entry=>cycle.recordExecution({kind:'api_response',stage:'followup',...entry}),
     async beginCycle({leaseToken,inputs,recordExecution,getExecutionLog,signal}) {
-      catalogue.clear();tasks.clear();touched.clear();receipts.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();followupScope.clear();phase='initial';
+      catalogue.clear();tasks.clear();touched.clear();receipts.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();historyPageOrigins.clear();attemptedTasks.clear();followupScope.clear();phase='initial';
       cycle={id:randomUUID(),leaseToken,inputs:structuredClone(inputs),recordExecution,getExecutionLog};
       if(taskStore.configured===false||typeof taskStore.catalogue!=='function'||typeof taskStore.read!=='function')throw Error('not_configured');
       const result=await refreshCatalogue(signal);
       if(result?.status!=='ready')storageFailure(result);
+      for(const [id,retry]of oldTaskRetries) {
+        const entry=catalogue.get(id);
+        if(!eligibleCatalogue(entry)||retry.updatedAt!==entry.updated_at||retry.until<=new Date(now()).getTime())oldTaskRetries.delete(id);
+      }
       for(const id of catalogue.keys())initialTaskIds.add(id);
       const candidates=await loadCoverageCandidates(cycle.inputs,signal);
       if(candidates.status!=='ready')storageFailure(candidates);
@@ -554,15 +620,17 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       }
       const result=await refreshCatalogue(signal);
       if(result.status!=='ready')return result;
-      followupScope=new Set([...catalogue.values()].filter(eligibleCatalogue).map(task=>task.uuid));
+      const eligible=[...catalogue.values()].filter(eligibleCatalogue),deferred=[];
+      followupScope=new Set(eligible.filter(task=>{if(availableForFollowup(task))return true;deferred.push(task);return false;}).map(task=>task.uuid));
       for(const task of catalogue.values())if(followupScope.has(task.uuid))latch(task);
       phase='followup';disclosures.clear();
       const orderedTasks=manifest();
       return {status:'ready',inputIds:orderedTasks.map(task=>task.uuid),followupRequired:orderedTasks.length>0,context:{tasks:orderedTasks,taskCount:orderedTasks.length,
+        deferredTaskCount:deferred.length,nextTaskRetryAt:deferred.length?new Date(Math.min(...deferred.map(task=>oldTaskRetries.get(task.uuid).until))).toISOString():null,
         executionHistory:fragments.bound({status:'ready',history:cycle.getExecutionLog().filter(row=>['api_response','api_result'].includes(row.kind)),
           notice:'Only deterministic API execution evidence is included here. Fully read selected saved tasks for original intent and retained initial source/tool context; the initial transcript may not remain in this model conversation.'}),
         apiResults:{status:'ready',notice:'See the separately recorded sync_calendars_to_map tool result; phase transition performs no business calls.'},
-        notice:'All eligible tasks are listed in the SAME order as task reference bindings: current-cycle work first, participation first within each group. Keep only one or two ready tasks active; complete or establish an actual blocker before selecting others. Prefer current-cycle tasks; blocked ones must not delay ready peers. Start with compact read_pending_task; full saved history remains unchanged and available with detail="full" only for a specific missing fact. Finish the selected view fragments once. The initial transcript may not be visible. Cache reads perform no live checks; resolve only after confirmed action. Unvisited tasks stay unchanged.'}};
+        notice:'Available tasks are listed in the SAME order as task reference bindings: current-cycle work first, participation first within each group. Actually attempted unchanged older tasks can wait briefly between cycles; deferredTaskCount and nextTaskRetryAt describe that selection delay, not completion or a cached source fact. Changed versions and current-cycle work are immediately eligible. Keep only one or two ready tasks active; complete or establish an actual blocker before selecting others. Start with compact read_pending_task; full saved history remains retained, with bounded history pages available for a specific missing fact. Finish the selected view fragments once. The initial transcript may not be visible. Cache reads perform no live checks; resolve only after confirmed action. Unvisited tasks stay unchanged.'}};
     },
     async finishCycle({signal,executionLog}) {
       // Only tasks with confirmed new outcomes are checkpointed; unrelated task
@@ -593,6 +661,15 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
         if(result.status!=='ready')return result;
         tasks.set(task.uuid,result.task);
       }
+      // Do not delay anything after a partial/failed checkpoint. Only a fully
+      // saved cycle may defer an actually inspected, still-unresolved old row.
+      const time=new Date(now()).getTime();
+      for(const id of attemptedTasks) {
+        const task=tasks.get(id);
+        if(!task||!current(task)||currentCycleTask(task)){oldTaskRetries.delete(id);continue;}
+        oldTaskRetries.set(id,{updatedAt:task.updated_at,until:Math.min(time+OLD_TASK_RETRY_MS,Date.parse(task.expires_at))});
+        while(oldTaskRetries.size>200)oldTaskRetries.delete(oldTaskRetries.keys().next().value);
+      }
       return {status:'ready'};
     },
   };
@@ -600,6 +677,6 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
     getBoundOriginals:context=>requireCycle(context)&&Array.isArray(context.inputIds)
       &&context.inputIds.every(id=>phase==='initial'?cycle.inputs.some(row=>row.uuid===id):followupScope.has(id))
       ?structuredClone(contextInputs(context.inputIds)):null,
-    get phase(){return phase;},cleanup(){cycle=undefined;catalogue.clear();tasks.clear();receipts.clear();touched.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();followupScope.clear();},
+    get phase(){return phase;},cleanup(){cycle=undefined;catalogue.clear();tasks.clear();receipts.clear();touched.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();historyPageOrigins.clear();attemptedTasks.clear();followupScope.clear();},
     getExecutionLog:()=>cycle?.getExecutionLog()??[],get taskCount(){return [...catalogue.values()].filter(eligibleCatalogue).length;}};
 }
