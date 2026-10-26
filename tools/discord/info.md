@@ -1,5 +1,11 @@
 # Discord tools
 
+Exact-original reads document the full server/channel/message URL and a maximum
+of eight results. A confirmed exact-message absence returns `source_missing`
+with its identity; denied/unavailable reads stay distinct. Tools do not clear
+tasks or acknowledge queue inputs themselves. The planner uses separate explicit
+bookkeeping calls after matching that absence to its own trusted original.
+
 Live read schemas/validation/dispatch in index.js and the explicitly named request-memory summary tool in live-summary.js. read_discord_window always uses the ordinary original-message reader; it never invokes the summary model, regardless of message count or text length. Bot API, source policy, time context and summarization helpers remain under ../../server/. No archive or ingestion code belongs here.
 
 `read_discord_summary` scans authorized eboard channels first in one bounded live request; general fallback excludes teams and team scope requires explicit current-user intent. The default window spans seven local calendar dates through now. At most30channels run sequentially under one shared300second aggregate deadline, including catalogue discovery, channel reads and summarization. Parent cancellation can stop the scan earlier; the deadline is not300seconds per channel. Summaries share the existing12dispatch/0.10USDrequest budget. Per-channel/aggregate coverage, bounded excerpts and missing content remain explicit. An empty authorized catalogue is unavailable, not proof of no messages. No content archive or periodic summary job is introduced.

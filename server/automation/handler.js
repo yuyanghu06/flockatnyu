@@ -4,6 +4,7 @@ import {buildAutomationPrompt} from './prompt.js';
 import {AUTOMATION_MAX_TOOL_CALLS,AUTOMATION_MAX_STAGE_CALLS} from './config.js';
 import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {buildObservationHandoff} from './observation-handoff.js';
+import {compactConversation} from './conversation-context.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const finishTool = {name:'finish_batch',description:'Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:0,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = (code,result) => { const error=new Error(code);if(plainObject(result?.diagnostics))error.diagnostics=result.diagnostics;throw error; };
@@ -149,7 +150,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       const queueReferences=pipeline?referenceMap(inputIds,'q'):null;
       let phaseReferences=queueReferences;
       const referenceBindings=()=>({phase:stage,inputIds:phaseReferences.bindings,handledInputIds:queueReferences.bindings,
-        ...(stage==='initial'?{noChangeInputIds:queueReferences.bindings}:{}),
+        ...(stage==='initial'?{noChangeInputIds:queueReferences.bindings,missingInputIds:queueReferences.bindings}:{}),
         notice:'Copy ref values for inputIds and the current taskId. finish_batch handledInputIds uses only the queue refs listed here. Exact listed UUIDs remain compatible; other strings are never repaired.'});
       const translateReference=(value,map,wire)=>typeof value==='string'?(wire?map.toRef.get(value):map.toUuid.get(value))??value:value;
       const referenceArguments=(call,wire=false)=>{
@@ -157,7 +158,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         if(!pipeline)return args;
         if(call.name==='finish_batch') {
           if(Array.isArray(args.handledInputIds))args.handledInputIds=args.handledInputIds.map(value=>translateReference(value,queueReferences,wire));
-          if(stage==='initial'&&Array.isArray(args.noChangeInputIds))args.noChangeInputIds=args.noChangeInputIds.map(value=>translateReference(value,queueReferences,wire));
+          if(stage==='initial')for(const field of ['noChangeInputIds','missingInputIds'])if(Array.isArray(args[field]))args[field]=args[field].map(value=>translateReference(value,queueReferences,wire));
         } else {
           if(Array.isArray(args.inputIds))args.inputIds=args.inputIds.map(value=>translateReference(value,phaseReferences,wire));
           if(stage==='followup'&&['read_pending_task','resolve_pending_task','defer_task'].includes(call.name)&&plainObject(args.arguments)&&Object.hasOwn(args.arguments,'taskId'))
@@ -165,7 +166,40 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         }
         return args;
       };
+      const formatModelResult=(result,toolName)=>{
+        if(!pipeline||stage!=='followup'||!['read_pending_task','patch_map_participation','finish_batch'].includes(toolName)
+          ||!plainObject(result)||!Array.isArray(result.resolutionOptions))return result;
+        const resolutionHints=result.resolutionOptions.flatMap(option=>{
+          const ref=phaseReferences.toRef.get(option?.taskId);
+          if(!ref||!['completed','no_change_needed','source_missing'].includes(option.outcome)
+            ||option.outcome==='no_change_needed'&&!['already_correct','no_actionable_request'].includes(option.reason))return [];
+          return [{tool:'resolve_pending_task',arguments:{inputIds:[ref],arguments:{taskId:ref,outcome:option.outcome,
+            ...(option.outcome==='no_change_needed'?{reason:option.reason}:{})}}}];
+        });
+        if(!resolutionHints.length)return result;
+        const visible={...result,resolutionHints,
+          resolutionHintNotice:'These are copyable CURRENT TASK refs for a separate decision, not automatic completion or proof. Choose only an outcome supported by current evidence; the backend still checks it.'};
+        return Buffer.byteLength(canonicalJson(visible))<=16384?visible:result;
+      };
+      const initialTaskCoverage=()=>{
+        if(!pipeline||typeof pipeline.getInitialTaskCoverage!=='function')return [];
+        const coverage=pipeline.getInitialTaskCoverage();
+        if(!Array.isArray(coverage)||coverage.length>claimedInputIds.length
+          ||new Set(coverage.map(row=>row?.inputId)).size!==coverage.length
+          ||coverage.some(row=>!plainObject(row)||!claimedInputIds.includes(row.inputId)||!Number.isSafeInteger(row.taskCount)||row.taskCount<1||row.taskCount>500))failure('preflight_failed');
+        return coverage;
+      };
       const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{}),...(pipeline?{referenceBindings:referenceBindings()}:{} )})}];
+      const enforceMessageBudget=()=>{
+        if(pipeline) {
+          let snapshot=typeof pipeline.getConversationSnapshot==='function'?pipeline.getConversationSnapshot():undefined;
+          if(snapshot?.status==='ready'&&Array.isArray(snapshot.tasks))snapshot={...snapshot,
+            tasks:snapshot.tasks.map(row=>({...row,compact:formatModelResult(row.compact,'read_pending_task')}))};
+          const compacted=compactConversation({messages,executionLog:getExecutionLog(),snapshot,referenceBindings:referenceBindings(),phase:stage});
+          if(compacted.compacted)messages.splice(0,messages.length,...compacted.messages);
+        }
+        if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+      };
       const callIds=new Set();
       let calls=0,stageCalls=0,stageRounds=0;
       const followupRounds=Math.min(10,config.followupRounds??10);
@@ -266,19 +300,17 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         // fragments, receipts and every private runtime guard remain intact.
         if(validatedAll)messages.splice(0,messages.length,followupMessage);
         else messages.push(followupMessage);
-        if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+        enforceMessageBudget();
         return next.followupRequired!==false;
       };
       if(pipeline){
         await guarded(()=>pipeline.beginCycle({leaseToken,inputs:structuredClone(inputs),principal,signal:combined,recordExecution,getExecutionLog}));
         if(typeof pipeline.getInitialTaskCoverage==='function') {
-          const coverage=pipeline.getInitialTaskCoverage();
-          if(!Array.isArray(coverage)||coverage.length>claimedInputIds.length
-            ||new Set(coverage.map(row=>row?.inputId)).size!==coverage.length
-            ||coverage.some(row=>!plainObject(row)||!claimedInputIds.includes(row.inputId)||!Number.isSafeInteger(row.taskCount)||row.taskCount<1||row.taskCount>500))failure('preflight_failed');
+          const coverage=initialTaskCoverage(),coveredRefs=coverage.map(row=>queueReferences.toRef.get(row.inputId));
           const initial=JSON.parse(messages[0].content);
           initial.savedTaskCoverage={inputs:coverage.map(row=>({inputRef:queueReferences.toRef.get(row.inputId),taskCount:row.taskCount})),
-            notice:'These claimed originals already have current saved actionable work with exactly matching original data. This is saved-task coverage, not completed action or live-source evidence. Retain blocked tasks; explicitly list their queue refs in handledInputIds with noChangeInputIds empty when finishing initial processing. Unlisted originals remain queued.'};
+            ...(coveredRefs.length?{completionHints:[{tool:'finish_batch',arguments:{handledInputIds:coveredRefs,noChangeInputIds:[]}}]}:{}),
+            notice:'These QUEUE refs already have saved work with exactly matching originals. They are not TASK refs and this does not mean the tasks are completed. The copyable finish arguments retain those tasks for follow-up: list these queue refs in handledInputIds and leave noChangeInputIds empty. The hint accounts only for the listed originals; other unfinished originals remain queued. Call finish_batch alone.'};
           messages[0].content=JSON.stringify(initial);
         }
         await recordExecution({kind:'batch_context',inputs:structuredClone(inputs),...(batchContext?{batchContext}:{})});
@@ -307,14 +339,20 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           return copy;
         });
         const canonicalFinishTool=structuredClone(finishTool);
-        if(pipeline&&stage==='initial')canonicalFinishTool.parameters.properties.noChangeInputIds={type:'array',items:{type:'string'},minItems:0,maxItems:20};
+        if(pipeline&&stage==='initial')for(const field of ['noChangeInputIds','missingInputIds'])canonicalFinishTool.parameters.properties[field]={type:'array',items:{type:'string'},minItems:0,maxItems:20};
         const requestFinishTool=structuredClone(canonicalFinishTool);
         if(pipeline) {
           requestFinishTool.description='Call alone with bare {handledInputIds}, never the ordinary wrapper. A queue input is handled when its required change succeeded, genuine unfinished actionable work was durably deferred, OR current evidence confirms no required change/already-satisfied intent. Handle that last category directly WITHOUT a write or NEW task; do not save a processing receipt. Copy only listed queue refs (q_...) or their exact UUIDs; task refs never finish queue inputs. [] ends this phase without claiming additional handled originals. Backend action/task completion checks still apply.'
-            +(stage==='initial'?' Initial phase also accepts noChangeInputIds: explicitly list exactly the originals requiring no change/already satisfied, excluding originals covered by an applied source write or current durable task. The two lists together declare handled originals; noChangeInputIds may be separate from handledInputIds or overlap it. Neither list may repeat an original internally. Missing noChangeInputIds means []. Reads/lookups do not cover an original.':'');
+            +(stage==='initial'?' Initial phase also accepts noChangeInputIds: explicitly list exactly the originals requiring no change/already satisfied, excluding originals covered by an applied source write or current durable task. The two lists together declare handled originals; noChangeInputIds may be separate from handledInputIds or overlap it. Neither list may repeat an original internally. Missing noChangeInputIds means []. missingInputIds is a subset of handledInputIds for exact queued originals whose separate authorized exact read returned source_missing; it cannot clear an incidental or guessed missing target, a denied read or unavailable service. Reads/lookups do not otherwise cover an original.':'');
           requestFinishTool.parameters.properties.handledInputIds.items={type:'string',minLength:1,maxLength:64,
             enum:queueReferences.bindings.map(row=>row.ref)};
-          if(stage==='initial')requestFinishTool.parameters.properties.noChangeInputIds.items=structuredClone(requestFinishTool.parameters.properties.handledInputIds.items);
+          if(stage==='initial') {
+            for(const field of ['noChangeInputIds','missingInputIds'])requestFinishTool.parameters.properties[field].items=structuredClone(requestFinishTool.parameters.properties.handledInputIds.items);
+            const covered=new Set(initialTaskCoverage().map(row=>row.inputId));
+            const noChangeChoices=queueReferences.bindings.filter(row=>!covered.has(row.uuid)).map(row=>row.ref);
+            if(noChangeChoices.length)requestFinishTool.parameters.properties.noChangeInputIds.items.enum=noChangeChoices;
+            else requestFinishTool.parameters.properties.noChangeInputIds.maxItems=0;
+          }
         }
         const matches=(value,schema)=>{try{return validateArguments(value,schema);}catch{return false;}};
         const idChoices=(call,definition,rejection)=>{
@@ -361,6 +399,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             ||!choices.every(id=>typeof id==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)&&matches(id,personSchema)))return;
           return {phase:stage,field:'arguments.personId',choices:[...choices],instruction:'Copy the complete exact person.id already returned for this bound original. Resubmit defer_task with a new call ID; no calls in this turn were executed.'};
         };
+        enforceMessageBudget();
         const turn=await guarded(()=>provider.toolTurn({system:system+driveSkillPrompt(driveSkillActive),messages:structuredClone(messages),tools:structuredClone([...requestDefinitions,requestFinishTool]),maxToolCalls:AUTOMATION_MAX_TOOL_CALLS,signal:combined,auditContext:{...auditContext,round:round+1}}));
         await recordExecution({kind:'model_result',round:progressRound,result:turn??null});
         if (!plainObject(turn)||!Array.isArray(turn.toolCalls)||!turn.toolCalls.length||turn.toolCalls.length>AUTOMATION_MAX_TOOL_CALLS||!['tool_calls','tool_use'].includes(turn.stopReason)) failure('incomplete_batch');
@@ -386,8 +425,8 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           if(pipeline&&call.name==='finish_batch'&&matches(execution.arguments,canonicalFinishTool.parameters)
             &&(new Set(execution.arguments.handledInputIds).size!==execution.arguments.handledInputIds.length
               ||!execution.arguments.handledInputIds.every(id=>validUuid(id)&&claimedInputIds.includes(id))
-              ||stage==='initial'&&(new Set(execution.arguments.noChangeInputIds||[]).size!==(execution.arguments.noChangeInputIds||[]).length
-                ||(execution.arguments.noChangeInputIds||[]).some(id=>!validUuid(id)||!claimedInputIds.includes(id))))) {
+              ||stage==='initial'&&['noChangeInputIds','missingInputIds'].some(field=>new Set(execution.arguments[field]||[]).size!==(execution.arguments[field]||[]).length
+                ||(execution.arguments[field]||[]).some(id=>!validUuid(id)||!claimedInputIds.includes(id))))) {
             await rejectProposal(call,'invalid_completion_scope',{keyword:'scope',field:'handledInputIds'});failure('invalid_completion');
           }
           let rejection;
@@ -434,7 +473,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
             messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
           }
-          if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+          enforceMessageBudget();
           continue;
         }
         if(rejections.size) {
@@ -454,7 +493,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
             messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
           }
-          if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+          enforceMessageBudget();
           continue;
         }
         if(pipeline&&stage==='followup') {
@@ -479,7 +518,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
               messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
             }
-            if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+            enforceMessageBudget();
             continue;
           }
           if(typeof pipeline.preflightParticipation==='function') {
@@ -509,7 +548,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
                 await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,result:feedback});
                 messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(feedback)});
               }
-              if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+              enforceMessageBudget();
               continue;
             }
           }
@@ -529,17 +568,18 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           await renew();await authorize();
           if(pipeline) {
             if(stage==='initial'&&typeof pipeline.validateInitialFinish==='function') {
-              const noChangeInputIds=executionCalls.find(call=>call.name==='finish_batch').arguments.noChangeInputIds||[];
-              const completion=await guarded(()=>pipeline.validateInitialFinish({principal,signal:combined,handledInputIds,noChangeInputIds}));
+              const finishArguments=executionCalls.find(call=>call.name==='finish_batch').arguments;
+              const noChangeInputIds=finishArguments.noChangeInputIds||[],missingInputIds=finishArguments.missingInputIds||[];
+              const completion=await guarded(()=>pipeline.validateInitialFinish({principal,signal:combined,handledInputIds,noChangeInputIds,missingInputIds}));
               if(completion?.status==='pending') {
                 const uncoveredInputRefs=(completion.uncoveredInputIds||[]).map(id=>queueReferences.bindings.find(binding=>binding.uuid===id)).filter(Boolean);
                 if(!uncoveredInputRefs.length||uncoveredInputRefs.length>20)failure('preflight_failed');
                 const response={status:'pending',reason:'uncovered_inputs',uncoveredInputRefs,
                   message:'These handled originals have neither an applied source write nor a current durable task. For each, perform its supported remaining action, save its genuine unfinished action, or explicitly include it in noChangeInputIds if current evidence confirms no required change/already satisfied. Reads/lookups are not completion. Finish again with an exact disjoint accounting.'};
                 messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)},
-                  {role:'tool',toolCallId:finish.id,content:JSON.stringify(response)});
+                  {role:'tool',toolCallId:finish.id,content:JSON.stringify(formatModelResult(response,'finish_batch'))});
                 await recordExecution({kind:'tool_result',tool:'finish_batch',result:response});
-                if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+                enforceMessageBudget();
                 await progressDone('pending');continue;
               }
               if(completion?.status==='invalid_request') {await rejectProposal(finish,'invalid_completion');failure('invalid_completion');}
@@ -552,9 +592,9 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
                 const response={...completion,taskRefs:(completion.taskIds||[]).map(id=>phaseReferences.bindings.find(binding=>binding.uuid===id)).filter(Boolean)};
                 if(Buffer.byteLength(canonicalJson(response))>16384)failure('context_limit');
                 messages.push({role:'assistant',content:typeof turn.text==='string'?turn.text:'',toolCalls:structuredClone(turn.toolCalls)},
-                  {role:'tool',toolCallId:finish.id,content:JSON.stringify(response)});
+                  {role:'tool',toolCallId:finish.id,content:JSON.stringify(formatModelResult(response,'finish_batch'))});
                 await recordExecution({kind:'tool_result',tool:'finish_batch',result:response});
-                if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+                enforceMessageBudget();
                 await progressDone('pending');continue;
               }
               if(completion?.status!=='ready')failure('preflight_failed',completion);
@@ -582,7 +622,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               if(Buffer.byteLength(canonicalJson(feedback))>16384)failure('context_limit');
               messages.push({role:'assistant',content:'',toolCalls:structuredClone(turn.toolCalls)},
                 {role:'tool',toolCallId:finish.id,content:JSON.stringify(feedback)});
-              if(Buffer.byteLength(JSON.stringify(messages))>262144)failure('context_limit');
+              enforceMessageBudget();
               activeProgress.result=feedback;
               await progressDone('pending');
               continue;
@@ -693,10 +733,10 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           }
           activeProgress.result=result;
           await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,inputIds:scopedIds,arguments:structuredClone(executionArguments),result});
-          messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(result)});
+          messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(formatModelResult(result,call.name))});
           await progressDone(result.status==='already_succeeded'?'already_succeeded':result.status==='partial'?'partial':'ready');
         }
-        if(Buffer.byteLength(JSON.stringify(messages))>262144) failure('context_limit');
+        enforceMessageBudget();
       }
       if(pipeline&&stage==='followup')return await settleCycle('round_limit');
       return outcome({status:'round_limit'});

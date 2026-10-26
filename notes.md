@@ -203,3 +203,7 @@ Approved correction: when a member says they will be at a named event/venue on a
 ## 2026-10-25 — Bug: cancelled Calendar event replaced by a new event may not appear correctly on the map
 
 The user reported that cancelling one Calendar event and creating a replacement may leave the map activity, building link or attendance attached to the wrong event. In the HP incident, the original remained cancelled and its saved attendees were hidden; the active replacement had a separate map entry but no building link. The individual records were corrected manually. General cancellation/replacement reconciliation remains an **open bug**, not a completed fix. Track cases with changed event IDs, missing replacement location, existing attendance and ambiguous replacements; preserve distinct events and avoid reviving cancelled originals. Hosted bug report: `5ad778a5-c122-4f67-9ff4-347a8cb6f210`.
+
+## 2026-10-26 — Selected planner remedies
+
+The user approved trimming unused active-conversation logs, an accepted separate no-change result for saved tasks, improved source/ID/Calendar-target prompting and formatting, and successful terminal handling of confirmed missing originals with exact queue/task cleanup. Keep source permissions, exact versions and unfinished unrelated work. Reproduce and explain invented page IDs without fixing that behavior. Explain the old-log cleanup correction but hold its implementation. Other unselected fixes and limit/deployment changes remain out of this pass; actual status is in the milestone.

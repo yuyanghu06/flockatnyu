@@ -204,7 +204,19 @@ export function createLiveDiscordRetrieval({config, store, client} = {}) {
     return run(args, async (ctx,signal) => {
       await ctx.check(args.channelId);
       const limit = args.limit || 5;
-      const raw = args.messageId && args.context === false ? [await client.getMessage({channelId:args.channelId,messageId:args.messageId,signal})] : await client.getMessages({channelId:args.channelId,around:args.messageId,limit,signal});
+      let raw;
+      if(args.messageId&&args.context===false) {
+        try {raw=[await client.getMessage({channelId:args.channelId,messageId:args.messageId,signal})];}
+        catch(error) {
+          // Only the exact message GET is terminal absence. Channel, role,
+          // membership and final access failures still follow the normal path.
+          if(error?.code!=='not_found')throw error;
+          return {status:'ready',outcome:'source_missing',sources:[],retrieval:'live',
+            missingOriginal:{provider:'discord',guildId:config.guildId,channelId:args.channelId,messageId:args.messageId,
+              sourceUrl:`https://discord.com/channels/${config.guildId}/${args.channelId}/${args.messageId}`},
+            coverage:{complete:true,matchedCount:0,returnedCount:0,reason:'exact_original_missing',textTruncated:false}};
+        }
+      } else raw=await client.getMessages({channelId:args.channelId,around:args.messageId,limit,signal});
       if (!Array.isArray(raw) || raw.length > limit) fail('invalid_response');
       const messages = raw.map(message => cleanMessage(message,args.channelId,config.guildId));
       if (args.messageId && args.context === false && messages[0]?.id !== args.messageId) fail('invalid_response');

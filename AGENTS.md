@@ -1,3 +1,29 @@
+# Selected planner fixes and held work (2026-10-26)
+
+The user authorized removing unused model-visible execution logs to keep the
+active conversation bounded, while preserving private execution evidence,
+unfinished task intent, current facts, source checks and exact versions. Small
+pages must not accumulate without retiring unnecessary history.
+
+Saved tasks may return a separate accepted no-change decision rather than
+requiring an unnecessary Calendar/map mutation. Distinguish confirmed completed
+actions, reviewed no-change work and confirmed missing originals. A successful
+authorized exact-original Discord absence check may finish its exact queued
+input and saved task; an unrelated or guessed missing ID, authorization failure,
+timeout or unavailable service must not clear other work. Preserve the normal
+principal, source, lease and optimistic-version checks. Resolving/reading tasks
+still must not fetch another service implicitly.
+
+Improve the planner prompt and already-returned structured source/target hints
+so it copies canonical URLs, author/source IDs and Calendar-backed event IDs into
+the existing tool fields. Do not weaken permissions or silently guess IDs.
+
+The user explicitly held off fixes to invented context-page IDs: reproduce and
+explain those failures, but keep the fragment-ID schema/reader unchanged. Explain
+the proposed old-log cleanup correction without implementing it. Other
+unselected changes, new limits and deployment changes are outside this pass.
+Implementation and verification truth remains in milestones/milestone.md.
+
 # Isolated tools; workflows belong in agent prompts (2026-10-23)
 
 For both chat and the autonomous planner/update agent, each callable tool must
