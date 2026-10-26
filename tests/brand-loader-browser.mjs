@@ -1,5 +1,4 @@
-import { goGreekPopup } from '../src/go-greek-popup.js';
-const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
+const expectedLandmarkCount = 9;
 import {chromium} from 'playwright-core';
 import fs from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';

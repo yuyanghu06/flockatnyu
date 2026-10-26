@@ -4,7 +4,6 @@ import {readFile,readdir} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
-import {goGreekPopup} from '../src/go-greek-popup.js';
 
 const migrations=new URL('../supabase/migrations/',import.meta.url);
 async function migration(n){const file=(await readdir(migrations)).find(f=>f.endsWith('.sql')&&Number(f.slice(8,12))===n);assert(file,`migration ${n}`);return readFile(new URL(file,migrations),'utf8');}
@@ -32,7 +31,7 @@ test('021 real SQL: seeded map identities, service isolation and validated atomi
   const people=(await db.query('select * from public.map_people order by display_name')).rows;
   const a=people[0].id,b=people[1].id,c=people[2].id;
   const home='bobst-library',target='nyu-kimmel-center',planned='stern-school-of-business';
-  await t.test('immutable021 keeps nine seeded buildings; later Go Greek catalogue seed is verified separately',async()=>{
+  await t.test('immutable021 and current visual catalogue keep the same nine seeded buildings',async()=>{
    const seeded={
     'nyu-silver-center':'Silver Center',
     'nyu-kimmel-center':'Kimmel Center',
@@ -50,9 +49,7 @@ test('021 real SQL: seeded map identities, service isolation and validated atomi
    const actual=(await db.query('select id,name,people_here from public.map_buildings order by id')).rows;
    assert.equal(actual.length,9);assert.deepEqual(Object.fromEntries(actual.map(r=>[r.id,r.name])),seeded);assert(actual.every(r=>r.people_here.length===0));
    assert.equal(ids.length,9);assert.deepEqual(ids.sort(),Object.keys(seeded).sort());
-   assert.equal(goGreekPopup.id,'683-broadway');assert.equal(goGreekPopup.name,'Go Greek');
-   const visualIds=[...ids,...(goGreekPopup.enabled?[goGreekPopup.id]:[])];
-   assert.equal(visualIds.length,9+Number(goGreekPopup.enabled));assert.equal(new Set(visualIds).size,visualIds.length);
+   assert.equal(new Set(ids).size,9);
    for(const m of visual.matchAll(/id: '([^']+)', name: '([^']+)'/g)){
     assert.equal(seeded[m[1]],m[2]);
    }

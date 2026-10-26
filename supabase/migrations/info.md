@@ -236,3 +236,7 @@ Hosted038 is `20261022182039_agent_empty_scope_maintenance`, applied through Sup
 045 adds service-only scoped task catalogue and exact complete read RPCs without pruning, cross-service calls or runner write locks. Existing039/list/save/resolve and tabledata stay intact. Local tests pass; hosted application remains pending in the rolling milestone.
 
 Hosted045 is20261023234558_agent_task_catalogue, appliedOctober23through the existing signed-in projectSQLeditor after independent acceptance. Exact6020byte source receipt and both function-bodyMD5s match reviewedlocalSQL; service-onlyACL/emptysearchpath and RESTvisibility verify. The normal developer MCP remainsread-only. See the task-storage verification report and rollingmilestone for workerstate.
+
+## Go Greek retirement (046)
+
+October25 owner-requested forward cleanup046 checks the exact popup identity under the existing map lock, removes exclusively linked activities/attendance and the popup link from shared events, then removes the catalogue row. Other events, people, catalogues, source originals and permissions remain intact. It is replay-safe, changes no schema/grants and does not modify historical037. Hosted application remains a separate operation recorded in milestones/milestone.md.

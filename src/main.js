@@ -23,7 +23,6 @@ import { createGouldPlaza } from './gould-plaza.js';
 import { createKimmelModel, removeKimmelGeometry, kimmelReplacement } from './kimmel.js';
 import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from './global-center.js';
 import { createSilverCenterModel, silverCenterReplacement } from './silver-center.js';
-import { goGreekPopup } from './go-greek-popup.js';
 import { enhanceCourantAsync, enhanceSternAsync } from './courant-stern.js';
 import streetParkMetadata from '../assets/campus-assets/data/streets-parks-render.json';
 import './style.css';
@@ -297,14 +296,6 @@ async function loadJob(job) {
     }
     if (job.tile) {
       model.traverse(mesh => { if (mesh.isMesh) mesh.material = cityMaterial; });
-      if (goGreekPopup.enabled && job.name === goGreekPopup.tile) {
-        const { createBroadway683Model, broadway683Replacement } = await import('./broadway-683.js');
-        const broadway = createBroadway683Model(model);
-        state.removedBroadway683Triangles = removeReplacedBuilding(model, broadway683Replacement);
-        if (state.removedBroadway683Triangles !== 70) recordError(job.name, new Error('683 Broadway replacement geometry count needs inspection.'));
-        registerLandmark(goGreekPopup.id, broadway);
-        scene.add(broadway);
-      }
       if (job.name === silverCenterReplacement.tile) {
         const silver = createSilverCenterModel(model);
         state.removedSilverCenterTriangles = removeReplacedBuilding(model, silverCenterReplacement);

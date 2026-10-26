@@ -46,3 +46,7 @@ Migration029 adds the service-only minimal bug_reports table and bounded append 
 Migration031 adds the minimal shared plain-text agent_memory note and scoped RPCs. Chat may maintain useful long-term club facts; this does not restore provider archives or summaries.
 
 Migration035 stages Discord metadata refreshes separately from a proven published catalogue to prevent temporary bot outages during archive scans. It retains immediate observed revocations, policy/manual-disable/source-identity checks and service-only access. Existing incomplete generations stay closed until real completion. Tests exercise the full001–035chain with actual discovery/store/chat adapters. Applied as20261019193035 through the restored project-owner dashboard; source/function hashes and ACLs verified. Legacy scan completion and service-role base-channel/rollback-only refresh checks passed; see the milestone snapshot. The user subsequently confirmed that normal bot replies work after the repair.
+
+## Go Greek retirement (046)
+
+October25 owner-requested forward cleanup046 checks the exact popup identity under the existing map lock, removes exclusively linked activities/attendance and the popup link from shared events, then removes the catalogue row. Other events, people, catalogues, source originals and permissions remain intact. It is replay-safe, changes no schema/grants and does not modify historical037. Hosted application remains a separate operation recorded in milestones/milestone.md.

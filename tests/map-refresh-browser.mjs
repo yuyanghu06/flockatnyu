@@ -1,5 +1,4 @@
-import { goGreekPopup } from '../src/go-greek-popup.js';
-const expectedLandmarkCount = 9 + Number(goGreekPopup.enabled);
+const expectedLandmarkCount = 9;
 // Independent actual-campus Chrome acceptance with synthetic local APIs only.
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';

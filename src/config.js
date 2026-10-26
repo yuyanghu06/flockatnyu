@@ -1,6 +1,5 @@
 import placements from '../assets/yuyang-site-3d-assets/data/landmark-placements.json';
 import extracted from '../assets/campus-assets/data/extracted-buildings.json';
-import { goGreekPopup } from './go-greek-popup.js';
 
 export { placements };
 export const paulson = extracted.buildings['nyu-john-a-paulson-center'];
@@ -34,7 +33,6 @@ export const cameraLimits = {
   targetBounds: { minX: -780, maxX: 780, minY: 1, maxY: 150, minZ: -780, maxZ: 970 },
 };
 export const buildings = [
-  ...(goGreekPopup.enabled ? [{ id: goGreekPopup.id, name: goGreekPopup.name, description: goGreekPopup.description }] : []),
   { id: 'nyu-silver-center', name: 'Silver Center', description: 'The Silver Center for Arts and Science at 100 Washington Square East, with pale masonry, ornamental cornices and the gold-toned entrance on Washington Place.' },
   { id: 'nyu-kimmel-center', name: 'Kimmel Center', description: 'NYU’s Kimmel Center for University Life at 60 Washington Square South. Pale masonry, glazed corners and upper terraces overlook Washington Square Park.' },
   { id: 'nyu-global-center', name: 'Global Center (GCASL)', description: 'NYU’s Global Center for Academic and Spiritual Life beside Kimmel. Its patterned ochre stone screen draws on a tree-of-life motif. This reference-informed exterior is an architectural approximation.' },

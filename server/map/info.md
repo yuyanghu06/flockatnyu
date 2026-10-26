@@ -213,7 +213,7 @@ this module creates no buckets, profiles, storage writes or public policies.
 
 Map operational diagnostics preserve deadline/caller cancellation, storage HTTP and response-validation causes while retaining existing result statuses, SQL conflict/validation mapping and authorization behavior. Fixed codes and observed numbers only are forwarded; provider bodies, URLs, identities and raw errors remain excluded.
 
-Presence projections include the actual event kind. `event-preview.js` grants only the exact reserved two-hour Go Greek UI fixture a nonproduction/local-development display exception; no participants or normal source read/write permissions follow. Production excludes this fixture. See docs/active-event-indicators.md for identity, expiry and guarded cancellation.
+Presence projections include the actual event kind. October25 Go Greek retirement removes its popup-only local sample authorization exception and module. Normal event source authorization and generic active-event indicators remain. Forward migration046 handles owner-requested attached-data cleanup; see milestones/go-greek-removal-2026-10-25/info.md for actual live status.
 
 
 
