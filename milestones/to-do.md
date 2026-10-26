@@ -4,7 +4,7 @@
 - [x] Pass frontend/API builds and9synthetic Chrome indicator cases.
 - [x] Correct the intermittent expiry fixture clock; coder focused22checks pass.
 - [x] Independently rerun focused offline regressions:148pass; final Evaluator ACCEPT.
-- [ ] Commit logical changes, fast-forward main, push normally and verify the remote commit and working tree.
+- [x] Commit logical changes, fast-forward main, push normally and verify matching remote/local fc387eb and clean tree; publish final receipt as documentation only.
 - Database cleanup046 remains a separate unapplied task; no live migration or manual deployment is performed by publication.
 
 ## Authorized planner throughput fixes — implemented and live

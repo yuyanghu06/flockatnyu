@@ -310,3 +310,5 @@ October25 throughput diagnosis entries record two read-only researcher passes, i
 October25 planner-throughput-fix preparation records research, accepted implementation contracts and independent reproduction before any release.
 
 October26 main-publication entries distinguish existing dev commits from dirty GoGreek retirement/operational records, record independent verification and review, and verify normal Git publication without applying migration046.
+
+Final October26 publication receipt: [2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md](2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md) verifies source/records on main and retains the unapplied database cleanup boundary.

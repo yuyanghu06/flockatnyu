@@ -6,7 +6,7 @@ Scope: the17existing codex/dev commits plus current GoGreek retirement, guarded 
 
 Completion criteria: focused local checks and both builds pass, independent evaluator accepts, logical commits retain all authored work, main is updated without force and the remote commit is verified.
 
-Status: independent Planner ACCEPT; independent verification is running. Root owns journal and Git mutations. [Planning receipt](../history/2026-10-26_12-05-32-083834-planner-local-main-publication-reviewed.md). Actual publication status is maintained in ../milestone.md.
+Status: complete. Independent Planner and Evaluator ACCEPT; frontend/API builds,148offline regressions and9synthetic Chrome checks pass after the bounded test fixture correction. Main was normally fast-forwarded and pushed through fc387eb, confirmed by matching remote/local commit and clean tree. [Publication receipt](../history/2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md); this final receipt is a documentation-only follow-up commit.
 
 Limitations: cleanup046 remains unapplied; prior live/browser receipts remain historical unless explicitly refreshed. Calendar replacement and remaining planner issues stay open.
 
