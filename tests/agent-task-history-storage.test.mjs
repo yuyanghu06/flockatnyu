@@ -85,7 +85,7 @@ test('production store and actual PostgreSQL keep old plus new history across th
    assert.equal((await f.save(changed,prior.updated_at)).status,'conflict');assert.deepEqual(await f.row(prior.uuid),before);
    assert.equal((await f.store.read({leaseToken:f.token,allowedSourceIds:[randomUUID()],taskId:prior.uuid})).status,'not_found');
    assert.equal((await f.store.save({leaseToken:randomUUID(),allowedSourceIds:[f.source],task:changed,expectedUpdatedAt:updated.task.updated_at})).status,'stale');assert.deepEqual(await f.row(prior.uuid),before);
-   await f.db.query("update public.agent_pending_tasks set created_at=clock_timestamp()-interval '25 hours',updated_at=clock_timestamp()-interval '2 hours',expires_at=clock_timestamp()-interval '1 hour' where uuid=$1",[prior.uuid]);
+   await f.db.query("update public.agent_pending_tasks set created_at=statement_timestamp()-interval '25 hours',updated_at=statement_timestamp()-interval '2 hours',expires_at=statement_timestamp()-interval '1 hour' where uuid=$1",[prior.uuid]);
    assert.equal((await f.read(prior.uuid)).status,'not_found');assert.equal((await f.save({...updated.task,info:changed.info})).status,'expired');
   });
  }finally{await f.db.close();}
