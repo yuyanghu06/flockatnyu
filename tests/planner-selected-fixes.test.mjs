@@ -121,6 +121,98 @@ test('compaction retires obsolete tool bodies without modifying evidence, pairs 
   const again=compactConversation({messages:compacted.messages,executionLog:execution,snapshot:{status:'ready',tasks:[],fragments:[]},referenceBindings:{inputIds:[]},phase:'initial'});assert.deepEqual(again.messages,compacted.messages);
 });
 
+test('distinct reads used only by later resolved tasks retire with coverage and authentic copied observations',()=>{
+  const closed=Array.from({length:6},(_,index)=>task(20+index,{large:false}).uuid),open=task(90,{large:false}).uuid;
+  const bindings={phase:'followup',inputIds:[...closed,open].map((uuid,index)=>({ref:'t_closed_'+index,uuid})),handledInputIds:[{ref:'q_original',uuid:input(90).uuid}]};
+  const compact={status:'ready',detail:'compact',task:{uuid:open,info:{request:{operation:'participation',calendarKind:'club',calendarEventId:'still-open',personId:ids.blocked},inputs:[input(90,{author:'999'})],batchContext:{calendarMap:{sourceId:ids.club}}}}};
+  const snapshot={status:'ready',phase:'followup',tasks:[{taskId:open,updatedAt:now,compactDisclosed:true,compact}],catalogue:[{taskId:open}],fragments:[],historyPages:[]};
+  const messages=[{role:'user',content:JSON.stringify({referenceBindings:bindings})}],execution=[];
+  const add=(tool,id,inputIds,args,result)=>{
+    messages.push({role:'assistant',content:'',toolCalls:[{id,name:tool,arguments:{inputIds,arguments:args}}]},{role:'tool',toolCallId:id,content:JSON.stringify(result)});
+    execution.push({kind:'tool_result',stage:'followup',tool,callId:id,inputIds,arguments:args,result:copy(result)});
+  };
+  for(const [index,id]of closed.entries()) {
+    const body='Distinct closed-task facts '+index+' '+'.'.repeat(14000),eventId='closed-event-'+index;
+    add('read_discord_messages','closed-source-'+index,[id],{url:'https://discord.com/channels/100/200/'+(700+index),context:false},{status:'ready',sourceStatus:'ready',sources:[{excerpt:body}],coverage:{complete:false,reason:'message_context',textTruncated:false}});
+    add('read_calendar_event','closed-calendar-'+index,[id],{eventId},{status:'ready',events:[{eventId,description:body}],coverage:{complete:true}});
+    add('read_map_events','closed-map-'+index,[id],{sourceId:ids.club,sourceRecordId:eventId},{status:'ready',events:[{id:'closed-map-'+index,source_id:ids.club,source_record_id:eventId,notes:body}],coverage:{complete:true}});
+    add('resolve_pending_task','closed-resolution-'+index,[id],{taskId:id,outcome:'no_change_needed',reason:'no_actionable_request'},{status:'ready',resolutionOutcome:'no_change_needed'});
+  }
+  const source=execution[0],observation={callId:source.callId,tool:source.tool,arguments:copy(source.arguments),result:copy(source.result),originalInputIds:[input(20).uuid]};
+  messages.push({role:'user',content:JSON.stringify({currentCycleObservations:{observations:[observation,{...observation,callId:'unknown-provenance'},{callId:source.callId,tool:source.tool}],omittedResults:0}})});
+  const before=copy({messages,execution,snapshot,bindings});assert(bytes(messages)>262144);
+  const result=compactConversation({messages,executionLog:execution,snapshot,referenceBindings:bindings,phase:'followup'});
+  assert(result.afterBytes<262144);assert.deepEqual({messages,execution,snapshot,bindings},before);
+  for(const row of result.messages.filter(row=>row.role==='tool'&&/^closed-(?:source|calendar|map)-/.test(row.toolCallId)))assert.equal(JSON.parse(row.content).reason,'resolved_task_read');
+  const marker=JSON.parse(result.messages.find(row=>row.toolCallId==='closed-source-0').content);assert.deepEqual(marker.coverage,source.result.coverage);assert.equal(marker.sourceStatus,'ready');
+  const handoff=JSON.parse(result.messages.find(row=>row.role==='user'&&row.content.includes('currentCycleObservations')).content).currentCycleObservations;
+  assert.equal(handoff.observations.length,2,'Exact call provenance removes its copy; unknown/missing provenance survives even when original-input IDs differ from task IDs');
+  const assistant=result.messages.flatMap(row=>row.role==='assistant'?(row.toolCalls||[]).map(call=>call.id):[]),tools=result.messages.filter(row=>row.role==='tool').map(row=>row.toolCallId);assert.deepEqual(tools,assistant);
+  assert(result.messages.filter(row=>row.role==='tool'&&row.toolCallId.startsWith('closed-resolution')).every(row=>JSON.parse(row.content).status==='ready'));
+  const again=compactConversation({messages:result.messages,executionLog:execution,snapshot,referenceBindings:bindings,phase:'followup'});assert.deepEqual(again.messages,result.messages);
+});
+
+test('closed-read cleanup preserves current dependencies, failures, uncertain scopes, pages and post-resolution readbacks',()=>{
+  const closed=task(30,{large:false}).uuid,reopened=task(31,{large:false}).uuid,open=task(32,{large:false}).uuid,otherOpen=task(33,{large:false}).uuid,queue=input(30).uuid;
+  const bindings={phase:'followup',inputIds:[closed,reopened,open,otherOpen].map((uuid,index)=>({ref:'t_protected_'+index,uuid})),handledInputIds:[{ref:'q_native',uuid:queue}]};
+  const compactFor=(id,n)=>({status:'ready',detail:'compact',task:{uuid:id,info:{request:{operation:'participation',calendarKind:'club',calendarEventId:'open-event-'+n,personId:n?ids.other:ids.person},inputs:[input(900+n,{author:String(990+n)})],batchContext:{calendarMap:{sourceId:ids.club}}}}});
+  const snapshot={status:'ready',phase:'followup',tasks:[open,otherOpen].map((taskId,index)=>({taskId,updatedAt:now,compactDisclosed:true,compact:compactFor(taskId,index)})),catalogue:[open,otherOpen,reopened].map(taskId=>({taskId})),fragments:[],historyPages:[]};
+  const messages=[],execution=[],protectedIds=[];
+  const add=(tool,id,scope,args,result,{stage='followup',protect=true}={})=>{
+    messages.push({role:'assistant',content:'',toolCalls:[{id,name:tool,arguments:{inputIds:scope,arguments:args}}]},{role:'tool',toolCallId:id,content:JSON.stringify(result)});
+    execution.push({kind:'tool_result',stage,tool,callId:id,inputIds:scope,arguments:args,result:copy(result)});if(protect)protectedIds.push(id);
+  };
+  const body='Unchanged protected facts. '.repeat(60),ready={status:'ready',body};
+  add('read_discord_messages','mixed',[closed,open],{messageId:'601',channelId:'200'},ready);
+  add('read_discord_messages','open',[open],{messageId:'602',channelId:'200'},ready);
+  add('read_discord_messages','unknown',[task(99).uuid],{messageId:'603',channelId:'200'},ready);
+  add('read_discord_messages','queue',[queue],{messageId:'604',channelId:'200'},ready);
+  add('read_discord_messages','initial',[closed],{messageId:'605',channelId:'200'},ready,{stage:'initial'});
+  add('read_discord_messages','empty',[],{messageId:'606',channelId:'200'},ready);
+  add('read_discord_messages','native-shared',[closed],{messageId:'1200',channelId:'200'},ready);
+  add('read_discord_messages','other-disclosed-shared',[closed],{messageId:'1201',channelId:'200'},ready);
+  add('read_discord_messages','url-shared',[closed],{url:originalUrl(input(900))},ready);
+  add('lookup_map_person','person-shared',[closed],{sourceUrl:'https://discord.com/channels/100/200/607',provider:'discord',providerUserId:'400'},{...ready,person:{id:ids.person}});
+  add('read_calendar_event','calendar-shared',[closed],{eventId:'open-event-0'},ready);
+  add('read_map_events','map-shared',[closed],{sourceId:ids.club,sourceRecordId:'open-event-1'},ready);
+  add('list_calendar_events','broad-calendar',[closed],{timeMin:now,timeMax:now},ready);
+  add('read_map_events','broad-map',[closed],{},ready);
+  add('read_discord_messages','failed',[closed],{messageId:'608',channelId:'200'},{status:'tool_error',reason:'source_unavailable',body});
+  add('read_calendar_event','normalized-partial',[closed],{eventId:'partial-event'},{status:'ready',sourceStatus:'partial',body});
+  add('read_map_events','explicit-partial',[closed],{sourceId:ids.club,sourceRecordId:'partial-map'},{status:'ready',partial:true,body});
+  add('read_discord_messages','reopened',[reopened],{messageId:'609',channelId:'200'},ready);
+  add('read_context_fragment','fragment',[closed],{id:'70000000-0000-4000-8000-000000000001',offset:0},{status:'ready',fragment:{id:'70000000-0000-4000-8000-000000000001',offset:0,nextOffset:body.length,totalChars:body.length*2,data:body}});
+  add('read_pending_task','history-page',[closed],{taskId:closed,detail:'history'},{status:'ready',historyPage:{taskId:closed,updatedAt:now,section:'executionHistory',offset:0,nextOffset:body.length,totalChars:body.length*2,data:body}});
+  add('upsert_map_event','write-receipt',[closed],{},{status:'ready',body});
+  add('read_discord_messages','eligible-control',[closed],{messageId:'610',channelId:'200'},{status:'ready',outcome:'source_missing',coverage:{complete:true,reason:'exact_original_missing'},body:'Closed original result. '.repeat(500)},{protect:false});
+  for(const id of [closed,reopened])add('resolve_pending_task','resolution-'+id,[id],{taskId:id,outcome:'no_change_needed'},{status:'ready'});
+  add('read_map_events','post-resolution',[closed],{sourceId:ids.club,sourceRecordId:'closed-readback'},ready);
+  const before=copy({messages,execution,snapshot}),result=compactConversation({messages,executionLog:execution,snapshot,referenceBindings:bindings,phase:'followup',triggerBytes:1});
+  for(const id of protectedIds)assert.equal(result.messages.find(row=>row.toolCallId===id).content,messages.find(row=>row.toolCallId===id).content,id+' must remain unchanged');
+  const marker=JSON.parse(result.messages.find(row=>row.toolCallId==='eligible-control').content);assert.equal(marker.reason,'resolved_task_read');assert.equal(marker.outcome,'source_missing');assert.deepEqual(marker.coverage,{complete:true,reason:'exact_original_missing'});
+  assert.deepEqual({messages,execution,snapshot},before);
+});
+
+test('production follow-up retires a closed source read while preserving its queue-bound initial handoff',async()=>{
+  const first=task(1,{current:true,operation:'source_review',original:input(1,{content:'Thanks for sharing the slides.',author:'700'}),large:false}),second=task(2,{current:true}),f=selectedFixture({pending:[first,second],backlog:198});
+  const saved=f.tasks.get(second.uuid);saved.info.executionHistory=[{kind:'tool_result',tool:'read_map_events',arguments:{},inputIds:[second.uuid],result:{status:'ready',historicalDetail:'Optional earlier context retained privately. '.repeat(8000)}}];
+  const original=copy(saved.info.inputs),history=copy(saved.info.executionHistory);let initial=0,followup=0;
+  const result=await f.run({toolTurn:async request=>{
+    if(!request.system.includes('FOLLOWUP phase'))return ++initial===1?turn(call('read_discord_messages','initial_queue_source',readOriginal(second.info.inputs[0]),[second.info.inputs[0].uuid])):turn(call('finish_batch','initial_handoff_finish',{handledInputIds:f.originals.map(row=>row.uuid)}));
+    followup++;
+    if(followup===1)return turn(call('read_pending_task','read_closed_compact',{taskId:first.uuid},[first.uuid]),call('read_pending_task','read_open_compact',{taskId:second.uuid},[second.uuid]));
+    if(followup===2)return turn(call('read_discord_messages','closed_source',readOriginal(first.info.inputs[0]),[first.uuid]),call('resolve_pending_task','close_source_task',{taskId:first.uuid,outcome:'no_change_needed',reason:'no_actionable_request'},[first.uuid]),call('read_pending_task','open_optional_history',{taskId:second.uuid,detail:'full'},[second.uuid]));
+    const chain=f.tools.findLast(row=>row.name==='read_pending_task'&&row.arguments.detail==='full'||row.name==='read_context_fragment'&&row.inputIds.includes(second.uuid))?.result?.fragment;
+    assert(chain?.nextOffset!==null);return turn(call('read_context_fragment','continue_open_history_'+followup,{id:chain.id,offset:chain.nextOffset},[second.uuid]));
+  }});
+  assert.notEqual(result.status,'context_limit');assert(!f.tasks.has(first.uuid));assert(f.tasks.has(second.uuid));
+  assert(f.requests.some(request=>request.messages.some(row=>row.role==='tool'&&row.toolCallId==='closed_source'&&JSON.parse(row.content).reason==='resolved_task_read')));
+  const compactedRequests=f.requests.filter(request=>request.messages.some(row=>row.role==='user'&&row.content.includes('runner_context_compaction')));assert(compactedRequests.length);
+  for(const request of compactedRequests){const handoff=request.messages.filter(row=>row.role==='user').map(row=>JSON.parse(row.content)).find(row=>row.currentCycleObservations)?.currentCycleObservations;assert(handoff?.observations.some(row=>row.callId==='initial_queue_source'&&row.result.status==='ready'),'Initial queue-bound source copy stays visible');}
+  assert(f.execution.some(row=>row.callId==='closed_source'&&row.result.sources?.length&&!row.result.contextRetired));
+  assert.deepEqual(f.tasks.get(second.uuid).info.inputs,original);assert.deepEqual(f.tasks.get(second.uuid).info.executionHistory.slice(0,history.length),history);preserveBusinessState(f);
+});
+
 test('compaction preserves a mandatory incomplete compact-task chain rather than inventing a complete task read',()=>{
   const taskId='50000000-0000-4000-8000-000000000001',id='70000000-0000-4000-8000-000000000001';
   const serialized=JSON.stringify({status:'ready',task:{uuid:taskId,info:{request:{summary:'Preserve the exact own intent'},inputs:[{raw_response:{payload:{content:'Essential original facts 🙂 '.repeat(18000)}}}]}}});

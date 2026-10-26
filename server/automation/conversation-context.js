@@ -1,4 +1,4 @@
-import {canonicalJson,plainObject} from './validation.js';
+import {canonicalJson,plainObject,validUuid} from './validation.js';
 
 const readTools=new Set(['read_discord_messages','read_discord_window','search_discord',
   'read_gmail','search_gmail','read_calendar_event','list_calendar_events','read_member_plan',
@@ -9,6 +9,8 @@ const parse=value=>{try{return typeof value==='string'?JSON.parse(value):null;}c
 const marker='runner_context_compaction';
 const managed=message=>message?.role==='user'&&parse(message.content)?.conversationContext?.origin===marker;
 const resultKey=row=>plainObject(row?.arguments)?canonicalJson([row.tool,row.arguments]):null;
+const successfulRead=result=>['ready','ok','success','succeeded','completed'].includes(result?.status)
+  &&(result.sourceStatus===undefined||['ready','ok','success','succeeded','completed','empty'].includes(result.sourceStatus))&&result.partial!==true;
 const notice='Only model-visible old or redundant logs were retired. Full execution evidence, source permissions and exact task versions are unchanged. These copied task views and result cursors are earlier disclosures, not fresh reads or new action proof. Optional history pages whose bodies were retired are NOT jointly present or a reconstructed complete JSON value. Use the complete compact task intent below; read a particular historical fact again only if needed. Other saved tasks remain stored and can be selected with a compact read.';
 
 function retired(result,reason,extra={}) {
@@ -27,6 +29,77 @@ function slimCatalogue(payload,active) {
   });
   result.context.catalogueNotice='Unselected task descriptions were retired from this conversation only. IDs, order and current-cycle priority remain; read a selected task compactly for its complete intent.';
   return result;
+}
+
+// Compare returned identifiers only. Source text/titles are never interpreted.
+function readIdentities(value,{tool,calendarKind,calendarSources}={}) {
+  const keys=new Set(),calendar=new Map(),add=(prefix,value)=>{if(typeof value==='string'&&value)keys.add(`${prefix}:${value}`);};
+  const event=(kind,id)=>{if(typeof id!=='string'||!id)return;const kinds=calendar.get(id)||new Set();kinds.add(kind||'*');calendar.set(id,kinds);};
+  const visit=(node,parent='',provider=tool?.includes('discord')?'discord':tool?.includes('gmail')?'gmail':undefined)=>{
+    if(Array.isArray(node)){for(const row of node)visit(row,parent,provider);return;}
+    if(!plainObject(node))return;
+    provider=node.provider||node.kind||node.source||provider;
+    for(const key of ['sourceUrl','source_url','url','htmlLink'])if(typeof node[key]==='string') {
+      add('url',node[key]);const match=/^https:\/\/discord\.com\/channels\/\d+\/(\d+)\/(\d+)$/.exec(node[key]);
+      if(match)add('discord-message',`${match[1]}:${match[2]}`);
+    }
+    const channel=node.channelId||node.channel_id,message=node.messageId||(parent==='payload'?node.id:undefined);
+    if(typeof channel==='string'&&typeof message==='string')add('discord-message',`${channel}:${message}`);
+    if(['gmail','email'].includes(provider))add('gmail-message',node.messageId||node.externalId||(parent==='payload'?node.id:undefined));
+    add('person',node.personId||node.person_id);if(parent==='person'||parent==='people')add('person',node.id);
+    add('discord-user',node.discord_user_id);if(parent==='author'&&provider==='discord')add('discord-user',node.id);
+    if(provider==='discord')add('discord-user',node.providerUserId||node.authorId);
+    if(['email','gmail'].includes(provider))add('email-user',node.providerUserId);
+    add('map',node.mapEventId);
+    const sourceId=node.sourceId||node.source_id,recordId=node.sourceRecordId||node.source_record_id;
+    if(typeof sourceId==='string'&&typeof recordId==='string') {add('record',canonicalJson([sourceId,recordId]));event(calendarSources?.get(sourceId),recordId);if(node.source_record_id)add('map',node.id);}
+    event(node.calendarKind||calendarKind,node.calendarEventId);
+    if(['read_calendar_event','list_calendar_events','read_member_plan','list_member_plans'].includes(tool))event(calendarKind,node.eventId);
+    if(tool==='read_map_events')add('map',node.eventId);
+    for(const [key,row]of Object.entries(node))if(row&&typeof row==='object')visit(row,key,provider);
+  };
+  visit(value);return {keys,calendar};
+}
+function sharedIdentities(left,right) {
+  if([...left.keys].some(key=>right.keys.has(key)))return true;
+  for(const [id,kinds]of left.calendar) {
+    const other=right.calendar.get(id);if(other&&(kinds.has('*')||other.has('*')||[...kinds].some(kind=>other.has(kind))))return true;
+  }
+  return false;
+}
+function resolvedReadRetirement({entries,snapshot,referenceBindings,phase,tasks}) {
+  if(phase!=='followup'||snapshot?.status!=='ready'||snapshot.phase!=='followup'||!Array.isArray(snapshot.catalogue)||!Array.isArray(snapshot.tasks)
+    ||referenceBindings?.phase!=='followup'||!Array.isArray(referenceBindings.inputIds))return ()=>false;
+  const queueIds=new Set((referenceBindings.handledInputIds||[]).map(row=>row.uuid));
+  const phaseIds=new Set((referenceBindings.inputIds||[]).filter(row=>typeof row.ref==='string'&&row.ref.startsWith('t_')&&validUuid(row.uuid)&&!queueIds.has(row.uuid)).map(row=>row.uuid));
+  const currentRows=[...snapshot.catalogue,...snapshot.tasks,...(snapshot.fragments||[]),...(snapshot.historyPages||[])];
+  if(currentRows.some(row=>!plainObject(row)||!validUuid(row.taskId)))return ()=>false;
+  const current=new Set(currentRows.map(row=>row.taskId));
+  const closedAt=new Map(),positions=new Map();
+  entries.forEach((row,index)=>{
+    positions.set(row,index);
+    if(row?.kind==='tool_result'&&row.stage==='followup'&&row.tool==='resolve_pending_task'&&row.result?.status==='ready'
+      &&phaseIds.has(row.arguments?.taskId)&&Array.isArray(row.inputIds)&&row.inputIds.includes(row.arguments.taskId)&&!current.has(row.arguments.taskId)&&!closedAt.has(row.arguments.taskId))closedAt.set(row.arguments.taskId,index);
+  });
+  const calendarSources=new Map();
+  for(const row of tasks.values())for(const [field,kind]of [['calendarMap','club'],['memberPlans','member']]) {
+    const source=row.compact?.task?.info?.batchContext?.[field]?.sourceId;
+    if(typeof source==='string')calendarSources.set(source,calendarSources.has(source)&&calendarSources.get(source)!==kind?'*':kind);
+  }
+  const unfinished=[...tasks.values()].map(row=>({compact:row.compact,identities:readIdentities(row.compact,{calendarKind:row.compact?.task?.info?.request?.calendarKind,calendarSources})}));
+  return row=>{
+    if(row?.kind!=='tool_result'||row.stage!=='followup'||!readTools.has(row.tool)||['read_pending_task','read_context_fragment'].includes(row.tool)
+      ||!successfulRead(row.result)||row.result.fragment||row.result.historyPage||!plainObject(row.arguments)||!Array.isArray(row.inputIds)||!row.inputIds.length
+      ||!row.inputIds.every(id=>phaseIds.has(id)&&closedAt.has(id)&&positions.get(row)<closedAt.get(id)))return false;
+    const calendarKind=['read_calendar_event','list_calendar_events'].includes(row.tool)?'club':['read_member_plan','list_member_plans'].includes(row.tool)?'member':undefined;
+    const identities=readIdentities({arguments:row.arguments,result:row.result},{tool:row.tool,calendarKind,calendarSources});
+    if(unfinished.some(task=>sharedIdentities(identities,task.identities)))return false;
+    if(unfinished.length&&(['read_calendar_event','list_calendar_events','read_member_plan','list_member_plans','read_map_events','find_map_attendance_targets'].includes(row.tool))) {
+      const broad=row.tool.startsWith('list_')||row.tool==='find_map_attendance_targets'||row.tool==='read_map_events'&&!(row.arguments.sourceId&&row.arguments.sourceRecordId||row.result.events?.some(event=>event.source_id&&event.source_record_id));
+      if(broad||unfinished.some(task=>!task.compact?.task?.info?.request?.calendarEventId))return false;
+    }
+    return true;
+  };
 }
 
 /** Retire copied model-visible logs only. Never mutate private execution history,
@@ -64,6 +137,7 @@ export function compactConversation({messages,executionLog=[],snapshot,reference
       const key=resultKey(row);if(key)latestByKey.set(key,row.callId);
     }
   }
+  const retireResolvedRead=resolvedReadRetirement({entries,snapshot,referenceBindings,phase,tasks});
   const chains=new Map((Array.isArray(snapshot?.fragments)?snapshot.fragments:[])
     .filter(row=>typeof row?.id==='string').map(row=>[row.id,row]));
   const latestFragment=new Map(),latestHistoryPage=new Map();
@@ -86,6 +160,12 @@ export function compactConversation({messages,executionLog=[],snapshot,reference
         const visible=slimCatalogue(payload,activeIds),handoff=visible.currentCycleObservations;
         if(plainObject(handoff)&&Array.isArray(handoff.observations)) {
           const kept=handoff.observations.filter(row=>{
+            const original=rowByCall.get(row.callId);
+            // Handoff bodies are copies, not authority to invent provenance.
+            if(!original||row.tool!==original.tool||!plainObject(row.arguments)||!plainObject(row.result)
+              ||!plainObject(original.arguments)||!plainObject(original.result)||canonicalJson(row.arguments)!==canonicalJson(original.arguments)
+              ||canonicalJson(row.result)!==canonicalJson(original.result))return true;
+            if(retireResolvedRead(original))return false;
             const key=resultKey(row),latest=key&&latestByKey.get(key);
             return !latest||typeof row.callId!=='string'||latest===row.callId;
           });
@@ -128,6 +208,10 @@ export function compactConversation({messages,executionLog=[],snapshot,reference
     // is not interchangeable with that newer chain, so ordinary read dedup must
     // never clear a mandatory chain (or the newest optional page body).
     if(typeof fragment?.data==='string'||typeof page?.data==='string')continue;
+    if(retireResolvedRead(row)) {
+      retire(message,result,'resolved_task_read',{taskRefs:row.inputIds.map(id=>taskRefs.get(id)??id),
+        ...Object.fromEntries(['sourceStatus','outcome','coverage','partial','warnings'].filter(key=>Object.hasOwn(result,key)).map(key=>[key,structuredClone(result[key])]))});continue;
+    }
     if(row.tool==='read_pending_task'&&!fragment&&!page) {
       const id=row.arguments?.taskId;
       if(tasks.has(id)||resolved.has(id)) {
