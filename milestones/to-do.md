@@ -1,3 +1,20 @@
+## Push and manual planner processing — current
+
+- [x] Confirm user means pending messages/saved tasks, not diagnostic logs; inspect Git/live worker and obtain publication review.
+- [ ] Push accepted implementation and verification records to main, verify remote.
+- [ ] Acquire normal exclusive planner lease, inspect eligible queued originals and saved tasks, manually perform supported work through ordinary service tools.
+- [ ] Verify exact outcomes, clear only completed/no-change/confirmed-missing versions, preserve unresolved work and record counts.
+- [ ] Push final operational records and report actual outcome/remaining limits.
+
+## Selected planner fixes — locally complete
+
+- [x] Accept bounded contracts, exclusive ownership and clean159-check baseline.
+- [x] Implement active model-conversation trimming and no-change/missing-original outcomes with normal source/version/lease checks.
+- [x] Improve canonical source/author/event hints and the worker prompt; preserve separate tool workflows.
+- [x] Independently verify selected behavior, capped model decisions and API build; fix the matching-target freshness finding and obtain evaluator ACCEPT.
+- [x] Reproduce page-ID rejection with the actual model and explain cleanup proposal; keep both implementations held.
+- Final focused integration270/270 passes. Two corrected real-model decisions pass; the original full conversations were not rerun. Final backend correction has offline replay coverage. Earlier capped/partial outcomes and27pre-existing fixture failures remain recorded. No new runtime limits, schema or deployment changes selected. [Milestone](planner-selected-fixes-2026-10-26/info.md).
+
 ## Requested local publication to main — October26
 
 - [x] Inspect local/main history and dirty changes; independent Planner accepts bounded publication plan.
@@ -6,6 +23,20 @@
 - [x] Independently rerun focused offline regressions:148pass; final Evaluator ACCEPT.
 - [x] Commit logical changes, fast-forward main, push normally and verify matching remote/local fc387eb and clean tree; publish final receipt as documentation only.
 - Database cleanup046 remains a separate unapplied task; no live migration or manual deployment is performed by publication.
+
+## Planner failure causes — debugged, fixes remain
+
+- [x] Correlate actual model proposals with each failure category; reproduce active conversation growth, task completion refusal and malformed requests offline.
+- [x] Recheck five exact Discord targets with fresh production source/bot permission checks; all exact messages404, all access endpoints200; no source bodies stored or business writes.
+- [x] Independently review confirmed causes and preserve uncertainty about historical cleanup/source-denial details.
+- [ ] Suggested follow-up: verified already-satisfied/no-change completion; bounded active conversation/history paging; correct model-supplied IDs/fields and source-read order; fixed-cutoff cleanup query and safe failure reasons; diagnostic tool-name/outcome corrections. No fixes or new limits selected by this diagnosis.
+- Exact historical cleanup error and some source-denial branches were not retained. [Cause report](planner-logging-review-2026-10-26/debug-causes.md).
+
+## Planner twelve-hour review — complete
+
+- [x] Inspect October26 12:08AM–12:08PM New York Railway outcomes and failure categories; independently recount and obtain evaluator ACCEPT.
+- [x] Explain unfinished work, rejected saved-task closure, oversized retained information and recurring log cleanup in plain English; separate107 successful save records from failure claims.
+- No runtime fix performed. Existing saved-task completion, step-limit, context-growth and audit-cleanup issues remain open. Backlog reduction and Calendar/map correctness were not verified. [Report](planner-logging-review-2026-10-26/info.md).
 
 ## Authorized planner throughput fixes — implemented and live
 

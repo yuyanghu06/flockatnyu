@@ -1,8 +1,32 @@
+## Push and manual pending-work processing — in progress
+
+The user requested publication, manual processing of pending messages/saved tasks, then cleanup of verified completed items and a final push. They explicitly clarified that diagnostic audit logs should remain. Publication evaluator ACCEPT; implementation is committed locally as263e0ca. No manual processing or live deployment has occurred yet. [Scope](planner-manual-processing-2026-10-26/info.md).
+
+## Selected planner fixes — implemented locally, not deployed
+
+Unused model-visible result/history bodies are trimmed while current facts and private execution evidence remain. Tasks can close through distinct confirmed-action, reviewed no-change or exact-missing-original results. Only matching trusted missing originals clear their queue/task versions. Source, author, task and Calendar-target fields are provided as copyable hints; failed target evidence cannot be replaced by an unrelated success.
+
+Final focused integration **270/270** and API build pass; independent evaluator **ACCEPT**. Configured-model work used **48/48** requests: the two corrected no-change decisions passed with scripted preparation, then replayed offline after the final backend freshness correction. The original full conversations were not rerun; their failures/partial/capped outcomes remain recorded.27older fixture failures match clean HEAD and remain unchanged.
+
+The held page-ID problem was reproduced with the actual model and remains unchanged. Old-log cleanup is a documented proposal only. No deployment, live business writes, new limits, dependencies or schema changes. [Scope and evidence](planner-selected-fixes-2026-10-26/info.md) · [Acceptance](history/2026-10-26_14-00-22-456674-evaluator-planner-selected-local-fixes-accepted.md) · [Integration](history/2026-10-26_14-00-22-457003-orchestrator-planner-selected-fixes-integrated-locally.md).
+
 ## Local changes published to main — complete
 
 The user requested a local diff and publication to main. Fresh origin/main is an ancestor of codex/dev:17existing commits cover chat/map fixes, Spotlight steering, planner task/history/read improvements and provider fallback. Current dirty work removes the GoGreek popup, updates tests, prepares guarded migration046 and adds operational records. Independent Planner ACCEPT. Both builds,148offline regressions and9synthetic Chrome cases pass; independent Evaluator ACCEPT. A timing-dependent expiry test fixture was corrected with one statement clock, preserving all assertions. Root committed the fixture fix67ab7c1, GoGreek retirement/cleanup e42588b and records fc387eb, then normally fast-forwarded/pushed main. Remote main and local HEAD both verified fc387eb with a clean tree; the final receipt follows as a documentation-only commit. [Final verification](history/2026-10-26_12-09-32-007979-tester-main-publication-regressions-passed.md) · [Evaluation](history/2026-10-26_12-09-32-007979-evaluator-main-publication-accepted.md).
 
 [Publication receipt](history/2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md). Migration046 remains unapplied; this task does not apply schema or manually deploy services. Existing Calendar replacement and planner limitations remain open. [Publication scope](main-publication-2026-10-26/info.md) · [Planner receipt](history/2026-10-26_12-05-32-083834-planner-local-main-publication-reviewed.md).
+
+## Planner failure causes traced — diagnosis only
+
+The seven failed requests to close saved tasks had no confirmed Calendar/map change. All seven failed continuation reads used nonexistent result IDs; five were all zeros. Both text-limit stops came after successfully reading more pages into an already growing model conversation, and the production runner reproduces this separately from database history compression. Smaller requests used invalid limits, argument fields, links or IDs.
+
+Five exact Discord targets still return404 through current production access checks. Some source-denial causes remain qualified: one malformed original link is certain, older-task source observations and wrong Discord-backed attendance targets are strongly supported. Cleanup's full-scan query problem is reproduced, but its actual historical error was discarded; no rows had expired at the12:08PMcutoff. Independent evaluator **ACCEPT** with those limits. No runtime fix, live business writes or deployment. [Plain-English diagnosis](planner-logging-review-2026-10-26/debug-causes.md) · [Evaluation](history/2026-10-26_13-13-29-189354-evaluator-planner-failure-cause-review-accepted.md) · [Integration](history/2026-10-26_13-13-29-189445-orchestrator-planner-reported-failures-traced.md).
+
+## Planner twelve-hour problems review — October26
+
+Reviewed **12:08AM–12:08PM New York**:46 terminal attempts;22 hit an allowed-step limit somewhere.33 attempts acknowledged96 input items, but12 of those attempts still left follow-up capped;21 reported both parts completed. None of seven recorded saved-task close attempts succeeded. Two runs accumulated too much text; smaller failures include11 access blocks and five missing Discord reads. All107 recorded task saves succeeded; hourly old-log cleanup failed12times.
+
+Independent evaluator **ACCEPT**. These are attempts and acknowledgements, not distinct event updates; current backlog, direct database persistence and Calendar/map correctness remain unverified. No runtime/service/configuration/deployment or business writes. [Findings and limits](planner-logging-review-2026-10-26/info.md) · [Review](history/2026-10-26_12-14-02-274027-evaluator-planner-twelve-hour-problems-accepted.md) · [Integration](history/2026-10-26_12-14-02-274095-orchestrator-planner-last-twelve-hour-problems-reviewed.md).
 
 ## Planner save/read fixes live; batch cap increased to five
 

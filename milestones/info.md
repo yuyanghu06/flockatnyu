@@ -1,5 +1,15 @@
 # Milestone journal
 
+`planner-manual-processing-2026-10-26/` tracks the user-authorized push and manual pending-work review; diagnostic logs and unresolved work are preserved.
+
+The selected planner fixes are locally complete with independent acceptance. Their guide distinguishes final offline checks, bounded actual-model decisions, earlier full-conversation limitations and held work; no deployment is claimed.
+
+`planner-selected-fixes-2026-10-26/` tracks only the user-selected planner remedies, explicit held work, and independent verification.
+
+The follow-up in `planner-logging-review-2026-10-26/debug-causes.md` records actual failure causes, offline reproductions, five safe current Discord checks and qualified unknowns. It changes no runtime behavior.
+
+`planner-logging-review-2026-10-26/` records the twelve-hour planner problem review, independent recount, plain-English findings and evidence limits. No runtime changes.
+
 The October25 planner queue-clear follow-up is recorded in `planner-48h-review-2026-10-25/`: explicit deletion authorization,574originals/184tasks removed, old lease invalidated, worker restarted and all work queues verified empty.
 
 `planner-48h-review-2026-10-25/` records the October23–25 operational review, restored model responses, remaining task-save failures, queue limitations and independent recount. No runtime changes were made.
