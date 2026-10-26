@@ -199,3 +199,7 @@ inference API to cut model costs. Recorded findings as of this date:
 ## 2026-10-22 — Reuse existing events for attendance
 
 Approved correction: when a member says they will be at a named event/venue on a date, inspect existing authorized map/Calendar occurrences before asking hours or creating a separate activity. “The entire time” inherits the matching event’s existing interval, not all day. Preserve explicit independent plans and clarify ambiguity. The user authorized removing the erroneous all-day GoGreek duplicate while retaining attendance on the original3–5PM event.
+
+## 2026-10-25 — Bug: cancelled Calendar event replaced by a new event may not appear correctly on the map
+
+The user reported that cancelling one Calendar event and creating a replacement may leave the map activity, building link or attendance attached to the wrong event. In the HP incident, the original remained cancelled and its saved attendees were hidden; the active replacement had a separate map entry but no building link. The individual records were corrected manually. General cancellation/replacement reconciliation remains an **open bug**, not a completed fix. Track cases with changed event IDs, missing replacement location, existing attendance and ambiguous replacements; preserve distinct events and avoid reviving cancelled originals. Hosted bug report: `5ad778a5-c122-4f67-9ff4-347a8cb6f210`.

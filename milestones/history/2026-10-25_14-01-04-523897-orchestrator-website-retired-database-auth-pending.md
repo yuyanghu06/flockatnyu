@@ -1,0 +1,10 @@
+# Live Go Greek website retirement verified; database authorization pending
+
+- Local timestamp / acting role / milestone: 2026-10-25T14:01:04.523897-04:00 / orchestrator / go-greek-removal-2026-10-25.
+- Requested scope: remove Go Greek from Flock and its attached database entries.
+- Starting repository state: unrelated existing documentation and incident journals preserved.
+- Work performed / changed files: uploaded only accepted276-file web package through Railway CLI; web408f84bb-9525-4119-b9c8-02dd3752952e is SUCCESS at2026-10-25T17:58:42.964Z. No worker, collector, configuration or business database changes.
+- Checks and evidence: hosted checks at17:59:44Z verify health, anonymous API denial, authenticated login, exact index and all8JS/CSS assets against accepted package; presence API statusok. Independent evaluator accepts bounded live website removal. Receipts: evidence/go-greek-removal-2026-10-25/hosted-web.json and web-package-verification.json. Prior independent browser checks establish nine roots and retained70towerfaces; no separate production-browser appearance claim.
+- Decisions: Supabase MCP-only preference preserved. Saved scoped endpoint is read_only=true; old read token could not refresh; temporary writable endpoint requires OAuth. First attempt expired; fresh authorization is open and user input requested. Default MCP settings remain unchanged. Do not silently substitute dashboard or unrelated internal-tooling connector writes.
+- Resulting state / acceptance: live website retirement accepted; database cleanup is NOT complete. Hosted presence still returns683-broadway/GoGreek. No cleanup046 application or deletion is claimed.
+- Remaining work and handoff: complete scoped OAuth, read exact building/links/current FK/task counts, apply only reviewed046, verify no target row/link/exclusive activity and preservation of other data. Preserve concurrent GoGreek event atKimmel, member profiles, Calendar/Discord originals, audits and unrelated tasks. Task remains awaiting required database access.

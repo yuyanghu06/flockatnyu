@@ -7,3 +7,5 @@ The user declined direct database fallback. Supabase MCP is authenticated; initi
 ## Immediate handoff / paused by user
 
 User requested documentation only and no other work. `handoff-2026-10-22.md` is the complete current continuation record, including latest livefailure, newest undeployedpromptsource and unfinished guardedcleanup. Earlier progress text is historical where it differs. Await user resumption.
+
+October23 user resumed fixes/testing. Current work covers queued contextual RSVPs, redundant cache-tool authorization and follow-up context, plus the latest chat timing/inheritance/revision checkpoint. Production acceptance and cleanup remain pending.

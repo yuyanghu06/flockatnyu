@@ -5,6 +5,19 @@ origin. Discord/Gmail collectors and update-agent are independent services shari
 the existing Supabase project. Migrations are never applied at image startup.
 The user authorized this live rollout and autonomous activation on2026-10-18.
 
+## Local developer CLI
+
+On October 22, 2026, Railway CLI 5.70.0 was installed on the current Mac with
+`brew install railway`, following [Railway’s CLI documentation](https://docs.railway.com/cli).
+The user completed `railway login`; `railway whoami` and a fresh project query
+succeeded. This checkout is linked to the existing `tech-nyu` project and its
+`production` environment. No default service is selected; name the intended
+service explicitly for service operations. CLI credentials and directory links
+stay in Railway’s private local configuration. Installation and authentication
+did not deploy, restart or change a hosted service. Service health is a separate
+check from CLI connectivity. The login page displayed an outage notice, but
+sign-in and project metadata reads succeeded during this setup.
+
 ## Access
 
 Set `SITE_ACCESS_PASSWORD` (at least12characters), `SITE_SESSION_SECRET` (at least
@@ -122,4 +135,9 @@ Web release046b9fd4-1d66-4adb-bd8c-ec0c54102170; update-agent bede3de6-1378-4e23
 
 Hosted checks verify login, anonymous API denial, exact index/main assets, all ten buildings including Go Greek, five Attio tools and a live read, and hidden Calendar cursors. Discord resumed its Gateway; worker organic model/Calendar activity emits diagnosticsVersion1. All27profiles were guarded-CAS switched to verified private portrait objects through MCP after compatible web was live; authenticated image bytes match original hashes and anonymous access is denied. Identity/name/email/visibility/creation facts remain unchanged. Original artwork and legacy frontend imports remain for compatibility; removing those imports is a later cleanup. No CRM test mutation or unsolicited Discord message was sent. Full receipts and scope limits live in the rolling milestone and ignored evidence/combined-release.
 
+
 October23 Spotlight steering release: web9843c735-4821-436a-8fbb-56c584d9d135 SUCCESS from source5c0a4cb. Prepared279 source-only files;273runtime/frontend files match accepted bytes. Authenticated read-only hosted checks confirm exact HTML/10bundles, configured chat, new closed-run steering409/no-store and preserved origin/session/map contracts. No hosted inference/business writes, worker rollout or schema change. Active-input state is process-local and closed/restarted runs reject honestly. See [verification and limits](spotlight-steering-verification-2026-10-23.md).
+
+## October25 Go Greek retirement
+
+Web408f84bb-9525-4119-b9c8-02dd3752952e is SUCCESS. Its276-file isolated package removes only the Go Greek frontend and popup-only presence exception; unrelated local worker changes are excluded. Exact hosted index/all8JS/CSSassets, health/auth and API checks pass. No worker/collector/config rollout. Guarded database cleanup046 remains unapplied pending scoped MCP write authorization; the live presence catalogue still contains the row. See milestones/go-greek-removal-2026-10-25/info.md.

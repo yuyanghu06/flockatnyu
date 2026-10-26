@@ -1,5 +1,9 @@
 # Pass history
 
+October25 queue-clear entries record the user's explicit data-loss authorization, independent scope review, actual production deletion, worker restart and zero-count verification. Historical operational audits and completion deduplication records were preserved.
+
+October25 planner review entries record independent local log interpretation, complete metadata recount and operational findings for the previous48hours. They separate model recovery, partial follow-up completion and current global queue state without changing live services.
+
 Append one timestamped Markdown record after each meaningful agent pass, including
 read-only planning, testing, and evaluation. Filenames use America/New_York local
 time with microseconds and a role/description suffix. Records are immutable;
@@ -284,3 +288,25 @@ October23 final evaluator accepts catalogue/exact-read release after306frozenche
 October23: hosted045/receipt/functionACL/RESTverified; isolatedworkera34ade2f isSUCCESSat19:52:01NewYork. Bothcurrent/frozengates306pass. Ordinaryrunobservation andsourcepublication remain.
 
 October24 model-usage entries record the exact Thursday rollout-start boundary, excluded local evaluation inventory, independent metadata recount and the bounded production estimate subtotal; no new inference or live changes.
+
+October25 map-upsert diagnosis entries record independent code tracing, actual-proposal offline validation, Railway failure/recovery, saved participant readback and evaluator acceptance without application changes.
+
+October25 follow-up traces invisible saved attendance to exact live Calendar cancellation, correlated sync timing, deployed-module reproduction and independent acceptance.
+
+October25 Go Greek removal passes record explicit owner authorization, exact data scope, preservation checks and release evidence. Earlier implementation and incident entries remain immutable.
+
+October25 active Calendar correction entries record source immutability, exact screenshot occurrence matching and preservation-first map updates.
+
+October25 active Calendar correction completion records one authorized target update, attendee/building preservation, live hosted visibility and independent evaluator acceptance.
+
+October25 queue-growth entries record fresh zero-count metadata, independent code tracing and accepted count-versus-size explanation without runtime changes.
+
+October25 bug-recording receipt documents one successful hosted report plus persistent notes/backlog updates, without runtime or Calendar/map changes.
+
+October25 afternoon queue-recheck receipt distinguishes fresh41pending inputs, recent batch acknowledgements and the unavailable saved-task count; no mutations.
+
+October25 throughput diagnosis entries record two read-only researcher passes, independent elapsed-time reconstruction, evaluator acceptance and primary integration; implementation remains separate.
+
+October25 planner-throughput-fix preparation records research, accepted implementation contracts and independent reproduction before any release.
+
+October26 main-publication entries distinguish existing dev commits from dirty GoGreek retirement/operational records, record independent verification and review, and verify normal Git publication without applying migration046.

@@ -78,13 +78,13 @@ applied schema and deployed behavior.
 
 `tool-health.md` records the October21 live connector/model diagnosis, successful-empty progress correction, native Drive activation issue and explicit read-only/mutation verification limits.
 
-`683-broadway-model.md` documents the Go Greek temporary popup: complete source-to-model-to-UI import chain, 70-face replacement boundary, one-switch disable workflow and exact permanent cleanup inventory. It distinguishes popup-owned files from shared map assets/UI and the separately registered Go Greek database row, with linked-data cleanup guards.
+`683-broadway-model.md` records Go Greek retirement, the guarded owner cleanup046 and historical import details. The popup modules/hooks are removed locally; the original background tower and shared map UI remain. Current live status is in the retirement milestone.
 
 `discord-chat.md` also explains request-local attachment vision for verified trigger/reply/recent messages, bounded native-CDN downloads, partial coverage and existing permission/privacy boundaries.
 
 `tool-failure-logging.md` records the fully paged historical failure baseline and safe versioned operational cause logging, including its retention, batch-detail and hosted activation limits.
 
-`active-event-indicators.md` explains original marker provenance, active-window/whole-building glow integration, resource ownership and the exact local-only Go Greek sample and cancellation boundaries.
+`active-event-indicators.md` explains original marker provenance, active-window/whole-building glow integration and resource ownership. Its historical Go Greek sample is retired; generic coverage uses Silver Center.
 
 Tool reliability guides distinguish historical failure diagnosis from current local implementation: five-minute broad Discord summaries, backend-owned bounded Calendar pagination and per-read map source-check reuse/concurrency. Planner relevant-link inspection is a saved requirement in notes.md; its implementation is a follow-up. Release and verification truth remain in milestones/milestone.md.
 
@@ -123,6 +123,14 @@ October23 isolated tools: [implementation contract](tool-isolation-implementatio
 
 October23: isolated tools are accepted, integrated and deployed (web33f90fb7 / workerae88da62). Saved-map read verified1.595seconds; see rolling milestone and tool-isolation verification report for exact evidence/limits.
 
+Chat map clock conversion and Spotlight queue verification are recorded in `chat-time-queue-verification-2026-10-23.md`; the rolling milestone holds release truth.
+
+[Focused planner follow-up verification](planner-followup-verification-2026-10-23.md) records compact task reads, current-cycle selection, retained model failures and release limits.
+
+chat-participant-normalization-verification-2026-10-23.md records label preservation, conservative duplicate removal, actual-model outcomes and release limits.
+
 [Spotlight steering verification](spotlight-steering-verification-2026-10-23.md) records active-reply input, controls, independent browser/runner/model evidence, cancellation-only final delta and process-local limits.
+
+planner-task-storage-verification-2026-10-23.md records catalogue/exact-read boundaries, synthetic/local PostgreSQL checks, hosted query-shape timing and actual release limits.
 
 [Provider routing](provider-routing.md) documents the private ordered URL/key list, fallback boundaries, one shared deadline and per-attempt audit identity. Actual release status remains in the rolling milestone.

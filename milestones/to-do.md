@@ -1,3 +1,12 @@
+## Requested local publication to main — October26
+
+- [x] Inspect local/main history and dirty changes; independent Planner accepts bounded publication plan.
+- [x] Pass frontend/API builds and9synthetic Chrome indicator cases.
+- [x] Correct the intermittent expiry fixture clock; coder focused22checks pass.
+- [x] Independently rerun focused offline regressions:148pass; final Evaluator ACCEPT.
+- [ ] Commit logical changes, fast-forward main, push normally and verify the remote commit and working tree.
+- Database cleanup046 remains a separate unapplied task; no live migration or manual deployment is performed by publication.
+
 ## Authorized planner throughput fixes — implemented and live
 
 - [x] Reproduce task saving failures using local PostgreSQL and accept the bounded plan.
@@ -7,6 +16,67 @@
 - [x] Verify the first ordinary five-input run: five acknowledged in 199.544 seconds, successful final task saves, no follow-up Discord source-tool repeats; independent live evaluator ACCEPT.
 
 Remaining planner issues: initial/follow-up round caps, source-review completion gaps, occasional repeated map reads and startup audit-retention cleanup. Sustained catch-up needs a longer operational sample; it is not established by one successful larger batch. No new budget or pacing changes are authorized by this record.
+
+## Planner two-input throughput diagnosis — complete
+
+- [x] Confirm exact live cap2 and historical5→2tuning; separate30-input/30-minute trigger and one-input retry lane.
+- [x] Independently measure11complete runs:13acknowledgements,median158seconds;Discord33%,model26%,sync7%,fourzero-ackruns consuming33%ofruntime.
+- [x] Confirm current task-save rejections and serial six-request Discord reads; evaluatorACCEPT and no runtime changes.
+- Next implementation scope if selected: fix checkpoint/history completion, avoid equivalent within-cycle reads/revisiting unchanged blocked work, retain sufficient observed context across phases, then test a higher batch cap. Existing source/access/pacing boundaries remain.
+
+[Report](planner-throughput-2026-10-25/info.md)
+
+## Planner post-clear recheck
+
+- [x] AtOctober25 4:32PM verify41pendingDiscord inputs,downfrom43at4:29PM;noquarantines,workeronline and8acknowledgements across4recent completedmainbatches.
+- Current saved-follow-up count could not be refreshed; existing read-only service grants and unavailable browser prevented that check. No queue changes made.
+
+## Go Greek retirement — website live, database deletion pending
+
+**Web408f84bb is SUCCESS and verified live.** The popup model/selector/camera/sample exception is removed; nine selectable landmarks and all70original tower faces remain. Exact hosted index/all8JS/CSSassets and health/auth/API checks pass; independent local tests/evaluator and live-release review accept. No worker/collector/config changes.
+
+**Database cleanup046 is prepared and tested but unapplied.** The API still returns the Go Greek row. The saved scoped Supabase MCP is read-only; two writable OAuth attempts expired and a fresh final-handoff authorization is pending. No database deletion is claimed. Complete OAuth, inspect fresh exact links/constraints, apply only046 and verify preservation. The concurrent GoGreek event at Kimmel, profiles and source originals remain intact. [Live release/access blocker](history/2026-10-25_14-01-04-523897-orchestrator-website-retired-database-auth-pending.md) · [Scope and all prior passes](go-greek-removal-2026-10-25/info.md).
+
+- [x] Remove popup modules/hooks/sample exception; independently verify original tower, generic indicators and exact SQL preservation.
+- [x] Independent evaluator ACCEPT; deploy isolated web408f84bb and verify exact hosted assets/access.
+- [ ] Complete project-scoped MCP OAuth; fresh live preflight, apply only046 and verify database deletion/preservation.
+
+## Open bug: Calendar cancellation and replacement may leave the map incorrect
+
+- [ ] Investigate and fix cancellation/replacement handling: an active replacement may lack the old activity's map location or attendees while attendance stays attached to a hidden cancelled original. Cover changed Calendar IDs, blank replacement location, existing attendee details and ambiguous matches without merging distinct events or reviving cancelled originals.
+- Report `5ad778a5-c122-4f67-9ff4-347a8cb6f210` recorded October25. The HP case was repaired manually; the general bug remains open. [Persistent note](../notes.md).
+
+## User-selected active Calendar map correction
+
+- [x] Identify exact active Calendar occurrence and existing map record; verify source immutability and preservation plan.
+- [x] Independently simulate subsequent sync and visibility, including the existing 4PM participant restriction.
+- [x] Review/run normal-service script with fresh source grants and exact versions; apply one target correction and verify actual hosted map visibility. Five attendees listed, four current avatars, cancelled original unchanged; evaluator ACCEPT.
+
+## Entire planner queue purge — complete
+
+- [x] Fresh1:53PMcheck confirms no incoming refill; independently distinguish message counts, saved reviews and per-task history growth.
+- [ ] Separate reliability work: allow verified no-change completion of saved source-review tasks while retaining appropriate source/version checks; investigate retained history size. No implementation authorized by this explanation.
+
+- [x] User explicitly requested deletion and accepted data loss; clear originals, pending/quarantined queue state, all follow-up tasks and pending manual dispatches.
+- [x] Remove574originals/574queue metadata/184savedtasks, invalidate old lease, restart existing worker and verify all work-queue counts zero atOctober25 1:48:58PMNewYork.
+- [x] Keep new ingestion enabled; preserve deduplication/action/collector state and Calendar/map/audit data.
+- Old-backlog recovery is superseded by the requested deletion. Task-history reliability remains separate unfinished work.
+
+## Planner 48-hour log review — complete
+
+- [x] Review October23 1:37PM throughOctober25 1:37PMNewYork with complete operational metadata pagination, bounded Railway logs and independent recount.
+- [x] Confirm model access resumedOctober24at10:16AM while planner completion remains unreliable; separate main/follow-up status and retry counts.
+- [x] Record global queue534pending/44quarantined/101expired with unchecked current eligibility, and current task-save rejections without assigning all424preflight failures to size.
+- Next if requested: fix task-history saving, inspect eligible queued/quarantined work and repeated follow-up/source-denial outcomes. No runtime change or recovery performed by this review.
+
+[Report and limits](planner-48h-review-2026-10-25/info.md)
+
+## Latest Railway map upsert diagnosis — complete
+
+- [x] Identify October25 chat rejection and successful same-run retry; compare retained proposals and reproduce exact time-validation cause offline.
+- [x] Confirm all four submitted participant attendance records in saved data; obtain independent evaluator ACCEPT.
+- [x] Follow-up: exact live Calendar original is cancelled; next sync restores cancelled map status while preserving attendees. Map filtering hides event/avatars; independently reproduced and accepted. Calendar cancellation actor/time remain unknown.
+- Optional requested follow-up: handle attendance on cancelled Calendar events and improve fixed diagnostics for map_time reasons. No runtime change or event resurrection performed.
 
 ## Thursday model usage review — complete
 
@@ -27,9 +97,9 @@ Remaining planner issues: initial/follow-up round caps, source-review completion
 - [x] Confirm current provider cause with one audited same-configuration synthetic request: credit_balance_exhausted; preserve historical-cause inference limit.
 - [x] Trace request and batch retries, failure accounting and current quarantine side effect; independently review evidence.
 - [x] Reproduce checkpoint SQL/Node size failures locally with deployed runner and real PostgreSQL; distinguish31 supported cases from16 genericcases.
-- [ ] Restore APIcredits through the account owner; no purchase or billing change made.
+- [x] Observe model access recovery: successful responses resumedOctober24at10:16AM. Account balance/restoration mechanism remain unverified; no purchase or billing change made by the reviews.
 - [ ] Implement safe provider error classification and persistent provider pause/deferral without consuming message failures. Preserve existing limits and exact lease/source/hash checks.
-- [ ] Recover eligible quarantined work through existing exact checks; no automatic bulk requeue performed.
+- Superseded October25 by explicit user request: old queued/quarantined originals and saved follow-up tasks were deleted, so do not attempt recovery of that discarded backlog.
 - [ ] Fix growing checkpoint history without losing originals/prior context. No truncation or cap increase selected.
 
 ## Planner overnight status — October 24
@@ -2582,3 +2652,5 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 ## Testing preference (side conversation)
 
 - [x] Record meaningful behavior testing and evaluator API-call permission in AGENTS.md and notes.md. No test-suite cleanup or API run requested by this documentation pass.
+
+[Refreshed database authorization handoff](history/2026-10-25_14-01-37-271205-orchestrator-database-auth-handoff-refreshed.md): no database deletion yet.

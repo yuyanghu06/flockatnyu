@@ -1,4 +1,12 @@
-# Go Greek popup at 683 Broadway
+# Go Greek popup retirement
+
+The owner requested permanent removal on October 25, 2026. The local implementation removes Go Greek from the selectable map, its camera preset and custom model, and restores the original 683 Broadway tower as ordinary background geometry. The shared source tile and the other nine landmarks remain intact. Runtime hooks and the popup-only sample authorization exception are removed.
+
+Forward migration `202610250046_retire_go_greek.sql` checks the exact building ID, name and aliases under the existing map advisory transaction lock. It deletes activities linked only to the popup, including their attendance and location links; for activities also linked to another building it removes only the Go Greek link. It then deletes the building catalogue row. People, source originals, event types, other catalogue rows, permissions and applied migration037 remain intact. This explicit owner request supersedes the earlier instruction below to retain linked activity history during an unrequested cleanup.
+
+Local checks and live deletion/release are separate. See [current retirement status](../milestones/go-greek-removal-2026-10-25/info.md) and [milestone journal](../milestones/milestone.md) for actual hosted results. The following import notes describe the retired implementation and remain historical documentation, not reactivation instructions.
+
+# Historical Go Greek popup implementation
 
 The user requested this temporary, one-day popup as **Go Greek**. Its location is 683 Broadway, within the 250 Mercer complex; its stable technical map identifier remains `683-broadway`. No calendar date or closing time was supplied, so the implementation has no automatic expiry and does not invent an operating date. The popup is currently enabled through one flag. The frontend model is implemented. The separately authorized backend catalogue registration is applied through migration037, hosted as `20261021205505_go_greek_building` in project `jssehnrmqhstcrtxulpa`. Supabase MCP verified the exact row and preserved prior catalogue/security; the existing local API recognizes it. No activity or event is created by that seed.
 

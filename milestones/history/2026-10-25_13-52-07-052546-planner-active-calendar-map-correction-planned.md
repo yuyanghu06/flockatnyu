@@ -1,0 +1,10 @@
+# Active Calendar map correction planned
+
+- Local timestamp / acting role / milestone: 2026-10-25T13:52:07.052546-04:00 / planner with orchestrator discovery / map-calendar-relink-2026-10-25.
+- Requested scope: identify the active Calendar event in the user screenshot and attach it to the map while preserving attendees.
+- Starting repository state: unrelated documentation, operational receipts and concurrent task work preserved. No runtime changes required.
+- Work performed / changed files: planner inspected immutable-source checks and normal service correction paths; orchestrator exact-read Calendar candidates with production configuration and read affected map snapshots. Planner stayed read-only.
+- Decisions: source identities are immutable. Reuse existing active target map event a6f9396d-b317-462b-abd0-7a23a72798bf, already bound to exact active Calendar event8e027d111f12479f10309fff114ebb39355e50cb29f652ff02326f6cdc197ad1. Preserve its three existing attendees; add two missing chat participants from cancelled original, using the target-bound chat reference. Add original Kimmel link; preserve empty target notes so a blank source location retains manual building. Leave cancelled original untouched.
+- Checks and evidence: exact screenshot title/date/noon–7PMNY matches unique confirmed Calendar entry. Current target has three attendees/no building; cancelled original has four attendees/Kimmel with two overlapping people. Source immutability is enforced by service, RPC and trigger. Hosted baseline at17:50:58Z shows zero Kimmel events/people. Private snapshots remain ignored under evidence/map-calendar-relink-2026-10-25.
+- Resulting state / acceptance: bounded plan accepted; ignored normal-service operator script in preparation. No live business writes, schema/config changes or deployment in this pass.
+- Remaining work and handoff: dry-run source/version/grant checks, independent review, exact authorized target update and hosted visibility readback. Existing attendee business facts/provenance preserved; generic RPC can refresh database-managed relation timestamps.

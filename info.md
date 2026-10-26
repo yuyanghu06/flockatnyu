@@ -1,5 +1,9 @@
 # Project root guide
 
+The user-authorized October25 planner queue clear removed the old inputs and saved follow-up work, restarted the existing worker and verified empty work queues. New ingestion remains enabled; see [the operation guide](milestones/planner-48h-review-2026-10-25/info.md#authorized-queue-clear-follow-up).
+
+The October25 planner48-hour operational review is documented in [its milestone guide](milestones/planner-48h-review-2026-10-25/info.md); current service availability, task-save failures, queue caveats and independent verification belong to the rolling snapshot. This review changed documentation only.
+
 This Git checkout is the application root. `src/` and `index.html` supply the Vite/Three.js campus interface; `server/` contains the Hono assistant API and independent source workers. `package.json` provides local paired web/API startup, separate sessions, builds and focused checks. Runtime keys belong in ignored settings or service secrets.
 
 `README.md` is the entry point. `AGENTS.md` defines scope and development rules; `.codex/` holds tracked agent configuration. `docs/` describes current contracts and source references. `milestones/` owns the rolling state, to-do list and immutable pass history. The orchestrator serializes shared journal updates and assigns exclusive writer ownership.
@@ -21,3 +25,11 @@ Building interaction uses a steady white surface highlight with smooth fades. Se
 Vite emits stable root favicon.svg/favicon.ico from the approved assets/branding
 sources for the public login page. These two read-only branding files are the
 only added anonymous static routes; application assets and APIs stay gated.
+
+Developer Supabase MCP is verified on the current Mac through the project-restricted read-only endpoint and browser OAuth. See docs/supabase-mcp-setup.md; application service credentials remain separate.
+
+Railway CLI is installed and signed in on the current Mac; this checkout links to tech-nyu production with no default service. See docs/deployment.md for local CLI guidance.
+
+AGENTS.md now requires isolated service tools and prompt-defined multi-tool workflows; recording that rule does not establish a runtime refactor or deployment.
+
+October25 Go Greek retirement: live website removal is verified on web408f84bb; database cleanup046 is prepared/tested but awaits project-scoped MCP write authorization. Preserve the separate Kimmel event. See milestones/go-greek-removal-2026-10-25/info.md for exact status.

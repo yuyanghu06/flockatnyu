@@ -1,5 +1,9 @@
 # Milestone journal
 
+The October25 planner queue-clear follow-up is recorded in `planner-48h-review-2026-10-25/`: explicit deletion authorization,574originals/184tasks removed, old lease invalidated, worker restarted and all work queues verified empty.
+
+`planner-48h-review-2026-10-25/` records the October23–25 operational review, restored model responses, remaining task-save failures, queue limitations and independent recount. No runtime changes were made.
+
 `milestone.md` is the authoritative rolling state and next-session handoff.
 `to-do.md` tracks priorities, completed work, and explicit cancellations.
 `history/` holds append-only records of every meaningful role pass.
@@ -266,3 +270,25 @@ October23 final evaluator accepts catalogue/exact-read release after306frozenche
 October23: hosted045/receipt/functionACL/RESTverified; isolatedworkera34ade2f isSUCCESSat19:52:01NewYork. Bothcurrent/frozengates306pass. Ordinaryrunobservation andsourcepublication remain.
 
 model-usage-review/ records the October24 read-only production usage recount since the first Thursday worker rollout, with independent review and explicit unpriced/local-test exclusions.
+
+October25 latest rejected map upsert, recovered retry and separate cancelled-event observation are documented in map-upsert-diagnosis-2026-10-25/.
+
+October25 follow-up confirms that canonical Calendar cancellation is restored by synchronization and hides saved attendance; see map-upsert-diagnosis-2026-10-25/.
+
+`go-greek-removal-2026-10-25/` tracks retirement of the temporary popup and its attached Flock data; source originals and unrelated records are preserved.
+
+The user-requested active Calendar replacement and Kimmel attendance correction is tracked in map-calendar-relink-2026-10-25/.
+
+The active Calendar correction is applied and verified through the hosted map API; see map-calendar-relink-2026-10-25/.
+
+October25 post-clear explanation distinguishes zero new queued inputs from saved-task history growth and the missing no-change resolution for saved reviews.
+
+October25 Calendar cancellation/replacement inconsistency is recorded in the hosted bug tracker, persistent notes and the open backlog; incident correction does not close the general bug.
+
+October25 4:32PM recheck records41new pendingDiscord inputs and continuing worker progress after the earlier empty queue; saved follow-up count unavailable.
+
+`planner-throughput-2026-10-25/` documents the live two-input cap, historical tuning, independently measured runtime costs and unresolved completion failures without live changes.
+
+`planner-throughput-fix-2026-10-25/` tracks authorized save/read fixes, independent model/storage verification and later batch-five worker rollout.
+
+main-publication-2026-10-26/ records the requested local diff, independent checks/review and normal publication to main, preserving unapplied cleanup046 and open issues.

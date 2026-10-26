@@ -1,3 +1,9 @@
+## Local changes publication to main — accepted for push
+
+The user requested a local diff and publication to main. Fresh origin/main is an ancestor of codex/dev:17existing commits cover chat/map fixes, Spotlight steering, planner task/history/read improvements and provider fallback. Current dirty work removes the GoGreek popup, updates tests, prepares guarded migration046 and adds operational records. Independent Planner ACCEPT. Both builds,148offline regressions and9synthetic Chrome cases pass; independent Evaluator ACCEPT. A timing-dependent expiry test fixture was corrected with one statement clock, preserving all assertions. Root is creating logical commits before a normal fast-forward push. [Final verification](history/2026-10-26_12-09-32-007979-tester-main-publication-regressions-passed.md) · [Evaluation](history/2026-10-26_12-09-32-007979-evaluator-main-publication-accepted.md).
+
+Migration046 remains unapplied; this task does not apply schema or manually deploy services. Existing Calendar replacement and planner limitations remain open. [Publication scope](main-publication-2026-10-26/info.md) · [Planner receipt](history/2026-10-26_12-05-32-083834-planner-local-main-publication-reviewed.md).
+
 ## Planner save/read fixes live; batch cap increased to five
 
 The isolated worker is deployed as `02cda8db-208b-4434-ad2c-a8365e93036c`, online with one replica. Its first ordinary five-input batch acknowledged all five in **3 minutes 20 seconds**, after successful final task saves. No task-storage failure appears in either supplied release gate. No Discord source-tool calls were proposed during that run's follow-up phase, supporting reuse of initial reads.
@@ -5,6 +11,72 @@ The isolated worker is deployed as `02cda8db-208b-4434-ad2c-a8365e93036c`, onlin
 Only AGENT_AUTOMATION_MAX_INPUTS changed from 2 to 5. Lossless history storage, paged task reads, current-cycle observations and brief exact-version retry spacing are active. Existing model/tool/deadline/pacing and source/access/version/lease/expiry limits remain. All 31 new checks, bounded real-model tests and exact package replay passed. Independent evaluator **ACCEPT** covers source, package and both live gates. Source commit `041b280` is pushed.
 
 Follow-up still hit its round cap in both completed gate runs; one earlier retry hit its initial cap and one map-read request repeated. Startup audit-retention cleanup failed separately from task storage. Unresolved work remains saved. A single larger batch does not establish sustained catch-up. [Scope, evidence and rollback](planner-throughput-fix-2026-10-25/info.md) · [Final live review](history/2026-10-25_17-59-17-754489-evaluator-planner-throughput-fix-live-accepted.md).
+
+## Planner throughput diagnosed — old two-input cap and repeated work
+
+Fresh live configuration confirms **MAX_INPUTS=2**, inherited from October18 tuning after a five-input run took569seconds under the600second budget. Source default20; no setting changed.
+
+October25 **4:00–4:46:43PM NewYork** window contains11complete runs,actuallyactive4:14–4:45PM:7completed/3preflightfailed/1roundlimit,20claimedattempts/13acknowledgements,median158seconds. **Discord reads/searches consume33% of runtime**, modelturns26%,sync7%; unclassified/setup/other tools remain separate. A normal Discord read makes six serialized requests; live spacing1second and toolmedian7.55seconds. Four zero-acknowledgement runs consume33%ofruntime; explicit task-save rejects recur4:33and4:40PM.
+
+Current two-original cycles also revisit eligible saved work; repeated source reads and follow-up add time. All172cohortmodelrequestsHTTP200. Suggested remedies: completion/history reliability, equivalent within-cycle read reuse and unchanged blocked-task handling, then measured retuning of the inherited cap. No permission checks, pacing, limits or live services changed. Independent testerPASS/evaluatorACCEPT.
+
+[Diagnosis and evidence limits](planner-throughput-2026-10-25/info.md) · [researcher-batching](history/2026-10-25_16-55-11-353478-researcher-batching-planner-throughput-diagnosed.md) · [researcher-discord](history/2026-10-25_16-55-11-353478-researcher-discord-planner-throughput-diagnosed.md) · [tester](history/2026-10-25_16-55-11-353478-tester-planner-throughput-diagnosed.md) · [evaluator](history/2026-10-25_16-55-11-353478-evaluator-planner-throughput-diagnosed.md) · [orchestrator](history/2026-10-25_16-55-11-353478-orchestrator-planner-throughput-diagnosed.md)
+
+## Planner queue recheck — 41 pending at 4:32 PM
+
+October25 at **4:32PM NewYork**,41incoming inputs are pending:40Discord message-created events and1edit, received since4:09PM. No quarantines or failure outcomes recorded for these pending rows. This is down from43at4:29PM. Earlier1:53PMempty-state evidence remains historical; all43observed4:29UUIDs differ from the pre-clear identity export.
+
+Worker is online withone replica. Four4:00–4:29PMmain-completed batches acknowledged8inputs;one follow-up hit its round limit. Current saved follow-up task count remains unverified because the service role cannot SELECT that table and browser SQL was unavailable. No changes made. [Recheck receipt](history/2026-10-25_16-33-11-775786-orchestrator-planner-queue-rechecked.md)
+
+## Go Greek retirement — website live, database deletion pending
+
+**Web408f84bb is SUCCESS and verified live.** The popup model/selector/camera/sample exception is removed; nine selectable landmarks and all70original tower faces remain. Exact hosted index/all8JS/CSSassets and health/auth/API checks pass; independent local tests/evaluator and live-release review accept. No worker/collector/config changes.
+
+**Database cleanup046 is prepared and tested but unapplied.** The API still returns the Go Greek row. The saved scoped Supabase MCP is read-only; two writable OAuth attempts expired and a fresh final-handoff authorization is pending. No database deletion is claimed. Complete OAuth, inspect fresh exact links/constraints, apply only046 and verify preservation. The concurrent GoGreek event at Kimmel, profiles and source originals remain intact. [Live release/access blocker](history/2026-10-25_14-01-04-523897-orchestrator-website-retired-database-auth-pending.md) · [Scope and all prior passes](go-greek-removal-2026-10-25/info.md).
+
+## Calendar cancellation/replacement bug recorded — open
+
+Saved the user's bug report `5ad778a5-c122-4f67-9ff4-347a8cb6f210` through the existing hosted bug-report tool and added it to notes and the backlog. Cancelling an event and creating a replacement can leave attendance on the hidden cancelled original and the active replacement without a building link. The HP record correction is complete; the general handling remains unfixed. This pass recorded the bug only, with no runtime, Calendar/map, schema, configuration or deployment changes.
+
+[Recording receipt](history/2026-10-25_13-57-37-545133-orchestrator-calendar-cancellation-replacement-bug-recorded.md) · [Persistent note](../notes.md)
+
+## User-selected active Calendar map correction — applied
+
+The screenshot's exact confirmed Calendar event now supplies the visible Kimmel activity through its existing map record. One normal versioned upsert added Kimmel and two missing attendees, preserving all three existing attendance records, event/source facts and the cancelled original. Five attendees are listed; four avatars are current, with the fifth retaining its4PMstart.
+
+Actual hosted map API verifies the confirmed event/attendees at **1:54PM NewYork**. Independent offline subsequent-sync cases and evaluator **ACCEPT** verify preservation with the Calendar entry's blank location. No Calendar writes, runtime/config/schema changes or deployment. Browser appearance and later ordinary sync remain unobserved.
+
+[Scope/result](map-calendar-relink-2026-10-25/info.md) · [Applied evidence](history/2026-10-25_13-55-49-003669-orchestrator-active-calendar-map-correction-applied.md) · [Independent review](history/2026-10-25_13-55-49-003669-evaluator-active-calendar-map-correction-accepted.md)
+
+## Planner queue cleared at user request — verified empty
+
+**Follow-up at1:53PM:** incoming originals and pending/quarantined input counts still zero; worker reports empty. The256KiB limit is per saved task. Code review identifies broad eligible-message intake, saved reviews without no-change dismissal and repeated source/tool history as accumulation mechanisms; no post-reset refill observed. [researcher](history/2026-10-25_13-56-12-541397-researcher-planner-queue-growth-reviewed.md) · [evaluator](history/2026-10-25_13-56-12-541397-evaluator-planner-queue-growth-reviewed.md) · [orchestrator](history/2026-10-25_13-56-12-541397-orchestrator-planner-queue-growth-reviewed.md)
+
+October25 at **1:48:25 PM New York**, the explicitly authorized purge deleted **574 queued originals,574 queue-metadata rows and184 saved follow-up tasks**; no queued/running manual requests existed. The transaction locked the runner and manual-dispatch paths and invalidated the active planner lease. Completed deduplication metadata, action receipts, collector checkpoints, terminal manual results, audit and Calendar/map data were preserved.
+
+The existing update-agent deployment was restarted and is **online with one running replica**. At **1:48:58 PM**, direct SQL verified **zero originals, zero saved tasks, zero pending/quarantined input rows, zero pending manual runs and no active lease**. New ingestion remains enabled. This discards the old backlog; it does not implement the outstanding task-history fix.
+
+[Operation details](planner-48h-review-2026-10-25/info.md#authorized-queue-clear-follow-up) · [Integration](history/2026-10-25_13-49-31-944507-orchestrator-planner-queue-cleared.md) · [Scope review](history/2026-10-25_13-49-31-944507-researcher-planner-queue-purge-reviewed.md) · [Independent ACCEPT](history/2026-10-25_13-49-31-944507-evaluator-planner-queue-clear-accepted.md)
+
+## Planner last 48 hours — model access recovered, completion unreliable
+
+Reviewed **October 23, 1:37 PM through October 25, 1:37 PM New York**. All four Railway services are online with no recent deployment crashes. Model429s stopped October24 at10:15AM; successful requests resumed10:16AM. All1,957model calls in the latest six hours returnedHTTP200; account funding itself was not inspected.
+
+There are **1,498 terminal attempts:332 completed,424 preparation/completion-check failures,618 unavailable,87 round-limit and37 other outcomes**. Completed audits acknowledge379inputs. These are retries/queue acknowledgements, not distinct event updates. Latest six hours: **50of142attempts completed**, with70preflight failures. Current global queue:534pending,44quarantined,101quarantine-expired; sourceeligibilityunchecked. Recent task saves still reject after near-limit task reads. Do not attribute every generic preflight failure to size.
+
+Only246Railwayterminalrows have both main/follow-up statuses completed;84completed-main runs hit the follow-up round limit and2retained incomplete follow-up. Onecarry-in terminal andoneactive run cross the cutoff. Known$13.14plannerestimate excludes1,619unpriced attempts. Independent evaluator **ACCEPT**; no inference, business writes, recovery, configuration changes or deployments.
+
+[Review and limitations](planner-48h-review-2026-10-25/info.md) · [Integration](history/2026-10-25_13-41-47-738661-orchestrator-planner-48h-logs-reviewed.md) · [Research](history/2026-10-25_13-41-47-738661-researcher-planner-log-semantics-reviewed.md) · [Independent recount](history/2026-10-25_13-41-47-738661-evaluator-planner-48h-review-accepted.md)
+
+## Latest map upsert — rejected first attempt, successful retry
+
+October25 at **1:32:44PM NewYork**, chat sent raw event timestamps together with local clock fields. Offline replay reproduces `map_time_conflicting_boundaries`; the adapter returns invalid_request. The retry removed only the two local fields and **succeeded at1:32:50PM**. Live readback confirms all four submitted participant attendance records.
+
+**Follow-up confirms why the map stays empty:** the canonical Calendar original is cancelled. The next successful Calendar sync restored map status to cancelled at **1:34:03PM NewYork**, while retaining all four participants. The map hides cancelled events and their avatars. Exact source updatedAt matches map reported_at; offline deployed-module reproductions and independent evaluator ACCEPT support this diagnosis. Calendar cancellation actor/time remain unknown. No runtime, configuration, schema, inference or business changes.
+
+[Cancellation cause and independent review](history/2026-10-25_13-42-05-954878-orchestrator-missing-map-update-traced-to-calendar-cancellation.md). Railway's earlier unknown time-validation reason is a separate fixed-diagnostic-code gap.
+
+[Diagnosis and limitations](map-upsert-diagnosis-2026-10-25/info.md) · [Integrated evidence](history/2026-10-25_13-37-33-307603-orchestrator-map-upsert-railway-diagnosed.md) · [Independent review](history/2026-10-25_13-37-33-307603-evaluator-map-upsert-diagnosis-accepted.md)
 
 ## Model usage since Thursday's first planner rollout — reviewed
 
@@ -22,7 +94,7 @@ The router tries orderedURL/key/model entries, skips knowncredit/auth/paymentrej
 
 Independenttests/evaluatoraccept; bothbaseline-isolatedreleases pass109checks/APIbuild. Packages contain279web/60workerfiles andonly4reviewedruntimechanges. Hostedhealth/auth/config andunchangedHTML/10JS/CSSchecks pass withzeroverificationinference/businesswrites. The firstobservedordinaryworkerbatch makesoneHTTP429credit_balance_exhausted request, skippingredundantquota retries. Startupprunemaintenanceloggedafailure; laterrequiredauditrecords succeeded.
 
-**Limit:** livebackupsuccess remainsunverified untilvalidsecond/thirdcredentials are added. Currentprimarycreditsremainexhausted; persistentproviderpause, quarantinerecovery andcheckpointlimits areseparate outstandingwork.
+**Limit:** livebackupsuccess remainsunverified untilvalidsecond/thirdcredentials are added. At rollout, primarycreditswereexhausted; the October25review above confirms successfulmodelresponsesresumedOctober24at10:16AM without verifying the accountbalance. Persistentproviderpause, quarantinerecovery andcheckpointlimits areseparate outstandingwork.
 
 [Live release/evidence](history/2026-10-24_08-23-49-710620-orchestrator-provider-fallback-live-verified.md) · [Configuration](../docs/provider-routing.md) · [Scope](provider-fallback/info.md)
 
@@ -4567,3 +4639,5 @@ Combined web package273files/78182292bytes uploaded asRailway deployment046b9fd4
 ## Testing preference recorded (side conversation)
 
 AGENTS.md now prioritizes real tasks, meaningful edge cases, correct responses and outcomes; discourages redundant syntax/implementation tests; and permits bounded configured model/application API evaluations. No tests were removed and no API calls or runtime changes were made for this documentation request. Active implementation/release state above is unchanged. [Record](history/2026-10-22_18-22-46-403630-orchestrator-testing-evaluation-preference-recorded.md).
+
+[Refreshed database authorization handoff](history/2026-10-25_14-01-37-271205-orchestrator-database-auth-handoff-refreshed.md): no database deletion yet.
