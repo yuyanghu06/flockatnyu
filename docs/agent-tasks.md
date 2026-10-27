@@ -30,7 +30,7 @@ its real saved result have been checked. Keep old failures in the test log.
 | CAL-03 | “Add these two meetings, update both rooms, then cancel both.” | Use separate batch create/update calls, preserve every unrequested field and report each result accurately. | Partial: all real batch/read/cancel calls pass and cleanup is verified; final answer remains unverified. |
 | CAL-04 | “This Discord announcement schedules a club workshop.” | Read the exact authorized original, reconcile one club Calendar event and keep its stable source identity through edits/cancellation. | Not tested: additional worker create/cancel cycles were declined. |
 | CAL-05 | “Move that meeting 30 minutes later.” | Read the exact current event, change only its start/end as requested, preserve its duration and other fields, and confirm the saved times. | Not tested as a complete live time-shift workflow; CAL-02 verified a title change with unchanged timing. |
-| CAL-06 | “Sync Calendar to the map, accepting clear spelling variants and dropping locations outside the map.” | Match only a clear existing building; keep unmatched building links empty without failing the sync; preserve event/attendance data, manual resolutions and real error reporting. | Partial live coverage: local repair passes ten new behavior cases plus 193 existing regressions; read-only provider calculation is ready with writes suppressed. No new production cycle or live application check. |
+| CAL-06 | “Sync Calendar to the map, accepting clear spelling variants and dropping locations outside the map.” | Match only a clear existing building; keep unmatched building links empty without failing the sync; preserve event/attendance data, manual resolutions and real error reporting. | Partial live workflow coverage: repair deployed in source 8718a1c; local regressions and read-only calculation pass. Worker remains paused, so no new cycle applied the intended placement. |
 | PLAN-01 | “I’ll study at Bobst tomorrow from 2 to 4.” | Resolve the real speaker, write the separate Member Plans Calendar, then project the plan to the map during its actual window. | Not tested: separate Member Plans create/project workflow requires additional worker cycles, which were declined. |
 | PLAN-02 | “Cancel that personal plan.” | Recheck the same original, cancel the same source-owned Member Plan and reflect cancellation on the map. | Not tested: additional worker create/cancel cycles were declined. |
 | MAP-01 | “Put Yuyang at Bobst for this explicitly labeled future test.” | Resolve an existing roster person; save only the requested activity/building/person; keep every unrelated event. | Pass for the bounded future-plan workflow: actual model lookup/create/read/cancel completed, and both temporary plans were independently read back cancelled. |
@@ -116,3 +116,11 @@ real errors still remain partial. Independent offline checks and a guarded
 read-only provider check pass. The intended E-Lab placement change was not
 applied. WORK-03 retains the original cycle's partial/round-limit outcome;
 no additional cycle ran. See [the repair evidence](../milestones/calendar-sync-location-fix-2026-10-27/verification.md).
+
+## Full-tree deployment — October 27, 2026
+
+All five services received the reviewed source 8718a1c packages. Web/collector
+readiness is verified; update-agent remains disabled and enrichment awaits its
+normal schedule. No new production cycle or business-write smoke test was run.
+CAL-06's code is deployed, but actual placement application and prior worker
+workflow gaps remain unverified. [Deployment receipts](../milestones/full-tree-release-2026-10-27/verification.md).

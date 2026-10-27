@@ -1,0 +1,10 @@
+# Full checked tree committed and pushed to development branch
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:48:17.422546-04:00 / orchestrator / full-tree-release-2026-10-27.
+- Requested scope: commit, push and deploy the entire tree on Railway while running no additional production cycle.
+- Starting repository state: corrected source and full CI/browser/container checks accepted; worker stopped/disabled with original region restored.
+- Work performed / changed files: Created logical commits c7bf07d (prompt assets/corrections), a5e4b58 (API/cache recovery), 0574771 (Calendar placement), 6b1502e (worker image roots) and 8718a1c (shared verification/records). The first push from the main checkout stopped because its hook lacked development executables. Reused an isolated exact-commit checkout with locked full dependencies and the normal installed .githooks pre-push hook; its full CI passed and push succeeded. No hook was bypassed. Original HEAD and origin/dev/tool-api-services read back equal at 8718a1c; main remains untouched.
+- Decisions: Use the current development branch and checked local package procedure; do not merge main or upload raw checkout/private files. Keep source commit and archive/service identities explicit. Preserve pause even on rollback.
+- Checks and evidence: ignored source-commit.txt, implementation-commits.json, push-with-checked-hook.log, release-manifest.json, package-index.json, frontend-supplemental-pin.json and worker metadata; [verification](../full-tree-release-2026-10-27/verification.md).
+- Resulting state / acceptance: Publication accepted: entire intended tree is committed/pushed, with clean source-to-test parity. Remote parity and standard push-hook CI recorded. New hosted application acceptance is still pending.
+- Remaining work and handoff: Complete web health/auth/exact assets/read-only API checks, then remaining four deployments, service-specific readiness and final worker timestamp/pause readbacks. Journal and publish final receipts after actual outcomes.

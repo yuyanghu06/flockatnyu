@@ -4,34 +4,34 @@ The isolated release is ebe0194 on codex/markdown-prompts-release; [PR1](https:/
 
 [Release scope](prompt-release-2026-10-27/info.md) · [tester pass](history/2026-10-27_19-31-42-250791-tester-release-full-checks-pass.md) · [evaluator pass](history/2026-10-27_19-31-42-250792-evaluator-release-scope-accepted.md) · [orchestrator pass](history/2026-10-27_19-31-42-250793-orchestrator-release-branch-pushed-pr-opened.md)
 
-## Full-tree Railway release — checks accepted; publication/packages next
+## Full-tree Railway release — complete; update agent deliberately paused
 
-The user authorized all five services from the entire dev/tool-api-services
-working tree. Exact final full CI passes all gates and 3,050 tests, with zero
-failures/two optional skips. All five browser flows pass. Three old API test
-fixtures were corrected without weakening grants/privacy; independent container
-review also found and fixed missing/stale worker Docker COPY roots. The new
-image-projection/import regression passes with networking blocked. Source and
-container review ACCEPT.
+The entire intended source tree is committed and pushed on dev/tool-api-services
+at 8718a1c909fc0122cda69b4f4391f2cca169a819. All five exact reviewed packages reached
+Railway SUCCESS. Full CI passes 3,050 tests with zero failures/two optional skips;
+all five browser flows pass. The worker Docker COPY omission and five old API
+fixture assumptions were corrected before upload; independent package and hosted
+reviews ACCEPT.
 
-Four logical source commits are local: c7bf07d prompt assets/corrections, a5e4b58
-API/cache recovery, 0574771 Calendar placement and 6b1502e worker image roots.
-Shared records are being committed before exact clean packages and push. No new
-application package has been uploaded yet.
+Web passes 28 hosted checks for health, private authentication, exact index/eight
+JS/CSS assets, catalogue/status and saved-data reads. Discord resumed its gateway;
+Gmail is ready with health 200. Enrichment is cronReady, preserving its normal
+schedule/volume; no job was forced. Update-agent reports disabled, no running/
+crashed replica, no lease and unchanged last-start since before the pause. No new
+production cycle was triggered by this rollout. Keep it paused.
 
-Worker activation remains false and the old process is stopped. A CLI zero-scale
-attempt unexpectedly rebuilt the old artifact in a default region; the original
-European region was restored and the disabled build stopped. Readback shows no
-lease and an unchanged last-start across the entire pause. No new production
-cycle or business-write test ran. Keep the worker paused after rollout.
+The deployment/region incident and correction are retained in history. Source
+8718a1c remains the application revision; this later documentation receipt changes
+no runtime bytes. Full business workflow/worker-operation acceptance remains
+partial as previously recorded; readiness does not establish those outcomes.
 
-[Scope](full-tree-release-2026-10-27/info.md) ·
-[Verification](full-tree-release-2026-10-27/verification.md).
+[Deployment IDs and verification](full-tree-release-2026-10-27/verification.md) ·
+[Editable task log](../docs/agent-tasks.md).
 
-[Release review finds worker image dependency omissions](history/2026-10-27_19-35-44-314791-evaluator-worker-container-omission-found.md) ·
-[Worker image includes its real reachable runtime roots](history/2026-10-27_19-35-44-314792-coder-worker-container-roots-corrected.md) ·
-[Full CI passes after worker container regression fix](history/2026-10-27_19-35-44-314793-tester-full-tree-container-gates-pass.md) ·
-[Unexpected scale-triggered rebuild stopped and region restored](history/2026-10-27_19-35-44-314794-orchestrator-worker-region-incident-corrected.md)
+[Web deployment passes hosted source and access checks](history/2026-10-27_19-56-58-012706-orchestrator-web-release-hosted-verified.md) ·
+[Collectors, paused worker and scheduled enrichment deployed](history/2026-10-27_19-56-58-012707-orchestrator-remaining-services-hosted-verified.md) ·
+[Independent evaluation accepts recorded five-service rollout](history/2026-10-27_19-56-58-012708-evaluator-five-service-hosted-rollout-accepted.md) ·
+[Full-tree source publication and five-service release completed](history/2026-10-27_19-56-58-012709-orchestrator-full-tree-release-completed.md)
 
 ## Contact clarification and Calendar completion — verified and accepted
 
@@ -745,7 +745,7 @@ Actual hosted index/eight bundles match accepted build; auth, privateRPC, combin
 
 User stopped direct Contacts intake and requested a staging table with exactly **id UUID**, **created_at timestamptz** (date+time) and **raw_input JSONB** for email and optional name. Incoming INBOX senders only; no new top-level columns, mail body/provenance storage, outgoing capture, historical import or direct Contacts writes.
 
-Independent plan accepted. Coder owns Google-local parser/store plus subscription/CLI and migration049; tester owns focused SQL and workflow checks. Root applies only049 and packages/deploys only Gmail. Implementation complete and independent tester/evaluator accepted:38SQL/helper/workflow checks and2focused Gmail package checks pass, API build passes. A lease-expiry bug was fixed and retested. The18-file/13-module package contains only Gmail runtime plus approved shared dependencies. Exact049 is now applied as hosted20261026215743_contacts_cache. Actual schema/grants verify three nonnull columns, forced RLS/service-only CRUD, denied browser roles; service PostgREST read200empty, Contacts count0unchanged and048function absent. Gmail-only package uploaded as deployment1c1a5fc0-5def-4c5b-89c2-4aab84b02c74; first release is healthy (health200/webhook401), but read-only diagnosis found an old message404 blocks existing Gmail sync. A narrowly scoped missing-original recovery is implemented and independently accepted (40+2checks); accepted Gmail-only recovery239293ad is SUCCESS; actual intake observed7private email/name-only cache rows with Contacts0unchanged. Health200/anonymous webhook401 and unchanged non-Gmail releases verify. Native history remains processing; full catch-up not claimed. Table unchanged. [Contacts cache rollout accepted](history/2026-10-26_18-17-28-159694-evaluator-contacts-cache-live-accepted.md) · [Minimal inbox contacts_cache live](history/2026-10-26_18-17-28-159694-orchestrator-contacts-cache-complete.md). [Upload](history/2026-10-26_18-01-21-929261-orchestrator-contacts-cache-gmail-uploaded.md). [Hosted table](history/2026-10-26_17-59-51-759276-orchestrator-contacts-cache-applied.md). [Contacts cache intake implemented](history/2026-10-26_17-57-28-068726-coder-contacts-cache-implemented.md) · [Contacts cache lease edge fixed](history/2026-10-26_17-57-28-068726-coder-contacts-cache-lease-fixed.md) · [Contacts cache SQL and workflow verified](history/2026-10-26_17-57-28-068726-tester-contacts-cache-behavior-verified.md) · [Gmail-only cache package reviewed](history/2026-10-26_17-57-28-068726-orchestrator-contacts-cache-package-reviewed.md) · [Contacts cache pre-application accepted](history/2026-10-26_17-57-28-068726-evaluator-contacts-cache-preapply-accepted.md). Cache failure must preserve the current message/cursor for retry; duplicates must not rewrite original cached rows. Existing queue/watch/auth/leases remain.
+Independent plan accepted. Coder owns Google-local parser/store plus subscription/CLI and migration049; tester owns focused SQL and workflow checks. Root applies only049 and packages/deploys only Gmail. Implementation complete and independent tester/evaluator accepted:38SQL/helper/workflow checks and2focused Gmail package checks pass, API build passes. A lease-expiry bug was fixed and retested. The18-file/13-module package contains only Gmail runtime plus approved shared dependencies. Exact049 is now applied as hosted20261026215743_contacts_cache. Actual schema/grants verify three nonnull columns, forced RLS/service-only CRUD, denied browser roles; service PostgREST read200empty, Contacts count0unchanged and048function absent. Gmail-only package uploaded as deployment1c1a5fc0-5def-4c5b-89c2-4aab84b02c74; first release is healthy (health 200/webhook401), but read-only diagnosis found an old message404 blocks existing Gmail sync. A narrowly scoped missing-original recovery is implemented and independently accepted (40+2checks); accepted Gmail-only recovery239293ad is SUCCESS; actual intake observed7private email/name-only cache rows with Contacts0unchanged. Health200/anonymous webhook401 and unchanged non-Gmail releases verify. Native history remains processing; full catch-up not claimed. Table unchanged. [Contacts cache rollout accepted](history/2026-10-26_18-17-28-159694-evaluator-contacts-cache-live-accepted.md) · [Minimal inbox contacts_cache live](history/2026-10-26_18-17-28-159694-orchestrator-contacts-cache-complete.md). [Upload](history/2026-10-26_18-01-21-929261-orchestrator-contacts-cache-gmail-uploaded.md). [Hosted table](history/2026-10-26_17-59-51-759276-orchestrator-contacts-cache-applied.md). [Contacts cache intake implemented](history/2026-10-26_17-57-28-068726-coder-contacts-cache-implemented.md) · [Contacts cache lease edge fixed](history/2026-10-26_17-57-28-068726-coder-contacts-cache-lease-fixed.md) · [Contacts cache SQL and workflow verified](history/2026-10-26_17-57-28-068726-tester-contacts-cache-behavior-verified.md) · [Gmail-only cache package reviewed](history/2026-10-26_17-57-28-068726-orchestrator-contacts-cache-package-reviewed.md) · [Contacts cache pre-application accepted](history/2026-10-26_17-57-28-068726-evaluator-contacts-cache-preapply-accepted.md). Cache failure must preserve the current message/cursor for retry; duplicates must not rewrite original cached rows. Existing queue/watch/auth/leases remain.
 
 The direct Gmail-to-Contacts idea is superseded. Fuzzy/filter/lead-prompt work was held during the cache change; latest continued UI requests resume it as the separate milestone above. Migration048 is not applied and should not enter this release; pending046 also remains separate. Preflight: cache table absent, contacts_search absent, Contacts count0. [Direct Contacts intake stopped](history/2026-10-26_17-52-03-961550-orchestrator-contacts-intake-superseded.md) · [Contacts cache plan accepted](history/2026-10-26_17-52-03-961550-planner-contacts-cache-planned.md). [Scope](contacts-cache/info.md).
 
@@ -1937,7 +1937,7 @@ Separate cap audit confirms409historical >8reply rejects (7.10percent of5763mode
 
 ## Planner API-key authentication deployed
 
-Web **c83f2495-ef51-4197-bebc-8f8f54dd30e4 SUCCESS**, no pending Railway rollout. Only the API-key auth delta was overlaid on the prior accepted web release;273baseline files remain byte-identical. The existing workerf1ab15c2 and collectors are unchanged. Live health200, missing/wrong-key planner start403, missing-key status403, ordinary tools403 and homepage login redirect pass. No manual job/model/business test action was created.
+Web **c83f2495-ef51-4197-bebc-8f8f54dd30e4 SUCCESS**, no pending Railway rollout. Only the API-key auth delta was overlaid on the prior accepted web release;273baseline files remain byte-identical. The existing workerf1ab15c2 and collectors are unchanged. Live health 200, missing/wrong-key planner start403, missing-key status403, ordinary tools403 and homepage login redirect pass. No manual job/model/business test action was created.
 
 **User will configure PLANNER_API_KEY on Railway web.** This pass generated/set no key or environment values. Both planner routes require its Bearer header and reject cookie/admin fallback; positive real-key dispatch awaits that setup. Prior130scoped/security/integration tests and API build pass, frozen package integrity/syntax/dependency closure pass. Concurrent tool-failure/backlog work remains separately pending and unmodified.
 
@@ -1953,7 +1953,7 @@ User authorized generic tool failure/reason replies to the model, allowing unrel
 
 Hosted042/043 receipts20261022215800/20261022215802 and service-only/RLS/eightfunctionbody checks verified. Independent130feature checks and final2443regressions pass with1optional skip; two legacycases in separate personal-location-behavior file are explicitly excluded. Source/package evaluatorACCEPT and API build pass. Website release retains the previously accepted chat-map correction; no global source-policy changes or fake Calendar/map facts were made.
 
-LiveHTTPhealth200/login303/auth and source-free metadata preflight pass; validstart202 and status200. Testrequest4fced205-4b6f-45e3-b9d0-ac37c54f5a7a is currentlyqueued behind an ordinary run that already held the worker. Its eventual empty result is still an operational observation, not claimed complete. No verification model/Calendar/map writes or Git publication. [Live receipt](history/2026-10-22_18-06-56-105712-orchestrator-manual-planner-api-live-verified.md) · [API guide](../docs/agent-automation.md) · [Scope](manual-planner-start/info.md).
+LiveHTTPhealth 200/login303/auth and source-free metadata preflight pass; validstart202 and status200. Testrequest4fced205-4b6f-45e3-b9d0-ac37c54f5a7a is currentlyqueued behind an ordinary run that already held the worker. Its eventual empty result is still an operational observation, not claimed complete. No verification model/Calendar/map writes or Git publication. [Live receipt](history/2026-10-22_18-06-56-105712-orchestrator-manual-planner-api-live-verified.md) · [API guide](../docs/agent-automation.md) · [Scope](manual-planner-start/info.md).
 
 ## Manual planner authentication changed to API key locally
 
@@ -2131,7 +2131,7 @@ Created Member Plans in the existing Tech@NYU Google account, timezone America/N
 
 ## Calendar complete receipts and Discord drafts deployed
 
-Web10f3a363-811c-4bd9-a86c-f4bef6caa553 and update-agentc6e09917-f346-4174-a96f-eaa04c264aa6 are SUCCESS; all4services online,0issues and no pending rollout. Hosted health200, anonymous Calendar/draft API403, password login303 and trusted Discord authorization200/ready pass. Worker entered ready preparation. Full2297tests passed/0failed/1optional skip, builds and independent review ACCEPT; all138runtime copies match reviewed source. Calendar receipts preserve actual saved names/descriptions/locations/times/safe details with explicit missing/clear/omission states; draft tool remains review-only in invoking reply. No Calendar test edits/model verification calls/Discord sends, env/schema/map changes or Git publication. Actual real-provider mutation wording remains untested. [Final release](history/2026-10-22_15-16-02-969044-orchestrator-calendar-complete-receipts-live-verified.md).
+Web10f3a363-811c-4bd9-a86c-f4bef6caa553 and update-agentc6e09917-f346-4174-a96f-eaa04c264aa6 are SUCCESS; all4services online,0issues and no pending rollout. Hosted health 200, anonymous Calendar/draft API403, password login303 and trusted Discord authorization200/ready pass. Worker entered ready preparation. Full2297tests passed/0failed/1optional skip, builds and independent review ACCEPT; all138runtime copies match reviewed source. Calendar receipts preserve actual saved names/descriptions/locations/times/safe details with explicit missing/clear/omission states; draft tool remains review-only in invoking reply. No Calendar test edits/model verification calls/Discord sends, env/schema/map changes or Git publication. Actual real-provider mutation wording remains untested. [Final release](history/2026-10-22_15-16-02-969044-orchestrator-calendar-complete-receipts-live-verified.md).
 
 ## Complete Calendar receipts fully verified; rollout underway
 
@@ -2179,7 +2179,7 @@ Read-only hosted aggregate audit distinguishes planner/update-agent calls from c
 
 ## Discord draft-only tool deployed
 
-Web908d744d-7e17-41f3-97e2-79ba997f0e56 is SUCCESS with frozen reviewed draft source; frontend/API builds and independent63new/413focused tests pass, evaluator ACCEPT. Hosted health200, anonymous draft API403 and authenticated Discord authorization200/ready pass. No real model draft or Discord message was generated; local production-settings adapter probe hit its60second caller timeout, extended check pending. No target messages, grant expansion, native draft persistence, env/schema/map changes. Calendar receipt implementation remains active and was excluded from this package. [Release](history/2026-10-22_14-58-51-306296-orchestrator-discord-draft-tool-deployed.md).
+Web908d744d-7e17-41f3-97e2-79ba997f0e56 is SUCCESS with frozen reviewed draft source; frontend/API builds and independent63new/413focused tests pass, evaluator ACCEPT. Hosted health 200, anonymous draft API403 and authenticated Discord authorization200/ready pass. No real model draft or Discord message was generated; local production-settings adapter probe hit its60second caller timeout, extended check pending. No target messages, grant expansion, native draft persistence, env/schema/map changes. Calendar receipt implementation remains active and was excluded from this package. [Release](history/2026-10-22_14-58-51-306296-orchestrator-discord-draft-tool-deployed.md).
 
 ## Complete Calendar receipts underway
 
@@ -2255,7 +2255,7 @@ Read-only hosted roster and exact live Discord member lookups verified usernames
 
 ## Discord blacklist fix complete and deployed
 
-Both Railway deployments are SUCCESS: web0f9ed90d-cde1-42b5-a0c3-5325380d35cb and update-agent de011f53-0525-4479-8db0-51c4562f8123. Hosted health200, anonymous tool403 and password login303 pass. Published catalogue has234sources,16absent from the old static list. Actual authenticated hosted catalogue lookup accepts an eligible base channel absent that list; worker resolver with production settings includes all234current Discord sources plus its explicit Gmail source (235total). No queue claim, source-content fetch, model call or Discord send was performed by the hosted probe. Sanitized package runtime source files byte-match current source. Applied03820261022182039body/ACL verified through Supabase MCP; no collector/configuration changes. Independent local dynamic admission, exact map/Calendar provenance, revocation and empty-scope retention tests/evaluation pass. Existing audience/team/permission/leadership restrictions and explicit non-Discord grants remain. Newly discovered eligible channels need no environment UUID additions. No native test channel/message was created; hosted env-absent channel admission is verified. [Release](history/2026-10-22_14-25-36-167023-orchestrator-discord-blacklist-live-release-verified.md); [scope](discord-blacklist/info.md).
+Both Railway deployments are SUCCESS: web0f9ed90d-cde1-42b5-a0c3-5325380d35cb and update-agent de011f53-0525-4479-8db0-51c4562f8123. Hosted health 200, anonymous tool403 and password login303 pass. Published catalogue has234sources,16absent from the old static list. Actual authenticated hosted catalogue lookup accepts an eligible base channel absent that list; worker resolver with production settings includes all234current Discord sources plus its explicit Gmail source (235total). No queue claim, source-content fetch, model call or Discord send was performed by the hosted probe. Sanitized package runtime source files byte-match current source. Applied03820261022182039body/ACL verified through Supabase MCP; no collector/configuration changes. Independent local dynamic admission, exact map/Calendar provenance, revocation and empty-scope retention tests/evaluation pass. Existing audience/team/permission/leadership restrictions and explicit non-Discord grants remain. Newly discovered eligible channels need no environment UUID additions. No native test channel/message was created; hosted env-absent channel admission is verified. [Release](history/2026-10-22_14-25-36-167023-orchestrator-discord-blacklist-live-release-verified.md); [scope](discord-blacklist/info.md).
 
 ## Discord blacklist release underway
 
@@ -3267,7 +3267,7 @@ Runtime40a2827/dfe7b44 and rollout documentatione89ca95 are pushed to origin/cod
 
 ## Miro quota rollout verified; separate Discord discovery limitation recorded
 
-Quota web043c4da7 and workercab66107 deployed SUCCESS. Compatible later releases from concurrent work are current webe4abfba6 and worker578d0390, bothSUCCESS; production budgeting remains enabled. Fresh actual protected website login303/root200/API200/anonymous403/health200 and direct authorized Miro tool request verify quota_exhausted, retryAt00UTC, zero sources/incomplete coverage and unchanged0reservation counters. No manual model or Miro tools/call sent. Full1079regressions, APIbuild, independent125tester/94evaluator checks and secret scan pass. Shared80/48/12budget, six-hour cadence and metadata cooldown are live; actual post-reset Miro content/sync remains unverified. Separate current Discord metadata generation started23:02UTC and is in archives0/191 with0readable channels; worker startup showscooldown/forbidden and no new completion is claimed. Collector still receives events; no permission bypass, source expansion or queued-input deletion. Source commits40a2827/dfe7b44 complete; final documentation publication next. Concurrent chat/upload/visual work preserved.
+Quota web043c4da7 and workercab66107 deployed SUCCESS. Compatible later releases from concurrent work are current webe4abfba6 and worker578d0390, bothSUCCESS; production budgeting remains enabled. Fresh actual protected website login303/root200/API200/anonymous403/health 200 and direct authorized Miro tool request verify quota_exhausted, retryAt00UTC, zero sources/incomplete coverage and unchanged0reservation counters. No manual model or Miro tools/call sent. Full1079regressions, APIbuild, independent125tester/94evaluator checks and secret scan pass. Shared80/48/12budget, six-hour cadence and metadata cooldown are live; actual post-reset Miro content/sync remains unverified. Separate current Discord metadata generation started23:02UTC and is in archives0/191 with0readable channels; worker startup showscooldown/forbidden and no new completion is claimed. Collector still receives events; no permission bypass, source expansion or queued-input deletion. Source commits40a2827/dfe7b44 complete; final documentation publication next. Concurrent chat/upload/visual work preserved.
 
 [Latest pass](history/2026-10-18_19-09-29-018090-orchestrator-quota-live-verified.md)
 
@@ -3411,7 +3411,7 @@ Proposed follow-up: classify quota errors safely, retain metadata-only cooldown 
 
 ## Current: site and Discord/Calendar worker recovered; Miro explicitly deferred
 
-Websitefa9079b3-4e52-43d2-9f46-bc1da1350706, worker2aaf552e-75db-4a18-aee3-cfe8a9fd6ec7, Discord3aa66021-bda0-4c40-a85e-5f62af638069 and Gmail5244b48a-483e-4378-9b40-c821b66830ed all SUCCESS. Web health200 and protected login/API pass; existing password retained. Failed deploy08ddc22e built but rejected14character password under old minimum24; minimum now12, signing/origin/session safeguards retained. Actual future-deployment health gate /healthz/60seconds configured, website not restarted for that setting.
+Websitefa9079b3-4e52-43d2-9f46-bc1da1350706, worker2aaf552e-75db-4a18-aee3-cfe8a9fd6ec7, Discord3aa66021-bda0-4c40-a85e-5f62af638069 and Gmail5244b48a-483e-4378-9b40-c821b66830ed all SUCCESS. Web health 200 and protected login/API pass; existing password retained. Failed deploy08ddc22e built but rejected14character password under old minimum24; minimum now12, signing/origin/session safeguards retained. Actual future-deployment health gate /healthz/60seconds configured, website not restarted for that setting.
 
 **Real processing:** worker6ea0d49b completed5/5inputs22:20:33UTC,12tools/4rounds/569325ms, explicitMirodeferred(boardCount1,syncCompletefalse). HostedDB15completed inputs and0remaining corresponding cache payloads;151other pending payloads preserved. Calendar/map retain4real scheduled events and0example.invalid events after nine exact-source demo/manual-presence deletions. Current worker2aaf552e uses identical image digest, tuned to2inputs under the same600second deadline for edit headroom; enabled/config and active2input lease verified. No second completed two-input batch claim.
 
@@ -3474,7 +3474,7 @@ Initial UI/favicon release850ab73b is SUCCESS; hosted page/icons and authenticat
 
 ## Web restored; worker preparation still under diagnosis
 
-Recovery webda7c5ab1-173c-4f7d-9464-9578d03c1821 SUCCESS; hosted health200/login303/protected page+API200/anonymousAPI403/foreignOrigin403. Existing password retained. Receipt evidence/optimization/hosted-recovery.json. Private worker broker200 and Calendarpreflightowner/ready now pass. Worker latest prepare stillfails(preflight_failed), so bounded live Miro preparation diagnosis underway; no ongoing completion claim.
+Recovery webda7c5ab1-173c-4f7d-9464-9578d03c1821 SUCCESS; hosted health 200/login303/protected page+API200/anonymousAPI403/foreignOrigin403. Existing password retained. Receipt evidence/optimization/hosted-recovery.json. Private worker broker200 and Calendarpreflightowner/ready now pass. Worker latest prepare stillfails(preflight_failed), so bounded live Miro preparation diagnosis underway; no ongoing completion claim.
 
 Collector continuation implemented/frozen:9lifecycle cases and91targeted combined checks pass; same-generation bounded retries preserve strict complete-publication authorization. Independent review/full suite/API build and sanitized collector context in progress. No source expansion/migration/queue deletion.
 
@@ -3586,7 +3586,7 @@ Goal: calm source-aware chat, autonomous Discord/Miro→Calendar→map reconcili
 
 Final worker4da381d1-1e1d-4662-a1ce-18a1231cee80 is enabled and observed preparing a batch; web4bbf57ff-e204-4434-8b43-ae3ef932ccf9, Discorda2a8b966-2e74-498a-afb4-6ba4d12b9035 and Gmail5244b48a-483e-4378-9b40-c821b66830ed all SUCCESS. Final prepared worker sources match reviewed files. Prior hosted worker completed5/5inputs (27toolcalls/11rounds); four canonical Calendar map events with building links were persisted. Do not conflate preceding live mutation evidence with final-build synthetic model checks.
 
-**Verification:** final1017/1017fullregressions, API build, unchanged frontend build and independent desktop/mobile browser acceptance; final timestamp review80/80; strict actual-model four-case run4/4,36calls,31unchanged source hashes, zero failed tools. Includes Discord scheduled-event create/edit and Miro→Calendar→map/RSVP with actual Miro adapter/parser and inert writes. Earlier3/4 diagnostic retained. Hosted final health200/login303/protected page+API200/anonymousAPI403; secure HttpOnly session. Secret scan1932textfiles/13actualprivatepatterns found0matches. Current diff whitespace passes; historical appended records retain earlier immutable whitespace.
+**Verification:** final1017/1017fullregressions, API build, unchanged frontend build and independent desktop/mobile browser acceptance; final timestamp review80/80; strict actual-model four-case run4/4,36calls,31unchanged source hashes, zero failed tools. Includes Discord scheduled-event create/edit and Miro→Calendar→map/RSVP with actual Miro adapter/parser and inert writes. Earlier3/4 diagnostic retained. Hosted final health 200/login303/protected page+API200/anonymousAPI403; secure HttpOnly session. Secret scan1932textfiles/13actualprivatepatterns found0matches. Current diff whitespace passes; historical appended records retain earlier immutable whitespace.
 
 **Architecture:** shared authorized source tools; Calendar canonical scheduled events, map mirrors plus informal activities; exact current Discord originals precede action. Calendar-owned reported_at canonicalized from exact observed updatedAt/createdAt before action hashing, with optimistic revisions and participant timestamps preserved. Service-only migration032 filters queue claims before bodies return; unrelated pending sources stay deferred. Production batches5inputs/600s,16rounds/32calls, eligible30input-or-oldest30minute trigger. Queued originals replace routine historical sweeps. Discord request spacing1000ms per process; upstream cooldowns retained. Web owns persistent Miro refresh credentials and worker receives access tokens through private broker.
 
@@ -4492,7 +4492,7 @@ Root [notes.md](../notes.md) stores requested ideas; AGENTS.md requires startup 
 
 - Discord/Gmail are separate slim live collectors; Miro remains provisioned and paused. Shared Supabase has seven service-only tables through023, including map_buildings/map_people. No Discord history archive/backfill, durable summaries or vectors.
 - Discord revisionc8035dd4-e073-477a-9fcd-dadc5334b4ef passed independent rollout and controlled resume verification.
-- Gmail revision8f10ca33-b53b-4358-96d9-b2becdf6f5e5 is healthy; collection=true/model=false, health200 and unsigned/forged401 verified. Runtime excludes agent configuration.
+- Gmail revision8f10ca33-b53b-4358-96d9-b2becdf6f5e5 is healthy; collection=true/model=false, health 200 and unsigned/forged401 verified. Runtime excludes agent configuration.
 - The chat agent API and update agent runner exist locally; neither is deployed as a Railway service. Local Miro-sourced Calendar tools and per-batch preparation are implemented; live target access, map writes, update_memory/durable memory and production member authentication remain unfinished.
 - M38 retired the redundant worker and deleted user-authorized98MB output/. The26 generated documentation avatars remain.
 

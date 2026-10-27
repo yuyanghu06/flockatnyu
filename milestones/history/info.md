@@ -537,3 +537,12 @@ Final full-tree pre-upload entries preserve the real worker image omission and
 its corrected COPY/import regression, final passing CI, source review and the
 acknowledged/corrected zero-replica control-plane incident. The worker remained
 disabled; upload and hosted receipts are not inferred from those local checks.
+
+Full-tree publication and package-review entries tie source commit 8718a1c to
+five accepted archives, normal pre-push checks, macOS metadata exclusion and all
+182 frontend artifacts. Hosted rollout success is recorded separately.
+
+Full-tree hosted completion entries record all five successful deployment IDs,
+web/collector readiness and independent ACCEPT while retaining the disabled
+worker, unchanged last-start and unforced scheduled enrichment. The documentation
+receipt is separate from source 8718a1c application packages.

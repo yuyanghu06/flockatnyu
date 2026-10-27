@@ -20,10 +20,11 @@ migration automatically. Full CI and browser gates, independent review, commit/
 push parity, package hashes, hosted readiness/auth/assets and disabled-worker
 receipts are completion criteria. Report worker deployed and paused, not active.
 
-Current state: final exact full CI passes 3,050 cases with two optional skips;
-all five browser flows pass. Older API fixtures and a real worker Docker COPY
-omission are repaired and independently accepted. Worker is offline/disabled,
-with original region restored and unchanged last-start after a corrected CLI
-scaling incident. No application package has been uploaded yet.
+Current state: complete and independently accepted. Source8718a1c is pushed on
+dev/tool-api-services and all five exact packages reached Railway SUCCESS. Web
+health/auth/assets/read-only API checks and collector readiness pass. Scheduled
+enrichment awaits its existing daily slot. Update-agent is deployed but disabled;
+no new production cycle was triggered. Existing broader workflow/dependency
+limitations remain. A documentation-only receipt follows the source commit.
 
-[Checks, boundaries and receipts](verification.md).
+[Checks, boundaries and deployment IDs](verification.md).

@@ -340,3 +340,8 @@ agent disabled/paused throughout and after this rollout; deployment is not
 permission to start a test cycle. All five sanitized service packages come from
 the exact checked commit. Current release truth belongs in the full-tree release
 milestone; private variables, grants, queues, tasks and volumes are preserved.
+
+Full-tree rollout completed: all five packages for source 8718a1c reached Railway
+SUCCESS. The update agent remains disabled/paused and must not be resumed merely
+to verify deployment. The final release milestone records actual IDs, hosted
+checks, preserved configuration and unresolved workflow limits.

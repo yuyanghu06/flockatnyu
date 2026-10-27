@@ -31,3 +31,8 @@ pass and a ready read-only provider calculation with one suppressed E-Lab
 placement correction. Final evaluator review ACCEPTS the scoped correction. The local milestone is
 complete; no deployment or live placement application is claimed. No live write or cycle
 occurred; see [verification](verification.md) for the exact boundary.
+
+Deployment follow-up: this correction is included in the successful full-tree
+source 8718a1c Railway rollout. The update agent is deliberately paused, so the
+intended E-Lab placement is still not live-applied by a new cycle. See the
+[release receipt](../full-tree-release-2026-10-27/verification.md).

@@ -1,0 +1,10 @@
+# Collectors, paused worker and scheduled enrichment deployed
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:56:58.012707-04:00 / orchestrator / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree to all five Railway services without another production cycle.
+- Starting repository state: source8718a1c committed/pushed, exact package review ACCEPT, worker deliberately disabled after the documented corrected region incident.
+- Work performed / changed files: Uploaded the accepted37-file Discord,18-file Gmail,174-file worker and15-file enrichment packages with explicit project/environment/service and path-as-root. All four exact deployment IDs reached SUCCESS. Deployment-scoped metadata shows Discord chat_ready/gateway_resumed/listening and Gmail listening/ready; Gmail health returns200. Worker log status is disabled with zero running/crashed replicas. Enrichment is cronReady with no job forced.
+- Decisions: Preserve source/package/service identity and private variables/volumes/grants. Leave processing false. Do not equate readiness with untested agent workflows or trigger paid/model/business-write checks to improve the report.
+- Checks and evidence: [release verification](../full-tree-release-2026-10-27/verification.md), ignored upload receipts/package index, hosted-web-report.json, hosted-services.json, hosted-configuration.json, gmail-health.json and worker-final-before-receipt.json. Root/evaluator inspected actual outcomes.
+- Resulting state / acceptance: All five services now use reviewed packages for8718a1c. Enrichment retains cron0 13,14 UTC, NEVER restart and its500MB /data volume; actual build logs confirm Dockerfile/server/entrypoint layers. Worker retains original European region and activationfalse. No migration, queue/task clearing or forced cycle occurred.
+- Remaining work and handoff: Preserve paused worker and existing limitations. Final documentation publication/remote parity and last worker guard are operator closeout evidence, not another cycle. No further application deployment, schema or configuration change is required.

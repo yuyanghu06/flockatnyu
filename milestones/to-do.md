@@ -14,10 +14,11 @@
 - [x] Repair and independently check five old API fixture assumptions without weakening permissions/privacy tests; focused 23 cases pass.
 - [x] Pass final exact full CI after fixture and worker-image corrections: 3,050 pass/zero fail/two optional skips; five browser flows pass.
 - [x] Obtain source/corrected-container ACCEPT and create four logical implementation commits.
-- [ ] Commit shared records, push dev/tool-api-services and verify remote parity.
-- [ ] Prepare and inspect all five packages from the exact clean checked commit; exclude private/generated data.
-- [ ] Deploy and verify web, Discord/Gmail collectors, disabled update-agent and off-hour scheduled enrichment.
-- [ ] Record hosted receipts and Git/remote parity; retain worker pause and all unrelated documented limitations.
+- [x] Commit shared records and push dev/tool-api-services at 8718a1c with the standard pre-push gate; original/remote parity confirmed.
+- [x] Prepare and independently ACCEPT all five exact-commit packages; source, locks, Docker COPY, 182 assets and privacy parity verified.
+- [x] Deploy all five exact packages; verify web/collector readiness, disabled worker and cron-ready enrichment without forcing a job.
+- [x] Record hosted receipts, source/remote parity and independent ACCEPT; publish this documentation-only receipt and retain final guard evidence.
+- Held: update-agent stays disabled until a new user instruction. Complete worker workflows and existing planner/dependency limitations remain separate.
 
 ## Contact clarification and Calendar completion — verified and accepted
 
@@ -2606,11 +2607,11 @@ Historical and concurrent unfinished work below is retained. Archive-related his
 - [x] User enabled correct Tech@NYU Chrome profile; verify completed Cloud Shell resources.
 - [x] Verify techflock resources; apply018/019 and independently verify exact schema, preserved data and migration receipts.
 - [x] Securely provision only new Gmail service and submit reviewed deployment.
-- [x] Verify deploymentSUCCESS, health200, unsigned/forged401 and active Gmail watch checkpoint.
+- [x] Verify deploymentSUCCESS, health 200, unsigned/forged401 and active Gmail watch checkpoint.
 - [x] Implement/review bounded diagnostic reasons and canonical base64url compatibility; diagnostic deployment submitted.
 - [x] Isolate signed push rejection to non-string notification historyId.
 - [x] Independently test/review safe numeric compatibility41/41; submit final revision79247d6f-c10f-4642-9371-540a3cee14d9.
-- [x] Verify final revisionSUCCESS, signed push200, health200, unsigned/forged401 and durable ready checkpoint.
+- [x] Verify final revisionSUCCESS, signed push200, health 200, unsigned/forged401 and durable ready checkpoint.
 - [x] Verify actual full correct-source email cache entry from the user’s test and advanced ready checkpoint.
 - [x] Notify user that signed notifications/watch work and113/113 pass; distinguish pending real-email test and inactive LLM/tools.
 - [x] Receive test subject and verify real-email cache ingestion.
