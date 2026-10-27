@@ -3,6 +3,7 @@ export const GOOGLE_SCOPES = Object.freeze([
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/drive.readonly',
 ]);
+export const GOOGLE_GMAIL_SEND_SCOPES = Object.freeze(['https://www.googleapis.com/auth/gmail.send']);
 // Explicit opt-in only. The existing read connector keeps GOOGLE_SCOPES.
 export const GOOGLE_CALENDAR_SCOPES = Object.freeze([
   'https://www.googleapis.com/auth/calendar.events',

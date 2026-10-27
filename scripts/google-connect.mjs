@@ -3,7 +3,7 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { lstat, open, rename, unlink } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readGoogleConfig, GOOGLE_SCOPES, GOOGLE_CALENDAR_SCOPES, GOOGLE_CALLBACK } from '../server/google/config.js';
+import { readGoogleConfig, GOOGLE_SCOPES, GOOGLE_CALENDAR_SCOPES, GOOGLE_GMAIL_SEND_SCOPES, GOOGLE_CALLBACK } from '../server/google/config.js';
 import { createGoogleOAuth, GoogleError, verifyGoogleToken } from '../server/google/oauth.js';
 import { boundedGoogleBody } from '../server/google/client.js';
 
@@ -22,17 +22,17 @@ async function existingOutput(force) {
 
 // Deliberately a local command, not a public Railway OAuth route. Secrets go to
 // one ignored mode-0600 file; neither the auth code nor any token is printed.
-export async function connectGoogle({ env = process.env, force = false, calendar = false, write = console.log } = {}) {
+export async function connectGoogle({ env = process.env, force = false, calendar = false, gmailSend = false, write = console.log } = {}) {
   const config = readGoogleConfig(env);
   if (!config.oauthConfigured) throw new GoogleError('setup_required_client_id_secret_expected_email_fixed_callback');
   await existingOutput(force);
   const oauth = createGoogleOAuth(config), state = randomBytes(32).toString('hex');
-  const requiredScopes = calendar ? [...GOOGLE_SCOPES, ...GOOGLE_CALENDAR_SCOPES] : GOOGLE_SCOPES;
+  const requiredScopes = [...GOOGLE_SCOPES, ...(calendar ? GOOGLE_CALENDAR_SCOPES : []), ...(gmailSend ? GOOGLE_GMAIL_SEND_SCOPES : [])];
   const { codeVerifier, codeChallenge } = await oauth.generateCodeVerifierAsync();
   const expires = Date.now() + 5 * 60 * 1000;
   let used = false, server;
   const authorization = oauth.generateAuthUrl({ access_type: 'offline', prompt: 'consent',
-    scope: requiredScopes, include_granted_scopes: false, state, code_challenge: codeChallenge,
+    scope: requiredScopes, include_granted_scopes: gmailSend, state, code_challenge: codeChallenge,
     code_challenge_method: 'S256', login_hint: config.expectedAccountEmail });
   const responseHeaders = { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store',
     'content-security-policy': "default-src 'none'; frame-ancestors 'none'", 'referrer-policy': 'no-referrer' };
@@ -100,8 +100,8 @@ export async function connectGoogle({ env = process.env, force = false, calendar
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const flags = process.argv.slice(2);
-  if (flags.some(flag => !['--force', '--calendar'].includes(flag))) { console.error('Usage: npm run google:connect -- [--force] [--calendar]'); process.exitCode = 1; }
-  else connectGoogle({ force: flags.includes('--force'), calendar: flags.includes('--calendar') }).catch(error => {
+  if (flags.some(flag => !['--force', '--calendar', '--gmail-send'].includes(flag))) { console.error('Usage: npm run google:connect -- [--force] [--calendar] [--gmail-send]'); process.exitCode = 1; }
+  else connectGoogle({ force: flags.includes('--force'), calendar: flags.includes('--calendar'), gmailSend: flags.includes('--gmail-send') }).catch(error => {
     console.error(`Google connection: ${error instanceof GoogleError ? error.code : 'authorization_failed'}.`);
     process.exitCode = 1;
   });
