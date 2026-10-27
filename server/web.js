@@ -162,7 +162,7 @@ export function startWebsite() {
   const siteAuth = createSiteAuth({apiConfig:config});
   const services=createRuntimeServices({config});
   const app = createWebsite({siteAuth, miroTokenBroker:createMiroTokenBroker(),
-    discordChatBridge:createRuntimeDiscordChatBridge({services}), apiApp:createRuntimeApp({config, auth:siteAuth.auth,services})});
+    discordChatBridge:createRuntimeDiscordChatBridge({services}), apiApp:createRuntimeApp({config, auth:siteAuth.auth,services,allowedOrigins:siteAuth.config.allowedOrigins})});
   return serve({fetch:app.fetch, hostname:config.host, port:config.port});
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {

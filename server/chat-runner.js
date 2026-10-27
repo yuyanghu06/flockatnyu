@@ -1,3 +1,5 @@
+import { validUuid } from './automation/validation.js';
+import { contactContextOfMessage, contactTextMessages, contactMessagesForModel } from './chat-contact-context.js';
 import {randomUUID} from 'node:crypto';
 import {ProviderError} from './providers/index.js';
 import {createTimeContext} from './time-zone.js';
@@ -17,19 +19,21 @@ const errorRecord = code => ({type:'error',code,message:errors[code] || errors.p
 function validConversation(value) {
   if (!value || !Array.isArray(value.messages) || !value.messages.length || value.messages.length > 20
     || value.messages.at(-1)?.role !== 'user'
+    || value.requestId !== undefined && !validUuid(value.requestId)
     || value.buildingId !== undefined && (typeof value.buildingId !== 'string' || !/^[a-z0-9-]{1,80}$/.test(value.buildingId))) return false;
   let length = 0;
   for (const message of value.messages) {
     if (!message || !['user','assistant'].includes(message.role) || typeof message.content !== 'string'
       || !message.content.trim() || message.content.length > 8000) return false;
+    try { contactContextOfMessage(message); } catch { return false; }
     length += message.content.length;
   }
-  const textBytes = Buffer.byteLength(JSON.stringify({messages:value.messages.map(({role,content})=>({role,content}))}));
+  const textBytes = Buffer.byteLength(JSON.stringify({messages:contactTextMessages(value.messages)}));
   return length <= 16000 && textBytes <= 32500;
 }
 // Shared request execution for the website and trusted Discord transport. This
 // does not authorize a transport; callers construct the principal server-side.
-export function createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,discordDraftTools,now=()=>new Date()}) {
+export function createChatRunner({config,provider,audit,liveDiscordTools,googleTools,gmailSendTools,miroTools,bugReportTools,memoryTools,contactsTools,tregTools,mapTools,attioTools,discordDraftTools,now=()=>new Date()}) {
   return {async run({conversation,principal,requestContext,discordContext,discordUsers,steering,signal,onRecord=()=>{}}) {
     const send = record => onRecord(record);
     const reject = code => { send(errorRecord(code)); return {status:'failed',code}; };
@@ -73,7 +77,7 @@ export function createChatRunner({config,provider,audit,liveDiscordTools,googleT
       const messages=steering?structuredClone(conversation.messages):conversation.messages;
       if(steering){steering.bind(send);send({type:'run',runId:steering.runId,steeringToken:steering.steeringToken});}
       let retrieval = await wait(retrieveAssistantContext({messages,principal,provider,
-        liveTools:liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,discordDraftTools,buildingId:conversation.buildingId,
+        liveTools:liveDiscordTools,googleTools,gmailSendTools,requestId:conversation.requestId?.toLowerCase(),miroTools,bugReportTools,memoryTools,contactsTools,tregTools,mapTools,attioTools,discordDraftTools,buildingId:conversation.buildingId,
         signal:abort.signal,steering,timeContext,requestContext,discordContext,discordUsers,planning:config.retrievalToolsEnabled!==false,
         auditContext,onAuditEvent:auditEvent,onToolEvent:event=>{if(!abort.signal.aborted)send(event);} }));
       let outputLength=0,answerVersion=0;
@@ -87,7 +91,7 @@ export function createChatRunner({config,provider,audit,liveDiscordTools,googleT
         abort.signal.addEventListener('abort',parentAbort,{once:true});if(abort.signal.aborted)parentAbort();
         const superseded=Symbol('steering');let answering=true,interrupted=false;
         const changed=steering?.waitForInput().then(()=>{if(answering)answerAbort.abort();return superseded;});
-        const iterator=provider.stream({messages,
+        const iterator=provider.stream({messages:contactMessagesForModel(messages),
           system:assistantAnswerPrompt({sources,results:retrieval.results,toolCapabilities:retrieval.toolCapabilities,memory:retrieval.memory,timeContext:currentTime,requestContext,discordContext,discordUsers}),
           signal:answerAbort.signal,timeContext:currentTime,auditContext})[Symbol.asyncIterator]();
         try{

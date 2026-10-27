@@ -1,3 +1,7 @@
+import { createGmailSendClient } from './google/gmail-send.js';
+import { createGmailSendStore } from './gmail-send-store.js';
+import { createGmailSendService } from './gmail-send-service.js';
+import { createGmailSendTools } from '../tools/gmail-send/index.js';
 import {SOURCE_TOOL_TIMEOUT_MS} from './source-timeout.js';
 import {createManualRunStore} from './automation/manual-runs.js';
 import { createApp } from './app.js';
@@ -39,6 +43,11 @@ import {createBugReportStore} from './bug-reports.js';
 import {createBugReportTools} from '../tools/bug-reports/index.js';
 import {createMemoryStore} from './memory.js';
 import {createMemoryTools} from '../tools/memory/index.js';
+import {createContactsStore} from './contacts.js';
+import {createTregPeopleClient,createTregContactsImporter} from './treg-people.js';
+import {createTregEnrichmentClient} from './treg-enrich.js';
+import {createTregTools} from '../tools/treg/index.js';
+import {createContactsTools} from '../tools/contacts/index.js';
 import {readAttioConfig} from './attio/config.js';
 import {createAttioClient} from './attio/client.js';
 import {createAttioTools} from '../tools/attio/index.js';
@@ -92,15 +101,23 @@ const mapTools = createChatMapTools({mapTools:createMapTools({service:mapService
   store:mapStore,publicOrigin:process.env.PUBLIC_ORIGIN});
 const bugReportTools = createBugReportTools({store: createBugReportStore()});
 const memoryTools = createMemoryTools({store: createMemoryStore()});
+const gmailSendService = createGmailSendService({client:createGmailSendClient(),store:createGmailSendStore()});
+const gmailSendTools = createGmailSendTools({service:gmailSendService});
+const contactsStore = createContactsStore();
+const contactsTools = createContactsTools({store: contactsStore});
+const tregPeopleClient = createTregPeopleClient();
+const tregContactsImporter = createTregContactsImporter({client:tregPeopleClient,contactsStore});
+const tregTools = createTregTools({peopleClient:tregPeopleClient,enrichmentClient:createTregEnrichmentClient({feature:'chat-contact-enrichment'})});
 const attioConfig = readAttioConfig();
 const attioTools = createAttioTools({config:attioConfig,client:createAttioClient({config:attioConfig})});
 const plannerRuns = createManualRunStore();
 return {config,audit,provider:createProvider(config,{audit}),mapPresenceService,mapAvatarService,mapTools,plannerRuns,discordStore,discordConfig,discordClient,
-  liveDiscordService,liveDiscordTools,googleTools,googleClient,miroTools,bugReportTools,memoryTools,attioTools};
+  liveDiscordService,liveDiscordTools,googleTools,googleClient,gmailSendService,gmailSendTools,miroTools,bugReportTools,memoryTools,contactsTools,contactsStore,tregContactsImporter,tregTools,attioTools};
 }
 
-export function createRuntimeApp({config=readConfig(),auth,services} = {}) {
-  return createApp({...services || createRuntimeServices({config}),...(auth?{auth}:{})});
+export function createRuntimeApp({config=readConfig(),auth,services,allowedOrigins} = {}) {
+  const runtime=services || createRuntimeServices({config});
+  return createApp({...runtime,...(allowedOrigins?{config:{...runtime.config,allowedOrigins:[...allowedOrigins]}}:{}),...(auth?{auth}:{})});
 }
 
 export function createRuntimeDiscordChatBridge({services,env=process.env} = {}) {
@@ -122,5 +139,5 @@ export function createRuntimeDiscordChatBridge({services,env=process.env} = {}) 
 }
 
 export function createDiscordChatRunner({services,chatConfig,discordDraftTools} = {}) {
-  return createChatRunner({...services,discordDraftTools,config:{...services.config,requestTimeoutMs:chatConfig.requestTimeoutMs}});
+  return createChatRunner({...services,gmailSendTools:null,discordDraftTools,config:{...services.config,requestTimeoutMs:chatConfig.requestTimeoutMs}});
 }

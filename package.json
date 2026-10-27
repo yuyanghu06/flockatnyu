@@ -42,7 +42,12 @@
     "start:web": "node server/web.js",
     "deploy:web:prepare": "node scripts/prepare-runtime-deploy.mjs web",
     "deploy:agent:prepare": "node scripts/prepare-runtime-deploy.mjs agent-worker",
-    "test:discord:chat": "node --test tests/discord-chat*.test.mjs tests/chat-runner.test.mjs tests/chat-request-context.test.mjs"
+    "test:discord:chat": "node --test tests/discord-chat*.test.mjs tests/chat-runner.test.mjs tests/chat-request-context.test.mjs",
+    "gmail:enrichment:status": "node --env-file-if-exists=.env server/gmail-enrichment/cli.js status",
+    "gmail:enrichment:once": "node --env-file-if-exists=.env server/gmail-enrichment/cli.js once",
+    "worker:gmail:enrichment": "node --env-file-if-exists=.env server/gmail-enrichment/cli.js scheduled",
+    "deploy:enrichment:prepare": "node scripts/prepare-gmail-enrichment-deploy.mjs",
+    "gmail:enrichment:drain": "node --env-file-if-exists=.env server/gmail-enrichment/cli.js drain"
   },
   "dependencies": {
     "@discordjs/rest": "2.6.3",

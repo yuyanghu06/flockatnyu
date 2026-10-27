@@ -1,3 +1,5 @@
+import { registerGmailSendApi } from './gmail-send-api.js';
+import { contactContextOfMessage, contactTextMessages } from './chat-contact-context.js';
 import { AttachmentError, attachmentErrors, attachmentBudget, normalizeAttachments, ATTACHMENT_ONLY_CONTENT, MAX_CHAT_BODY_BYTES } from './chat-attachments.js';
 import { Hono } from 'hono';
 import {canonicalTimeZone, createTimeContext} from './time-zone.js';
@@ -11,6 +13,8 @@ import {validateManualRunInput} from './automation/manual-runs.js';
 import {createManualPlannerAuth} from './automation/manual-auth.js';
 import {validUuid} from './automation/validation.js';
 import {createChatSteeringRegistry} from './chat-steering.js';
+import {registerContactsApi} from './contacts-api.js';
+import {registerTregContactsApi} from './treg-contacts-api.js';
 
 const unavailableDiscord = { configured: false, async search() { return { status: 'not_configured', sources: [] }; }, async listChannels() { return { status: 'not_configured', channels: [] }; } };
 const errorMessages = {
@@ -31,14 +35,16 @@ export function developmentAuth(c, config) {
   try {
     const localHosts = ['localhost', '127.0.0.1', '[::1]'];
     const requestUrl = new URL(c.req.url);
-    if(/^\/api\/map\/people\/[^/]+\/avatar$/.test(requestUrl.pathname)&&c.req.header('sec-fetch-site')==='cross-site')return null;
+    if((/^\/api\/map\/people\/[^/]+\/avatar$/.test(requestUrl.pathname)||/^\/api\/contacts(?:\/|$)/.test(requestUrl.pathname))&&c.req.header('sec-fetch-site')==='cross-site')return null;
     if (!localHosts.includes(requestUrl.hostname)) return null;
     const host = c.req.header('host');
     if (host && !localHosts.includes(new URL(`http://${host}`).hostname)) return null;
     const originHeader = c.req.header('origin');
     // Same-origin GET fetches generally omit Origin. Only the exact read-only
     // routes below receive this exemption; mutation requests still require Origin.
-    if (!originHeader && c.req.method === 'GET' && (['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname) || (!requestUrl.search && (/^\/api\/map\/people\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\/avatar$/.test(requestUrl.pathname) || /^\/api\/planner\/runs\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(requestUrl.pathname))))) {
+    const contactRead = requestUrl.pathname === '/api/contacts' || /^\/api\/contacts\/[^/]+$/.test(requestUrl.pathname) && validUuid(requestUrl.pathname.split('/').at(-1));
+    const gmailSendRead = requestUrl.pathname === '/api/gmail/send-status' || /^\/api\/gmail\/send\/[^/]+$/.test(requestUrl.pathname) && validUuid(requestUrl.pathname.split('/').at(-1));
+    if (!originHeader && c.req.method === 'GET' && (contactRead || gmailSendRead || ['/api/status', '/api/admin/discord', '/api/tools', '/api/map/presence'].includes(requestUrl.pathname) || (!requestUrl.search && (/^\/api\/map\/people\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\/avatar$/.test(requestUrl.pathname) || /^\/api\/planner\/runs\/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(requestUrl.pathname))))) {
       return { id: 'local-development', allowedSourceIds: [...config.allowedSourceIds], isAdmin: config.devAdminEnabled === true,
         ...(config.devLiveDiscordEnabled && /^[0-9]{1,20}$/.test(config.discordGuildId) ? { liveDiscord: { mode: 'local-operator', guildId: config.discordGuildId } } : {}),
         ...(config.devGoogleEnabled ? { googleAccess: true } : {}) };
@@ -80,25 +86,27 @@ async function readConversation(request, timeoutMs) {
   const messages = value.messages.map(message => {
     if (!message || !['user', 'assistant'].includes(message.role) || typeof message.content !== 'string' || message.content.length > 8000) throw new Error('invalid');
     if (message.attachments !== undefined && message.role !== 'user') throw new AttachmentError();
+    const contactContext = contactContextOfMessage(message);
     const attachments = normalizeAttachments(message.attachments, budget);
     if (!message.content.trim() && !attachments.length) throw new Error('invalid');
     const content = message.content.trim() ? message.content : ATTACHMENT_ONLY_CONTENT;
     total += content.length;
-    return { role: message.role, content, ...(attachments.length ? { attachments } : {}) };
+    return { role: message.role, content, ...(attachments.length ? { attachments } : {}), ...(contactContext === undefined ? {} : { contactContext }) };
   });
-  const textBytes = new TextEncoder().encode(JSON.stringify({ messages: messages.map(({ role, content }) => ({ role, content })) })).length;
+  const textBytes = new TextEncoder().encode(JSON.stringify({ messages: contactTextMessages(messages) })).length;
   if (total > 16000 || textBytes > 32500 || messages.at(-1).role !== 'user') throw new Error('invalid');
   if (value.buildingId !== undefined && (typeof value.buildingId !== 'string' || !/^[a-z0-9-]{1,80}$/.test(value.buildingId))) throw new Error('invalid');
   const timeZone = canonicalTimeZone(value.timeZone);
   if (!timeZone) throw new Error('invalid');
   if(value.steering!==undefined&&typeof value.steering!=='boolean')throw new Error('invalid');
-  return { messages, buildingId: value.buildingId, timeZone, ...(value.steering===true?{steering:true}:{}) };
+  if(value.requestId!==undefined&&!validUuid(value.requestId))throw new Error('invalid');
+  return { messages, buildingId: value.buildingId, timeZone, ...(value.requestId === undefined ? {} : { requestId: value.requestId.toLowerCase() }), ...(value.steering===true?{steering:true}:{}) };
 }
 
-export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, miroTools = null, attioTools = null, bugReportTools = null, memoryTools = null, mapTools = null, mapPresenceService = null, mapAvatarService = null, plannerRuns = null, plannerAuth = createManualPlannerAuth(), auth = developmentAuth, now = () => new Date() } = {}) {
+export function createApp({ config = readConfig(), audit = createAuditLogger(), provider = createProvider(config,{audit}), discordStore = unavailableDiscord, discordConfig = {}, liveDiscordTools = null, liveDiscordService = null, googleTools = null, googleClient = null, gmailSendTools = null, gmailSendService = null, miroTools = null, attioTools = null, bugReportTools = null, memoryTools = null, contactsTools = null, contactsStore = null, tregContactsImporter = null, tregTools = null, mapTools = null, mapPresenceService = null, mapAvatarService = null, plannerRuns = null, plannerAuth = createManualPlannerAuth(), auth = developmentAuth, now = () => new Date() } = {}) {
   const app = new Hono();
   const steeringRuns = createChatSteeringRegistry({now});
-  const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,miroTools,bugReportTools,memoryTools,mapTools,attioTools,now});
+  const chatRunner = createChatRunner({config,provider,audit,liveDiscordTools,googleTools,gmailSendTools,miroTools,bugReportTools,memoryTools,contactsTools,tregTools,mapTools,attioTools,now});
   const deny = (c, code, status) => c.body(JSON.stringify(errorRecord(code)) + '\n', status, ndjsonHeaders);
   const authorize = async c => {
     try {
@@ -106,6 +114,9 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
         guildId:config.discordGuildId,signal:c.req.raw.signal});
     } catch { return null; }
   };
+  registerContactsApi({app,contactsStore,auth,config,readJSON});
+  registerGmailSendApi({app,service:gmailSendService,auth,config,readJSON});
+  registerTregContactsApi({app,tregContactsImporter,auth,config,readJSON});
   app.get('/healthz', c => c.json({ ok: true, service: 'tech-nyu-api' }));
   app.get('/api/status', async c => {
     const principal = await authorize(c);
@@ -115,6 +126,8 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
         liveConfigured: liveDiscordService?.configured === true, liveAllowed: Boolean(principal?.liveDiscord), retrieval: 'live_only' },
       miro: {configured: miroTools?.configured === true, retrieval: 'live_read_only'},
       attio: {configured:attioTools?.configured === true},
+      contacts: {configured:contactsTools?.configured === true},
+      treg: {configured:tregTools?.configured === true},
       google: { ...(googleClient?.status?.() || { configured: false, oauthVerified: false, status: 'not_configured' }), allowed: principal?.googleAccess === true },
       access: { mode: config.production ? 'members_required' : 'local_development', allowed: Boolean(principal), admin: principal?.isAdmin === true } });
   });
@@ -182,7 +195,7 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     const principal = await authorize(c);
     if (!principal?.id || !Array.isArray(principal.allowedSourceIds)) return apiError(c, 'access_denied', 403);
     c.header('cache-control', 'no-store');
-    return c.json({ tools: [...(liveDiscordTools?.tools || []), ...(googleTools?.tools || []), ...(miroTools?.tools || []), ...(attioTools?.tools || []), ...(bugReportTools?.tools || []), ...(memoryTools?.tools || []), ...(mapTools?.tools || [])], policy: { discord: 'live_only' } });
+    return c.json({ tools: [...(liveDiscordTools?.tools || []), ...(googleTools?.tools || []), ...(gmailSendTools?.tools || []), ...(miroTools?.tools || []), ...(attioTools?.tools || []), ...(bugReportTools?.tools || []), ...(memoryTools?.tools || []), ...(contactsTools?.tools || []), ...(tregTools?.tools || []), ...(mapTools?.tools || [])], policy: { discord: 'live_only' } });
   });
   app.get('/api/admin/discord', async c => {
     const principal = await authorize(c);
@@ -208,7 +221,7 @@ export function createApp({ config = readConfig(), audit = createAuditLogger(), 
     let value;
     try { value = await readJSON(c.req.raw, config.timeoutMs, 8192); } catch { return apiError(c, 'invalid_request', 400); }
     const name = c.req.param('tool').replaceAll('-', '_');
-    const adapter = liveDiscordTools?.tools?.some(tool => tool.name === name) ? liveDiscordTools : googleTools?.tools?.some(tool => tool.name === name) ? googleTools : miroTools?.tools?.some(tool => tool.name === name) ? miroTools : attioTools?.tools?.some(tool => tool.name === name) ? attioTools : mapTools?.tools?.some(tool => tool.name === name) ? mapTools : null;
+    const adapter = liveDiscordTools?.tools?.some(tool => tool.name === name) ? liveDiscordTools : googleTools?.tools?.some(tool => tool.name === name) ? googleTools : miroTools?.tools?.some(tool => tool.name === name) ? miroTools : attioTools?.tools?.some(tool => tool.name === name) ? attioTools : tregTools?.tools?.some(tool => tool.name === name) ? tregTools : mapTools?.tools?.some(tool => tool.name === name) ? mapTools : null;
     if (!adapter) return apiError(c, 'not_configured', 503);
     const timeContext = createTimeContext({now:now()});
     const result = await adapter.execute({ name, arguments: value, principal, signal: c.req.raw.signal, timeContext,

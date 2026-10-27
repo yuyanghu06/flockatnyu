@@ -31,3 +31,6 @@ supabase/.temp/
 .miro-mcp-auth.json
 .miro-mcp-auth.json.*.tmp
 .miro-mcp-auth.json.lock
+
+# Private Treg request/response/import logs contain contact details.
+/.local/treg-calls/
