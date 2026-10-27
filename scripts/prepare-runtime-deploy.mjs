@@ -4,6 +4,7 @@ import { builtinModules } from 'node:module';
 import { tmpdir } from 'node:os';
 import { dirname, extname, isAbsolute, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { promptAssetsForSources } from './prompt-assets.mjs';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const native = new Set(builtinModules.map((name) => `node:${name.replace(/^node:/, '')}`));
@@ -109,10 +110,8 @@ export async function prepareRuntimeDeployment({
   }
   await visit(service === 'web' ? 'server/web.js' : 'server/automation/cli.js');
   if (service === 'agent-worker') await visit('server/automation/adapters.js');
-  // Fixed domain guidance is an explicit asset, never a model-selected path or
-  // an unreviewed private inventory from the developer's computer.
-  if (files.has('server/skills/drive.js')) {
-    const name = 'server/skills/techatnyu-drive/SKILL.md';
+  // Reviewed prompt references are fixed assets, never a general Markdown scan.
+  for (const name of promptAssetsForSources(files)) {
     files.set(name, await input(root, name));
   }
   if (service === 'web') {

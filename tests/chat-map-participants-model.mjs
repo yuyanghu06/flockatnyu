@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {promptSourceFiles} from './fixtures/chat-source-files.mjs';
 import {createHash} from 'node:crypto';
 import {readFile,writeFile,mkdir,readdir,copyFile,rename} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
@@ -18,7 +19,7 @@ if(!process.argv.includes('--live-model')){console.log(JSON.stringify({inference
 const config=readConfig();assert(config.configured,'Configured model unavailable; no credentials printed');const maxRequests=Number(arg('max-requests')??10);assert(Number.isInteger(maxRequests)&&maxRequests>=1&&maxRequests<=10);
 const directory=resolve(arg('evidence-dir')??`evidence/chat-map-participants/gate-${Date.now()}`);await mkdir(dirname(directory),{recursive:true});await mkdir(directory,{mode:0o700});
 async function filesIn(folder){const out=[];for(const entry of await readdir(new URL(`../${folder}/`,import.meta.url),{withFileTypes:true})){const path=`${folder}/${entry.name}`;if(entry.isDirectory())out.push(...await filesIn(path));else if(entry.isFile())out.push(path);}return out;}
-const files=[...await filesIn('server'),...await filesIn('tools'),...await filesIn('src/api/operations'),'package.json','package-lock.json','tests/fixtures/chat-map-time.mjs','tests/chat-map-participants.test.mjs','tests/chat-map-participants-model.mjs'].sort(),hashes=async()=>Object.fromEntries(await Promise.all(files.map(async path=>[path,hash(await readFile(new URL(`../${path}`,import.meta.url)))]))),pins=await hashes();
+const files=[...await filesIn('server'),...await filesIn('tools'),...await filesIn('src/api/operations'),...promptSourceFiles(),'package.json','package-lock.json','tests/fixtures/chat-source-files.mjs','tests/fixtures/chat-map-time.mjs','tests/chat-map-participants.test.mjs','tests/chat-map-participants-model.mjs'].sort(),hashes=async()=>Object.fromEntries(await Promise.all(files.map(async path=>[path,hash(await readFile(new URL(`../${path}`,import.meta.url)))]))),pins=await hashes();
 for(const path of files){const target=resolve(directory,'source',path);await mkdir(dirname(target),{recursive:true});await copyFile(new URL(`../${path}`,import.meta.url),target);}
 const report={provider:config.provider,model:config.model,runtimeRoot:new URL('../',import.meta.url).pathname,startedAt:new Date().toISOString(),maxRequests,maxRequestsPerCase:5,networkRequests:0,pins,cases:[],limitations:['No scripted model proposals. Model may itself preserve labels or avoid duplicates; component checks establish adapter omission and normalization behavior.','Production chat runner/map adapter/service with synthetic in-memory storage and Discord actor. No live business reads/writes or deployment verification.']},evidence=resolve(directory,'evidence.json');
 const persist=async()=>{const temp=resolve(directory,'evidence.tmp');await writeFile(temp,JSON.stringify(report,null,2)+'\n',{mode:0o600});await rename(temp,evidence);};await persist();

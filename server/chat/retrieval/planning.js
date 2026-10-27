@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 // Installs the existing bounded planning loop using the shared private request state.
 import { contactMessagesForModel } from '../contact-context.js';
 
@@ -211,8 +212,7 @@ export function installRetrievalPlanning(run) {
             tool: 'planning',
             status: 'duplicate_call_skipped',
             sources: [],
-            reason:
-              'No new calls executed. Reuse previous results, correct invalid calls or return no calls when the request is satisfied. Do not claim registered tools unavailable.',
+            reason: promptText('agents/chat/recovery#no-new-calls-executed-reuse-previous-results'),
           });
           if (++run.noProgressRounds >= 3) break;
         } else run.noProgressRounds = 0;

@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import { prepareRuntimeDeployment } from '../scripts/prepare-runtime-deploy.mjs';
+import { assistantPlanningPrompt } from '../server/chat/prompts/planning.js';
+import { buildAutomationPrompt } from '../server/automation/prompt.js';
 
 test('web and worker upload contexts contain exact reachable code, pinned manifests, no private files and no worker frontend', async (t) => {
   const temp = await mkdtemp(join(tmpdir(), 'runtime-deployment-test-'));
@@ -38,7 +42,11 @@ test('web and worker upload contexts contain exact reachable code, pinned manife
       'src/api/treg/people/phone/find/post.js',
       'src/api/treg/companies/enrich/post.js',
     ]) {
-      assert.equal(result.files.includes(dormant), false, 'dormant routes stay out of deployed runtime');
+      assert.equal(
+        result.files.includes(dormant),
+        false,
+        'dormant routes stay out of deployed runtime',
+      );
     }
     assert.ok(
       !result.files.some((name) => name.startsWith('src/') && !name.startsWith('src/api/')),
@@ -47,7 +55,9 @@ test('web and worker upload contexts contain exact reachable code, pinned manife
     // Authored history.js is runtime code; private history directories stay excluded.
     for (const name of result.files)
       assert.ok(
-        !/(?:^|\/)(?:\.env[^/]*|\.git|node_modules|evidence|history|\.miro[^/]*)(?:\/|$)/.test(name),
+        !/(?:^|\/)(?:\.env[^/]*|\.git|node_modules|evidence|history|\.miro[^/]*)(?:\/|$)/.test(
+          name,
+        ),
         name,
       );
     const manifest = JSON.parse(await readFile(join(result.directory, 'package.json'), 'utf8'));
@@ -65,6 +75,27 @@ test('web and worker upload contexts contain exact reachable code, pinned manife
     const railway = JSON.parse(await readFile(join(result.directory, 'railway.json'), 'utf8'));
     assert.equal(railway.deploy.cronSchedule, null);
     assert.equal(railway.deploy.healthcheckPath, service === 'web' ? '/healthz' : undefined);
+    const docker = await readFile(join(result.directory, 'Dockerfile'), 'utf8');
+    assert.match(docker, /^COPY prompts \.\/prompts$/m);
+    const module =
+      service === 'web' ? 'server/chat/prompts/planning.js' : 'server/automation/prompt.js';
+    const name = service === 'web' ? 'assistantPlanningPrompt' : 'buildAutomationPrompt';
+    const input =
+      service === 'web'
+        ? { now: '2026-10-27T12:00:00Z', timeZone: 'America/New_York' }
+        : { now: '2026-10-27T12:00:00Z', timezone: 'America/New_York', phase: 'followup' };
+    const expected =
+      service === 'web' ? assistantPlanningPrompt(input) : buildAutomationPrompt(input);
+    const program = `const module=await import(${JSON.stringify(pathToFileURL(join(result.directory, module)).href)});process.stdout.write(module[${JSON.stringify(name)}](${JSON.stringify(input)}));`;
+    assert.equal(
+      execFileSync(process.execPath, ['--input-type=module', '-e', program], {
+        cwd: temp,
+        env: {},
+        encoding: 'utf8',
+      }),
+      expected,
+      `${service}: packaged prompt imports and renders entirely from its own context`,
+    );
   }
   const again = await prepareRuntimeDeployment({ service: 'agent-worker', temporaryRoot: temp });
   assert.deepEqual(again.files, contexts[1].files);

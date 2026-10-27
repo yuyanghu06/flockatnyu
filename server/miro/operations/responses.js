@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { createHash } from 'node:crypto';
 import { classifyMiroToolError } from '../mcp-client.js';
 
@@ -13,14 +14,10 @@ export const blocked = (status) => ({
   coverage: { complete: false, reason: status },
 });
 export const quotaNotices = Object.freeze({
-  quota_exhausted:
-    'Miro has reached its daily tool-call allowance. Live content is unavailable until the daily reset; honor retryAt when present and do not retry in this request.',
-  budget_exhausted:
-    'The shared Miro read budget is exhausted. Honor retryAt when present and do not retry in this request.',
-  reconciliation_deferred:
-    'Background Miro reconciliation is deferred by its read schedule. Honor retryAt when present; this does not establish board contents or synchronization.',
-  quota_state_unavailable:
-    'The shared Miro read budget cannot currently be checked. Live content is unavailable; do not retry in this request.',
+  quota_exhausted: promptText('tools/miro/results#quotanotices.quota_exhausted'),
+  budget_exhausted: promptText('tools/miro/results#quotanotices.budget_exhausted'),
+  reconciliation_deferred: promptText('tools/miro/results#quotanotices.reconciliation_deferred'),
+  quota_state_unavailable: promptText('tools/miro/results#quotanotices.quota_state_unavailable'),
 });
 const safeRetryAt = (value) =>
   typeof value === 'string' &&
@@ -36,12 +33,9 @@ export const quotaFailure = (code, error) => ({
   ...(safeRetryAt(error?.retryAt) ? { retryAt: error.retryAt } : {}),
 });
 const requestNotices = Object.freeze({
-  schema:
-    'Use the declared tool schema and exact native boardId/itemId values returned by live Miro navigation. Do not guess IDs or repeat unchanged invalid arguments.',
-  canvas_options:
-    'For type=canvas, omit limit and cursor; use itemIds and/or scope to narrow content. For JSON fragments use offset and expectedHash. Copy exact returned native IDs.',
-  table_options:
-    'For type=table, omit scope and itemIds; use limit and cursor from nextCursor for rows. For JSON fragments use offset and expectedHash. Copy exact returned native IDs.',
+  schema: promptText('tools/miro/results#requestnotices.schema'),
+  canvas_options: promptText('tools/miro/results#requestnotices.canvas_options'),
+  table_options: promptText('tools/miro/results#requestnotices.table_options'),
 });
 export const invalidRequest = (reason) => ({
   ...blocked('invalid_request'),

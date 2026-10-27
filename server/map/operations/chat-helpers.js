@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { createHash } from 'node:crypto';
 import { canonicalJson } from '../../automation/validation.js';
 import { text, uuid } from '../events.js';
@@ -46,8 +47,7 @@ export const optionalProvenance = (schema, keys) => ({
           key,
           {
             ...schema.properties[key],
-            description:
-              'Optional source metadata. Omit unchanged metadata on an existing event/participant so the adapter copies stored values; omit for a new direct-chat participant/report so the server supplies attribution. If included, copy exactly from the read result. Provider IDs/URLs are opaque: never decode, rebuild or re-encode them.',
+            description: promptText('tools/map/chat-fields#source-metadata'),
           },
         ]),
     ),

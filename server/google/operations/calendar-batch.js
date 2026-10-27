@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { createHash } from 'node:crypto';
 import { projectCalendarReceipt } from '../calendar-receipt.js';
 import { googleDiagnostics, googleError } from '../oauth.js';
@@ -62,7 +63,7 @@ const define = (name, description, properties, required) =>
   });
 export const CHAT_CALENDAR_BATCH_TOOL = define(
   'create_calendar_events',
-  'Create up to50 requested timed OR all-day events. Never discard known times or put them only in descriptions. Use compact {title,date,startTime:"HH:MM",endTime:"HH:MM",timeZone} for same-day timed rows; alternatively title+start/end RFC3339 boundaries. Date alone means truly all-day, with server exclusive next-day end. Do not mix date with canonical start/end. This tool only creates the supplied rows; it does not list Calendar or match existing events. Use a separate list_calendar_events call to inspect potential duplicates and decide which rows to submit. Update an existing event by exact ID instead of submitting a replacement create. Skip unresolved source rows and report after clear rows. No attendees, recurrence or alternate calendar.',
+  promptText('tools/calendar/create_calendar_events#description'),
   {
     title: { type: 'string', minLength: 1, maxLength: 300 },
     ...batchTimingProperties,
@@ -72,7 +73,7 @@ export const CHAT_CALENDAR_BATCH_TOOL = define(
 );
 export const CHAT_CALENDAR_BATCH_UPDATE_TOOL = define(
   'update_calendar_events',
-  'Patch up to50 exact eventIds from prior receipts or a narrowed Calendar listing. Internally reads each exact ID for a fresh hidden revision then patches only supplied fields, preserving IDs/human fields; conflicts/unsupported rows fail independently. Use compact {eventId,date,startTime:"HH:MM",endTime:"HH:MM",timeZone} to correct timed schedules without expanding arguments. Canonical start/end may convert all-day/timed; never omit known times. Title-only matches do not select an eventId. No attendees, recurrence, invitations or alternate calendar.',
+  promptText('tools/calendar/update_calendar_events#description'),
   {
     eventId: { type: 'string', minLength: 5, maxLength: 1024 },
     title: { type: 'string', minLength: 1, maxLength: 300 },
