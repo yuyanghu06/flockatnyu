@@ -25,6 +25,23 @@ invoke models. Existing per-turn, phase and run bounds remain unchanged.
 The initial phase interprets queued originals and updates the pinned club or
 Member Plans Calendar. New personal plans/current presence still originate in
 Member Plans; this simplification introduces no map-only personal creation path.
+An explicit own-location report is independent presence unless the observed
+conversation actually connects it to a particular existing activity. The agent
+does not need to establish that no club event exists before recording it. Adjacent
+messages by the same speaker may supply an invitation or departure time; they
+do not by themselves turn that report into existing-event attendance. Preserve
+the stated uncertainty about a departure in the label and use its supported
+nominal local clock. Do not invent an activity from the building name.
+Keep the location report's original source key, URL and timestamp when adjacent
+messages supply its departure. A later acknowledgement such as "Thanks!" does
+not reissue an older plan found in context. When recovering a saved presence task,
+use that task's originating location original rather than the current queue
+trigger, even if both messages have the same speaker.
+Initial-phase actions must implement the claimed original's own new or revised
+intent. Nearby older reports do not become additional queued inputs. An older
+saved task is acted on in follow-up after its complete task-version read and any
+required classification correction. Observed context still supplies the activity
+for a current speaker's actual attendance offer or revision.
 The deterministic phase copies actual Calendar occurrences, preserves independent
 participants/human edits and uses fixed building aliases. The follow-up phase
 handles source interpretation, participation and ambiguous location tasks using
@@ -68,6 +85,9 @@ current-location report with no end expires at original start +2hours; partial
 edits do not refresh expiry. Personal future plans need supported ends. A club
 timed event with a known start may use the approved +2hours missing-end default,
 preserving an existing end. All-day ends are exclusive; unknown starts defer.
+For new current presence, omit `start` so the backend keeps the exact original
+source instant, including fractional seconds. Supply a supported departure as
+`end` independently; do not reconstruct or round the original arrival clock.
 
 Temporary tasks retain authorized original IDs, speaker/channel/timestamps,
 preceding context actually read and actual execution outcomes. They are a bounded
@@ -79,6 +99,16 @@ reads, Calendar reads/updates and map read/person-lookup/update tools as needed.
 Current source scope and cache expiry still apply. The normal action tools retain
 their own checks; reading cache creates no fresh identity or write receipt.
 Resolve only after required work succeeds; untouched/unresolved versions survive errors, crashes and caps.
+
+Unfinished independent presence uses a `source_review` task with
+`calendarKind:"member"`. A saved task's earlier classification is not authority
+to discard its original intent. If the complete original instead establishes
+independent presence but the task was labeled `participation`, update that same
+task once to `source_review`, preserving its known person and original evidence,
+then read the new compact version before the Member Plans action. Do not invent
+an existing-event ID. Existing-event participation keeps its separate exact
+occurrence checks. Successful Calendar writes require a separately chosen map
+synchronization; task completion still requires the existing action proof.
 
 Follow-up keeps one or two distinct tasks active at a time. The complete lightweight
 catalogue and numbered task references have the same order: current-cycle tasks
@@ -109,6 +139,9 @@ history count and explains how to request full detail. This is a read projection
 the stored task, originals and history remain unchanged. The model requests full
 detail only for a specific necessary conversational fact missing from compact and
 current returned results. Full detail returns the unchanged saved task, losslessly.
+When the missing fact is source text, choose a targeted source read rather than
+loading the old execution log to reconstruct it. Ready actions do not wait for
+optional historical context.
 
 Either selected view may fragment when genuinely large. Read every returned piece
 of that view before relying on it. A complete compact view establishes the normal
