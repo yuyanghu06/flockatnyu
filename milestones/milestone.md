@@ -1,8 +1,14 @@
-## Markdown prompt release — isolated source ready for full checks
+## Markdown prompt release — merged; packages checked; uploads held
 
-User authorized push/deployment. The release includes the tested privateoperation-API prerequisite/corrections, Markdownassets/loader andtwo promptfixes. LaterCalendarlocationmatching isexcluded. Threeobsoletefixturecontracts are repaired with67focusedpasses and no backendweakening. Three logical commits areprepared in a managedisolatedcheckout; the originaldirtysource remains intact. FullCI/browser, independentreview, PR/main releaseartifact and productionrollout remain pending.
+[PR1](https://github.com/yuyanghu06/flockatnyu/pull/1) merged as e6c62403fa0bc6addb8af31449f73d52bf0e5e97. Local CI and all five browser flows pass; GitHub PR and main-only release checks pass. The five exact-commit archives are verified, including every packaged application source and Markdown asset. No upload has begun. A separately authorized full-tree rollout is active in another chat, and its review caught a worker Docker COPY defect. Coordinate one rollout and correct the image before deploying. The update agent stays disabled; no production cycle is authorized here.
 
-[Scope/rollback targets](prompt-release-2026-10-27/info.md) · [planner pass](history/2026-10-27_19-22-38-253282-planner-release-scope-planned.md) · [tester pass](history/2026-10-27_19-22-38-253283-tester-release-api-fixtures-repaired.md) · [orchestrator pass](history/2026-10-27_19-22-38-253284-orchestrator-release-source-isolated.md)
+[Scope](prompt-release-2026-10-27/info.md) · [latest pass](history/2026-10-27_19-41-28-857228-orchestrator-release-artifact-verified-deploy-coordination.md)
+
+[Worker artifact rejected before upload](history/2026-10-27_19-44-50-012259-evaluator-worker-artifact-rejected.md)
+
+[Worker image copies its actual reachable roots](history/2026-10-27_19-44-50-012260-coder-worker-image-copy-corrected.md)
+
+[Independent image checks](history/2026-10-27_19-46-19-703038-tester-worker-image-imports-verified.md) pass:3cases and both failure controls. Final review/publication pending; no upload.
 
 ## Contact clarification and Calendar completion — verified and accepted
 

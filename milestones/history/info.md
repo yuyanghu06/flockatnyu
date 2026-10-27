@@ -496,3 +496,11 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Private operation API passes independent static review](2026-10-27_16-39-42-665897-evaluator-operation-api-static-review.md).
 
 - [Operation API development branch publication](2026-10-27_16-44-17-884943-orchestrator-operation-api-dev-publication.md).
+
+- [Exact release artifact verification and deployment coordination](2026-10-27_19-41-28-857228-orchestrator-release-artifact-verified-deploy-coordination.md).
+
+- [Worker artifact rejected before upload](2026-10-27_19-44-50-012259-evaluator-worker-artifact-rejected.md).
+
+- [Worker image copies its actual reachable roots](2026-10-27_19-44-50-012260-coder-worker-image-copy-corrected.md).
+
+- [Corrected worker image verification](2026-10-27_19-46-19-703038-tester-worker-image-imports-verified.md).
