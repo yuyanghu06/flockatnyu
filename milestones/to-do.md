@@ -1,3 +1,45 @@
+## Server cleanup reviewed with final-test limitation
+
+- Independent read-only review found no unresolved blocking code/privacy issue. Chat public results, execution ordering, request state, all 1,191 semantic strings and eight generated prompts match. Audit redaction ordering, native data, source-only packaging and dormant endpoints remain protected.
+- Fifty-four independent checks completed successfully before the user stopped testing. The final full integration run was stopped, so acceptance explicitly records incomplete full-suite verification. The browser run had already finished its five workflows successfully before termination checks.
+- User instruction: stop the tests. No further tests will run; this publication uses a one-time local pre-push hook bypass and a skip-CI commit marker. Permanent CI/hooks remain configured for later work. No container build, deployment or live-service verification is claimed.
+
+## Server consumers and independent regression fixtures migrated
+
+- Updated external consumers and 109 test/harness source references to grouped server paths. Model source-pin/copy lists include extracted chat implementations; the opt-in prompt script tracks all chat helpers rather than its facade only. Removed its stale reference to a retired map-intent module. No model calls were made.
+- Completed focused evidence: initial 316 of 317 checks passed; the only package filename false positive was corrected to distinguish authored history.js from a private history directory, then eleven package checks passed. Large Unicode Contacts projection regression passes while preserving all ten receipts and the original input.
+- All eight dormant-route test bodies remain intact. The latest full integration run was stopped by explicit user instruction; it is not reported as passing.
+
+## Server services grouped with behavior-preserving splits
+
+- Thirty flat server modules now belong to responsibility folders; only index.js and web.js remain at the root. Chat uses thirty-two focused modules; other services split audit dictionaries/argument diagnostics/serialization and Treg identity/import logic. Folder guides explain responsibilities and connections.
+- Preservation evidence: all 1,191 chat strings/templates and eight generated planning/answer outputs match the originals. Non-chat declarations were independently compared; exports, source/identity/version checks, budgets, redaction-before-truncation and native records remain unchanged.
+- Completed checks before stop: focused chat/input cases, seventy-one privacy/Treg cases, API build, formatting, strict lint and physical line limits. All new/moved modules stay below five hundred lines; only four pre-existing worker/test exceptions remain. No inference, paid calls, deployments or schema changes.
+
+## Remaining company-provider work integrated into the new style
+
+- Brand.dev client and pure projection helper are retained in the organized Treg service. Company route comments accurately explain domain, website hostname, email and name selection, minimum selected-name length, LinkedIn-only rejection, fixed GET variants, auth/logging/limits and dormant behavior.
+- Dormant regression source split into focused client and HTTP suites plus a shared synthetic fixture; all eight original test bodies/assertions remain structurally identical. No test coverage was removed.
+- Completed before the stop instruction: forty-eight affected Treg checks, three packaging checks, API build, formatting, lint and size checks passed. No paid/provider calls, activation or live data writes.
+
+## Server responsibility folders and preservation checks planned
+
+- Scope: group all thirty root service/chat modules by responsibility while retaining only server/index.js and server/web.js as stable entry points. Existing cohesive provider/worker directories stay intact except import updates.
+- New groups: runtime, chat, contacts, treg, audit, auth, shared and knowledge; Gmail send service/store join google. Format moved code and split oversized context, diagnostics, audit serialization and importer logic into coherent modules. No new file-limit exceptions.
+- Root owns external consumers/config/deployment/docs; chat and other server writers have exclusive ownership; tester owns fixture paths/source inventories. Preserve all public exports, prompt bytes, source boundaries, receipts, redaction order and budgets.
+
+## Tools and HTTP API relationship verified
+
+- Read-only audit: tools generally call server clients, services or saved-data stores directly; they do not call our own HTTP routes. Browser routes independently call those services. The generic POST /api/tools/:tool endpoint instead invokes selected tool adapters.
+- Examples: Gmail send tool and HTTP endpoint share the send service; Contacts tools/routes share the store. Discord/Google/Calendar/Miro tools use provider clients, while worker controls use in-process queue/task state. Tools can add exact-read receipts, permissions, deduplication and uncertainty protection, so they are not all simple pass-through wrappers.
+- No one-to-one endpoint/tool mapping. Dormant lookup endpoints have no tools; legacy HTTP Treg import searches and saves, whereas model search/enrich/import remain separate. Current explanations are in docs/tools-and-api.md and tools/info.md. No behavior or access changes were made by this audit.
+
+## Remaining provider changes planned for the new style
+
+- Scope: integrate all previously separate Brand.dev/company-comparison work and leave a clean working tree. Keep provider logic in server services and preserve dormant route exposure.
+- Plan: retain validated Brand.dev request/projection behavior, accurately document selector precedence and dormant HTTP access, format source, and split the large dormant test suite into a shared fixture and focused client/HTTP suites under the existing line limits.
+- Acceptance: native records/private logs, one selected provider request, budgets, idempotency, safe errors and all four dormant 404s remain unchanged. No paid calls, deployment, cache writes or schema changes.
+
 ## Source cleanup published to main
 
 - Publication: GitHub workflow authorization completed and verified. The clean checkout pushed source and documentation commits through 728f6f7822e4c9592d127317b1fecf0d46a497e6 to main without force. Initial work had already been published at fb2cd5b. The temporary push credential helper used the newly authorized GitHub CLI credential; no global Git credential settings changed.
@@ -40,6 +82,15 @@
 - Root owned agent-local-clock-boundaries.test.mjs. Preserved summer/winter/fractional/non-hour-zone conversion, DST gaps/folds, exact raw endpoint copies, canonical action hashing and opaque preparation scope/replay checks.
 - Updated fixture current source revocation to a named exact-URL source read; invalid action stays unhandled/round-limited rather than falsely completed. Reservation accounting distinguishes the proposal round from separately named later Calendar sync. Successful own writes explicitly finish their original.
 - Evidence: all seven actual production-handler/adapter tests pass; no app behavior change or live services in this test repair pass.
+
+<!-- treg-branddev-default:start -->
+## Brand.dev company-enrichment default
+
+- [x] Accept fixed-provider request, output and dormant-route scope.
+- [x] Implement native Brand.dev requests and explicit output mapping.
+- [x] Replay four original responses and independently pass selector, privacy, failure and affected regression checks.
+- [x] Independently accept implementation/replays and confirm dormant package exclusion; integrate Brand.dev selection.
+<!-- treg-branddev-default:end -->
 
 ## Private test harness dependencies removed
 
@@ -119,9 +170,9 @@
 ## Company-enrichment provider comparison
 
 - [x] Verify current native contracts, price estimates and bounded eight-provider plan.
-- [ ] Prepare and independently preflight the private 32-request harness.
-- [ ] Run the approved matrix once and reconcile costs and receipts.
-- [ ] Independently review coverage, useful fields, identity and limitations; report the best options.
+- [x] Prepare and independently preflight the private 32-request harness.
+- [x] Complete all 32 calls once; reconcile $1.698160 in known charges with the balance decrease.
+- [x] Independently verify corrected coverage, identities/quality warnings, cost and limitations; accept PDL/Brand.dev as qualified recommendations.
 <!-- treg-company-provider-compare:end -->
 
 <!-- treg-company-count-fix:start -->

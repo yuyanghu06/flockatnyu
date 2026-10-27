@@ -1,5 +1,8 @@
 # Pass history
 
+October 27 Brand.dev default entries record request/projection compatibility, saved-response verification and unchanged route exposure.
+
+
 October 27 company-provider comparison entries distinguish current catalog planning, guarded real API calls, cost reconciliation and independently reviewed findings.
 
 
@@ -457,3 +460,17 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Clean cleanup checkout verified; GitHub workflow authorization required](2026-10-27_14-30-26-357103-orchestrator-cleanup-isolated-verification.md).
 
 - [Source cleanup published to main](2026-10-27_14-44-01-186165-orchestrator-cleanup-published.md).
+
+- [Remaining provider changes planned for the new style](2026-10-27_15-25-07-838082-planner-remaining-provider-plan.md).
+
+- [Tools and HTTP API relationship verified](2026-10-27_15-25-07-864262-explorer-tools-api-audit.md).
+
+- [Server responsibility folders and preservation checks planned](2026-10-27_15-25-07-891521-planner-server-organization-plan.md).
+
+- [Remaining company-provider work integrated into the new style](2026-10-27_15-25-07-918343-coder-provider-style-port.md).
+
+- [Server services grouped with behavior-preserving splits](2026-10-27_15-25-07-946587-coder-server-services-grouped.md).
+
+- [Server consumers and independent regression fixtures migrated](2026-10-27_15-25-07-974988-tester-server-consumer-migration.md).
+
+- [Server cleanup reviewed with final-test limitation](2026-10-27_15-25-08-002167-evaluator-server-cleanup-review.md).

@@ -1,0 +1,11 @@
+# Brand.dev company default implemented
+
+- Acting role: coder; orchestrator inspected the source and records the pass.
+- User scope: select Brand.dev for the dormant company-enrichment operation.
+- Application changes: server/treg-lookups.js now dispatches one fixed native GET for company enrichment; server/treg-branddev.js supplies pure identifier selection and response projection. The other three operations retain their routed POST behavior. Current formatted lengths are 461 and 149 lines, below the 500-line limit.
+- Request behavior: domain/website hostname precedes email then selected name. Hostnames lowercase and remove only leading www; selected names need three characters. All fields still receive generic validation; LinkedIn-only input fails before logging/dispatch. No company inference or additional lookup occurs.
+- Output behavior: only explicit supported fields are projected. Industry labels and supplied address values join into display text, an unambiguous LinkedIn URL is exposed, and missing website/founding values remain absent. Exact employee counts and ranges are both labelled if both exist; no source value is chosen as verified. Native bodies and numeric values remain unchanged in private logs.
+- Checks: coder replayed all four saved native bodies through the real client/logger using simulated transport. Selector, fixed provider usage, GET/no-body behavior, cost ceiling, idempotency, input rejection and native preservation checks pass. Syntax, Prettier, ESLint and whitespace pass. Pins: client d9e0bcede7fae9eb513e987e2dc3df20ed8bb16cb8ddec18e08eb4b57c404273; helper efeab9e92f2c8449f9d661cc99b19f9899042c5cb78da54a53df8979ecde3775.
+- Root integration: updated provider/selector/output guides and only the documentation comment in the moved company POST handler. Registration now lives in src/api/treg/register.js; concurrent per-method route moves are preserved. No HTTP function logic changed. Root API build passes.
+- Result: implementation frozen for independent tests/review. No paid calls, provider/environment settings, Contacts/cache/schema changes, route activation or deployment occurred.
+- Handoff: finish independent four-response HTTP replays and affected regressions, verify current package exclusion and obtain evaluator acceptance.

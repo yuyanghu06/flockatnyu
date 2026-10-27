@@ -1,5 +1,8 @@
 # Milestone journal
 
+`treg-branddev-default/` tracks the selected company provider and native adapter, with dormant routes kept inactive.
+
+
 `treg-company-provider-compare/` tracks the eight-provider, four-company comparison with private evidence and unchanged application settings.
 
 
@@ -370,3 +373,6 @@ Folder rename/main integration is complete: local Railway link repaired, main 4e
 The planner-presence-diagnosis folder records diagnosis, actual-model corrections and the accepted worker-only standalone-presence release; it distinguishes simulations/startup verification from an unverified actual report replay.
 
 `source-cleanup-ci/` tracks source grouping, server-only HTTP routes and enforceable local/GitHub checks.
+
+`server-cleanup/` records grouping the backend, porting the remaining provider
+changes, the tools/API audit and the user-requested stop to final testing.

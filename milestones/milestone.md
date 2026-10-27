@@ -1,3 +1,59 @@
+## Server cleanup reviewed with final-test limitation
+
+- Independent read-only review found no unresolved blocking code/privacy issue. Chat public results, execution ordering, request state, all 1,191 semantic strings and eight generated prompts match. Audit redaction ordering, native data, source-only packaging and dormant endpoints remain protected.
+- Fifty-four independent checks completed successfully before the user stopped testing. The final full integration run was stopped, so acceptance explicitly records incomplete full-suite verification. The browser run had already finished its five workflows successfully before termination checks.
+- User instruction: stop the tests. No further tests will run; this publication uses a one-time local pre-push hook bypass and a skip-CI commit marker. Permanent CI/hooks remain configured for later work. No container build, deployment or live-service verification is claimed.
+
+[Pass record](history/2026-10-27_15-25-08-002167-evaluator-server-cleanup-review.md).
+
+## Server consumers and independent regression fixtures migrated
+
+- Updated external consumers and 109 test/harness source references to grouped server paths. Model source-pin/copy lists include extracted chat implementations; the opt-in prompt script tracks all chat helpers rather than its facade only. Removed its stale reference to a retired map-intent module. No model calls were made.
+- Completed focused evidence: initial 316 of 317 checks passed; the only package filename false positive was corrected to distinguish authored history.js from a private history directory, then eleven package checks passed. Large Unicode Contacts projection regression passes while preserving all ten receipts and the original input.
+- All eight dormant-route test bodies remain intact. The latest full integration run was stopped by explicit user instruction; it is not reported as passing.
+
+[Pass record](history/2026-10-27_15-25-07-974988-tester-server-consumer-migration.md).
+
+## Server services grouped with behavior-preserving splits
+
+- Thirty flat server modules now belong to responsibility folders; only index.js and web.js remain at the root. Chat uses thirty-two focused modules; other services split audit dictionaries/argument diagnostics/serialization and Treg identity/import logic. Folder guides explain responsibilities and connections.
+- Preservation evidence: all 1,191 chat strings/templates and eight generated planning/answer outputs match the originals. Non-chat declarations were independently compared; exports, source/identity/version checks, budgets, redaction-before-truncation and native records remain unchanged.
+- Completed checks before stop: focused chat/input cases, seventy-one privacy/Treg cases, API build, formatting, strict lint and physical line limits. All new/moved modules stay below five hundred lines; only four pre-existing worker/test exceptions remain. No inference, paid calls, deployments or schema changes.
+
+[Pass record](history/2026-10-27_15-25-07-946587-coder-server-services-grouped.md).
+
+## Remaining company-provider work integrated into the new style
+
+- Brand.dev client and pure projection helper are retained in the organized Treg service. Company route comments accurately explain domain, website hostname, email and name selection, minimum selected-name length, LinkedIn-only rejection, fixed GET variants, auth/logging/limits and dormant behavior.
+- Dormant regression source split into focused client and HTTP suites plus a shared synthetic fixture; all eight original test bodies/assertions remain structurally identical. No test coverage was removed.
+- Completed before the stop instruction: forty-eight affected Treg checks, three packaging checks, API build, formatting, lint and size checks passed. No paid/provider calls, activation or live data writes.
+
+[Pass record](history/2026-10-27_15-25-07-918343-coder-provider-style-port.md).
+
+## Server responsibility folders and preservation checks planned
+
+- Scope: group all thirty root service/chat modules by responsibility while retaining only server/index.js and server/web.js as stable entry points. Existing cohesive provider/worker directories stay intact except import updates.
+- New groups: runtime, chat, contacts, treg, audit, auth, shared and knowledge; Gmail send service/store join google. Format moved code and split oversized context, diagnostics, audit serialization and importer logic into coherent modules. No new file-limit exceptions.
+- Root owns external consumers/config/deployment/docs; chat and other server writers have exclusive ownership; tester owns fixture paths/source inventories. Preserve all public exports, prompt bytes, source boundaries, receipts, redaction order and budgets.
+
+[Pass record](history/2026-10-27_15-25-07-891521-planner-server-organization-plan.md).
+
+## Tools and HTTP API relationship verified
+
+- Read-only audit: tools generally call server clients, services or saved-data stores directly; they do not call our own HTTP routes. Browser routes independently call those services. The generic POST /api/tools/:tool endpoint instead invokes selected tool adapters.
+- Examples: Gmail send tool and HTTP endpoint share the send service; Contacts tools/routes share the store. Discord/Google/Calendar/Miro tools use provider clients, while worker controls use in-process queue/task state. Tools can add exact-read receipts, permissions, deduplication and uncertainty protection, so they are not all simple pass-through wrappers.
+- No one-to-one endpoint/tool mapping. Dormant lookup endpoints have no tools; legacy HTTP Treg import searches and saves, whereas model search/enrich/import remain separate. Current explanations are in docs/tools-and-api.md and tools/info.md. No behavior or access changes were made by this audit.
+
+[Pass record](history/2026-10-27_15-25-07-864262-explorer-tools-api-audit.md).
+
+## Remaining provider changes planned for the new style
+
+- Scope: integrate all previously separate Brand.dev/company-comparison work and leave a clean working tree. Keep provider logic in server services and preserve dormant route exposure.
+- Plan: retain validated Brand.dev request/projection behavior, accurately document selector precedence and dormant HTTP access, format source, and split the large dormant test suite into a shared fixture and focused client/HTTP suites under the existing line limits.
+- Acceptance: native records/private logs, one selected provider request, budgets, idempotency, safe errors and all four dormant 404s remain unchanged. No paid calls, deployment, cache writes or schema changes.
+
+[Pass record](history/2026-10-27_15-25-07-838082-planner-remaining-provider-plan.md).
+
 ## Source cleanup published to main
 
 - Publication: GitHub workflow authorization completed and verified. The clean checkout pushed source and documentation commits through 728f6f7822e4c9592d127317b1fecf0d46a497e6 to main without force. Initial work had already been published at fb2cd5b. The temporary push credential helper used the newly authorized GitHub CLI credential; no global Git credential settings changed.
@@ -52,6 +108,16 @@
 - Evidence: all seven actual production-handler/adapter tests pass; no app behavior change or live services in this test repair pass.
 
 [Pass record](history/2026-10-27_14-18-37-349013-orchestrator-local-clock-fixtures.md).
+
+<!-- treg-branddev-default:start -->
+## Brand.dev company default — complete
+
+The selected company-enrichment provider is now Brand.dev through Treg. The dormant client uses one fixed GET variant for domain/website, email or selected name; no inference, retries, fallback or chained lookup. Supported output fields come from explicit native values. Both reported employee count/range values are labelled when present; absent website/founding values stay absent. Native bodies remain unchanged privately. Other lookup providers and Exa people search are unchanged.
+
+Independent tester and evaluator accept the change. All four saved native responses pass the real client/authenticated HTTP handler; 50 affected groups and the final 15 focused checks pass. Root API/format and current package exclusion checks pass. Client/helper are formatted below 500 lines. Concurrent API moves/comments and unrelated source cleanup were preserved. Current registry is src/api/treg/register.js; dormant routes remain unmounted and excluded from web packaging.
+
+No extra paid/model/live business call, Contacts/cache/schema/settings change, route activation, deployment, commit or push occurred. This completes provider selection, not public endpoint activation or a company-data accuracy guarantee. No required work remains. [Completion](history/2026-10-27_14-22-57-138150-orchestrator-branddev-company-default-complete.md) · [Independent acceptance](history/2026-10-27_14-22-57-138150-evaluator-branddev-company-default-accepted.md) · [Scope](treg-branddev-default/info.md).
+<!-- treg-branddev-default:end -->
 
 ## Private test harness dependencies removed
 
@@ -150,9 +216,13 @@
 [Pass record](history/2026-10-27_13-56-56-591689-orchestrator-publication-inspection.md).
 
 <!-- treg-company-provider-compare:start -->
-## Company-enrichment provider comparison — planned
+## Company-enrichment provider comparison — complete and accepted
 
-The user requested a provider comparison, superseding selected-provider-only scope for this company experiment. Eight eligible providers will each receive Google, Microsoft, Anthropic and Cursor domains. Current all-hit estimate is $1.70576 for 32 requests; fixed caps reserve at most $4.20 under the $10 hard limit. No retries, settings changes, contact/cache writes or route activation. Compare returned identities, eight useful fields, consistency, latency and actual charges; counts alone do not prove accuracy. Harness and independent preflight are next. [Plan](history/2026-10-27_13-54-34-772743-planner-company-provider-comparison-planned.md) · [Scope](treg-company-provider-compare/info.md).
+Eight providers × four company domains completed exactly 32 calls for $1.698160. Every charge is known and the balance decrease matches exactly. TheCompaniesAPI's four $0 results explicitly report cache hits; no serving relay was reported and other cache status is unknown. Independent tester and evaluator accept the guarded run, accounting and final analysis. Prior spend plus this run remains below the $10 ceiling.
+
+Provisional choices: People Data Labs for structured company identities/core records, and Brand.dev for lower-cost basic company context. Other records contain important mixed-identity or factual conflicts. Offline corrections recover explicit native fields that the first projector missed: CompanyEnrich has 31/32 populated core values and TheCompaniesAPI 30/32. Their high field coverage does not establish accuracy. Original native bodies, report, cost and timing remain unchanged. Employee counts, linked profiles, ranges and staffing snapshots have different scopes and remain unverified as real headcounts. This is a four-company comparison, not a universal accuracy benchmark.
+
+No application/provider-default, Contacts/cache, source-grant, route, settings, schema, deployment, commit or push changes occurred. The user-requested test is complete; no required work remains. [Completion](history/2026-10-27_14-08-57-825659-orchestrator-company-provider-comparison-complete.md) · [Final independent acceptance](history/2026-10-27_14-08-57-825659-evaluator-company-provider-comparison-accepted.md) · [Scope](treg-company-provider-compare/info.md).
 <!-- treg-company-provider-compare:end -->
 
 <!-- treg-company-count-fix:start -->
