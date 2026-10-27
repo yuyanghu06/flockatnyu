@@ -6,6 +6,7 @@ import { createGmailSubscriptionStore } from './subscription-store.js';
 import { createGmailSubscriptionApp } from './subscription-app.js';
 import { createAutomationStore } from '../automation/store.js';
 import { createEventUpdater } from '../automation/events.js';
+import { createContactsCache } from './contacts-cache.js';
 
 export function createGmailSubscriptionRuntime({ env = process.env, fetchImpl = globalThis.fetch, onDiagnostic } = {}) {
   const config = readGmailSubscriptionConfig(env);
@@ -13,13 +14,15 @@ export function createGmailSubscriptionRuntime({ env = process.env, fetchImpl = 
   const inputStore = createAutomationStore({ env, fetchImpl });
   if (!inputStore.configured) throw new Error('not_configured');
   const store = createGmailSubscriptionStore({ url: env.SUPABASE_URL, serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY, fetchImpl });
+  const contactsCache = createContactsCache({ url: env.SUPABASE_URL, serviceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY, fetchImpl });
   // This principal is constructed only here, never from webhook input.
   const principal = Object.freeze({ googleAccess: true, allowedSourceIds: config.allowedSourceIds });
   const updater = createEventUpdater({ store: inputStore, principal, config: { enabled: config.enabled },
     authorizeEvent: ({ event, principal: actor }) => actor.googleAccess === true && actor.allowedSourceIds.includes(event.source_id)
       && event.source_id === config.sourceId && event.source === 'gmail'
       && ['email_received', 'email_received_metadata'].includes(event.event_type) });
-  const subscription = createGmailSubscription({ config, store, fetchImpl, onDiagnostic, enqueueEvent: event => updater.enqueue(event) });
+  const subscription = createGmailSubscription({ config, store, fetchImpl, onDiagnostic,
+    cacheInboxSender: contactsCache.cacheInboxSender, enqueueEvent: event => updater.enqueue(event) });
   const controller = new AbortController();
   return { config, subscription, controller, app: createGmailSubscriptionApp({ subscription, signal: controller.signal, onDiagnostic }) };
 }

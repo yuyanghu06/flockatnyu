@@ -124,7 +124,7 @@ test('actual Gmail closure contains its callback and cache updater, excludes age
   assert.deepEqual(result.dependencies, gmailDependencies);
   assert.deepEqual(result.modules, [
     'server/automation/events.js', 'server/automation/store.js', 'server/automation/validation.js',
-    'server/google/client.js', 'server/google/config.js', 'server/google/oauth.js', 'server/google/subscription-app.js',
+    'server/google/client.js', 'server/google/config.js', 'server/google/contacts-cache.js', 'server/google/mailbox.js', 'server/google/oauth.js', 'server/google/subscription-app.js',
     'server/google/subscription-cli.js', 'server/google/subscription-store.js', 'server/google/subscription.js', 'server/source-timeout.js',
   ]);
   assert.deepEqual(await filesIn(result.directory), result.files);

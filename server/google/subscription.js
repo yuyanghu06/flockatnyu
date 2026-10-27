@@ -11,7 +11,7 @@ const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const safeCodes = new Set(['disabled', 'not_configured', 'unauthorized', 'invalid_push', 'account_mismatch', 'busy', 'not_started', 'resync_required',
   'invalid_response', 'rate_limited', 'permission_denied', 'reauthorization_required', 'response_too_large', 'enqueue_failed', 'lease_lost', 'aborted',
-  'subscription_store_unavailable', 'google_unavailable', 'configuration_changed']);
+  'subscription_store_unavailable', 'google_unavailable', 'configuration_changed', 'contact_cache_failed', 'message_not_found']);
 class SubscriptionError extends Error { constructor(code) { super(code); this.code = code; } }
 const fail = code => { throw new SubscriptionError(code); };
 const stamp = now => new Date(now()).getTime();
@@ -57,7 +57,7 @@ export function readGmailSubscriptionConfig(env = process.env) {
     maxRunMs: 60000, leaseMs: 90000, renewAfterMs: 86400000, reconcileMs: 300000 });
 }
 
-export function createGmailSubscription({ config = readGmailSubscriptionConfig(), auth, store, enqueueEvent,
+export function createGmailSubscription({ config = readGmailSubscriptionConfig(), auth, store, enqueueEvent, cacheInboxSender,
   fetchImpl = globalThis.fetch, verifyPushToken, onDiagnostic, now = () => new Date() } = {}) {
   const diagnose = createGmailPushDiagnostics(onDiagnostic);
   const rejectPush = (reason, value, code = 'invalid_push') => { diagnose(reason, value); fail(code); };
@@ -80,7 +80,9 @@ export function createGmailSubscription({ config = readGmailSubscriptionConfig()
     catch { fail(signal?.aborted ? 'aborted' : 'google_unavailable'); }
     if (!response.ok) {
       await response.body?.cancel();
-      fail(response.status === 404 && path.startsWith('/history?') ? 'resync_required' : response.status === 429 ? 'rate_limited'
+      fail(response.status === 404 && path.startsWith('/history?') ? 'resync_required'
+        : response.status === 404 && method === 'GET' && /^\/messages\/[a-fA-F0-9]{1,64}\?format=(?:full|metadata)$/.test(path) ? 'message_not_found'
+        : response.status === 429 ? 'rate_limited'
         : response.status === 401 ? 'reauthorization_required' : response.status === 403 ? 'permission_denied' : 'google_unavailable');
     }
     try {
@@ -171,16 +173,41 @@ export function createGmailSubscription({ config = readGmailSubscriptionConfig()
           }
           let message, eventType = 'email_received';
           try {
-            message = await request(`/messages/${id}?format=full`, token, ctx.signal, { maxBytes: config.maxMessageBytes });
+            try {
+              message = await request(`/messages/${id}?format=full`, token, ctx.signal, { maxBytes: config.maxMessageBytes });
+            } catch (error) {
+              if (error.code !== 'response_too_large') throw error;
+              // Preserve a bounded original provider response instead of blocking
+              // all later mailbox changes on a large MIME body. The distinct event
+              // type tells the agent it must read the body before body-based actions.
+              message = await request(`/messages/${id}?format=metadata`, token, ctx.signal, { maxBytes: config.maxMessageBytes });
+              eventType = 'email_received_metadata';
+            }
           } catch (error) {
-            if (error.code !== 'response_too_large') throw error;
-            // Preserve a bounded original provider response instead of blocking
-            // all later mailbox changes on a large MIME body. The distinct event
-            // type tells the agent it must read the body before body-based actions.
-            message = await request(`/messages/${id}?format=metadata`, token, ctx.signal, { maxBytes: config.maxMessageBytes });
-            eventType = 'email_received_metadata';
+            if (error.code !== 'message_not_found') throw error;
+            if (ctx.signal.aborted) fail('aborted');
+            // History can retain a message that no longer exists. A fresh lease
+            // CAS acknowledges only this missing original, with no invented mail
+            // or cache/queue write, before continuing to later additions.
+            await ctx.save({ pageOffset: pageOffset + 1, pageFingerprint, status: 'pending' });
+            seen.add(id); messages++;
+            continue;
           }
           if (message.id !== id || !object(message.payload) || !historyId(message.historyId)) fail('invalid_response');
+          if (typeof cacheInboxSender === 'function') {
+            // Recheck ownership immediately before the separate intake write.
+            // This CAS changes no cursor/offset and cannot acknowledge the email.
+            await ctx.save({});
+            if (ctx.signal.aborted) fail('aborted');
+            let cached;
+            try { cached = await cacheInboxSender({ message, accountEmail: config.expectedAccountEmail, signal: ctx.signal }); }
+            catch { fail(ctx.signal.aborted ? 'aborted' : 'contact_cache_failed'); }
+            if (ctx.signal.aborted) fail('aborted');
+            if (!['ready', 'skipped'].includes(cached?.status)) fail('contact_cache_failed');
+            // The cache call may outlive this lease. Reconfirm ownership before
+            // dispatching the independent queue operation; replay is idempotent.
+            await ctx.save({});
+          }
           const outcome = await enqueueEvent({ source: 'gmail', sourceId: config.sourceId, eventType, eventId: id,
             revision, payload: message, signal: ctx.signal });
           if (!['queued', 'duplicate'].includes(outcome?.status)) fail('enqueue_failed');

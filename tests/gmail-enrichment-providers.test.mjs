@@ -1,0 +1,104 @@
+import test,{before,after} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,readFile,readdir,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {randomUUID} from 'node:crypto';
+import {PGlite} from '@electric-sql/pglite';
+import {createDailyTregEnrichmentClient,readDailyTregEnrichmentPolicy} from '../server/gmail-enrichment/treg.js';
+import {createTregCallLogger} from '../server/treg-call-log.js';
+import {createGmailEnrichmentRuntime,runGmailEnrichmentCli} from '../server/gmail-enrichment/cli.js';
+
+const originalFetch=globalThis.fetch;
+before(()=>{globalThis.fetch=()=>{throw Error('Live network forbidden in daily provider tests');};});
+after(()=>{globalThis.fetch=originalFetch;});
+const actor={id:'synthetic-daily-worker',allowedSourceIds:[]},requestId='a1000000-0000-4000-8000-000000000001',email='Rae+Daily@Example.com';
+const tomba='tomba.people.enrich',apollo='apollo.people.enrich';
+const nativeTomba={full_name:'Rae Example',first_name:'Rae',last_name:'Example',email:'rae@example.com',phone_number:false,verification:{level:'native'},sources:[{name:'Provider source',active:true}],native_extra:{keep:[1,null,'unchanged']}};
+const tombaBody={data:nativeTomba},missTomba={data:{full_name:null}};
+const nativeApollo={person:{name:'Rae Example',first_name:'Rae',last_name:'Example',email:'rae@example.com',match_confidence:'high',native_extra:{keep:[1,null,'unchanged']}}};
+const missApollo={person:{name:'Echoed stub is not a match',email:null,match_confidence:'none'}};
+function reply(body,{status=200,cost='2500',callId='synthetic-provider-call',headers={}}={}) {
+ return new Response(typeof body==='string'?body:JSON.stringify(body),{status,headers:{'content-type':'application/json',...(cost===null?{}:{'x-treg-cost-micro':String(cost)}),...(callId===null?{}:{'x-treg-call-id':callId}),...headers}});
+}
+async function fixture(t,{responses=[()=>reply(tombaBody)],env:extra={},callLogger}={}) {
+ const directory=await mkdtemp(join(tmpdir(),'flock-daily-providers-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+ const env={TREG_TOKEN:'synthetic-daily-provider-secret',TREG_CALL_LOG_DIR:join(directory,'calls'),...extra},requests=[];
+ const logger=callLogger??createTregCallLogger({env});t.after(()=>logger.close?.());
+ const fetchImpl=async(input,init={})=>{const url=new URL(input);assert.equal(url.origin,'https://treg.to');assert(['/call/'+tomba,'/call/'+apollo].includes(url.pathname),'Only two fixed direct providers allowed');assert.equal(init.method,url.pathname==='/call/'+tomba?'GET':'POST');const item={url,body:init.body,headers:new Headers(init.headers),signal:init.signal};requests.push(item);const handler=responses[requests.length-1];assert(handler,'Unexpected extra paid request');return handler(item);};
+ const client=createDailyTregEnrichmentClient({env,fetchImpl,callLogger:logger});
+ return {client,requests,env,logger,enrich:options=>client.enrich({email,requestId,principal:actor,...options}),async logs(){return Promise.all((await readdir(env.TREG_CALL_LOG_DIR)).filter(x=>x.endsWith('.jsonl')).map(async name=>(await readFile(join(env.TREG_CALL_LOG_DIR,name),'utf8')).trim().split('\n').map(x=>JSON.parse(x))));}};
+}
+
+test('daily policy is Tomba first and at most two providers; invalid inputs/config prevent paid calls',async t=>{
+ assert.deepEqual(readDailyTregEnrichmentPolicy({}).providers,[tomba,apollo]);assert.deepEqual(readDailyTregEnrichmentPolicy({GMAIL_ENRICHMENT_MAX_PROVIDERS:'1'}).providers,[tomba]);
+ for(const value of ['0','3','2.0','-1','two'])assert.equal(readDailyTregEnrichmentPolicy({GMAIL_ENRICHMENT_MAX_PROVIDERS:value}).configured,false);
+ const f=await fixture(t);for(const value of ['not-email','Rae <rae@example.com>','rae@example.com ','a\nb@example.com'])assert.equal((await f.enrich({email:value})).status,'invalid_request');assert.equal((await f.enrich({principal:{}})).status,'forbidden');assert.equal((await f.enrich({requestId:'not-a-uuid'})).status,'invalid_request');assert.equal(f.requests.length,0);
+ for(const env of [{GMAIL_ENRICHMENT_MAX_PROVIDERS:'3'},{TREG_TOKEN:''},{TREG_TOKEN:'invalid token'},{TREG_ORG:'invalid org'},{TREG_MAX_COST_USD:'0'},{TREG_MAX_COST_USD:'1.000001'},{TREG_MAX_COST_USD:'0.0000001'}]){const invalid=await fixture(t,{env});assert.equal(invalid.client.configured,false);assert.equal((await invalid.enrich()).status,'not_configured');assert.equal(invalid.requests.length,0);}
+ const capped=await fixture(t,{env:{TREG_MAX_COST_USD:'0.05'}});assert.equal((await capped.enrich()).status,'ready');assert.equal(Number(capped.requests[0].headers.get('x-treg-route-max-cost')),0.05);
+});
+
+test('Tomba hit is query-only GET, stores the exact native data object and logs the full outer body',async t=>{
+ const f=await fixture(t),found=await f.enrich();assert.equal(found.status,'ready');assert.equal(found.matched,true);assert.deepEqual(found.enrichment.raw,nativeTomba);assert.deepEqual(found.enrichment.output,{full_name:'Rae Example',first_name:'Rae',last_name:'Example'});
+ assert.equal(f.requests.length,1);const request=f.requests[0];assert.equal(request.url.pathname,'/call/'+tomba);assert.deepEqual([...request.url.searchParams],[['email',email.toLowerCase()]]);assert.equal(request.body,undefined);assert.equal(request.headers.get('content-type'),null);assert.equal(Number(request.headers.get('x-treg-route-max-cost')),0.1);assert.equal(request.headers.get('x-treg-route-waterfall'),'0');assert.equal(found.usage.provider,tomba);assert.equal(found.usage.costMicro,2500);
+ assert.equal((await found.finishLog({status:'imported',saved:true})).status,'ready');const logs=await f.logs();assert.equal(logs.length,1);assert.deepEqual(logs[0].find(x=>x.type==='response').data.body,tombaBody);assert.equal(logs[0].at(-1).type,'import_outcome');assert(!JSON.stringify(logs).includes(f.env.TREG_TOKEN));assert.equal(found.enrichment.raw.phone_number,false);assert.deepEqual(found.enrichment.raw.sources,nativeTomba.sources);
+});
+
+test('Tomba miss reaches Apollo once with remaining budget and exact native winner/all-attempt logs',async t=>{
+ const f=await fixture(t,{responses:[()=>reply(missTomba,{cost:'30000',callId:'synthetic-tomba-miss'}),()=>reply(nativeApollo,{cost:'40000',callId:'synthetic-apollo-hit'})]});const found=await f.enrich();assert.equal(found.status,'ready');assert.equal(found.matched,true);assert.equal(f.requests.length,2);assert.equal(f.requests[1].url.pathname,'/call/'+apollo);assert.deepEqual([...f.requests[1].url.searchParams],[['email',email.toLowerCase()]]);assert.equal(f.requests[1].body,undefined);assert.equal(Number(f.requests[1].headers.get('x-treg-route-max-cost')),0.07);assert.equal(f.requests[0].signal,f.requests[1].signal);assert.deepEqual(found.enrichment.raw,nativeApollo);assert.equal(found.usage.provider,apollo);assert.equal(found.usage.callId,'synthetic-apollo-hit');assert.equal(found.usage.costMicro,70000);
+ assert.equal((await found.finishLog({status:'imported',saved:true})).status,'ready');const logs=await f.logs();assert.equal(logs.length,2);assert(logs.every(rows=>rows.some(x=>x.type==='request')&&rows.some(x=>x.type==='response')&&rows.at(-1).type==='import_outcome'));
+ const one=await fixture(t,{env:{GMAIL_ENRICHMENT_MAX_PROVIDERS:'1'},responses:[()=>reply(missTomba)]});assert.equal((await one.enrich()).matched,false);assert.equal(one.requests.length,1);
+ const full=await fixture(t,{responses:[()=>reply(missTomba,{cost:'100000'})]});const exhausted=await full.enrich();assert.equal(exhausted.status,'ready');assert.equal(exhausted.matched,false);assert.equal(exhausted.usage.costMicro,100000);assert.equal(full.requests.length,1);
+});
+
+test('Apollo fallback preserves nameless hits/rejects stubs; unknown Tomba bodies are not free misses',async t=>{
+ const nameless={person:{email:'rae@example.com',native_extra:{keep:true}}};const a=await fixture(t,{responses:[()=>reply(missTomba),()=>reply(nameless)]});const hit=await a.enrich();assert.equal(hit.matched,true);assert.equal(hit.enrichment.output.full_name,null);assert.deepEqual(hit.enrichment.raw,nameless);assert.equal(a.requests.length,2);
+ const stub=await fixture(t,{responses:[()=>reply(missTomba),()=>reply(missApollo)]});const miss=await stub.enrich();assert.equal(miss.status,'ready');assert.equal(miss.matched,false);assert.deepEqual(miss.enrichment.raw,missApollo);assert.equal(stub.requests.length,2);
+ for(const body of [[],{data:[]},{person:{name:'Wrong provider shape'}},{data:{full_name:42}}]){const invalid=await fixture(t,{responses:[()=>reply(body)]});assert.equal((await invalid.enrich()).status,'invalid_response');assert.equal(invalid.requests.length,1);}
+ for(const body of [{error:'not found'},'<html>not found</html>']){const invalid=await fixture(t,{responses:[()=>reply(body,{status:404,cost:null})]});assert.notEqual((await invalid.enrich()).status,'ready');assert.equal(invalid.requests.length,1);}
+});
+
+test('only typed free pauses/known-cost recoverable errors fall back; auth/budget/rate failures stop',async t=>{
+ const paused=await fixture(t,{responses:[()=>reply({detail:{error:'provider_paused'}},{status:503,cost:null,headers:{'x-treg-error':'1'}}),()=>reply(nativeApollo)]});const hit=await paused.enrich();assert.equal(hit.status,'ready');assert.equal(hit.usage.costMicro,2500);assert.equal(paused.requests.length,2);
+ const recoverable=await fixture(t,{responses:[()=>reply({error:'Provider unavailable'},{status:500,cost:'1000'}),()=>reply(nativeApollo,{cost:'2000'})]});assert.equal((await recoverable.enrich()).usage.costMicro,3000);assert.equal(recoverable.requests.length,2);
+ const exhausted=await fixture(t,{responses:[()=>reply({error:'First failed'},{status:500,cost:'1000'}),()=>reply({error:'Second failed'},{status:500,cost:'1000'})]});assert.notEqual((await exhausted.enrich()).status,'ready');assert.equal(exhausted.requests.length,2,'Never try a third provider');
+ for(const status of [401,403,402,429]){const blocked=await fixture(t,{responses:[()=>reply({error:'PRIVATE failure'},{status,cost:'0'})]});const result=await blocked.enrich();assert.notEqual(result.status,'ready');assert.equal(blocked.requests.length,1);assert(!JSON.stringify(result).includes('PRIVATE'));}
+ const generic=await fixture(t,{responses:[()=>reply({detail:{error:'provider_unavailable'}},{status:503,cost:null})]});assert.notEqual((await generic.enrich()).status,'ready');assert.equal(generic.requests.length,1);
+});
+
+test('unknown costs/transport/logging failures/cancellation/overrun stop another provider call',async t=>{
+ const unknown=await fixture(t,{responses:[()=>reply(missTomba,{cost:null})]});assert.equal((await unknown.enrich()).usage?.costMicro,null);assert.equal(unknown.requests.length,1);
+ const failed=await fixture(t,{responses:[()=>{throw Error('PRIVATE transport');}]});assert.notEqual((await failed.enrich()).status,'ready');assert.equal(failed.requests.length,1);
+ const blocked=await fixture(t,{callLogger:{begin:async()=>({status:'log_unavailable'})}});assert.equal((await blocked.enrich()).status,'log_unavailable');assert.equal(blocked.requests.length,0);
+ const responseLog=await fixture(t,{responses:[()=>reply(missTomba)],callLogger:{begin:async()=>({status:'ready',session:{logId:randomUUID(),append:async type=>({status:type==='response'?'log_unavailable':'ready'})}})}});assert.equal((await responseLog.enrich()).status,'log_unavailable');assert.equal(responseLog.requests.length,1);
+ const controller=new AbortController(),cancelled=await fixture(t,{responses:[()=>{controller.abort();return reply(missTomba);}]});assert.equal((await cancelled.enrich({signal:controller.signal})).status,'aborted');assert.equal(cancelled.requests.length,1);
+ const early=new AbortController(),duringLog=await fixture(t,{callLogger:{begin:async()=>{early.abort();return {status:'ready',session:{logId:randomUUID(),append:async()=>({status:'ready'})}};}}});assert.equal((await duringLog.enrich({signal:early.signal})).status,'aborted');assert.equal(duringLog.requests.length,0);
+ const over=await fixture(t,{responses:[()=>reply(tombaBody,{cost:'110000'})]});const result=await over.enrich();assert.equal(result.status,'ready');assert.equal(result.budgetExceeded,true);assert.equal(result.usage.costMicro,110000);assert.equal(over.requests.length,1);
+ const oversized=await fixture(t,{responses:[()=>reply({data:{...nativeTomba,large:'x'.repeat(512000)}})]});assert.equal((await oversized.enrich()).status,'response_too_large');assert.equal(oversized.requests.length,1);
+});
+
+test('idempotency covers actor/address/policy/provider and identical attempts retain their key',async t=>{
+ const f=await fixture(t,{env:{GMAIL_ENRICHMENT_MAX_PROVIDERS:'1'},responses:Array.from({length:8},()=>()=>reply(missTomba))});await f.enrich();await f.enrich({email:email.toLowerCase()});await f.enrich({email:'other@example.com'});await f.enrich({principal:{...actor,id:'other-actor'}});const keys=f.requests.map(x=>x.headers.get('idempotency-key'));assert.equal(keys[0],keys[1]);assert.notEqual(keys[0],keys[2]);assert.notEqual(keys[0],keys[3]);
+ const two=await fixture(t,{responses:[()=>reply(missTomba),()=>reply(nativeApollo)]});await two.enrich();assert.notEqual(keys[0],two.requests[0].headers.get('idempotency-key'));assert.notEqual(two.requests[0].headers.get('idempotency-key'),two.requests[1].headers.get('idempotency-key'));
+});
+
+test('free Tomba replay retains original logical cost before calculating Apollo allowance',async t=>{
+ const f=await fixture(t,{responses:[()=>reply(missTomba,{cost:'0',headers:{'x-treg-original-cost-micro':'90000'}}),()=>reply(nativeApollo,{cost:'9000'})]});const found=await f.enrich();assert.equal(found.status,'ready');assert.equal(f.requests.length,2);assert.equal(Number(f.requests[1].headers.get('x-treg-route-max-cost')),0.01);assert.equal(found.usage.costMicro,99000);
+ for(const value of ['-1','invalid','1.5']){const invalid=await fixture(t,{responses:[()=>reply(missTomba,{cost:'0',headers:{'x-treg-original-cost-micro':value}})]});assert.notEqual((await invalid.enrich()).status,'ready');assert.equal(invalid.requests.length,1);}
+ const conflicting=await fixture(t,{responses:[()=>reply(missTomba,{cost:'1000',headers:{'x-treg-original-cost-micro':'90000'}})]});assert.notEqual((await conflicting.enrich()).status,'ready');assert.equal(conflicting.requests.length,1);
+});
+
+test('actual CLI/current SQL save exact Tomba data or Apollo envelope, preserve cache and skip completed work',async t=>{
+ const db=new PGlite();t.after(()=>db.close());await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');const root=new URL('../supabase/migrations/',import.meta.url),files=await readdir(root);for(const suffix of ['0047','0049','0050'])await db.exec(await readFile(new URL(files.find(x=>x.startsWith('20261026'+suffix+'_')),root),'utf8'));await db.exec(await readFile(new URL('202610270051_contacts_native_fields.sql',root),'utf8'));await db.exec('set role service_role');
+ for(const input of [{email:'tomba@example.com',name:'Original name'},{email:'fallback@example.com',extra:{untouched:true}}])await db.query('insert into public.contacts_cache(id,raw_input) values($1,$2::jsonb)',[randomUUID(),JSON.stringify(input)]);
+ const snapshot=async()=>(await db.query('select id::text,created_at::text,raw_input::text from public.contacts_cache order by id')).rows,before=await snapshot();await db.exec("reset role;create function public.provider_cache_readonly() returns trigger language plpgsql as $$begin raise exception 'Forbidden cache mutation';end$$;create trigger provider_cache_readonly before insert or update or delete on public.contacts_cache for each statement execute function public.provider_cache_readonly();set role service_role;");
+ const directory=await mkdtemp(join(tmpdir(),'flock-provider-sql-'));t.after(()=>rm(directory,{recursive:true,force:true}));const flatTomba={...nativeTomba,email:'tomba@example.com'},namelessApollo={person:{email:'fallback@example.com',match_confidence:'high',native_extra:{keep:[null,1,true]}}};let paid=0,forceOverrun=false;const seen=[];
+ const env={GMAIL_ENRICHMENT_ENABLED:'true',GMAIL_ENRICHMENT_ACCOUNT:'club@example.com',GMAIL_ENRICHMENT_SOURCE_IDS:'62000000-0000-4000-8000-000000000001',SUPABASE_URL:'https://provider-sql.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-sql-provider-key',TREG_TOKEN:'synthetic-provider-sql-token',TREG_CALL_LOG_DIR:join(directory,'calls')};
+ const fetchImpl=async(input,init={})=>{const url=new URL(input);if(url.origin==='https://treg.to'){paid++;seen.push(url.pathname);assert.equal(init.body,undefined);assert.deepEqual([...url.searchParams.keys()],['email']);if(forceOverrun){assert.equal(init.method,'GET');assert.equal(url.pathname,'/call/'+tomba);return reply({data:{...flatTomba,email:url.searchParams.get('email'),native_extra:{overshoot:true}}},{cost:'110000',callId:'synthetic-overrun-'+paid});}if(url.pathname==='/call/'+tomba){assert.equal(init.method,'GET');return reply(url.searchParams.get('email')==='tomba@example.com'?{data:flatTomba}:missTomba,{cost:'2000',callId:'synthetic-sql-tomba-'+paid});}assert.equal(url.pathname,'/call/'+apollo);assert.equal(init.method,'POST');assert.equal(url.searchParams.get('email'),'fallback@example.com');return reply(namelessApollo,{cost:'3000',callId:'synthetic-sql-apollo-'+paid});}assert.equal(init.method,'POST');assert.equal(url.origin,'https://provider-sql.example.test');const operation=url.pathname.split('/').at(-1);assert(['gmail_enrichment_probe','gmail_enrichment_claim','gmail_enrichment_renew','gmail_enrichment_complete','gmail_enrichment_defer'].includes(operation));const body=JSON.parse(init.body);assert.deepEqual(Object.keys(body),['p_payload']);const value=(await db.query(`select public.${operation}($1::jsonb) result`,[JSON.stringify(body.p_payload)])).rows[0].result;return new Response(JSON.stringify(value),{status:200});};
+ const runtime=createGmailEnrichmentRuntime({env,fetchImpl});t.after(()=>runtime.close());const output=[],result=await runGmailEnrichmentCli({waitImpl:async()=>{},argv:['drain'],runtime,write:x=>output.push(x)});assert.equal(result.stopReason,'empty');assert.equal(result.counts.imported,2);assert.equal(result.counts.jobCompleted,2);assert.equal(result.counts.costMicro,7000);assert.equal(paid,3);assert.deepEqual([...seen].sort(),['/call/'+apollo,'/call/'+tomba,'/call/'+tomba].sort());assert.deepEqual(await snapshot(),before);
+ const saved=(await db.query('select raw_input,lookup_email,public.contact_fields(raw_input,lookup_email) fields from public.contacts')).rows,primary=saved.find(x=>x.lookup_email==='tomba@example.com'),fallback=saved.find(x=>x.lookup_email==='fallback@example.com');assert.deepEqual(primary.raw_input,flatTomba);assert.equal(primary.fields.first_name,'Rae');assert.equal(primary.fields.last_name,'Example');assert.equal(primary.fields.email,'tomba@example.com');assert.equal(primary.fields.phone_number,'');assert.equal(primary.raw_input.phone_number,false);assert.deepEqual(fallback.raw_input,namelessApollo);assert.equal(fallback.fields.email,'fallback@example.com');
+ const jobs=(await db.query('select usage_provider,usage_cost_micro,status from public.contacts_enrichment_jobs')).rows;assert(jobs.every(x=>x.status==='completed'));assert.deepEqual(jobs.map(x=>Number(x.usage_cost_micro)).sort((a,b)=>a-b),[2000,5000]);assert(!JSON.stringify((await db.query('select to_jsonb(j) data from public.contacts_enrichment_jobs j')).rows).includes('native_extra'));
+ const again=await runGmailEnrichmentCli({waitImpl:async()=>{},argv:['drain'],runtime,write:()=>{}});assert.equal(again.counts.requests,0);assert.equal(paid,3);assert.deepEqual(await snapshot(),before);assert(!JSON.stringify(output).includes('@example.com'));
+ await db.exec('reset role;alter table public.contacts_cache disable trigger provider_cache_readonly;set role service_role;');for(const value of ['overrun@example.com','still-pending@example.com'])await db.query('insert into public.contacts_cache(id,raw_input) values($1,$2::jsonb)',[randomUUID(),JSON.stringify({email:value})]);await db.exec('reset role;alter table public.contacts_cache enable trigger provider_cache_readonly;set role service_role;');const newBaseline=await snapshot();forceOverrun=true;
+ const exceeded=await runtime.worker.once();assert.equal(exceeded.status,'budget_exceeded');assert.equal(exceeded.counts.requests,1);assert.equal(exceeded.counts.costMicro,110000);assert.equal(exceeded.counts.jobCompleted,1);assert.equal(paid,4);assert.deepEqual(await snapshot(),newBaseline);assert.equal(Number((await db.query('select day_spent_micro from public.contacts_enrichment_state')).rows[0].day_spent_micro),117000);assert.equal((await db.query("select count(*)::int n from public.contacts_enrichment_jobs where status='completed'")).rows[0].n,3);
+});

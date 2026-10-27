@@ -19,7 +19,7 @@ const message=(id='a1',history=newCursor)=>({id,historyId:history,snippet:'I can
 const additions=(ids=['a1'],history=newCursor)=>({historyId:history,history:[{id:history,messagesAdded:ids.map(id=>({message:{id}}))}]});
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 
-function fixture({initial=state(),settings={},verify,fetchRoute,enqueue,auth,cas,onDiagnostic}={}){
+function fixture({initial=state(),settings={},verify,fetchRoute,enqueue,auth,cas,onDiagnostic,cacheInboxSender}={}){
  let current=structuredClone(initial),time=fixedTime;
  const requests=[],enqueued=[],stateCalls=[],tokenCalls=[];
  const store={getState:async key=>{stateCalls.push({op:'get',key});return structuredClone(current);},casState:async(key,expected,next)=>{
@@ -39,7 +39,8 @@ function fixture({initial=state(),settings={},verify,fetchRoute,enqueue,auth,cas
    if(parsed.pathname.endsWith('/history'))return Response.json(additions());
    const id=parsed.pathname.split('/').at(-1);return Response.json(message(id));
   },
-  enqueueEvent:async event=>{enqueued.push(structuredClone({...event,signal:undefined}));return enqueue?enqueue(event):{status:'queued'};}
+  enqueueEvent:async event=>{enqueued.push(structuredClone({...event,signal:undefined}));return enqueue?enqueue(event):{status:'queued'};},
+  ...(cacheInboxSender?{cacheInboxSender}:{})
  };
  const subscription=createGmailSubscription(dependencies);
  return {subscription,restart:()=>createGmailSubscription(dependencies),store,requests,enqueued,stateCalls,tokenCalls,state:()=>structuredClone(current),setState:s=>{current=structuredClone(s);},advance:ms=>{time+=ms;}};
@@ -139,6 +140,32 @@ test('partial page enqueue failure persists successful offset and fresh instance
  failSecond=false;assert.deepEqual(await f.restart().sync(),{status:'ready',queued:1,duplicates:0,messages:1});assert.equal(f.state().cursor,newCursor);assert.deepEqual(f.enqueued.map(e=>e.eventId+':'+e.revision),['a1:'+newCursor,'a2:'+newCursor,'a2:'+newCursor]);
 });
 
+test('inbox sender cache runs after validated fetch and before queue; cache failure retains the exact pending offset',async()=>{
+ const order=[];let failSecond=true;
+ const f=fixture({fetchRoute:async url=>url.pathname.endsWith('/history')?Response.json(additions(['a1','a2'])):undefined,
+  cacheInboxSender:async({message:mail,accountEmail,signal})=>{assert.equal(accountEmail,'club@example.test');assert(!signal.aborted);assert.deepEqual(mail,message(mail.id));order.push('cache:'+mail.id);return {status:mail.id==='a2'&&failSecond?'contact_cache_failed':'ready'};},
+  enqueue:async event=>{order.push('queue:'+event.eventId);return {status:'queued'};}});
+ assert.deepEqual(await f.subscription.sync(),{status:'contact_cache_failed'});assert.deepEqual(order,['cache:a1','queue:a1','cache:a2']);assert.equal(f.state().cursor,oldCursor);assert.equal(f.state().pageOffset,1);assert.equal(f.state().lease,undefined);assert(!JSON.stringify(f.state()).includes('Original email evidence'));
+ failSecond=false;assert.equal((await f.restart().sync()).status,'ready');assert.equal(f.state().cursor,newCursor);assert.deepEqual(order,['cache:a1','queue:a1','cache:a2','cache:a2','queue:a2']);
+ for(const callback of [async()=>{throw Error('PRIVATE sender/body failure');},async()=>({status:'unexpected'}),async()=>({status:'contact_cache_failed'})]){const failed=fixture({cacheInboxSender:callback});assert.deepEqual(await failed.subscription.sync(),{status:'contact_cache_failed'});assert.equal(failed.enqueued.length,0);assert.equal(failed.state().cursor,oldCursor);assert.equal(failed.state().pageOffset,0);}
+ let cached=0;const invalid=fixture({cacheInboxSender:async()=>{cached++;return {status:'ready'};},fetchRoute:async url=>url.pathname.includes('/messages/')?Response.json({...message(),id:'wrong'}):undefined});assert.equal((await invalid.subscription.sync()).status,'invalid_response');assert.equal(cached,0,'An unvalidated message never reaches sender intake');
+});
+
+test('queue failure after sender cache safely replays; skipped senders and metadata fallback preserve ordinary queue events',async()=>{
+ const cached=new Set(),cacheCalls=[];let fail=true;const f=fixture({cacheInboxSender:async({message:mail})=>{cacheCalls.push(mail.id);cached.add('person@example.test');return {status:'ready'};},enqueue:async()=>({status:fail?'unavailable':'queued'})});
+ assert.equal((await f.subscription.sync()).status,'enqueue_failed');assert.equal(cached.size,1);assert.equal(f.state().cursor,oldCursor);assert.equal(f.state().pageOffset,0);fail=false;assert.equal((await f.restart().sync()).status,'ready');assert.equal(f.state().cursor,newCursor);assert.deepEqual(cacheCalls,['a1','a1']);assert.equal(cached.size,1);
+ const skipped=fixture({cacheInboxSender:async()=>({status:'skipped'})});assert.equal((await skipped.subscription.sync()).status,'ready');assert.equal(skipped.enqueued.length,1);assert.deepEqual(skipped.enqueued[0].payload,message());
+ const metadata={id:'a1',historyId:newCursor,labelIds:['INBOX'],payload:{headers:[{name:'From',value:'Metadata Sender <metadata@example.test>'}]}};let observed;
+ const fallback=fixture({cacheInboxSender:async({message:mail})=>{observed=structuredClone(mail);return {status:'ready'};},fetchRoute:async url=>url.pathname.endsWith('/messages/a1')?Response.json(url.searchParams.get('format')==='full'?{...message(),payload:{body:{data:'x'.repeat(60000)}}}:metadata):undefined});assert.equal((await fallback.subscription.sync()).status,'ready');assert.deepEqual(observed,metadata);assert.equal(fallback.enqueued[0].eventType,'email_received_metadata');assert.deepEqual(fallback.enqueued[0].payload,metadata);
+});
+
+test('sender cache respects cancellation and lease ownership before cache and before separate queue dispatch',async()=>{
+ const controller=new AbortController();let f,cached=0;f=fixture({cacheInboxSender:async()=>{cached++;controller.abort();return {status:'ready'};}});assert.equal((await f.subscription.sync({signal:controller.signal})).status,'aborted');assert.equal(cached,1);assert.equal(f.enqueued.length,0);assert.equal(f.state().cursor,oldCursor);
+ let expired;expired=fixture({cacheInboxSender:async()=>{expired.advance(91000);return {status:'ready'};}});assert.equal((await expired.subscription.sync()).status,'lease_lost');assert.equal(expired.enqueued.length,0,'A cache completion after lease expiry must not dispatch a queue write');assert.equal(expired.state().cursor,oldCursor);
+ let intake=0;const lost=fixture({cacheInboxSender:async()=>{intake++;return {status:'ready'};},cas:async({expected,next})=>expected?.lease&&next?.lease?false:undefined});assert.equal((await lost.subscription.sync()).status,'lease_lost');assert.equal(intake,0);assert.equal(lost.enqueued.length,0);
+ let cachedBeforeLoss=false;const stolen=fixture({cacheInboxSender:async()=>{cachedBeforeLoss=true;return {status:'ready'};},cas:async({expected,next})=>cachedBeforeLoss&&expected?.lease&&next?.lease?false:undefined});assert.equal((await stolen.subscription.sync()).status,'lease_lost');assert.equal(stolen.enqueued.length,0,'A completed cache write grants no permission after ownership is lost');assert.equal(stolen.state().cursor,oldCursor);
+});
+
 test('email fetch/invalid response/oversize errors retain cursor and never enqueue incomplete data',async()=>{
  const routes=[
   async url=>url.pathname.includes('/messages/')?new Response('PRIVATE_BODY',{status:503}):undefined,
@@ -148,6 +175,36 @@ test('email fetch/invalid response/oversize errors retain cursor and never enque
   async url=>url.pathname.endsWith('/history')?Response.json({...additions(),nextPageToken:'x'.repeat(2049)}):undefined
  ];
  for(const fetchRoute of routes){const f=fixture({fetchRoute});const result=await f.subscription.sync();assert(['google_unavailable','invalid_response','response_too_large'].includes(result.status));assert(!JSON.stringify(result).includes('PRIVATE'));assert.equal(f.state().cursor,oldCursor);assert.equal(f.enqueued.length,0);assert.equal(f.state().lease,undefined);}
+});
+
+test('missing Gmail originals skip only that message, preserve paging budget and allow a later valid sender through',async()=>{
+ for(const metadataFallback of [false,true]){
+  const cached=[],formats=[];const f=fixture({fetchRoute:async url=>{
+   if(url.pathname.endsWith('/history'))return Response.json(additions(['a1','a2']));
+   if(!url.pathname.endsWith('/messages/a1'))return;
+   formats.push(url.searchParams.get('format'));return metadataFallback&&url.searchParams.get('format')==='full'?Response.json({...message(),payload:{body:{data:'x'.repeat(60000)}}}):new Response('PRIVATE missing original',{status:404});
+  },cacheInboxSender:async({message:mail})=>{cached.push(mail.id);return {status:'ready'};}});
+  assert.deepEqual(await f.subscription.sync(),{status:'ready',queued:1,duplicates:0,messages:2});assert.deepEqual(formats,metadataFallback?['full','metadata']:['full']);assert.deepEqual(cached,['a2']);assert.deepEqual(f.enqueued.map(event=>event.eventId),['a2']);assert.deepEqual(f.enqueued[0].payload,message('a2'));assert.equal(f.state().cursor,newCursor);assert.equal(f.state().lease,undefined);
+  const skipped=f.stateCalls.find(call=>call.op==='cas'&&call.next?.pageOffset===1&&call.next?.pageFingerprint);assert(skipped,'Missing original receives its own checkpoint before later cache/queue activity');assert.equal(skipped.next.cursor,oldCursor);assert(!JSON.stringify(skipped.next).includes('PRIVATE'));
+ }
+ const bounded=fixture({settings:{maxMessages:1},fetchRoute:async url=>url.pathname.endsWith('/history')?Response.json(additions(['a1','a2'])):url.pathname.endsWith('/messages/a1')?new Response(null,{status:404}):undefined});
+ assert.deepEqual(await bounded.subscription.sync(),{status:'pending',queued:0,duplicates:0,messages:1});assert.equal(bounded.state().cursor,oldCursor);assert.equal(bounded.state().pageOffset,1);assert.equal(bounded.enqueued.length,0);assert(!bounded.requests.some(request=>new URL(request.url).pathname.endsWith('/messages/a2')));
+ assert.deepEqual(await bounded.restart().sync(),{status:'ready',queued:1,duplicates:0,messages:1});assert.equal(bounded.state().cursor,newCursor);assert.equal(bounded.requests.filter(request=>new URL(request.url).pathname.endsWith('/messages/a1')).length,1,'Persisted missing-message offset survives a fresh subscription instance');assert.deepEqual(bounded.enqueued.map(event=>event.eventId),['a2']);
+});
+
+test('missing-original checkpoint requires the lease; other message errors remain retryable and do not skip later additions',async()=>{
+ for(const loss of ['expired','stolen','aborted']){
+  let f,missing=false;const controller=new AbortController(),cached=[];f=fixture({fetchRoute:async url=>{
+   if(url.pathname.endsWith('/history'))return Response.json(additions(['a1','a2']));
+   if(!url.pathname.endsWith('/messages/a1'))return;
+   missing=true;if(loss==='expired')f.advance(91000);if(loss==='aborted')controller.abort();return new Response(null,{status:404});
+  },cas:async({expected,next})=>loss==='stolen'&&missing&&expected?.lease&&next?.lease?false:undefined,cacheInboxSender:async({message:mail})=>{cached.push(mail.id);return {status:'ready'};}});
+  assert.equal((await f.subscription.sync({signal:controller.signal})).status,loss==='aborted'?'aborted':'lease_lost');assert.equal(f.state().cursor,oldCursor);assert.equal(f.enqueued.length,0);assert.deepEqual(cached,[]);assert(!f.requests.some(request=>new URL(request.url).pathname.endsWith('/messages/a2')),'Cannot dispatch a later original after losing permission to checkpoint the missing one');
+ }
+ for(const status of [403,429,500])for(const metadataFallback of [false,true]){
+  let cached=0;const f=fixture({fetchRoute:async url=>url.pathname.endsWith('/history')?Response.json(additions(['a1','a2'])):url.pathname.endsWith('/messages/a1')?(metadataFallback&&url.searchParams.get('format')==='full'?Response.json({...message(),payload:{body:{data:'x'.repeat(60000)}}}):new Response('PRIVATE provider error',{status})):undefined,cacheInboxSender:async()=>{cached++;return {status:'ready'};}});
+  const result=await f.subscription.sync();assert.equal(result.status,status===403?'permission_denied':status===429?'rate_limited':'google_unavailable');assert.equal(f.state().cursor,oldCursor);assert.equal(f.state().pageOffset,0);assert.equal(f.enqueued.length,0);assert.equal(cached,0);assert(!f.requests.some(request=>new URL(request.url).pathname.endsWith('/messages/a2')));assert(!JSON.stringify(result).includes('PRIVATE'));
+ }
 });
 
 test('oversized full email falls back to explicit raw metadata event and advances safely',async()=>{
@@ -256,7 +313,7 @@ test('actual Gmail runtime authorizer accepts metadata fallback into shared upda
  t.mock.method(OAuth2Client.prototype,'getAccessToken',async()=>({token:'synthetic-access'}));
  t.mock.method(OAuth2Client.prototype,'getTokenInfo',async()=>({scopes:[...GOOGLE_SCOPES]}));
  for(const accept of [true,false]){
-  let checkpoint=state();const queued=[{uuid:'existing-unrelated-row',raw_response:{source:'discord',payload:{retained:true}}}],requests=[];
+  let checkpoint=state();const queued=[{uuid:'existing-unrelated-row',raw_response:{source:'discord',payload:{retained:true}}}],requests=[],cached=[];
   const runtime=createGmailSubscriptionRuntime({env:{...env,SUPABASE_URL:'https://db.example.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-service'},fetchImpl:async(url,options)=>{
    const parsed=new URL(url);requests.push({parsed,options});assert.equal(options.redirect,'error');
    if(parsed.origin==='https://db.example.test'){
@@ -264,7 +321,9 @@ test('actual Gmail runtime authorizer accepts metadata fallback into shared upda
     const args=JSON.parse(options.body);
     if(parsed.pathname.endsWith('/agent_subscription_get_state'))return Response.json(checkpoint);
     if(parsed.pathname.endsWith('/agent_subscription_cas_state')){if(!equal(checkpoint,args.p_expected))return Response.json(false);checkpoint=args.p_next;return Response.json(true);}
+    if(parsed.pathname==='/rest/v1/contacts_cache'){assert.deepEqual(args.raw_input,{email:'metadata@example.test',name:'Metadata Sender'});assert.deepEqual(Object.keys(args).sort(),['id','raw_input']);cached.push(args);return new Response(null,{status:204});}
     assert(parsed.pathname.endsWith('/agent_automation_enqueue'));
+    assert.equal(cached.length,1,'The actual runtime caches an incoming sender before its separate queue operation');
     assert.equal(args.p_envelope.source,'gmail');assert.equal(args.p_envelope.source_id,sourceId);assert.equal(args.p_envelope.event_type,'email_received_metadata');
     if(!accept)return Response.json({status:'forbidden'});
     queued.push({uuid:args.p_input_id,raw_response:args.p_envelope});return Response.json({status:'queued',inputId:args.p_input_id});
@@ -274,10 +333,11 @@ test('actual Gmail runtime authorizer accepts metadata fallback into shared upda
    if(parsed.pathname.endsWith('/history'))return Response.json(additions());
    assert(parsed.pathname.endsWith('/messages/a1'));
    if(parsed.searchParams.get('format')==='full')return Response.json({...message(),payload:{body:{data:'x'.repeat(60000)}}});
-   assert.equal(parsed.searchParams.get('format'),'metadata');return Response.json({id:'a1',historyId:newCursor,payload:{headers:[{name:'Subject',value:'Large message metadata'}]}});
+   assert.equal(parsed.searchParams.get('format'),'metadata');return Response.json({id:'a1',historyId:newCursor,labelIds:['INBOX'],payload:{headers:[{name:'Subject',value:'Large message metadata'},{name:'From',value:'Metadata Sender <metadata@example.test>'}]}});
   }});
   const result=await runtime.subscription.sync();assert.equal(result.status,accept?'ready':'enqueue_failed');assert.equal(checkpoint.cursor,accept?newCursor:oldCursor);assert.equal(queued.length,accept?2:1);
   assert.deepEqual(queued[0],{uuid:'existing-unrelated-row',raw_response:{source:'discord',payload:{retained:true}}});
+  assert.equal(cached.length,1);assert(!requests.some(r=>r.parsed.pathname==='/rest/v1/contacts'),'Collector must not write the CRM Contacts table');
   assert(requests.every(r=>r.parsed.origin==='https://db.example.test'||r.options.method==='GET'),'Runtime ingestion sends no mail or source mutations');
  }
 });
