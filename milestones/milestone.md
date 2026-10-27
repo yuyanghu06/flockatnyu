@@ -1,3 +1,7 @@
+## Remaining planner queue cleared at user request
+
+After explicit permanent-deletion confirmation,27pending messages and34saved tasks were deleted at10:59:43PMNewYork. Readback at11:00:01PMshows messages/tasks/pendingmanualwork all0. Map-event and participant counts remain40/56; completed receipts and diagnostics are outside the deletion scope. Existing worker restarted, all5Railwayservices healthy; no new deployment. Normal ingestion remains enabled. Independent review ACCEPT. These discarded tasks are separate from199manual task resolutions. [Execution](history/2026-10-26_23-03-07-877303-orchestrator-remaining-planner-queue-cleared.md) · [Acceptance](history/2026-10-26_23-03-07-877303-evaluator-explicit-planner-purge-accepted.md) · [Scope](planner-clear-2026-10-26/info.md).
+
 ## Push and manual pending-work processing — manual pass ended
 
 Selected fixes263e0ca and425fda5 are pushed to main. The manual pass ended after228queue acknowledgements and199verified exact saved-task removals. Five Calendar events were created and read back with their map records; two Calendar updates and thirteen person-update effects across nine people were verified. Independent accounting ACCEPT; final non-atomic inventory at10:40PMhas40pending/cached, including one still pending from the earlier186cohort. The queue is not empty. New ingestion and genuinely unresolved tasks remain; no blanket purge or diagnostic-log deletion. The worker was not redeployed. [Scope](planner-manual-processing-2026-10-26/info.md).

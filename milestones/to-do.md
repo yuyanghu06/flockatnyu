@@ -1,3 +1,8 @@
+## Explicit remaining planner queue clear
+
+- [x] Confirm new user deletion scope and obtain fresh counts; prepare reviewed purge with completed-receipt preservation guard.
+- [x] Obtain Delete them confirmation, restart/fence existing worker, delete27messages/34tasks, verify allpending/taskcounts0and map40/56unchanged; independent ACCEPT.
+
 ## Push and manual planner processing — manual pass ended
 
 - [x] Confirm “log” means pending messages and saved tasks; diagnostic logs stay intact.
@@ -23,7 +28,7 @@
 - [x] Through bulk047:212queue acknowledgements,198closures; reviewed conditional transport discussion without inventing attendance.
 - [x] Through bulk050:223queue acknowledgements and199closures; manually inspect accessible own travel screenshot, retain unavailable older attachment, acknowledge exact missing original correctly.
 - [x] End the bounded manual pass after228queue acknowledgements/199exact task removals; stop extra live-arrival chasing after the user challenged the delay.
-- [ ] Remaining queue is not cleared: final40pending/cache,including1of original186cohort after round_limit. Preserve real blockers/new arrivals for ordinary worker or a later requested pass.
+- [x] Superseded by later explicit deletion request: remaining27messages and34tasks discarded, then zero queue/tasks verified. Keep this separate from manual-completion counts.
 - [x] Final independent accounting ACCEPT and metadata inventory complete; retain actual limitations.
 - [x] Verify operator stopped and private environment/source/config/helper/image files removed; retain51source-free receipts, scan credentials and publish final records normally.
 

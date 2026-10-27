@@ -21,3 +21,5 @@ Verification limits: selected changes passed focused offline checks/API build an
 Evidence: ignored evidence/planner-manual-processing-2026-10-26/ contains source-free receipts/decisions and final audit reports. Immutable history links are in the rolling snapshot. Remaining work is genuine blocker resolution and ordinary queued processing, with held fixes requiring a later scope decision.
 
 Private cleanup is verified: operator process ended, environment JSON and entire helper/source/fragment/image directory deleted, and all51source-free terminal receipts retained. Exact secret-value scan of107journal files found0matches; whitespace check passes. Unrelated concurrent global-instruction documentation is preserved separately.
+
+Later user instruction supersedes backlog preservation: explicit confirmed purge removed the remaining27queued originals and34savedtasks; zero queue/tasks verified at11PM. Those are discarded unfinished items, not additional accepted task completions. See ../planner-clear-2026-10-26/info.md.
