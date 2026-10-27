@@ -1,3 +1,12 @@
+## Source cleanup published to main
+
+- Publication: GitHub workflow authorization completed and verified. The clean checkout pushed source and documentation commits through 728f6f7822e4c9592d127317b1fecf0d46a497e6 to main without force. Initial work had already been published at fb2cd5b. The temporary push credential helper used the newly authorized GitHub CLI credential; no global Git credential settings changed.
+- Verification: the installed hook reran the complete Node 22.22 CI command on the clean committed checkout: 3,004 tests passed, zero failed, two existing tests skipped; formatting, lint, line limits, API and frontend builds passed. All five isolated browser workflows pass. Five source-only service release archives were prepared for the reviewed code commit.
+- GitHub CI started at https://github.com/yuyanghu06/flockatnyu/actions/runs/40562455754; its remote jobs were still running when this receipt was written. No remote pass is inferred from the local pass.
+- Implemented: organized and fully formatted browser source, 25 individually documented URL-shaped API method files (21 active, four dormant), fixed source-preservation regressions, durable offline fixtures, enforceable local/CI checks and checked release-package preparation. Independent evaluator accepts all scoped changes.
+- Limits: production deployment and database work remain separate; branch-protection/required-check settings have not been changed. Concurrent company-provider work remains untouched and uncommitted in the original checkout. The two unchanged dependency advisories and absent container-build verification remain documented.
+- Remaining action: publish this receipt, inspect the GitHub job outcomes, and leave the original checkout’s unrelated work intact.
+
 ## Clean cleanup checkout verified; GitHub workflow authorization required
 
 - Source39dd507 consists of six logical cleanup commits, separate from unrelated company-provider source/test/documentation changes. Fresh isolated checkout installed dependencies with npm ci on Node22.22.0, with no ignored credentials/private evidence copied.

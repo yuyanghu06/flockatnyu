@@ -455,3 +455,5 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Cleanup independently accepted before publication](2026-10-27_14-23-24-174783-evaluator-cleanup-final-review.md).
 
 - [Clean cleanup checkout verified; GitHub workflow authorization required](2026-10-27_14-30-26-357103-orchestrator-cleanup-isolated-verification.md).
+
+- [Source cleanup published to main](2026-10-27_14-44-01-186165-orchestrator-cleanup-published.md).
