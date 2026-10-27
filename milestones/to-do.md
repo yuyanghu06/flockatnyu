@@ -1,11 +1,10 @@
-## Markdown prompt release — in progress
+## Markdown prompt release — publication complete; deployment pending
 
-- [x] Isolate the tested source and preserve unrelated Calendar location changes.
-- [x] Repair baseline API fixtures without weakening runtime checks;67focusedpasses.
-- [x] Create reviewable prerequisite, Markdown migration and prompt-fix commits.
-- [ ] Complete full CI/browser and independent scope review; push PR and merge main.
-- [ ] Build/download exact main release artifact; deploy web/update/Discord only.
-- [ ] Verify hosted readiness, auth/assets/prompt hashes and unchanged Gmail deployments; publish receipts.
+- [x] Isolate requested changes, repair obsolete API test fixtures, pass normal CI/browser checks and independent source review.
+- [x] Push normally, merge PR1 after checks, build and verify exact main release artifacts.
+- [ ] Coordinate overlapping full-tree deployment and correct the worker image COPY roots before upload.
+- [ ] Verify successful affected Railway rollouts, normal web authentication/assets and retained disabled worker state.
+- [ ] Publish final deployment receipts and Git parity.
 
 ## Contact clarification and Calendar completion — verified and accepted
 

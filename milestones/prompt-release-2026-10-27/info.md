@@ -16,4 +16,6 @@ Known-good rollback deployments before release:
 - unchanged gmail-events: 239293ad-2c9b-4545-8199-5d4df85aeee0
 - unchanged gmail-enrichment: d780e172-3aa8-41d6-a10b-b1cd24722aec
 
-Status: isolated source committed through ce69ef2, full CI/browser and independent final review pending. No push or deployment yet.
+Status: source merged to main e6c62403fa0bc6addb8af31449f73d52bf0e5e97; PR and release workflow checks pass. Exact artifacts verified. Deployment pending coordination with the separately authorized full-tree rollout and correction of worker image COPY roots. No new application package has been uploaded by this chat. Worker remains disabled.
+
+Worker image correction ee936d2 passes independent local runtime imports and both failure controls. See [verification](verification.md). Final review and publication pending.
