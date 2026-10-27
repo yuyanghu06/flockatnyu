@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { campusStartup } from './map-startup.js';
 import { createAssistant } from './assistant.js';
 import './assistant.css';
+import { createContacts } from './contacts.js';
+import './contacts.css';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -196,7 +198,9 @@ function setHovered(id) {
 }
 const mapInteractions = createMapInteractions({ element: renderer.domElement, wheelEventTarget: window, controls, hit, select, setHovered, navigation: cameraNavigation, getRoot: id => roots.get(id),
   isWheelEnabled: () => controls.enabled && !document.querySelector('dialog[open]') && !document.querySelector('.map-presence__itinerary:hover') });
-createAssistant({ getBuilding: () => { const building = buildings.find(item => item.id === state.selected); return building ? { id: building.id, name: building.name } : null; } });
+const contactsUi = createContacts({ onFlockContact: contact => assistantUi.attachContact(contact) });
+const assistantUi = createAssistant({ extraLaunchers: [contactsUi.launcher], getBuilding: () => { const building = buildings.find(item => item.id === state.selected); return building ? { id: building.id, name: building.name } : null; } });
+if (import.meta.hot) import.meta.hot.dispose(() => { contactsUi.dispose(); assistantUi.dispose(); });
 const eventIndicators = createMapEventIndicators({ scene, camera, getRoot: id => roots.get(id), reducedMotion: () => reducedMotionQuery.matches });
 const mapPresence = createMapPresence({ container: $('map'), camera, renderer, getRoot: id => roots.get(id), selectBuilding: select, focusBuilding: focusSelection, getFocusedBuilding: () => cameraNavigation.returning ? null : cameraNavigation.focusedId, onCatalogueChange: catalogue => eventIndicators.setBuildings(catalogue) });
 if (import.meta.hot) import.meta.hot.dispose(() => { mapPresence.dispose(); eventIndicators.dispose(); });

@@ -1,3 +1,33 @@
+# Isolated Contacts design mock
+
+
+`contacts-mock.js` and `contacts-mock.css` serve the root `contacts-mock.html`
+prototype. They fork the current Contacts appearance and use only a synthetic
+in-memory six-field client. Its profile header places the avatar left of the name/workplace and actions to the right; mobile wraps actions beneath the identity. List and detail avatar tiles have soft inset highlights and shadows for subtle raised depth. All six existing-contact fields are directly editable in recessed white boxes, with a larger Notes textarea and Save/Cancel shown only for changes. The redundant Edit button is removed; fields are directly editable, and red square × opens confirmation. Search has the same recessed surface as the fields; Load more is gray and raised. The sample/reset footer is removed, while the editor Save/Cancel footer remains. Drafts and partial saves remain local; refresh resets samples.
+Change these mock files for visual/structural experiments without changing the
+real Contacts component, API or database. No production-client imports, fetch or
+browser storage; normal production inputs exclude this draft. The earlier
+calendar mock runtime files are removed; historical receipts remain.
+
+# Contacts interface
+
+`contacts.js` builds the native Contacts dialog and the icon-only profile-avatar launcher
+beside Ask Tech@NYU. `main.js` passes that button into the assistant's optional
+shared launcher row; both remain hidden until campus entry. Standalone assistant
+mounts retain their original launcher behavior. Contacts owns a responsive list,
+search, exact details and six-field create/edit/delete forms. The approved mock design is now ported here: existing fields are immediately editable in recessed boxes, Notes is larger, and Save/Cancel appear only for changes. The profile avatar sits left of name/workplace; the accessible red square × opens confirmation. There is no Edit button or sample footer. Raised avatar/paging surfaces and recessed Search match the approved draft. Edit drafts remain
+in memory through failures and version conflicts, submit only changed fields,
+and never enter local storage. Inline deletion confirms the exact person.
+The dialog header contains the Contacts title and actions without a subtitle.
+
+`contacts-client.js` accesses authenticated same-origin `/api/contacts` routes
+without model calls, validates bounded six-field responses and requires confirmed
+mutation receipts. `contacts.css` follows the existing ivory/black/inset-surface
+styles with pale-lilac selection, a desktop split pane and a single mobile view.
+Native dialog focus trapping, Escape/backdrop dismissal, focus restoration and
+map-event isolation keep interaction local. Assistant shortcuts cannot open a
+second modal over Contacts. The 46px desktop / 44px mobile avatar has a 31px head-and-shoulders mask without a surrounding ring with the @logo pastel palette. Color highlights rotate on hover/focus at 1.422222 seconds; resting and reduced-motion states are static. Search/count/Load more remain stationary while contact rows scroll independently.
+
 # Standard interface text
 
 The shared --ink token is pure black (#000000). Normal map, note/itinerary,
@@ -323,3 +353,17 @@ October25 removal deletes the popup model/manifest and main/config/camera hooks.
 Active-event signals live in `map-event-indicators.js`: original personal-site canvas exclamation, shared softly flashing gold borrowed-geometry overlay with a small marker bounce (both static for reduced motion), complete cached root bounds and exact active-window reconciliation. `map-presence.js` supplies the full authorized catalogue/clears failures; main owns lifecycle. Generic across buildings; it remains active after Go Greek retirement. See docs/active-event-indicators.md.
 
 Selected-building framing now uses `map-focus-layout.js` as the shared camera/card contract: desktop buildings fit left of the card; compact cards move below them with assistant clearance. `camera-focus.js` solves complete perspective bounds, widens the lens smoothly only when distance caps prevent a compact fit and restores the overview lens. Per-building facade angles remain; the former Kimmel-only screen-side override is removed.
+
+Contacts empty results hide empty count metadata and place the heading/helper about 12px below Search. The redundant Add your first contact link is removed; the header Add contact button remains. Both actual and mock use this treatment.
+
+Contacts filters use a pastel outline funnel when closed/inactive and filled when open/applied. Name/Workplace/presence/sort options commit on Apply, reset paging and preserve the global query on Reset; contact drafts remain independent. Purple focus rectangles are replaced with neutral inset/brightness cues. The dialog shares Spotlight380msopening/180msclosing motion, including safe reopen, disposal, focus restoration and reduced motion.
+
+
+
+
+
+Contacts fields, profile and notices scroll inside `contacts-detail-scroll`. Cancel/Save occupy a separate normal footer; enlarged Notes never sits behind it. The external Save button is associated with the current form, preserving native click/Enter submission. Focus scrolling adjusts only the field area when the entire field fits.
+
+The profile's Flock it! action closes Contacts while retaining its draft and passes only the saved UUID/first/last names to `assistant.attachContact`. Main wires the two components together. Flock shows a removable names-only chip inside the prompt column, preserves typed text/files, and never sends automatically. Each queued, retried or steered message captures its own selection. Switching to a different contact keeps that message queued for a separate reply. No contact context is persisted in browser storage or copied into visible message text.
+
+Chat messages carry stable request UUIDs through Resume and steering. A queued message binds permanently before an attempted steering dispatch and cannot rebind to a different active request after a lost acknowledgement. UUIDs are transport data, not visible prompt text or source permission.

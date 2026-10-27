@@ -13,6 +13,7 @@
 .campus-assistant[hidden], .campus-assistant [hidden] { display: none !important; }
 .campus-assistant button, .campus-assistant textarea { font: inherit; }
 .campus-assistant button { touch-action: manipulation; cursor: pointer; }
+.assistant-launchers { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 .assistant-launcher {
   display: flex;
   align-items: center;
@@ -241,6 +242,7 @@
 }
 @media (max-width: 600px) {
   .campus-assistant { right: 16px; bottom: 16px; }
+  .assistant-launchers { gap: 8px; }
   .assistant-launcher { min-height: 44px; }
   .assistant-shortcut { display: none; }
   .assistant-panel { --assistant-max-height: calc(88dvh - 16px); inset: 12dvh 0 auto; width: calc(100vw - 24px); border-radius: 19px; }
@@ -288,3 +290,11 @@
 .assistant-queue-inject:hover:not(:disabled), .assistant-queue-inject:focus-visible:not(:disabled) { background: #00000008; color: #6c6c69; }
 .assistant-queue-remove { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; font-size: 20px !important; }
 .assistant-queue-remove:hover, .assistant-queue-remove:focus-visible { background: #00000008; }
+
+/* Selected Contacts context stays separate from typed text and file attachments. */
+.assistant-prompt { flex: 1; min-width: 0; }
+.assistant-contact-context { margin: 0 0 7px; }
+.assistant-contact-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; margin-top: 4px; padding: 5px 9px; border: 1px solid #626c5824; border-radius: 9px; background: #e9e3ef; box-shadow: inset 1px 1.5px 3px #29233716, inset -1px -1px 2px #fff9; color: #000; font-size: 11px; line-height: 1.5; vertical-align: top; }
+.assistant-contact-name { min-width: 0; overflow-wrap: anywhere; white-space: normal; }
+.assistant-contact-remove { display: grid; place-items: center; flex: 0 0 22px; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: #000; font-family: inherit; font-size: 17px; line-height: 1; cursor: pointer; }
+.assistant-contact-remove:hover, .assistant-contact-remove:focus-visible { background: #0000000a; }

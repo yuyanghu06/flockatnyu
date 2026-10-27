@@ -1,13 +1,13 @@
 import { ATTACHMENT_ACCEPT, ATTACHMENT_ONLY_CONTENT, readAttachmentFiles } from './chat-attachments.js';
-import { boundedMessages, getAssistantStatus, steerAssistant, streamAssistant } from './chat-client.js';
+import { boundedMessages, getAssistantStatus, normalizeContactContext, steerAssistant, streamAssistant } from './chat-client.js';
 import { renderAssistantMarkdown } from './assistant-markdown.js';
 import { assistantShortcut } from './assistant-presentation.js';
 const assistantLogoUrl = new URL('../assets/branding/tech-at-assistant.png', import.meta.url).href;
 const assistantHoverLogoUrl = new URL('../assets/branding/tech-at-assistant-hover.svg', import.meta.url).href;
 
-export function createAssistant({ container = document.body, getBuilding = () => null } = {}) {
+export function createAssistant({ container = document.body, getBuilding = () => null, extraLaunchers = [] } = {}) {
   let entered = false, disposed = false, available = false, busy = false;
-  let draftAttachments = [], readingFiles = false;
+  let draftAttachments = [], readingFiles = false, draftContactContext;
   const maxPendingMessages = 10;
   const maxPendingAttachmentBytes = 20 * 1024 * 1024;
   let queuedMessages = [], queuePaused = false, activeMessage = null, nextMessageId = 0;
@@ -87,6 +87,8 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   attach.innerHTML = '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 12 6-6a3 3 0 0 1 4 4l-8 8a5 5 0 0 1-7-7l9-9"/><path d="m6 14 8-8"/></svg>';
   const fileInput = el('input'); fileInput.type = 'file'; fileInput.multiple = true; fileInput.accept = ATTACHMENT_ACCEPT; fileInput.hidden = true;
   fileInput.setAttribute('aria-label', 'Choose files to attach');
+  const contactContextArea = el('div', 'assistant-contact-context'); contactContextArea.hidden = true;
+  contactContextArea.setAttribute('aria-label', 'Selected contact');
   const draftFiles = el('div', 'assistant-attachments'); draftFiles.hidden = true;
   draftFiles.setAttribute('aria-label', 'Attached files');
   const attachmentError = el('p', 'assistant-attachment-error'); attachmentError.hidden = true; attachmentError.setAttribute('role', 'alert');
@@ -99,7 +101,8 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   queueHeader.append(queueState, resumeQueue, clearQueue);
   const queueList = el('ol', 'assistant-queue-list'); queueList.setAttribute('aria-label', 'Queued messages');
   queue.append(queueHeader, queueList);
-  compose.append(attach, input, send);
+  const prompt = el('div', 'assistant-prompt'); prompt.append(contactContextArea, input);
+  compose.append(attach, prompt, send);
   form.append(queue, label, compose, fileInput, draftFiles, attachmentError);
   const connection = el('div', 'assistant-connection');
   const service = el('p', 'assistant-service', 'Checking connection…'); service.setAttribute('role', 'status');
@@ -110,7 +113,11 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   transcript.setAttribute('role', 'log'); transcript.setAttribute('aria-label', 'Conversation'); transcript.setAttribute('aria-live', 'off');
   const announcement = el('p', 'assistant-announcement');
   announcement.setAttribute('role', 'status'); announcement.setAttribute('aria-live', 'polite');
-  panel.append(header, transcript, form, announcement); root.append(launcher, panel); container.append(root);
+  panel.append(header, transcript, form, announcement);
+  if (Array.isArray(extraLaunchers) && extraLaunchers.length) {
+    const launchers = el('div', 'assistant-launchers'); launchers.append(...extraLaunchers, launcher); root.append(launchers, panel);
+  } else root.append(launcher, panel);
+  container.append(root);
 
   const atLatest = () => transcript.scrollHeight - transcript.clientHeight - transcript.scrollTop < 2;
   function pauseFollow() {
@@ -175,9 +182,11 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   function injectionUnavailable(message) {
     if (!entered || !available || !busy || !activeRun || request?.signal.aborted) return 'Wait for an active reply before adding queued text.';
     if (pendingInjection) return 'Wait for the current queued message to be incorporated.';
+    if (message.requestGroupBound && message.requestId !== activeMessage?.requestId) return 'Resume this message separately to retain its original request.';
     if (message.attachments.length) return 'Messages with files must be sent as a separate reply.';
     if (message.steeredMessages?.length) return 'Resume this interrupted reply to retain all of its added messages.';
     if (!message.text.trim()) return 'Only text can be added to the current reply.';
+    if ((message.contactContext?.id || null) !== (activeMessage?.contactContext?.id || null)) return 'This message is about a different contact. Send it as a separate reply.';
     if ((message.building?.id || null) !== (activeMessage?.building?.id || null)) return 'This message was queued for a different building. Send it as a separate reply.';
     return '';
   }
@@ -192,10 +201,14 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       const item = el('li', 'assistant-queue-item'); item.setAttribute('data-message-id', String(message.id));
       const details = el('div', 'assistant-queue-details');
       details.append(el('p', 'assistant-queue-text', message.text || 'Attached files'));
+      if (message.contactContext) details.append(contactChip(message.contactContext));
       if (message.attachments.length) details.append(el('p', 'assistant-queue-files', message.attachments.map(file => file.name).join(', ')));
       if (message.building) details.append(el('p', 'assistant-queue-building', message.building.name));
       if (message.retry) details.append(el('p', 'assistant-queue-retry', 'Incomplete reply · ready to retry'));
-      for (const added of message.steeredMessages || []) details.append(el('p', 'assistant-queue-files', `Added to reply: ${added.text}`));
+      for (const added of message.steeredMessages || []) {
+        details.append(el('p', 'assistant-queue-files', `Added to reply: ${added.text}`));
+        if (added.contactContext) details.append(contactChip(added.contactContext));
+      }
       if (pendingInjection?.message.id === message.id) details.append(el('p', 'assistant-queue-retry', 'Waiting for the current reply to incorporate this text…'));
       const actions = el('div', 'assistant-queue-actions');
       const inject = el('button', 'assistant-queue-inject', '↑'); inject.type = 'button';
@@ -219,11 +232,15 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   async function injectMessage(message) {
     if (injectionUnavailable(message) || !queuedMessages.some(entry => entry.id === message.id)) return;
+    // Bind before dispatch: the server may act even if both acknowledgements are
+    // lost. A retained queue item must never retry that work as a new send group.
+    message.requestId = activeMessage.requestId;
+    message.requestGroupBound = true;
     const pending = { message, messageId: `queue-${message.id}`, generation, run: activeRun };
     // Register before POST: the stream can acknowledge incorporation first.
     pendingInjection = pending; renderQueue(); controls();
     try {
-      await steerAssistant({ ...pending.run, messageId: pending.messageId, text: message.text, signal: request.signal });
+      await steerAssistant({ ...pending.run, messageId: pending.messageId, text: message.text, contactContext: message.contactContext, signal: request.signal });
       // HTTP acceptance does not mean the active model has used the message.
     } catch (error) {
       if (disposed || pendingInjection !== pending) return;
@@ -232,6 +249,34 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       fileError(new Error(pending.error));
       renderQueue(); controls();
     }
+  }
+  function contactChip(context, removable = false) {
+    const chip = el('span', 'assistant-contact-chip');
+    const name = [context.first_name, context.last_name].filter(Boolean).join(' ').trim() || 'Unnamed contact';
+    chip.append(el('span', 'assistant-contact-name', name));
+    if (removable) {
+      const remove = el('button', 'assistant-contact-remove', '×'); remove.type = 'button';
+      remove.setAttribute('aria-label', 'Remove selected contact');
+      remove.addEventListener('click', () => { draftContactContext = undefined; renderContactContext(); controls(); input.focus(); });
+      chip.append(remove);
+    }
+    return chip;
+  }
+  function renderContactContext() {
+    const height = panel.getBoundingClientRect().height;
+    const follow = atLatest();
+    contactContextArea.replaceChildren(); contactContextArea.hidden = !draftContactContext;
+    if (draftContactContext) contactContextArea.append(contactChip(draftContactContext, true));
+    queueResize(height, follow);
+  }
+  function attachContact(context) {
+    if (disposed) return false;
+    let selected;
+    try { selected = normalizeContactContext(context); } catch { return false; }
+    if (!selected) return false;
+    draftContactContext = selected; renderContactContext(); controls(); open();
+    if (panel.open) input.focus();
+    return true;
   }
   function renderDraftFiles() {
     const height = panel.getBoundingClientRect().height;
@@ -280,6 +325,8 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   }
   function open() {
     if (!entered || disposed) return;
+    const activeModal = document.querySelector?.('dialog[open]');
+    if (activeModal && activeModal !== panel) return;
     if (closing) { clearTimeout(closeTimer); closing = false; panel.classList.remove('is-closing'); }
     else {
       if (panel.open) return;
@@ -375,9 +422,10 @@ export function createAssistant({ container = document.body, getBuilding = () =>
       fileError(new Error('Up to 10 messages can be waiting or responding. Remove a queued message or wait for a reply; your draft is kept.')); return;
     }
     const attachments = draftAttachments;
-    try { boundedMessages([{ role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }]); }
+    const contactContext = draftContactContext ? { ...draftContactContext } : undefined;
+    try { boundedMessages([{ role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}), ...(contactContext ? { contactContext } : {}) }]); }
     catch (error) { fileError(error); return; }
-    queuedMessages.push({ id: ++nextMessageId, text, attachments, building: building ? { ...building } : null });
+    queuedMessages.push({ id: ++nextMessageId, requestId: crypto.randomUUID(), text, attachments, ...(contactContext ? { contactContext } : {}), building: building ? { ...building } : null });
     input.value = ''; draftAttachments = []; attachmentError.hidden = true; renderDraftFiles(); resizeInput();
     renderQueue(); controls(); return drainQueue();
   }
@@ -388,16 +436,21 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     return respond(message);
   }
   async function respond(message) {
+    message.requestGroupBound = true;
     const { text, attachments } = message;
     const id = ++generation, controller = new AbortController(); request = controller;
     activeRun = null;
     const userBubble = bubble('user', text || 'Attached files');
+    if (message.contactContext) userBubble.box.append(contactChip(message.contactContext));
     if (attachments.length) {
       const files = el('ul', 'assistant-message-files');
       for (const file of attachments) files.append(el('li', '', file.name));
       userBubble.box.append(files);
     }
-    for (const added of message.steeredMessages || []) bubble('user', added.text);
+    for (const added of message.steeredMessages || []) {
+      const addedBubble = bubble('user', added.text);
+      if (added.contactContext) addedBubble.box.append(contactChip(added.contactContext));
+    }
     const reply = bubble('assistant', 'Thinking…'); controls();
     announcement.textContent = 'Assistant is responding…'; let partial = '';
     let renderFrame = 0, events = [], renderedPartial = '';
@@ -429,9 +482,11 @@ export function createAssistant({ container = document.body, getBuilding = () =>
     try {
       // Build history at dispatch, after the preceding reply has completed.
       const priorConversation = conversation;
-      const userMessages = () => [{ role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) }, ...(message.steeredMessages || []).map(added => ({ role: 'user', content: added.text }))];
+      const userMessages = () => [{ role: 'user', content: text || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}),
+        ...(message.contactContext ? { contactContext: { ...message.contactContext } } : {}) },
+        ...(message.steeredMessages || []).map(added => ({ role: 'user', content: added.text, ...(added.contactContext ? { contactContext: { ...added.contactContext } } : {}) }))];
       const messages = boundedMessages([...priorConversation, ...userMessages()]);
-      const answer = await streamAssistant({ messages, buildingId: message.building?.id, signal: controller.signal, onEvent(event) {
+      const answer = await streamAssistant({ messages, requestId: message.requestId, buildingId: message.building?.id, signal: controller.signal, onEvent(event) {
         if (disposed || id !== generation || controller.signal.aborted) return;
         if (event.type === 'run') {
           activeRun = { runId: event.runId, steeringToken: event.steeringToken }; renderQueue(); controls(); return;
@@ -441,8 +496,11 @@ export function createAssistant({ container = document.body, getBuilding = () =>
           if (!pending || pending.generation !== id || pending.messageId !== event.messageId || event.status !== 'applied') return;
           message.steeredMessages ??= [];
           if (!message.steeredMessages.some(added => added.messageId === event.messageId)) {
-            message.steeredMessages.push({ messageId: event.messageId, text: pending.message.text });
-            const added = bubble('user', pending.message.text); transcript.insertBefore(added.box, reply.box);
+            message.steeredMessages.push({ messageId: event.messageId, text: pending.message.text,
+              ...(pending.message.contactContext ? { contactContext: { ...pending.message.contactContext } } : {}) });
+            const added = bubble('user', pending.message.text);
+            if (pending.message.contactContext) added.box.append(contactChip(pending.message.contactContext));
+            transcript.insertBefore(added.box, reply.box);
           }
           queuedMessages = queuedMessages.filter(entry => entry.id !== pending.message.id);
           pendingInjection = null;
@@ -556,9 +614,9 @@ export function createAssistant({ container = document.body, getBuilding = () =>
   document.addEventListener('campus-loading-failed', onFailure);
   document.addEventListener('campus-building-selected', onBuilding);
   controls();
-  return Object.freeze({ open, close, dispose() {
+  return Object.freeze({ open, close, attachContact, dispose() {
     stopLogoAnimation();
-    disposed = true; draftAttachments = []; conversation = []; queuedMessages = []; activeMessage = null; onFailure();
+    disposed = true; draftAttachments = []; draftContactContext = undefined; conversation = []; queuedMessages = []; activeMessage = null; onFailure();
     document.removeEventListener('keydown', onShortcut);
     globalThis.removeEventListener?.('resize', onViewportResize);
     globalThis.visualViewport?.removeEventListener('resize', onViewportResize);

@@ -2,6 +2,23 @@ import { ATTACHMENT_ONLY_CONTENT, AttachmentError, attachmentBudget, normalizeAt
 export function safeSourceUrl(value) {
   try { const u = new URL(value); return ['http:', 'https:'].includes(u.protocol) ? u.href : null; } catch { return null; }
 }
+// A selected saved contact is a bounded selector, never a copied profile.
+export function normalizeContactContext(value) {
+  if (value === undefined) return undefined;
+  const keys = ['id', 'first_name', 'last_name'];
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== keys.length
+    || !keys.every(key => Object.hasOwn(value, key))
+    || typeof value.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.id)
+    || !keys.slice(1).every(key => typeof value[key] === 'string' && value[key].length <= 200 && !value[key].includes('\0'))) {
+    throw new Error('This contact cannot be added to the message.');
+  }
+  return { id: value.id.toLowerCase(), first_name: value.first_name, last_name: value.last_name };
+}
+const selectedContact = message => {
+  if (message.contactContext !== undefined && message.role !== 'user') throw new Error('Contact context belongs to user messages only.');
+  const contactContext = normalizeContactContext(message.contactContext);
+  return contactContext === undefined ? {} : { contactContext };
+};
 export function boundedMessages(messages) {
   const candidates = messages.filter(m => ['user', 'assistant'].includes(m.role) && typeof m.content === 'string' && (m.content.trim() || m.role === 'user' && m.attachments?.length)).slice(-20);
   const result = [];
@@ -14,18 +31,19 @@ export function boundedMessages(messages) {
     let attachments;
     try { attachments = normalizeAttachments(candidate.attachments, proposedBudget); }
     catch (error) { if (result.length && error.code === 'attachment_total') break; throw error; }
-    const message = { role: candidate.role, content: candidate.content.slice(0, 8000) || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}) };
+    const message = { role: candidate.role, content: candidate.content.slice(0, 8000) || ATTACHMENT_ONLY_CONTENT, ...(attachments.length ? { attachments } : {}), ...selectedContact(candidate) };
     const proposed = [message, ...result];
-    const textOnly = proposed.map(({ role, content }) => ({ role, content }));
+    const textOnly = proposed.map(({ role, content, contactContext }) => ({ role, content, ...(contactContext ? { contactContext } : {}) }));
     if (chars + message.content.length > 16000 || encoder.encode(JSON.stringify({ messages: textOnly })).length > 32500 || encoder.encode(JSON.stringify({ messages: proposed })).length > MAX_CHAT_BODY_BYTES - 512) break;
     result.unshift(message); chars += message.content.length; budget = proposedBudget;
   }
   if (!result.length && candidates.length) {
     const last = candidates.at(-1);
     let content = last.content.slice(0, 8000) || ATTACHMENT_ONLY_CONTENT;
-    while (encoder.encode(JSON.stringify({ messages: [{ role: last.role, content }] })).length > 32500) content = content.slice(0, -100);
+    const context = selectedContact(last);
+    while (encoder.encode(JSON.stringify({ messages: [{ role: last.role, content, ...context }] })).length > 32500) content = content.slice(0, -100);
     const attachments = normalizeAttachments(last.attachments);
-    result.push({ role: last.role, content, ...(attachments.length ? { attachments } : {}) });
+    result.push({ role: last.role, content, ...(attachments.length ? { attachments } : {}), ...context });
   }
   return result;
 }
@@ -74,8 +92,9 @@ export function browserTimeZone() {
   } catch { return 'UTC'; }
 }
 // EOF never counts as successful completion.
-export async function streamAssistant({ messages, buildingId, signal, onEvent = () => {}, fetchImpl = fetch }) {
-  const body = { messages: boundedMessages(messages), timeZone: browserTimeZone(), steering:true };
+export async function streamAssistant({ messages, buildingId, requestId, signal, onEvent = () => {}, fetchImpl = fetch }) {
+  if (requestId !== undefined && (typeof requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId))) throw new Error('Invalid chat request ID.');
+  const body = { ...(requestId === undefined ? {} : { requestId: requestId.toLowerCase() }), messages: boundedMessages(messages), timeZone: browserTimeZone(), steering:true };
   if (typeof buildingId === 'string' && buildingId) body.buildingId = buildingId;
   let r;
   try { r = await fetchImpl('/api/chat', { method: 'POST', signal, headers: { 'Content-Type': 'application/json', Accept: 'application/x-ndjson' }, body: JSON.stringify(body) }); }
@@ -146,13 +165,14 @@ export async function streamAssistant({ messages, buildingId, signal, onEvent = 
 
 // The token is issued only to the active reply stream. Never add it to history,
 // model input, query strings or persistent browser storage.
-export async function steerAssistant({runId,steeringToken,messageId,text,signal,fetchImpl=fetch}) {
+export async function steerAssistant({runId,steeringToken,messageId,text,contactContext,signal,fetchImpl=fetch}) {
   if(typeof runId!=='string'||!/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(runId)
     ||typeof steeringToken!=='string'||!/^[A-Za-z0-9_-]{43}$/.test(steeringToken)
     ||typeof messageId!=='string'||!/^[A-Za-z0-9_-]{1,80}$/.test(messageId)
     ||typeof text!=='string'||!text.trim()||text.length>8000)throw new Error('This message cannot be added to the active reply.');
+  const selected = normalizeContactContext(contactContext);
   let response;
-  try{response=await fetchImpl(`/api/chat/${runId}/steer`,{method:'POST',signal,headers:{'Content-Type':'application/json','x-flock-steering-token':steeringToken},body:JSON.stringify({messageId,text})});}
+  try{response=await fetchImpl(`/api/chat/${runId}/steer`,{method:'POST',signal,headers:{'Content-Type':'application/json','x-flock-steering-token':steeringToken},body:JSON.stringify({messageId,text,...(selected ? {contactContext:selected} : {})})});}
   catch(error){throw connectionError(error,signal);}
   if(!response.ok)throw new Error(response.status===409?'The active reply has ended. Your message is still queued.':response.status===413?'The active conversation is full. Your message is still queued.':response.status===403?'Access to the active reply is no longer available. Your message is still queued.':connectionMessage);
   let result;try{result=await response.json();}catch{throw new Error('Could not confirm adding this message. It is still queued.');}
