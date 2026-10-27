@@ -35,17 +35,26 @@ function fixture({protectedPrior=false}={}) {
 
 test('real map store read, exact lookup and write dispatch only their own database operation',async()=>{
   const f=fixture(),read=await f.map.execute({name:'read_map_events',arguments:{eventId:eid},principal});
-  assert.equal(read.status,'ready');assert.equal(typeof mapReadContext(read),'function');
+  assert.equal(read.status,'ready');assert.equal(mapReadContext(read),undefined);
+  assert.equal(Object.getOwnPropertySymbols(read).length,0);assert.deepEqual(f.calls,['/rest/v1/rpc/map_read_events']);
   assert(!JSON.stringify(read).includes('mapReadContext'));
+  const beforeLookup=f.calls.length;
   const lookup=await f.map.execute({name:'lookup_map_person',arguments:{provider:'discord',providerUserId:'123',sourceId:dsid,sourceUrl:'https://discord.com/channels/100/200/300'},principal});
-  assert.equal(lookup.person.id,pid);
-  const before=f.calls.length,result=await f.map.execute({name:'upsert_map_event',arguments:{event:{...strip(read.events[0]),notes:'Requested note'},buildings:[{building_id:'bobst-library',location_notes:'Room 2'}],people:[],expectedUpdatedAt:at},principal,readContext:mapReadContext(read)});
+  assert.equal(lookup.person.id,pid);assert.deepEqual(f.calls.slice(beforeLookup),['/rest/v1/map_people']);
+  // JSON clients receive data; a trusted server caller retains its own receipt.
+  const beforeTrustedRead=f.calls.length,trustedRead=await f.service.read({principal,eventId:eid});
+  assert.equal(typeof mapReadContext(trustedRead),'function');assert.equal(mapReadContext(JSON.parse(JSON.stringify(trustedRead))),undefined);
+  assert.deepEqual(f.calls.slice(beforeTrustedRead),['/rest/v1/rpc/map_read_events']);
+  const before=f.calls.length,result=await f.map.execute({name:'upsert_map_event',arguments:{event:{...strip(read.events[0]),notes:'Requested note'},buildings:[{building_id:'bobst-library',location_notes:'Room 2'}],people:[],expectedUpdatedAt:at},principal,readContext:mapReadContext(trustedRead)});
   assert.equal(result.status,'ready');assert.equal(result.sourceStatus,'applied');assert.deepEqual(f.calls.slice(before),['/rest/v1/rpc/map_upsert_event']);assert.equal(f.sourceCalls,0);
 });
 
 test('map update without a local explicit-read receipt does not secretly read storage',async()=>{
-  const f=fixture(),result=await f.map.execute({name:'upsert_map_event',arguments:{event:strip(event()),buildings:[],people:[],expectedUpdatedAt:at},principal});
-  assert.equal(result.status,'read_required');assert.deepEqual(f.calls,[]);assert.equal(f.sourceCalls,0);
+  const f=fixture();
+  for(const readContext of [undefined,()=>({eventId:eid,updated_at:at})]) {
+    const result=await f.map.execute({name:'upsert_map_event',arguments:{event:strip(event()),buildings:[],people:[],expectedUpdatedAt:at},principal,readContext});
+    assert.equal(result.status,'read_required');assert.deepEqual(f.calls,[]);assert.equal(f.sourceCalls,0);
+  }
 });
 
 test('DB transaction rejects a concurrent revision without any hidden refresh or readback',async()=>{

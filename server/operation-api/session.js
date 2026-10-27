@@ -9,10 +9,11 @@ import { OPERATION_BODY_BYTES } from './dispatch.js';
 const failure = (reason, status = 'tool_error') => ({ status, reason, sources: [] });
 const scopeOf = (context) => canonicalJson([...(context.inputIds || [])].sort());
 
-export function createOperationSession(service) {
+export function createOperationSession(service, { catalogue = service.tools || [] } = {}) {
   const app = createOperationApp();
   const owner = { epoch: 0, closed: false };
   const definitions = new Map((service.tools || []).map((tool) => [tool.name, tool]));
+  const knownNames = new Set(catalogue.map((tool) => tool.name));
   for (const name of definitions.keys())
     if (!OPERATIONS[name]) throw new Error('operation_route_missing');
   const preparations = new Map();
@@ -48,8 +49,10 @@ export function createOperationSession(service) {
   async function invoke(name, args, context = {}, { phase = 'execute', preparation } = {}) {
     const definition = definitions.get(name),
       operation = OPERATIONS[name];
-    if (owner.closed || !definition || !operation)
+    if (owner.closed || !definitions.size || (!definition && knownNames.has(name)))
       return { value: failure('operation_not_available', 'forbidden') };
+    if (!definition || !operation)
+      return { value: failure('invalid_operation', 'invalid_request') };
     let body;
     try {
       if (args !== undefined) assertJsonArguments(args);

@@ -20,6 +20,7 @@ export async function dispatchOperation(c, operation) {
   if (request.signal.aborted || binding.context.signal?.aborted)
     return reject('aborted', 'operation_aborted');
   let body;
+  let result;
   try {
     const text = await request.text();
     if (Buffer.byteLength(text) > OPERATION_BODY_BYTES)
@@ -49,7 +50,13 @@ export async function dispatchOperation(c, operation) {
     // after initial authentication. Recheck immediately before dispatch.
     if (!invocationActive(binding) || request.signal.aborted || binding.context.signal?.aborted)
       return reject('aborted', 'operation_session_expired');
-    const result = await binding.invoke(body);
+    result = await binding.invoke(body);
+  } catch (error) {
+    // Preserve original service exceptions for required audit/lease stopping.
+    recordOutcome(request, { error });
+    return reject('tool_error', 'operation_failed', 500);
+  }
+  try {
     if (!invocationActive(binding))
       return reject(
         'tool_error',
@@ -71,10 +78,13 @@ export async function dispatchOperation(c, operation) {
     // only the server-side session may later resolve its original read result.
     recordOutcome(request, { raw: result.value });
     return new Response(encoded, { headers });
-  } catch (error) {
-    // Preserve cancellation/required-audit stopping behavior for this trusted
-    // in-process caller without putting exception text in an HTTP response/log.
-    recordOutcome(request, { error });
-    return reject('tool_error', 'operation_failed', 500);
+  } catch {
+    // Execution may already have changed the provider. An unreadable result is
+    // transport uncertainty, not a new service exception or permission to retry.
+    return reject(
+      'tool_error',
+      binding.definition.readOnly ? 'operation_invalid_response' : 'write_outcome_unknown',
+      500,
+    );
   }
 }

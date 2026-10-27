@@ -7,8 +7,8 @@ const cachedClients = new WeakMap();
 
 // Converts an operation service into a thin endpoint client while preserving the
 // existing constructor/metadata interface used by chat and worker composition.
-export function bindOperationApi(service) {
-  const session = createOperationSession(service);
+export function bindOperationApi(service, { catalogue = service.tools || [] } = {}) {
+  const session = createOperationSession(service, { catalogue });
   const prepared = new WeakMap();
   const definitions = (service.tools || []).map((tool) => {
     const result = { ...tool };
@@ -37,7 +37,10 @@ export function bindOperationApi(service) {
     execute: async ({ name, arguments: args, ...context } = {}) =>
       (await session.invoke(name, args, context)).value,
     ...(typeof service.createRequest === 'function'
-      ? { createRequest: (context) => bindOperationApi(session.createRequest(context)) }
+      ? {
+          createRequest: (context) =>
+            bindOperationApi(session.createRequest(context), { catalogue }),
+        }
       : {}),
     ...(typeof service.advanceUserInput === 'function'
       ? { advanceUserInput: (...args) => session.advanceUserInput(...args) }
