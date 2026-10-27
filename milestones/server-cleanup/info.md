@@ -13,5 +13,5 @@ Independent review found no blocking code issue. Focused checks, prompt/AST
 comparisons, formatting, lint, API build and five browser workflows completed.
 The user explicitly stopped the final full test run, which remains unverified.
 No further tests or automatic CI are run for this publication; ordinary hooks and
-CI stay enabled for future work. Commit/push and clean-tree verification remain
-for the final integration step. No deployment, schema or business-data writes.
+CI stay enabled for future work. Source, guides and provider histories are published through `950c4fe`; the
+final receipt and saved discussion note follow in a documentation commit. No deployment, schema or business-data writes.

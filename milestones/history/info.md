@@ -474,3 +474,5 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Server consumers and independent regression fixtures migrated](2026-10-27_15-25-07-974988-tester-server-consumer-migration.md).
 
 - [Server cleanup reviewed with final-test limitation](2026-10-27_15-25-08-002167-evaluator-server-cleanup-review.md).
+
+- [Server cleanup and remaining provider work published](2026-10-27_15-26-50-084001-orchestrator-server-cleanup-published.md).

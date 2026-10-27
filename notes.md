@@ -246,3 +246,36 @@ User wants company-people discovery through search_treg_people and richer profil
 ## 2026-10-26 — Selected planner remedies
 
 The user approved trimming unused active-conversation logs, an accepted separate no-change result for saved tasks, improved source/ID/Calendar-target prompting and formatting, and successful terminal handling of confirmed missing originals with exact queue/task cleanup. Keep source permissions, exact versions and unfinished unrelated work. Reproduce and explain invented page IDs without fixing that behavior. Explain the old-log cleanup correction but hold its implementation. Other unselected fixes and limit/deployment changes remain out of this pass; actual status is in the milestone.
+
+
+## 2026-10-27 — Side conversation: tools, services and API handoff
+
+The user asked how tools relate to services and API routes, and whether it would
+be cleaner to require every tool to be exposed through an HTTP API. They then
+asked to save this discussion so another agent can take over later.
+
+Current architecture, as explained in the conversation:
+
+```text
+Agent → tool → shared service → provider API or database
+Website → HTTP API route → shared service → provider API or database
+```
+
+Tools and website API routes are separate entry points to shared services; tools
+generally do not call the website's HTTP routes. Services hold shared validation,
+permissions and operation logic, while some tool adapters also perform meaningful
+checks or processing. This is a simplified explanation, not a claim that every
+operation has both a tool and an HTTP route or that every tool is a thin wrapper.
+
+Open question for the next agent: compare keeping these two entry points with
+making agents call authenticated HTTP endpoints for all tool operations. Explain
+which is cleaner for this repository, especially whether agents run inside the
+same server or as separate processes/services, and what each choice adds in
+network requests, authentication, shared checks and maintenance. The comparison
+was interrupted before a recommendation was delivered. The user confirmed their
+understanding that the current arrangement is a chain; they have not selected or
+authorized an architecture migration in this side conversation.
+
+This entry records discussion only. It does not establish a new implementation,
+verification, deployment or release result. Continue from the current repository
+state and preserve work happening in the main conversation.
