@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'meshoptimizer';
-import { createKimmelModel, removeKimmelGeometry } from '../src/kimmel.js';
-import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from '../src/global-center.js';
+import { createKimmelModel, removeKimmelGeometry } from '../src/map/landmarks/kimmel.js';
+import { createGlobalCenterModel, removeGlobalCenterGeometry, globalCenterReplacement } from '../src/map/landmarks/global-center.js';
 
 // Filesystem-only acceptance: never opens a browser or contacts a server.
 const file='assets/yuyang-site-3d-assets/models/buildings/city-tiles/tile--1_0.glb';

@@ -1,3 +1,30 @@
+# Standard verification and current fixture contracts
+
+Run `npm test` for the deterministic Node/isolated SQL suites and the ten offline
+map checks selected by `scripts/run-tests.mjs`. The runner uses four test files at
+a time. `npm run ci` adds formatting, linting, file-length limits and both builds;
+run builds before package checks. Browser and real-model checks stay separate and
+use synthetic business services unless a specific live check is authorized.
+
+Saved-task fixtures use `fixtures/planner-followup.mjs` to expose the saved
+catalogue and exact-read methods separately. Tests of full fragment chains request
+`detail: 'full'`; the normal compact view includes complete original inputs and
+source references but omits retained execution history and historical batch context. A no-change decision is separate from an applied-write receipt
+and still needs an explicit exact-version task resolution.
+
+Worker authorization fixtures model the published saved policy and channel tree.
+They retain ancestor metadata without giving ancestors or siblings source grants.
+Source tools read originals explicitly; map/Calendar operations do not hide reads
+of other services. Full queued native Discord originals already supply their
+original body; metadata-only Gmail inputs need a separate body read. Source
+failures and truncated new observations must not create write authority.
+
+Provider-grouped HTTP route tests import the server-only `src/api` modules.
+`runtime-deploy.test.mjs` verifies reachable API inclusion, dormant/worker route
+exclusion and rejection of browser modules in server packages. Private historical
+model resources have synthetic committed replacements in
+`fixtures/planner-resource-regression.mjs`; they are not CI dependencies.
+
 October23 current verification: production-runner actual-model conversations and retained failures are documented in `docs/tool-isolation-verification-2026-10-23.md`. Worker isolation tests now cover ready/partial/failed sync visibility after initial transcript reset and fragmented partial outcomes without completed receipts. Workflow tests cover exact saved-task coverage, changed/expired/removed originals, and omitted queue inputs remaining queued without duplicate checkpoints. Historical private replay/hash-linked experiments are distinct from ordinary current behavior checks.
 
 `contacts-native-fields.test.mjs` covers native Treg wrapper imports through actual client/worker/SQL/store/API/tools, including exact raw/cache preservation, separate lookup email, search/filters, manual clears and duplicate protection. Synthetic provider data only.

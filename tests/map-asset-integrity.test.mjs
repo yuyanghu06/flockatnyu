@@ -5,9 +5,9 @@ import { createHash } from 'node:crypto';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'meshoptimizer';
-import { enhanceCourantAsync, enhanceSternAsync } from '../src/courant-stern.js';
-import { createLeslieElabModel, leslieElabReplacement } from '../src/leslie-elab.js';
-import { removeReplacedBuilding, insideFootprint } from '../src/geometry.js';
+import { enhanceCourantAsync, enhanceSternAsync } from '../src/map/landmarks/courant-stern.js';
+import { createLeslieElabModel, leslieElabReplacement } from '../src/map/landmarks/leslie-elab.js';
+import { removeReplacedBuilding, insideFootprint } from '../src/map/landmarks/geometry.js';
 
 const asset = path => new URL('../assets/' + path, import.meta.url);
 const json = async path => JSON.parse(await readFile(asset(path), 'utf8'));

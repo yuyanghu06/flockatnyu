@@ -19,7 +19,7 @@ const sources = [
   { title: 'Relative', url: '/synthetic' },
 ];
 const fixture = `<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;background:#cbd7c5"><div id="map" style="height:100vh"></div><script type="module">
-import {createAssistant} from '/src/assistant.js'; import '/src/assistant.css';
+import {createAssistant} from '/src/features/assistant/assistant.js'; import '/src/features/assistant/assistant.css';
 window.mode='stream'; window.calls=[]; window.mapEvents=[]; const encode=new TextEncoder();
 window.fetch=async(url,options)=>{
  if(url==='/api/status')return Response.json({chat:{configured:true},access:{allowed:true}});

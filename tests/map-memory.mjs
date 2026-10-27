@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import {compactContextGeometry,freezeStaticSubtree} from '../src/map-resources.js';
-import {createLandmarkEffects} from '../src/landmark-effects.js';
+import {compactContextGeometry,freezeStaticSubtree} from '../src/map/landmarks/map-resources.js';
+import {createLandmarkEffects} from '../src/map/landmarks/landmark-effects.js';
 const checks=[],check=(name,fn)=>{fn();checks.push({name,pass:true});};
 function raw(a){const arr=[];for(let i=0;i<a.count;i++)for(let j=0;j<a.itemSize;j++)arr.push(a.array[i*(a.isInterleavedBufferAttribute?a.data.stride:a.itemSize)+(a.isInterleavedBufferAttribute?a.offset:0)+j]);return arr;}
 check('Interleaved normalized raw values/index preserved; unrelated geometry unchanged and originals not disposed',()=>{

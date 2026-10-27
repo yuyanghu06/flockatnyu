@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 
 const url=process.env.MAP_URL??'http://127.0.0.1:5174',out=process.env.MAP_EVIDENCE??'evidence/map-event-indicators';
 await fs.mkdir(out,{recursive:true});
-const main=await fs.readFile('src/main.js','utf8'),lineNumber=main.split('\n').findIndex(l=>l.includes("Object.defineProperty(window, '__map'"));
+const main=await fs.readFile('src/app/map-diagnostics.js','utf8'),lineNumber=main.split('\n').findIndex(l=>l.includes("Object.defineProperty(window, '__map'"));
 const base=Date.parse('2026-11-01T12:00:00Z'),iso=n=>new Date(n).toISOString();
 const event=(id,patch={})=>({id,title:'Synthetic scheduled event',kind:'scheduled_event',status:'confirmed',startsAt:iso(base-1000),endsAt:iso(base+90000),allDay:false,timeZone:'America/New_York',location:'Synthetic room',attendees:[],...patch});
 const report={url,checks:[],limitations:['Synthetic intercepted API only; no real provider reads, model calls or stored events.','Isolated installed headless Chrome; mobile viewport and reduced motion emulated, no physical touch/GPU timing claim.','Clock is fixed and advanced in this browser context, independent of real polling intervals.']};
@@ -26,8 +26,8 @@ async function fixture({retiredData=false,reducedMotion='no-preference',viewport
       {id:'nyu-kimmel-center',name:'Kimmel',people:[],events:[event('personal',{kind:'personal_plan'}),event('tentative',{status:'tentative'}),event('missing-kind',{kind:undefined})]},
     ]}});
   });
-  const debug=await context.newCDPSession(page);await debug.send('Debugger.enable');await debug.send('Debugger.setBreakpointByUrl',{urlRegex:'/src/main\\.js(?:\\?|$)',lineNumber});let captured=false;
-  debug.on('Debugger.paused',async e=>{try{const value=await debug.send('Debugger.evaluateOnCallFrame',{callFrameId:e.callFrames[0].callFrameId,expression:'globalThis.__eventProbe={scene,roots,pickMeshes,camera,renderer,THREE,landmarkEffects,eventIndicators,sourceDisposals:0}; for(const root of roots.values())root.traverse(m=>{if(m.isMesh){m.geometry.addEventListener("dispose",()=>__eventProbe.sourceDisposals++);m.material.addEventListener("dispose",()=>__eventProbe.sourceDisposals++);}}); true',returnByValue:true});assert(!value.exceptionDetails);captured=true;}finally{await debug.send('Debugger.resume');}});
+  const debug=await context.newCDPSession(page);await debug.send('Debugger.enable');await debug.send('Debugger.setBreakpointByUrl',{urlRegex:'/src/app/map-diagnostics\\.js(?:\\?|$)',lineNumber});let captured=false;
+  debug.on('Debugger.paused',async e=>{try{const value=await debug.send('Debugger.evaluateOnCallFrame',{callFrameId:e.callFrames[0].callFrameId,expression:'globalThis.__eventProbe={...view,THREE,sourceDisposals:0}; for(const root of view.roots.values())root.traverse(m=>{if(m.isMesh){m.geometry.addEventListener("dispose",()=>__eventProbe.sourceDisposals++);m.material.addEventListener("dispose",()=>__eventProbe.sourceDisposals++);}}); true',returnByValue:true});assert(!value.exceptionDetails);captured=true;}finally{await debug.send('Debugger.resume');}});
   const started=Date.now();await page.goto(url,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>window.__map?.snapshot().status==='ready'&&document.querySelector('#app').dataset.state==='entered',null,{timeout:120000});assert(captured);await debug.send('Debugger.disable');
   if(await page.getByRole('button',{name:'Close assistant',exact:true}).isVisible())await page.getByRole('button',{name:'Close assistant',exact:true}).click();
   await page.mouse.move(5,5);await page.waitForFunction(()=>window.__map.presence.snapshot().status==='ok');
@@ -90,7 +90,7 @@ try {
   await check('Retired popup API data cannot register a marker, selector, camera preset or model request',async()=>{
     const retired=await fixture({retiredData:true});try{
       const s=await retired.snap(),state=await retired.page.evaluate(async()=>{
-        const {buildings}=await import('/src/config.js'),{buildingViews}=await import('/src/building-views.js');
+        const {buildings}=await import('/src/map/data/config.js'),{buildingViews}=await import('/src/map/data/building-views.js');
         return {ids:buildings.map(b=>b.id),preset:buildingViews['683-broadway']??null,roots:[...window.__eventProbe.roots.keys()]};
       });
       assert.equal(state.ids.length,9);assert(!state.ids.includes('683-broadway'));assert(!state.roots.includes('683-broadway'));assert.equal(state.preset,null);

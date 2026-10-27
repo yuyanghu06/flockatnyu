@@ -28,8 +28,8 @@ function fixture({sourceConfigured=true,sourceAllowed=true,calendarEvents=[calen
   const liveDiscordService={configured:true,readMessages:async args=>{calls.push(['discord-current',args]);return {status:discordDenied?'forbidden':'ready',sources:[original]};}};
   const mapEventService={configured:true,read:async args=>{calls.push(['map-read',args]);return mapRead?mapRead(args):{status:'ok',events:existingMapEvents,event_people:[],event_buildings:existingMapBuildings,buildings:fixedCatalogue};},
     lookup:async args=>{calls.push(['lookup',args]);return {status:'ok',person:{id:MAP_RECORD_EXAMPLES.people[0].person_id}};},upsert:async args=>{writes.push(args);return mapUpsert?mapUpsert(args,writes.length):{status:'applied'};}};
-  const discordTools={tools:[{name:'read_discord_messages',description:'Fixture original',parameters:{type:'object',properties:{},additionalProperties:false}}],
-    execute:async()=>discordResult||{status:'ready',sources:[original]}};
+  const discordTools={tools:[{name:'read_discord_messages',description:'Fixture original',parameters:{type:'object',properties:{channelId:{type:'string'},messageId:{type:'string'},context:{type:'boolean'}},additionalProperties:false}}],
+    execute:async()=>discordResult||{status:discordDenied?'forbidden':'ready',sources:discordDenied?[]:[original]}};
   const a=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:[miroSource,discordSource,gmailSource,...(sourceAllowed?[calendarSource]:[])].join(','),AGENT_GMAIL_SOURCE_ID:gmailSource,
     ...(sourceConfigured?{AGENT_CALENDAR_SOURCE_ID:calendarSource}:{})},config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),now,
     fetchImpl:async()=>{throw Error('Unmocked network');},dependencies:{googleConfig:{configured:true},googleClient:{configured:true},
@@ -49,21 +49,14 @@ const mapArgs=(source=calendarSource,sourceUrl=url,record=eventId)=>({event:{...
   ...(source===calendarSource?{name:calendarEvent.title,notes:calendarEvent.location,kind:'scheduled_event',reported_at:calendarEvent.updatedAt,starts_at:calendarEvent.start.dateTime,ends_at:calendarEvent.end.dateTime}:{}),
   source_id:source,source_url:sourceUrl,source_record_id:record},buildings:structuredClone(MAP_RECORD_EXAMPLES.buildings),people:[]});
 const window={timeMin:'2026-10-17T16:00:00Z',timeMax:'2026-10-26T16:00:00Z'};
-test('batch includes bounded trusted window; observed Calendar occurrence permits exact-source map projection with fresh access',async()=>{
-  const f=fixture(),batch=await f.prepare();
-  assert.equal(batch.calendarMap.configured,true);assert.equal(batch.calendarMap.sourceId,calendarSource);
-  assert.equal(batch.reconciliationWindow,undefined);assert.equal(batch.miro,undefined);
-  assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'forbidden_source');
-  const result=await f.tool('list_calendar_events')(window);
-  assert.equal(result.nextPageToken,undefined);assert.equal(result.coverage.complete,true);assert.equal(result.coverage.pagesRead,2);
-  assert.deepEqual(result.sources,[{kind:'google_calendar',retrieval:'live',sourceId:calendarSource,externalId:eventId,url}]);
-  assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'forbidden_source');
-  await f.tool('read_map_events')({sourceId:calendarSource,sourceRecordId:eventId});
-  assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'ready');assert.equal(f.writes.length,1);
-  assert(f.calls.some(([kind])=>kind==='calendar-current'));
-  assert.equal(f.writes[0].event.source_record_id,eventId);assert.equal(f.writes[0].people.length,0);
-  f.revokeCalendar();assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'forbidden_source');
-  assert.equal(f.writes.length,1);
+test('observed Calendar occurrence permits exact-source map creation without a mandatory map scan or hidden Calendar read',async()=>{
+ const f=fixture(),batch=await f.prepare();assert.equal(batch.calendarMap.configured,true);assert.equal(batch.calendarMap.sourceId,calendarSource);assert.equal(batch.reconciliationWindow,undefined);assert.equal(batch.miro,undefined);
+ assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'forbidden_source');
+ const result=await f.tool('list_calendar_events')(window);assert.equal(result.nextPageToken,undefined);assert.equal(result.coverage.complete,true);assert.equal(result.coverage.pagesRead,2);
+ assert.deepEqual(result.sources,[{kind:'google_calendar',retrieval:'live',sourceId:calendarSource,externalId:eventId,url}]);
+ const before=f.calls.length;assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'ready');assert.equal(f.writes.length,1);assert.equal(f.calls.length,before,'Map creation does not dispatch Calendar or map reads');
+ assert.equal(f.writes[0].event.source_record_id,eventId);assert.equal(f.writes[0].people.length,0);
+ await f.prepare();assert.equal((await f.tool('upsert_map_event')(mapArgs())).status,'forbidden_source');assert.equal(f.writes.length,1,'A fresh batch cannot reuse an old Calendar observation');
 });
 test('Calendar map projection rejects forged IDs/links/source borrowing and never guesses participants from selected fields',async()=>{
   const f=fixture();await f.prepare();await f.tool('list_calendar_events')(window);
@@ -92,7 +85,7 @@ test('live Discord follow-up originals support scoped map facts and attendance w
   assert.equal(f.calls.filter(([kind])=>kind==='lookup').length,0);
   assert.equal((await f.tool('lookup_map_person')({provider:'discord',providerUserId:'400',sourceId:discordSource,sourceUrl:discordUrl})).status,'ready');
   assert.equal((await f.tool('upsert_map_event')(p)).status,'ready');assert.equal(f.writes.length,1);
-  f.revokeDiscord();assert.equal((await f.tool('upsert_map_event')(p)).status,'forbidden_source');assert.equal(f.writes.length,1);
+  f.revokeDiscord();await f.tool('read_discord_messages')({channelId:'200',messageId:'301',context:false});assert.equal((await f.tool('upsert_map_event')(p)).status,'forbidden_source');assert.equal(f.writes.length,1);
   await f.prepare();assert.equal((await f.tool('upsert_map_event')(p)).status,'forbidden_source');
 });
 test('Calendar event facts and explicit live Discord participation retain separate source provenance',async()=>{
@@ -113,7 +106,7 @@ test('Discord navigation metadata, non-live content, forged links and unallowed 
 });
 
 const projection=()=>{const p=mapArgs();p.event={...p.event,name:calendarEvent.title,kind:'scheduled_event',reported_at:calendarEvent.updatedAt,starts_at:calendarEvent.start.dateTime,ends_at:calendarEvent.end.dateTime};return p;};
-test('actual handler canonicalizes exact trusted Calendar identity and origin before writing and hashing its receipt',async()=>{
+test('actual handler rejects a forged Calendar link then hashes the model-selected canonical retry unchanged',async()=>{
  const origin='https://miro.com/app/board/board/?moveToWidget=item';
  const f=fixture({calendarEvents:[{...calendarEvent,managed:true,sourceUrl:origin}]}),config=readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'});
  const input={uuid:inputId,raw_response:{source:'gmail',source_id:gmailSource,event_type:'email_received_metadata',event_id:'abc123',revision:'1',received_at:now().toISOString(),payload:{id:'abc123'}}};
@@ -126,14 +119,15 @@ test('actual handler canonicalizes exact trusted Calendar identity and origin be
   if(round===1){name='list_calendar_events';args=required;}
   else if(round===2){name='read_map_events';args={sourceId:calendarSource,sourceRecordId:eventId};}
   else if(round===3){name='upsert_map_event';args=projection();args.event.source_url=url.replace('calendar.google.com','google.com');args.event.url='https://wrong.invalid';args.event.notes='';modelArguments=structuredClone(args);}
+  else if(round===4){name='upsert_map_event';args=projection();args.event.url=url;args.event.notes=`${calendarEvent.location}\nOriginal plan: ${origin}`;modelArguments=structuredClone(args);}
   else {name='finish_batch';args={handledInputIds:[inputId]};}
   return {stopReason:'tool_calls',toolCalls:[{id:`call_${round}`,name,arguments:name==='finish_batch'?args:{inputIds:[inputId],arguments:args}}]};
  }};
  const handler=createAutomationHandler({...f.a,store,provider,config,now});
- assert.equal((await handler.tick()).status,'completed');assert.equal(f.writes.length,1);assert.equal(finished,1);assert.equal(attempted.length,1);assert.equal(completed.length,1);
+ assert.equal((await handler.tick()).status,'completed');assert.equal(f.writes.length,1);assert.equal(finished,1);assert.equal(attempted.length,2);assert.equal(completed.length,1);
  const {principal,signal,...applied}=f.writes[0];assert.equal(applied.event.source_url,url);assert.equal(applied.event.url,url);assert(applied.event.notes.includes(origin));assert(applied.event.notes.includes(calendarEvent.location));
  const receipt=args=>createHash('sha256').update(canonicalJson({inputIds:[inputId],name:'upsert_map_event',arguments:args})).digest('hex');
- assert.equal(completed[0],receipt(applied));assert.notEqual(completed[0],receipt(modelArguments));
+ assert.deepEqual(Object.fromEntries(Object.keys(modelArguments).map(key=>[key,applied[key]])),modelArguments);assert.equal(completed[0],receipt(modelArguments));
 });
 
 test('URL correction does not expose a canonical reference for wrong identities, unobserved sources or revoked access',async()=>{

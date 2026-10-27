@@ -95,14 +95,15 @@ test('repeat of an actually delivered exact snapshot reuses data without rebindi
   assert.deepEqual((await h.full()).task, h.task);
   const stored = canonicalJson(h.rows.get(h.taskId)), beforeBindings = h.bindings.length;
   const expected = { status: 'ready', alreadyRead: true, ...(!process.env.TASK_READ_DISCLOSURE_BASELINE ? { detail: 'full' } : {}), taskId: h.taskId, updated_at: stamp, request: Object.fromEntries(Object.entries(h.task.info.request).filter(([key]) => ['operation', 'calendarKind', 'calendarEventId', 'personId', 'buildingId'].includes(key))), notice: compactNotice };
-  assert.deepEqual(await h.read(), expected);
+  const repeated=await h.read();const {resolutionOptions,resolutionNotice,...metadata}=repeated;assert.deepEqual(metadata,expected);
+  assert.deepEqual(resolutionOptions?.map(row=>row.outcome),['completed','no_change_needed','no_change_needed','source_missing']);assert(resolutionOptions.every(row=>row.taskId===h.taskId));assert.equal(typeof resolutionNotice,'string');
   assert.equal(Object.hasOwn(expected.request, 'summary'), false, 'Repeated metadata does not duplicate the fully delivered summary');
   assert.equal(h.bindings.length, beforeBindings, 'Known disclosure must not grant a new bind/read proof');
   assert.equal(canonicalJson(h.rows.get(h.taskId)), stored, 'Originals/full history and every saved field remain unchanged');
   assert.equal((await h.call('resolve_pending_task', { taskId: h.taskId, outcome: 'completed' })).status, 'invalid_request');
   assert.equal(h.rows.size, 1); assert.equal(h.storeCalls.length, 0);
   h.history.push({ kind: 'tool_result', tool: 'upsert_map_event', inputIds: [h.taskId], arguments: { event: { source_record_id: 'workshop123' }, people: [{ person_id: h.person }] }, result: { status: 'ready', eventId: 'workshop123' } });
-  assert.deepEqual(await h.read(), expected);
+  const {resolutionOptions:choices,resolutionNotice:notice,...again}=await h.read();assert.deepEqual(again,expected);assert.deepEqual(choices,resolutionOptions);assert.equal(notice,resolutionNotice);
   assert.equal((await h.call('resolve_pending_task', { taskId: h.taskId, outcome: 'completed' })).status, 'ready', 'Earlier action proof survives a repeated data read');
 });
 

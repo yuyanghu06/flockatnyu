@@ -22,14 +22,10 @@ function fixture() {
   const authorize=createMapSourceAuthorizer({calendarClient:client,calendarSourceId:sourceId});
   return {client,calls,authorize,revoke:()=>{status='permission_denied';},changeEvents:rows=>{events=rows;}};
 }
-test('Calendar map access validates exact configured source, canonical event identity and current live read',async()=>{
-  const f=fixture();
-  for(const actor of [principal,{id:'update-agent',calendarAccess:true,calendarId,allowedSourceIds:[sourceId]}]) {
-    assert.equal(await f.authorize({principal:actor,sourceId,sourceUrl:link()}),true);
-    assert.deepEqual(f.calls.at(-1).principal,{id:actor.id,calendarAccess:true,calendarId});
-    assert.equal(f.calls.at(-1).eventId,eventId);
-  }
-  f.revoke();assert.equal(await f.authorize({principal,sourceId,sourceUrl:link()}),false);
+test('saved Calendar map access validates configured source and canonical identity without reading Calendar',async()=>{
+ const f=fixture();
+ for(const actor of [principal,{id:'update-agent',calendarAccess:true,calendarId,allowedSourceIds:[sourceId]}])assert.equal(await f.authorize({principal:actor,sourceId,sourceUrl:link()}),true);
+ assert.equal(f.calls.length,0);f.revoke();assert.equal(await f.authorize({principal,sourceId,sourceUrl:link()}),true);assert.equal(f.calls.length,0,'Provider status is checked only by an explicit Calendar operation');
 });
 test('forged Calendar targets, links, source IDs and grants fail before provider read',async()=>{
   const f=fixture();
@@ -41,16 +37,10 @@ test('forged Calendar targets, links, source IDs and grants fail before provider
   assert.equal(await createMapSourceAuthorizer({calendarClient:f.client})({principal,sourceId,sourceUrl:link()}),false);
   assert.equal(f.calls.length,0);
 });
-test('current Calendar mismatch, missing event, failure or aborted read cannot authorize map visibility',async()=>{
-  for(const rows of [[],[{eventId:'another',url:link()}],[{eventId,url:link(eventId,'other@example.com')}]]) {
-    const f=fixture();f.changeEvents(rows);assert.equal(await f.authorize({principal,sourceId,sourceUrl:link()}),false);
-  }
-  const f=fixture();f.client.readEvent=async()=>{throw Error('private');};
-  assert.equal(await f.authorize({principal,sourceId,sourceUrl:link()}),false);
-  const controller=new AbortController();controller.abort();
-  assert.equal(await fixture().authorize({principal,sourceId,sourceUrl:link(),signal:controller.signal}),false);
-  const during=fixture(),duringController=new AbortController();during.client.readEvent=async()=>{duringController.abort();return {status:'ready',events:[{eventId,url:link()}]};};
-  assert.equal(await during.authorize({principal,sourceId,sourceUrl:link(),signal:duringController.signal}),false);
+test('saved map authorization checks cancellation locally and never implicitly checks a Calendar original',async()=>{
+ const f=fixture();f.client.readEvent=async()=>{throw Error('Map authorization must not fetch Calendar');};
+ assert.equal(await f.authorize({principal,sourceId,sourceUrl:link()}),true);assert.equal(f.calls.length,0);
+ const controller=new AbortController();controller.abort();assert.equal(await f.authorize({principal,sourceId,sourceUrl:link(),signal:controller.signal}),false);
 });
 test('Calendar source configuration is optional and chat provenance is attached only from server config plus allowlist',async()=>{
   assert.equal(readCalendarConfig({}).sourceId,'');
@@ -81,44 +71,39 @@ function timestampFixture(patch={}) {
  const prepare=async()=>{const batch=await a.prepareBatch({...context,inputs:[input]});await tool('list_calendar_events').execute({timeMin:'2026-10-21T00:00:00Z',timeMax:'2026-10-23T00:00:00Z'},context);await tool('read_map_events').execute({sourceId:calendarSource,sourceRecordId:eventId},context);return batch;};
  return {a,config,clock,input,context,proposal,original,writes,tool,prepare,revoke:()=>{revoked=true;}};
 }
-test('Calendar timestamp preparation uses observed updatedAt or createdAt without touching map token or participants',async()=>{
+test('map argument preparation preserves exactly the model proposal and does not repair timestamps',async()=>{
  for(const patch of [{},{updatedAt:undefined,createdAt:currentTimestamp}]){
   const f=timestampFixture(patch);await f.prepare();const args=structuredClone(f.proposal);args.people=[{reported_at:oldTimestamp,source_id:sourceId}];
-  const prepared=await f.tool('upsert_map_event').prepareArguments(args,f.context);
-  assert.equal(prepared.event.reported_at,currentTimestamp);assert.equal(prepared.expectedUpdatedAt,oldTimestamp);assert.deepEqual(prepared.people,args.people);assert.equal(args.event.reported_at,oldTimestamp);
+  assert.deepEqual(await f.tool('upsert_map_event').prepareArguments(args,f.context),args);assert.equal(f.writes.length,0);
  }
 });
-test('Calendar timestamp preparation never repairs foreign/unobserved/revoked sources or non-Calendar timestamps',async()=>{
+test('foreign and unobserved Calendar event identities cannot authorize changed map facts',async()=>{
  const f=timestampFixture();await f.prepare();
  for(const patch of [{source_id:sourceId},{source_id:randomUUID()},{source_record_id:'unknown_event'}]){
-  const args={...structuredClone(f.proposal),event:{...f.proposal.event,...patch}},prepared=await f.tool('upsert_map_event').prepareArguments(args,f.context);
-  assert.equal(prepared.event.reported_at,oldTimestamp);assert.equal((await f.tool('upsert_map_event').execute(args,f.context)).status,'forbidden_source');
+  const args={...structuredClone(f.proposal),event:{...f.proposal.event,name:'Changed event',...patch}};
+  assert.deepEqual(await f.tool('upsert_map_event').prepareArguments(args,f.context),args);assert.equal((await f.tool('upsert_map_event').execute(args,f.context)).status,'forbidden_source');
  }
- f.revoke();assert.equal((await f.tool('upsert_map_event').prepareArguments(f.proposal,f.context)).event.reported_at,oldTimestamp);assert.equal((await f.tool('upsert_map_event').execute(f.proposal,f.context)).status,'forbidden_source');assert.equal(f.writes.length,0);
- const unobserved=timestampFixture();await unobserved.a.prepareBatch({...unobserved.context,inputs:[unobserved.input]});assert.equal((await unobserved.tool('upsert_map_event').prepareArguments(unobserved.proposal,unobserved.context)).event.reported_at,oldTimestamp);
+ const unobserved=timestampFixture();await unobserved.a.prepareBatch({...unobserved.context,inputs:[unobserved.input]});
+ const args=structuredClone(unobserved.proposal);args.event.name='Changed event';assert.equal((await unobserved.tool('upsert_map_event').execute(args,unobserved.context)).status,'read_required');assert.equal(f.writes.length,0);assert.equal(unobserved.writes.length,0);
 });
-test('missing/invalid original Calendar timestamps fail closed; sparse cancellation preserves known timestamp',async()=>{
- for(const patch of [{updatedAt:undefined},{updatedAt:'not-a-date',createdAt:currentTimestamp}]){
-  const f=timestampFixture(patch);await f.prepare();const prepared=await f.tool('upsert_map_event').prepareArguments(f.proposal,f.context);assert.equal(prepared.event.reported_at,oldTimestamp);
-  assert.equal((await f.tool('upsert_map_event').execute(f.proposal,f.context)).status,'forbidden_source');assert.equal(f.writes.length,0);
- }
- const sparse=timestampFixture({status:'cancelled',start:null,end:null});await sparse.prepare();const args=structuredClone(sparse.proposal);args.event.status='cancelled';
- assert.equal((await sparse.tool('upsert_map_event').prepareArguments(args,sparse.context)).event.reported_at,oldTimestamp);
- assert.equal((await sparse.tool('upsert_map_event').execute(args,sparse.context)).status,'ready');assert.equal(sparse.writes[0].event.reported_at,oldTimestamp);
+test('a separately observed sparse Calendar cancellation preserves the supplied saved timestamp',async()=>{
+ const f=timestampFixture({status:'cancelled',start:null,end:null});await f.prepare();const args=structuredClone(f.proposal);args.event.status='cancelled';
+ assert.deepEqual(await f.tool('upsert_map_event').prepareArguments(args,f.context),args);assert.equal((await f.tool('upsert_map_event').execute(args,f.context)).status,'ready');assert.equal(f.writes[0].event.reported_at,oldTimestamp);
 });
-test('actual handler hashes corrected Calendar reported_at before action receipt and preserves optimistic token',async()=>{
+test('actual handler hashes the exact explicit Calendar-based proposal and preserves optimistic token',async()=>{
  const f=timestampFixture(),receipts=[];let round=0,batch;
  const store={configured:true,claim:async()=>({status:'ready',leaseToken:randomUUID(),inputs:[f.input]}),renew:async()=>({status:'ready'}),release:async()=>({status:'ready'}),finish:async()=>({status:'ready'}),action:async({actionKey,complete})=>{receipts.push({actionKey,complete});return {status:complete?'completed':'execute'};}};
  const provider={toolTurn:async request=>{
   round++;batch??=JSON.parse(request.messages[0].content).batchContext;let name,args;
   if(round===1){name='list_calendar_events';args={timeMin:'2026-10-21T00:00:00Z',timeMax:'2026-10-23T00:00:00Z'};}
   else if(round===2){name='read_map_events';args={sourceId:calendarSource,sourceRecordId:eventId};}
-  else if(round===3){name='upsert_map_event';args=structuredClone(f.proposal);}
+  else if(round===3){name='upsert_map_event';args=structuredClone(f.proposal);args.event.reported_at=currentTimestamp;}
   else{name='finish_batch';args={handledInputIds:[queuedId]};}
   return {stopReason:'tool_calls',toolCalls:[{id:'call'+round,name,arguments:name==='finish_batch'?args:{inputIds:[queuedId],arguments:args}}]};
  }};
  assert.equal((await createAutomationHandler({...f.a,store,provider,config:f.config,now:f.clock}).tick()).status,'completed');assert.equal(f.writes.length,1);
  const {principal,signal,...written}=f.writes[0];assert.equal(written.event.reported_at,currentTimestamp);assert.equal(written.expectedUpdatedAt,oldTimestamp);
  const hash=args=>createHash('sha256').update(canonicalJson({inputIds:[queuedId],name:'upsert_map_event',arguments:args})).digest('hex');
- assert.equal(receipts.length,2);assert.equal(receipts[0].actionKey,hash(written));assert.equal(receipts[1].actionKey,hash(written));assert.notEqual(hash(written),hash(f.proposal));
+ const expected=structuredClone(f.proposal);expected.event.reported_at=currentTimestamp;assert.deepEqual(Object.fromEntries(Object.keys(expected).map(key=>[key,written[key]])),expected);
+ assert.equal(receipts.length,2);assert.equal(receipts[0].actionKey,hash(expected));assert.equal(receipts[1].actionKey,hash(expected));assert.notEqual(hash(expected),hash(f.proposal));
 });

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import {createMapEventIndicators} from '../src/map-event-indicators.js';
-import {createLandmarkEffects} from '../src/landmark-effects.js';
+import {createMapEventIndicators} from '../src/map/presence/map-event-indicators.js';
+import {createLandmarkEffects} from '../src/map/landmarks/landmark-effects.js';
 
 const at = Date.parse('2026-11-01T12:00:00Z');
 const event = (patch = {}) => ({kind:'scheduled_event',status:'confirmed',starts:at,ends:at+1000,...patch});

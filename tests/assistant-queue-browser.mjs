@@ -7,8 +7,8 @@ const browser = await chromium.launch({
   headless: true,
 });
 const fixture = `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><script type="module">
-import { createAssistant } from '/src/assistant.js';
-import '/src/assistant.css';
+import { createAssistant } from '/src/features/assistant/assistant.js';
+import '/src/features/assistant/assistant.css';
 const encoder = new TextEncoder();
 const h = window.harness = { calls: [], streams: [], steers: [], inFlight: 0, maxInFlight: 0, offline: false, httpNext: false, steerMode: 'accept', emitRun: true };
 window.fetch = async (url, options) => {

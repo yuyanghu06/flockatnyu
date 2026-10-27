@@ -32,17 +32,15 @@ function clock(t) {
 const observe=promise=>{const state={done:false};state.promise=promise.then(value=>{state.done=true;state.value=value;},error=>{state.done=true;state.error=error;});return state;};
 const stalledFetch=(_url,{signal})=>new Promise((_,reject)=>{if(signal.aborted)reject(signal.reason);else signal.addEventListener('abort',()=>reject(signal.reason),{once:true});});
 
-for(const kind of ['events','presence'])test(`${kind} source checks can exceed 5s without bypassing source decisions`,async t=>{
-  const advance=clock(t);let checked=0;
-  const factory=kind==='events'?createMapEventService:createMapPresenceService;
-  const data=snapshot();data.event_buildings=data.events.map(event=>({event_id:event.id,building_id:'bobst-library',location_notes:''}));
-  const service=factory({store:{configured:true,read:async()=>data},production:true,now:()=>new Date(at),authorizeSource:async({signal})=>{
-    await new Promise(resolve=>setTimeout(resolve,kind==='events'?600:6000));assert.equal(signal.aborted,false);return ++checked!==11;
-  }});
-  const state=observe(service.read({principal}));await flush();
-  for(let i=0;i<11;i++)await advance(kind==='events'?600:2000);
-  assert.equal(state.done,true);assert.equal(state.value.status,'ok');assert.equal(checked,11);
-  assert.equal(kind==='events'?state.value.events.length:state.value.buildings[0].events.length,10,'the denied original stays hidden despite the larger deadline');
+for(const kind of ['events','presence'])test(`${kind} saved-map reads can exceed 5s and still enforce local source decisions`,async t=>{
+ const advance=clock(t);let checked=0;
+ const factory=kind==='events'?createMapEventService:createMapPresenceService;
+ const data=snapshot();data.event_buildings=data.events.map(event=>({event_id:event.id,building_id:'bobst-library',location_notes:''}));
+ const authorizeSource=Object.assign(()=>++checked!==11,{localOnly:true});
+ const service=factory({store:{configured:true,read:async()=>{await new Promise(resolve=>setTimeout(resolve,6000));return data;}},production:true,now:()=>new Date(at),authorizeSource});
+ const state=observe(service.read({principal}));await flush();await advance(5999);assert.equal(state.done,false);assert.equal(checked,0);
+ await advance(1);await state.promise;assert.equal(state.value.status,'ok');assert.equal(checked,11);
+ assert.equal(kind==='events'?state.value.events.length:state.value.buildings[0].events.length,10,'Denied saved provenance remains hidden after the database read');
 });
 
 test('standard map read waits beyond the old 15s ceiling for its authorized event snapshot',async t=>{
@@ -70,11 +68,11 @@ test('map explicit shorter overrides and parent cancellation remain effective',a
   let called=false;await assert.rejects(boundedWork(()=>{called=true;},parent.signal));assert.equal(called,false);
 });
 
-test('map source checks stop at 60s and return no partially authorized snapshot',async t=>{
-  const advance=clock(t);let child;
-  const service=createMapEventService({store:{configured:true,read:async()=>snapshot()},now:()=>new Date(at),authorizeSource:async({signal})=>{child=signal;return new Promise(()=>{});}});
-  const state=observe(service.read({principal}));await flush();await advance(59999);assert.equal(state.done,false);
-  await advance(1);await state.promise;assert.equal(child.aborted,true);assert.deepEqual(state.value,{status:'unavailable',diagnostics:{stage:'execution',reason:'timeout'}});
+test('map storage waits stop at 60s and return no partial snapshot',async t=>{
+ const advance=clock(t);let child;
+ const service=createMapEventService({store:{configured:true,read:async({signal})=>{child=signal;return new Promise(()=>{});}},now:()=>new Date(at)});
+ const state=observe(service.read({principal}));await flush();await advance(59999);assert.equal(state.done,false);
+ await advance(1);await state.promise;assert.equal(child.aborted,true);assert.deepEqual(state.value,{status:'unavailable',diagnostics:{stage:'execution',reason:'timeout'}});
 });
 
 const transports=[

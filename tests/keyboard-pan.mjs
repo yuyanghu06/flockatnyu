@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { Vector3 } from 'three';
-import { createKeyboardPan } from '../src/keyboard-pan.js';
-import { constrainPan } from '../src/geometry.js';
+import { createKeyboardPan } from '../src/map/camera/keyboard-pan.js';
+import { constrainPan } from '../src/map/landmarks/geometry.js';
 class Events {
   constructor(parent = null) { this.parent = parent; }
   listeners = new Map();

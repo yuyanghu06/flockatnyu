@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import {createLoadingState} from '../src/loading-state.js';
+import {createLoadingState} from '../src/app/loading-state.js';
 const checks=[],check=(name,fn)=>{fn();checks.push({name,pass:true});};
 const ready=s=>{s.start(1);s.jobFinished();s.sceneReady();};
 check('Initial state never enters; invalid totals/counters cannot manufacture readiness',()=>{const s=createLoadingState();assert.equal(s.snapshot().status,'loading');assert.equal(s.enter(),false);assert.equal(s.jobFinished(),false);assert.equal(s.resourceFinished(),false);for(const n of [0,-1,.5,NaN,Infinity,Number.MAX_SAFE_INTEGER+1,'1',null])assert.throws(()=>s.start(n),RangeError);assert.equal(s.snapshot().started,false);s.start(2);assert.equal(s.start(1),false);s.jobFinished();assert.equal(s.enter(),false);s.jobFinished();assert.equal(s.jobFinished(),false);assert.equal(s.snapshot().completedJobs,2);assert.equal(s.enter(),false);});
@@ -18,7 +18,7 @@ function node(id){if(!nodes.has(id))nodes.set(id,{hidden:false,inert:id==='app',
 let reloads=0;const motion={matches:false,addEventListener(){}};
 globalThis.document={getElementById:node,dispatchEvent:e=>events.push(e.type)};globalThis.window={location:{reload:()=>reloads++},matchMedia:()=>motion};globalThis.setTimeout=()=>1;globalThis.clearTimeout=()=>{};
 try {
- const {campusStartup:s}=await import('../src/map-startup.js');
+ const {campusStartup:s}=await import('../src/app/map-startup.js');
  check('Ready holds input through ordered logo and white exits, then enters exactly once',()=>{
   assert(node('app').inert);s.start(1);s.resourceStarted();s.jobFinished();s.sceneReady();assert(node('app').inert);assert.equal(events.filter(x=>x==='campus-enter').length,0);
   s.resourceFinished();assert.equal(s.snapshot().status,'ready');assert(node('app').inert);assert.equal(node('startup-notice').dataset.phase,'logo-exit');assert.equal(node('startup-brand').dataset.static,'false');assert.equal(node('app').attributes.get('aria-busy'),'false');

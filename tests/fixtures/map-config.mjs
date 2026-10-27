@@ -2,7 +2,7 @@ import {readFile} from 'node:fs/promises';
 
 // Vite accepts bare JSON imports; Node needs the data inlined for these tests.
 // Resolve JavaScript imports against the real config file before using a data URL.
-const url=new URL('../../src/config.js',import.meta.url);
+const url=new URL('../../src/map/data/config.js',import.meta.url);
 let source=await readFile(url,'utf8');
 const jsonImports=[...source.matchAll(/import (\w+) from '([^']+\.json)';/g)];
 for(const [statement,name,path] of jsonImports) {

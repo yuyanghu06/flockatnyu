@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMapEventService,mapReadContext} from '../server/map/events.js';
@@ -52,6 +53,7 @@ function savedWorkFixture(){
  const task={uuid:randomUUID(),created_at:stamp,updated_at:stamp,expires_at:'2026-10-23T18:30:00.000Z',info:{version:1,sourceIds:[sourceId],inputs:[structuredClone(input)],request:{summary:'Private old saved summary',operation:'source_review'},executionHistory:[]}};
  const rows=new Map([[task.uuid,structuredClone(task)]]),calls=[],history=[],owner={id:'worker',allowedSourceIds:[sourceId]},leaseToken=randomUUID();
  const taskStore={configured:true,list:async()=>{calls.push('list');return {status:'ready',tasks:structuredClone([...rows.values()])};},save:async args=>{calls.push('save');const previous=rows.get(args.task.uuid);if(previous&&previous.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};const saved={...structuredClone(args.task),created_at:previous?.created_at||stamp,updated_at:stamp,expires_at:previous?.expires_at||'2026-10-23T18:30:00.000Z'};rows.set(saved.uuid,saved);return {status:'ready',task:structuredClone(saved)};},resolve:async()=>{throw Error('Unfinished saved task cannot be deleted');}};
+ attachTaskReads(taskStore,rows,{onCall:row=>calls.push(row.method)});
  const staged=createStagedPipeline({taskStore,principal:owner,fragments:createBoundedResults(),bindTask:async()=>{},now:()=>new Date(stamp)});
  return {stamp,sourceId,input,task,rows,calls,history,principal:owner,leaseToken,staged,begin:()=>staged.pipeline.beginCycle({leaseToken,inputs:[input],recordExecution:async row=>history.push(row),getExecutionLog:()=>structuredClone(history)}),after:()=>staged.pipeline.afterInitial({handledInputIds:[],inputs:[input],executionLog:history})};
 }
@@ -86,7 +88,7 @@ test('initial planner context discloses only saved coverage and still requires e
    const binding=message.referenceBindings.handledInputIds.find(row=>row.uuid===f.input.uuid);
    assert.deepEqual(message.savedTaskCoverage.inputs,[{inputRef:binding.ref,taskCount:1}]);
    const coverage=JSON.stringify(message.savedTaskCoverage);assert(!coverage.includes(f.task.uuid));assert(!coverage.includes(f.task.info.request.summary));
-   assert.deepEqual(f.calls,['list'],'Coverage reuses the already loaded task snapshot');
+   assert.deepEqual(f.calls,['catalogue','read'],'Coverage uses the saved catalogue and exact matching task only');
    return {stopReason:'tool_calls',text:'',toolCalls:[{id:'finish_initial',name:'finish_batch',arguments:{handledInputIds:declared?[binding.ref]:[],noChangeInputIds:[]}}]};
   }
   return {stopReason:'tool_calls',text:'',toolCalls:[{id:'finish_followup',name:'finish_batch',arguments:{handledInputIds:[]}}]};

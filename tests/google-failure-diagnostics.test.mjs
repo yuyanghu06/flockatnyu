@@ -169,13 +169,13 @@ test('successful and empty results gain no diagnostic fields',async()=>{
 const batchUrl=id=>`https://calendar.google.com/calendar/event?eid=${Buffer.from(`${id} ${config.calendarId}`).toString('base64url')}`;
 const batchSaved=(id,outcome='created')=>({status:'ready',outcome,eventId:id,url:batchUrl(id),start:{date:'2026-10-24'},end:{date:'2026-10-25'},location:'Saved room'});
 
-test('mixed create batch retains duplicate-check429, mutation503, typed exception403 and local-date diagnostics',async()=>{
-  let listings=0,writes=0;
+test('mixed create batch retains mutation429, mutation503, typed exception403 and local-date diagnostics',async()=>{
+  let writes=0;
   const client={calendarId:config.calendarId,
-    listEvents:async()=>++listings===1?{status:'rate_limited',diagnostics:{stage:'provider_request',reason:'http_error',httpStatus:429,body:secret}}:
-      {status:'ready',events:[],coverage:{complete:true}},
-    createChatEvent:async()=>{writes++;if(writes===1)return {status:'google_unavailable',diagnostics:{stage:'provider_request',reason:'http_error',httpStatus:503,account:secret}};
-      if(writes===2)throw new GoogleError('permission_denied',{stage:'calendar_acl',reason:'http_error',httpStatus:403,body:secret});
+    listEvents:async()=>assert.fail('Batch creation must not hide a Calendar discovery read'),
+    createChatEvent:async()=>{writes++;if(writes===1)return {status:'rate_limited',diagnostics:{stage:'provider_request',reason:'http_error',httpStatus:429,body:secret}};
+      if(writes===2)return {status:'google_unavailable',diagnostics:{stage:'provider_request',reason:'http_error',httpStatus:503,account:secret}};
+      if(writes===3)throw new GoogleError('permission_denied',{stage:'calendar_acl',reason:'http_error',httpStatus:403,body:secret});
       return batchSaved('created_event');}};
   const result=await createCalendarBatch({client,operationId:'batch',principal,events:[
     {title:'Rate limited duplicate check',date:'2026-10-21'},

@@ -13,7 +13,7 @@ try {
   page.setDefaultTimeout(10000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.route('**/__upload_check', route => route.fulfill({ contentType: 'text/html', body: `<html><body><script type="module">
-    import { createAssistant } from '/src/assistant.js'; import '/src/assistant.css';
+    import { createAssistant } from '/src/features/assistant/assistant.js'; import '/src/features/assistant/assistant.css';
     window.uploadCalls = []; window.mode = 'ready'; window.mapRefreshes = 0;
     document.addEventListener('campus-map-updated', () => window.mapRefreshes++);
     window.fetch = async (url, options) => {

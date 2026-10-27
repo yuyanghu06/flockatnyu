@@ -1,3 +1,4 @@
+import {attachTaskReads} from './fixtures/planner-followup.mjs';
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
@@ -26,6 +27,7 @@ export function workerFixture(provider){
     if(previous&&previous.updated_at!==args.expectedUpdatedAt)return {status:'conflict'};
     const saved={...previous,...args.task,created_at:previous?.created_at??stamp,updated_at:`2026-10-22T20:01:${String(++version).padStart(2,'0')}.000Z`,expires_at:previous?.expires_at??pending.expires_at};tasks.set(saved.uuid,saved);return {status:'ready',task:structuredClone(saved)};
   },resolve:async()=>{resolutions++;throw Error('Unresolved task cannot be removed');}};
+  attachTaskReads(taskStore,tasks);
   const fragments=createBoundedResults({maxBytes:1048576,maxEntries:32});
   const staged=createStagedPipeline({taskStore,principal:actor,fragments,bindTask:async()=>{},runSync:async()=>({status:'ready',results:[],unresolved:[]}),now:()=>new Date(now)});
   const discord=createLiveRetrievalTools({guildId:'100',service:{readMessages:async args=>{
@@ -34,7 +36,7 @@ export function workerFixture(provider){
     sourceReads++;return {status:'unavailable',sources:[],coverage:{complete:false}};
   }}});
   const reader=discord.tools.find(row=>row.name==='read_discord_messages');
-  const tools=[...staged.tools,{...reader,readOnly:true,execute:(args,context)=>discord.execute({name:reader.name,arguments:args,...context,timeContext:{now,timeZone:'America/New_York'}})}];
+  const tools=[...staged.tools,{name:'sync_calendars_to_map',description:'Separately registered runner synchronization',idempotent:true,parameters:{type:'object',properties:{},additionalProperties:false},execute:async()=>({status:'ready',complete:true,results:[],unresolved:[]})},{...reader,readOnly:true,execute:(args,context)=>discord.execute({name:reader.name,arguments:args,...context,timeContext:{now,timeZone:'America/New_York'}})}];
   const store={configured:true,claim:async()=>({status:'ready',leaseToken:workerIds.lease,inputs:structuredClone(queued)}),renew:async()=>({status:'ready'}),action:async({complete})=>({status:complete?'completed':'execute'}),release:async()=>({status:'ready'}),fail:async()=>({status:'ready'}),finish:async({handledInputIds})=>{queued=queued.filter(row=>!handledInputIds.includes(row.uuid));return {status:'ready'};}};
   const handler=createAutomationHandler({store,provider:{toolTurn:async args=>{requests.push(args);return provider.toolTurn(args);}},tools,principal:actor,authorizeEvent:async()=>true,pipeline:{...staged.pipeline,recordExecution:async row=>execution.push(row)},config:readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),now:()=>new Date(now)});
   return {handler,tasks,operations,requests,execution,sourceRequests,get queued(){return queued;},get sourceReads(){return sourceReads;},get resolutions(){return resolutions;}};

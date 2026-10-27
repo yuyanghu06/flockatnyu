@@ -21,7 +21,7 @@ function authorizationFixture(threads=false){
  const parents=[channel('700','800'),channel('701','800')],category=channel('800',null,4);
  const selected=threads?[channel('200','700',11),channel('201','700',12),channel('202','701',11),channel('203','800'),channel('204','800'),channel('205','800')]:Array.from({length:6},(_,i)=>channel(String(200+i)));
  const bindings=new Map(selected.map(row=>[row.id,randomUUID()])),calls=[];
- const state={policy:{guildId:'100',revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]},catalogue:selected.map(row=>({enabled:true,guildId:'100',channelId:row.id,sourceId:bindings.get(row.id)}))};
+ const state={policy:{guildId:'100',revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]},catalogue:[...selected,...(threads?[...parents,category]:[])].map(row=>({enabled:bindings.has(row.id),guildId:'100',channelId:row.id,sourceId:bindings.get(row.id),type:row.type,parentId:row.parent_id}))};
  const live=[...selected,...(threads?[...parents,category]:[])],metadata=threads?live.filter(row=>![11,12].includes(row.type)):live;
  const record=(name,args)=>calls.push({name,...args});
  const adapters=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:[...bindings.values()].join(',')},config,now:clock,fetchImpl:async()=>{throw Error('Unexpected network request');},dependencies:{
@@ -35,9 +35,8 @@ function authorizationFixture(threads=false){
 
 for(const threads of [false,true])test(`six distinct ${threads?'thread/parent':'ordinary'} channel bindings receive fresh complete authorization`,async()=>{
  const f=authorizationFixture(threads);assert.equal(await f.authorize(),true);
- const expected={policy:2,catalogue:2,guild:1,channel:threads?8:6};assert.deepEqual(f.counts(),expected);
- assert.deepEqual(new Set(f.calls.filter(row=>row.name==='channel').map(row=>row.channelId)),new Set([...f.inputs.map(row=>row.raw_response.payload.channel_id),...(threads?['700','701']:[])]));
- if(threads)assert.equal(f.calls.filter(row=>row.channelId==='700').length,1,'Sibling threads share only the freshly fetched parent within this boundary');
+ const expected={policy:1,catalogue:1};assert.deepEqual(f.counts(),expected);
+ assert(!f.calls.some(row=>['guild','channel'].includes(row.name)),'Queue authorization reads saved metadata only');
  const first=f.calls.length;assert.equal(await f.authorize(),true);assert.equal(f.calls.length,2*first,'A later boundary performs fresh checks, not a whole-run cache');
  evidence.observations.push({case:threads?'six-thread-parent-authorization':'six-channel-authorization',boundInputs:6,perBoundary:expected,totalBoundaries:2,totalRequests:f.calls.length});
 });
@@ -48,7 +47,7 @@ for(const threads of [false,true])test(`reservation-time ${threads?'thread-paren
  const store={configured:true,claim:async()=>({status:'ready',leaseToken,inputs:f.inputs}),renew:async()=>({status:'ready'}),action:async({complete})=>{if(!complete){stats.reservations++;if(threads)f.state.policy.excludedChannelIds=['700'];else f.state.catalogue[5].sourceId=randomUUID();}return {status:complete?'completed':'execute'};},finish:async()=>{stats.finish++;return {status:'ready'};},release:async()=>{stats.releases++;return {status:'ready'};}};
  const handler=createAutomationHandler({config,store,principal:f.adapters.principal,now:clock,authorizeEvents:async args=>{stats.authBoundaries++;return f.adapters.authorizeEvents(args);},tools:[{name:'save',description:'Synthetic business write',idempotent:true,parameters:{type:'object',properties:{},additionalProperties:false},execute:async()=>{stats.writes++;return {status:'ready'};}}],provider:{toolTurn:async()=>{stats.scriptedReplies++;return {stopReason:'tool_calls',toolCalls:[{id:'attempt',name:'save',arguments:{inputIds:f.inputs.map(row=>row.uuid),arguments:{}}}]};}}});
  assert.equal((await handler.tick()).status,'forbidden');assert.deepEqual(stats,{scriptedReplies:1,authBoundaries:3,reservations:1,writes:0,finish:0,releases:1});assert.deepEqual(f.inputs,before);
- const expected=threads?{policy:5,catalogue:5,guild:3,channel:18}:{policy:5,catalogue:5,guild:3,channel:12};assert.deepEqual(f.counts(),expected);
+ const expected={policy:3,catalogue:3};assert.deepEqual(f.counts(),expected);
  evidence.observations.push({case:threads?'thread-parent-revoked-after-reservation':'source-rebound-after-reservation',...stats,requests:f.counts(),queuedInputsPreserved:6});
 });
 

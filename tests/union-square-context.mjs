@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {MeshoptDecoder} from 'meshoptimizer';
-import {insideFootprint} from '../src/geometry.js';
+import {insideFootprint} from '../src/map/landmarks/geometry.js';
 
 // Source-only audit: no browser, server, network, or source-asset writes.
 const base='assets/yuyang-site-3d-assets/models/buildings/';

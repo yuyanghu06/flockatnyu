@@ -5,6 +5,8 @@ import {readFile,readdir} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {vector} from '@electric-sql/pglite-pgvector';
+import {pg_trgm} from '@electric-sql/pglite/contrib/pg_trgm';
+import {fuzzystrmatch} from '@electric-sql/pglite/contrib/fuzzystrmatch';
 import {WebSocketShardEvents as E} from '@discordjs/ws';
 import {createDiscordMetadataReconcile} from '../server/discord/metadata-reconcile.js';
 import {createDiscordEventListener} from '../server/discord/event-listener.js';
@@ -24,7 +26,7 @@ const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});retur
 const bounded=async promise=>{let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('foreground ingestion blocked')),2000);})]);}finally{clearTimeout(timer);}};
 
 async function database() {
-  const db=new PGlite({extensions:{vector}});
+  const db=new PGlite({extensions:{vector,pg_trgm,fuzzystrmatch}});
   await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');
   const directory=new URL('../supabase/migrations/',import.meta.url);
   for(const file of (await readdir(directory)).filter(f=>f.endsWith('.sql')).sort())await db.exec(await readFile(new URL(file,directory),'utf8'));

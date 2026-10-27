@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeContactContext as browserContext, boundedMessages, streamAssistant, steerAssistant } from '../src/chat-client.js';
+import { normalizeContactContext as browserContext, boundedMessages, streamAssistant, steerAssistant } from '../src/features/assistant/chat-client.js';
 import { normalizeContactContext as serverContext, contactMessageForModel } from '../server/chat-contact-context.js';
 import { createChatSteeringRegistry } from '../server/chat-steering.js';
 import { createApp } from '../server/app.js';

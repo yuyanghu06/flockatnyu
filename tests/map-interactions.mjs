@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import { createCameraFocus } from '../src/camera-focus.js';
-import { constrainPan } from '../src/geometry.js';
-import { createMapInteractions } from '../src/map-interactions.js';
+import { createCameraFocus } from '../src/map/camera/camera-focus.js';
+import { constrainPan } from '../src/map/landmarks/geometry.js';
+import { createMapInteractions } from '../src/map/camera/map-interactions.js';
 import {mapConfig} from './fixtures/map-config.mjs';
 class Events {
   handlers=new Map(); options=new Map();clientHeight=600;

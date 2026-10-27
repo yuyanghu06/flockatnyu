@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {clampFocusedAvatarPosition as clamp} from '../src/map-presence-drag.js';
+import {clampFocusedAvatarPosition as clamp} from '../src/map/presence/map-presence-drag.js';
 const frame={left:20,top:40,width:480,height:640};
 const pixels=point=>({x:frame.left+point.u*frame.width,y:frame.top+point.v*frame.height});
 test('valid focused drops keep their exact position',()=>{assert.deepEqual(pixels(clamp({x:240,y:330,frame,size:120,noteWidth:200,noteHeight:60})),{x:240,y:330});});

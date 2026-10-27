@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { boundedMessages, safeSourceUrl, getAssistantStatus, streamAssistant, steerAssistant } from '../src/chat-client.js';
-import { createAssistant } from '../src/assistant.js';
+import { boundedMessages, safeSourceUrl, getAssistantStatus, streamAssistant, steerAssistant } from '../src/features/assistant/chat-client.js';
+import { createAssistant } from '../src/features/assistant/assistant.js';
 const encode = text => new TextEncoder().encode(text);
 function response(parts, type = 'application/x-ndjson') { return new Response(new ReadableStream({ start(c) { parts.forEach(p => c.enqueue(typeof p === 'string' ? encode(p) : p)); c.close(); } }), { headers: { 'Content-Type': type } }); }
 const status = { chat: { configured: true, provider: 'fixture', model: 'offline' }, knowledge: { configured: false, status: 'not_configured' }, access: { mode: 'fixture', allowed: true } };

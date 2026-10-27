@@ -23,8 +23,8 @@ async function fixture({viewport={width:1440,height:1000},mode='held-model',redu
  }
  await page.route('**/*.js',async r=>{
   const pathname=new URL(r.request().url()).pathname;
-  const entry=/\/assets\/map-(?!startup)[^/]+\.js$/.test(pathname)||pathname==='/src/bootstrap.js';
-  const main=/\/assets\/main-[^/]+\.js$/.test(pathname)||pathname==='/src/main.js';
+  const entry=/\/assets\/map-(?!startup)[^/]+\.js$/.test(pathname)||pathname==='/src/app/bootstrap.js';
+  const main=/\/assets\/main-[^/]+\.js$/.test(pathname)||pathname==='/src/app/main.js';
   if(mode==='abort-bootstrap'&&entry)return r.abort('failed');
   if(mode==='abort-main'&&main)return r.abort('failed');
   if(mode==='held-bootstrap'&&entry){held=true;await gate;}

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createStartupVisual,paintStartup,STARTUP_REVEAL} from '../src/startup-visual.js';
+import {createStartupVisual,paintStartup,STARTUP_REVEAL} from '../src/app/startup-visual.js';
 
 const saved=Object.fromEntries(['window','document','setTimeout','clearTimeout','requestAnimationFrame','cancelAnimationFrame'].map(k=>[k,globalThis[k]]));
 const checks=[];

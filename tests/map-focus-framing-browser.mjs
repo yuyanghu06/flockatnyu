@@ -73,7 +73,7 @@ async function frame(page, id) {
   await page.evaluate(id => { window.__map.select(id); window.__map.focus(); }, id); await settle(page);
   return page.evaluate(async id => {
     const T = await import('/node_modules/three/build/three.module.js');
-    const { mapFocusLayout } = await import('/src/map-focus-layout.js');
+    const { mapFocusLayout } = await import('/src/map/camera/map-focus-layout.js');
     const snapshot = window.__map.snapshot(), pose = snapshot.camera;
     const bounds = snapshot.landmarks.find(x => x.id === id).bounds;
     const camera = new T.PerspectiveCamera(pose.fov, innerWidth / innerHeight, pose.near, pose.far);

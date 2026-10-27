@@ -1,3 +1,5 @@
+import {isDiscordChannelExcluded} from '../server/discord/discovery.js';
+import {withDiscordSourceScope} from '../server/discord/source-scope.js';
 import {calendarEventReceipt} from '../server/google/calendar-receipt.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -33,11 +35,11 @@ const channel=(id,parent_id=EBOARD_CATEGORY_ID,type=0)=>({id,guild_id:guildId,pa
 
 function discordFixture() {
   const state={policy:{guildId,revision:1,paused:false,discoveryEnabled:true,excludedChannelIds:[],excludedCategoryIds:[]},
-    rows:[{guildId,channelId,sourceId:discordSource,enabled:true}],metadata:[channel(EBOARD_CATEGORY_ID,null,4),channel(channelId)],reads:0,policyStatus:'ready',onRead:null,permissionDenied:false};
+    rows:[{guildId,channelId,sourceId:discordSource,enabled:true}],metadata:[channel(EBOARD_CATEGORY_ID,null,4),channel(channelId)],reads:0,policyStatus:'ready',onRead:null,permissionDenied:false,permissionChecks:0};
   const store={configured:true,getPolicy:async()=>({status:state.policyStatus,policy:structuredClone(state.policy)}),
-    listSyncChannels:async()=>({status:'ready',channels:structuredClone(state.rows)})};
+    listSyncChannels:async()=>({status:'ready',channels:structuredClone(state.rows.filter(row=>{const channels=new Map(state.metadata.map(item=>[item.id,item]));return !isDiscordChannelExcluded({channel:channels.get(row.channelId),channels,policy:state.policy});}))})};
   const client={configured:true,getCurrentApplication:async()=>({flags:1<<18}),getGuildChannels:async()=>structuredClone(state.metadata),
-    getActiveThreads:async()=>({threads:[]}),getChannel:async({channelId:id})=>{if(state.permissionDenied)throw Object.assign(Error('permission_denied'),{code:'permission_denied'});return structuredClone(state.metadata.find(row=>row.id===id));},
+    getActiveThreads:async()=>({threads:[]}),getChannel:async({channelId:id})=>{state.permissionChecks++;if(state.permissionDenied)throw Object.assign(Error('permission_denied'),{code:'permission_denied'});return structuredClone(state.metadata.find(row=>row.id===id));},
     getMessage:async()=>{state.reads++;await state.onRead?.();return {id:messageId,channel_id:channelId,guild_id:guildId,author:{id:userId,username:'synthetic'},timestamp:clock().toISOString(),content:announcement};}};
   const config={configured:true,guildId,botToken:'synthetic',pacing:{minIntervalMs:0}};
   const service=createLiveDiscordRetrieval({config,store,client});
@@ -74,7 +76,7 @@ for(const [name,revoke] of [
   ['manual disable',s=>s.rows[0].enabled=false],['channel blacklist',s=>s.policy.excludedChannelIds=[channelId]],
   ['category blacklist',s=>s.policy.excludedCategoryIds=[EBOARD_CATEGORY_ID]],['catalogue withdrawal',s=>s.rows=[]],
   ['policy outage',s=>s.policyStatus='unavailable'],['policy pause',s=>s.policy.paused=true],
-  ['bot permission revocation',s=>s.permissionDenied=true],
+  ['published bot permission revocation',s=>{s.permissionDenied=true;s.rows[0].enabled=false;}],
 ])test(`website exact originals and map visibility fail closed after ${name}`,async()=>{
   const f=websiteFixture();assert.equal((await (await f.request('/api/map/presence')).json()).visible,true);
   revoke(f.state);const before=f.state.reads;
@@ -112,15 +114,16 @@ test('Discord-chat newly discovered sources are restricted to the destination au
   assert.deepEqual(approved.principal.liveDiscord.allowedSourceIds,[discordSource]);
   assert.deepEqual(approved.principal.allowedSourceIds,[miroSource,discordSource]);
   const authorizer=createMapSourceAuthorizer({liveDiscordService:f.service});
-  assert.equal(await authorizer({principal:approved.principal,sourceId:discordSource,sourceUrl}),true);
-  assert.equal(await authorizer({principal:approved.principal,sourceId:foreignSource,sourceUrl:sourceUrl.replace('/200/','/201/')}),false);
+  const scoped=await withDiscordSourceScope({principal:approved.principal,store:f.store,guildId});
+  assert.equal(await authorizer({principal:scoped,sourceId:discordSource,sourceUrl}),true);
+  assert.equal(await authorizer({principal:scoped,sourceId:foreignSource,sourceUrl:sourceUrl.replace('/200/','/201/')}),false);
   f.state.rows[0].enabled=false;await assert.rejects(access.authorize({guildId,channelId,userId}),{message:'discord_chat_denied'});
 });
 
 function workerFixture() {
   const f=discordFixture(),config=readAutomationConfig({AGENT_AUTOMATION_ENABLED:'true'}),calendarWrites=[];
   const adapters=createAutomationAdapters({env:{ASSISTANT_ALLOWED_SOURCE_IDS:miroSource},config,now:clock,fetchImpl:async()=>{throw Error('Unexpected network');},dependencies:{
-    googleConfig:{configured:false},googleClient:{configured:false},discordConfig:f.config,discordStore:f.store,discordClient:f.client,liveDiscordService:f.service,
+    googleConfig:{configured:false},googleClient:{configured:false},discordConfig:f.config,discordStore:f.store,discordClient:f.client,liveDiscordService:f.service,discordTools:createLiveRetrievalTools({service:f.service,guildId}),
     calendarConfig:{configured:true,calendarId},calendarClient:{configured:true,calendarId,preflight:async()=>({status:'ready',calendarId,accessRole:'owner'}),
       listEvents:async()=>({status:'ready',events:[],nextPageToken:null,coverage:{complete:true}}),upsertEvent:async args=>{calendarWrites.push(args);return {status:'ready',...calendarEventReceipt({id:'synthetic_event',summary:args.title,description:args.description,location:args.location,start:args.start,end:args.end,status:'confirmed'},{calendarId,outcome:'created'})};}},
     miroConfig:{configured:true,boardIds:['board']},miroStore:{configured:true,authorizedBoard:async()=>({status:'ready',data:{board_id:'board',source_id:miroSource,team_id:null}})},
@@ -133,7 +136,7 @@ function workerFixture() {
     renew:async()=>({status:'ready'}),release:async()=>{calls.push({kind:'release'});return {status:'ready'};},finish:async args=>{calls.push({kind:'finish',ids:args.handledInputIds});return {status:'ready'};}};
   const handler=createAutomationHandler({...adapters,config,store,now:clock,provider:{toolTurn:async()=>{calls.push({kind:'model'});return {stopReason:'tool_calls',toolCalls:[{id:'finish_1',name:'finish_batch',arguments:{handledInputIds:queue.map(row=>row.uuid)}}]};}}});
   const updater=createEventUpdater({config,store,principal:adapters.principal,authorizeEvent:adapters.authorizeEvent,now:clock});
-  const enqueue=()=>updater.enqueue({source:'discord',sourceId:discordSource,eventType:'message_created',eventId:messageId,revision:'1',payload:input.raw_response.payload});
+  const enqueue=async()=>{await adapters.resolveClaimSourceIds({principal:adapters.principal});return updater.enqueue({source:'discord',sourceId:discordSource,eventType:'message_created',eventId:messageId,revision:'1',payload:input.raw_response.payload});};
   return {...f,adapters,config,input,queue,calls,handler,enqueue,calendarWrites,set onClaim(fn){onClaim=fn;}};
 }
 
@@ -151,10 +154,20 @@ test('worker catalog withdrawal before a second tick permits only an empty maint
   assert.deepEqual(f.adapters.principal.allowedSourceIds,[miroSource]);
 });
 
-for(const [name,revoke] of [['manual disable',s=>s.rows[0].enabled=false],['channel blacklist',s=>s.policy.excludedChannelIds=[channelId]],['category blacklist',s=>s.policy.excludedCategoryIds=[EBOARD_CATEGORY_ID]],['source remap',s=>s.rows[0].sourceId=foreignSource],['bot permission revocation',s=>s.permissionDenied=true]])
+for(const [name,revoke] of [['manual disable',s=>s.rows[0].enabled=false],['channel blacklist',s=>s.policy.excludedChannelIds=[channelId]],['category blacklist',s=>s.policy.excludedCategoryIds=[EBOARD_CATEGORY_ID]],['source remap',s=>s.rows[0].sourceId=foreignSource],['published bot permission revocation',s=>{s.permissionDenied=true;s.rows[0].enabled=false;}]])
 test(`worker revocation after claim blocks model and finish: ${name}`,async()=>{
   const f=workerFixture();await f.enqueue();f.onClaim=()=>revoke(f.state);
   assert.equal((await f.handler.tick()).status,'forbidden');assert.deepEqual(f.calls.map(row=>row.kind),['claim','release']);
+});
+
+test('provider-only permission loss rejects an explicit original read and cannot authorize a Calendar write',async()=>{
+ const f=workerFixture(),a=f.adapters,context={principal:a.principal,inputIds:[f.input.uuid]};
+ await a.resolveClaimSourceIds({principal:a.principal});await a.prepareBatch({...context,inputs:[f.input]});
+ f.state.permissionDenied=true;const tool=name=>a.tools.find(row=>row.name===name);
+ const read=await tool('read_discord_messages').execute({channelId,messageId,context:false},context);assert.notEqual(read.status,'ready');assert.equal(f.state.reads,0);
+ const checks=f.state.permissionChecks;
+ const write=await tool('upsert_calendar_event').execute({sourceKey:`discord:${guildId}:${channelId}:${messageId}`,sourceUrl,title:'Synthetic Workshop',location:'Bobst',start:{dateTime:'2026-10-24T18:00:00-04:00',timeZone:'America/New_York'},end:{dateTime:'2026-10-24T20:00:00-04:00',timeZone:'America/New_York'}},context);
+ assert.equal(write.status,'forbidden_source');assert.equal(f.calendarWrites.length,0);assert.equal(f.state.permissionChecks,checks,'Calendar write does not hide another Discord permission fetch');
 });
 
 test('env-absent Discord source supports exact original Calendar provenance and revocation still blocks a later write',async()=>{
@@ -163,11 +176,12 @@ test('env-absent Discord source supports exact original Calendar provenance and 
   await a.prepareBatch({...context,inputs:[f.input]});
   const tool=name=>a.tools.find(t=>t.name===name),window={timeMin:'2026-10-24T00:00:00-04:00',timeMax:'2026-10-25T00:00:00-04:00'};
   assert.equal((await tool('list_calendar_events').execute(window,context)).status,'ready');
+  assert.equal((await tool('read_discord_messages').execute({channelId,messageId,context:false},context)).status,'ready');
   const args={sourceKey:`discord:${guildId}:${channelId}:${messageId}`,sourceUrl,title:'Synthetic Workshop',location:'Bobst',start:{dateTime:'2026-10-24T18:00:00-04:00',timeZone:'America/New_York'},end:{dateTime:'2026-10-24T20:00:00-04:00',timeZone:'America/New_York'}};
   for(const patch of [{sourceKey:'discord:100:200:301'},{sourceUrl:sourceUrl+'0'}])assert.equal((await tool('upsert_calendar_event').execute({...args,...patch},context)).status,'forbidden_source');
   assert.equal((await tool('upsert_calendar_event').execute(args,context)).status,'ready');assert.equal(f.calendarWrites.length,1);
   assert.equal(f.calendarWrites[0].sourceKey,args.sourceKey);assert.equal(f.calendarWrites[0].sourceUrl,sourceUrl);
-  f.state.rows[0].enabled=false;assert.equal((await tool('upsert_calendar_event').execute(args,context)).status,'forbidden_source');assert.equal(f.calendarWrites.length,1);
+  f.state.rows[0].enabled=false;await a.resolveClaimSourceIds({principal:a.principal});assert.equal((await tool('upsert_calendar_event').execute(args,context)).status,'forbidden_source');assert.equal(f.calendarWrites.length,1);
 });
 
 test('source-free adapter -> handler -> production store -> executed SQL preserves quarantine TTL and expired-lease recovery without returning originals',async()=>{

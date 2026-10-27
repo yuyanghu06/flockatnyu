@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { AttachmentError, normalizeAttachments, attachmentBudget, attachmentBytes, providerChatMessages, MAX_FILE_BYTES, MAX_ATTACHMENT_BYTES, MAX_CHAT_BODY_BYTES, ATTACHMENT_ONLY_CONTENT } from '../server/chat-attachments.js';
-import { readAttachmentFiles } from '../src/chat-attachments.js';
-import { boundedMessages, streamAssistant } from '../src/chat-client.js';
+import { readAttachmentFiles } from '../src/features/assistant/chat-attachments.js';
+import { boundedMessages, streamAssistant } from '../src/features/assistant/chat-client.js';
 import { createProvider } from '../server/providers/index.js';
 import { createApp } from '../server/app.js';
 const file = (name = 'note.txt', mimeType = 'text/plain', bytes = 'Hello 🌱') => ({ name, mimeType, data: Buffer.from(bytes).toString('base64') });

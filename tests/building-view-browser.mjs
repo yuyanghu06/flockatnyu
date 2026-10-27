@@ -2,7 +2,7 @@ import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import { createPaulsonModel } from '../src/paulson.js';
+import { createPaulsonModel } from '../src/map/landmarks/paulson.js';
 
 const url = process.env.MAP_URL ?? 'http://127.0.0.1:5173';
 const out = process.env.MAP_EVIDENCE ?? 'evidence/m19-building-views';

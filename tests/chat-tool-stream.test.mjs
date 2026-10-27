@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {retrieveAssistantContext} from '../server/assistant-context.js';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
-import {streamAssistant} from '../src/chat-client.js';
+import {streamAssistant} from '../src/features/assistant/chat-client.js';
 import {readGoogleConfig,GOOGLE_SCOPES} from '../server/google/config.js';
 import {createGoogleClient} from '../server/google/client.js';
 import {executeGoogleTool,GOOGLE_TOOLS} from '../tools/google/index.js';

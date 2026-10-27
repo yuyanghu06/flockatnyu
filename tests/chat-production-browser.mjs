@@ -28,7 +28,7 @@ let browser;
 try {
   browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
   const page=await browser.newPage();page.setDefaultTimeout(12000);const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.route('**/__production_check',route=>route.fulfill({contentType:'text/html',body:'<html><body><script type="module">import {createAssistant} from "/src/assistant.js";import "/src/assistant.css";window.ui=createAssistant();document.dispatchEvent(new Event("campus-enter"));</script></body></html>'}));
+  await page.route('**/__production_check',route=>route.fulfill({contentType:'text/html',body:'<html><body><script type="module">import {createAssistant} from "/src/features/assistant/assistant.js";import "/src/features/assistant/assistant.css";window.ui=createAssistant();document.dispatchEvent(new Event("campus-enter"));</script></body></html>'}));
   for(const width of [1280,390]){
     round=0;release=null;fail=false;reportFails=width===390;
     await page.setViewportSize({width,height:900});await page.goto(`http://127.0.0.1:${server.address().port}/__production_check`);
@@ -69,7 +69,7 @@ try {
     console.log(JSON.stringify(observations.at(-1)));
   }
   await page.route('**/__map_refresh_check',route=>route.fulfill({contentType:'text/html',body:`<html><body><div id="app" data-state="entered" style="width:1200px;height:800px"></div><script type="module">
-    import {createMapPresence} from '/src/map-presence.js';import {PerspectiveCamera} from '/node_modules/three/build/three.module.js';
+    import {createMapPresence} from '/src/map/presence/map-presence.js';import {PerspectiveCamera} from '/node_modules/three/build/three.module.js';
     const container=document.querySelector('#app');window.mapReads=0;
     const payload=attendees=>({status:'ok',observedAt:new Date().toISOString(),upcoming:[],buildings:[{id:'bobst-library',name:'Bobst Library',people:[],events:[{id:'synthetic-aws',title:'AWS Workshop',startsAt:new Date(Date.now()+3600000).toISOString(),endsAt:new Date(Date.now()+7200000).toISOString(),timeZone:'America/New_York',allDay:false,status:'confirmed',location:'Room 101',attendees}]}]});
     window.presence=createMapPresence({container,camera:new PerspectiveCamera(),renderer:{},getRoot:()=>null,getFocusedBuilding:()=> 'bobst-library',selectBuilding(){},focusBuilding(){},fetchImpl:async()=>{

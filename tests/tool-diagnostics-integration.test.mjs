@@ -30,7 +30,7 @@ function worker(proposals,execute,{prepareArguments}={}){
 
 test('planner ordinary argument failures recover with undispatched diagnostics while unknown tools remain fatal',async()=>{
  let executions=0;
- for(const [proposal,reason]of [[call('read_discord_messages','one',{inputIds:[inputId],arguments:{'PRIVATE_PROPERTY':'PRIVATE_VALUE'}}),'invalid_arguments'],[call('PRIVATE_TOOL','one',{inputIds:[inputId],arguments:{}}),'unknown_tool'],[call('read_discord_messages','one',{inputIds:['33333333-3333-4333-8333-333333333333'],arguments:{}}),'invalid_input_scope']]){
+ for(const [proposal,reason]of [[call('read_discord_messages','one',{inputIds:[inputId],arguments:{'PRIVATE_PROPERTY':'PRIVATE_VALUE'}}),'invalid_arguments'],[call('PRIVATE_TOOL','one',{inputIds:[inputId],arguments:{}}),'unknown_tool'],[call('read_discord_messages','one',{inputIds:['33333333-3333-4333-8333-333333333333'],arguments:{}}),'invalid_arguments']]){
   const f=worker([proposal],async()=>{executions++;return {status:'ready'};});assert.equal((await f.handler.tick()).status,reason==='unknown_tool'?'invalid_tool_call':'completed');assert.equal(f.events.filter(e=>e.kind==='tool_started'&&e.tool!=='finish_batch').length,0);
   const terminal=f.events.find(e=>e.kind==='tool_finished');assert.equal(terminal.diagnostics.reason,reason);assert.equal(terminal.diagnostics.dispatched,0);assert.equal(JSON.stringify(f.events).includes('PRIVATE'),false);
  }

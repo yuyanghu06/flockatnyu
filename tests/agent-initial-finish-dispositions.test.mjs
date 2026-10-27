@@ -108,8 +108,7 @@ test('union does not override backend conflicts with actual task/write coverage 
       if (mode === 'changed-write') h.coverage[0].raw_response.payload.content = 'Different original';
       return response(finish('initial', { handledInputIds: [refs[1]], noChangeInputIds: mode.endsWith('conflict') ? [refs[0], refs[1]] : [refs[0]] }));
     }]);
-    assert.equal(h.validations.length, 1, mode); assert.deepEqual(h.validations[0].handled, h.inputs.map(row => row.uuid));
-    assert.equal(h.validations[0].result.status, mode.endsWith('conflict') ? 'invalid_request' : 'pending', mode);
+    assert.equal(h.validations.length,mode==='task-conflict'?0:1,mode);if(mode!=='task-conflict'){assert.deepEqual(h.validations[0].handled,h.inputs.map(row=>row.uuid));assert.equal(h.validations[0].result.status,mode==='write-conflict'?'invalid_request':'pending',mode);}else assert.equal(result.status,'invalid_tool_call','Conflicting no-change/task dispositions are rejected before validation');
     assert.notEqual(result.status, 'completed'); assert.equal(h.transitions.length, 0); assert.equal(h.finishes.length, 0); assert.deepEqual(h.pending(), h.inputs);
   }
 });

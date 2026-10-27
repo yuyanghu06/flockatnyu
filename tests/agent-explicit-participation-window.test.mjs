@@ -91,7 +91,7 @@ test('real adapter rejects missing windows with zero writes or completion proof,
 test('explicit endpoints do not bypass unread task, source revocation or stale revision guards', async () => {
   for (const kind of ['unread', 'revoked', 'stale']) {
     const f = await participationFixture(); if (kind === 'unread') { await f.prepare(); await f.followup(); } else await f.prime([0]);
-    if (kind === 'revoked') f.control.revoked = true;
+    if (kind === 'revoked') { f.control.revoked = true; await f.adapters.resolveClaimSourceIds({principal:f.adapters.principal}); }
     const args = f.patch([0]); if (kind === 'stale') args.expectedUpdatedAt = '2026-10-22T18:00:00.000Z';
     const before = f.clone([...f.mapRows.values()]); const result = await f.execute('patch_map_participation', args, [f.pending[0].uuid]);
     assert.notEqual(result.status, 'ready', kind); assert.equal(result.receiptId, undefined); assert.deepEqual([...f.mapRows.values()], before); assert.equal(f.chronology.filter(row => row.kind === 'map_attempt').length, 0);
@@ -105,7 +105,7 @@ async function feedbackRun(body) {
   const store = { configured: true, claim: async () => ({ status: 'ready', leaseToken: randomUUID(), inputs: f.clone(f.inputs) }), renew: async () => ({ status: 'ready' }), release: async () => {}, action: async ({ complete }) => ({ status: complete ? 'completed' : 'execute' }), finish: async () => ({ status: 'ready' }) };
   const provider = { toolTurn: async request => { requests.push(request); const index = round++, ids = [f.pending[0].uuid];
     if (index === 0) return turn(ownCall('finish_batch', 'initial', f.inputs.map(row => row.uuid)));
-    if (index === 1) return turn(ownCall('read_pending_task', 'read', { taskId: ids[0] }, ids));
+    if (index === 1) return turn(ownCall('read_pending_task', 'read', { detail: 'full', taskId: ids[0] }, ids));
     if (index === 2) return turn(ownCall('read_discord_messages', 'original', { channelId: '200', messageId: '300', context: false }, ids), ownCall('lookup_map_person', 'identity', { provider: 'discord', providerUserId: '400', sourceId: f.source, sourceUrl: url('300') }, ids));
     if (index === 3) return turn(ownCall('patch_map_participation', 'bad', args, ids));
     return { text: 'Pending correction', toolCalls: [], stopReason: 'stop' }; } };

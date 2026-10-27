@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {createMapAvatarService} from '../server/map/avatars.js';
 import {safeAvatar,safePerson,createMapEventService} from '../server/map/events.js';
 import {createMapPresenceService} from '../server/map/presence.js';
-import {resolveMapAvatarUrl} from '../src/map-avatar-url.js';
+import {resolveMapAvatarUrl} from '../src/map/presence/map-avatar-url.js';
 import {createApp} from '../server/app.js';
 import {readConfig} from '../server/config.js';
 import {createWebsite} from '../server/web.js';

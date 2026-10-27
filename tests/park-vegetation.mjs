@@ -2,10 +2,10 @@ import fs from 'node:fs';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import {createGouldPlaza} from '../src/gould-plaza.js';
+import {createGouldPlaza} from '../src/map/landmarks/gould-plaza.js';
 import {NodeIO} from '@gltf-transform/core';
-import {prepareStreetSurfaces,unionStreetPolygons} from '../src/streets.js';
-import {planParkVegetation,createParkVegetation} from '../src/park-vegetation.js';
+import {prepareStreetSurfaces,unionStreetPolygons} from '../src/map/environment/streets.js';
+import {planParkVegetation,createParkVegetation} from '../src/map/environment/park-vegetation.js';
 const data=JSON.parse(fs.readFileSync('assets/campus-assets/data/streets-parks.json')),meta=JSON.parse(fs.readFileSync('assets/campus-assets/data/park-vegetation-render.json'));
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),checks=[];
 function check(name,fn){fn();checks.push({name,pass:true});}
@@ -25,7 +25,7 @@ check('Independent disk containment in actual park, explicit cover and clipped e
 check('Independent crown exclusion from paths, roads, sidewalks, curbs, buildings, water/fountains and hardscape',()=>{const obstacles=[prepared.pathFootprints,prepared.roads,prepared.sidewalks,prepared.curbs,prepared.buildingFootprints,data.parks.filter(p=>hard(p.tags)).map(p=>p.rings)];for(const p of meta.placements)for(const mask of obstacles)excluded(p,mask);});
 const io=new NodeIO(),actualBoxes=[];
 for(const file of Object.keys(meta.sourceHashes)){assert.equal(hash(fs.readFileSync(file)),meta.sourceHashes[file]);if(!file.endsWith('.glb'))continue;const doc=await io.read(file);for(const n of doc.getRoot().listNodes()){if(!n.getMesh())continue;const box=new T.Box3(),matrix=new T.Matrix4().fromArray(n.getWorldMatrix());for(const prim of n.getMesh().listPrimitives()){const a=prim.getAttribute('POSITION');for(let i=0;i<a.getCount();i++)box.expandByPoint(new T.Vector3().fromArray(a.getElement(i,[])).applyMatrix4(matrix));}actualBoxes.push({source:file,minX:box.min.x,maxX:box.max.x,minZ:box.min.z,maxZ:box.max.z});}}
-const gb=new T.Box3().setFromObject(createGouldPlaza());actualBoxes.push({source:'src/gould-plaza.js:createGouldPlaza',minX:gb.min.x,maxX:gb.max.x,minZ:gb.min.z,maxZ:gb.max.z});
+const gb=new T.Box3().setFromObject(createGouldPlaza());actualBoxes.push({source:'src/map/landmarks/gould-plaza.js:createGouldPlaza',minX:gb.min.x,maxX:gb.max.x,minZ:gb.min.z,maxZ:gb.max.z});
 check('All246 exclusions match source mesh bounds; source SHA256 hashes preserved',()=>{assert.equal(actualBoxes.length,246);assert.deepEqual(actualBoxes,meta.existingExclusions);});
 let minGap=Infinity;
 check('Independent AABB/crown clearance and pairwise crown spacing',()=>{for(const p of meta.placements)for(const b of actualBoxes){const dx=Math.max(b.minX-p.x,0,p.x-b.maxX),dz=Math.max(b.minZ-p.z,0,p.z-b.maxZ);assert(dx*dx+dz*dz>=(p.radius+.75)**2-1e-8);}for(let i=0;i<meta.placements.length;i++)for(let j=i+1;j<meta.placements.length;j++){const a=meta.placements[i],b=meta.placements[j],gap=Math.hypot(a.x-b.x,a.z-b.z)-a.radius-b.radius;minGap=Math.min(minGap,gap);assert(gap>=1.25-1e-8);}});

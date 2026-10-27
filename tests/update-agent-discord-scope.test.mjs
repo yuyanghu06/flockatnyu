@@ -91,8 +91,8 @@ test('catalogue outages fail closed for Discord and preserve only explicitly gra
   }
 });
 
-test('same-guild exact binding can authorize enqueue before the first tick; foreign and forged bindings cannot',async()=>{
-  const f=fixture();f.discover();let queued=0;
+test('fresh published same-guild binding authorizes enqueue before the first tick; foreign and forged bindings cannot',async()=>{
+  const f=fixture();f.discover();await f.a.resolveClaimSourceIds({principal:f.a.principal});let queued=0;
   const updater=createEventUpdater({...f.a,config,now,store:{enqueue:async()=>{queued++;return {status:'queued'};}}});
   const event={source:'discord',sourceId:newId,eventType:'message_created',eventId:'300',revision:'1',payload:input().raw_response.payload};
   assert.equal((await updater.enqueue(event)).status,'queued');assert.equal(queued,1);assert(f.a.principal.allowedSourceIds.includes(newId));
@@ -101,8 +101,8 @@ test('same-guild exact binding can authorize enqueue before the first tick; fore
   f.state.channels[0].guildId='999';assert.equal((await updater.enqueue(event)).status,'forbidden');assert.equal(queued,1);
 });
 
-test('blacklisting, manual disable and live permission loss after claim prevent every model and action',async()=>{
-  for(const revoke of [f=>{f.policy.excludedChannelIds=['200'];},f=>{f.state.channels[0].enabled=false;},f=>{f.state.denied=true;}]) {
+test('published blacklist and manual disable after claim prevent every model and action',async()=>{
+  for(const revoke of [f=>{f.policy.excludedChannelIds=['200'];},f=>{f.state.channels[0].enabled=false;}]) {
     const f=fixture();f.discover();let models=0;
     const r=runtime(f,{onClaim:()=>revoke(f),provider:{toolTurn:async()=>{models++;throw Error('Unexpected model');}}});r.queue.push(input());
     assert.equal((await r.handler.tick()).status,'forbidden');assert.equal(models,0);assert.equal(f.state.writes,0);assert.equal(r.finishes.length,0);

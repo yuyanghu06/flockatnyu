@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {renderAssistantMarkdown as render} from '../src/assistant-markdown.js';
+import {renderAssistantMarkdown as render} from '../src/features/assistant/assistant-markdown.js';
 
 test('replies render channel emphasis, lists, links, code and tables',()=>{
  const html=render('Posted **#eboard-chat** for *review*.\n\n- First\n- Second\n\n[Source](https://example.com/event)\n\n`inline`\n\n```js\nconst x = 1;\n```\n\n| Time | Room |\n| --- | --- |\n| 3 PM | 101 |');

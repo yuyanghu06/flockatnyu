@@ -169,14 +169,14 @@ test('fixed Discord, Miro and map outcomes retain exact reason in durable and Ra
   assert.equal(normalized.outcome,'pending');assert.equal(normalized.sourceOutcomeCode,C.outcome.pending);
 });
 
-for(const scenario of ['duplicate429','exactread403','mutation503'])test(`real multirow Calendar adapter audits ${scenario} once, retaining all safe item causes`,async()=>{
+for(const scenario of ['create429','exactread403','mutation503'])test(`real multirow Calendar adapter audits ${scenario} once, retaining all safe item causes`,async()=>{
   const f=auditFixture();let turns=0,reads=0,writes=0,lists=0;
   const failing=status=>({status:status===429?'rate_limited':status===403?'permission_denied':'google_unavailable',
     diagnostics:{stage:'provider_request',reason:'http_error',httpStatus:status},privateField:privateText});
   const client={configured:true,calendarId,
-    listEvents:async()=>{lists++;return scenario==='duplicate429'?failing(429):{status:'ready',events:[],coverage:{complete:true}};},
+    listEvents:async()=>{lists++;assert.fail('Creating a batch must not implicitly list Calendar events');},
     readChatEvent:async()=>{reads++;return failing(403);},
-    createChatEvent:async()=>{writes++;return failing(503);}};
+    createChatEvent:async()=>{writes++;return failing(scenario==='create429'?429:503);}};
   const name=scenario==='exactread403'?'update_calendar_events':'create_calendar_events';
   const entries=scenario==='exactread403'?[0,1,2].map(index=>({eventId:`private_event_${index}`,title:privateText,location:privateText})):
     [0,1].map(index=>({title:privateText+index,date:start.date,location:privateText}));
@@ -188,13 +188,13 @@ for(const scenario of ['duplicate429','exactread403','mutation503'])test(`real m
   const rows=f.rows.filter(row=>row.kind==='tool_finished');assert.equal(rows.length,1);
   assert.equal(f.rows.filter(row=>row.kind==='tool_started').length,1);assert.equal(f.rows.length,2);
   assert.equal(rows[0].counts.sequence,1);assert.equal(rows[0].counts.outcomeCode,C.outcome.partial);
-  assert.equal(rows[0].counts.observedHttpStatus,scenario==='duplicate429'?429:scenario==='exactread403'?403:503);
+  assert.equal(rows[0].counts.observedHttpStatus,scenario==='create429'?429:scenario==='exactread403'?403:503);
   assert.equal(rows[0].counts.reasonCode,C.reason.http_error);
   const itemLogs=f.logs.filter(row=>row.event==='agent_tool_batch_item_diagnostic');
   assert.equal(itemLogs.length,entries.length);
   assert(itemLogs.every(row=>row.eventId===rows[0].eventId&&row.runId===context.runId));
-  if(scenario==='duplicate429'){
-    assert.equal(lists,1);assert.equal(reads,0);assert.equal(writes,0);
+  if(scenario==='create429'){
+    assert.equal(lists,0);assert.equal(reads,0);assert.equal(writes,2);
     assert.equal(rows[0].counts.batchFailed,2);assert.equal(rows[0].counts.batchUnattempted,0);
     assert(itemLogs.every(row=>row.observedHttpStatus===429&&row.reason==='http_error'));
   }else if(scenario==='exactread403'){
@@ -203,7 +203,7 @@ for(const scenario of ['duplicate429','exactread403','mutation503'])test(`real m
     assert.deepEqual(itemLogs.map(row=>row.dispatched),[1,0,0]);
     assert.deepEqual(itemLogs.map(row=>row.observedHttpStatus),[403,undefined,undefined]);
   }else{
-    assert.equal(lists,1);assert.equal(reads,0);assert.equal(writes,2);
+    assert.equal(lists,0);assert.equal(reads,0);assert.equal(writes,2);
     assert.equal(rows[0].counts.batchFailed,3);assert.equal(rows[0].counts.batchUnattempted,0);
     assert.deepEqual(itemLogs.map(row=>row.dispatched),[1,1,0]);
     assert.deepEqual(itemLogs.map(row=>row.observedHttpStatus),[503,503,undefined]);

@@ -43,7 +43,7 @@ test('021 real SQL: seeded map identities, service isolation and validated atomi
     'stern-school-of-business':'Stern School of Business',
     'nyu-john-a-paulson-center':'John A. Paulson Center',
    };
-   const config=await readFile(new URL('../src/config.js',import.meta.url),'utf8');
+   const config=await readFile(new URL('../src/map/data/config.js',import.meta.url),'utf8');
    const visual=config.split('export const buildings = [')[1];
    const ids=[...visual.matchAll(/\bid: '([^']+)'/g)].map(m=>m[1]);
    const actual=(await db.query('select id,name,people_here from public.map_buildings order by id')).rows;

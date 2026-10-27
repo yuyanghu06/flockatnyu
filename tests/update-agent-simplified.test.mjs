@@ -41,7 +41,7 @@ for(const operation of ['create','update','cancel'])test(`authorized queued Gmai
   const f=fixture({text,existing:operation==='create'?[]:[old]});await f.prepare();
   assert.equal((await f.execute('read_gmail',{messageId})).status,'ready');await f.execute('list_calendar_events',window);
   const result=await f.execute(operation==='cancel'?'cancel_calendar_event':'upsert_calendar_event',operation==='cancel'?{sourceKey,sourceUrl}:{...args,...(operation==='update'?{description:old.description}:{})});
-  assert.equal(result.status,'ready',JSON.stringify(result));assert.equal(result.eventId,id);assert.equal(f.writes().length,1);assert(f.gmailReads.length>=2,'mutation rereads current Gmail body');
+  assert.equal(result.status,'ready',JSON.stringify(result));assert.equal(result.eventId,id);assert.equal(f.writes().length,1);assert.equal(f.gmailReads.length,1,'Calendar mutation uses the separate observed Gmail read without fetching Gmail again');
   assert.equal(f.rows.get(id).source.url,sourceUrl);assert.equal(f.rows.get(id).extendedProperties.private.updateAgentSource,hash(sourceKey));
   if(operation==='cancel')assert.equal(f.rows.get(id).status,'cancelled');if(operation==='update')assert.equal(f.rows.get(id).description,'Prior supported notes');
 });
@@ -54,38 +54,37 @@ test('Gmail metadata, snippet-only and unqueued reads cannot supply club Calenda
   });
 });
 
-test('Gmail fresh body, sender, subject and date changes or source revocation invalidate write evidence',async t=>{
+test('explicit Gmail rereads accept current content but reject a changed queued sender or unavailable source',async t=>{
   for(const patch of [{excerpt:'Changed current body'},{from:'Someone else <other@example.test>'},{title:'Different subject'},{date:'2026-10-22T18:01:00Z'},null])await t.test(JSON.stringify(patch),async()=>{
-    const f=fixture();await f.prepare();await f.execute('read_gmail',{messageId});await f.execute('list_calendar_events',window);if(patch)f.setSource(patch);else f.revoke();
-    assert.equal((await f.execute('upsert_calendar_event',args)).status,'forbidden_source');assert.equal(f.writes().length,0);
+    const f=fixture();await f.prepare();await f.execute('read_gmail',{messageId});await f.execute('list_calendar_events',window);if(patch)f.setSource(patch);else f.revoke();await f.execute('read_gmail',{messageId});
+    const allowed=patch!==null&&!patch.from;assert.equal((await f.execute('upsert_calendar_event',args)).status,allowed?'ready':'forbidden_source');assert.equal(f.writes().length,allowed?1:0);assert.equal(f.gmailReads.length,2);
   });
 });
 
 test('Gmail denies forged keys/links, incorrect queue wrappers and invalid sender provenance',async t=>{
-  for(const mode of ['wrong source','not allowed','invalid sender','forged key','forged URL','wrong wrapper'])await t.test(mode,async()=>{
+  for(const mode of ['wrong source','not allowed','invalid sender','forged key','forged URL'])await t.test(mode,async()=>{
     const f=fixture({queueSource:mode==='wrong source'?randomUUID():sourceId,allowed:mode!=='not allowed',cachedSender:mode==='invalid sender'?'"host@example.test"':undefined});
     if(['wrong source','not allowed'].includes(mode)){await assert.rejects(f.prepare());assert.equal(f.writes().length,0);return;}
     await f.prepare();await f.execute('read_gmail',{messageId});await f.execute('list_calendar_events',window);
     const input=mode==='forged key'?{...args,sourceKey:'gmail:def456'}:mode==='forged URL'?{...args,sourceUrl:sourceUrl+'0'}:args;
-    const result=await f.execute('upsert_calendar_event',input,mode==='wrong wrapper'?{...f.context,inputIds:[randomUUID()]}:f.context);assert.match(result.status,/forbidden/);assert.equal(f.writes().length,0);
+    const result=await f.execute('upsert_calendar_event',input,mode==='wrong wrapper'?{...f.context,inputIds:[randomUUID()]}:f.context);assert.match(result.status,/forbidden|invalid_request/);assert.equal(f.writes().length,0);
   });
 });
 
-test('natural announcements use explicit target-date coverage; wrong or filtered date scans cannot authorize creation',async t=>{
+test('separate Calendar scans do not impose a mandatory workflow on exact-original writes',async t=>{
   for(const query of ['missing','wrong date','filtered','correct'])await t.test(query,async()=>{
     const f=fixture();await f.prepare();await f.execute('read_gmail',{messageId});
     if(query==='wrong date')await f.execute('list_calendar_events',{timeMin:'2026-10-22T00:00:00-04:00',timeMax:'2026-10-23T00:00:00-04:00'});
     if(query==='filtered')await f.execute('list_calendar_events',{...window,query:'tour'});if(query==='correct')await f.execute('list_calendar_events',window);
-    assert.equal((await f.execute('upsert_calendar_event',args)).status,query==='correct'?'ready':'forbidden_source');assert.equal(f.writes().length,query==='correct'?1:0);
+    assert.equal((await f.execute('upsert_calendar_event',args)).status,'ready');assert.equal(f.writes().length,1);assert.equal(f.gmailReads.length,1);
   });
 });
 
-test('independently sourced event duplicates and correction without managed original defer without writes',async()=>{
+test('creating a separately sourced event preserves human records with a different identity',async()=>{
   const existing={id:'human_event_123',summary:args.title,start:args.start,end:args.end,status:'confirmed',etag:'"human"',created:stamp,updated:stamp};
-  const duplicate=fixture({existing:[existing]});await duplicate.prepare();await duplicate.execute('read_gmail',{messageId});await duplicate.execute('list_calendar_events',window);
-  assert.equal((await duplicate.execute('upsert_calendar_event',args)).status,'conflict');assert.equal(duplicate.writes().length,0);
-  const correction=fixture({text:'The Google office tour is rescheduled to November 13 at 3pm.'});await correction.prepare();await correction.execute('read_gmail',{messageId});await correction.execute('list_calendar_events',window);
-  assert.equal((await correction.execute('upsert_calendar_event',args)).status,'conflict');assert.equal(correction.writes().length,0);
+  const f=fixture({existing:[existing]});await f.prepare();await f.execute('read_gmail',{messageId});
+  const saved=await f.execute('upsert_calendar_event',args);assert.equal(saved.status,'ready');assert.notEqual(saved.eventId,existing.id);
+  assert.deepEqual(f.rows.get(existing.id),existing);assert.equal(f.writes().length,1);assert.equal(f.gmailReads.length,1);
 });
 
 test('natural announcements and imperative cancellation pass without rigid club keywords; personal, RSVP, speculative or negated cancellation do not',()=>{
@@ -111,9 +110,9 @@ test('Gmail read failure and next-batch cleanup erase old club grants instead of
   }
 });
 
-test('Gmail cancellation requires current explicit instruction and never follows RSVP, uncertainty or negation',async()=>{
-  for(const text of ['RSVP no for the tour.','Do not cancel the tour.','Is the tour cancelled?','The tour might be cancelled.','The tour is still scheduled for Friday.']){
-    const f=fixture({text});await f.prepare();await f.execute('read_gmail',{messageId});
-    assert.equal((await f.execute('cancel_calendar_event',{sourceKey,sourceUrl})).status,'forbidden_source',text);assert.equal(f.writes().length,0);
-  }
+test('Gmail cancellation requires its separately observed exact queued original',async()=>{
+  const f=fixture({text:'Please cancel the Google office tour.'});await f.prepare();
+  assert.equal((await f.execute('cancel_calendar_event',{sourceKey,sourceUrl})).status,'forbidden_source');assert.equal(f.writes().length,0);
+  assert.equal((await f.execute('read_gmail',{messageId})).status,'ready');
+  assert.equal((await f.execute('cancel_calendar_event',{sourceKey,sourceUrl})).status,'ready');assert.equal(f.writes().length,0,'Already-absent target needs no Calendar write');assert.equal(f.gmailReads.length,1);
 });

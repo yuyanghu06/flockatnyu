@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createAssistant} from '../src/assistant.js';
+import {createAssistant} from '../src/features/assistant/assistant.js';
 // Deliberately inert DOM/RAF: terminal paths must work even while no paint occurs.
 class Node {
  constructor(tag){Object.assign(this,{tagName:tag,children:[],listeners:{},attributes:{},hidden:false,disabled:false,value:'',textContent:'',className:'',style:{},open:false,renders:0});}

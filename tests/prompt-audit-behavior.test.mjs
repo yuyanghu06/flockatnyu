@@ -6,7 +6,7 @@ import {attendanceArguments,scriptedProvider} from './fixtures/chat-map-attendan
 const call=(name,id,args={},scope=[workerIds.task])=>({id,name,arguments:name==='finish_batch'?{handledInputIds:args}:{inputIds:scope,arguments:args}});
 const turn=(...toolCalls)=>({text:'Synthetic test interpretation',stopReason:'tool_calls',toolCalls});
 function workerProvider({invalidDefer=false}={}){let step=0;return {toolTurn:async request=>{
-  const responses=[turn(call('finish_batch','initial',[workerIds.queue])),turn(call('read_pending_task','task',{taskId:workerIds.task})),turn(call('read_discord_messages','source',{channelId:'200',messageId:'300',context:false,limit:1})),()=>{
+  const responses=[turn({id:'initial',name:'finish_batch',arguments:{handledInputIds:[],noChangeInputIds:[workerIds.queue]}}),turn(call('read_pending_task','task',{taskId:workerIds.task})),turn(call('read_discord_messages','source',{channelId:'200',messageId:'300',context:false,limit:1})),()=>{
     assert(request.messages.some(row=>row.role==='tool'&&JSON.parse(row.content).status==='tool_error'));
     return turn(call('defer_task','defer',{taskId:workerIds.task,summary:'Exact original is unavailable; retain the same unfinished Calendar review',...(invalidDefer?{}:{operation:'source_review'})}));
   },...(invalidDefer?[()=>{assert.equal(JSON.parse(request.messages.at(-1).content).status,'tool_error');return turn(call('defer_task','corrected_defer',{taskId:workerIds.task,summary:'Exact original is unavailable; retain the same unfinished Calendar review',operation:'source_review'}));}]:[]),turn(call('finish_batch','final',[]))];const response=responses[step++];assert(response,'Unexpected model request');return typeof response==='function'?response():response;

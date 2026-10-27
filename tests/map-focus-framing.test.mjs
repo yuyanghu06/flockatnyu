@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {createCameraFocus} from '../src/camera-focus.js';
-import {mapFocusLayout} from '../src/map-focus-layout.js';
+import {createCameraFocus} from '../src/map/camera/camera-focus.js';
+import {mapFocusLayout} from '../src/map/camera/map-focus-layout.js';
 const limits={minDistance:15,maxDistance:470,minPolarAngle:.01,maxPolarAngle:1.2,minCameraHeight:1,targetBounds:{minX:-780,maxX:780,minY:1,maxY:150,minZ:-780,maxZ:970}};
 function rig(width=390,height=844){
  const camera=new T.PerspectiveCamera(43,width/height,.5,6000);camera.position.set(100,200,300);
