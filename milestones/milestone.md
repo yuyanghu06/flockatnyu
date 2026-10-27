@@ -1,8 +1,104 @@
-## Push and manual pending-work processing — in progress
+## Push and manual pending-work processing — manual pass ended
 
-The user requested publication, manual processing of pending messages/saved tasks, then cleanup of verified completed items and a final push. They explicitly clarified that diagnostic audit logs should remain. Publication evaluator ACCEPT; implementation is committed locally as263e0ca. No manual processing or live deployment has occurred yet. [Scope](planner-manual-processing-2026-10-26/info.md).
+Selected fixes263e0ca and425fda5 are pushed to main. The manual pass ended after228queue acknowledgements and199verified exact saved-task removals. Five Calendar events were created and read back with their map records; two Calendar updates and thirteen person-update effects across nine people were verified. Independent accounting ACCEPT; final non-atomic inventory at10:40PMhas40pending/cached, including one still pending from the earlier186cohort. The queue is not empty. New ingestion and genuinely unresolved tasks remain; no blanket purge or diagnostic-log deletion. The worker was not redeployed. [Scope](planner-manual-processing-2026-10-26/info.md).
 
-## Selected planner fixes — implemented locally, not deployed
+[Manual planner cycle 11 completed](history/2026-10-26_16-45-34-755226-orchestrator-manual-planner-cycle-11-completed.md) · [Manual planner cycle 12 completed](history/2026-10-26_16-45-34-756012-orchestrator-manual-planner-cycle-12-completed.md)
+
+[Private loop stop after cycle](history/2026-10-26_16-53-19-906505-coder-private-loop-stop-after-cycle.md) · [Private loop stop accepted](history/2026-10-26_16-53-19-906813-evaluator-private-loop-stop-after-cycle-accepted.md) · [Manual retry selection reviewed](history/2026-10-26_16-53-19-906914-planner-manual-retry-selection-audit.md) · [Manual planner cycle 13 completed](history/2026-10-26_16-53-19-906994-orchestrator-manual-planner-cycle-13-completed.md)
+
+[Manual cycle 14](history/2026-10-26_16-58-57-160362-orchestrator-manual-planner-cycle-14-completed.md)
+
+[Operational review through cycle 14](history/2026-10-26_17-02-56-302749-evaluator-manual-planner-through-cycle-14-accepted.md)
+
+[Manual queue metadata recheck](history/2026-10-26_17-10-18-471923-planner-manual-pending-metadata-recheck.md) · [Manual planner cycle 15 completed](history/2026-10-26_17-10-18-472213-orchestrator-manual-planner-cycle-15-completed.md)
+
+[Completion and location contracts](history/2026-10-26_17-13-02-186949-planner-source-review-completion-location-contracts.md)
+
+[Manual cycle 16](history/2026-10-26_17-20-01-247948-orchestrator-manual-planner-cycle-16-completed.md)
+
+[Private exact quarantine retry helper](history/2026-10-26_17-28-39-030843-coder-private-exact-quarantine-retry-helper.md) · [Private exact quarantine retry accepted](history/2026-10-26_17-28-39-031206-evaluator-private-exact-quarantine-retry-accepted.md) · [Manual planner cycle 17 completed](history/2026-10-26_17-28-39-031329-orchestrator-manual-planner-cycle-17-completed.md)
+
+[Manual cycle 18](history/2026-10-26_17-35-46-473316-orchestrator-manual-planner-cycle-18-completed.md)
+
+[Guarded quarantine retry wiring reviewed](history/2026-10-26_17-39-15-840938-planner-guarded-quarantine-retry-wiring.md) · [Manual processing through cycle 18 accepted](history/2026-10-26_17-39-15-841251-evaluator-manual-planner-through-cycle-18-accepted.md)
+
+[Manual cycle 19](history/2026-10-26_17-45-22-653877-orchestrator-manual-planner-cycle-19-completed.md)
+
+[Manual cycle 20 partial](history/2026-10-26_17-58-49-768603-orchestrator-manual-planner-cycle-20-partial.md)
+
+[Manual planner cycle 21 completed](history/2026-10-26_18-06-22-703212-orchestrator-manual-planner-cycle-21-completed.md) · [Guarded quarantine retry applied to one valid original](history/2026-10-26_18-06-22-703513-orchestrator-guarded-quarantine-retry-partial.md) · [Initial queue status after guarded retry](history/2026-10-26_18-06-22-703622-planner-initial-22-status-after-guarded-retry.md)
+
+[Two task current evidence reviewed](history/2026-10-26_18-17-15-828668-planner-two-task-current-evidence-reviewed.md)
+
+[Manual planner cycle 22 completed](history/2026-10-26_18-17-15-829960-orchestrator-manual-planner-cycle-22-completed.md)
+
+[Manual through cycle 22 accounting accepted](history/2026-10-26_18-20-20-210666-evaluator-manual-through-cycle-22-accounting-accepted.md)
+
+[Initial backlog metadata refreshed](history/2026-10-26_18-20-20-213144-planner-initial-backlog-metadata-refreshed.md)
+
+[Manual cycle23](history/2026-10-26_18-23-10-156519-orchestrator-manual-planner-cycle-23-completed.md)
+
+[Accounting through23 accepted](history/2026-10-26_18-25-29-734427-evaluator-manual-through-cycle-23-accounting-accepted.md)
+
+[Engineering scheduling reviewed](history/2026-10-26_18-29-59-758479-planner-engineering-scheduling-evidence-reviewed.md)
+
+[Manual cycle24](history/2026-10-26_18-31-11-440025-orchestrator-manual-planner-cycle-24-completed.md)
+
+[Initial message backlog settled](history/2026-10-26_18-31-51-217853-planner-initial-backlog-settlement-verified.md)
+
+[Manual cycle25 partial](history/2026-10-26_18-37-51-651405-orchestrator-manual-planner-cycle-25-context-limited.md)
+
+[Accounting through24 accepted](history/2026-10-26_18-39-47-749051-evaluator-manual-through-cycle-24-accounting-accepted.md)
+
+[Manual cycle26 completed](history/2026-10-26_18-44-44-953793-orchestrator-manual-planner-cycle-26-completed.md)
+
+[Closed-task read cleanup contract](history/2026-10-26_18-46-29-909895-planner-resolved-task-read-cleanup-contract-accepted.md) · [Scope](planner-resolved-read-cleanup-2026-10-26/info.md)
+
+[Accounting through26 accepted](history/2026-10-26_18-51-42-477397-evaluator-manual-through-cycle-26-accounting-accepted.md)
+
+[Manual cycle27 completed](history/2026-10-26_18-57-39-943774-orchestrator-manual-planner-cycle-27-completed.md)
+
+[Independent cleanup probe](history/2026-10-26_19-00-22-110096-tester-resolved-read-cleanup-provisional-probe-passed.md)
+
+[Closed-task read cleanup implemented](history/2026-10-26_19-00-46-662285-coder-resolved-task-read-cleanup-implemented.md)
+
+[Cleanup independently verified](history/2026-10-26_19-02-57-314069-tester-resolved-read-cleanup-independent-verification-passed.md)
+
+[Resolved read cleanup accepted](history/2026-10-26_19-04-50-766289-evaluator-resolved-read-cleanup-accepted.md)
+
+[Resolved read cleanup integrated](history/2026-10-26_19-04-50-767829-orchestrator-resolved-read-cleanup-integrated.md)
+
+[Manual cycle28 completed](history/2026-10-26_19-09-54-778128-orchestrator-manual-planner-cycle-28-completed.md)
+
+[Manual cycle29 completed](history/2026-10-26_19-15-04-491304-orchestrator-manual-planner-cycle-29-completed.md)
+
+[Manual cycle30 completed](history/2026-10-26_19-22-54-026275-orchestrator-manual-planner-cycle-30-completed.md)
+
+[Manual cycle31 completed](history/2026-10-26_19-33-11-867120-orchestrator-manual-planner-cycle-31-completed.md)
+
+[Manual planner cycle 32 partial](history/2026-10-26_19-54-19-566280-orchestrator-manual-planner-cycle-32-partial.md)
+
+[Complete queue audit corrects starting sample](history/2026-10-26_19-54-19-568533-planner-complete-queue-audit-corrects-starting-sample.md)
+
+[Private five input batching accepted](history/2026-10-26_19-54-19-569631-orchestrator-private-five-input-batching-accepted.md)
+
+[First six five-capacity runs](history/2026-10-26_20-16-20-000001-orchestrator-first-six-five-capacity-runs-reviewed.md): independent accounting ACCEPT through bulk006 records 182 distinct accepted task removals, 41 queue acknowledgements and 38 terminal runs (32 completed, four aborted, two text-limit stops). No global-empty claim; three later resolutions rely on explicit operator-observed ready results rather than archived raw responses. Unresolved work remains saved.
+
+[Further mail batches reviewed](history/2026-10-26_20-21-30-000001-orchestrator-bulk007-through010-reviewed.md) · [Complete metadata inventory at 8:21 PM](history/2026-10-26_20-24-00-000001-tester-complete-pending-metadata-inventory.md) · [Closed-read cleanup pushed](history/2026-10-26_20-18-40-000001-orchestrator-closed-read-cleanup-pushed.md) · [Accounting through bulk006 accepted](history/2026-10-26_20-17-20-000001-evaluator-manual-accounting-through-bulk006-accepted.md).
+
+[Another twenty-three emails reviewed](history/2026-10-26_20-27-30-000001-orchestrator-bulk011-through015-reviewed.md): operator ledger through bulk015 records185accepted task removals and72queue acknowledgements. Full remaining queue processing continues.
+
+[Twenty more emails reviewed](history/2026-10-26_20-34-30-000001-orchestrator-bulk016-through020-reviewed.md) · [Private link display accepted](history/2026-10-26_20-34-30-000002-evaluator-private-link-display-correction-accepted.md) · [Shipyard schedule completed](history/2026-10-26_20-49-00-000001-orchestrator-bulk021-through025-shipyard-schedule-completed.md).
+
+[Accounting through bulk027 accepted](history/2026-10-26_20-59-30-000001-evaluator-manual-accounting-through-bulk027-accepted.md):186distinct task removals and122queue acknowledgements, with explicit operator-observation limits. [Fresh progress inventory](history/2026-10-26_20-59-30-000002-tester-pending-inventory-refresh.md) at8:53PMshows127cachedpending originals, all in scope and retry-due;105remain from the earlier186snapshot and22are newer pending UUIDs. The queue is not empty and direct global saved-task metadata remains unavailable.
+
+[First32bulk runs completed](history/2026-10-26_21-10-00-000001-orchestrator-first-bulk-loop-completed.md): all32completed both stages, with145queue acknowledgements overall and186saved-task removals unchanged. Exact source-missing queue completion is verified; the operator corrected its omitted missingInputIds finish field. Another bounded manual loop continues, with no automatic command selection or live setting changes.
+
+[Twenty-five more originals reviewed](history/2026-10-26_21-19-20-000001-orchestrator-bulk033-through037-reviewed.md): through bulk037 the operator ledger reaches170queue acknowledgements and186saved-task removals, with unfinished work preserved. Processing continues.
+
+[Calendar identity/update contract](history/2026-10-26_21-46-20-000001-planner-calendar-identity-and-unmanaged-update-limit.md) · [Discord long-read limit](history/2026-10-26_21-46-20-000002-planner-discord-long-message-read-limit.md) · [Bulk038–041 and verified Fahim addition](history/2026-10-26_21-46-20-000003-orchestrator-bulk038-through041-reviewed.md). Operator ledger190queue acknowledgements/187task removals; unresolved nine-event work retained, no unsafe overwrite or extra code changes.
+
+## Selected planner fixes — pushed, not deployed
 
 Unused model-visible result/history bodies are trimmed while current facts and private execution evidence remain. Tasks can close through distinct confirmed-action, reviewed no-change or exact-missing-original results. Only matching trusted missing originals clear their queue/task versions. Source, author, task and Calendar-target fields are provided as copyable hints; failed target evidence cannot be replaced by an unrelated success.
 
@@ -4665,3 +4761,26 @@ Combined web package273files/78182292bytes uploaded asRailway deployment046b9fd4
 AGENTS.md now prioritizes real tasks, meaningful edge cases, correct responses and outcomes; discourages redundant syntax/implementation tests; and permits bounded configured model/application API evaluations. No tests were removed and no API calls or runtime changes were made for this documentation request. Active implementation/release state above is unchanged. [Record](history/2026-10-22_18-22-46-403630-orchestrator-testing-evaluation-preference-recorded.md).
 
 [Refreshed database authorization handoff](history/2026-10-25_14-01-37-271205-orchestrator-database-auth-handoff-refreshed.md): no database deletion yet.
+
+[Travel clarification and Frank attendance](history/2026-10-26_22-15-30-000001-orchestrator-bulk042-through043-reviewed.md)
+
+[Accounting and latest pending inventory](history/2026-10-26_22-16-50-000001-evaluator-accounting-and-pending-inventory-refreshed.md)
+
+[Legacy closure contract](history/2026-10-26_22-17-30-000001-planner-legacy-closure-contract-reviewed.md) · [Eight tasks cleared](history/2026-10-26_22-17-30-000002-orchestrator-bulk044-eight-tasks-cleared.md)
+
+[Legacy decisions accepted](history/2026-10-26_22-19-00-000001-evaluator-legacy-travel-and-approval-decisions-accepted.md)
+
+[Accounting correction through044](history/2026-10-26_22-21-00-000001-evaluator-accounting-clarified-through044.md) · [Sean pickup confirmation](history/2026-10-26_22-21-00-000002-orchestrator-sean-pickup-confirmation-verified.md)
+
+[Transport discussion batches046–047](history/2026-10-26_22-24-30-000001-orchestrator-bulk046-through047-reviewed.md)
+
+[Van-capacity discussion reviewed](history/2026-10-26_22-27-30-000001-orchestrator-bulk048-capacity-discussion-reviewed.md)
+
+
+[Reply parent and images reviewed](history/2026-10-26_22-36-00-000001-orchestrator-bulk049-through050-images-reviewed.md)
+
+
+[Final pending inventory](history/2026-10-26_22-42-00-000001-tester-final-pending-inventory.md) · [Final accounting accepted](history/2026-10-26_22-42-00-000002-evaluator-final-manual-accounting-accepted.md) · [Final manual batch ended](history/2026-10-26_22-42-00-000003-orchestrator-final-manual-cycle-ended.md)
+
+
+[Private cleanup verified](history/2026-10-26_22-43-00-000001-orchestrator-private-cleanup-verified.md)

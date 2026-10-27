@@ -1,10 +1,31 @@
-## Push and manual planner processing — current
+## Push and manual planner processing — manual pass ended
 
-- [x] Confirm user means pending messages/saved tasks, not diagnostic logs; inspect Git/live worker and obtain publication review.
-- [ ] Push accepted implementation and verification records to main, verify remote.
-- [ ] Acquire normal exclusive planner lease, inspect eligible queued originals and saved tasks, manually perform supported work through ordinary service tools.
-- [ ] Verify exact outcomes, clear only completed/no-change/confirmed-missing versions, preserve unresolved work and record counts.
-- [ ] Push final operational records and report actual outcome/remaining limits.
+- [x] Confirm “log” means pending messages and saved tasks; diagnostic logs stay intact.
+- [x] Push implementation263e0ca and records86af416 to main and verify matching remote.
+- [x] Use normal exclusive leases and separate service tools for supported manual work.
+- [x] Account for the starting22queued originals:21done,1naturallyexpired,0pending, independently verified. New ingestion is separate.
+- [x] Guardedly requeue the one still-valid quarantined original; leave the expired original unrestored and outside completion counts.
+- [x] Accept179exact saved-task removals through32, verified absent in later owned catalogues; initial22was only an incomplete sample, not the whole queue.
+- [x] Independently verify and push closed-read conversation cleanup425fda5; no new limits or deployment.
+- [x] Independent accounting ACCEPT through bulk006:182accepted task removals and41queue acknowledgements; no global-empty claim.
+- [x] Operator ledger through bulk015:185accepted task removals and72queue acknowledgements; remaining queue still under review.
+- [x] Continue through bulk020:92queue acknowledgements; preserve one newly verified missing-person/missing-occurrence task rather than claim attendance saved.
+- [x] Continue through bulk025:186accepted task removals and113queue acknowledgements. Complete and read back Shipyard Calendar/map schedule using the trusted original plus manually verified public-page clocks; retain unmatched-person work.
+- [x] Independent accounting ACCEPT through bulk027:186removals,122acknowledgements. Fresh progress inventory127pending/cache/allin scope;105from prior snapshot and22newer pending UUIDs. No global-empty claim.
+- [x] Complete first32bulk runs:145queue acknowledgements overall,186task removals; exact missing-original queue result accepted after explicit missingInputIds finish. Continue remaining originals in another bounded loop.
+- [x] Continue through bulk037:170queue acknowledgements overall,186task removals unchanged; existing EcoGPT invitation verified without new writes.
+- [x] Continue through bulk041:190queue acknowledgements and187task removals; add/read back Fahim's planned retreat participation while preserving seven prior business facts. Relationship-row timestamps refreshed through the existing snapshot API.
+- [ ] Held outside selected fixes: multiple Calendar events per single original and direct safe updates/adoption of unmanaged Calendar entries. One source key currently addresses one event; unresolved nine-event work is saved, not force-written.
+- [ ] Held reader limitation: Discord excerpts stop at1800UTF-16characters, with no exposed full-message/offset route. Fragments cannot recover pre-truncated text. Do not treat saved tail as a fresh full read.
+- [x] Continue through bulk043:200queue acknowledgements and189accepted removals; planned retreat facts verified for nine people.
+- [x] Through bulk044:201queue acknowledgements and197closures; correct approval versus attendance, resolve two superseded travel uncertainties with current source and target evidence.
+- [x] Through bulk045:206queue acknowledgements and198closures; Sean Hu pickup confirmation saved/read back. Independent grouping correction distinguishes person effects from tool calls.
+- [x] Through bulk047:212queue acknowledgements,198closures; reviewed conditional transport discussion without inventing attendance.
+- [x] Through bulk050:223queue acknowledgements and199closures; manually inspect accessible own travel screenshot, retain unavailable older attachment, acknowledge exact missing original correctly.
+- [x] End the bounded manual pass after228queue acknowledgements/199exact task removals; stop extra live-arrival chasing after the user challenged the delay.
+- [ ] Remaining queue is not cleared: final40pending/cache,including1of original186cohort after round_limit. Preserve real blockers/new arrivals for ordinary worker or a later requested pass.
+- [x] Final independent accounting ACCEPT and metadata inventory complete; retain actual limitations.
+- [x] Verify operator stopped and private environment/source/config/helper/image files removed; retain51source-free receipts, scan credentials and publish final records normally.
 
 ## Selected planner fixes — locally complete
 
@@ -29,7 +50,8 @@
 - [x] Correlate actual model proposals with each failure category; reproduce active conversation growth, task completion refusal and malformed requests offline.
 - [x] Recheck five exact Discord targets with fresh production source/bot permission checks; all exact messages404, all access endpoints200; no source bodies stored or business writes.
 - [x] Independently review confirmed causes and preserve uncertainty about historical cleanup/source-denial details.
-- [ ] Suggested follow-up: verified already-satisfied/no-change completion; bounded active conversation/history paging; correct model-supplied IDs/fields and source-read order; fixed-cutoff cleanup query and safe failure reasons; diagnostic tool-name/outcome corrections. No fixes or new limits selected by this diagnosis.
+- [x] The later selected-fixes pass supersedes this diagnosis-only deferral for active-history trimming, reviewed no-change/exact-missing completion and source/target hints; those changes are implemented and pushed.
+- [ ] Held: page-ID reader/schema changes, audit-log cleanup implementation and unrelated diagnostics changes. The user requested reproduction/proposal first and deferred these fixes.
 - Exact historical cleanup error and some source-denial branches were not retained. [Cause report](planner-logging-review-2026-10-26/debug-causes.md).
 
 ## Planner twelve-hour review — complete

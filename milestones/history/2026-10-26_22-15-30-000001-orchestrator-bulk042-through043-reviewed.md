@@ -1,0 +1,10 @@
+# Retreat travel clarification and Frank attendance verified
+
+- Local timestamp / acting role / milestone: October26,2026,10:15PM NewYork / Orchestrator / manual pending work.
+- Requested scope: process pending originals and clear only confirmed completed work.
+- Starting repository state: source425fda5 pushed; through bulk041190queue acknowledgements and187task removals.
+- Work performed / changed files: reviewed bulk042 and043; used separate exact source, identity, map and participation tools. Corrected Fahim’s travel label to neutral uncertainty around5PM, then added Frank’s own agreement to planned retreat travel. Source-free receipts and decisions remain in ignored evidence.
+- Decisions: pickup/departure clocks do not define house arrival or physical presence. No messages, RSVP, document edits or publication were sent. A corrective patch conflict was followed by a fresh exact map read and successful retry; the rejected attempt is excluded.
+- Checks and evidence: both runs completed both stages, audit intact, ten originals acknowledged. Fahim final receipt5540e9d1-56e1-418f-ae3d-a288c8d4be8d, task35bf9ce3-b3d9-5f8a-ae42-c82e8a4e5cf9 ready/completed. Frank receipt db5b156f-b3ef-4f3f-9670-39cde82c69dc, taska152f451-836e-5c5a-a78c-6ce51cf95971 ready/completed. Exact retreat readback shows nine people, eight going and one declined, planned with inherited bounds. All eight prior business facts survive Frank’s addition; existing snapshot SQL refreshes relation metadata timestamps.
+- Resulting state / acceptance: operator ledger200queue acknowledgements and189distinct saved-task removals:165no-action,11already-correct,1exact-missing and12completed after actions. Eleven successful participation calls cover nine distinct people, including two additional label correction calls. Five Calendar creations and two Calendar updates unchanged. No live deployment or extra code change.
+- Remaining work and handoff: active manual loop continues; final independent inventory/accounting, private-file cleanup and final push remain. Counts are manual outcomes, not a claim that all pending work is gone.
