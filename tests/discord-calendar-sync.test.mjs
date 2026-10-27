@@ -11,9 +11,9 @@ const now=()=>new Date('2026-10-18T16:00:00Z');
 const announcement='Tech@NYU event: Synthetic Workshop is scheduled October 20, 2026 at 6pm at Bobst.';
 const args={sourceKey,sourceUrl,title:'Synthetic Workshop',location:'Bobst',start:{dateTime:'2026-10-20T18:00:00-04:00',timeZone:'America/New_York'},end:{dateTime:'2026-10-20T20:00:00-04:00',timeZone:'America/New_York'}};
 const window={timeMin:'2026-10-20T00:00:00-04:00',timeMax:'2026-10-21T00:00:00-04:00'};
-function fixture({body=announcement,liveBody=body,eventType='message_created',existing=[],truncated=false}={}) {
+function fixture({body=announcement,liveBody=body,eventType='message_created',existing=[],truncated=false,liveMessageId='300'}={}) {
  let excluded=false,deleted=false,currentBody=liveBody;const writes=[],reads=[];
- const source=()=>({kind:'discord',retrieval:'live',sourceId:discordSource,guildId:'100',channelId:'200',messageId:'300',url:sourceUrl,authorId:'400',excerpt:currentBody});
+ const source=()=>({kind:'discord',retrieval:'live',sourceId:discordSource,guildId:'100',channelId:'200',messageId:liveMessageId,url:sourceUrl.replace('/300',`/${liveMessageId}`),authorId:'400',excerpt:currentBody});
  const liveDiscordService={configured:true,readMessages:async input=>{reads.push(input);return {status:excluded||deleted?'forbidden':'ready',sources:excluded||deleted?[]:[source()],coverage:{textTruncated:truncated}};}};
  const policy={guildId:'100',revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]};
  const channel={id:'200',guild_id:'100',type:0,parent_id:null};
@@ -36,50 +36,45 @@ function fixture({body=announcement,liveBody=body,eventType='message_created',ex
  return {a,context,writes,reads,prepare:()=>a.prepareBatch({...context,inputs:[input]}),exclude:()=>{excluded=true;},remove:()=>{deleted=true;},
   tool:name=>async arguments_=>a.tools.find(tool=>tool.name===name).execute(arguments_,context)};
 }
-test('queued explicit Discord club event creates fixed Calendar event after a complete matching-window read',async()=>{
- const f=fixture();await f.prepare();assert.equal((await f.tool('upsert_calendar_event')(args)).status,'forbidden_source');
- await f.tool('list_calendar_events')(window);assert.equal((await f.tool('upsert_calendar_event')(args)).status,'ready');
- assert.equal(f.writes.length,1);assert.equal(f.writes[0].sourceKey,sourceKey);assert.equal(f.writes[0].principal.calendarId,calendarId);
+const readOriginal=f=>f.tool('read_discord_messages')({channelId:'200',messageId:'300',context:false});
+
+test('a queued native Discord original authorizes its exact Calendar operation without hidden source reads',async()=>{
+ const f=fixture();await f.prepare();assert.equal(f.reads.length,0);
+ const result=await f.tool('upsert_calendar_event')(args);assert.equal(result.status,'ready');assert.equal(f.writes.length,1);assert.equal(f.reads.length,0);
+ assert.equal(f.writes[0].sourceKey,sourceKey);assert.equal(f.writes[0].principal.calendarId,calendarId);
+ assert.equal((await readOriginal(f)).status,'ready');assert.equal(f.reads.length,1,'A model-selected refresh stays a separate source operation');
 });
-test('live Discord originals can support Calendar scope and source IDs/URLs cannot be forged',async()=>{
- const f=fixture({body:'An irrelevant source trigger',liveBody:announcement});await f.prepare();await f.tool('list_calendar_events')(window);
- await f.tool('read_discord_messages')({channelId:'200',messageId:'300',context:false});
+test('live Discord observations retain exact source IDs, event keys and canonical URLs',async()=>{
+ const f=fixture({body:'An irrelevant queue trigger',liveBody:announcement});await f.prepare();await readOriginal(f);
  assert.equal((await f.tool('upsert_calendar_event')(args)).status,'ready');
- for(const patch of [{sourceKey:'discord:100:200:301'},{sourceUrl:sourceUrl+'0'},{sourceKey:'discord:999:200:300'}])assert.equal((await f.tool('upsert_calendar_event')({...args,...patch})).status,'forbidden_source');
- assert.equal(f.writes.length,1);
+ for(const patch of [{sourceKey:'discord:100:200:301'},{sourceUrl:sourceUrl+'0'},{sourceKey:'discord:999:200:300'}])assert.equal((await f.tool('upsert_calendar_event')({...args,...patch})).status,'forbidden_source');assert.equal(f.writes.length,1);
 });
-test('same-message edit preserves managed source identity, new-message corrections/cross-source edits defer',async()=>{
- const existing={eventId:calendarEventId(calendarId,sourceKey),title:args.title,start:args.start,sourceUrl,managed:true};
- const f=fixture({body:'Tech@NYU event: Synthetic Workshop is rescheduled to October 20, 2026 at6pm.',eventType:'message_updated',existing:[existing]});
- await f.prepare();await f.tool('list_calendar_events')(window);assert.equal((await f.tool('upsert_calendar_event')(args)).status,'ready');assert.equal(f.writes[0].sourceKey,sourceKey);
- const newer=fixture({body:'Tech@NYU event: Synthetic Workshop is rescheduled to October 20, 2026 at6pm.'});
- await newer.prepare();await newer.tool('list_calendar_events')(window);assert.equal((await newer.tool('upsert_calendar_event')(args)).status,'conflict');assert.equal(newer.writes.length,0);
- const miroUrl='https://miro.com/app/board/board/?moveToWidget=item';
- const cross=fixture({body:`Tech@NYU event: Synthetic Workshop is scheduled October20 at6pm. Source ${miroUrl}`,existing:[{...existing,sourceUrl:miroUrl}]});
- await cross.prepare();await cross.tool('list_calendar_events')(window);assert.equal((await cross.tool('upsert_calendar_event')(args)).status,'conflict');assert.equal(cross.writes.length,0);
-});
-test('explicit original cancellation supports only same managed key; missing source and negation do not cancel',async()=>{
- const f=fixture({body:'Tech@NYU event: Synthetic Workshop is cancelled.',eventType:'message_updated'});await f.prepare();
- assert.equal((await f.tool('cancel_calendar_event')({sourceKey,sourceUrl})).status,'ready');assert.equal(f.writes.length,1);
- for(const body of ['The Tech@NYU workshop is not cancelled; it is still on.','Tech@NYU event: Synthetic Workshop might be cancelled.','Is the Tech@NYU workshop cancelled?']) {
-  const n=fixture({body});await n.prepare();assert.equal((await n.tool('cancel_calendar_event')({sourceKey,sourceUrl})).status,'forbidden_source');assert.equal(n.writes.length,0);
+test('updates and cancellations retain the exact observed managed source identity',async()=>{
+ for(const operation of ['upsert_calendar_event','cancel_calendar_event']){
+  const f=fixture({body:operation==='cancel_calendar_event'?'The workshop is cancelled.':'The workshop is rescheduled.',eventType:'message_updated'});await f.prepare();await readOriginal(f);
+  const input=operation==='cancel_calendar_event'?{sourceKey,sourceUrl}:args;
+  assert.equal((await f.tool(operation)(input)).status,'ready');assert.equal(f.writes.length,1);assert.equal(f.writes[0].sourceKey,sourceKey);assert.equal(f.writes[0].sourceUrl,sourceUrl);assert.equal(f.reads.length,1);
  }
 });
-test('personal activities, RSVP-only originals and stale/removed/excluded/truncated evidence never write Calendar',async()=>{
- for(const body of ["I'm studying at Bobst until8",'Co-working with the Tech@NYU team tonight',"Reminder: I'm attending the scheduled Tech@NYU workshop on Oct20 at6pm", "I'm not attending the scheduled Tech@NYU workshop on Oct20 at6pm",'Alex is attending the scheduled Tech@NYU workshop on Oct20 at6pm',
-  'Reminder: RSVP yes for the scheduled Tech@NYU workshop on October20 at6pm.',
-  'I plan to attend the Tech@NYU event scheduled October20 at6pm.',
-  'We are planning to join the Tech@NYU event scheduled October20 at6pm.',
-  'I intend to go to the Tech@NYU event scheduled October20 at6pm.']) {
-  const f=fixture({body});await f.prepare();await f.tool('list_calendar_events')(window);assert.equal((await f.tool('upsert_calendar_event')(args)).status,'forbidden_source',body);assert.equal(f.writes.length,0);
+test('failed explicit source rereads remove authority without Calendar writes',async()=>{
+ for(const mode of ['exclude','remove']){
+  const f=fixture(mode==='truncated'?{truncated:true}:{});await f.prepare();
+  if(mode!=='truncated'){assert.equal((await readOriginal(f)).status,'ready');f[mode]();}
+  const read=await readOriginal(f);assert.equal((await f.tool('upsert_calendar_event')(args)).status,'forbidden_source',mode+': '+JSON.stringify(read));assert.equal(f.writes.length,0);
  }
- for(const options of [{liveBody:"I'm attending the workshop"},{truncated:true}]) {
-  const f=fixture(options);await f.prepare();await f.tool('list_calendar_events')(window);assert.equal((await f.tool('upsert_calendar_event')(args)).status,'forbidden_source');assert.equal(f.writes.length,0);
- }
- for(const revoke of ['exclude','remove']) {const f=fixture();await f.prepare();await f.tool('list_calendar_events')(window);f[revoke]();assert.equal((await f.tool('upsert_calendar_event')(args)).status,'forbidden_source');assert.equal(f.writes.length,0);}
- assert.equal(discordCalendarIntent('Tech@NYU event: Study Jam study group is scheduled on October20 at6pm.'),true);
 });
-test('all-day Discord events respect local midnight window rather than UTC midnight',async()=>{
- const f=fixture({body:'Tech@NYU event: Study Jam is scheduled all day October20, 2026.'});await f.prepare();await f.tool('list_calendar_events')(window);
- assert.equal((await f.tool('upsert_calendar_event')({...args,title:'Study Jam',start:{date:'2026-10-20'},end:{date:'2026-10-21'}})).status,'ready');assert.equal(f.writes.length,1);
+test('a truncated follow-up original cannot add new Calendar write authority',async()=>{
+ const f=fixture({truncated:true,liveMessageId:'301'});await f.prepare();
+ const read=await f.tool('read_discord_messages')({channelId:'200',messageId:'301',context:false});assert.equal(read.coverage.textTruncated,true);
+ const changed={...args,sourceKey:'discord:100:200:301',sourceUrl:sourceUrl.replace('/300','/301')};
+ assert.equal((await f.tool('upsert_calendar_event')(changed)).status,'forbidden_source');assert.equal(f.writes.length,0);
+});
+test('intent classification keeps own-location reports and RSVPs distinct from club announcements',()=>{
+ for(const text of [announcement,'Tech@NYU event: Study Jam study group is scheduled on October20 at6pm.'])assert.equal(discordCalendarIntent(text),true,text);
+ for(const text of ["I'm studying at Bobst until8",'Co-working with the Tech@NYU team tonight',"I'm attending the scheduled Tech@NYU workshop on Oct20 at6pm",'Reminder: RSVP yes for the workshop.'])assert.equal(discordCalendarIntent(text),false,text);
+ for(const text of ['The workshop is not cancelled.','Is the workshop cancelled?','The workshop might be cancelled.'])assert.equal(discordCalendarIntent(text,{cancel:true}),false,text);
+});
+test('all-day Calendar writes preserve supplied New York dates after an explicit source read',async()=>{
+ const f=fixture({body:'Tech@NYU event: Study Jam is scheduled all day October20, 2026.'});await f.prepare();await readOriginal(f);
+ assert.equal((await f.tool('upsert_calendar_event')({...args,title:'Study Jam',start:{date:'2026-10-20'},end:{date:'2026-10-21'}})).status,'ready');assert.equal(f.writes.length,1);assert.deepEqual(f.writes[0].start,{date:'2026-10-20'});assert.deepEqual(f.writes[0].end,{date:'2026-10-21'});
 });

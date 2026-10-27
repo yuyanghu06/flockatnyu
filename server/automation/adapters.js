@@ -1,3 +1,5 @@
+import {manualAuthorizationSnapshot} from './manual-authorization.js';
+import {mapFactsChanged} from './map-facts.js';
 import {randomUUID} from 'node:crypto';
 import {readConfig} from '../config.js';
 import {readGoogleConfig} from '../google/config.js';
@@ -224,13 +226,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   async function readDiscordAuthorizationPair(signal) {
     if(manualWhitelist) {
       const result=await ordinaryDiscordStore.getManualScopeMetadata({guildId:discordConfig.guildId,channelIds:manual.channelIds,signal});
-      const data=result?.metadata;
-      if(result?.status!=='ready'||data?.guildId!==discordConfig.guildId||data.paused||data.discoveryEnabled===false
-        ||!Array.isArray(data.nodes)||data.publishedRevision!==data.policyRevision)return [{status:'forbidden'},{status:'forbidden'}];
-      const channels=data.nodes.filter(row=>manual.channelIds.includes(row.channelId)&&row.sourceId&&!row.manualDisabled&&!row.withdrawn)
-        .map(row=>({...row,enabled:true,guildId:discordConfig.guildId}));
-      const snapshot={status:'ready',policy:{guildId:discordConfig.guildId,revision:data.policyRevision,paused:false,discoveryEnabled:true,
-        excludedCategoryIds:[],excludedChannelIds:[]},channels};
+      const snapshot=manualAuthorizationSnapshot({result,guildId:discordConfig.guildId,channelIds:manual.channelIds});
       return [snapshot,snapshot];
     }
     if('getAuthorizationSnapshot' in discordStore) {
@@ -469,8 +465,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     const current=previous?.events.find(row=>row.id===args.event.id);
     if(args.event?.id&&(!current||current.updated_at!==args.expectedUpdatedAt))return {status:current?'conflict':'read_required'};
     const projection=target?observedCalendar(target.sourceId,args.event.source_record_id):null;
-    const factsChanged=!current||['name','notes','kind','type_id','status','time_kind','starts_at','ends_at','starts_on','ends_on','time_zone','source_id','source_url','source_record_id','url','reported_at']
-      .some(key=>canonicalJson(current[key]??null)!==canonicalJson(args.event[key]??null));
+    const factsChanged=mapFactsChanged({current,previousBuildings:previous?.event_buildings,event:args.event,buildings:args.buildings});
     if(factsChanged&&!target&&!await supportingSource(args.event?.source_id,args.event?.source_url,context,{sourceRecordId:args.event?.source_record_id}))return {status:'forbidden_source'};
     if(factsChanged&&target) {
       const original=projection?.original;
@@ -866,7 +861,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       if(tool.name==='read_discord_messages'&&(result.status!=='ready'||result.outcome==='source_missing'))for(const [key,row] of observed)if(row.provider==='discord'&&(args.url===row.sourceUrl||args.channelId===row.channelId&&args.messageId===row.messageId))observed.delete(key);
       // Only returned originals can support follow-up facts, not catalogue
       // metadata or model-supplied URLs. Recheck current live access on use.
-      if(result.status==='ready'&&tool.name!=='list_discord_channels')for(const source of result.sources||[])
+      if(result.status==='ready'&&result.coverage?.textTruncated!==true&&tool.name!=='list_discord_channels')for(const source of result.sources||[])
         if(source.kind==='discord'&&source.retrieval==='live'&&source.guildId===discordConfig.guildId
           &&snowflake(source.channelId)&&snowflake(source.messageId)&&validUuid(source.sourceId)
           &&allowedSourceIds.includes(source.sourceId)

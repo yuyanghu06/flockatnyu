@@ -63,23 +63,34 @@ function bundled(f,{manual=true,store=f.store}={}) {
 }
 const queued=(id='300')=>({source:'discord',source_id:sourceId,event_type:'message_created',event_id:id,revision:'1',received_at:'2026-10-22T18:00:00Z',payload:{id,guild_id:guildId,channel_id:channelId,author:{id:'400'},content:'me'}});
 
-test('actual bundled adapter shares one pair per boundary across a batch, but each authorization call remains fresh',async()=>{
+test('bundled authorization reads fresh saved manual metadata without provider calls',async()=>{
  const f=fixture(),adapters=bundled(f),events=[queued('300'),queued('301'),queued('302')];
+ await adapters.resolveClaimSourceIds({principal:adapters.principal});for(const key of Object.keys(f.counts))f.counts[key]=0;
  assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),true);
- assert.deepEqual({metadata:f.counts.metadata,guildChannels:f.counts.guildChannels,channelDetails:f.counts.channelDetails},{metadata:2,guildChannels:3,channelDetails:3});
- assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),true);assert.equal(f.counts.metadata,4);
- const details=f.client.getChannel;let checked=false;
- f.client.getChannel=async args=>{const result=await details(args);if(f.counts.metadata===5&&!checked){checked=true;f.metadata.nodes.find(node=>node.channelId===channelId).manualDisabled=true;}return result;};
- assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),false,'Revocation after the initial pair must fail at a later boundary');
- assert.equal(f.reads,0,'Authorization does not import message bodies');
+ assert.deepEqual({metadata:f.counts.metadata,guildChannels:f.counts.guildChannels,channelDetails:f.counts.channelDetails},{metadata:1,guildChannels:0,channelDetails:0});
+ assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),true);assert.equal(f.counts.metadata,2);
+ f.metadata.nodes.find(node=>node.channelId===channelId).manualDisabled=true;
+ assert.equal(await adapters.authorizeEvents({events,principal:adapters.principal}),false,'The next saved-metadata boundary sees a published disable');
+ assert.equal(f.counts.metadata,3);assert.equal(f.reads,0);assert.equal(f.counts.guildChannels,0);assert.equal(f.counts.channelDetails,0);
 });
 
-test('ordinary adapter fallback still reads policy and catalogue twice and rejects paired failures without fallback grants',async()=>{
+test('saved manual ancestry denies ancestor disables and withdrawal without granting siblings',async()=>{
+ for(const field of ['manualDisabled','withdrawn']){
+  const f=fixture(),a=bundled(f);await a.resolveClaimSourceIds({principal:a.principal});
+  assert.deepEqual(a.principal.allowedSourceIds,[sourceId]);assert(!a.principal.allowedSourceIds.includes(siblingSource));
+  assert.equal(await a.authorizeEvents({events:[queued()],principal:a.principal}),true);
+  f.metadata.nodes.find(row=>row.channelId===categoryId)[field]=true;
+  const before={guild:f.counts.guildChannels,channel:f.counts.channelDetails};assert.equal(await a.authorizeEvents({events:[queued()],principal:a.principal}),false);
+  assert.deepEqual({guild:f.counts.guildChannels,channel:f.counts.channelDetails},before);assert(!a.principal.allowedSourceIds.includes(siblingSource));
+ }
+});
+
+test('ordinary adapter fallback reads one saved policy/catalogue pair and rejects paired failures without fallback grants',async()=>{
  const f=fixture(),policy={guildId,revision:1,paused:false,discoveryEnabled:true,excludedCategoryIds:[],excludedChannelIds:[]},channels=[{guildId,channelId,sourceId,enabled:true}];
  f.store.getPolicy=async()=>{f.counts.policy++;return {status:'ready',policy:structuredClone(policy)};};
  f.store.listSyncChannels=async()=>{f.counts.catalogue++;return {status:'ready',channels:structuredClone(channels)};};
  const adapters=bundled(f,{manual:false});assert.equal(await adapters.authorizeEvents({events:[queued()],principal:adapters.principal}),true);
- assert.equal(f.counts.policy,2);assert.equal(f.counts.catalogue,2);
+ assert.equal(f.counts.policy,1);assert.equal(f.counts.catalogue,1);
  const pairedStore={...f.store,getAuthorizationSnapshot:async()=>({status:'forbidden',policy:null,channels:[]})};
  const denied=bundled(f,{manual:false,store:pairedStore}),before={policy:f.counts.policy,catalogue:f.counts.catalogue};
  assert.equal(await denied.authorizeEvents({events:[queued()],principal:denied.principal}),false);
@@ -130,7 +141,7 @@ test('bundled manual adapters claim only whitelist sources and disable Gmail; em
  const normal=createAutomationAdapters({env,config,dependencies:deps,manual:{force:true,channelIds:[]},fetchImpl:async()=>{throw Error('No external reads');}});
  assert.deepEqual(await normal.resolveClaimSourceIds({principal:normal.principal}),[siblingSource,gmail]);assert.equal(normal.principal.googleAccess,true);
  const snapshots=[],staged=createAutomationAdapters({env:{...env,AGENT_AUTOMATION_STAGED_ENABLED:'true'},config,
-  dependencies:{...deps,memberConfig:{configured:false,sourceId:member},memberClient:{configured:false,calendarId:'synthetic-members@group.calendar.google.com'},taskStore:{prune:async()=>({status:'ready'}),list:async args=>{snapshots.push(args);return {status:'ready',tasks:[]};}}},
+  dependencies:{...deps,memberConfig:{configured:false,sourceId:member},memberClient:{configured:false,calendarId:'synthetic-members@group.calendar.google.com'},taskStore:{prune:async()=>({status:'ready'}),catalogue:async args=>{snapshots.push(args);return {status:'ready',tasks:[]};},read:async()=>({status:'not_found'})}},
   manual:{force:true,channelIds:[channelId]},fetchImpl:async()=>{throw Error('No external reads');}});
  await staged.resolveClaimSourceIds({principal:staged.principal});
  await staged.pipeline.beginCycle({leaseToken:randomUUID(),inputs:[],recordExecution:()=>{},getExecutionLog:()=>[]});

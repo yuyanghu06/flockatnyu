@@ -355,3 +355,9 @@ October 25 throughput fix (live release truth stays in the rolling milestone): `
 Standalone own-location reports use Member Plans without requiring a club event. The prompt distinguishes existing-event participation, corrects wrongly classified saved tasks before exact-version actions, and uses supported same-speaker departure context.
 
 Initial work uses only a queued original's own offered/revised intent; a newer acknowledgement does not reissue an older location found in context. Older saved work follows its own task/version checks in follow-up.
+
+`manual-authorization.js` checks current saved whitelist metadata while retaining
+ancestor rows only to verify the selected channel's ancestry. It grants no sibling
+or ancestor sources and performs no provider calls. `map-facts.js` compares event
+fields and the selected event's building relations, so participant-only updates
+cannot silently move an independently sourced event.
