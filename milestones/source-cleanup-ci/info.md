@@ -1,10 +1,14 @@
 # Source cleanup and CI
 
-Group browser code by responsibility and server HTTP routes by provider. Preserve
-all existing behavior and security checks. Add actual formatting/lint/line limits,
-offline test and build commands, GitHub checks and checked release packages.
+Browser code is grouped under app/features/map. Twenty-five API method files
+mirror URL paths and document technical contracts plus plain-English purpose.
+Twenty-one endpoints are active; four dormant routes remain unregistered.
+Formatting, lint, 500-line JavaScript/400-line CSS limits, offline tests, isolated
+browser checks, local hooks and GitHub release-package workflows are implemented.
 
-Completion requires independent behavior testing, browser evidence, review,
-resolved findings and recorded commits/push. Initial feature publication is
-complete at fb2cd5b. Structural implementation and verification are in progress;
-no live application deployment is part of this cleanup.
+Independent review accepts the cleanup. A clean Node 22.22 checkout of commit `39dd507`
+passes standard CI (3,004 passed, zero failed, two existing skips) and all five
+browser workflows. Six logical cleanup commits exclude concurrent Brand.dev work.
+GitHub rejected their push because its OAuth credential lacks workflow permission;
+publication awaits user authorization. Initial feature publication `fb2cd5b` is live
+on GitHub. No production deployment or schema changes are part of this cleanup.

@@ -453,3 +453,5 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Deterministic regression repairs accepted](2026-10-27_14-23-24-145611-tester-regression-fixtures-final.md).
 
 - [Cleanup independently accepted before publication](2026-10-27_14-23-24-174783-evaluator-cleanup-final-review.md).
+
+- [Clean cleanup checkout verified; GitHub workflow authorization required](2026-10-27_14-30-26-357103-orchestrator-cleanup-isolated-verification.md).
