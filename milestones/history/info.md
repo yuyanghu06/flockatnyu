@@ -504,3 +504,8 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Worker image copies its actual reachable roots](2026-10-27_19-44-50-012260-coder-worker-image-copy-corrected.md).
 
 - [Corrected worker image verification](2026-10-27_19-46-19-703038-tester-worker-image-imports-verified.md).
+
+- [Independent review accepts the worker image correction](2026-10-27_19-55-49-880396-evaluator-worker-image-correction-accepted.md).
+- [Independent hosted verification passes](2026-10-27_19-55-49-880397-tester-hosted-prompt-release-verified.md).
+- [Independent review accepts deployed prompts and inactive-worker readiness](2026-10-27_19-55-49-880398-evaluator-prompt-deployment-accepted.md).
+- [Prompt migration and fixes published and deployed](2026-10-27_19-55-49-880399-orchestrator-prompt-release-integrated.md).

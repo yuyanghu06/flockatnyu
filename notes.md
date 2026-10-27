@@ -28,7 +28,7 @@ Persist user-requested notes here across sessions. Preserve the user’s intent,
 
 - **Agent names:** the frontend conversational assistant is the **chat agent**; the backend autonomous processor is the **update agent**. These names supersede frontend/backend agent terminology. The chat agent is served by the Chat API, and the update agent runs in the automation worker.
 
-- **Calendar:** use Tech’s **fall26** calendar for the calendar integration. User supplied the exact Google Calendar ID on 2026-10-17; it is configured as GOOGLE_CALENDAR_ID in the ignored local environment. Calendar event writes and per-batch Miro reads/prompt wiring are authorized. Additional Calendar OAuth consent completed, but the owner must share the target with the app account hello@techatnyu.org using Make changes to events; API currently returns404. The user does not have permission to grant this access and explicitly deferred Calendar activation while moving to other subjects; wait for owner access or a user request to resume.
+- **Calendar:** use Tech’s **fall26** calendar for the calendar integration. User supplied the exact Google Calendar ID on 2026-10-17; it is configured as GOOGLE_CALENDAR_ID in the ignored local environment. Calendar event writes and per-batch Miro reads/prompt wiring are authorized. Additional Calendar OAuth consent completed, but the owner must share the target with the app account hello@techatnyu.org using Make changes to events; API currently returns 404. The user does not have permission to grant this access and explicitly deferred Calendar activation while moving to other subjects; wait for owner access or a user request to resume.
 - **MVP first:** finish the initial MVP using the agreed architecture, then expand later.
 - **Frontend:** substantial frontend changes are planned. Keep backend contracts and ownership clear so frontend work can proceed independently.
 - **Shared agent tools:** The chat agent and update agent should share tool implementations. The target is the same tool catalog with different prompting; exact tool exposure and wiring are a later discussion.
@@ -308,3 +308,7 @@ Calendar scans after complete empty coverage. Explicit Calendar questions remain
 scoped; general schedule questions use actual Miro content when its tools exist.
 Current verification, qualifications and release state are in
 [milestones/prompt-clarification-completion-2026-10-27](milestones/prompt-clarification-completion-2026-10-27/verification.md).
+
+## 2026-10-27 — prompt release
+
+The structured Markdown prompts and both Contacts/Calendar prompt fixes are pushed and deployed. PR #1 and PR #2 record source/image publication. The separately authorized full-tree rollout contains identical prompt payloads; no duplicate upload was made. Worker remains disabled. Exact commits, deployment IDs, tests and limits are in [release verification](milestones/prompt-release-2026-10-27/verification.md).

@@ -872,3 +872,5 @@ Origin, public projection, durable-log failure/cancellation and default-app 404s
 private-logger boundaries. `treg-branddev.test.mjs` independently exercises the
 selected company request variants and native field projection. These suites make
 no live or paid calls and do not activate the dormant routes.
+
+`runtime-deploy.test.mjs` projects the actual Docker COPY filesystem and imports the real web app/worker adapters and handler with networking/listening denied. It checks every reachable package file reaches the image and rejects absent COPY roots. The prompt release journal separates this local check from the actual Railway build/startup and normal authenticated hosted checks.

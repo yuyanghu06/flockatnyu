@@ -380,3 +380,5 @@ The planner-presence-diagnosis folder records diagnosis, actual-model correction
 
 `server-cleanup/` records grouping the backend, porting the remaining provider
 changes, the tools/API audit and the user-requested stop to final testing.
+
+`prompt-release-2026-10-27/` records the pushed Markdown migration/two prompt fixes, rejected and corrected worker image, exact payload parity with the separately authorized full-tree rollout, actual deployment IDs and independent hosted auth/assets checks. Worker remains inactive.

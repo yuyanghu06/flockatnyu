@@ -1,10 +1,12 @@
-## Markdown prompt release — publication complete; deployment pending
+## Markdown prompt release — complete
 
-- [x] Isolate requested changes, repair obsolete API test fixtures, pass normal CI/browser checks and independent source review.
-- [x] Push normally, merge PR1 after checks, build and verify exact main release artifacts.
-- [ ] Coordinate overlapping full-tree deployment and correct the worker image COPY roots before upload.
-- [ ] Verify successful affected Railway rollouts, normal web authentication/assets and retained disabled worker state.
-- [ ] Publish final deployment receipts and Git parity.
+- [x] Isolate requested source, retain tested prompt/runtime behavior and pass normal CI/browser/source review.
+- [x] Push and merge PR #1 after quality/browser checks; verify exact main release artifacts.
+- [x] Reject the broken worker image, correct COPY roots, independently test failure controls, and merge PR #2 after all gates.
+- [x] Verify the separately authorized full-tree rollout contains the exact accepted 87 assets/353 prompt payloads; supersede duplicate uploads to avoid overwriting it.
+- [x] Confirm successful web/worker/Discord deployments, normal web authentication and exact static assets; record independent ACCEPT.
+- [x] Keep the worker disabled and document that no active production cycle was verified.
+- [x] Prepare final source-free receipts for normal publication; retain unrelated unfinished work below.
 
 ## Contact clarification and Calendar completion — verified and accepted
 

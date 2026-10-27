@@ -1,14 +1,13 @@
-## Markdown prompt release — merged; packages checked; uploads held
+## Markdown prompt migration and both fixes — pushed and deployed
 
-[PR1](https://github.com/yuyanghu06/flockatnyu/pull/1) merged as e6c62403fa0bc6addb8af31449f73d52bf0e5e97. Local CI and all five browser flows pass; GitHub PR and main-only release checks pass. The five exact-commit archives are verified, including every packaged application source and Markdown asset. No upload has begun. A separately authorized full-tree rollout is active in another chat, and its review caught a worker Docker COPY defect. Coordinate one rollout and correct the image before deploying. The update agent stays disabled; no production cycle is authorized here.
+PR #1 merged the structured Markdown prompt migration and Contacts/Calendar fixes. PR #2 merged the required worker image correction after quality/browser checks. Production source8718a1c contains the exact same 87 assets/353 payloads; the other chat's separately authorized full-tree rollout installed it, so no overlapping upload was made here. Web/Discord/worker deployments succeed. Independent normal HTTPS health/login/auth/index/all 8 JS/CSS hash checks pass; prompt Markdown returns 404. Discord is listening. Worker code is installed but disabled; no active cycle is claimed. Configured-model acceptance of both fixes remains unchanged; no new model/business call or manual cycle ran here.
 
-[Scope](prompt-release-2026-10-27/info.md) · [latest pass](history/2026-10-27_19-41-28-857228-orchestrator-release-artifact-verified-deploy-coordination.md)
+[Verification and actual deployment IDs](prompt-release-2026-10-27/verification.md) · [safe receipts](prompt-release-2026-10-27/receipts.json)
 
-[Worker artifact rejected before upload](history/2026-10-27_19-44-50-012259-evaluator-worker-artifact-rejected.md)
-
-[Worker image copies its actual reachable roots](history/2026-10-27_19-44-50-012260-coder-worker-image-copy-corrected.md)
-
-[Independent image checks](history/2026-10-27_19-46-19-703038-tester-worker-image-imports-verified.md) pass:3cases and both failure controls. Final review/publication pending; no upload.
+[Independent review accepts the worker image correction](history/2026-10-27_19-55-49-880396-evaluator-worker-image-correction-accepted.md) ·
+[Independent hosted verification passes](history/2026-10-27_19-55-49-880397-tester-hosted-prompt-release-verified.md) ·
+[Independent review accepts deployed prompts and inactive-worker readiness](history/2026-10-27_19-55-49-880398-evaluator-prompt-deployment-accepted.md) ·
+[Prompt migration and fixes published and deployed](history/2026-10-27_19-55-49-880399-orchestrator-prompt-release-integrated.md)
 
 ## Contact clarification and Calendar completion — verified and accepted
 
