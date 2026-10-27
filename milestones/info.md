@@ -1,5 +1,7 @@
 # Milestone journal
 
+`prompt-release-2026-10-27/` records isolated release scope, exact checked commits/artifacts, rollback IDs and actual rollout verification.
+
 Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
 
 `treg-branddev-default/` tracks the selected company provider and native adapter, with dormant routes kept inactive.

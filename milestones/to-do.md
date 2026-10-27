@@ -1,3 +1,12 @@
+## Markdown prompt release — in progress
+
+- [x] Isolate the tested source and preserve unrelated Calendar location changes.
+- [x] Repair baseline API fixtures without weakening runtime checks;67focusedpasses.
+- [x] Create reviewable prerequisite, Markdown migration and prompt-fix commits.
+- [ ] Complete full CI/browser and independent scope review; push PR and merge main.
+- [ ] Build/download exact main release artifact; deploy web/update/Discord only.
+- [ ] Verify hosted readiness, auth/assets/prompt hashes and unchanged Gmail deployments; publish receipts.
+
 ## Contact clarification and Calendar completion — verified and accepted
 
 - [x] Tighten Contact target selection before candidate reads/writes and preserve pending intent through clarification.
