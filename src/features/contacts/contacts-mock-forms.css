@@ -1,0 +1,169 @@
+@media (max-width: 640px) {
+  .campus-contacts {
+    right: 16px;
+    bottom: 16px;
+  }
+  .contacts-launcher {
+    flex-basis: 44px;
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+  .contacts-panel {
+    width: calc(100vw - 24px);
+    height: min(700px, calc(100dvh - 32px));
+    max-height: calc(100dvh - 24px);
+    border-radius: 19px;
+  }
+  .contacts-header {
+    align-items: flex-start;
+    gap: 8px;
+    padding: 21px 19px 18px;
+  }
+  .contacts-heading h2 {
+    font-size: 21px;
+  }
+  .contacts-header-actions {
+    gap: 10px;
+  }
+  .contacts-button--add {
+    gap: 4px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+  .contacts-button--add svg {
+    width: 14px;
+    height: 14px;
+  }
+  .contacts-close {
+    width: 25px;
+    height: 30px;
+  }
+  .contacts-body {
+    display: block;
+    position: relative;
+  }
+  .contacts-sidebar {
+    height: 100%;
+    padding: 19px 14px;
+    border: 0;
+  }
+  .contacts-detail {
+    height: 100%;
+    padding: 22px 22px 26px;
+  }
+  .contacts-panel[data-view='list'] .contacts-detail,
+  .contacts-panel[data-view='detail'] .contacts-sidebar {
+    display: none;
+  }
+  .contacts-back {
+    display: inline-flex;
+  }
+  .contacts-list-meta {
+    margin-top: 13px;
+  }
+  .contacts-row {
+    min-height: 71px;
+  }
+  .contacts-row-summary strong {
+    font-size: 13px;
+  }
+  .contacts-row-summary > span {
+    font-size: 11px;
+  }
+  .contacts-avatar {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+  .contacts-avatar--large {
+    width: 48px;
+    height: 48px;
+  }
+  .contacts-profile {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px 14px;
+  }
+  .contacts-detail-actions {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .contacts-detail-title {
+    font-size: 22px;
+  }
+  .contacts-editor-grid {
+    gap: 17px 12px;
+  }
+  .contacts-input-group input,
+  .contacts-input-group textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+@media (max-width: 370px) {
+  .contacts-header {
+    padding-right: 15px;
+    padding-left: 17px;
+  }
+  .contacts-header-actions {
+    gap: 6px;
+  }
+  .contacts-button--add {
+    padding: 7px;
+  }
+  .contacts-detail {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+  .contacts-editor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contacts-panel[open],
+  .contacts-panel[open].is-closing,
+  .contacts-panel.is-closing::backdrop,
+  .contacts-launcher {
+    animation: none;
+    transition: none;
+  }
+}
+/* Standalone playground framing only. The copied component above can diverge
+   freely without changing Contacts in the actual app. */
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: #000;
+  background: #f6f3e9;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+[hidden] {
+  display: none !important;
+}
+@keyframes assistant-launcher-pop {
+  from {
+    opacity: 0;
+    scale: 0.85;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}

@@ -1,0 +1,137 @@
+.assistant-queue-list {
+  display: grid;
+  gap: 5px;
+  max-height: min(144px, 20dvh);
+  margin: 4px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  list-style: none;
+}
+.assistant-queue-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 6px 4px 9px;
+  border-radius: 8px;
+  background: #efede4;
+}
+.assistant-queue-details {
+  flex: 1;
+  min-width: 0;
+}
+.assistant-queue-text {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.assistant-queue-files,
+.assistant-queue-building,
+.assistant-queue-retry {
+  margin: 2px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.assistant-queue-retry {
+  color: #81553e;
+}
+.assistant-queue-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+.assistant-queue-inject {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9d9d98;
+  font-size: 18px !important;
+}
+.assistant-queue-inject:hover:not(:disabled),
+.assistant-queue-inject:focus-visible:not(:disabled) {
+  background: #00000008;
+  color: #6c6c69;
+}
+.assistant-queue-remove {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 20px !important;
+}
+.assistant-queue-remove:hover,
+.assistant-queue-remove:focus-visible {
+  background: #00000008;
+}
+/* Selected Contacts context stays separate from typed text and file attachments. */
+.assistant-prompt {
+  flex: 1;
+  min-width: 0;
+}
+.assistant-contact-context {
+  margin: 0 0 7px;
+}
+.assistant-contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 5px 9px;
+  border: 1px solid #626c5824;
+  border-radius: 9px;
+  background: #e9e3ef;
+  box-shadow:
+    inset 1px 1.5px 3px #29233716,
+    inset -1px -1px 2px #fff9;
+  color: #000;
+  font-size: 11px;
+  line-height: 1.5;
+  vertical-align: top;
+}
+.assistant-contact-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.assistant-contact-remove {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #000;
+  font-family: inherit;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+.assistant-contact-remove:hover,
+.assistant-contact-remove:focus-visible {
+  background: #0000000a;
+}

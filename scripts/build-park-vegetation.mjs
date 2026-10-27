@@ -3,13 +3,13 @@ import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {Document,NodeIO} from '@gltf-transform/core';
 import * as THREE from 'three';
-import {prepareStreetSurfaces} from '../src/streets.js';
-import {planParkVegetation,createParkVegetation,diskFits,clearExisting} from '../src/park-vegetation.js';
-import {createGouldPlaza} from '../src/gould-plaza.js';
+import {prepareStreetSurfaces} from '../src/map/environment/streets.js';
+import {planParkVegetation,createParkVegetation,diskFits,clearExisting} from '../src/map/environment/park-vegetation.js';
+import {createGouldPlaza} from '../src/map/landmarks/gould-plaza.js';
 
 const io=new NodeIO(),hash=b=>createHash('sha256').update(b).digest('hex');
 const dataPath='assets/campus-assets/data/streets-parks.json';
-const sourcePaths=[dataPath,'src/gould-plaza.js',...['washington-square-trees','courant-garden','washington-square-fountain'].map(n=>`assets/yuyang-site-3d-assets/models/environment/${n}.glb`)];
+const sourcePaths=[dataPath,'src/map/landmarks/gould-plaza.js',...['washington-square-trees','courant-garden','washington-square-fountain'].map(n=>`assets/yuyang-site-3d-assets/models/environment/${n}.glb`)];
 const sourceHashes={},existing=[];
 for(const path of sourcePaths){
   const bytes=await fs.readFile(path);sourceHashes[path]=hash(bytes);if(!path.endsWith('.glb'))continue;
@@ -27,7 +27,7 @@ for(const path of sourcePaths){
 // object offline and conservatively protect its complete plaza footprint.
 const gould=createGouldPlaza();gould.updateMatrixWorld(true);
 const gouldBounds=new THREE.Box3().setFromObject(gould);
-existing.push({source:'src/gould-plaza.js:createGouldPlaza',minX:gouldBounds.min.x,maxX:gouldBounds.max.x,minZ:gouldBounds.min.z,maxZ:gouldBounds.max.z});
+existing.push({source:'src/map/landmarks/gould-plaza.js:createGouldPlaza',minX:gouldBounds.min.x,maxX:gouldBounds.max.x,minZ:gouldBounds.min.z,maxZ:gouldBounds.max.z});
 gould.traverse(o=>{o.geometry?.dispose();if(o.material)o.material.dispose();});
 const data=JSON.parse(await fs.readFile(dataPath,'utf8'));
 console.log('Preparing street and building exclusion polygons');

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import { Document, NodeIO } from '@gltf-transform/core';
-import { prepareStreetSurfaces, createStreets } from '../src/streets.js';
-import { createParks } from '../src/parks.js';
+import { prepareStreetSurfaces, createStreets } from '../src/map/environment/streets.js';
+import { createParks } from '../src/map/environment/parks.js';
 
 const started=performance.now();
 const data=JSON.parse(await fs.readFile('assets/campus-assets/data/streets-parks.json','utf8'));

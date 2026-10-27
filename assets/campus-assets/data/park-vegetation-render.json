@@ -20,7 +20,7 @@
   },
   "sourceHashes": {
     "assets/campus-assets/data/streets-parks.json": "00429850f078b84fd0dea2e7c6eab0e1030a900039d580170d798a98fcdda9d0",
-    "src/gould-plaza.js": "7141d496de0d87db32991e32887a934fe89db054661863133189da2b8843173a",
+    "src/map/landmarks/gould-plaza.js": "1695b05d7e7f0ffeaa0ba218dcd34af54c2a259772dd5ba01684bfc7665ecd10",
     "assets/yuyang-site-3d-assets/models/environment/washington-square-trees.glb": "a21462774aee209de3ed454e870efd0e3736837abe51fde04d9d0d362b40da1a",
     "assets/yuyang-site-3d-assets/models/environment/courant-garden.glb": "8fef0fea5cfb36bec59315a4d7c771bc0f85ff2ace05c18ca3bd4d658d8b75b5",
     "assets/yuyang-site-3d-assets/models/environment/washington-square-fountain.glb": "e7b41396e8fb2a18f7de509e70971dfeb3f30cf3eaaf255f2dde8eb491aecfc3"
@@ -1743,7 +1743,7 @@
       "maxZ": -0.5679374396276472
     },
     {
-      "source": "src/gould-plaza.js:createGouldPlaza",
+      "source": "src/map/landmarks/gould-plaza.js:createGouldPlaza",
       "minX": 78.45346069335938,
       "maxX": 148.7293701171875,
       "minZ": 171.71893310546875,

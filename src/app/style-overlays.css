@@ -1,0 +1,135 @@
+#hover {
+  position: absolute;
+  pointer-events: none;
+  background: #faf8f1;
+  color: var(--ink);
+  box-shadow: 0 3px 18px #24372930;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+dialog {
+  border: 1px solid #deddd0;
+  border-radius: 15px;
+  padding: 28px;
+  background: var(--paper);
+  width: min(470px, calc(100vw - 30px));
+  color: var(--ink);
+  box-shadow: 0 20px 90px #182c3266;
+}
+dialog::backdrop {
+  background: #1a302d66;
+  backdrop-filter: blur(3px);
+}
+.close {
+  position: absolute;
+  right: 16px;
+  top: 12px;
+}
+textarea {
+  resize: vertical;
+  max-height: 40dvh;
+  width: 100%;
+  font:
+    11px/1.5 ui-monospace,
+    monospace;
+  border: 1px solid #d6d9cc;
+  background: #fffef9;
+  border-radius: 7px;
+  padding: 12px;
+}
+.dialog-actions {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+#camera-copy {
+  background: var(--purple);
+  color: white;
+}
+#camera-message {
+  margin: 8px 0 0;
+  min-height: 20px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 700px) {
+  .masthead {
+    top: 14px;
+    left: 14px;
+    padding: 12px;
+    gap: 9px;
+  }
+  .masthead .preview {
+    display: none;
+  }
+  h1 {
+    font-size: 21px;
+  }
+  .eyebrow {
+    font-size: 8px;
+  }
+  .mark {
+    width: 30px;
+    height: 36px;
+    font-size: 23px;
+  }
+  .toolbar {
+    top: 112px;
+    right: 14px;
+    gap: 5px;
+  }
+  .toolbar button {
+    padding: 9px;
+    font-size: 10px;
+  }
+  .explorer {
+    left: 14px;
+    top: auto;
+    bottom: 98px;
+    width: 215px;
+    padding: 14px;
+    max-height: 37dvh;
+  }
+  .explorer h2,
+  .explorer .intro,
+  .activity span {
+    display: none;
+  }
+  .explorer .eyebrow {
+    margin-bottom: 8px;
+  }
+  .activity {
+    margin-top: 12px;
+    padding-top: 0;
+  }
+  .activity p {
+    font-size: 10px;
+  }
+  .explorer label {
+    margin-top: 8px;
+  }
+  .bottom {
+    left: 14px;
+    bottom: 14px;
+  }
+  .hints {
+    font-size: 9px;
+  }
+  .hints span {
+    font-size: 9px;
+  }
+  .attribution {
+    font-size: 8px;
+  }
+  #building-detail {
+    margin-top: 12px;
+  }
+  h3 {
+    font-size: 17px;
+  }
+  .toolbar {
+    max-width: calc(100vw - 28px);
+  }
+}
