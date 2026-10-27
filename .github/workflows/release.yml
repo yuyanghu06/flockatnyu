@@ -1,0 +1,34 @@
+name: Release packages
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-packages
+  cancel-in-progress: false
+jobs:
+  checks:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/ci.yml
+  package:
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Prepare source-only packages for this exact commit
+        run: node scripts/release-packages.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.sha }}
+          path: build/release/
+          if-no-files-found: error
+          retention-days: 14

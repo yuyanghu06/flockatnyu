@@ -1,0 +1,7 @@
+node_modules/
+dist/
+evidence/
+assets/
+yuyang-site-3d-assets/
+package-lock.json
+milestones/history/
