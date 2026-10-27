@@ -1,0 +1,10 @@
+# Contacts search and UI live release accepted
+
+- Local timestamp / acting role / milestone: 2026-10-26T18:40:08.540596-04:00 / evaluator / contacts-search-filters.
+- Requested scope: Contacts search/filter/prompt and purple-focus/funnel/Spotlight refinements, separately completed minimal inbox cache.
+- Starting repository state: Accepted source/package deployed and actual hosted checks passed; user asked status while finalchecks finished.
+- Work performed / changed files: Independent final evaluator ACCEPT, no findings. Actual webcbfbf5caSUCCESS, all8bundlehashesmatch,048stableinvoker/service-only, auth/filter/queryrejection/UIkeyboard/funnel/ApplyReset/mobile/motion verified. Gmail/Discord/update releases unchanged and no staged work. Hosted CRM empty; populated behavior covered by synthetic evidence.
+- Decisions: Preserve existing live service/source boundaries, no Treg rollout, automatic cachepromotion, background service changes during web release or liveContact/modelwrites. Only named migrations048/049applied;046pending. No commit/push.
+- Checks and evidence: evidence/contacts-fuzzy-search/summary.json13SQLHTTPtools+16browserentries; actualgpt6-luna6intendedcases26requests within revised28cap, failed malformedAttiofixture retained and corrected focusedretryonly. Bothbuilds/package281exactvariantprobe pass. Hosted schema/RPC/auth/index/8bundles/combinedfilters/invalidsort andactualbrowsermotion/funnel/neutralfocus/mobile/AddCancel pass. local-preview.json200. Cache evidence separately shows3columns/service-only, Gmailhealth200/webhook401/7emailname-onlyrows/Contacts0. Source/model credentials private.
+- Resulting state / acceptance: Complete and live; independent tester/evaluator ACCEPT.
+- Remaining work and handoff: No remaining requested implementation. Physical mobile hardware and real savedContactmutations are notclaimed; native Gmail incrementalhistorycatch-up stillprocessing, no fullhistoryimportclaim. Existingchunkwarning/knownunrelatedDiscordpackagingexpectation remain. Localdevsession46361kept running.

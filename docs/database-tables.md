@@ -1,5 +1,35 @@
 # Current database tables
 
+## Contacts CRM storage (047; live; native-field upgrade051)
+
+`contacts` is hosted as `20261026162857_contacts` in the existing Supabase project. Its original047 schema stores one contact per row with four columns: generated UUID `id`,
+timezone-aware `created_at` and `updated_at`, and `raw_input` JSONB. The database
+fills both timestamps on insertion, preserves creation time on updates and
+automatically advances update time. `raw_input` must be a JSON object; its keys
+are optional and can expand as contact information grows. Migration051 (hosted20261027145509_contacts_native_fields) adds nullable `lookup_email` outside native `raw_input`, with a validated original enrichment address. Private projection/search/match functions read the observed native `person` shape and respect explicit manual clears. The upgrade changes no saved JSON/cache; actual application and targeted recovery status is in the milestone.
+
+For example:
+
+```json
+{
+  "first_name": "Alex",
+  "last_name": "Example",
+  "email": "alex@example.com",
+  "phone_number": "+1-202-555-0123",
+  "organization": "Example Club",
+  "tags": ["mentor"]
+}
+```
+
+Forced row-level security and explicit grants keep contact reads and changes
+available only to trusted service-role/database operations. This migration adds
+storage only. The separate [chat contact tools](contacts.md) implement the six-field
+model operations locally. No contacts are imported, and no contact interface,
+deduplication rules or links to `map_people` are added. See the
+[milestone snapshot](../milestones/milestone.md) for actual hosted application.
+
+## Existing integration tables
+
 Hosted Supabase retains eleven public tables through migrations029/030; Miro live-only030 is recorded at20261018174413. All force RLS and deny direct browser access; backend credentials and source policy remain server-only.
 
 | Table | Purpose |
@@ -82,3 +112,15 @@ Migration030 removes miro_boards and sync functions. Existing Miro source UUID/s
 ## Shared agent memory
 
 `agent_memory` has exactly id, content(text) and updated_at, with one fixed shared row. Migration031forcesRLS and uses service-only read/optimistic-write RPCs. It stores a concise shared club note, not source archives or per-user chat history. See [long-term memory](long-term-memory.md).
+
+## contacts_cache
+
+Private Gmail inbox-sender staging, separate from Contacts. Exactly three columns: `id uuid` generated primary key; `created_at timestamptz` generated first-insertion date/time; `raw_input jsonb` required object. Intake saves only `email` and optional plain `name`, with no mail body/headers/message IDs or extra top-level fields. Deterministic sender IDs and insert-ignore preserve first cached values on replay. Forced RLS/service-only CRUD; browser roles have no access. Applied local049 as hosted20261026215743_contacts_cache. No promotion into Contacts, backfill, automatic retention or processing columns are added.
+
+## Separate enrichment processing (local migration050)
+
+The user corrected the service: contacts_cache holds original unenriched senders and is read-only to the enrichment workflow. Revised050 uses metadata-only contacts_enrichment_jobs for source hashes, durable requests, attempts, leases/spend and completion/contact-ID receipts; contacts_enrichment_state holds global operational scope, leases and budgets. Neither table stores provider/profile responses. Native enriched objects are inserted only into contacts. Contact insertion and processing completion commit in one transaction. Original cache rows and human contact edits stay unchanged. Full Treg logs remain the separately authorized private exception.Revised050 is applied as20261026225556_gmail_contact_enrichment; hosted cache inputs are unchanged. Current scheduled execution evidence and release state are in the milestone. [Worker guide](gmail-enrichment.md).
+
+## Gmail sending receipts (053)
+
+`gmail_send_receipts` stores service-only actor/sender/payload hashes, operation/group IDs, dispatch status, timestamps and accepted Gmail message/thread IDs. It stores no addresses, subject/body, OAuth secrets or native messages. Forced RLS and private claim/finish/read/probe RPCs protect access. Dispatch/unknown markers never expire into resend permission. See [Gmail sending](gmail-send.md) and the milestone for current hosted verification.

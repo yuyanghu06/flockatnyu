@@ -1,3 +1,19 @@
+# Treg discovery default-save override (2026-10-27)
+
+For chat, use search_treg_people to find people at companies and enrich_treg_people for richer people profiles using actual supplied or returned email addresses. The user clarified that this does not mean company enrichment. Successful returned people should be saved to Contacts by default through a separate named Contacts import tool, unless the current user explicitly says not to save. Lookup and save remain separate model-selected operations. Preserve complete native raw results server-side and existing contacts/human edits; never fabricate raw data from the six displayed fields. Ordinary Contacts create/read/update/delete remain separate tools with exact-read/version checks. Actual implementation, verification and release truth lives in milestones/milestone.md.
+
+# Raw-only sender cache override (2026-10-26)
+
+The user corrected the separate Treg enrichment service: contacts_cache holds only original raw, unenriched sender inputs. The enrichment service must not write enrichment results or processing metadata into that table, replace its JSON or delete inputs. Store native raw enriched contacts only in contacts. Keep required lease, request, budget, retry and completion tracking separately without storing enrichment payloads there. Existing explicitly authorized private full-call Treg logs remain separate. This supersedes the earlier cache-backwrite plan; current implementation and release truth live in milestones/milestone.md.
+
+# Raw Treg lead preservation (2026-10-26)
+
+The user explicitly requested preserving raw Treg lead records and rendering only contact fields supported by this app. Store each complete returned person object as contacts.raw_input without dropping extra/native values, injecting normalized blanks or overwriting original keys with metadata. Determine identity separately and keep full call provenance in private logs. Valid unknown lead formats must not be discarded merely because six display fields are unavailable. Preserve existing leads/human edits through insert-only imports; do not backfill/rewrite existing rows without a separate request. UI/API exposure stays limited to supported values. Current implementation and verification live in the milestone.
+
+# Treg full-call logging authorization (2026-10-26)
+
+The user explicitly requested logging the entire Treg people-search call. Retain its request body, bounded complete upstream response (including raw provider data/errors), safe timing/routing/cost metadata and exact contact-import outcomes in a separate private server log. Remove authentication/cookies/credentials and known secret values. Keep seven-day retention and explicit incomplete/truncated markers where existing response limits prevent full capture. No public or model-facing log retrieval. This is a narrow Treg logging exception; existing model-audit, Discord/Gmail/Calendar and other source-content logging restrictions remain unchanged. Recording this instruction alone does not establish implementation, deployment or live verification.
+
 # Isolated tools; workflows belong in agent prompts (2026-10-23)
 
 For both chat and the autonomous planner/update agent, each callable tool must
@@ -342,9 +358,9 @@ The club name, membership model, and exact campus coverage remain to be confirme
 
 ## Current state and authorization
 
-- The project root is the Git checkout containing this file. The original Mac
-  checkout was `/Users/yuyang/techatnyu-internal-tooling/tech-visualized`; the current
-  Windows checkout is `C:/Users/Yuyang Hu/Documents/techatnyu/techvisualized`.
+- The project root is the Git checkout containing this file. The current Mac
+  checkout is `/Users/yuyang/Documents/techatnyu/flockatnyu`. Earlier Mac and
+  Windows checkout paths in historical records are not current startup paths.
   Application source belongs in this root; do not create a nested application.
 - The completed preliminary work includes asset gathering and this project
   briefing. Current workflow status lives in `milestones/milestone.md`.

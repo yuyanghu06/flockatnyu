@@ -1,0 +1,7 @@
+# Selected contact backend integrated
+
+- Timestamp / role / milestone: 2026-10-27T12:03:58.585435-04:00 / orchestrator / contacts-flock-context.
+- Scope and starting state: Fix field/footer overlap and implement the clarified Flock it! selected-contact prompt context. Existing dirty tree and other work preserved.
+- Work, checks and decisions: Added chat-contact-context helper, user-message normalization, runner validation, per-run steering subject/retry checks and model-only serialization for native/fallback planning and final answers. Original user content remains unchanged for write checks. System guidance treats names as untrusted labels and selection as an exact saved Contact subject; the model independently chooses read_contact for required details. Main connects Contacts callback to assistant.attachContact. No schema/live data/source-access changes. API build and51 existing chat/provider/steering/Contacts regressions pass; three new transport/HTTP/native+fallback/steer behavior groups pass.
+- Evidence: Ignored evidence/contacts-footer-layout/; meaningful new tests/contact-chat-context.test.mjs. Sources frozen for model evidence. All checks are local/simulated except configured inference; no live business writes, deployment, commit or push in these passes.
+- Acceptance and handoff: Independent final reviews and isolated website rollout/fresh-page checks remain. Actual user tab and unsaved drafts must remain intact.

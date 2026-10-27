@@ -1,5 +1,8 @@
 # Railway Gmail and Drive connector
 
+Website email sending is a separate optional connector, described in
+[Gmail sending](gmail-send.md). It does not expand these read tools or worker scopes.
+
 The assistant's Hono server calls Google's Gmail and Drive APIs through server-owned read tools. A cloud-hosted LLM never receives Google credentials. A local Codex/ChatGPT MCP connection does not automatically become available to a Railway process; these tools are the application's independent connector.
 
 Implemented tools: `search_gmail`, `read_gmail`, `search_drive`, `list_drive_folder`, and `read_drive`. Gmail search hydrates subject/from/to/date/snippets, and reads extract bounded plaintext with inert HTML fallback, without attachments. Drive search returns names/descriptions/links; reads export Docs/Slides text, the **first sheet only** of Sheets as CSV, and small plaintext files. Unsupported binary files return metadata only. Search returns at most five results; reads are bounded and explicitly partial. These chat read tools expose no sending, modifications, Calendar writes or arbitrary URL fetching. The update agent has a separate fixed-target Calendar connector described below.

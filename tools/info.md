@@ -25,3 +25,16 @@ proof plus exact saved-version deletion. sync_calendars_to_map is the explicitly
 user-authorized combined operation, separately dispatched/logged after successful
 initial finish_batch. See docs/tool-isolation-implementation.md and the current
 rolling milestone for implementation and verification state.
+
+- `contacts/index.js`: separate saved-contact search, exact read, create, update
+  and delete tools for website/Discord chat. Writable fields are first_name,
+  last_name, email, phone_number, workplace and notes. Omitted edit values and
+  legacy JSON remain intact; an empty string clears an explicitly named field.
+  Request-local exact reads and timestamps protect updates/deletes. Tool results
+  and receipts feed model context, while contact values stay out of content-free
+  execution metadata. These tools are separate from Attio and are not registered
+  with the autonomous update agent.
+
+`treg/index.js` provides separate Treg people search and array-email enrichment for shared website/Discord chat. Both perform lookups only, reuse results within a request, and return only supported contact strings and bounded safe outcomes. They never import Contacts or read sender cache; raw full-call logs stay private.
+
+`gmail-send/` contains a separate website-only send tool with stable request-group identities and durable receipts. It performs no recipient lookup or source reads; those remain separate named tools.

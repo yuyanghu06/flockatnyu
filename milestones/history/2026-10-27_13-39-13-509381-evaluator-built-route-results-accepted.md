@@ -1,0 +1,8 @@
+# Existing-route live results accepted
+
+- Role: independent evaluator; read-only actualresultreview and offlinecompanyreplays.
+- Scope: ONLYbuiltcurrentselectedproviders/$10cap; noalternativeprovidersweep.
+- Evidence/checks:28calls/30completeredactedlogs including2balance;allobservedcharges12,855microUSD($0.012855)equalbalance;0unknown. EmailBlitz2/10cost990micro/median1.549s;phoneBlitz5/10cost2475micro/1.791s;Trykitt2verdictscost800micro/3.652s(onevalid,onervalidfalse/validrisk);personBlitz2/2matchingnames+linkscost990micro/1.505sconditionalonactualfoundemails;CompaniesAPI2accepted/4cost7600micro/1.119s.
+- Findings: Google/MSproviderrecordsreturnednumericemployees. Realclientofflineoriginalreplaysinvalid_response; changingonlyemployeestostringbothsucceed. Chargedintegrationfailures,notprovidermisses. Providerfactaccuracy/delivery/phones/employmentunverified. Eightmissingemailswerenotguessed/skippedverificationandenrichment.
+- Verdict: ACCEPTwithcompanybugdisclosed. No pooledwinneracrossdifferentoperations; priorExadiscovery9/10remainsseparate. No saveattempts;dormantproductionrouteswerenotactivated. No network/file/businesschangesbyevaluator.
+- Remaining/handoff: requestedtestingcomplete. Companytypecompatibilityfixisfutureworkoutsidecurrentrequest; rootreportsoutcomesandfinishesExadefaultliveverification.

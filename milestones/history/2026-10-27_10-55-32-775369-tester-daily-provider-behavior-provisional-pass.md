@@ -1,0 +1,9 @@
+# Daily provider behavior independently verified
+
+- Local timestamp / acting role / milestone: 2026-10-27T10:55:32.775369-04:00 / tester, serialized by orchestrator / gmail-enrichment-providers.
+- Requested scope: Only the daily Gmail runtime; Apollo first, AIArk second, two providers total. CSV rerun is cancelled; no website release.
+- Starting repository state: Accepted direct-provider plan, existing raw-only cache/native Contacts and 9 AM New York schedule.
+- Work performed / changed files / decisions: Independent affected suite passed 41/41 through simulated direct providers and actual CLI/SQL. Exact request formats, hits/misses, stubs, nameless native Contacts, no cache DML, remaining/replay budgets, errors, logging, cancellation and schedule checks pass. Synthetic SQL/schedule fixtures now use exact Apollo native wrappers; substantive preservation assertions remain. An unrelated unchanged website logging test independently reproduces a stale assertion that counts a read-only POST as a write (5/6 pass); it is not edited or packaged. Concurrent local treg-people.js and assistant-context.js changes are outside this assignment and preserved. No tester external requests.
+- Checks and evidence: Ignored evidence/gmail-enrichment/providers/ contains the independent baseline, focused test evidence and rejected pre-isolation package manifest. No lead values or credentials are retained here.
+- Resulting state / acceptance: Daily behavior passes provisionally; isolated-package correction is in progress. No application/web deployment, schema change, CSV processing or manual paid worker action occurred.
+- Remaining work and handoff: Finalize daily-local helpers, rerun only affected checks, regenerate the dependency-free package, obtain final independent acceptance and deploy only gmail-enrichment.

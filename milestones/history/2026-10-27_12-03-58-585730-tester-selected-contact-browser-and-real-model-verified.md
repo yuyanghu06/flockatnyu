@@ -1,0 +1,7 @@
+# Selected contact browser and real model verified
+
+- Timestamp / role / milestone: 2026-10-27T12:03:58.585730-04:00 / tester / contacts-flock-context.
+- Scope and starting state: Fix field/footer overlap and implement the clarified Flock it! selected-contact prompt context. Existing dirty tree and other work preserved.
+- Work, checks and decisions: Independent resized Notes/browser layout and actual Contacts-to-Flock integration pass with simulated persistence. Names-only chip, no auto-send, saved-only selector, draft/text/file preservation, removal/replacement and queued IDs verified. Actual configured gpt-6-luna passes four realistic selected-subject cases in12 inference requests within16 total/4 per-case caps: same-name pronoun, latest replacement, deleted subject and malicious names. Every case chooses read_contact with the exact selected UUID; zero attempted/applied writes, unchanged synthetic rows, network restricted to configured inference. Source pins remain stable. Final native resize-handle check/review remains separate.
+- Evidence: Ignored evidence/contacts-footer-layout/; meaningful new tests/contact-chat-context.test.mjs. Sources frozen for model evidence. All checks are local/simulated except configured inference; no live business writes, deployment, commit or push in these passes.
+- Acceptance and handoff: Independent final reviews and isolated website rollout/fresh-page checks remain. Actual user tab and unsaved drafts must remain intact.

@@ -1,0 +1,9 @@
+# Raw Treg lead preservation directed
+
+- Local timestamp / acting role / milestone: 2026-10-26_17-35-36-117809 / orchestrator / treg-call-logging.
+- Requested scope: user clarified to save the raw Treg result and have code render only supported contact fields so leads are not lost. This steers and extends the active logging work.
+- Starting state: original import projects six canonical fields and nests raw person data; full-call logger in progress. Independent planner accepted logging and evaluator is reviewing actual evolving files.
+- Work performed/decisions: root assigned exact per-person provider object storage as contacts.raw_input, without six-field overwrite, blank injection or metadata collisions. UI/API keep supported top-level string projections only. Identity normalization is transient; existing insert-only/exact-email preservation remains. Valid unknown schemas must be saved using a stable provider+canonical-raw hash fallback when strong identity is unavailable. Full request/response/provenance stays in the separate private call log. No migration or raw-record backfill/rewrite.
+- Checks/evidence: independent evaluator confirmed existing API projection already restricts six string values and identified prior normalization skipping unknown rows as incompatible with preservation. Tester updates actual production-adapter assertions, including native null/object values and extra keys. Logging reviewer found unknown-header redaction and cleanup starvation issues; tester reproduced a large-body redaction CPU hang. Coder is fixing all within the active implementation pass.
+- Resulting state: implementation/tests ongoing; no live lookup/contact write/deploy or acceptance claimed.
+- Remaining work: verify exact raw equality, prior records/human edits, supported render projection, bounded fast redaction, truthful logging failures, retention and final build/package/review.

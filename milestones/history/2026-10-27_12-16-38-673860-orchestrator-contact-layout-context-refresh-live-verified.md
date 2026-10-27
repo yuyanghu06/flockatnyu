@@ -1,0 +1,10 @@
+# Contact layout, context and refresh live verified
+
+- Timestamp / role / milestone: 2026-10-27T12:16:38.673860-04:00 / orchestrator / contacts-flock-context.
+- Scope and starting state: All requested Notes/footer, Flock it! chip and Refresh changes independently accepted; isolated web rollout uploaded.
+- Result: Deploymentdf287ac5-60c5-43b5-91c4-05a8773892b6 SUCCESS at flock.techatnyu.org. Actual authenticated Chrome/DPR2 verifies1512x688,900x500,390x600,320x568 with500px Notes at scroll start/middle/end:12 cases show separate field clipping, no field pixels under/below the normal footer, contained/hit-testable buttons, and reachable bottom resize handle. Actual Refresh performs a directory read and preserves unsaved Notes.
+- Context flow: Actual Flock it! closes Contacts and opens Flock with only the saved first/last-name chip inside the prompt; typed assistant text and the Contacts draft survive. It sends nothing. Chip removal keeps text; reopening Contacts retains the draft; Cancel restores saved Notes.
+- Evidence: hosted-report.json PASS; actual index and all8JS/CSS bundles match accepted package (9hashes). Both hosted screenshots inspected. All non-GET business requests were blocked:0attempts,0page errors, no live model calls or contact mutations. The real user tab was never reloaded/edited.
+- Other verification: Independent local resized Notes/form tests, names-only transport/queue/steering checks,51existing regressions,3new context groups, two independent reviews, and four actual gpt-6-luna cases in12/16 capped inference requests on simulated Contacts. Final UI-only Refresh checks include mobile header wrap and500px Notes. Model backend pins remain unchanged.
+- Limits: No live model request over real business data or physical mobile keyboard test; source/model and live UI checks remain distinct. No schema, source grants, other services, auth/MCP settings, commit or push changes.
+- Acceptance and handoff: Requested work complete. Preserve any existing draft before refreshing older browser tabs. No required implementation, release or verification work remains.

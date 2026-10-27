@@ -24,3 +24,5 @@ milestone and service guides.
 Miro retirement: miro-worker deployment files/preparer and Railway miro-sync service are removed. Chat/update agents connect directly to official Miro MCP with separate application credentials; there is no Miro collector.
 
 Web and update-agent use `scripts/prepare-runtime-deploy.mjs` sanitized reachable-module contexts. Web serves built frontend and API behind the environment-password gate; its persistent /data owns Miro OAuth. Worker uses the private access-token broker and reads official MCP directly. See docs/deployment.md.
+
+`gmail-enrichment/` packages the independent opt-in contacts_cache/Treg/Contacts service. It uses a separate private /data volume for call logs and contains no Google OAuth/collector runtime. Schema and activation status are in the rolling milestone.

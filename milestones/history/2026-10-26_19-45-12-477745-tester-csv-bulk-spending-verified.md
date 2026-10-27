@@ -1,0 +1,9 @@
+# CSV batch inputs, pilot and spending verified
+
+- Local timestamp / acting role / milestone: 2026-10-26T19:45:12.477745-04:00 / independent tester / treg-csv-email.
+- Requested scope: Independently verify email-only CSV input, existing batching and bounded $10 bulk test.
+- Starting repository state: Existing hosted1–10email API, five-email live pilot, private bulk harness and evaluator-requested hardening.
+- Work performed / changed files: Tester exclusively wrote ignored independent-* evidence; no application/shared journal edit or external/provider/model/business call. Production validator independently confirms4,125rows,2,362valid emails,2,361unique,one duplicate and1,763skipped rows; exact pilot input/order verified without exposing lead data. Existing13focused regressions and offline all batch sizes1–10 pass.
+- Checks / evidence: Actual final bulk source executed with fully mocked imports/fetch and blocked external network: maximum-cost case stops at$10; zero-cost file completes; unknown/network results retain reservations and stop without retries; known overruns are counted; pre-dispatch fsync failure stops new intents and awaits two already-started requests. Maximum concurrency3, durable intent before dispatch and guard replay prevention pass. evidence/treg-csv-email/independent-bulk-dryrun.json and independent-source-sha256.txt; final bulk SHA25616255082270740840c50cd32f5c3a347e9eb077174386046212f598fb30e8a8a.
+- Decisions / acceptance: Tester PASS, no launch blocker. Simulated spending/failure behavior is distinct from the actual five-email hosted trial, which returned five misses and$0reportedcost. No full-file live calls yet.
+- Remaining work and handoff: Final evaluator launch acceptance, then root may execute only the authorized $10 email-only full-file test; verify actual final results/costs independently.

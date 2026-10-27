@@ -1,0 +1,10 @@
+# Treg full-call logging planned
+
+- Local timestamp / acting role / milestone: 2026-10-26_17-32-01-731706 / independent planner / treg-call-logging.
+- Requested scope: user asks to log the entire Treg call and asks whether the shown contact fields fit ours. Those fields are our existing projection; native provider response formats vary.
+- Starting state: Treg direct import accepted locally with no token/live lookup. Separate Contacts UI deployments have completed; preserve them. Existing model audit forbids raw source bodies and remains unchanged.
+- Work performed: independent planner inspected Treg client/importer, current model audit, actual deployment volume/bootstrap, docs, tests and source limits. No application edits or live calls. Root assigned distinct code/test ownership.
+- Decisions: separate private per-attempt JSONL logs, durable request before paid dispatch, bounded full redacted response before contact writes, final confirmed/partial import outcome. Defaults .local/treg-calls for development and /data/treg-calls for production on existing mounted private volume. Seven-day retention; directory0700/files0600; no public/model retrieval or console bodies. Preserve512000-byte response limit; explicit partial prefix metadata on oversized responses. Redact credentials/auth/cookies and known secret values, never raw exception text. No global/model audit policy expansion.
+- Checks/evidence: current client discards non-2xx bodies; new logging must read these within existing bounds. entrypoint.sh gives the app private persistent /data ownership. No Treg token configured. No new migration needed.
+- Acceptance: planner ACCEPT. Independent tests must prove full success/error capture, redaction, log failure before dispatch and before writes, truthful post-write logging failure, bounded oversize, permissions/retention/symlink handling and existing duplicate/human preservation.
+- Remaining work: implement, independently test, review, API build and actual package inclusion. No paid/live lookup or deployment authorized by this pass.

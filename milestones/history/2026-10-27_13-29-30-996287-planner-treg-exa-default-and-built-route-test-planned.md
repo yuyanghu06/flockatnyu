@@ -1,0 +1,10 @@
+# Exa default and existing-route tests planned
+
+- Role/scope: independent planner; orchestrator records report. User selected Exa for default people search and requested same tests narrowed to built operations/currently selected providers only, $10maximum. This supersedes proposed broader catalogue comparisons.
+- Starting state: previous20search comparison complete; separate default-saving release is live8455304f. Unrelated edits preserved.
+- Plan: fixed direct Exa endpoint with deterministic all-supplied-criteria query and native rows intact; existing budget/logging/auth/cancellation/no fallback retained. Necessary bounded JS/SQL native-field read support uses explicit firstName/lastName and sole current-company only; no raw JSON flattening, data backfill or unrelated enrichment change.
+- Test plan: reuse prior Exa search evidence; ten exact known engineer identities/profilelinks for email and phone finding, four employer domains for company enrichment. Verify/enrich only actual returned literal emails. Existing dormant routes remain unmounted; use isolated local handlers with real upstream clients. Up to44additionalrequests/$4.40reserved inside confirmed$10budget, no retries/provider sweep/Contacts-cache writes or messages.
+- Work/decisions: planner read current code/docs/catalogmetadata and ACCEPT bounded plan. Root assigned separate exclusive coder files for Exa compatibility and ignored test harness; tester owns tests only. Specialists do not spawn children.
+- Checks/evidence: read-only currentofficialcatalog metadata in ignored evidence/treg-built-route-benchmark; no new paid call yet. Employment/discoveryresults are providerreported; compare outcomes per operation, not overallwinner across differenttasks.
+- Result: implementation and independent preflight proceed; actual test/release unverified.
+- Handoff: build, test, evaluate and deploy Exa search change; execute approved route test harness only after independent preflight. Never expose dormant routes or change daily providers.

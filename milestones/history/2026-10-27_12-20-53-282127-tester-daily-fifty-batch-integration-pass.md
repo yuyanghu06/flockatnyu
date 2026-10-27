@@ -1,0 +1,9 @@
+# Dailybatch integration independently verified
+
+- Local timestamp / acting role / milestone: 2026-10-27T12:20:53.282127-04:00 / tester, serialized by orchestrator / gmail-enrichment-batches.
+- Requested scope: Dailycacheemailenrichment batching,maximum50emailsperbatch, avoidoverload. No50parallelrequests/daily50cap orlivecacheinjection/rerun requested.
+- Starting repository state: PriorTomba→Apollo e38SUCCESS andapprovedhardcap/pacingplan; raw-onlycache/nativeContacts/currentmoney/scheduleboundaries.
+- Work performed / changed files / decisions: Independent33affectedchecks passed underglobalexternalfetchblock in14.4s. ActualCLI/currentlocalSQL seeded101syntheticrawsenders andprocessed50+50+1+empty, withthreerequested5000mswaits andmaxproviderconcurrency1. Exact nativeContacts andrawcacheDMLdenial/preservation pluscompletedrerun0calls pass. Legacy100/directinjected500cannotbypass50peronce. Realdefaultpauseabort/CLI SIGTERM preventsnextbatch/closesresources/listeners. Existingtimingfixturesandtwo providerdraincalls gainedonlyno-opwaits; provider/raw/budget/scheduleassertionsretainmeaning. No hostedcachetestdata/providercalls.
+- Checks and evidence: Ignored batches/ holds baseline/source/testproofs and15-filedeploymentmanifest. Frozenconfigc3c926fd/worker a84e15fd/schedule2231bc19/CLIeaac7126 matchfinalimplementation; no newprovider/model/productionbusinesswrites, schema change ordeployment bythispass.
+- Resulting state / acceptance: Implemented/tested/packageverified; finalindependentlaunchacceptancepending beforelivechange.
+- Remaining work and handoff: Accept/deployonlyreviewedGmailpackagewithbatchaliases50,verifyactualenvreadiness/hardlimit/pause/unchangedcaps/cronprivatevolume. Reportpreviousandcurrenttestslocalvsproductiontruthfully; do notseedlivecache ortriggerpaidworker.

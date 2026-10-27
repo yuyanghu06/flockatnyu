@@ -1,0 +1,8 @@
+# Native contact sql api checks passed
+
+- Local timestamp / acting role / milestone: 2026-10-27T10:54:48.399559-04:00 / tester / treg-contact-diagnosis.
+- Requested scope / starting state: Independently verify/review final bounded native Contacts/UI changes; existing and concurrent work preserved.
+- Work performed / checks / decisions: Independent Contacts focused command passes26/26, including five new actual-adapter/PGlite native groups. Cache-mutation rejection, exact raw preservation, separate lookup emails, manual null/blank overrides, private projections, full-table search/filter/sort/page, duplicate preservation, flat/Apollo/unknown formats and Unicode limits verified. Old fixture contracts updated without weakening private-state preservation. Supplementary daily SQL failure retained and identified as concurrent provider work; final evaluator rerun supersedes it with8/8.
+- Changed files: tester owns new native tests and existing fixture/assertion contract updates; evaluator read-only. Source pins/evidence in ignored evidence/treg-contact-diagnosis/tests/.
+- Resulting state / acceptance: Local checks accepted. Both builds and whitespace pass; existing large bundle warning unchanged. Isolated web287-file package excludes secrets/logs/daily worker/dormant routes and matches final checked source. Eleven prior-release pinned unchanged modules match; old full context unavailable and SSH has no registered key, so full deployed source comparison unavailable.
+- Remaining work and handoff: Root will apply only051, execute exact authorized two-email recovery with native/cache hashes preserved, then release reviewed web package and verify authenticated browser/API outcomes. No paid lookup or business write in these passes.

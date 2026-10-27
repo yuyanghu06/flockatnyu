@@ -1,0 +1,9 @@
+# Daily Tomba behavior independently verified
+
+- Local timestamp / acting role / milestone: 2026-10-27T12:01:17.618484-04:00 / tester, serialized by orchestrator / daily-tomba-default.
+- Requested scope: Daily service ONLY; Tomba first, Apollo fallback, two total. No website/SQL/schema/provider benchmark or CSV rerun.
+- Starting repository state: PriorApollo→AIArk daily0888SUCCESS and acceptedTomba plan; currentproductionbudgets/schedule/Contacts/cache retained.
+- Work performed / changed files / decisions: Independent affected28/28 under globalexternal-fetch blocker passes: provider9groups,SQL8,schedule5,worker6. Actual CLI with current051 localSQL stores whole native Tomba person fields includingunknown verification/sources/phonebool, displays native names/email through existingreaders, keepsphonebooluncoerced/hidden, preserves Apollo fallback wrapper/nameless hit. CacheDMLdeny, aggregate7000charge, completedrerun0calls and observed110000overrunsettle/stop checks remain. Owned SQL/schedule differences only synthetictransport/nativeexpectedshape; substantive preservationassertions intact. Concurrentapp/contextsource drift is outsideassignment andexcludedfromdailybundle; no revert/newwebrelease.
+- Checks and evidence: Ignored evidence/gmail-enrichment/tomba-default/ holds before-source, independentbaselines/fixtureproofs/TAP/pins and final15-filedeploymentmanifest. No credentials or sourcevalues in trackedjournal. No provider/model/businesscalls, schema or deployment bythispass.
+- Resulting state / acceptance: Implementation/affected behavior/sourcepackage pass; final independent launch verdict pending.
+- Remaining work and handoff: Launch onlyGmailreviewed15-filepackage, verifyliveTomba→Apollo/readiness/max2/existingcaps/cronvolume. Do notresetjobs orreprocesssavedcontacts/cache orCSV.

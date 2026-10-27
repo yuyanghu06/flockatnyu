@@ -67,3 +67,7 @@ Collector packaging permits the exact shared `server/source-timeout.js` module a
 `map-avatar-storage.mjs` is an operator-only private Supabase portrait uploader/migrator. Default mode plans without writes. `--upload` hash-verifies PNGs under immutable person/content keys and saves a0600manifest under ignored evidence/storage-avatars/. `--apply --web-ready` changes only avatar_url using ID/originalURL/updated_at guards after compatible web rollout; `--verify` checks stored bytes, anonymous denials and preserved profile facts. No model tool or browser upload grants are added.
 
 Collector packaging admits only four reviewed root-level shared modules (source timeout and the three private-bridge chat context/attachment modules), reached by static imports. Collector images copy the entire sanitized server context so every packaged reachable module is present; unrelated repository files and secrets remain excluded.
+
+`prepare-gmail-enrichment-deploy.mjs` builds a separate, static-import-only worker upload context with its own private-log volume entrypoint. It excludes frontend/source collectors/planner, data/logs/env and tests; preparation does not deploy or activate the service.
+
+`google-connect.mjs --gmail-send` adds explicitly approved Gmail send permission with incremental consent, preserves the normal read flow and saves credentials only to ignored mode-0600 .env.google.

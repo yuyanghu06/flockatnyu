@@ -1,5 +1,33 @@
 # Milestone journal
 
+`treg-company-provider-compare/` tracks the eight-provider, four-company comparison with private evidence and unchanged application settings.
+
+
+`treg-company-count-fix/` tracks the numeric employee-count compatibility repair and saved-response verification without route activation.
+
+
+`treg-exa-default/` tracks default search and native read compatibility; `treg-built-route-test/` tracks bounded tests of only existing selected-provider routes.
+
+
+`treg-search-engineers/` tracks the bounded live people-search comparison; Contacts/cache and daily runtime stay unchanged.
+
+
+`treg-default-save/` tracks prompt-led people discovery, enrichment and separate native Contacts imports.
+
+`gmail-enrichment-batches/` records the daily 50-email batch cap, sequential requests, five-second pacing and independent local/live verification.
+
+`daily-tomba-default/` records the daily-only Tomba-first/Apollo-fallback release and independent source/live verification.
+
+`treg-provider-benchmark/` tracks the14saved-match import and bounded20-email/eight-provider comparison; daily runtime stays unchanged.
+
+`treg-contact-diagnosis/` tracks the native Treg shape/email mismatch and requested Contacts loading/idle-animation fixes.
+
+`gmail-enrichment-providers/` tracks the daily-only Apollo-first/two-provider change; CSV rerun and website changes were cancelled by the user.
+
+`treg-csv-email/` tracks the bounded email-only CSV test, existing batch interface and private live evidence.
+
+`treg-contacts/` tracks the bounded authenticated Treg-to-Contacts import, simulated verification and credential limitation.
+
 The October25 planner queue-clear follow-up is recorded in `planner-48h-review-2026-10-25/`: explicit deletion authorization,574originals/184tasks removed, old lease invalidated, worker restarted and all work queues verified empty.
 
 `planner-48h-review-2026-10-25/` records the October23–25 operational review, restored model responses, remaining task-save failures, queue limitations and independent recount. No runtime changes were made.
@@ -292,3 +320,41 @@ October25 4:32PM recheck records41new pendingDiscord inputs and continuing worke
 `planner-throughput-fix-2026-10-25/` tracks authorized save/read fixes, independent model/storage verification and later batch-five worker rollout.
 
 main-publication-2026-10-26/ records the requested local diff, independent checks/review and normal publication to main, preserving unapplied cleanup046 and open issues.
+
+The October23 Railway inspection records current production log findings only; stopped product work remains stopped.
+
+October 26 folder-rename verification records portable application paths, independent local builds/serving checks, an unrelated stale collector test expectation, and the repaired local Railway folder association. Production services were not changed.
+
+Folder rename/main integration is complete: local Railway link repaired, main 4e974d0 integrated with all uncommitted records preserved, independent review accepted and fresh local checks recorded. See folder-rename-main-integration/info.md and the current snapshot.
+
+`contacts-crm/` tracks the new private contacts table, SQL verification and hosted application.
+
+`contacts-tools/` tracks model contact operations and real-model evaluation on simulated storage.
+
+`contacts-ui/` tracks the adjacent Contacts launcher, manual contact UI/API and source-based site style guide.
+
+`contacts-local-load/` records the stale paired-dev API failure, exact restart and actual read verification.
+
+`calendar-ui-mock/` tracks the separate local-only calendar design draft.
+
+`contacts-design-mock/` replaces the cancelled calendar draft with an isolated Contacts design playground.
+
+`contacts-site-release/` records promotion of the approved Contacts mock into the real website and a compatible web-only release.
+
+`treg-call-logging/` tracks private full Treg request/response/import logging, secret removal and simulated verification.
+
+`gmail-cache-enrichment/` tracks the separate Gmail-cache enrichment worker and its pending external cache contract.
+
+`contacts-cache/` records the minimal inbox-sender staging table and separate Gmail cache step, replacing the direct Contacts intake plan.
+
+`contacts-search-filters/` tracks shared fuzzy/filter search, manual-lead routing, funnel/focus treatment and Spotlight-matching Contacts motion, separate from completed inbox cache intake.
+
+`treg-agent-tools/` tracks separate lookup-only Treg search and array email enrichment in shared chat.
+
+`treg-dormant-routes/` tracks four prepared Treg lookup handlers that remain outside the running application and tool catalogue. Its acceptance includes independent operation/error/privacy tests and actual package exclusion; current status lives in the rolling milestone.
+
+`contacts-footer-clipping/` records the CSS-only upward positioning of existing editor actions, browser geometry/scroll checks and frontend-only release.
+
+`contacts-flock-context/` tracks replacing the sticky Notes overlap with separate layout areas, the Flock it! saved-contact chip and directory refresh. It distinguishes synthetic UI/transport tests, actual configured-model evaluation and hosted release checks.
+
+The planner-presence-diagnosis folder records diagnosis, actual-model corrections and the accepted worker-only standalone-presence release; it distinguishes simulations/startup verification from an unverified actual report replay.

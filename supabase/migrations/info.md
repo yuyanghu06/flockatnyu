@@ -1,5 +1,7 @@
 # Current migration boundary
 
+051 is applied as hosted20261027145509_contacts_native_fields, the native Contacts upgrade: adds nullable lookup_email, service-only contact_fields/contacts_match_email, and updates search/completion without rewriting contacts or cache. Applied047–050 remain immutable. Verify and apply only051; never replay the migration directory. Hosted application/authorized recovery status belongs in the rolling milestone.
+
 Applied001–021 are immutable. Hosted020 is20261017184647_discord_manual_channel_disable;018 is20261017182014 and019 is20261017182143.020 updates two existing invoker functions and adds manual-disable intent only inside existing catalogue JSONB. It creates no table, column, archive or new grant. Independent actualSQL tests and hosted preservation fingerprints are under evidence/m36-collector-cleanup.
 
 Never replay this directory with ordinary db push: local and hosted version prefixes differ. Apply only reviewed new migrations deliberately, verify receipts/definitions/access and preserve unrelated data. Historical notes below are superseded where013–020 remove the described structures.
@@ -240,3 +242,27 @@ Hosted045 is20261023234558_agent_task_catalogue, appliedOctober23through the exi
 ## Go Greek retirement (046)
 
 October25 owner-requested forward cleanup046 checks the exact popup identity under the existing map lock, removes exclusively linked activities/attendance and the popup link from shared events, then removes the catalogue row. Other events, people, catalogues, source originals and permissions remain intact. It is replay-safe, changes no schema/grants and does not modify historical037. Hosted application remains a separate operation recorded in milestones/milestone.md.
+
+## Contacts CRM storage (047)
+
+047 creates only `public.contacts` and its timestamp trigger function. Each row
+has a generated UUID `id`, finite timezone-aware `created_at`/`updated_at` and a
+`raw_input` JSONB object with flexible optional contact fields. Updates preserve
+creation time and advance update time automatically. Forced RLS and explicit
+grants allow trusted service-role CRUD and deny browser access; no general
+contact RPC, import, UI, fixed field catalogue or deduplication is added.
+Applied through Supabase MCP as `20261026162857_contacts` on October26, independently of046. Exact reviewed SQL, columns, managed-timestamp trigger, forced RLS and service-only CRUD verified; table initially empty and existing table permissions unchanged. Applied047 is immutable; do not replay the migration directory.
+
+Migration049 `contacts_cache` is applied as hosted `20261026215743_contacts_cache` and is immutable. It adds only id UUID, created_at timestamptz and object raw_input JSONB with forced RLS/service-only CRUD. Apply only049; pending046 and deferred048must not be replayed. Intake stores email and optional plain name only.
+
+`202610260050_gmail_contact_enrichment.sql` follows Contacts047 and sender-cache049. Its revised v2 contract adds metadata-only jobs/state, atomic leases/source revisions and durable request/budget guards, then inserts native Contacts with completion in one transaction. It never writes cache rows or stores enrichment in tracking tables. It does not rewrite original sender fields or apply/deploy itself. It is separate from deferred048 and the collector-owned049 rollout.
+
+Migration048 contacts_search is now explicitly applied as hosted20261026222756_contacts_search, after049, and immutable. It adds private stable invoker search and approved pg_trgm/fuzzystrmatch extensions, without changing contact rows or cache columns. This separate accepted website feature supersedes its earlier held status; never replay pending046or this directory with db push.
+
+The final revised050 source SHA256 f5712c164b7333a2dc8ae76056788abe24a0318f4550b7c20fd1acb7c1f01dcb is hosted as20261026225556_gmail_contact_enrichment. The earlier local cache-backwrite design was never applied and is superseded. Applied047/048/049 and unrelated046 are preserved. Follow the milestone for scheduled service verification and activation.
+
+052 appends eLab to the fixed Leslie building aliases. It preserves existing catalogue values/timestamps and restores the timestamp validator in the same locked transaction; runtime catalogue mutation grants remain denied.
+
+053 adds only service-only Gmail send operation metadata and fixed claim/finish/read/probe RPCs. It stores no message addresses/content or OAuth secrets. Pending dispatch/unknown markers never expire into permission to resend.
+
+`202610270054_contacts_exa_fields.sql` replaces only the read-only saved-contact field function to recognize explicit Exa names and an unambiguous current company. It preserves service-only access and all saved rows/timestamps; there is no backfill.

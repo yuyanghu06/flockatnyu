@@ -25,3 +25,15 @@ planner-followup.mjs supplies synthetic current/backlog tasks, external boundary
 `chat-steering.mjs` supplies a production app/runner with synthetic authentication, controlled provider timing and inert tools for admission, cancellation and stream races. `chat-steering-model.mjs` uses the production runner, registry and map adapters with synthetic storage; only injection timing is controlled during an actual-model run. No fixture creates live business-service clients. The companion harness pins sources and bounds all inference dispatches.
 
 `planner-followup.mjs` also supplies the synthetic task catalogue/exact-read storage interface used by current planner tests. Catalogue metadata is separate from full retained originals/history; each read can fail independently. Its integration-source adapter supplies this interface and required map-read context imports to extracted current constructors without editing closed historical evidence. No production fallback to full task listing is provided by these helpers.
+
+`contacts-store.mjs` supplies a synthetic PostgREST persistence transport beneath the real contacts store and tools. It records attempted/applied writes, preserves exact timestamp strings and can simulate conflicts or a lost write response. `contacts-model.mjs` supplies nine realistic requests and saved-field assertions for the production chat runner. Its scripted provider checks fixture mechanics only; the companion harness separately records actual configured-model calls under fixed network/request limits. No fixture contacts live business services.
+
+`contacts-ui.mjs` supplies synthetic directory rows and the real contacts API/store with test authentication and controllable failure responses. It supports both HTTP route checks and the local Chrome/Vite end-to-end UI test. Its production-session secrets are inert test strings; it creates no live business-service clients or model requests.
+
+`treg-contacts.mjs` supplies synthetic Treg responses/PostgREST for direct-import and logging tests, including conflict-ignore inserts, exact email filters and failure-after-commit. It runs real application/client/store/logger code, allocates isolated private temporary logs and cleans them up. No live business service is accessed.
+
+`gmail-enrichment.mjs` supplies invented sender/provider data and an explicitly simulated cache contract for isolated engine checks. Actual SQL tests separately use production migrations and fixed RPC transports. No real email/provider data or credentials belong in these fixtures.
+
+Contacts fake PostgREST search delegates ranking/filtering to the actual048SQL in serialized PGlite snapshots, rather than copying ranking in JavaScript. Model fixtures expose both production Contacts/Attio adapters with synthetic persistence; corrected Attio record_text is required for honest valid provider responses.
+
+planner-presence.mjs provides isolated Discord originals, Calendar/map/task storage and production planner adapters for missed-presence regression verification. It does not connect to live business services.

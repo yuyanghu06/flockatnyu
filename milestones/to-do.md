@@ -1,3 +1,372 @@
+## Source organization and CI plan accepted
+
+- Scope: independent read-only planner inspected frontend, HTTP routes, deployment, tests and current quality commands.
+- Plan: group browser code under app/features/map; server-only handlers under src/api by provider. Preserve routes, auth, source permissions, exact writes, all UI/map behavior and dormant Treg 404s. Update asset paths, test imports and deployment reachability.
+- Limits: 500 physical lines per JavaScript module, 400 CSS; split oversized src files. Explicit frozen per-file exceptions for existing oversized backend/tests; no blanket legacy exclusion.
+- Checks: standard formatting/lint/size, offline behavior tests, builds, packaging and synthetic browser smoke. No live-service calls or model evaluation required for unchanged prompts.
+- Next: finish initial main publication, then two exclusive implementation assignments plus root CI work.
+
+## Publication checkpoint review accepted
+
+- Scope: independent read-only review of pending changes before splitting commits.
+- Evidence: 521 pending paths checked; no private credential matches, private evidence/build/dependency paths or files above 5 MiB. Whitespace passes. Contacts, Gmail, Treg boundaries and packaging reviewed.
+- Verdict: accepted for checkpoint commits. Root must preserve remote main and inspect full-suite failures before final publication.
+
+## Working-tree publication and source cleanup started
+
+- Requested scope: split pending changes into logical commits, preserve remote main, push main, then reorganize src and add CI/CD checks.
+- Starting state: codex/dev at 4e974d0; 521 pending paths. Fetched origin/main at cfa12a7 with five additional commits. No history rewriting planned.
+- Checks: initial API/frontend builds pass; full offline tests running. Pending-file secret-pattern scan found only ordinary task filenames/words after masked inspection; no credential match.
+- Next: finish independent checkpoint review and tests, commit feature groups, integrate remote main, push before cleanup. Planner independently reviewing cleanup structure.
+
+<!-- treg-company-provider-compare:start -->
+## Company-enrichment provider comparison
+
+- [x] Verify current native contracts, price estimates and bounded eight-provider plan.
+- [ ] Prepare and independently preflight the private 32-request harness.
+- [ ] Run the approved matrix once and reconcile costs and receipts.
+- [ ] Independently review coverage, useful fields, identity and limitations; report the best options.
+<!-- treg-company-provider-compare:end -->
+
+<!-- treg-company-count-fix:start -->
+## Company employee-count compatibility
+
+- [x] Independently plan the narrow fix and retain dormant-route boundaries.
+- [x] Implement client-only normalization with strict numeric validation.
+- [x] Replay both saved failures through the real client and HTTP handler; pass preservation, bad-type and regression checks.
+- [x] Independently review and integrate; confirm the deployed runtime package is unchanged and the handlers remain dormant.
+<!-- treg-company-count-fix:end -->
+
+<!-- treg-built-route-test:start -->
+## Existing Treg route tests
+
+- [x] Confirm the $10 limit and selected-provider-only scope.
+- [x] Independently review the guarded local harness with real handlers and clients.
+- [x] Complete 28 live requests and reconcile the $0.012855 charge.
+- [x] Independently verify results and diagnose the company response mismatch.
+- [x] Later user-requested follow-up: safely support numeric company employee counts. Both saved Google/Microsoft responses now pass; no route activation was requested.
+<!-- treg-built-route-test:end -->
+
+<!-- treg-exa-default:start -->
+## Exa default people search
+
+- [x] Implement fixed Exa dispatch and explicit native-field display without rewriting saved records.
+- [x] Pass independent local SQL, API, preservation and failure tests; accept the reviewed package.
+- [x] Apply migration 054, verify unchanged rows/security and deploy only the website.
+- [x] Verify one actual hosted Exa search, readable fields, existing tools and dormant-route boundaries.
+- [x] Record final independent hosted acceptance and completion.
+<!-- treg-exa-default:end -->
+
+<!-- treg-search-engineers:start -->
+## Treg engineer-search comparison
+
+- [x] Independently verify current search contracts and bounded20call/$2plan.
+- [x] Independently preflight temporary harness; complete20authorizedcalls and exact$0.0318balance reconciliation.
+- [x] Independently verify20results/caps, exact$0.0318cost/balance and ten supported distinctprofiles; tester/evaluator ACCEPT.
+<!-- treg-search-engineers:end -->
+
+<!-- treg-default-save:start -->
+## Treg default Contacts saving
+
+- [x] Clarify people enrichment and independently plan separate native-result save workflow.
+- [x] Implement default-save prompts, request-local result references and Contacts import tool; retain CRUD.
+- [x] Independently verify raw/privacy/failure boundaries and actual-model workflows; document bounded incomplete CRUD final answer.
+- [x] Independent source/hosted ACCEPT; website8455304f SUCCESS, live catalogue/readiness/frontend verified with zero paid/test data writes.
+<!-- treg-default-save:end -->
+
+<!-- gmail-send:start -->
+## Gmail send API
+
+- [x] Verify current account/scopes and accept bounded send/idempotency plan.
+- [x] Complete sender, durable receipts, API/tool and stable chat metadata integration.
+- [x] Independently verify MIME/auth/SQL/concurrency/unknown/privacy and4actual-model cases on simulated services.
+- [x] Finish lost-steering-ACK browser retest and independent final review.
+- [x] Review/apply053, deploy only website and verify read-only readiness.
+- [x] Obtain explicit Google send-scope consent, preserve existing grants, and verify live readiness without sending a real email.
+- [x] Recheck explicit deploy request: current reviewed website is live, no remaining packaged changes.
+<!-- gmail-send:end -->
+
+- [x] Check current Flock email-send API status: live catalogue confirms search/read only; sending not implemented. No enablement requested.
+
+<!-- gmail-enrichment-batches:start -->
+## Daily50-email batches
+
+- [x] Explain priorlocalcache/simulatedprovider vs live-readonlyverification; acceptper-batchscope.
+- [x] Implement explicitdefault50/hard50cap,sequentialprocessing,abortable5secondpause.
+- [x] Verify33affectedchecks:101localSQL→50+50+1, hardcap, concurrency1, pause/abort/native/cache/rerun0.
+- [x] Deploy only Gmail d780e172 SUCCESS; verify live 50 cap, five-second pause, readiness and unchanged settings.
+- [x] Final independent hosted ACCEPT and handoff; no production test data or manual paid reruns.
+<!-- gmail-enrichment-batches:end -->
+
+<!-- planner-presence-diagnosis:start -->
+## Missed presence report
+
+- [x] Trace production ingestion, identity, deferral and follow-up; explain confirmed decision failure.
+- [x] Plan bounded standalone-presence/task-reclassification and additive eLab alias fix.
+- [x] Reproduce bounded baseline with actual configured model and simulated services (8requests; zero writes/two needless tasks).
+- [x] Implement routing/task-reclassification prompt and guarded alias migration; existing focused checks pass.
+- [x] Correct timestamp precision instruction, freeze prompt and verify alias migration/API build; isolate prompt-only62-file worker.
+- [x] Verify actual-model exact3message creation on first precision-corrected candidate.
+- [x] Resolve saved-task provenance/reclassification findings; final314actualmodel original(5requests)+savedtask(10) both pass incl exacttask deletion under cumulative80ceiling.
+- [x] Independent final source/model/migration/package launch ACCEPT.
+- [x] Apply exact alias and verify service-only catalogue readback; upload reviewed prompt-only worker2bcc7d90.
+- [x] Verify worker2bcc7d90SUCCESS/oneRUNNINGinstance, unchanged model/settings and independent hosted acceptance.
+- [x] Verify alias/name/timestamp and other-building hash preservation; runtime permission/trigger behavior covered by actual-schema tests and reviewed transaction.
+- Optional: owner trigger/grant metadata reread awaits MCP reconnection; live organic replay is unverified, and pre-existing audit-prune maintenance remains separate.
+<!-- planner-presence-diagnosis:end -->
+
+<!-- contacts-flock-context:start -->
+## Contact editor layout and Flock context
+
+- [x] Separate scrolling fields and footer; verify resized Notes and form behavior.
+- [x] Add Flock it! handoff, names-only prompt chip and per-turn selected-contact transport.
+- [x] Independently verify UI/transport/steering/privacy and actual-model behavior on simulated data.
+- [x] Review, release isolated website and verify live without changing saved contacts or user drafts.
+<!-- contacts-flock-context:end -->
+
+<!-- daily-tomba-default:start -->
+## Daily Tomba-first update
+
+- [x] Confirm daily-only scope and native person-object plan; keep Apollo fallback/two total.
+- [x] Implement only daily Tomba→Apollo adapter/order; existing limits/data boundaries preserved.
+- [x] Verify28affectedchecks/current051SQLraw+render/cache and one-file15-modulepackage change.
+- [x] Deploy only Gmail e38af83cSUCCESS; verify Tomba→Apollo/max2/readiness and unchanged caps/cron/volume.
+- [x] Final independent hosted ACCEPT/handoff complete; no data reruns or required work remain.
+<!-- daily-tomba-default:end -->
+
+<!-- treg-provider-benchmark:start -->
+## Import saved matches and compare providers
+
+- [x] Import14saved names/lookup emails and verify existing Contacts/cache unchanged (total16).
+- [x] Independently verify eight-provider email-only contracts and bounded comparison plan.
+- [x] Prepare/test private guarded160-call benchmark and obtain independent launch ACCEPT (finald50pin).
+- [x] Run160authorizedpairs and reconcile actual$0.6045cost/results; no retries.
+- [x] Independently verify coverage/cost/latency/nativeempty-responsecorrections; daily runtime unchanged.
+<!-- treg-provider-benchmark:end -->
+
+<!-- contacts-footer-clipping:start -->
+## Contacts editor button clipping
+
+- [x] Add explicit16pxfooterinset; verify whole-container clipping gap at actual user viewport and keyboard behavior.
+- [x] Release frontend-only follow-up; verify fresh assets and preserve old-tab unsaved draft.
+
+- [x] Move existing actions upward and verify desktop/short/mobile geometry, keyboard focus and field scrolling.
+- [x] Independently review, release frontend-only update and verify live clipping correction.
+- [x] Final read-only hosted-evidence review accepted; complete.
+<!-- contacts-footer-clipping:end -->
+
+<!-- treg-contact-diagnosis:start -->
+## Native Treg Contacts and UI fixes
+
+- [x] Trace today’s exact native records/import receipts and confirm nested names/absent email.
+- [x] Implement and browser-check loading selection and idle-avatar fixes.
+- [x] Implement shared native projection, SQL search and separate original lookup email storage.
+- [x] Independently test actual worker/SQL/API preservation, search, edits and duplicates; evaluate.
+- [x] Apply reviewed schema and restore only the two authorized emails; verify raw/cache unchanged.
+- [x] Release reviewed website and verify authenticated names/emails/UI.
+- [x] Final independent hosted-evidence review accepted; requested work complete.
+<!-- treg-contact-diagnosis:end -->
+
+<!-- gmail-enrichment-providers:start -->
+## Daily Gmail Apollo/two-provider update
+
+- [x] Confirm latestscope: dailyruntimeONLY; CSVrerunCANCELLED; websiteunchanged.
+- [x] Verify official directprovider contracts/currentApolloavailability andacceptboundedplan.
+- [x] Implement daily-only Apollo → AIArk client with strict two-provider/shared-cost/logging/native preservation.
+- [x] Remove transitive Contacts/shared-client modules; final15-file package and pins verified.
+- [x] Independently verify provider flow, budgets, logs, cache/Contacts and daily-only scope (28 affected checks).
+- [x] Deploy only Gmail0888a347SUCCESS; verify live policy/readiness/schedule/private volume and preserved budgets.
+- [x] Final independent launch/hosted ACCEPT and handoff complete; natural provider outcomes remain separate.
+<!-- gmail-enrichment-providers:end -->
+
+<!-- treg-csv-email:start -->
+## CSV email-only enrichment
+
+- [x] Independently inspect CSV and existing1–10email API batching; no application change needed.
+- [x] Run five-email hosted pilot: five honest misses,$0reportedcost,no business writes.
+- [x] Receive user-selected$10total full-file spending limit.
+- [x] Independently verify bounded private bulk harness, failure stops and $10 spending reservations.
+- [x] Obtain independent final launch acceptance.
+- [x] Reconcile first partial run and preserve30uncertain-email spending allowance.
+- [x] Accept/run bounded continuation: all2361unique inputs complete;8415micro authoritative total charge.
+- [x] Independently verify final cumulative counts, exports, authoritative balance and preservation.
+- [x] Record final evaluator ACCEPT and complete user handoff; no required CSV test work remains.
+- [x] Final CSV counts/costs/privacy were verified and reported in the completed prior trial; new CSV rerun is cancelled.
+<!-- treg-csv-email:end -->
+
+<!-- treg-dormant-routes:start -->
+## Dormant Treg routes
+
+- [x] Confirm official contracts and accept bounded implementation plan.
+- [x] Implement four fixed clients/route handlers with no runtime/tool/UI/worker registration.
+- [x] Independently test actual handlers/clients, errors, auth, cost/logging and dormant boundaries with simulated providers.
+- [x] Verify API checks, independent review, corrections and current guides.
+- Explicit user preference: keep existing people enrichment at one provider attempt, with no fallback. No paid test or deployment requested for this addition.
+<!-- treg-dormant-routes:end -->
+
+No required work remains for the dormant routes. Registration/exposure is deliberately deferred; no live provider calls or deployment performed.
+
+<!-- treg-agent-tools:start -->
+## Treg agent tools
+
+- [x] Independently plan separate search and array-email enrichment tools.
+- [x] Implement shared chat registration, safe projections, replay protection and lookup-only logs.
+- [x] Independently verify actual clients/tools/runner/API with simulated transports.
+- [x] Verify focused regressions, both builds and actual isolated website package.
+- [x] Verify six configured-model scenarios on simulated services,21requests within28cap; preserve corrected fixture evidence.
+- [x] Obtain independent evaluator ACCEPT and integrate journal/guides.
+- [x] Configure private token and publish reviewed web runtime; verify health/auth/catalogue and exactly one authorized hosted enrichment request.
+- [x] Independently review live release and honest balance-refusal evidence.
+- [x] After user funding, verify one fresh hosted lookup and matching billing: selected BlitzAPI provider returned no profile; both charges $0; balance remains $10; no save or retry loop.
+- Verification limit: profile-bearing results, actual Discord execution and the scheduled worker were not tested by this single-email website trial.
+<!-- treg-agent-tools:end -->
+
+## Contacts fuzzy search, filters and motion
+
+- [x] Implement shared048search/filter contract and real/mock UI with lead-routing prompt.
+- [x] Independently verify SQL/API/browser and actual configured model behavior on simulated data; evaluator ACCEPT.
+- [x] Review/apply only048and isolate approved website package from concurrent work.
+- [x] Publish only website and verify live auth/search/filter/motion with exact assets; final evaluator ACCEPT.
+
+## Gmail inbox contacts_cache
+
+- [x] Stop direct Contacts intake and pin minimal cache/inbox-only plan.
+- [x] Implement three-column schema and separate retry-safe Gmail cache operation.
+- [x] Independently verify SQL/privacy/eligibility/dedup/retry/ordinary queue behavior and Gmail package; evaluator ACCEPT.
+- [x] Apply only049, release only Gmail collector and verify live schema/health and real cache intake safely.
+- Direct Gmail-to-Contacts capture is superseded. Latest UI requests resume separate fuzzy/filter/prompt work;048remains pending review.
+
+## Separate Gmail cache enrichment service
+
+- [x] User correction implemented: cache read-only raw input; native enrichment only Contacts; metadata-only jobs/state.
+- [x] Revised050 independently verified/applied as20261026225556; all28 original cache rows unchanged.
+- [x] Deploy isolated service with private volume and finite9AMNewYork/DST schedule; finaldeployment11646098SUCCESS.
+- [x] Verify user-provided private token presence/configuration and read-only readiness; nextOctober27at9AMET.
+- [x] Final36checks/API/package/sourcepins and independent hosted schedule acceptance.
+- [ ] Actual first scheduled Treg authentication/results/log writes remain unverified until the natural run.
+- Superseded: cache-backwrite/saved-enrichment resume and perpetual polling designs; never deployed. Earlier local-only/disabled/token-missing status below is historical.
+
+
+- [x] Independently plan read-only cache and metadata-only v2 completion contract.
+
+- [ ] Correct pipeline: cache is read-only raw input; native enriched results only in Contacts.
+- [ ] Replace cached-response storage with metadata-only tracking and atomic Contacts completion.
+- [ ] Independently verify untouched cache inputs, no payload in tracking, raw Contacts, retries/budgets/leases and final review.
+- Earlier cache-backwrite completion is superseded by the user’s correction; no050/live enrichment was applied.
+
+
+- [x] Verify hosted sender cache: 28 rows, expected schema/private access, no enrichment yet;050/worker still inactive.
+
+- [x] Independently inspect existing services and verify official email-enrichment contract.
+- [x] Implement and independently verify standalone Treg enrichment client.
+- [x] Implement separate resumable worker/config/CLI/package over injected cache operations; actual adapter phase follows.
+- [x] Read actual049 cache and inbox-only helper; sender-only scope now matches real intake.
+- [x] Complete050 real cache adapter/atomic Contacts fencing integration without changing049/collector.
+- [x] Verify actual SQL claim/version/budget behavior and end-to-end simulated failure/restart/concurrency cases; 32 focused checks pass.
+- [x] Complete API/package checks, independent evaluator ACCEPT and current guides.
+- Activation remains separate:050 unapplied, worker disabled; private token is present but no live lookup/schema application/service activation/deployment performed.
+
+## Treg full-call logging
+
+- [x] Independently plan private request/response/import logging and retain existing model-audit restrictions.
+- [x] Implement durable private logs with credential redaction, retention and truthful failure handling.
+- [x] Save every bounded raw provider lead unchanged, retain unknown schemas, and render only supported string fields without touching existing leads.
+- [x] Independently verify actual filesystem and HTTP/client/store lifecycle on simulated services; 22 meaningful checks pass.
+- [x] Pass API/package checks and document exact log storage/access/limits.
+- [x] Complete final independent evaluator acceptance and integration; local scope complete.
+- Live provider logging requires private token configuration; no paid lookup is claimed.
+
+## Contacts empty-state cleanup
+
+- [x] Remove redundant CTA and reduce empty-message spacing in real/mock UI.
+- [x] Verify layout/header Add, build and publish frontend-only package preserving live backend.
+- [x] Verify actual hosted empty view and finish release records; evaluator ACCEPT.
+
+## Treg people search into Contacts
+
+- [x] Inspect official API/provider shapes, existing Contacts/auth and private configuration availability; independent plan accepted.
+- [x] Implement bounded authenticated direct import with private token, cost/idempotency metadata and insert-only preservation.
+- [x] Independently test real HTTP/client/store adapters using simulated Treg/PostgREST, including duplicates/errors/partial outcomes.
+- [x] Run API/frontend build, actual production package inclusion and scoped documentation.
+- [x] Complete independent evaluator acceptance and final integration; local integration accepted.
+- [ ] Live provider verification requires private TREG_TOKEN; no token currently configured.
+
+## Approved Contacts design on the site
+
+- [x] Plan real-UI port and compatible website-only release.
+- [x] Port approved mock into API-backed Contacts without sample/global mock code.
+- [x] Update and run meaningful browser/API checks, builds and production package review.
+- [x] Independently evaluate, deploy only web and verify live authenticated reads/assets/UI.
+- [x] Complete release evidence and current guides.
+
+## Separate Contacts design mock
+
+- [x] Remove redundant Edit control; direct editing and focused desktop flow verified, review accepted.
+
+- [x] Recess Search, raise Load more and remove the sample footer; focused desktop/mobile checks and review accepted.
+
+- [x] Raised gray Edit and red square × Delete, plus directly editable recessed fields with Save/Cancel; verified and accepted.
+
+- [x] Inline profile avatar, identity and actions; verify desktop/mobile and button behavior.
+- [x] Add subtle depth to mock avatars and complete combined visual review; evaluator ACCEPT.
+
+- [x] Record user correction: Contacts mock replaces calendar draft.
+- [x] Remove the three calendar mock runtime files and build the isolated Contacts sample UI.
+- [x] Verify local-only CRUD/reset/mobile and no real service requests or production inclusion.
+- [x] Replace the separate mock browser tab with Contacts and complete independent acceptance.
+- Superseded: calendar mock was built/verified, then cancelled because the user clarified Contacts was intended. Historical receipts remain.
+
+## Contacts local load failure
+
+- [x] Confirm stale local API404 while new frontend is visible; verify fresh configured database read.
+- [x] Restart only the exact project paired devserver; API and Vite proxy now return200ready/count0.
+- [x] Independently verify actual configured browser/database read and No contacts yet; final evaluator ACCEPT.
+
+## Contacts interface and style guide
+
+- [x] Remove Contacts subtitle and unused CSS; build/review accepted.
+
+- [x] Study actual UI/CSS and capture browser style baseline; independent plan accepted.
+- [x] Implement adjacent Contacts launcher, responsive dialog and six-field CRUD UI.
+- [x] Add authenticated contacts HTTP routes with version/preservation checks.
+- [x] Write source-based site style design document.
+- [x] Independently verify authenticated API behavior with synthetic persistence.
+- [x] Fix final-field clearing, failed conflict-reload draft retention, assistant shortcut and launcher font; independently retest.
+- [x] Independently verify desktop/mobile browser flow with synthetic data.
+- [x] Keep search/count/paging visible while rows scroll; final independent desktop/mobile retest passes.
+- [x] Apply final rounded-square/no-ring person-avatar design; actual hover/focus pixels, static reduced motion and accessibility verified.
+- [x] Evaluate, fix/retest and integrate; final evaluator ACCEPT.
+- New Contacts UI/API remain local; no production release or real contact changes performed.
+
+## Contacts model tools
+
+- [x] Independently plan the tools, storage and chat integration.
+- [x] Add fixed content-free diagnostic codes and the contact-operation guide.
+- [x] Implement contacts store/tools and chat result/receipt routing.
+- [x] Independently test CRUD, preservation, ambiguity, errors and access.
+- [x] Verify API build and actual web packaging include the contact modules.
+- [x] Run9real configured gpt-6-luna API scenarios on simulated contact storage: all pass,42requests, stable sources, caps respected.
+- [x] Complete independent final evaluation and integration; evaluator ACCEPT.
+- Separate later release: new contact tools are local and not deployed; no real contact writes were performed.
+
+## Contacts CRM table
+
+- [x] Independently plan schema and access conventions.
+- [x] Implement migration047 and contact storage documentation.
+- [x] Independently verify real SQL behavior.
+- [x] Complete independent final review; evaluator ACCEPT for local implementation.
+- [x] Restore Supabase MCP access, apply only047 as20261026162857_contacts and verify hosted schema/trigger/grants and zero contacts.
+- [x] Complete independent hosted-evidence review; final evaluator ACCEPT, requested table complete.
+
+## Folder rename and main integration
+
+- [x] Independently inspect old paths; verify build, local startup/assets and deployment packaging.
+- [x] Restore the existing local Railway CLI association for flockatnyu; verify status and preserve unrelated settings.
+- [x] Correct current startup paths in AGENTS.md and .codex/info.md.
+- [x] Complete independent rename review; pull 24 commits from main to 4e974d0, preserve all work, resolve journal conflicts and independently verify restoration.
+- [x] Rerun API/frontend builds and focused offline checks on updated source; no new failures.
+- [ ] Separate maintenance: collector-deploy.test.mjs:150 has a pre-existing module-list expectation missing metadata-reconcile.js; actual packaging passes.
+
 ## Requested local publication to main — October26
 
 - [x] Inspect local/main history and dirty changes; independent Planner accepts bounded publication plan.
@@ -518,6 +887,11 @@ Continue the October23 GoGreek repair and exact seven-case test gate in `/Users/
 - [ ] Independently model-test short contextual multi-person RSVPs and latest UTC/null-inheritance/parent-revision chat corrections using simulated business stores.
 - [ ] Review, isolated release without rolling back newer production changes, verify actual attendance/projection and exact cleanup.
 - Historical STOPPED wording below is superseded by the user's October23 resume.
+
+## Current Railway log inspection
+
+- [x] Inspect production deployment status and recent runtime/proxy logs for the user; report observed application failures and evidence limits.
+- [ ] If separately resumed, investigate Discord chat failures, Gmail Google availability and planner timeouts/context/preflight failures. This inspection makes no fixes and does not resume the stopped application work.
 
 ## Git checkpoint
 

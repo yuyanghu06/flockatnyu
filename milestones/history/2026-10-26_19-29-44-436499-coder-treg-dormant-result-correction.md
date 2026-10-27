@@ -1,0 +1,10 @@
+# Dormant result correction complete
+
+- Local timestamp / acting role / milestone: 2026-10-26T19:29:44.436499-04:00 / coder / treg-dormant-routes.
+- Requested scope: Build email finding, email verification, phone finding and company enrichment without runtime/tool/other caller exposure; explicitly preserve current enrichment without fallback.
+- Starting repository state: Accepted fixed contracts, new modules, retained cancellation failure and reviewed blank-primary correction. Unrelated and concurrent work preserved.
+- Work performed / changed files: Changed only server/treg-lookups.js and server/treg-lookups-api.js. Rejected blank non-null primary result strings in both client and HTTP projection; null misses, optional empty fields and false/unknown verification remain unchanged. Combined cancellation/timeout handling includes response and final log-flush races. Final module hashes match root/tester evidence.
+- Decisions: New route registration stays exported but unimported/uninvoked. Each operation performs one fixed upstream request with existing cost and no-fallback settings; no auto verification, enrichment, retry, polling or contact saving. Private raw logs remain separate from projected results.
+- Checks and evidence: Final tester-report.json records 34 focused regression checks passing with stable source pins, plus the independent evaluator's seven-group rerun. Tests use simulated Treg and a real temporary private logger, with a global live-network blocker. Root API check and whitespace check pass. Actual 286-file package excludes new modules and is byte-identical to the previous release. Ignored evidence/treg-dormant-routes/ retains preparation, failure, passing runs, package and final pins.
+- Resulting state / acceptance: Complete locally; independent evaluator ACCEPT, no unresolved findings.
+- Remaining work and handoff: No required work remains in this scope. A later explicit integration request is required to register or expose the handlers. Live provider behavior and deployment of these additions are not claimed. HTTP tests inject the bounded JSON reader; existing actual app remains untouched.

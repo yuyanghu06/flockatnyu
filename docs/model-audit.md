@@ -73,3 +73,9 @@ Tool and run diagnostics now add versioned fixed reason/stage/outcome and schema
 
 
 Staged-cycle execution history is distinct from these operational audit tables: actual selected API results/source context stay in bounded run memory and temporary039task checkpoints for the final phase. Operational audits retain their existing content-free run/tool outcomes and model outputs only, with no assistant-facing retrieval.
+
+## Separate Treg call logs
+
+The user separately authorized full private Treg request/response/import logging on October 26, 2026. That integration uses its own private files, seven-day retention and credential removal, described in [the Treg guide](treg-contacts.md). It does not add source bodies to model-audit tables, change this audit policy or provide model-facing retrieval.
+
+The separate Gmail send operational ledger and direct API expose only metadata. Existing owner-authorized private model-output audit remains unchanged: model-proposed send_gmail arguments may contain composed recipient/subject/body. The new sender adds no prompt, credential or raw Gmail response logging. See [Gmail sending](gmail-send.md).

@@ -1,5 +1,33 @@
 # Pass history
 
+October 27 company-provider comparison entries distinguish current catalog planning, guarded real API calls, cost reconciliation and independently reviewed findings.
+
+
+October 27 company count entries record the client-only fix, original response replays and unchanged dormant-route boundary.
+
+
+October27 Exa/default-route entries record selected-provider scope, local versus hosted checks, bounded spending and native-data preservation.
+
+
+October27 engineer-search entries record the bounded comparison of the hosted tool and direct providers, separating provider claims from verified identity/employment.
+
+
+October 27 Treg default-save entries separate planning, native-result tool implementation, simulated-service model evidence and website release.
+
+October 27 daily batching entries record local 101-sender boundary tests, the four-module release, read-only live configuration and final acceptance without a manual paid run.
+
+October27 daily Tomba entries record the explicitly daily-only provider change, one-module package diff,28affected checks and live configuration acceptance; no data reruns.
+
+October27 saved-match/provider benchmark entries distinguish14name/email Contact inserts from a separate authorized20-email experiment; no full CSV rerun or daily-policy change.
+
+October27 native Contacts entries distinguish incident diagnosis, independent synthetic SQL/API/browser checks, reviewed schema/recovery, actual hosted release/Chrome results, and final independent evidence acceptance. Native JSON/cache remain unchanged.
+
+October27 daily-provider entries record the explicit scope narrowing: Apollo→AIArk, two providers total, daily runtime only; no CSV rerun or website release.
+
+October26 CSV email entries distinguish the hosted five-email pilot from user-authorized full-file testing under a$10ceiling; no lead values or credentials are retained here.
+
+October26 Treg Contacts entries distinguish official API planning, actual implementation, simulated integration evidence and unverified paid live calls.
+
 October25 queue-clear entries record the user's explicit data-loss authorization, independent scope review, actual production deletion, worker restart and zero-count verification. Historical operational audits and completion deduplication records were preserved.
 
 October25 planner review entries record independent local log interpretation, complete metadata recount and operational findings for the previous48hours. They separate model recovery, partial follow-up completion and current global queue state without changing live services.
@@ -312,3 +340,82 @@ October25 planner-throughput-fix preparation records research, accepted implemen
 October26 main-publication entries distinguish existing dev commits from dirty GoGreek retirement/operational records, record independent verification and review, and verify normal Git publication without applying migration046.
 
 Final October26 publication receipt: [2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md](2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md) verifies source/records on main and retains the unapplied database cleanup boundary.
+
+
+Current production log inspection: [2026-10-23_12-27-22-149231-orchestrator-railway-current-log-check.md](2026-10-23_12-27-22-149231-orchestrator-railway-current-log-check.md) distinguishes successful deployments from observed application failures without changing live services.
+
+October 26 folder-rename verification records portable application paths, independent local builds/serving checks, an unrelated stale collector test expectation, and the repaired local Railway folder association. Production services were not changed.
+
+Folder rename/main integration is complete: local Railway link repaired, main 4e974d0 integrated with all uncommitted records preserved, independent review accepted and fresh local checks recorded. See folder-rename-main-integration/info.md and the current snapshot.
+
+October26 contacts-crm entries record schema planning, implementation, independent checks/review and actual hosted-application status.
+
+Contacts CRM table is live as20261026162857_contacts with independent local and hosted acceptance; [completion](2026-10-26_12-32-23-697199-orchestrator-contacts-complete.md) records the final scope.
+
+October26 contacts-tools passes record implementation, actual behavior checks, bounded live inference and independent evaluation separately from live contact writes.
+
+Contacts tools are implemented locally with independent actual-model testing (gpt-6-luna,9cases,42requests) and final acceptance; [integration](2026-10-26_12-46-44-614886-orchestrator-contacts-tools-integrated.md) distinguishes this from a production deployment.
+
+October26 contacts-ui passes distinguish source/computed-style research, synthetic browser/API verification and actual deployment state.
+
+Contacts UI/style guide completion includes the final rounded-square/no-ring pastel profile avatar, complete synthetic browser/API checks and independent acceptance; [final integration](2026-10-26_13-25-04-345579-orchestrator-contacts-ui-style-guide-complete.md). Earlier circular/labeled variants remain historical.
+
+[Contacts subtitle removal](2026-10-26_14-31-27-021742-orchestrator-contacts-subtitle-change-integrated.md) records the title-only header correction and bounded checks.
+
+Contacts local-load records distinguish stale runtime404 from source/database failures and actual hosted reads from prior simulated storage.
+
+[Contacts local runtime repair complete](2026-10-26_14-36-48-210401-orchestrator-contacts-local-load-repair-complete.md) verifies real configured read/UI after restarting stale project API, without code/data or production changes.
+
+Calendar UI mock entries record isolated sample-only implementation, browser verification and separate-tab handoff.
+
+[Separate calendar mock completion](2026-10-26_14-50-46-263588-orchestrator-calendar-mock-separate-tab-complete.md) records the verified sample-only draft and preserved user-facing Chrome tab.
+
+Contacts-design-mock correction records retain calendar history while removing its runtimefiles and repurposing the mocktab.
+
+[Contacts mock completion](2026-10-26_14-58-05-023715-orchestrator-contacts-design-mock-complete.md) records the corrected Contacts draft, memory-only behavior, independent acceptance and separate-tab handoff.
+
+[Contacts header and avatar completion](2026-10-26_15-16-44-540857-orchestrator-contacts-mock-header-avatar-complete.md) records inline profile layout and subtle raised avatar styling with independent responsive/control and visual checks.
+
+[Contacts inline fields completion](2026-10-26_15-24-23-993728-orchestrator-contacts-mock-inline-fields-complete.md) records recessed editable fields, raised gray Edit and red square × with focused browser acceptance.
+
+[Search and footer completion](2026-10-26_15-28-29-567989-orchestrator-contacts-mock-search-footer-complete.md) records recessed search, raised paging and sample footer removal with focused acceptance.
+
+[Edit removal completion](2026-10-26_15-32-52-956741-orchestrator-contacts-mock-edit-removal-complete.md) records removal of the redundant control while retaining direct editing.
+
+[Approved Contacts design live](2026-10-26_15-46-33-172120-orchestrator-contacts-approved-design-live.md) records real UI promotion, compatible web-only rollout and actual authenticated hosted verification.
+
+[Contacts empty-state cleanup complete](2026-10-26_15-57-40-796075-orchestrator-contacts-empty-cleanup-complete.md) records frontend-only release isolation,12px gap, duplicate CTA removal and actual hosted verification.
+
+October26 Treg full-call logging records separate private integration logs from existing model audits, and distinguish simulated evidence from unverified paid lookups.
+
+October26 Gmail cache enrichment entries distinguish independent service/client work from the pending separately built cache schema and unverified live activation.
+
+[Contacts refinements complete](2026-10-26_18-40-08-540596-orchestrator-contacts-refinements-complete.md) records accepted live fuzzy/filter/prompt and focus/funnel/motion release alongside the separate completed minimal Gmail cache.
+
+Treg agent tool passes record separate lookups, simulated integration evidence and actual configured-model checks, with live activation reported separately.
+
+October26 Treg hosted-trial entries record the reviewed web release, private token configuration and exactly one email lookup refused for zero team balance. They distinguish a working authenticated route from unverified successful profile matching, and provider zero-charge evidence from an unreported parent charge.
+
+The later funded Treg trial preserves the earlier balance refusal and records one new successful lookup with a selected-provider miss, matching zero-charge records, no Contacts/cache write and independent acceptance.
+
+Dormant-route entries record official four-operation planning, exclusive implementation/testing, retained cancellation and blank-primary findings, their corrections, final independent acceptance and byte-identical production package exclusion. Existing no-fallback enrichment is preserved.
+
+October27 Contacts-footer entries retain the initial keyboard overlap, focused CSS fix/retests, unchanged backend package proof, web-only rollout and actual hosted clipping/focus verification.
+
+October27 presence-diagnosis entries record read-only production audit findings and independent code review, without source bodies or a runtime-fix claim.
+
+October27 contact-context entries supersede the sticky footer with separate scrolling fields/actions, add Flock it! and Refresh, and distinguish independent synthetic browser/transport checks, capped real-model inference on simulated Contacts and actual hosted UI verification without business writes.
+
+October27 standalone-presence correction entries retain actual-model failures and fixes, source/precision/task-version checks, final simulated successes and exact alias/worker release receipts; no live plot is claimed.
+
+October27 Gmail sending entries record implementation, local SQL/transport/browser checks, actual configured-model simulated-service evaluation and release/consent boundaries. Contact chip inset refinement is independently hosted-verified.
+
+Hosted Gmail sender code/store accepted separately from pending Google send permission; no actual email or delivery is claimed.
+
+Final Gmail activation entries record user-approved Google send consent, preserved prior grants, private website-only token replacement and HTTP200 ready readback, with zero emails sent.
+
+- [Working-tree publication and source cleanup started](2026-10-27_13-56-56-591689-orchestrator-publication-inspection.md).
+
+- [Publication checkpoint review accepted](2026-10-27_13-57-42-671385-evaluator-publication-review.md).
+
+- [Source organization and CI plan accepted](2026-10-27_13-57-42-709936-planner-source-cleanup-plan.md).

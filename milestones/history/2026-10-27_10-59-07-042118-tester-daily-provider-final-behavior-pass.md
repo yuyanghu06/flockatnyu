@@ -1,0 +1,9 @@
+# Final isolated daily behavior verified
+
+- Local timestamp / acting role / milestone: 2026-10-27T10:59:07.042118-04:00 / tester, serialized by orchestrator / gmail-enrichment-providers.
+- Requested scope: Daily Gmail runtime only, Apollo then AIArk, maximum two providers total; no CSV rerun or website release.
+- Starting repository state: Initial logic passed, package isolation finding blocked upload until shared dependencies were removed.
+- Work performed / changed files / decisions: Independent affected suite passed28/28 under global external-fetch blocker, final pins stable before/after:9directprovider groups,8actual SQL,5schedule and6worker groups. Actual CLI/SQL verifies nameless Apollo hits, AIArk fallback, exact full native Contact bodies, cache-DML deny trigger, aggregate7000micro charge and completed rerun with zero calls. Known110000micro overrun settles exactly then stops with other input pending. Replayed90000original charge with0current leaves10000allowance; malformed/conflicting receipt stops. Credential/org/cost/provider policy validation passes. Prior unrelated website logging stale POST-count assertion is recorded separately and not changed or included in package.
+- Checks and evidence: evidence/gmail-enrichment/providers/ holds independent-final-affected.tap, independent-final-pins.json and final15-file deployment manifest. Root API build and git diff --check pass. No paid test, business write, schema operation, commit or push.
+- Resulting state / acceptance: Final affected behavior and source/package scope pass; evaluator launch verdict pending before release.
+- Remaining work and handoff: Obtain independent launch acceptance, set service-only max providers2 and deploy only reviewed Gmail package. Verify actual live policy/readiness/off-hour skip, preserved cron/private volume and unchanged web deployment; report natural Apollo response unverified until scheduled run.

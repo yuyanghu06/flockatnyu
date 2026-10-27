@@ -1,0 +1,7 @@
+# Contacts model tools
+
+Build separate search/read/create/update/delete operations over the existing private contacts table. Only six string fields are writable: first_name,last_name,email,phone_number,workplace,notes. Preserve other saved data and use exact reads/versions for mutation. Website and Discord chat share these tools; the autonomous update agent remains unchanged. Completion requires meaningful offline checks, real configured-model API evaluation on simulated storage and independent acceptance. Current status is in ../milestone.md. No deployment or real contact mutation is part of this pass.
+
+Core tools and shared chat integration are implemented locally and frozen for independent testing. Existing focused regressions pass;2Calendar diagnostic failures reproduce on unchanged HEAD. No deployment or real contact mutation.
+
+Status: completed locally, independent tester PASS/evaluator ACCEPT. Actual configured gpt-6-luna passed9cases with42inference requests, inference-only network, simulated persistence and stable source pins. [Model evidence receipt](../history/2026-10-26_12-46-44-613434-tester-contacts-real-model-verified.md) · [Review](../history/2026-10-26_12-46-44-614559-evaluator-contacts-tools-accepted.md) · [Integration](../history/2026-10-26_12-46-44-614886-orchestrator-contacts-tools-integrated.md). Tools have not been deployed and hosted REST operations were not exercised.

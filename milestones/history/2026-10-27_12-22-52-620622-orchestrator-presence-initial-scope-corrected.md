@@ -1,0 +1,8 @@
+# Keep old saved work out of acknowledgement processing
+
+- Timestamp / role / scope: 2026-10-27T12:22:52.620622-04:00 / orchestrator integrating coder/tester/evaluator passes / missed-presence fix.
+- Finding: Last actual-model saved-task run created the correct old original's Member Plans/map entry in INITIAL while interpreting a newer acknowledgement. Reclassifying the task afterward changed its version, so existing completion checks correctly rejected resolution and retained the task. Map correctness alone was not accepted.
+- Correction: Frozen314e970c46c2b38a5eba9082cc9222c434874e32ea1b0768281c7f0c1d601c88 adds prominent initial own-queued-intent scope: surrounding old context is not additional claimed work; acknowledgement requires no action; saved work executes in follow-up after its compact/reclassification/new-version-read checkpoint. Genuine current offers/revisions still use context normally. No backend semantic gates, permission changes or runner workflow additions.
+- Verification boundary:54actualinferenceHTTPrequests spent. Root authorizes final cumulative80ceiling, retaining initial48→60history and all failures, solely for finalsource saved-taskcap14/exactcap6, with other meaningful cases only if budget remains after both pass. No resets, no inference after80 and no more source iteration in this campaign. Existing97focused deterministic/adapter checks pass; final model acceptance pending.
+- Release:62-file isolated worker now pins final314prompt as sole runtime difference from deployed041b280.052 remains independently tested and unapplied. No production change yet.
+- Handoff: Evaluator requires successful exact-version resolution and absence of oldtask; no release until accepted.

@@ -1,0 +1,9 @@
+# Gmail send API and permission plan
+
+- Timestamp / role / milestone: 2026-10-27T12:53:28.917806-04:00 / planner with orchestrator integration / gmail-send.
+- User scope: Build email sending after live status confirmed read-only Gmail; also apply recessed contact-chip styling. Sending a real test email was not requested.
+- Plan: Separate fixed-sender plain-text sender, durable metadata-only receipt ledger053, authenticated POSTsend/readiness/receipt APIs and separate website chat send_gmail. Exact request includes UUID,to1–10literaladdresses,subject<=200,body<=20000/max65536UTF8bytes; no caller sender, CC/BCC, HTML, attachments or threading. Normal reads and autonomous/Discord tools remain unchanged.
+- Safety/identity: Verify Google send scope and expected account, send one POST without retries, persist dispatch marker first, replay confirmed same-key requests, conflict on changed payload and fence unknown groups across restart. Stable queued chat request UUID survives Retry/Resume/steering; never rely on random run IDs or Gmail Message-ID deduplication.
+- Ownership: Core coder owns Google sender/contracts/config/OAuth opt-in; second coder owns SQL/store/service/API/tool; tester owns new synthetic and actual-model tests. Root owns runtime/prompt/metadata integration, all journal/guides and release.
+- Evidence: Read-only production OAuth check verifies hello@techatnyu.org and Gmail read permission but no send permission. Official Google send/MIME/scope contracts checked. Code/tests/review and concrete deployment must complete before asking for Google send consent. No live email or OAuth permission change authorized by this planning pass.
+- Next: Finish independent tests/review, exact053 apply and web-only deployment/readiness; request action-time consent for missing send scope only after implementation is reviewable. No actual email without a specifically authorized recipient.

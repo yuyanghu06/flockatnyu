@@ -1,0 +1,5 @@
+# Dormant Treg lookup routes
+
+Build backend handlers and fixed Treg clients for email finding, email verification, phone finding and company enrichment. Export registration for later use, but leave it unregistered in the running app. No tool/UI/worker wiring, Contacts/cache writes, live provider calls or deployment in this scope. Preserve existing people enrichment and its no-fallback setting.
+
+Completion requires verified official input/output contracts, strict validation/authentication/cost/logging behavior, meaningful independent tests, API checks and evaluator acceptance. Root owns shared guides/journal; coder owns assigned new implementation files and tester owns assigned tests/evidence. Current status: complete locally; independent tester PASS and evaluator ACCEPT. Actual default-app 404/tool absence, no-fallback behavior, final API check and production-package exclusion are verified. Simulated upstream only; no deployment or live provider call. Registration remains deliberately deferred.

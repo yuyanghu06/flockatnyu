@@ -6,6 +6,8 @@ The October25 planner48-hour operational review is documented in [its milestone 
 
 This Git checkout is the application root. `src/` and `index.html` supply the Vite/Three.js campus interface; `server/` contains the Hono assistant API and independent source workers. `package.json` provides local paired web/API startup, separate sessions, builds and focused checks. Runtime keys belong in ignored settings or service secrets.
 
+`contacts-mock.html` is an isolated local Contacts design draft served by Vite. Its copied UI, synthetic in-memory data and styles live in `src/contacts-mock.js` and `src/contacts-mock.css`. It replaces the cancelled calendar draft, makes no real API calls and is deliberately absent from production build inputs.
+
 `README.md` is the entry point. `AGENTS.md` defines scope and development rules; `.codex/` holds tracked agent configuration. `docs/` describes current contracts and source references. `milestones/` owns the rolling state, to-do list and immutable pass history. The orchestrator serializes shared journal updates and assigns exclusive writer ownership.
 
 `deployment/` contains independent Discord/Gmail event collector and Miro worker images. Railway production has exactly `discord-events` and `gmail-events` running continuously, plus paused `miro-sync`. All share Supabase. The Discord discovery cron is removed. Native Discord creates and Gmail ingestion have reached the pending queue; edit/delete lifecycle and live blacklist probes remain follow-up. No LLM service or Calendar/map write adapters are active. `supabase/` preserves immutable migrations and the five service-only tables; the rolling milestone records exact deployment evidence.
@@ -33,3 +35,7 @@ Railway CLI is installed and signed in on the current Mac; this checkout links t
 AGENTS.md now requires isolated service tools and prompt-defined multi-tool workflows; recording that rule does not establish a runtime refactor or deployment.
 
 October25 Go Greek retirement: live website removal is verified on web408f84bb; database cleanup046 is prepared/tested but awaits project-scoped MCP write authorization. Preserve the separate Kimmel event. See milestones/go-greek-removal-2026-10-25/info.md for exact status.
+
+The approved Contacts prototype has been promoted to the real API-backed website UI and deployed on web release `a3bc66fa-2911-449b-ba38-3cb6fb71db98`. The mock remains a local design reference; synthetic data is not shipped. See milestones/contacts-site-release/info.md and the rolling snapshot for actual verification and mutation limits.
+
+The separate opt-in Gmail sender-cache enrichment worker is documented in docs/gmail-enrichment.md. Its own runtime/package reads contacts_cache unchanged and inserts native raw Contacts with separate metadata-only completion, lease/version and budget checks. Implementation, migration and activation status are in the rolling milestone.

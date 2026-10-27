@@ -1,0 +1,9 @@
+# Daily provider live configuration accepted
+
+- Local timestamp / acting role / milestone: 2026-10-27T11:03:36.049050-04:00 / evaluator, serialized by orchestrator / gmail-enrichment-providers.
+- Requested scope: Only the daily Gmail enrichment runtime; Apollo first, AIArk second, two total providers. No CSV rerun or website release.
+- Starting repository state: New daily code/tests, isolated15-file package and successful targeted release/readback were complete.
+- Work performed / changed files / decisions: Independent read-only evaluator ACCEPT: deployment0888a347 isSUCCESS with no stagedchanges; Apollo first/AIArk second, maximum two providers total. Reviewed15-file package matches frozen sources and excludes website/Contacts/private data. Actual live-variable-backed probe readiness isready; existing0.10email/0.50cycle/1.00day limits,9AMNewYork/DSTcron,restartNEVER andprivate/data volume remain. No CSV rerun/paidverificationcall. Actual Apollo behavior awaits normalOctober28 9AMET run. Concurrent website release is separate and preserved.
+- Checks and evidence: Ignored providers/ deployment-package.json, independent-report.json, independent-final-affected.tap/pins and private-readiness-after-deploy.json. Live setting2, enabled/configuredtrue, ready probe, paidrequests0 and100000/500000/1000000micro ceilings. Newdeploymentruntimeproviderresults not claimed. Known unrelated website logging test stale POST-count fixture remains outside this release; affected checks pass.
+- Resulting state / acceptance: COMPLETE; independent tester PASS and evaluator launch/hosted ACCEPT, no unresolved material findings. Existing9AMold-policy32sendercycle is separate from newprovider behavior.
+- Remaining work and handoff: Normalnext9AMET cycle uses newproviderchain; no manualpaidtest or data reprocessing required. No commit/push requested or performed.

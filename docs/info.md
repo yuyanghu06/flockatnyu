@@ -134,3 +134,25 @@ chat-participant-normalization-verification-2026-10-23.md records label preserva
 planner-task-storage-verification-2026-10-23.md records catalogue/exact-read boundaries, synthetic/local PostgreSQL checks, hosted query-shape timing and actual release limits.
 
 [Provider routing](provider-routing.md) documents the private ordered URL/key list, fallback boundaries, one shared deadline and per-attempt audit identity. Actual release status remains in the rolling milestone.
+
+[contacts.md](contacts.md) describes the private six-field contact tools, version checks and model-testing boundary.
+
+[style-design.md](style-design.md) records the current active UI colors, exact surface/shadow recipes, typography, layout, motion and Contacts extension rules, based on source and browser inspection.
+
+The [Treg Contacts guide](treg-contacts.md) documents the direct authenticated import endpoint, private server configuration, conservative provider mappings, original-row retention, cost/idempotency behavior and simulated-versus-live verification.
+
+The Contacts and style guides now describe the approved always-editable recessed fields, inline profile header, red square deletion confirmation and raised avatar/paging surfaces. The website release is verified live; hosted mutations remain distinct from synthetic CRUD evidence.
+
+The [Gmail enrichment guide](gmail-enrichment.md) describes the separate sender-cache/Treg/Contacts worker, raw data preservation, ordered restart recovery, database leases/budgets, private logging and activation limits.
+
+[Treg contacts](treg-contacts.md) describes the separate people-search and array-email-enrichment agent tools alongside the existing raw-preserving import API. Lookups do not save Contacts or touch sender cache.
+
+The [dormant Treg lookup guide](treg-lookups.md) documents four prepared backend operations, their future route/input/result contracts, no-fallback cost/logging rules and intentional lack of running registration. It does not grant tool/UI/worker exposure or activation.
+
+The Contacts guide describes the split field/footer layout, Flock it! handoff, names-only prompt chip and bounded per-message contact selector. The selector provides a saved-record subject without changing identity, source or write permissions.
+
+update-agent-prompt.md describes independent presence routing, supported nearby departure context and same-task classification correction; production outcome and verification live in the milestone.
+
+[Gmail sending](gmail-send.md) describes the separate website send API/tool, fixed account/OAuth opt-in, durable content-free receipts, conservative retry behavior and verification boundaries.
+
+`treg-contacts.md` describes fixed Exa people search and native read projection. Existing dormant lookup routes remain separate; current release/test truth is in the milestone.

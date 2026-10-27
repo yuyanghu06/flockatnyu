@@ -1,0 +1,10 @@
+# Private Treg logging and raw leads independently verified
+
+- Local timestamp / acting role / milestone: 2026-10-26_17-38-39-405023 / tester / treg-call-logging.
+- Requested scope: log the entire Treg call, then preserve each raw lead and render only supported contact fields.
+- Starting state: accepted logging plan plus explicit user raw-storage correction; unrelated UI releases retained.
+- Work performed / changed files: Tester owns tests/treg-call-log.test.mjs, tests/treg-contacts.test.mjs and tests/fixtures/treg-contacts.mjs only. Real private temporary files and production HTTP/client/importer/store adapters run over simulated Treg/PostgREST. Exact raw rows, native extra/null/object fields, unknown schemas, supported-string projection, existing human edits, repeated/concurrent imports, request/response/import durability, errors, secret/header/URL scrubbing, permissions/symlinks, retention beyond1000entries, stage-specific failures, private attemptIDs, oversized/deep/incomplete streams verified.
+- Decisions: exact raw person object in contacts.raw_input, no normalized blank/provenance injection, no dropped unknown formats. Existing records/human edits remain insert-only. Logging separate from model audits; private request/response/import JSONL defaults .local/treg-calls or /data/treg-calls, seven-day retention, secret removal, bounded body/depth capture with honest metadata.
+- Checks and evidence: PASS: node --test --test-timeout=20000 tests/treg-call-log.test.mjs tests/treg-contacts.test.mjs tests/contacts-http.test.mjs tests/contacts-tools.test.mjs:22/22in1.53s. Long-text CPU hang reproduced then fixed and retested. Syntax/scoped whitespace pass. Ignored evidence/treg-contacts/logging/independent-tests.tap and verified-source-sha256.txt.
+- Resulting state / acceptance: implementation and independent tests/build/package complete locally; no live token/provider/model/database call, no schema change/deploy/restart/commit/push.
+- Remaining work/handoff: final independent evaluation and integration. Activation/live verification remains separate and requires private token/configured runtime.

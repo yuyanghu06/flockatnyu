@@ -203,3 +203,42 @@ Approved correction: when a member says they will be at a named event/venue on a
 ## 2026-10-25 — Bug: cancelled Calendar event replaced by a new event may not appear correctly on the map
 
 The user reported that cancelling one Calendar event and creating a replacement may leave the map activity, building link or attendance attached to the wrong event. In the HP incident, the original remained cancelled and its saved attendees were hidden; the active replacement had a separate map entry but no building link. The individual records were corrected manually. General cancellation/replacement reconciliation remains an **open bug**, not a completed fix. Track cases with changed event IDs, missing replacement location, existing attendance and ambiguous replacements; preserve distinct events and avoid reviving cancelled originals. Hosted bug report: `5ad778a5-c122-4f67-9ff4-347a8cb6f210`.
+
+## 2026-10-26 — Treg call logging
+
+- User requested logging the entire Treg people-search call, including request, provider response and import result. Use private server-only retention with credentials removed; this does not broaden unrelated source/model logging. The six displayed contact fields are our importer projection, and id/timestamps are database-managed; Treg provider fields can differ or be missing. Implementation/live status belongs in the milestone.
+
+- **Treg raw lead preservation correction:** user wants each complete raw provider lead saved to contacts.raw_input and only supported values rendered. Extra/native fields and unknown formats must survive; identity matching may normalize transiently but must not reshape the saved record. This supersedes the initial normalized-six-fields-plus-nested-provenance storage arrangement for new imports. Existing leads and human edits stay untouched.
+
+## 2026-10-26 — Separate cached-sender enrichment
+
+- User requested a new separate service: read the newly built Gmail sender cache, enrich cached people using Treg, save the full enrichment back into that same cache, then store raw enriched contacts in Contacts. This authorizes the separate enrichment pipeline, not direct collector-to-Contacts writes or Gmail body transmission. Actual intake049 is sender-only. Preserve original email/name keys and human edits, use saved responses on restart, and keep billing/logging bounded and private. Implementation/activation truth is in the milestone.
+
+## 2026-10-26 — Raw-only cache correction
+
+- User explicitly rejected saving the full Treg enrichment back into contacts_cache. That table is raw, unenriched input only. The separate service reads it and writes native enriched contacts only to Contacts, leaving cache inputs unchanged. This supersedes the earlier cache-backwrite sequence and cached-response resume design. Keep necessary processing metadata outside the cache; private full-call logging remains authorized.
+
+## 2026-10-26 — Daily enrichment schedule
+
+- User requested the separate Railway enrichment service at 9 AM ET and explicitly confirmed New York local time including daylight saving. Use a finite scheduled backlog drain rather than a permanent polling process. Railway UTC cron checks 13:00/14:00; only the New York 09 hour may construct the runtime. Other checks exit without database/provider work. Raw cache remains unchanged, only pending jobs process, and spending/failure limits remain visible. User authorized scheduling/deployment; readiness and actual private token status are in the milestone.
+
+## 2026-10-26 — Dormant lookup routes and no fallback
+
+- User requested backend routes for email finding, email verification, phone finding and company enrichment, without exposing them to tools or other callers yet. Keep exported handlers unregistered in the running app until a later integration request.
+- User explicitly confirmed keeping current person/email enrichment without provider fallback. Do not turn on a provider waterfall or silently retry other providers. Implementation and verification remain in the milestone.
+
+## 2026-10-27 — Daily Treg provider update scope
+
+User superseded the earlier no-fallback preference only for the daily Gmail enrichment service: Apollo first if available, two providers total with AIArk second. Keep9AMNewYork/DSTschedule and existingbudget/cache/nativeContacts boundaries. User explicitly cancelled the proposedCSVrerun and narrowed this change to the daily runtime; do not change/release websiteTregtools or runCSVagain. Actualimplementation/release truth belongs in the milestone.
+
+## 2026-10-27 — Daily Tomba first
+
+After the provider comparison, user selected Tomba as default and explicitly clarified dailyserviceONLY. Use Tomba first with Apollo fallback, maximumtwo providers total, preserving existing9AMNewYork/DSTschedule, spending and raw-data boundaries. This supersedes today's earlier dailyApollo→AIArkorder only. No website/tool changes or CSV/benchmark rerun are authorized by this preference. Actualrelease truth is in the milestone.
+
+## 2026-10-27 — Enrichment batches capped at50
+
+User requested a hardmaximum50cacheemailsperbatch to avoidoverwhelming enrichment. Keepprocessingoneemailatatime andbriefpausesbetweenbatches; morebatchesmaydraininthenormaldaily run. PreserveTomba→Apollo/max2 and existingmoney/schedule/data boundaries. Thisdoesnotrequestlivecachetestdata orrerunCSV. Actualimplementation/release state is in the milestone.
+
+## 2026-10-27 — Treg discovery saves people by default
+
+User wants company-people discovery through search_treg_people and richer profiles through enrich_treg_people, then successful results saved in Contacts by default using separate database tools. Clarified people at companies, not company enrichment. Explicit no-save requests still take precedence; preserve complete native raw objects and existing human edits. CRUD tools already exist. Implementation and release truth belongs in the milestone.

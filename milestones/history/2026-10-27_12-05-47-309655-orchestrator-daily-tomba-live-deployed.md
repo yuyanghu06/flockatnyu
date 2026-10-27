@@ -1,0 +1,10 @@
+# Daily Tomba-first release deployed
+
+- Local timestamp / acting role / milestone: 2026-10-27T12:05:47.309655-04:00 / orchestrator / daily-tomba-default.
+- Requested scope: DailyserviceONLY; Tomba first and Apollofallback,maximumtwo. No CSV/benchmark/manualenrichment,website/tool/schema changes orsource-data reset.
+- Starting repository state: Independent28/28affectedtests andlaunchACCEPT; final15-filepackage onlydaily/treg.js hash18fcchanged from0888release.
+- Work performed / changed files: Uploadedonlyreviewed15-fileGmailcontext toservice35efa7d3. Deployment e38af83c-b440-4f82-a65d-d3bd66ade8d1 isSUCCESS. No environmentvariablemutationneeded: existingGMAIL_ENRICHMENT_MAX_PROVIDERS remains2. Rootediteddailyguide/envcomment/trackingonly; codechangeownedcoderonlytreg.js.
+- Verification / preservation: Actual Railwaymetadata confirms latestSUCCESS/no stagedchanges,cron0 13,14 * * *,restartNEVER,sameprivate/data volumee3418ec6-724d-4d45-b446-66569441134c. ActualrenderedprivateGmailvariables were usedinmemory with frozennewruntime andnetworkallowlist permittingonlyoneSupabasereadinessprobe:ready/enabled/configured,primaryTomba/providerorderTomba+Apollo/max2,paidrequests0. Existingperemail/cycle/day100000/500000/1000000micro ceilings unchanged. Safeproof underignored tomba-default/private-live-readiness.json. No schema/database/businesswrites orjobreset; previous16Contacts/32cache are not reprocessed.
+- Decisions: Complete native Tombapersondata object remains unchanged andreadable through existingflatreaders; fullouterresponseprivatelogged. Apollofallbackretainsnativewrapper. Source,timeout/lease,schedule/store/worker/APIboundaries unchanged. Onlydailyruntime wasreleased; concurrentwebsitework preserved.
+- Resulting state / acceptance: Liveconfiguration/readiness verified; finalindependenthostedacceptancepending. Actualnewdailyproviderexecution isnotclaimed; nextnormal9AMNewYorkcandidateOctober28usesnewcode.
+- Remaining work and handoff: Recordhostedacceptance,cleanup task-onlytemporarycontextandreportcompletion. Do not manuallytriggerproviderlookups or rerunCSV/benchmark.

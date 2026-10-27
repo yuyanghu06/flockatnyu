@@ -1,0 +1,9 @@
+# Bounded CSV continuation independently verified
+
+- Local timestamp / acting role / milestone: 2026-10-26T22:48:04.608002-04:00 / independent tester / treg-csv-email.
+- Requested scope: Verify one deliberate retry of30lost responses plus836untouched inputs under the original$10authorization.
+- Starting repository state:1495confirmed unique ready results,4950micro client-observed cost; original30uncertain calls retain3Mmicro reservation. A read-only actual balance9,994,555micro reconciles to5445micro total debit, including495micro from those30.
+- Work performed / changed files: Tester inspected copied resume harness and seed; exclusively wrote ignored independent-resume-* evidence, no external calls or application edits. Seed exactly1495prior confirmed results,10match/1485miss, no extras or duplicates; next866inputs exactly30deliberate retry+836untouched. Original guard/results preserved.
+- Checks and evidence: Actual copied runner executed with mocked imports/fetch:4950known+3Mretained reserve; max-cost scenario stops after60new emails at6,004,950known+3,000,000held=9,004,950<=10M. Old3Mfloor is never released, concurrency<=3, durable intent before dispatch and replay guard pass. Final source SHA256f350ccd2e785ca4d9dc28f9ec2db5d2064ab005ab4d6d3d5877c9ff62a7c3d77. independent-resume-seed.json and independent-resume-budget.json retain commands/outcomes.
+- Decisions / acceptance: Tester PASS; no launch blocker. This is a separately announced controlled recovery attempt, not an automatic/free retry. Final spending must include original495micro not visible in client results.
+- Remaining work and handoff: Obtain evaluator launch verdict, execute only this one continuation and independently reconcile cumulative results/spending. No Contact/cache/search/fallback/schedule/deployment changes.

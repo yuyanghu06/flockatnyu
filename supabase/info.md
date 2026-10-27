@@ -1,5 +1,14 @@
 # Supabase schema
 
+Native Contacts upgrade051 preserves provider JSON and raw sender cache, stores the original enrichment address separately, and unifies private search/duplicate/display field projection. Apply after047–050; existing email recovery requires explicit authorization.
+
+Migration047 adds a private `contacts` CRM table with generated UUID `id`,
+timezone-aware `created_at`/`updated_at` and one flexible `raw_input` JSONB object.
+The database preserves creation time and advances update time automatically.
+Only trusted service-role/database operations can read or change contacts; no
+browser access, imports, contact tools or map-identity links are added. Hosted
+application is verified as `20261026162857_contacts`; see the [milestone snapshot](../milestones/milestone.md).
+
 This folder contains immutable applied SQL migrations and migration guidance. The historical018–020 schema retained these seven service-only public tables; later map/event and Miro overrides below supersede this list:
 
 - `discord_view_policies`: Discord policy and channel/thread metadata catalogue.
@@ -50,3 +59,11 @@ Migration035 stages Discord metadata refreshes separately from a proven publishe
 ## Go Greek retirement (046)
 
 October25 owner-requested forward cleanup046 checks the exact popup identity under the existing map lock, removes exclusively linked activities/attendance and the popup link from shared events, then removes the catalogue row. Other events, people, catalogues, source originals and permissions remain intact. It is replay-safe, changes no schema/grants and does not modify historical037. Hosted application remains a separate operation recorded in milestones/milestone.md.
+
+The incoming-sender staging schema is local migration049 contacts_cache: exactly UUID, creation timestamp and raw JSON object. It is separate from the normal Contacts CRM and is applied as hosted20261026215743_contacts_cache; current receipts live in the milestone.
+
+Migration050 adds only the separate Contacts-cache enrichment service: private operational job/scope/lease/budget metadata and fixed RPCs that only read contacts_cache, then atomically insert raw Contacts and mark processing complete. Enrichment payloads never enter cache or tracking tables. It follows intake049; its local file/testing does not establish hosted application. See docs/gmail-enrichment.md and the rolling milestone.
+
+Revised raw-only050 was applied as hosted20261026225556_gmail_contact_enrichment after independent local review. Hosted cache hash stayed exact for all28 original rows; metadata tables and Contacts remained empty after application. Service functions read cache only and atomically write raw Contacts plus typed completion metadata. Actual provider work is scheduled separately.
+
+Migration053 adds only private Gmail send metadata and fixed RPCs; it does not modify Contacts, sender cache or original source records. Exact hosted version and preserved-row hashes belong in the milestone.

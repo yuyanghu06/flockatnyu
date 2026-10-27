@@ -1,0 +1,10 @@
+# Private Treg logging and raw lead storage implemented
+
+- Local timestamp / acting role / milestone: 2026-10-26_17-38-39-404126 / coder / treg-call-logging.
+- Requested scope: log the entire Treg call, then preserve each raw lead and render only supported contact fields.
+- Starting state: accepted logging plan plus explicit user raw-storage correction; unrelated UI releases retained.
+- Work performed / changed files: Added server/treg-call-log.js and lifecycle hooks to treg-people.js; narrowed API log_unavailable status support; raw Contacts import now saves structuredClone(person) exact, with identity-only normalization and raw-hash fallback for unknown schemas. Private logs capture effective request, bounded entire response/error and import result/private per-row attempts. Credentials are removed. File permissions, nofollow checks, seven-day progressing cleanup, flush boundaries, partial/deep/redaction markers and honest post-write failures implemented. .env.example and .gitignore updated. No application changes outside owned scope.
+- Decisions: exact raw person object in contacts.raw_input, no normalized blank/provenance injection, no dropped unknown formats. Existing records/human edits remain insert-only. Logging separate from model audits; private request/response/import JSONL defaults .local/treg-calls or /data/treg-calls, seven-day retention, secret removal, bounded body/depth capture with honest metadata.
+- Checks and evidence: Coder frozen; independent tester evidence follows. Initial plaintext credential/cleanup starvation/incomplete metadata findings and long-text redaction CPU hang fixed, without changing model audit/source scope/timeout or weakening limits.
+- Resulting state / acceptance: implementation and independent tests/build/package complete locally; no live token/provider/model/database call, no schema change/deploy/restart/commit/push.
+- Remaining work/handoff: final independent evaluation and integration. Activation/live verification remains separate and requires private token/configured runtime.

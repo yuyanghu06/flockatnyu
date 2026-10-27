@@ -335,3 +335,7 @@ October 25 throughput fix (live release truth stays in the rolling milestone): `
 `read_pending_task` can page execution history or the complete logical task using exact versions and Unicode-safe responses. Oversized full reads direct the caller to pages. Optional history pages neither grant nor revoke compact action proof, and their bodies do not recursively enter saved history. After successful checkpoints, inspected unresolved older task versions can wait five minutes before being selected again. Current inputs and changed versions bypass this process-local scheduling hint; it stores no source facts.
 
 `observation-handoff.js` carries bounded, already-returned current-cycle read results into follow-up when the initial transcript resets. It makes no provider call and creates no permission receipt. The model sees provenance, coverage and later read failures. Actual read and write-time permission and revocation checks remain. Prompt workflows describe reuse, necessary refreshes and paged history explicitly.
+
+Standalone own-location reports use Member Plans without requiring a club event. The prompt distinguishes existing-event participation, corrects wrongly classified saved tasks before exact-version actions, and uses supported same-speaker departure context.
+
+Initial work uses only a queued original's own offered/revised intent; a newer acknowledgement does not reissue an older location found in context. Older saved work follows its own task/version checks in follow-up.

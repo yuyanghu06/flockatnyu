@@ -1,0 +1,7 @@
+# Final presence verification remains bounded
+
+- Timestamp / role / scope: 2026-10-27T12:20:01.653544-04:00 / orchestrator / finish requested missed-presence correction.
+- Current source: Frozen prompt802806a7357ba2f821497b590486928506b071d0c5d80ddb090d71fe61b4057f, unchanged052 migration. Root75focusedchecks pass; independent tester broader97checks pass, including full1–51schema/052preservation and simulated default/identity/source-outage/human-preservation cases.
+- Actual-model result: Final same-speaker acknowledgement case correctly avoids reissuing presence, corrects oldtask to source_review, reads new version, uses exact originating original/person/time, creates correct MemberPlans/map and syncs separately. Its chosen9requesttestcap stopped before resolve/finish; this is incomplete completion evidence, not acceptance or a production limit change.
+- Bounded follow-up: Initial cumulative48inference cap retained in history;44requests spent. Root explicitly extends cumulative ceiling to60, preserving ledger and all failed runs, solely for one final saved-task rerun with12requestcap and final exact-message run with4cap. No more inference beyond60, no runtime budget/timeout changes, no credentials or live business-service evaluation writes.
+- Release:62-file source-only package remains prompt-only relative to deployed041b280; shared unrelated dirtydiagnostics excluded. No migration application/deployment yet. Await exact-task resolved and final-source original results plus independent evaluation.
