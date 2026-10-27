@@ -1,8 +1,10 @@
+HTTP handlers live under [src/api](../src/api/info.md), with URL-shaped folders and one method per endpoint file. `app.js` composes authentication/services; provider clients and business rules stay here.
+
 # Server source
 
 `contact-fields.js` supplies the six supported saved-contact strings from explicit manual keys or the observed native Treg person wrapper, with separate lookup-email fallback. APIs/model projections share it; raw JSON stays private and unchanged.
 
-`contacts-api.js` exposes authenticated browser search/read/create/update/delete
+`../src/api/contacts/register.js` exposes authenticated browser search/read/create/update/delete
 at `/api/contacts` and `/api/contacts/:id`. It reuses the same saved contacts
 store as chat and returns only identity/timestamps plus six string fields. Each
 manual edit or deletion reads the exact saved contact, preserves legacy JSON
@@ -230,7 +232,7 @@ Contextual attendance guidance in chat-behavior.js and assistant-context.js make
 
 ## Direct Treg Contacts import
 
-`treg-people.js` contains the bounded Treg-only search client and explicitly requested direct-import orchestration. `treg-contacts-api.js` registers authenticated `POST /api/contacts/import/treg`, separately from chat tools and saved Contacts reads. `contacts.js` has insert-only `importContact` with deterministic-ID conflict handling and transient exact-email preservation; it saves the actual raw person object without adding display fields or provenance keys. UI/API projection stays limited to supported strings.
+`treg-people.js` contains the bounded Treg-only search client and explicitly requested direct-import orchestration. `../src/api/contacts/import/treg/post.js` registers authenticated `POST /api/contacts/import/treg`, separately from chat tools and saved Contacts reads. `contacts.js` has insert-only `importContact` with deterministic-ID conflict handling and transient exact-email preservation; it saves the actual raw person object without adding display fields or provenance keys. UI/API projection stays limited to supported strings.
 
 `treg-call-log.js` stores private, flushed request/response/import JSONL records, removes credentials and known secrets, maintains seven-day retention and refuses unsafe file paths. Default production storage uses the existing private `/data` volume. No public or model retrieval is exposed. Runtime static imports include these modules in web packaging; general model audits, prompts and other service boundaries are unchanged. See `docs/treg-contacts.md` and the rolling milestone for exact contract/evidence.
 
@@ -242,11 +244,11 @@ Treg lookup tools are registered through runtime-app, app, chat-runner and assis
 
 ## Dormant Treg operations
 
-`treg-lookups.js` defines fixed clients for email finding, email verification, phone finding and company enrichment. `treg-lookups-api.js` exports optional authenticated route registration. Neither module is imported or registered by the running app/runtime, and production package discovery excludes them. They have no tool, UI, worker, Contacts/cache or Jev connection. Each operation uses the existing private configuration/logging with a single provider attempt and no automatic fallback, retry or polling. See [the contracts and limits](../docs/treg-lookups.md); current verification lives in the milestone.
+`treg-lookups.js` defines fixed clients for email finding, email verification, phone finding and company enrichment. `../src/api/treg/register.js` exports optional authenticated route registration. Neither module is imported or registered by the running app/runtime, and production package discovery excludes them. They have no tool, UI, worker, Contacts/cache or Jev connection. Each operation uses the existing private configuration/logging with a single provider attempt and no automatic fallback, retry or polling. See [the contracts and limits](../docs/treg-lookups.md); current verification lives in the milestone.
 
 `chat-contact-context.js` validates the optional saved-contact selector on user messages. App, runner and steering preserve bounded ID/name metadata, while model-only message copies label it as untrusted subject data. Planning and answering can select the normal exact `read_contact` tool; no source lookup is hidden in normalization. Original user content remains the current instruction used by write checks. The selector is not a profile, verified actor or map identity.
 
-`gmail-send-store.js`, `gmail-send-service.js` and `gmail-send-api.js` provide private durable operation metadata and authenticated website-only plaintext sending/status APIs. They never read Contacts or another source; the model separately chooses those tools. Runtime keeps sending out of Discord/worker catalogues. See docs/gmail-send.md.
+`gmail-send-store.js`, `gmail-send-service.js` and `../src/api/gmail/send/post.js` provide private durable operation metadata and authenticated website-only plaintext sending/status APIs. They never read Contacts or another source; the model separately chooses those tools. Runtime keeps sending out of Discord/worker catalogues. See docs/gmail-send.md.
 
 `treg-result-cache.js` is the short-lived
 actor-bound bridge between separate chat Treg lookups and Contacts imports. It

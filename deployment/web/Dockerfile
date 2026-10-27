@@ -6,8 +6,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY server ./server
 COPY tools ./tools
+COPY src/api ./src/api
 COPY dist ./dist
-RUN find server tools -name '*.js' -print0 | xargs -0 -r -n 1 node --check
+RUN find server tools src/api -name '*.js' -print0 | xargs -0 -r -n 1 node --check
 COPY entrypoint.sh /usr/local/bin/tech-nyu-web-entrypoint
 RUN chmod 0755 /usr/local/bin/tech-nyu-web-entrypoint
 USER root

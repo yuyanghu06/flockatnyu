@@ -9,7 +9,7 @@ These four backend operations are prepared for later use. Their registration fun
 | Find a phone number | `/api/treg/people/phone/find` | `treg.people.phone.find` |
 | Enrich a company | `/api/treg/companies/enrich` | `treg.companies.enrich` |
 
-`server/treg-lookups.js` supplies the fixed contracts, input validation and operation client. `server/treg-lookups-api.js` exports the optional registration function. Tests may register it on an isolated application; production callers must not import it until a later integration request.
+`server/treg-lookups.js` supplies the fixed contracts, input validation and operation client. `src/api/treg/register.js` exports the optional registration function. Tests may register it on an isolated application; production callers must not import it until a later integration request.
 
 ## Input
 

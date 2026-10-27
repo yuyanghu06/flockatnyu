@@ -7,7 +7,7 @@ import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { fuzzystrmatch } from '@electric-sql/pglite/contrib/fuzzystrmatch';
 import { Hono } from 'hono';
 import { createContactsStore } from '../server/contacts.js';
-import { registerContactsApi } from '../server/contacts-api.js';
+import { registerContactsApi } from '../src/api/contacts/register.js';
 import { createContactsTools } from '../tools/contacts/index.js';
 import { assistantAnswerPrompt } from '../server/assistant-context.js';
 import { createTregEnrichmentClient } from '../server/treg-enrich.js';

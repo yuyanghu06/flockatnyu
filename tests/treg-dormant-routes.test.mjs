@@ -5,7 +5,7 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {Hono} from 'hono';
 import {createTregLookupClient,TREG_LOOKUP_CONTRACTS,validTregLookupInput} from '../server/treg-lookups.js';
-import {registerTregLookupApi} from '../server/treg-lookups-api.js';
+import {registerTregLookupApi} from '../src/api/treg/register.js';
 import {createTregCallLogger} from '../server/treg-call-log.js';
 import {createTregPeopleClient} from '../server/treg-people.js';
 import {createTregEnrichmentClient} from '../server/treg-enrich.js';

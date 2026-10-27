@@ -15,7 +15,7 @@ capabilities require `SITE_GOOGLE_ENABLED=true` and/or
 source allowlists and the configured Discord guild still restrict reads.
 
 Prepare an isolated upload with `node scripts/prepare-runtime-deploy.mjs web`
-after the frontend build. The generated context contains reachable server/tool
+after the frontend build. The generated context contains reachable server/tool and server-only `src/api`
 modules, pinned runtime dependencies and frontend build files, never local
 environment, OAuth, Git, journal or evidence files. Railway variables and any
 separately provisioned persistent Miro authentication remain operational setup.
@@ -26,3 +26,8 @@ the sole persistent Miro OAuth refresh file on its writable volume; worker
 uploads never contain that file and workers receive short-lived access tokens.
 
 The explicit Railway start command invokes the image bootstrap. It validates /data and the exact auth file, fixes only their ownership/private modes, then execs gosu as node. Provision credentials separately after first launch and restart; verify actual UID1000 and modes on hosted runtime.
+
+The API directory now mirrors URL segments, with one method handler per file.
+`src/api/register.js` composes active handlers; named path parameters use complete
+folders such as `[id]`. Only reachable endpoints/helpers enter the image. The
+four optional Treg lookup handlers and their composition stay excluded.

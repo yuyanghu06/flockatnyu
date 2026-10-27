@@ -1,0 +1,45 @@
+/** Compose existing endpoint registrations only; this module defines no route itself. */
+import { registerApiContactsGet } from './contacts/get.js';
+import { registerApiContactsIdGet } from './contacts/[id]/get.js';
+import { registerApiContactsPost } from './contacts/post.js';
+import { registerApiContactsIdPatch } from './contacts/[id]/patch.js';
+import { registerApiContactsIdDelete } from './contacts/[id]/delete.js';
+import { registerApiGmailSendStatusGet } from './gmail/send-status/get.js';
+import { registerApiGmailSendRequestIdGet } from './gmail/send/[requestId]/get.js';
+import { registerApiGmailSendPost } from './gmail/send/post.js';
+import { registerApiContactsImportTregPost } from './contacts/import/treg/post.js';
+import { registerHealthzGet } from './healthz/get.js';
+import { registerApiStatusGet } from './status/get.js';
+import { registerApiPlannerRunsPost } from './planner/runs/post.js';
+import { registerApiPlannerRunsRunIdGet } from './planner/runs/[runId]/get.js';
+import { registerApiMapPeoplePersonIdAvatarGet } from './map/people/[personId]/avatar/get.js';
+import { registerApiMapPresenceGet } from './map/presence/get.js';
+import { registerApiToolsGet } from './tools/get.js';
+import { registerApiToolsToolPost } from './tools/[tool]/post.js';
+import { registerApiAdminDiscordGet } from './admin/discord/get.js';
+import { registerApiAdminDiscordChannelsPut } from './admin/discord/channels/put.js';
+import { registerApiChatRunIdSteerPost } from './chat/[runId]/steer/post.js';
+import { registerApiChatPost } from './chat/post.js';
+export function registerApiRoutes(dependencies) {
+  registerApiContactsGet(dependencies);
+  registerApiContactsIdGet(dependencies);
+  registerApiContactsPost(dependencies);
+  registerApiContactsIdPatch(dependencies);
+  registerApiContactsIdDelete(dependencies);
+  registerApiGmailSendStatusGet({ ...dependencies, service: dependencies.gmailSendService });
+  registerApiGmailSendRequestIdGet({ ...dependencies, service: dependencies.gmailSendService });
+  registerApiGmailSendPost({ ...dependencies, service: dependencies.gmailSendService });
+  registerApiContactsImportTregPost(dependencies);
+  registerHealthzGet(dependencies);
+  registerApiStatusGet(dependencies);
+  registerApiPlannerRunsPost(dependencies);
+  registerApiPlannerRunsRunIdGet(dependencies);
+  registerApiMapPeoplePersonIdAvatarGet(dependencies);
+  registerApiMapPresenceGet(dependencies);
+  registerApiToolsGet(dependencies);
+  registerApiToolsToolPost(dependencies);
+  registerApiAdminDiscordGet(dependencies);
+  registerApiAdminDiscordChannelsPut(dependencies);
+  registerApiChatRunIdSteerPost(dependencies);
+  registerApiChatPost(dependencies);
+}
