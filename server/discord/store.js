@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 // Migration017 derives these stable RPC rows from the policy JSONB catalogue;

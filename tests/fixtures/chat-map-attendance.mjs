@@ -4,8 +4,8 @@ import {createMapSourceAuthorizer,withChatMapSource,CHAT_MAP_SOURCE_ID} from '..
 import {createMapPresenceService} from '../../server/map/presence.js';
 import {createMapTools} from '../../tools/map/index.js';
 import {createChatMapTools} from '../../tools/map/chat.js';
-import {createChatRunner} from '../../server/chat-runner.js';
-import {readConfig} from '../../server/config.js';
+import {createChatRunner} from '../../server/chat/runner.js';
+import {readConfig} from '../../server/shared/config.js';
 
 export const ids={source:'10000000-0000-4000-8000-000000000001',event:'20000000-0000-4000-8000-000000000001',person:'30000000-0000-4000-8000-000000000001',other:'30000000-0000-4000-8000-000000000002'};
 export const now='2026-10-22T20:00:00.000Z',updated='2026-10-22T19:00:00.000Z',origin='https://club.example.test',calendarId='club@example.test',providerId='gogreek20261023';

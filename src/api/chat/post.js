@@ -19,7 +19,7 @@
  * retain safe codes. Stream/tool failures are not write success receipts. no-store,
  * nosniff; credentials and raw private logs stay server-only.
  */
-import { AttachmentError } from '../../../server/chat-attachments.js';
+import { AttachmentError } from '../../../server/chat/attachments.js';
 import { readConversation } from '../_shared/chat-input.js';
 import { ndjsonHeaders } from '../_shared/http.js';
 

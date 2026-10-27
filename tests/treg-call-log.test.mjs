@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,readdir,readFile,writeFile,mkdir,lstat,utimes,symlink,unlink,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {createTregCallLogger} from '../server/treg-call-log.js';
+import {createTregCallLogger} from '../server/treg/call-log.js';
 import {tregContactsFixture,tregQuery,tregPerson,tregRequestId} from './fixtures/treg-contacts.mjs';
 
 async function temporary(t) {

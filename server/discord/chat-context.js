@@ -1,6 +1,6 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import {loadDiscordChatImages} from './chat-images.js';
-import {validateDiscordRepliedMessage} from '../chat-discord-context.js';
+import {validateDiscordRepliedMessage} from "../chat/discord-context.js";
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const label = (value,max) => String(value || '').replace(/[\u0000-\u001f\u007f-\u009f]/g,' ').trim().slice(0,max);
 

@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import {isDiscordChannelExcluded} from './discovery.js';
 import {discordSnowflakeAt} from './live-client.js';
 import {DISCORD_SCOPES,discordChannelScope,explicitlyRequestedTeam} from './channel-scope.js';

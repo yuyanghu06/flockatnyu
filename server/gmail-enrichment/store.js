@@ -1,5 +1,5 @@
 import { plainObject } from '../automation/validation.js';
-import { SOURCE_TOOL_TIMEOUT_MS } from '../source-timeout.js';
+import { SOURCE_TOOL_TIMEOUT_MS } from "../shared/source-timeout.js";
 
 const functions = Object.freeze({ probe: 'gmail_enrichment_probe', claim: 'gmail_enrichment_claim', renew: 'gmail_enrichment_renew',
   complete: 'gmail_enrichment_complete', defer: 'gmail_enrichment_defer' });

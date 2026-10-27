@@ -17,7 +17,7 @@ safe usage metadata and explicit coverage or per-address outcomes.
 
 In chat, successful logged results also expose opaque `resultId` values. The
 complete native person records and private log append functions remain only in
-an actor-bound, request-local bridge (`server/treg-result-cache.js`), bounded to
+an actor-bound, request-local bridge (`server/treg/result-cache.js`), bounded to
 100 records, 200 KB per person and 2 MB total. These references allow the separate
 Contacts `import_treg_contacts` tool to save exact native JSON without exposing
 it to the model or paying for a second lookup. Misses and errors get no reference;

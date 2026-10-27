@@ -3,10 +3,10 @@ import {createHash,randomUUID} from 'node:crypto';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {serve} from '@hono/node-server';
 import {chromium} from 'playwright-core';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {createWebsite} from '../server/web.js';
-import {readConfig} from '../server/config.js';
-import {createSiteAuth,readSiteAuthConfig} from '../server/site-auth.js';
+import {readConfig} from '../server/shared/config.js';
+import {createSiteAuth,readSiteAuthConfig} from '../server/auth/site-auth.js';
 import {createMapAvatarService} from '../server/map/avatars.js';
 import {createMapPresenceService} from '../server/map/presence.js';
 

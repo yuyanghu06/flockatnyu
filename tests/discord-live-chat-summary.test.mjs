@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createLiveChatTools} from '../tools/discord/live-summary.js';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
 import {SUMMARY_FIELDS} from '../server/discord/summary-provider.js';
 const guildId='100',channelId='200',from='2026-10-01T04:00:00.000Z',to='2026-10-08T04:00:00.000Z';
 const principal={id:'local-development',liveDiscord:{mode:'local-operator',guildId}};

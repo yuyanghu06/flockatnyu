@@ -37,3 +37,23 @@ planner-followup.mjs supplies synthetic current/backlog tasks, external boundary
 Contacts fake PostgREST search delegates ranking/filtering to the actual048SQL in serialized PGlite snapshots, rather than copying ranking in JavaScript. Model fixtures expose both production Contacts/Attio adapters with synthetic persistence; corrected Attio record_text is required for honest valid provider responses.
 
 planner-presence.mjs provides isolated Discord originals, Calendar/map/task storage and production planner adapters for missed-presence regression verification. It does not connect to live business services.
+
+## Server cleanup import boundaries
+
+Current fixtures import grouped server modules directly: `runtime` for app/service
+composition, `chat` for the chat runner and context, `contacts` for saved people,
+`treg` for provider lookup/import clients, `audit` for private logging and safe
+diagnostics, and `auth`, `shared` and `knowledge` for their named responsibilities.
+Synthetic source constructors resolve imports against those current files. The
+facade exports remain the supported test interface; helper extraction does not
+justify copied production behavior inside a fixture. Keep source pins in optional
+model harnesses complete when a facade's implementation moves into helper files.
+
+`chat-source-files.mjs` lists the current JavaScript files behind the grouped chat
+facade. Optional model harnesses include that inventory and the helper itself in
+their existing source hashes/copies, alongside explicit audit/Treg dependencies.
+It reads filenames only and does not load clients or run model/business calls.
+
+`treg-dormant.mjs` supplies shared synthetic client/logger/auth fixtures for the
+split dormant Treg suites. `chat-source-files.mjs` inventories extracted chat
+implementations for opt-in model source hashes/copies and prompt verification.

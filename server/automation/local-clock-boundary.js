@@ -1,4 +1,4 @@
-import {canonicalTimeZone} from '../time-zone.js';
+import {canonicalTimeZone} from "../shared/time-zone.js";
 import {canonicalJson,plainObject} from './validation.js';
 
 const invalid=()=>{throw Error('invalid_request');};

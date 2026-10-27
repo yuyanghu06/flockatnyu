@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { canonicalJson, plainObject, validUuid } from '../automation/validation.js';
-import { createTregCallLogger } from '../treg-call-log.js';
-import { SOURCE_TOOL_TIMEOUT_MS } from '../source-timeout.js';
+import { createTregCallLogger } from "../treg/call-log.js";
+import { SOURCE_TOOL_TIMEOUT_MS } from "../shared/source-timeout.js";
 
 const providers = Object.freeze(['tomba.people.enrich', 'apollo.people.enrich']);
 const responseLimit = 512_000;

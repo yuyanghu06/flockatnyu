@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createChatSteeringRegistry} from '../server/chat-steering.js';
-import {createChatRunner} from '../server/chat-runner.js';
+import {createChatSteeringRegistry} from '../server/chat/steering.js';
+import {createChatRunner} from '../server/chat/runner.js';
 import {createAttioTools} from '../tools/attio/index.js';
 import {createFixture,deferred,until,principal,origin} from './fixtures/chat-steering.mjs';
 const call=(id,action)=>({id,name:'fixture_action',arguments:{action}});

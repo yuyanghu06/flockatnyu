@@ -13,7 +13,7 @@ import {createLiveDiscordClient} from '../server/discord/live-client.js';
 import {readLiveDiscordConfig} from '../server/discord/live-config.js';
 import {createMiroStore} from '../server/miro/store.js';
 import {readMiroMcpConfig} from '../server/miro/mcp-config.js';
-import {createMemoryStore} from '../server/memory.js';
+import {createMemoryStore} from '../server/knowledge/memory.js';
 
 const at='2026-10-20T16:00:00.000Z';
 const sid='22222222-2222-4222-8222-222222222222';

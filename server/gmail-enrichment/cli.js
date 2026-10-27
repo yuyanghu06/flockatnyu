@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { readGmailEnrichmentConfig } from './config.js';
 import { createGmailEnrichmentWorker } from './worker.js';
 import { createDailyTregEnrichmentClient } from './treg.js';
-import { createTregCallLogger } from '../treg-call-log.js';
+import { createTregCallLogger } from "../treg/call-log.js";
 import { createGmailEnrichmentCacheStore } from './store.js';
 import { isGmailEnrichmentScheduleTime, gmailEnrichmentDrainLimit, drainGmailEnrichment } from './schedule.js';
 

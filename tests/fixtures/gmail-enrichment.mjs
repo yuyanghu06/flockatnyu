@@ -3,8 +3,8 @@ import {randomUUID,createHash} from 'node:crypto';
 import {mkdtemp,readdir,readFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {createTregEnrichmentClient} from '../../server/treg-enrich.js';
-import {createTregCallLogger} from '../../server/treg-call-log.js';
+import {createTregEnrichmentClient} from '../../server/treg/enrich.js';
+import {createTregCallLogger} from '../../server/treg/call-log.js';
 import {createGmailEnrichmentWorker} from '../../server/gmail-enrichment/worker.js';
 
 export const gmailSourceId='62000000-0000-4000-8000-000000000001';

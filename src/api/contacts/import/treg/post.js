@@ -17,7 +17,7 @@
  * success is invented on exception; private no-store.
  */
 import { plainObject, validUuid } from '../../../../../server/automation/validation.js';
-import { validTregPeopleQuery } from '../../../../../server/treg-people.js';
+import { validTregPeopleQuery } from '../../../../../server/treg/people.js';
 const statuses = {
   forbidden: 403,
   invalid_request: 400,

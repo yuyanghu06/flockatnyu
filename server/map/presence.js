@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 // Service-only projections from normalized events; no legacy JSON fallback.
 import {createMapEventStore, validateSnapshot, validEvent, validParticipation, eventWindow, authorizeProvenance, boundedWork, text, uuid, safeAvatar} from './events.js';
 export const MAP_DEBUG_SOURCE_ID = 'a7969a7a-53cc-4c75-9736-95dd386f1c5e';

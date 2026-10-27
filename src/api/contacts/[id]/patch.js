@@ -15,7 +15,7 @@
  * 403 forbidden, 404 missing, 409 stale version, 503 unavailable. Only confirmed writes
  * report success; uncertainty after dispatch is write_outcome_unknown. Private no-store.
  */
-import { validContactFields } from '../../../../server/contacts.js';
+import { validContactFields } from '../../../../server/contacts/store.js';
 import { validUuid } from '../../../../server/automation/validation.js';
 import {
   createContactsHttpContext,

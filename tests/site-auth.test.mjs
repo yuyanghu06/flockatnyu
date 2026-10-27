@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, rm, symlink, writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {createSiteAuth, readSiteAuthConfig} from '../server/site-auth.js';
+import {createSiteAuth, readSiteAuthConfig} from '../server/auth/site-auth.js';
 import {createWebsite} from '../server/web.js';
 
 const env = {PUBLIC_ORIGIN:'https://club.example', SITE_ACCESS_PASSWORD:'synthetic-password-for-tests-only', SITE_SESSION_SECRET:'synthetic-signing-secret-for-tests-only', SITE_GOOGLE_ENABLED:'true', SITE_DISCORD_ENABLED:'true'};

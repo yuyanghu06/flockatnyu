@@ -1,28 +1,32 @@
 /**
  * POST /api/treg/companies/enrich
  *
- * Why: Look up company details separately from people enrichment when a future caller
- * explicitly enables it.
- * Inputs: JSON exactly {requestId:UUID, input}; no query; <=8192 bytes and <=10 s
- * bounded read. At least one domain, website, name, linkedin_url, linkedin_handle or
- * actual email is required. The existing shared validator rejects unknown, blank,
- * oversized or malformed identifiers.
- * Access: DORMANT: not mounted or reachable in production (404 there). Isolated
- * registration requires authenticated actor ID<=512/allowedSourceIds and exact same
- * Origin; cross-site rejected.
- * Service and effects: When deliberately mounted, tregLookupClient.lookup uses the
- * configured fixed company provider through Treg with requestId, principal, request
- * signal and required private logging. No fallback, polling, Contacts/cache write or
- * other-service operation is added by this route.
- * Response and failure: 200 ready/hasResult/output/usage
- * (name/domain/website/description/industry/employees/location/linkedin_url/founded;
- * employees text/null); 202 pending.400 invalid, 403 forbidden, 402 budget, 408 aborted,
- * 429 rate limit, 502 invalid/oversized, 503 config/log/unavailable. Null miss and
- * pending are honest outcomes; native provider bodies stay private. Private no-store,
- * nosniff.
+ * Why: Reserve a company-detail lookup for a future explicitly enabled caller,
+ * separately from people discovery and enrichment. This handler is DORMANT:
+ * the running app never registers it, so the production path returns 404.
+ * Inputs: JSON exactly {requestId: UUID, input}, no query, <=8192 bytes and a
+ * <=10-second bounded body read. Every supplied field is validated. Select one
+ * identifier in order: domain, website hostname, actual email, company name.
+ * A selected name needs at least three characters. LinkedIn-only input fails;
+ * a valid extra LinkedIn field is unused alongside a supported selector.
+ * Access: Optional registration requires an authenticated actor ID <=512 chars,
+ * an allowedSourceIds array and exact same Origin. Cross-site requests fail.
+ * Services/effects: tregLookupClient.lookup makes one fixed native Brand.dev GET
+ * through Treg: retrieve for domain/website, retrieve-by-email or retrieve-by-name.
+ * Website hostnames are extracted locally; the app never fetches that website.
+ * The client forwards the request signal, private configuration, cost ceiling and
+ * actor/operation/input/request-ID idempotency. Required private logs retain the
+ * bounded native response, with credentials removed. No fallback, polling,
+ * Contacts/cache write or other-service operation occurs.
+ * Response/status: 200 ready/hasResult/output/usage; 202 pending; 400 invalid,
+ * 403 forbidden, 402 budget, 408 aborted, 429 rate limit, 502 invalid/oversized,
+ * 503 config/log/unavailable. Output allows supported name/domain/website,
+ * description/industry/employees/location/linkedin_url/founded fields only;
+ * employees remain text/null and provider-native bodies stay private. Misses and
+ * pending are honest outcomes. Every response is private no-store and nosniff.
  */
 import { plainObject, validUuid } from '../../../../../server/automation/validation.js';
-import { validTregLookupInput } from '../../../../../server/treg-lookups.js';
+import { validTregLookupInput } from '../../../../../server/treg/lookups.js';
 import { statuses, projectResult } from '../../../_shared/treg-lookups.js';
 export function registerApiTregCompaniesEnrichPost({
   app,

@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import { boundedGoogleBody } from './client.js';
 
 // Service-only metadata. Raw mail is written only by the shared input updater.

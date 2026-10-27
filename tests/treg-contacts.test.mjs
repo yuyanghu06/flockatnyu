@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {tregContactsFixture,tregPerson,tregQuery,tregRequestId,tregStamp} from './fixtures/treg-contacts.mjs';
-import {readTregPeopleConfig} from '../server/treg-people.js';
+import {readTregPeopleConfig} from '../server/treg/people.js';
 
 const bodyOf=async response=>({code:response.status,body:await response.json()});
 const requestId2='51000000-0000-4000-8000-000000000002';

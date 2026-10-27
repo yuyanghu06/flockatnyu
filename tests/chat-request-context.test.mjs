@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateChatRequestContext,chatRequestContextPrompt} from '../server/chat-request-context.js';
-import {assistantAnswerPrompt,assistantPlanningPrompt} from '../server/assistant-context.js';
+import {validateChatRequestContext,chatRequestContextPrompt} from '../server/chat/request-context.js';
+import {assistantAnswerPrompt,assistantPlanningPrompt} from '../server/chat/context.js';
 const context = () => ({transport:'discord',actor:{provider:'discord',userId:'123',guildId:'456',username:'person',displayName:'Person'},channelId:'789',threadId:null,requestId:'101',sourceProfileId:'eboard:abc_123-45'});
 test('context copies only the exact server contract and freezes actor labels',()=>{
  const input=context(),value=validateChatRequestContext(input);

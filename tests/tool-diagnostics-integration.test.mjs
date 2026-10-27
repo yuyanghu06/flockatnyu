@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
 import {createAutomationHandler} from '../server/automation/handler.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 const definition={name:'read_discord_messages',description:'Fixture',parameters:{type:'object',properties:{query:{type:'string',minLength:3}},additionalProperties:false}};

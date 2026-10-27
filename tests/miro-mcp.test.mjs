@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {createMiroMcpTools,miroSvgItems} from '../tools/miro/mcp.js';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
 import {validateArguments} from '../server/automation/validation.js';
 const sourceId='10000000-0000-4000-8000-000000000001';
 const principal={id:'fixture',allowedSourceIds:[sourceId]};

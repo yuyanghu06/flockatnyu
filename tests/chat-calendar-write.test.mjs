@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createCalendarClient} from '../server/google/calendar-client.js';
 import {readCalendarConfig,CALENDAR_REQUIRED_SCOPES} from '../server/google/calendar-config.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 
 const target='synthetic-club@group.calendar.google.com';
 const principal={id:'synthetic_chat_user',googleAccess:true,allowedSourceIds:[]};

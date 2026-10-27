@@ -44,9 +44,10 @@ test('web and worker upload contexts contain exact reachable code, pinned manife
       !result.files.some((name) => name.startsWith('src/') && !name.startsWith('src/api/')),
       'browser sources never enter the runtime context',
     );
+    // Authored history.js is runtime code; private history directories stay excluded.
     for (const name of result.files)
       assert.ok(
-        !/(?:^|\/)(?:\.env[^/]*|\.git|node_modules|evidence|history|\.miro[^/]*)\b/.test(name),
+        !/(?:^|\/)(?:\.env[^/]*|\.git|node_modules|evidence|history|\.miro[^/]*)(?:\/|$)/.test(name),
         name,
       );
     const manifest = JSON.parse(await readFile(join(result.directory, 'package.json'), 'utf8'));

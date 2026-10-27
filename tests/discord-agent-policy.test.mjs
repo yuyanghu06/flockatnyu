@@ -6,8 +6,8 @@ import {DEFAULT_DISCORD_EXCLUSIONS} from '../server/discord/discovery.js';
 import {EBOARD_CATEGORY_ID, LEADERSHIP_CHANNEL_ID} from '../server/discord/channel-scope.js';
 import {SUMMARY_FIELDS} from '../server/discord/summary-provider.js';
 import {createLiveChatTools} from '../tools/discord/live-summary.js';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
 
 // Real authorization/retrieval and tool dispatch, with inert Discord/store/model
 // boundaries. No live sources, durable writes, workers, or HTTP calls are used.

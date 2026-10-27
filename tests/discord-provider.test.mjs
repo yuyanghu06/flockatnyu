@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createProvider } from '../server/providers/index.js';
-import { readConfig } from '../server/config.js';
+import { readConfig } from '../server/shared/config.js';
 import { LIVE_DISCORD_TOOLS } from '../tools/discord/index.js';
 const DISCORD_SEARCH_TOOL=LIVE_DISCORD_TOOLS.find(tool=>tool.name==='search_discord');
 const args = { messages: [{ role: 'user', content: 'What did Pope say today?' }], system: 'Choose safe tools', tools: [DISCORD_SEARCH_TOOL], signal: new AbortController().signal };

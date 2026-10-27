@@ -1,17 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assistantAnswerPrompt,retrieveAssistantContext} from '../server/assistant-context.js';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
+import {assistantAnswerPrompt,retrieveAssistantContext} from '../server/chat/context.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
 import {MAP_RECORD_EXAMPLES} from '../server/map/contracts.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
-import {createRuntimeServices} from '../server/runtime-app.js';
-import {createChatRunner} from '../server/chat-runner.js';
+import {createRuntimeServices} from '../server/runtime/services.js';
+import {createChatRunner} from '../server/chat/runner.js';
 import {CHAT_MAP_SOURCE_ID,withChatMapSource,chatMapEventUrl,createMapSourceAuthorizer} from '../server/map/source-access.js';
 import {createMapEventService,mapReadContext} from '../server/map/events.js';
-import {createTimeContext} from '../server/time-zone.js';
+import {createTimeContext} from '../server/shared/time-zone.js';
 
 const sourceId = MAP_RECORD_EXAMPLES.event.source_id, personId = MAP_RECORD_EXAMPLES.people[0].person_id;
 const sourceUrl = 'https://discord.com/channels/123/456/789';

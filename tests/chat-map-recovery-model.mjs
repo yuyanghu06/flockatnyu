@@ -1,9 +1,10 @@
+import {chatSourceFiles} from './fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile,mkdtemp,mkdir,writeFile,chmod} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {recoveryCase,assertPrefix,verifyRecovery,attendanceArguments} from './fixtures/chat-map-recovery.mjs';
 
 const names=['duplicate-already-recorded','duplicate-new-attendee','conflict-preserves-human-edit','unavailable-write-honest'];
@@ -41,7 +42,7 @@ if(!process.argv.includes('--live-model')){console.log(JSON.stringify({inference
 const config=readConfig();assert(config.configured,'Configured model is unavailable; no credentials printed');
 const maxRequests=Number(process.argv.find(value=>value.startsWith('--max-requests='))?.slice(15)??20);
 assert(Number.isInteger(maxRequests)&&maxRequests>=1&&maxRequests<=20,'Hard total inference dispatch cap must be1through20');
-const files=['server/chat-runner.js','server/assistant-context.js','server/chat-behavior.js','server/chat-request-context.js','server/chat-discord-context.js','server/providers/index.js','server/providers/retry.js','server/config.js','server/time-zone.js','server/tool-diagnostics.js','server/map/chat-time.js','server/map/events.js','server/map/contracts.js','server/map/source-access.js','server/map/read-comparison.js','server/automation/local-clock-boundary.js','server/automation/validation.js','tools/map/chat.js','tools/map/index.js','tests/fixtures/chat-map-time.mjs','tests/fixtures/chat-map-recovery.mjs','tests/chat-map-recovery-model.mjs'];
+const files=[...new Set([...(await chatSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/runner.js','server/chat/context.js','server/chat/behavior.js','server/chat/request-context.js','server/chat/discord-context.js','server/providers/index.js','server/providers/retry.js','server/shared/config.js','server/shared/time-zone.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/map/chat-time.js','server/map/events.js','server/map/contracts.js','server/map/source-access.js','server/map/read-comparison.js','server/automation/local-clock-boundary.js','server/automation/validation.js','tools/map/chat.js','tools/map/index.js','tests/fixtures/chat-map-time.mjs','tests/fixtures/chat-map-recovery.mjs','tests/chat-map-recovery-model.mjs']])].sort();
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,createHash('sha256').update(await readFile(new URL(`../${file}`,import.meta.url))).digest('hex')])));
 const pins=await hashes(),folder=await mkdtemp('/tmp/flock-chat-map-recovery-'),evidence=join(folder,'evidence.json');await chmod(folder,0o700);
 for(const file of files){const target=join(folder,'source',file);await mkdir(dirname(target),{recursive:true});await writeFile(target,await readFile(new URL(`../${file}`,import.meta.url)),{mode:0o600});}

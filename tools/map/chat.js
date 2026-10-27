@@ -1,14 +1,14 @@
 import {createHash} from 'node:crypto';
 import {validateArguments,canonicalJson} from '../../server/automation/validation.js';
 import {safePerson,text,uuid,validateSnapshot,boundedWork,timestamp,mapReadContext} from '../../server/map/events.js';
-import {validateChatRequestContext} from '../../server/chat-request-context.js';
-import {validateDiscordUsers} from '../../server/chat-discord-context.js';
+import {validateChatRequestContext} from '../../server/chat/request-context.js';
+import {validateDiscordUsers} from '../../server/chat/discord-context.js';
 import {CHAT_MAP_SOURCE_ID,chatMapEventUrl} from '../../server/map/source-access.js';
 import {chatMapTimeSchema,normalizeChatMapTimes,chatMapLocalDisplay,ChatMapTimeError} from '../../server/map/chat-time.js';
 import {EVENT_DEFAULT_DURATION_SECONDS,PRESENCE_DEFAULT_TTL_SECONDS} from '../../server/map/contracts.js';
-import {chatMapTargetChoicePrompt} from '../../server/chat-behavior.js';
+import {chatMapTargetChoicePrompt} from '../../server/chat/behavior.js';
 import {compareDeduplicatedMapRead} from '../../server/map/read-comparison.js';
-import {createTimeContext} from '../../server/time-zone.js';
+import {createTimeContext} from '../../server/shared/time-zone.js';
 
 const principalValid=principal=>text(principal?.id,200,1)&&Array.isArray(principal.allowedSourceIds)&&principal.allowedSourceIds.every(uuid);
 export const normalizeChatMapPersonName=value=>value.normalize('NFC').trim().replace(/\s+/gu,' ').toLowerCase();

@@ -1,7 +1,7 @@
 // Inert transport/scheduler fixture: production app/runner, synthetic auth,
 // controlled provider and tool adapters. No model API or business service I/O.
 import assert from 'node:assert/strict';
-import {createApp} from '../../server/app.js';
+import {createApp} from '../../server/runtime/app.js';
 export const origin='http://steering.test';
 export const principal={id:'synthetic-member',allowedSourceIds:['synthetic-source'],googleAccess:true};
 export const conversation={messages:[{role:'user',content:'Save my first plan'}],buildingId:'stern',timeZone:'America/New_York',steering:true};

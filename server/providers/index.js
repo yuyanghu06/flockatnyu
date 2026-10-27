@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { AttachmentError, providerChatMessages } from '../chat-attachments.js';
-import { createAuditLogger } from '../model-audit.js';
+import { AttachmentError, providerChatMessages } from "../chat/attachments.js";
+import { createAuditLogger } from "../audit/model-audit.js";
 import { abortableDelay, fallbackStatus, hardQuotaCode, retryDelay, transientStatus, transientTransport, untilAborted } from './retry.js';
 // Private routing state cannot be authored by model output or an upstream body.
 const operationBudget=Symbol('operationBudget'),fallbackFailures=new WeakSet();

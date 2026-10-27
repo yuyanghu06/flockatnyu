@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateDiscordRecentContext,validateDiscordUsers,discordRecentContextPrompt,discordUsersPrompt} from '../server/chat-discord-context.js';
-import {createChatRunner} from '../server/chat-runner.js';
-import {createApp} from '../server/app.js';
+import {validateDiscordRecentContext,validateDiscordUsers,discordRecentContextPrompt,discordUsersPrompt} from '../server/chat/discord-context.js';
+import {createChatRunner} from '../server/chat/runner.js';
+import {createApp} from '../server/runtime/app.js';
 const request = ()=>({transport:'discord',actor:{provider:'discord',userId:'123',guildId:'456',username:'current',displayName:'Current speaker'},channelId:'789',threadId:'789',requestId:'999',sourceProfileId:'eboard:fixture'});
 const message = (id='100',content='PRIVATE_RECENT_MESSAGE')=>({id,channelId:'789',authorId:'222',authorName:'Another speaker',createdAt:'2026-10-19T15:30:00.000Z',content});
 const recent = ()=>({guildId:'456',channelId:'789',from:'2026-10-19T15:00:00.000Z',to:'2026-10-19T16:00:00.000Z',complete:true,reason:null,messages:[message()]});

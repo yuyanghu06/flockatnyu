@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import { createHash } from 'node:crypto';
 import { readCalendarConfig, CALENDAR_REQUIRED_SCOPES } from './calendar-config.js';
 import { boundedGoogleBody } from './client.js';

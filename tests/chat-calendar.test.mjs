@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createChatCalendarTools } from '../tools/calendar/chat.js';
-import { retrieveAssistantContext, assistantAnswerPrompt } from '../server/assistant-context.js';
-import { createApp } from '../server/app.js';
+import { retrieveAssistantContext, assistantAnswerPrompt } from '../server/chat/context.js';
+import { createApp } from '../server/runtime/app.js';
 
 const principal = { id: 'chat-reader', googleAccess: true, allowedSourceIds: [] };
 const window = { timeMin: '2026-10-18T00:00:00-04:00', timeMax: '2026-10-19T00:00:00-04:00' };

@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import { MiroMcpError } from './mcp-auth.js';
 
 export const MIRO_QUOTA_KEY = 'subscription:miro-mcp-budget:v1';

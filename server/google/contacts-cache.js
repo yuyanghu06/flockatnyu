@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { sourceMailbox } from './mailbox.js';
 import { boundedGoogleBody } from './client.js';
-import { SOURCE_TOOL_TIMEOUT_MS } from '../source-timeout.js';
+import { SOURCE_TOOL_TIMEOUT_MS } from "../shared/source-timeout.js";
 
 // Fixed application namespace. Identity depends only on the normalized sender
 // address, so replay preserves the first observed name and creation timestamp.

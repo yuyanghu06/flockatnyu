@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createChatRunner} from '../../server/chat-runner.js';
+import {createChatRunner} from '../../server/chat/runner.js';
 import {createContactsTools} from '../../tools/contacts/index.js';
 import {contactStorage,contactRow,contactIds,contactFields,contactPrincipal} from './contacts-store.mjs';
 import {createAttioTools} from '../../tools/attio/index.js';

@@ -4,7 +4,7 @@ import {createCalendarClient} from '../server/google/calendar-client.js';
 import {readCalendarConfig,CALENDAR_REQUIRED_SCOPES} from '../server/google/calendar-config.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 import {createProvider} from '../server/providers/index.js';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {checkSchema,validateArguments} from '../server/automation/validation.js';
 
 const calendarId='synthetic-club@group.calendar.google.com',principal={id:'synthetic-corrector',googleAccess:true,allowedSourceIds:[]};

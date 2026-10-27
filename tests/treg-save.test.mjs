@@ -1,7 +1,7 @@
 import {isDeepStrictEqual} from 'node:util';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createTregResultCache} from '../server/treg-result-cache.js';
+import {createTregResultCache} from '../server/treg/result-cache.js';
 import {createContactsTools} from '../tools/contacts/index.js';
 import {saveFixture,principal,rawPeople,enrichedRaw,humanRow,humanId,hiddenNative,fixtureSecret,stamp,savedStorage} from './fixtures/treg-save.mjs';
 

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
-import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/assistant-context.js';
+import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/chat/context.js';
 import {createGoogleClient} from '../server/google/client.js';
 import {GOOGLE_SCOPES,readGoogleConfig} from '../server/google/config.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';

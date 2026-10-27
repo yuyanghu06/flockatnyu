@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {DIAGNOSTIC_CODES as C,toolDiagnostics,diagnosticCounts,argumentDiagnostic,safeDiagnosticTool} from '../server/tool-diagnostics.js';
-import {createAuditLogger} from '../server/model-audit.js';
+import {DIAGNOSTIC_CODES as C,toolDiagnostics,diagnosticCounts,argumentDiagnostic,safeDiagnosticTool} from '../server/audit/diagnostics.js';
+import {createAuditLogger} from '../server/audit/model-audit.js';
 
 test('content-free fixed classification separates coverage, empty, deferral, policy, cancellation and execution',()=>{
  for(const [result,outcome]of [[{status:'unavailable',coverage:{complete:false}},'failed'],[{status:'team_request_required',coverage:{complete:false}},'policy_denied'],[{status:'empty'},'empty'],[{status:'ready',sourceStatus:'partial'},'partial'],[{status:'ready',sourceStatus:'unavailable',deferred:true},'deferred'],[{status:'pending'},'pending'],[{status:'permission_denied'},'policy_denied'],[{status:'aborted'},'cancelled'],[{status:'invalid_request'},'rejected'],[{status:'ready'},'success']])assert.equal(toolDiagnostics({result}).outcome,outcome);

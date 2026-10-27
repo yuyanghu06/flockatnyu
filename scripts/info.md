@@ -62,7 +62,7 @@ The agent harness enforces exact synthetic provider selectors/window pagination 
 
 Runtime web packaging permits the existing @discordjs/rest dependency for the authenticated Discord bridge’s metadata checks. Collector packaging follows the optional chat transport imports without adding a model provider or account connectors to that service.
 
-Collector packaging permits the exact shared `server/source-timeout.js` module alongside each service's existing directory roots. Both Discord and Gmail use this shared static-import packager; the runtime packager follows the same module through its existing import closure. This does not allow other server-root modules into collector contexts.
+Collector packaging permits the exact shared `server/shared/source-timeout.js` module alongside each service's existing directory roots. Both Discord and Gmail use this shared static-import packager; the runtime packager follows the same module through its existing import closure. This does not allow other server-root modules into collector contexts.
 
 `map-avatar-storage.mjs` is an operator-only private Supabase portrait uploader/migrator. Default mode plans without writes. `--upload` hash-verifies PNGs under immutable person/content keys and saves a0600manifest under ignored evidence/storage-avatars/. `--apply --web-ready` changes only avatar_url using ID/originalURL/updated_at guards after compatible web rollout; `--verify` checks stored bytes, anonymous denials and preserved profile facts. No model tool or browser upload grants are added.
 
@@ -75,3 +75,7 @@ Collector packaging admits only four reviewed root-level shared modules (source 
 The runtime deployment preparer follows only reachable server, tools and server-only `src/api` JavaScript. Browser source is denied even when a server file tries to import it. The web Docker image copies and syntax-checks `src/api`; the worker does not package these website-only handlers.
 
 Quality commands use `check-file-limits.mjs`, `run-tests.mjs` and `browser-smoke.mjs`. `release-packages.mjs` prepares five source-only commit-labelled archives after checks. See `docs/ci-cd.md`; these scripts do not deploy or call business providers.
+
+The opt-in prompt verification script tracks every extracted chat implementation
+file, not just its facade. It still requires explicit live-model opt-in; this
+cleanup did not make inference or business-service calls.

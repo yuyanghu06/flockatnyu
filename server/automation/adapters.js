@@ -1,7 +1,7 @@
 import {manualAuthorizationSnapshot} from './manual-authorization.js';
 import {mapFactsChanged} from './map-facts.js';
 import {randomUUID} from 'node:crypto';
-import {readConfig} from '../config.js';
+import {readConfig} from "../shared/config.js";
 import {readGoogleConfig} from '../google/config.js';
 import {createGoogleClient} from '../google/client.js';
 import {sourceMailbox} from '../google/mailbox.js';
@@ -30,7 +30,7 @@ import {withLocalTimeDisplay} from './local-time-display.js';
 import {normalizeMemberPlanBoundary} from './local-clock-boundary.js';
 import {createMapSourceAuthorizer} from '../map/source-access.js';
 import {canonicalJson,plainObject,validUuid,validateArguments} from './validation.js';
-import {resolveDateBoundary} from '../time-zone.js';
+import {resolveDateBoundary} from "../shared/time-zone.js";
 
 const snowflake=value=>typeof value==='string'&&/^[0-9]{1,20}$/.test(value);
 const personUuid=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);

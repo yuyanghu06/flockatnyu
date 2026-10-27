@@ -1,15 +1,15 @@
 import {
   contactContextOfMessage,
   contactTextMessages,
-} from '../../../server/chat-contact-context.js';
+} from '../../../server/chat/contact-context.js';
 import {
   AttachmentError,
   attachmentBudget,
   normalizeAttachments,
   ATTACHMENT_ONLY_CONTENT,
   MAX_CHAT_BODY_BYTES,
-} from '../../../server/chat-attachments.js';
-import { canonicalTimeZone } from '../../../server/time-zone.js';
+} from '../../../server/chat/attachments.js';
+import { canonicalTimeZone } from '../../../server/shared/time-zone.js';
 import { validUuid } from '../../../server/automation/validation.js';
 import { readJSON } from './http.js';
 

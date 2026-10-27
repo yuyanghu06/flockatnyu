@@ -6,6 +6,6 @@ This folder mirrors the `/api/gmail/send` URL segment. Each method file register
 
 Child URL folders: `[requestId]/`.
 
-Services and authentication are injected by `server/app.js` through the root
+Services and authentication are injected by `server/runtime/app.js` through the root
 registration module. Shared helpers live in `_shared/`; browser code must not
 import these server-only handlers. Preserve exact public behavior when editing.

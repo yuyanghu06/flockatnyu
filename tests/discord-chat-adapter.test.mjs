@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
-import {validateChatRequestContext} from '../server/chat-request-context.js';
+import {validateChatRequestContext} from '../server/chat/request-context.js';
 import {readDiscordChatConfig} from '../server/discord/chat-config.js';
 
 const message=(id='10',extra={})=>({t:'MESSAGE_CREATE',d:{id,guild_id:'1',channel_id:'2',type:0,content:'<@99> hello',author:{id:'5',username:'verified-user',global_name:'Discord Name'},member:{nick:'Server Nick'},...extra}});

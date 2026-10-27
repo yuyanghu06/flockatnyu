@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createTregResultCache} from '../server/treg-result-cache.js';
-import {contactFields} from '../server/contact-fields.js';
+import {createTregResultCache} from '../server/treg/result-cache.js';
+import {contactFields} from '../server/contacts/fields.js';
 import {tregToolsFixture,fixtureSecret} from './fixtures/treg-tools.mjs';
 import {saveFixture,principal,hiddenNative} from './fixtures/treg-save.mjs';
 

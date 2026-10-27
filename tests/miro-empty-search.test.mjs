@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createMiroMcpTools} from '../tools/miro/mcp.js';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
 import {createAutomationAdapters} from '../server/automation/adapters.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 

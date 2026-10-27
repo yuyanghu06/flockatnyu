@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {setTimeout as pause} from 'node:timers/promises';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {createProvider} from '../server/providers/index.js';
-import {createAuditLogger} from '../server/model-audit.js';
+import {createAuditLogger} from '../server/audit/model-audit.js';
 import {createAutomationHandler} from '../server/automation/handler.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 

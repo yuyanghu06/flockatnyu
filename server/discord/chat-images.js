@@ -1,5 +1,5 @@
-import {MAX_FILES,MAX_FILE_BYTES,MAX_ATTACHMENT_BYTES,normalizeAttachments,attachmentBudget,attachmentMime} from '../chat-attachments.js';
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {MAX_FILES,MAX_FILE_BYTES,MAX_ATTACHMENT_BYTES,normalizeAttachments,attachmentBudget,attachmentMime} from "../chat/attachments.js";
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 
 export const DISCORD_IMAGE_CANDIDATE_LIMIT = 40;
 const id=value=>typeof value==='string'&&/^[0-9]{1,20}$/.test(value);

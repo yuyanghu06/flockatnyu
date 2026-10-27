@@ -8,7 +8,7 @@ access rules, service effects, output/failure behavior and a plain-English reaso
 for keeping the endpoint.
 
 `register.js` composes the 21 active endpoints in their existing order. It is
-called by `server/app.js`, which supplies configured services, authentication and
+called by `server/runtime/app.js`, which supplies configured services, authentication and
 the chat runner. `_shared/` holds existing parsing, authentication and response
 helpers; those files register no routes. `contacts/register.js` composes only the
 saved-Contacts endpoints for isolated tests. Registration files compose endpoints

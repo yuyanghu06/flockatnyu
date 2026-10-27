@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createContactsStore} from '../../server/contacts.js';
+import {createContactsStore} from '../../server/contacts/store.js';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
 import {pg_trgm} from '@electric-sql/pglite/contrib/pg_trgm';

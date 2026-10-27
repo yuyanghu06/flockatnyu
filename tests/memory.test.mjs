@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
-import {createMemoryStore,memoryPrompt} from '../server/memory.js';
+import {createMemoryStore,memoryPrompt} from '../server/knowledge/memory.js';
 import {createMemoryTools} from '../tools/memory/index.js';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
 
 const principal={id:'club-reader',allowedSourceIds:[]};
 const stamp='2026-10-18T18:00:00.123456+00:00';

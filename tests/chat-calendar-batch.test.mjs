@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createCalendarClient} from '../server/google/calendar-client.js';
 import {readCalendarConfig,CALENDAR_REQUIRED_SCOPES} from '../server/google/calendar-config.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {checkSchema,validateArguments} from '../server/automation/validation.js';
 import {createGoogleClient} from '../server/google/client.js';
 import {readGoogleConfig,GOOGLE_SCOPES} from '../server/google/config.js';

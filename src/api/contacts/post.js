@@ -14,7 +14,7 @@
  * Malformed/uncertain post-dispatch outcomes report write_outcome_unknown, never
  * fabricate success or retry. Raw data stays private.
  */
-import { validContactFields } from '../../../server/contacts.js';
+import { validContactFields } from '../../../server/contacts/store.js';
 
 import {
   createContactsHttpContext,

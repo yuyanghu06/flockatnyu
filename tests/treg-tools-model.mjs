@@ -1,7 +1,8 @@
+import {chatSourceFiles} from './fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {createProvider} from '../server/providers/index.js';
 import {modelCaseNames,modelScenario,hiddenProviderValue,fixtureSecret} from './fixtures/treg-tools.mjs';
 
@@ -21,7 +22,7 @@ if(!process.argv.includes('--live-model')){console.log(JSON.stringify({cases:cho
 const config=readConfig();assert(config.configured,'Configured inference unavailable; credentials remain private');
 const maxRequests=Number(process.argv.find(value=>value.startsWith('--max-requests='))?.slice(15)??28),perCase=Number(process.argv.find(value=>value.startsWith('--max-per-case='))?.slice(15)??6);
 assert(Number.isInteger(maxRequests)&&maxRequests>0&&maxRequests<=28);assert(Number.isInteger(perCase)&&perCase>0&&perCase<=6);
-const files=['tools/treg/index.js','tools/contacts/index.js','server/assistant-context.js','server/chat-runner.js','server/chat-behavior.js','server/contacts.js','server/contacts-search.js','server/treg-people.js','server/treg-enrich.js','server/treg-call-log.js','server/tool-diagnostics.js','server/config.js','server/providers/index.js','server/providers/retry.js','server/automation/validation.js','tests/treg-tools-model.mjs','tests/fixtures/treg-tools.mjs','tests/fixtures/contacts-store.mjs'];
+const files=[...new Set([...(await chatSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['tools/treg/index.js','tools/contacts/index.js','server/chat/context.js','server/chat/runner.js','server/chat/behavior.js','server/contacts/store.js','server/contacts/search.js','server/treg/people.js','server/treg/validation.js','server/treg/contact-identity.js','server/treg/contacts-importer.js','server/treg/enrich.js','server/treg/call-log.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/shared/config.js','server/providers/index.js','server/providers/retry.js','server/automation/validation.js','tests/treg-tools-model.mjs','tests/fixtures/treg-tools.mjs','tests/fixtures/contacts-store.mjs']])].sort();
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,createHash('sha256').update(await readFile(new URL('../'+file,import.meta.url))).digest('hex')])));
 const pins=await hashes(),directory=new URL('../evidence/treg-agent-tools/model-'+new Date().toISOString().replace(/[:.]/g,'-')+'/',import.meta.url);await mkdir(directory,{recursive:true,mode:0o700});
 const report={provider:config.provider,model:config.model,pins,maxRequests,maxRequestsPerCase:perCase,networkRequests:0,startedAt:new Date().toISOString(),cases:[],limitations:['Only configured inference network is allowed. Treg and Contacts transports are simulated using production clients/tools and runner.','This is a small real-model behavior sample, not a live Treg lookup, live website/Discord verification, deployed runtime or database mutation.','Synthetic prompts, tool proposals/results and final answers are private evaluation evidence; no credentials are recorded.']};

@@ -15,4 +15,4 @@ not prove delivery. No message content enters tool receipts or this folder.
 
 The runtime integrates this adapter only into user-directed chat. Direct stateless
 execution refuses writes. Operational receipts and Google account/scope checks
-live in `server/gmail-send-service.js` and the dedicated Google send client.
+live in `server/google/gmail-send-service.js` and the dedicated Google send client.

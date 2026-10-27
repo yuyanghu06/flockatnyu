@@ -11,7 +11,7 @@ import {createGmailEnrichmentRuntime,runGmailEnrichmentCli} from '../server/gmai
 import {createGmailEnrichmentWorker} from '../server/gmail-enrichment/worker.js';
 import {createGmailEnrichmentCacheStore} from '../server/gmail-enrichment/store.js';
 import {createDailyTregEnrichmentClient} from '../server/gmail-enrichment/treg.js';
-import {createTregCallLogger} from '../server/treg-call-log.js';
+import {createTregCallLogger} from '../server/treg/call-log.js';
 import {drainGmailEnrichment} from '../server/gmail-enrichment/schedule.js';
 
 const originalFetch=globalThis.fetch;

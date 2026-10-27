@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {createGoogleClient} from '../server/google/client.js';
 import {readGoogleConfig,GOOGLE_SCOPES} from '../server/google/config.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';

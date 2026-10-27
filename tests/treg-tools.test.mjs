@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createChatRunner} from '../server/chat-runner.js';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
-import {createSiteAuth,readSiteAuthConfig} from '../server/site-auth.js';
-import {createTregEnrichmentClient} from '../server/treg-enrich.js';
+import {createChatRunner} from '../server/chat/runner.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
+import {createSiteAuth,readSiteAuthConfig} from '../server/auth/site-auth.js';
+import {createTregEnrichmentClient} from '../server/treg/enrich.js';
 import {contactPrincipal} from './fixtures/contacts-store.mjs';
 import {tregToolsFixture,fixtureSecret,hiddenProviderValue,personFields} from './fixtures/treg-tools.mjs';
 

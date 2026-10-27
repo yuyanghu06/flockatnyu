@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createChatRunner} from '../server/chat-runner.js';
-import {createApp} from '../server/app.js';
+import {createChatRunner} from '../server/chat/runner.js';
+import {createApp} from '../server/runtime/app.js';
 import {ProviderError} from '../server/providers/index.js';
 const config={configured:true,provider:'openai-compatible',timeoutMs:1000,retrievalToolsEnabled:true};
 const principal={id:'server-discord',allowedSourceIds:['source']};

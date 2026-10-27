@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {readFile,writeFile,mkdir,readdir,copyFile,rename} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {fixture,snapshot,ids} from './fixtures/chat-map-time.mjs';
 
 const clone=value=>structuredClone(value),arg=name=>process.argv.find(value=>value.startsWith(`--${name}=`))?.slice(name.length+3),hash=value=>createHash('sha256').update(value).digest('hex');

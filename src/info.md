@@ -7,7 +7,7 @@ presence displays.
 
 `api/` contains **server-only** HTTP handlers whose folders mirror URL segments, with one method handler per file. Browser modules
 must never import those handlers or service implementations. The assistant's file
-validator uses the existing I/O-free `server/chat-attachments.js` contract shared
+validator uses the existing I/O-free `server/chat/attachments.js` contract shared
 with the server; credentials and service clients remain server-only.
 
 Each module is formatted with the repository Prettier configuration. JavaScript

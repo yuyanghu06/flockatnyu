@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 import {createChatMapTools} from '../tools/map/chat.js';
 import {createMapTools} from '../tools/map/index.js';
-import {createDiscordChatRunner} from '../server/runtime-app.js';
+import {createDiscordChatRunner} from '../server/runtime/services.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';
 
 const actor={id:'discord:100:300',allowedSourceIds:[],googleAccess:true};

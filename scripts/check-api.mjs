@@ -14,6 +14,6 @@ await check('server');
 await check('tools');
 await check('src/api');
 // Validate real dependencies without opening a port or making external calls.
-await import('../server/app.js');
+await import('../server/runtime/app.js');
 await import('@hono/node-server');
 console.log('API syntax and runtime dependencies verified.');

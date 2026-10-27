@@ -1,4 +1,4 @@
-import { SOURCE_TOOL_TIMEOUT_MS } from '../source-timeout.js';
+import { SOURCE_TOOL_TIMEOUT_MS } from "../shared/source-timeout.js";
 import { validUuid } from '../automation/validation.js';
 
 // Server only: the bearer token must never be serialized into a response.

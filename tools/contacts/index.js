@@ -1,8 +1,8 @@
-import { contactFields } from '../../server/contact-fields.js';
+import { contactFields } from '../../server/contacts/fields.js';
 import { canonicalJson, validateArguments, validUuid } from '../../server/automation/validation.js';
-import { CONTACT_FIELDS, validContact, validContactFields } from '../../server/contacts.js';
-export { CONTACT_FIELDS } from '../../server/contacts.js';
-import { CONTACT_SEARCH_PROPERTIES } from '../../server/contacts-search.js';
+import { CONTACT_FIELDS, validContact, validContactFields } from '../../server/contacts/store.js';
+export { CONTACT_FIELDS } from '../../server/contacts/store.js';
+import { CONTACT_SEARCH_PROPERTIES } from '../../server/contacts/search.js';
 
 const fields = { type: 'object', additionalProperties: false, properties: Object.fromEntries(Object.entries(CONTACT_FIELDS).map(([name, maxLength]) => [name, { type: 'string', maxLength }])) };
 const contactId = { type: 'string', minLength: 36, maxLength: 36 };

@@ -1,4 +1,4 @@
-import { attachmentErrors } from '../../../server/chat-attachments.js';
+import { attachmentErrors } from '../../../server/chat/attachments.js';
 
 export const errorMessages = {
   ...attachmentErrors,

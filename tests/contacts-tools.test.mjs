@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createContactsStore,CONTACT_FIELDS} from '../server/contacts.js';
+import {createContactsStore,CONTACT_FIELDS} from '../server/contacts/store.js';
 import {createContactsTools} from '../tools/contacts/index.js';
 import {contactStorage,contactRow,contactIds,contactFields,contactPrincipal,contactStamp} from './fixtures/contacts-store.mjs';
 

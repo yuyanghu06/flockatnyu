@@ -8,10 +8,10 @@ import {createManualRunDispatcher} from '../server/automation/manual-worker.js';
 import {createAutomationStore} from '../server/automation/store.js';
 import {createAutomationHandler} from '../server/automation/handler.js';
 import {readAutomationConfig} from '../server/automation/config.js';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {createWebsite} from '../server/web.js';
-import {createSiteAuth,readSiteAuthConfig} from '../server/site-auth.js';
-import {readConfig} from '../server/config.js';
+import {createSiteAuth,readSiteAuthConfig} from '../server/auth/site-auth.js';
+import {readConfig} from '../server/shared/config.js';
 import {createManualPlannerAuth} from '../server/automation/manual-auth.js';
 
 const source=randomUUID(),other=randomUUID(),env={SUPABASE_URL:'https://db.synthetic.test',SUPABASE_SERVICE_ROLE_KEY:'synthetic-private-key'};

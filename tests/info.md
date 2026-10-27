@@ -1,5 +1,15 @@
 # Standard verification and current fixture contracts
 
+## Server module locations
+
+Tests import HTTP composition from `server/runtime`, chat orchestration from
+`server/chat`, Contacts persistence from `server/contacts`, Treg operations from
+`server/treg`, audit code from `server/audit`, and shared/auth/knowledge helpers
+from their named folders. Keep test imports and generated constructor-module URLs
+aligned with these real files. Model-evaluation source pins must include extracted
+helper modules as well as their public entry files; these scripts remain opt-in
+and are not executed by the deterministic suite.
+
 Run `npm test` for the deterministic Node/isolated SQL suites and the ten offline
 map checks selected by `scripts/run-tests.mjs`. The runner uses four test files at
 a time. `npm run ci` adds formatting, linting, file-length limits and both builds;
@@ -464,11 +474,9 @@ Forced software rendering can be too slow for short held-key motion probes.
 
 M24 changes keyboard-pan-browser.mjs and building-view-browser.mjs expectations only where the new native modal must block map scrolling. Outward focus return remains available once the modal closes; existing M23 motion/geometry assertions remain. Current final run evidence is under the M24 evidence folder.
 
-
 M25/M26 final independent12-suite connector command in evidence/m25-connectors/independent-report.md passes132/132; fresh-parent denial covers14 malformed cases. Summary/SQL/default-worker launch root check73/73 passes. These fixture results do not establish hosted execution or semantic model quality.
 
 M27 tests miro-{client,deploy,snapshot,sql,tools}.test.mjs independently exercise pagination/typed originals/group context, errors and limits, real001+012 PGlite leases/ACL/atomics, isolated upload inputs and actual HTTP fake-provider model context. No live model or Miro calls.
-
 
 provider-tool-compatibility.test.mjs adds6officialLuna/Sol tool-planning payload regressions;95targetedchecks pass. FinalfullDiscord350/350 log is evidence/m25-summary-only/final-discord-tests.log. Hosted realreadback is distinct in evidence/m25-cloud/final-report.md (726/726currentvectors, raw0, pending434).
 
@@ -700,7 +708,6 @@ source-timeouts.test.mjs uses virtual timers and synthetic source clients to ver
 
 Discord collector diagnostics tests exercise safe stage/code attribution, nested transport causes, hostile error values, logger failure containment, graceful cancellation and durable checkpoint ordering, CLI setup/teardown, monitor-only nonzero fatal exit and sanitized deployment closure. All fixtures are synthetic; no live Discord messages are sent. Native Node fatal stderr remains outside structured-log sanitization.
 
-
 Discord total-request deadlines: `discord-chat-config.test.mjs` checks the twenty-minute
 default and upper bound, shorter explicit overrides, clamping and malformed values.
 `discord-chat-tool-parity.test.mjs` observes actual runtime timers: Discord gets its
@@ -745,7 +752,6 @@ Discord concurrency checks exercise configured10total/5permember with held overl
 `calendar-complete-receipts.test.mjs` independently verifies actual saved fields across single/managed/batch writes, clear/missing/sparse/reconciliation outcomes, safe ancillary fields, no private-field leakage, both model paths and realistic/pathological large-batch bounds/reprojection. `calendar-location-receipts.test.mjs` now permits authorized saved descriptions alongside location while still rejecting arbitrary provider fields.
 
 The current scoped-claim runtime test distinguishes malformed/missing scope denial from an explicit empty array: empty scope performs bounded maintenance without originals, source authorization/preparation, tools or model calls. Historical migration032 SQL fixtures keep their original contract;038 coverage tests the current maintenance override.
-
 
 Staged Calendar acceptance: agent-pending-tasks.test.mjs executes039/store scope/lease/version/TTL/capacity; agent-staged-handler.test.mjs checks same-lease phases/10turn cap; calendar-deterministic-sync and member-plans-calendar test pinned target/metadata/location/relationship behavior; staged-pipeline and staged-runtime-integration exercise actual bundled Calendar-first presence, cached RSVP/task progression, untouched retention, multi-calendar visibility and041 map fencing.
 
@@ -807,7 +813,6 @@ Current task-store test fixtures expose separate catalogue and exact-read operat
 
 `provider-fallback.test.mjs` checks ordered second/third-provider recovery for native turns, planning and streaming, per-provider protocol/key/model/audit identity, one deadline, abort/audit/local-validation stops, no replay after HTTP success, JSON-key redaction and a real planner runner with a simulated business operation executed once. Its transports are synthetic; live backup availability requires private credentials.
 
-
 `agent-task-history-storage.test.mjs` exercises the production store with actual local PostgreSQL, exact compressed-history recovery and corruption, version, lease and source failures. `agent-task-history-pages.test.mjs` checks bounded history/full-task pages and older-task retry selection. `agent-observation-handoff.test.mjs` checks actual handler phase transfer with unchanged budgets. `planner-throughput-model.mjs` uses the configured model and production runner with simulated business services, inference-only network and hard request caps. Scripted checks, real-model evidence and live outcomes remain distinct in the milestone.
 
 October26 publication checks corrected the expired task-history fixture to use a statement-stable clock at the exact24hour lifetime boundary; production expiry checks and existing assertions remain unchanged. Fresh verification is recorded in ../milestones/main-publication-2026-10-26/.
@@ -851,3 +856,12 @@ gmail-send.test.mjs and gmail-send-sql.test.mjs exercise actual MIME client and 
 `treg-save.test.mjs` verifies separate native Contacts imports from scoped Treg result references, exact raw/lookup-email preservation, existing human data, versioned edits/deletion, replay, uncertainty, logging fences and memory bounds. `fixtures/treg-save.mjs` uses production clients/runner/store with simulated provider and PostgREST transports. `treg-save-model.mjs` evaluates actual configured inference with an exact endpoint allowlist and persisted cumulative request cap; `--self-check` tests fixture mechanics only. Private reports retain interrupted/budget-limited cases honestly; see the rolling milestone for accepted behavior and remaining limits.
 
 The dormant Treg route checks cover numeric company employee counts, strict invalid-value rejection, unchanged native logging and the client-to-HTTP text contract. Original provider-response replays remain in ignored private evidence.
+
+The dormant Treg lookup checks are split by responsibility: `treg-dormant-routes.test.mjs`
+checks fixed clients, selectors, typed results, errors, bounded responses and private
+logs; `treg-dormant-http.test.mjs` checks optional HTTP registration, authentication,
+Origin, public projection, durable-log failure/cancellation and default-app 404s.
+`fixtures/treg-dormant.mjs` supplies only synthetic provider, session and temporary
+private-logger boundaries. `treg-branddev.test.mjs` independently exercises the
+selected company request variants and native field projection. These suites make
+no live or paid calls and do not activate the dormant routes.

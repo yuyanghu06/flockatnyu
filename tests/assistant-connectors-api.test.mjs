@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
 import {createLiveRetrievalTools} from '../tools/discord/index.js';
 import {GOOGLE_TOOLS,executeGoogleTool} from '../tools/google/index.js';
 const env={LLM_PROVIDER:'openai-compatible',LLM_MODEL:'offline-fixture',LLM_API_KEY:'fixture-private-key',DEV_LIVE_DISCORD_ENABLED:'true',DEV_GOOGLE_ENABLED:'true',DISCORD_GUILD_ID:'100'};

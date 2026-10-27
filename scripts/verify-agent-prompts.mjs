@@ -1,11 +1,12 @@
+import {chatSourceFiles} from '../tests/fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {setTimeout as pause} from 'node:timers/promises';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
-import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/assistant-context.js';
+import {readConfig} from '../server/shared/config.js';
+import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/chat/context.js';
 import {createLiveDiscordRetrieval} from '../server/discord/live-retrieval.js';
 import {discordSnowflakeAt} from '../server/discord/live-client.js';
 import {EBOARD_CATEGORY_ID} from '../server/discord/channel-scope.js';
@@ -228,12 +229,14 @@ const selected=Array.from({length:repeats},()=>selection).flat();
 if(!selected.length)throw Error('Unknown smoke case');
 const output=fileURLToPath(new URL('../evidence/agent-prompts/live-model-results.json',import.meta.url));
 let prior;try{prior=JSON.parse(await readFile(output,'utf8'));}catch{}
-const monitoredPaths=['scripts/verify-agent-prompts.mjs','server/app.js','server/assistant-context.js','server/providers/index.js','server/config.js',
+const monitoredPaths=['scripts/verify-agent-prompts.mjs','tests/fixtures/chat-source-files.mjs','server/runtime/app.js','server/chat/context.js','server/providers/index.js','server/shared/config.js',
   'server/automation/prompt.js','server/automation/config.js','server/automation/handler.js','server/automation/adapters.js',
-  'server/map/contracts.js','server/map/source-access.js','server/map/chat-intent.js','tools/map/chat.js','tools/map/index.js',
+  'server/map/contracts.js','server/map/source-access.js','tools/map/chat.js','tools/map/index.js',
   'server/discord/channel-scope.js','server/discord/live-retrieval.js','server/discord/live-client.js','server/discord/live-config.js','server/discord/client.js','server/discord/request-pacing.js','tools/discord/index.js','tools/discord/live-summary.js',
   'server/miro/navigation.js',
   'server/google/calendar-chat-prompt.js','server/google/calendar-client.js','tools/calendar/chat-boundaries.js','tools/calendar/chat.js','tools/calendar/index.js'];
+// Pin extracted prompt, execution and projection implementations as well as the facade.
+for(const path of await chatSourceFiles())if(!monitoredPaths.includes(path))monitoredPaths.push(path);
 const hashSources=async()=>Object.fromEntries(await Promise.all(monitoredPaths.map(async path=>
   [path,createHash('sha256').update(await readFile(new URL('../'+path,import.meta.url))).digest('hex')])));
 const sourceHashes=await hashSources();

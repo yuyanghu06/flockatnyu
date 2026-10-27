@@ -1,4 +1,4 @@
-import { SOURCE_TOOL_TIMEOUT_MS } from '../source-timeout.js';
+import { SOURCE_TOOL_TIMEOUT_MS } from "../shared/source-timeout.js";
 import { plainObject } from '../automation/validation.js';
 import { readGoogleConfig, GOOGLE_GMAIL_SEND_SCOPES } from './config.js';
 import { createGoogleOAuth, GoogleError, googleError, verifyGoogleToken, waitForGoogleAuth } from './oauth.js';

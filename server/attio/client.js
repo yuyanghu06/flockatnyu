@@ -1,5 +1,5 @@
 import { readAttioConfig, validAttioSlug } from './config.js';
-import { SOURCE_TOOL_TIMEOUT_MS } from '../source-timeout.js';
+import { SOURCE_TOOL_TIMEOUT_MS } from "../shared/source-timeout.js";
 import { plainObject, validUuid } from '../automation/validation.js';
 
 const ORIGIN = 'https://api.attio.com/v2';

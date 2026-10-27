@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createDiscordStore } from '../server/discord/store.js';
-import { createApp } from '../server/app.js';
-import { readConfig } from '../server/config.js';
+import { createApp } from '../server/runtime/app.js';
+import { readConfig } from '../server/shared/config.js';
 
 const sourceId = '22222222-2222-4222-8222-222222222222', foreign = '33333333-3333-4333-8333-333333333333';
 const principal = { id: '11111111-1111-4111-8111-111111111111', allowedSourceIds: [sourceId] };

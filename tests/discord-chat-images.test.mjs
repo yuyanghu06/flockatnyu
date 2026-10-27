@@ -4,10 +4,10 @@ import {createLiveDiscordClient,discordSnowflakeAt} from '../server/discord/live
 import {createLiveDiscordRetrieval} from '../server/discord/live-retrieval.js';
 import {createDiscordChatContextLoader} from '../server/discord/chat-context.js';
 import {createDiscordChatBridge} from '../server/discord/chat-bridge.js';
-import {createDiscordChatRunner} from '../server/runtime-app.js';
+import {createDiscordChatRunner} from '../server/runtime/services.js';
 import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
 import {createDiscordChatRemote} from '../server/discord/chat-bridge.js';
-import {validateDiscordRecentContext} from '../server/chat-discord-context.js';
+import {validateDiscordRecentContext} from '../server/chat/discord-context.js';
 import {createProvider} from '../server/providers/index.js';
 import {loadDiscordChatImages} from '../server/discord/chat-images.js';
 

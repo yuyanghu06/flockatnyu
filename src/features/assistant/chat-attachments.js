@@ -7,7 +7,7 @@ import {
   MAX_TEXT_FILE_BYTES,
   attachmentMime,
   normalizeAttachments,
-} from '../../../server/chat-attachments.js';
+} from '../../../server/chat/attachments.js';
 export {
   ATTACHMENT_ACCEPT,
   ATTACHMENT_ONLY_CONTENT,
@@ -15,7 +15,7 @@ export {
   attachmentBudget,
   normalizeAttachments,
   MAX_CHAT_BODY_BYTES,
-} from '../../../server/chat-attachments.js';
+} from '../../../server/chat/attachments.js';
 export async function readAttachmentFiles(files, existing = []) {
   const selected = Array.from(files || []);
   if (selected.length + existing.length > MAX_FILES) throw new AttachmentError('attachment_total');

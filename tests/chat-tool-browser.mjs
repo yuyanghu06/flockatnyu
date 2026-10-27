@@ -1,8 +1,8 @@
 import {chromium} from 'playwright-core';
 import {serve} from '@hono/node-server';
 import assert from 'node:assert/strict';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
 const baseUrl=process.env.MAP_URL||'http://127.0.0.1:5173';
 let mode='ready',release,planningRelease,pausePlanning=false,markdownReply=false;
 const app=createApp({config:readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'fixture',LLM_API_KEY:'fixture-only'}),auth:()=>({id:'fixture',allowedSourceIds:[]}),provider:{planTools:async({messages})=>{if(pausePlanning&&messages.at(-1).content==='show formatted reply'){pausePlanning=false;await new Promise(resolve=>{planningRelease=resolve;});}return [{name:'search_discord',arguments:{query:'private fixture query'}}];},async *stream(){yield markdownReply?'Posted **#eboard-chat** for review.\n\n- First detail\n- Second detail\n\n[Source](https://example.com/event)\n\n<script>window.fixtureInjected=true</script>':'Hi! How can I help?';}},liveDiscordTools:{tools:[{name:'search_discord'}],execute:async()=>{await new Promise(resolve=>{release=resolve;});if(mode==='throw')throw Error('private adapter failure');return {status:mode,sources:[],secret:'private-token'};}}});

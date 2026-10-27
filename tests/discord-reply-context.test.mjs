@@ -4,8 +4,8 @@ import {createLiveDiscordClient,discordSnowflakeAt} from '../server/discord/live
 import {createLiveDiscordRetrieval} from '../server/discord/live-retrieval.js';
 import {createDiscordChatContextLoader} from '../server/discord/chat-context.js';
 import {createDiscordChatBridge} from '../server/discord/chat-bridge.js';
-import {createDiscordChatRunner} from '../server/runtime-app.js';
-import {validateDiscordRecentContext} from '../server/chat-discord-context.js';
+import {createDiscordChatRunner} from '../server/runtime/services.js';
+import {validateDiscordRecentContext} from '../server/chat/discord-context.js';
 import {createProvider} from '../server/providers/index.js';
 
 const guildId='100',channelId='200',actorId='300',sourceId='00000000-0000-4000-8000-000000000001';

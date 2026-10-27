@@ -19,7 +19,7 @@
  * no-store, nosniff.
  */
 import { plainObject, validUuid } from '../../../../../../server/automation/validation.js';
-import { validTregLookupInput } from '../../../../../../server/treg-lookups.js';
+import { validTregLookupInput } from '../../../../../../server/treg/lookups.js';
 import { statuses, projectResult } from '../../../../_shared/treg-lookups.js';
 export function registerApiTregPeopleEmailFindPost({
   app,

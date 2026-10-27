@@ -1,4 +1,4 @@
-import {toolDiagnostics,argumentDiagnostic,safeDiagnosticTool} from '../tool-diagnostics.js';
+import {toolDiagnostics,argumentDiagnostic,safeDiagnosticTool} from "../audit/diagnostics.js";
 import {createHash,randomUUID} from 'node:crypto';
 import {buildAutomationPrompt} from './prompt.js';
 import {AUTOMATION_MAX_TOOL_CALLS,AUTOMATION_MAX_STAGE_CALLS} from './config.js';

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {canonicalTimeZone,createTimeContext,resolveDateBoundary} from '../server/time-zone.js';
+import {canonicalTimeZone,createTimeContext,resolveDateBoundary} from '../server/shared/time-zone.js';
 import {validateLiveDiscordArguments,createLiveRetrievalTools} from '../tools/discord/index.js';
 import {createLiveChatTools} from '../tools/discord/live-summary.js';
 import {createLiveDiscordRetrieval} from '../server/discord/live-retrieval.js';

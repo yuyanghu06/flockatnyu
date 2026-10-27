@@ -2,10 +2,6 @@
   "javascript": 500,
   "css": 400,
   "exceptions": {
-    "server/assistant-context.js": {
-      "maxLines": 773,
-      "reason": "Pre-existing file at fb2cd5b; split by responsibility before growth. See docs/ci-cd.md."
-    },
     "server/automation/adapters.js": {
       "maxLines": 1043,
       "reason": "Pre-existing oversized adapter; cleanup reduced its frozen maximum. Split by responsibility before future growth. See docs/ci-cd.md."

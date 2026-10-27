@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/assistant-context.js';
+import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/chat/context.js';
 const messages=[{role:'user',content:'Summarize #general last week'}];
 const args={channelId:'200',from:'2026-10-01T04:00:00.000Z',to:'2026-10-08T04:00:00.000Z'};
 const source=(id='m1',extra={})=>({id,title:'Evidence',url:'https://discord.com/channels/100/200/400',excerpt:'fact',...extra});

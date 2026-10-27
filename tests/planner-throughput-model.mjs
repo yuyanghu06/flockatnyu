@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir,readdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {createAutomationHandler} from '../server/automation/handler.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 import {canonicalJson} from '../server/automation/validation.js';

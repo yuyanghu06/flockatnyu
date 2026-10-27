@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {randomUUID,createHash} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
-import {estimateAuditCost} from '../server/model-audit.js';
+import {estimateAuditCost} from '../server/audit/model-audit.js';
 const identity={provider:'openai-compatible',model:'gpt-6-luna',providerBaseHost:'api.openai.com',serviceTier:'default'};
 const usage={inputTokens:10000,outputTokens:200,cacheReadTokens:1000,cacheWriteTokens:7946,reasoningTokens:30};
 const expected=((10000-1000-7946)*0.10+1000*0.01+7946*0.125+200*0.50)/1e6;

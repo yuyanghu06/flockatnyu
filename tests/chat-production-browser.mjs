@@ -4,8 +4,8 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {createServer} from 'vite';
 import {serve} from '@hono/node-server';
 import {chromium} from 'playwright-core';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
 import {createBugReportTools} from '../tools/bug-reports/index.js';
 
 const directory=new URL('../evidence/chat-production-fixes/',import.meta.url);

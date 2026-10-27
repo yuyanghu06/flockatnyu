@@ -1,8 +1,8 @@
 // Synthetic storage with production runner/map adapters. Model responses are
 // supplied by the caller: deterministic self-check or a separately approved API.
 import assert from 'node:assert/strict';
-import {createChatRunner} from '../../server/chat-runner.js';
-import {createChatSteeringRegistry} from '../../server/chat-steering.js';
+import {createChatRunner} from '../../server/chat/runner.js';
+import {createChatSteeringRegistry} from '../../server/chat/steering.js';
 import {fixture,snapshot,ids,origin,principal,requestContext,discordUsers,zone,currentUpdate} from './chat-map-time.mjs';
 export const caseNames=['correction-during-map-write','answer-context-change'];
 export function scenario(name){

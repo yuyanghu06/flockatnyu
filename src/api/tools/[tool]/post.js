@@ -16,7 +16,7 @@
  * unavailable/uncertain states stay with the named adapter; this route never asserts
  * write success itself. no-store.
  */
-import { createTimeContext } from '../../../../server/time-zone.js';
+import { createTimeContext } from '../../../../server/shared/time-zone.js';
 import { apiError, resultStatus, readJSON } from '../../_shared/http.js';
 
 export function registerApiToolsToolPost({

@@ -1,7 +1,7 @@
 import {createHash,timingSafeEqual} from 'node:crypto';
 import {request as httpRequest} from 'node:http';
-import {normalizeAttachments} from '../chat-attachments.js';
-import {validateDiscordRecentContext} from '../chat-discord-context.js';
+import {normalizeAttachments} from "../chat/attachments.js";
+import {validateDiscordRecentContext} from "../chat/discord-context.js";
 
 const snowflake = value => typeof value === 'string' && /^[0-9]{1,20}$/.test(value);
 const hash = value => createHash('sha256').update(value).digest();

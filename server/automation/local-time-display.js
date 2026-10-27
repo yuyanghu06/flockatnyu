@@ -1,4 +1,4 @@
-import {canonicalTimeZone,createTimeContext} from '../time-zone.js';
+import {canonicalTimeZone,createTimeContext} from "../shared/time-zone.js";
 import {timestamp} from '../map/events.js';
 import {plainObject} from './validation.js';
 

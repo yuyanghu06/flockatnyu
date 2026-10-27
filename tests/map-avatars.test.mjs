@@ -5,10 +5,10 @@ import {createMapAvatarService} from '../server/map/avatars.js';
 import {safeAvatar,safePerson,createMapEventService} from '../server/map/events.js';
 import {createMapPresenceService} from '../server/map/presence.js';
 import {resolveMapAvatarUrl} from '../src/map/presence/map-avatar-url.js';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
 import {createWebsite} from '../server/web.js';
-import {createSiteAuth,readSiteAuthConfig} from '../server/site-auth.js';
+import {createSiteAuth,readSiteAuthConfig} from '../server/auth/site-auth.js';
 
 const pid='11111111-1111-4111-8111-111111111111',other='22222222-2222-4222-8222-222222222222';
 const sid='33333333-3333-4333-8333-333333333333',eid='44444444-4444-4444-8444-444444444444';

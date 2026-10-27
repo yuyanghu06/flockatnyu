@@ -56,7 +56,7 @@ export default [
         {
           patterns: [
             {
-              regex: '(^node:|/(tools|api)/|/server/(?!chat-attachments[.]js$))',
+              regex: '(^node:|/(tools|api)/|/server/(?!chat/attachments[.]js$))',
               message:
                 'Browser code may import only browser modules and the pure attachment contract.',
             },
@@ -66,10 +66,22 @@ export default [
     },
   },
   {
-    files: ['server/chat-attachments.js'],
+    files: ['server/chat/attachments.js'],
     rules: {
       'no-restricted-imports': ['error', { patterns: ['*'] }],
       'no-restricted-globals': ['error', 'process', 'require', 'fetch', 'global'],
+    },
+  },
+  {
+    files: [
+      'server/{runtime,chat,contacts,treg,audit,auth,shared,knowledge}/**/*.js',
+      'server/google/gmail-send-{service,store}.js',
+      'server/{index,web}.js',
+    ],
+    rules: {
+      ...js.configs.recommended.rules,
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-empty': ['error', { allowEmptyCatch: true }],
     },
   },
   {

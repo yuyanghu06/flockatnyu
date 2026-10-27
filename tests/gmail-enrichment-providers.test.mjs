@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {PGlite} from '@electric-sql/pglite';
 import {createDailyTregEnrichmentClient,readDailyTregEnrichmentPolicy} from '../server/gmail-enrichment/treg.js';
-import {createTregCallLogger} from '../server/treg-call-log.js';
+import {createTregCallLogger} from '../server/treg/call-log.js';
 import {createGmailEnrichmentRuntime,runGmailEnrichmentCli} from '../server/gmail-enrichment/cli.js';
 
 const originalFetch=globalThis.fetch;

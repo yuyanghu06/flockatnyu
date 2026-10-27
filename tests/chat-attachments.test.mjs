@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { AttachmentError, normalizeAttachments, attachmentBudget, attachmentBytes, providerChatMessages, MAX_FILE_BYTES, MAX_ATTACHMENT_BYTES, MAX_CHAT_BODY_BYTES, ATTACHMENT_ONLY_CONTENT } from '../server/chat-attachments.js';
+import { AttachmentError, normalizeAttachments, attachmentBudget, attachmentBytes, providerChatMessages, MAX_FILE_BYTES, MAX_ATTACHMENT_BYTES, MAX_CHAT_BODY_BYTES, ATTACHMENT_ONLY_CONTENT } from '../server/chat/attachments.js';
 import { readAttachmentFiles } from '../src/features/assistant/chat-attachments.js';
 import { boundedMessages, streamAssistant } from '../src/features/assistant/chat-client.js';
 import { createProvider } from '../server/providers/index.js';
-import { createApp } from '../server/app.js';
+import { createApp } from '../server/runtime/app.js';
 const file = (name = 'note.txt', mimeType = 'text/plain', bytes = 'Hello 🌱') => ({ name, mimeType, data: Buffer.from(bytes).toString('base64') });
 const png = () => file('photo.png', 'image/png', Buffer.from('89504e470d0a1a0a00000000', 'hex'));
 const pdf = () => file('document.pdf', 'application/pdf', '%PDF-1.7\nfixture');

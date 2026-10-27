@@ -1,5 +1,5 @@
 import {validateArguments} from '../../server/automation/validation.js';
-import {MEMORY_MAX_BYTES,validMemory} from '../../server/memory.js';
+import {MEMORY_MAX_BYTES,validMemory} from '../../server/knowledge/memory.js';
 
 const define=(name,description,properties,required=[])=>Object.freeze({name,description,
   parameters:{type:'object',additionalProperties:false,properties,required}});

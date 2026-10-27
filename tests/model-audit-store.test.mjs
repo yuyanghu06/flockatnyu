@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createAuditLogger,estimateAuditCost} from '../server/model-audit.js';
+import {createAuditLogger,estimateAuditCost} from '../server/audit/model-audit.js';
 const callId='11111111-1111-4111-8111-111111111111',runId='22222222-2222-4222-8222-222222222222';
 const start={callId,context:{agent:'planner',runId,round:2},provider:'openai',model:'gpt-6-luna',operation:'toolTurn',stream:false,providerBaseHost:'api.openai.com'};
 const env={NODE_ENV:'production',SUPABASE_URL:'https://private.example.com',SUPABASE_SERVICE_ROLE_KEY:'service-private-secret',GOOGLE_CLIENT_SECRET:'google-private-secret',GOOGLE_CREDENTIALS:JSON.stringify({access_token:'json-private-token',refresh_token:'json-private-refresh'})};

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {fixture,assertAttendance,exactSentence,requestContext,snapshot,calendarId} from './fixtures/chat-map-attendance.mjs';
 
 // Only the configured inference endpoint is networked. All source/map storage

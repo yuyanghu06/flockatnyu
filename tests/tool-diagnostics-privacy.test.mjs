@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {toolDiagnostics, diagnosticCounts, DIAGNOSTIC_CODES as C, argumentDiagnostic} from '../server/tool-diagnostics.js';
-import {createAuditLogger} from '../server/model-audit.js';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
-import {createChatRunner} from '../server/chat-runner.js';
+import {toolDiagnostics, diagnosticCounts, DIAGNOSTIC_CODES as C, argumentDiagnostic} from '../server/audit/diagnostics.js';
+import {createAuditLogger} from '../server/audit/model-audit.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
+import {createChatRunner} from '../server/chat/runner.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 import {createProvider} from '../server/providers/index.js';
 import {createMapEventStore,createMapEventService} from '../server/map/events.js';

@@ -1,10 +1,10 @@
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import {resolve,isAbsolute} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
-import {readConfig} from '../config.js';
+import {readConfig} from "../shared/config.js";
 import {createProvider} from '../providers/index.js';
-import {createAuditLogger} from '../model-audit.js';
-import {startAuditMaintenance} from '../audit-lifecycle.js';
+import {createAuditLogger} from "../audit/model-audit.js";
+import {startAuditMaintenance} from "../audit/maintenance.js";
 import {readAutomationConfig} from './config.js';
 import {createAutomationStore} from './store.js';
 import {createAutomationHandler} from './handler.js';

@@ -1,6 +1,6 @@
-import {createApp} from '../../server/app.js';
-import {readConfig} from '../../server/config.js';
-import {createSiteAuth,readSiteAuthConfig} from '../../server/site-auth.js';
+import {createApp} from '../../server/runtime/app.js';
+import {readConfig} from '../../server/shared/config.js';
+import {createSiteAuth,readSiteAuthConfig} from '../../server/auth/site-auth.js';
 import {contactStorage,contactRow,contactIds} from './contacts-store.mjs';
 
 export {contactRow,contactIds};

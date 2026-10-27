@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {createWebsite} from '../server/web.js';
-import {createSiteAuth,readSiteAuthConfig} from '../server/site-auth.js';
-import {readConfig} from '../server/config.js';
+import {createSiteAuth,readSiteAuthConfig} from '../server/auth/site-auth.js';
+import {readConfig} from '../server/shared/config.js';
 import {createManualPlannerAuth} from '../server/automation/manual-auth.js';
 
 const origin='https://planner.example',password='synthetic-planner-password',runId=randomUUID();

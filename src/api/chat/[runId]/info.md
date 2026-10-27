@@ -4,6 +4,6 @@ This folder mirrors the `/api/chat/:runId` URL segment. It does not itself add a
 
 Child URL folders: `steer/`.
 
-Services and authentication are injected by `server/app.js` through the root
+Services and authentication are injected by `server/runtime/app.js` through the root
 registration module. Shared helpers live in `_shared/`; browser code must not
 import these server-only handlers. Preserve exact public behavior when editing.

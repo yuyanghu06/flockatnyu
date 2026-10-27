@@ -3,7 +3,7 @@ import {createHash} from 'node:crypto';
 import {mkdir,readFile,writeFile,copyFile,readdir} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {fixture,task,input,ids,eventId,copy,assertAdded,assertPreserved} from './fixtures/planner-followup.mjs';
 
 const digest=value=>createHash('sha256').update(typeof value==='string'||Buffer.isBuffer(value)?value:JSON.stringify(value)).digest('hex');

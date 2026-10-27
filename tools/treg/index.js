@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { canonicalJson, plainObject, validateArguments } from '../../server/automation/validation.js';
-import { CONTACT_FIELDS } from '../../server/contacts.js';
-import { exaContactFields } from '../../server/contact-fields.js';
-import { validTregPeopleQuery } from '../../server/treg-people.js';
-import { validTregEnrichmentEmail } from '../../server/treg-enrich.js';
+import { CONTACT_FIELDS } from '../../server/contacts/store.js';
+import { exaContactFields } from '../../server/contacts/fields.js';
+import { validTregPeopleQuery } from '../../server/treg/people.js';
+import { validTregEnrichmentEmail } from '../../server/treg/enrich.js';
 
 const define = (name, description, properties, required = []) => Object.freeze({ name, description, readOnly: true,
   parameters: { type: 'object', additionalProperties: false, properties, required } });

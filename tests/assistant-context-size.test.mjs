@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assistantAnswerPrompt,assistantPlanningPrompt} from '../server/assistant-context.js';
+import {assistantAnswerPrompt,assistantPlanningPrompt} from '../server/chat/context.js';
+import {publicResult} from '../server/chat/public-result.js';
 
 const now='2026-10-18T16:00:00Z',timeZone='America/New_York';
 const marker='\nUNTRUSTED TOOL STATUS AND REFERENCE DATA (JSON):\n';
@@ -38,4 +39,30 @@ test('duplicate canonical objects reference the first exact canonical source; no
  const actual=encoded(input).data;assert.deepEqual(actual.results[0].sources,[{sourceRef:0}]);assert.deepEqual(actual.sources,input.sources);
  assert.deepEqual(encoded({sources:[],results:[{sources:[original]}]}).data,{sources:[],results:[{sources:[original]}]});
  assert.deepEqual(encoded({}).data,{results:[],sources:[]});
+});
+
+test('large Contacts imports keep every confirmed receipt while removing oversized contact bodies',()=>{
+ const notes='💬'.repeat(2000);
+ const items=Array.from({length:10},(_,index)=>({
+  resultId:`10000000-0000-4000-8000-${String(index+1).padStart(12,'0')}`,
+  operation:index%2?'existing':'imported',
+  id:`20000000-0000-4000-8000-${String(index+1).padStart(12,'0')}`,
+  updated_at:now,
+ }));
+ const result={status:'ready',contactImport:{complete:true,imported:5,existing:5,items},results:items.map(item=>({
+  resultId:item.resultId,status:'ready',operation:item.operation,
+  contact:{id:item.id,created_at:now,updated_at:now,raw_input:{first_name:'Synthetic',notes}},
+ }))};
+ const args={resultIds:items.map(item=>item.resultId)},before=structuredClone(result);
+ const single=publicResult('import_treg_contacts',{resultIds:[items[0].resultId]},{
+  status:'ready',contactImport:{complete:true,imported:1,existing:0,items:[items[0]]},results:[result.results[0]],
+ });
+ assert.equal(single.results[0].contact.raw_input.notes,notes,'Each contact fits the individual projection limit');
+ assert(Buffer.byteLength(JSON.stringify(single.results[0].contact.raw_input))<24000);
+ assert(Buffer.byteLength(JSON.stringify(result.results))>60000,'The complete batch exceeds the aggregate result bound');
+ const projected=publicResult('import_treg_contacts',args,result);
+ assert.equal(projected.status,'ready');assert.deepEqual(projected.contactImport,result.contactImport);
+ assert.deepEqual(projected.results,items.map(({resultId,operation})=>({resultId,status:'ready',operation})));
+ assert(projected.results.every(item=>!Object.hasOwn(item,'contact')));
+ assert(Buffer.byteLength(JSON.stringify(projected))<60000);assert.deepEqual(result,before,'Projection does not change saved contacts or receipts');
 });

@@ -15,12 +15,12 @@
  * configuration/storage/invalid result; bounded coverage never proves absence. Private
  * no-store; raw records stay private.
  */
-import { validContact } from '../../../server/contacts.js';
+import { validContact } from '../../../server/contacts/store.js';
 
 import {
   CONTACT_SEARCH_PROPERTIES,
   validContactsSearchOptions,
-} from '../../../server/contacts-search.js';
+} from '../../../server/contacts/search.js';
 import { createContactsHttpContext, project } from '../_shared/contacts.js';
 
 export function registerApiContactsGet({ app, contactsStore, auth, config, readJSON } = {}) {

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {createChatRunner} from '../../server/chat-runner.js';
+import {createChatRunner} from '../../server/chat/runner.js';
 import {createMapEventService,validateSnapshot} from '../../server/map/events.js';
 import {CHAT_MAP_SOURCE_ID,chatMapEventUrl,createMapSourceAuthorizer,withChatMapSource} from '../../server/map/source-access.js';
 import {createMapTools} from '../../tools/map/index.js';
 import {createChatMapTools} from '../../tools/map/chat.js';
-import {createTimeContext} from '../../server/time-zone.js';
+import {createTimeContext} from '../../server/shared/time-zone.js';
 
 export const zone='America/New_York',origin='https://synthetic-flock.example.test';
 export const ids={event:'21000000-0000-4000-8000-000000000001',second:'21000000-0000-4000-8000-000000000002',

@@ -5,7 +5,7 @@ import {CALENDAR_REQUIRED_SCOPES} from '../server/google/calendar-config.js';
 import {GoogleError} from '../server/google/oauth.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 import {projectCalendarBatchWrite} from '../tools/calendar/chat-batch.js';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 
 const calendarId='fixed@example.com',privateText='PRIVATE_PROVIDER_FIELD',descriptionText='Saved event description requested for complete receipts';
 const start={date:'2026-10-23'},end={date:'2026-10-24'};

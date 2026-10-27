@@ -1,5 +1,5 @@
 import {normalizeMemberPlanBoundary} from '../automation/local-clock-boundary.js';
-import {canonicalTimeZone} from '../time-zone.js';
+import {canonicalTimeZone} from "../shared/time-zone.js";
 import {timestamp,eventWindow} from './events.js';
 
 export class ChatMapTimeError extends Error {

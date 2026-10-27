@@ -4,7 +4,7 @@ Saved-contact results contain only the six projected supported strings; request-
 
 `index.js` exposes separate search, exact read, create, update and delete tools
 for the existing Supabase `contacts` table. They use only the saved contacts
-store in `server/contacts.js`; no source originals or other services are fetched.
+store in `server/contacts/store.js`; no source originals or other services are fetched.
 
 Tool writes accept six optional string fields: first_name, last_name, email,
 phone_number, workplace and notes. Creation fills omitted fields with empty
@@ -24,7 +24,7 @@ confirmed writes return a content-free contactWrite receipt. Direct stateless
 execution cannot update or delete because it has no exact-read snapshot.
 
 Tool results expose only the six supported string values through the shared
-`server/contact-fields.js` reader. It understands the observed native
+`server/contacts/fields.js` reader. It understands the observed native
 `found`/`person` envelope and separately saved lookup email; explicit manual
 top-level fields, including clears, take precedence. Exact read snapshots stay
 private inside the request adapter so edits preserve complete native JSON and

@@ -6,6 +6,6 @@ Child URL folders: `companies/`, `people/`.
 
 `register.js` is the optional composition seam for all four dormant lookup handlers. The production root does not import it; never activate these paid operations as a side effect of file cleanup.
 
-Services and authentication are injected by `server/app.js` through the root
+Services and authentication are injected by `server/runtime/app.js` through the root
 registration module. Shared helpers live in `_shared/`; browser code must not
 import these server-only handlers. Preserve exact public behavior when editing.

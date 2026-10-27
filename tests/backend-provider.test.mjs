@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readConfig } from '../server/config.js';
+import { readConfig } from '../server/shared/config.js';
 import { createProvider, parseSSE } from '../server/providers/index.js';
 
 const config = readConfig({ LLM_PROVIDER: 'openai-compatible', LLM_MODEL: 'test-model', LLM_API_KEY: 'test-secret' });
@@ -68,7 +68,7 @@ test('provider fetch cancellation remains sanitized', async () => {
 
 test('Hono API integration (requires installed dependency)', async t => {
   try { await import('hono'); } catch (error) { if (error.code === 'ERR_MODULE_NOT_FOUND') { t.skip('Hono dependency unavailable in offline environment'); return; } throw error; }
-  const { createApp } = await import('../server/app.js');
+  const { createApp } = await import('../server/runtime/app.js');
   const app = createApp({ config, auth: () => ({ id: 'local-development', allowedSourceIds: [] }), provider: { async *stream({ system }) { assert.match(system, /No club knowledge/); yield 'Hello'; } } });
   const response = await app.request('/api/chat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: 'Hello' }] }) });
   assert.deepEqual((await response.text()).trim().split('\n').map(JSON.parse).map(row => row.type), ['meta', 'delta', 'done']);

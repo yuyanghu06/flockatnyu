@@ -5,7 +5,7 @@ import {createDiscordChatContextLoader} from '../server/discord/chat-context.js'
 import {createLiveDiscordRetrieval} from '../server/discord/live-retrieval.js';
 import {createDiscordChatBridge,createDiscordChatRemote} from '../server/discord/chat-bridge.js';
 import {createDiscordChatAdapter} from '../server/discord/chat-adapter.js';
-import {createDiscordChatRunner} from '../server/runtime-app.js';
+import {createDiscordChatRunner} from '../server/runtime/services.js';
 import {discordSnowflakeAt} from '../server/discord/live-client.js';
 import {EBOARD_CATEGORY_ID,LEADERSHIP_CHANNEL_ID} from '../server/discord/channel-scope.js';
 const guildId='100',userId='300',own='200',sibling='201',unrelated='202',eboard='203',ownThread='250';

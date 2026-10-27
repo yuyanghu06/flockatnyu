@@ -7,7 +7,7 @@ import {createAutomationHandler} from '../server/automation/handler.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 import {createStagedPipeline} from '../server/automation/staged-pipeline.js';
 import {createBoundedResults} from '../server/automation/bounded-result.js';
-import {DIAGNOSTIC_CODES} from '../server/tool-diagnostics.js';
+import {DIAGNOSTIC_CODES} from '../server/audit/diagnostics.js';
 
 const inputId=randomUUID(),leaseToken=randomUUID(),sourceId=randomUUID(),stamp='2026-10-22T18:00:00Z';
 const secret='PRIVATE_FAILED_TOOL_BODY_AND_CREDENTIAL';

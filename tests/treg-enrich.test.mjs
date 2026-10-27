@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import {mkdtemp,readdir,readFile,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {createTregEnrichmentClient} from '../server/treg-enrich.js';
-import {createTregCallLogger} from '../server/treg-call-log.js';
+import {createTregEnrichmentClient} from '../server/treg/enrich.js';
+import {createTregCallLogger} from '../server/treg/call-log.js';
 
 const requestId='61000000-0000-4000-8000-000000000001',principal={id:'synthetic-enrichment-worker',allowedSourceIds:[]};
 const email='Rae@Example.com';

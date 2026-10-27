@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {resolve} from 'node:path';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 import {selectedFixture,input,task,ids,copy,originalUrl,preserveBusinessState,bytes,call,turn} from './fixtures/planner-selected-fixes.mjs';
 
 const flag=name=>process.argv.find(value=>value.startsWith('--'+name+'='))?.slice(name.length+3);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {miroNavigationPrompt} from '../server/miro/navigation.js';
-import {assistantAnswerPrompt,retrieveAssistantContext} from '../server/assistant-context.js';
+import {assistantAnswerPrompt,retrieveAssistantContext} from '../server/chat/context.js';
 import {createMiroMcpTools} from '../tools/miro/mcp.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
 

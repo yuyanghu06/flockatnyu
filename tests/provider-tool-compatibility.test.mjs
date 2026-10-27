@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createProvider} from '../server/providers/index.js';
-import {readConfig} from '../server/config.js';
+import {readConfig} from '../server/shared/config.js';
 const messages=[{role:'user',content:'Read the club Discord channel.'}];
 const tool={name:'read_discord_window',description:'Read original channel messages.',parameters:{type:'object',properties:{channelId:{type:'string'}},required:['channelId'],additionalProperties:false}};
 const makeConfig=extra=>readConfig({LLM_PROVIDER:'openai-compatible',LLM_MODEL:'gpt-6-luna',LLM_API_KEY:'fixture-only-secret',...extra});

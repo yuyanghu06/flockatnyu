@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDiscordDraftTools} from '../tools/discord/draft.js';
-import {createDiscordChatRunner,createRuntimeDiscordChatBridge} from '../server/runtime-app.js';
+import {createDiscordChatRunner,createRuntimeDiscordChatBridge} from '../server/runtime/services.js';
 import {REST} from '@discordjs/rest';
 import {EBOARD_CATEGORY_ID} from '../server/discord/channel-scope.js';
-import {createChatRunner} from '../server/chat-runner.js';
+import {createChatRunner} from '../server/chat/runner.js';
 import {createDiscordChatBridge} from '../server/discord/chat-bridge.js';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 import {createProvider} from '../server/providers/index.js';
 
 const source=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;

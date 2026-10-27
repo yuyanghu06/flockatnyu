@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
 import {createBugReportTools} from '../tools/bug-reports/index.js';
-import {createBugReportStore} from '../server/bug-reports.js';
-import {createApp} from '../server/app.js';
-import {readConfig} from '../server/config.js';
-import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/assistant-context.js';
+import {createBugReportStore} from '../server/knowledge/bug-reports.js';
+import {createApp} from '../server/runtime/app.js';
+import {readConfig} from '../server/shared/config.js';
+import {retrieveAssistantContext,assistantAnswerPrompt} from '../server/chat/context.js';
 
 const id='11111111-1111-4111-8111-111111111111';
 const principal={id:'local-development',allowedSourceIds:[]};

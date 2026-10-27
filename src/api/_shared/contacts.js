@@ -1,5 +1,5 @@
-import { contactFields } from '../../../server/contact-fields.js';
-import { validContact } from '../../../server/contacts.js';
+import { contactFields } from '../../../server/contacts/fields.js';
+import { validContact } from '../../../server/contacts/store.js';
 import { plainObject } from '../../../server/automation/validation.js';
 
 const statuses = Object.freeze({

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createApp, developmentAuth } from '../server/app.js';
-import { readConfig } from '../server/config.js';
+import { createApp, developmentAuth } from '../server/runtime/app.js';
+import { readConfig } from '../server/shared/config.js';
 import { boundedMessages } from '../src/features/assistant/chat-client.js';
 import { createLiveRetrievalTools } from '../tools/discord/index.js';
 

@@ -3,12 +3,12 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {readFile,readdir} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {createTregPeopleClient} from '../../server/treg-people.js';
-import {createTregEnrichmentClient} from '../../server/treg-enrich.js';
-import {createTregCallLogger} from '../../server/treg-call-log.js';
+import {createTregPeopleClient} from '../../server/treg/people.js';
+import {createTregEnrichmentClient} from '../../server/treg/enrich.js';
+import {createTregCallLogger} from '../../server/treg/call-log.js';
 import {createTregTools} from '../../tools/treg/index.js';
 import {createContactsTools} from '../../tools/contacts/index.js';
-import {createChatRunner} from '../../server/chat-runner.js';
+import {createChatRunner} from '../../server/chat/runner.js';
 import {contactStorage,contactRow,contactPrincipal} from './contacts-store.mjs';
 
 const temporaryRoots=new Set();

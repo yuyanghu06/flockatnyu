@@ -7,7 +7,7 @@ import {createMapEventService,mapReadContext} from '../server/map/events.js';
 import {createMapPresenceService} from '../server/map/presence.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
-import {createTimeContext} from '../server/time-zone.js';
+import {createTimeContext} from '../server/shared/time-zone.js';
 
 // All identities/messages below are synthetic. No source API or hosted database
 // is used. Optional configured-model checks reuse the existing inert harness.

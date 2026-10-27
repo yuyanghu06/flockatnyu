@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createApp} from '../server/app.js';
+import {createApp} from '../server/runtime/app.js';
 const guildId='100',source=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 function setup() {
  const state={enabled:true,available:true,seen:[]};

@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import {mapAvatarProxy} from './avatars.js';
 // Trusted normalized-event storage. Browser projections live in presence.js.
 import {randomUUID} from 'node:crypto';

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fixture,snapshot,plain,ids,principal,now} from './fixtures/chat-map-attendance.mjs';
-import {retrieveAssistantContext} from '../server/assistant-context.js';
+import {retrieveAssistantContext} from '../server/chat/context.js';
 import {createMapTools} from '../tools/map/index.js';
 import {createChatMapTools} from '../tools/map/chat.js';
 

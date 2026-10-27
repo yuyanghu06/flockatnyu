@@ -6,6 +6,6 @@ This folder mirrors the `/healthz` URL segment. Each method file registers exact
 
 Base-path exception: this handler serves `/healthz`, not `/api/healthz`, preserving the hosting health check.
 
-Services and authentication are injected by `server/app.js` through the root
+Services and authentication are injected by `server/runtime/app.js` through the root
 registration module. Shared helpers live in `_shared/`; browser code must not
 import these server-only handlers. Preserve exact public behavior when editing.

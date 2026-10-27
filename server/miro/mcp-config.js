@@ -1,4 +1,4 @@
-import {SOURCE_TOOL_TIMEOUT_MS} from '../source-timeout.js';
+import {SOURCE_TOOL_TIMEOUT_MS} from "../shared/source-timeout.js";
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 export const validMiroId = value => typeof value === 'string' && /^[A-Za-z0-9_=-]{1,200}$/.test(value);

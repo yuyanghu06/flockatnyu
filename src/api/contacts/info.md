@@ -9,6 +9,6 @@ Child URL folders: `[id]/`, `import/`.
 
 `register.js` composes the five saved-Contacts method handlers for isolated tests; the production root also registers them explicitly. Treg importing is a separate endpoint under `import/treg/`.
 
-Services and authentication are injected by `server/app.js` through the root
+Services and authentication are injected by `server/runtime/app.js` through the root
 registration module. Shared helpers live in `_shared/`; browser code must not
 import these server-only handlers. Preserve exact public behavior when editing.
