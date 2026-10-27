@@ -1,5 +1,7 @@
 # Standard verification and current fixture contracts
 
+`prompt-assets.test.mjs` checks exact Markdown loading, placeholder/path failures, copied-source independence and fixed asset packaging. Drive/collector/runtime package tests use relocated assets. The prompt-markdown milestone records five full-suite API fixture failures reproduced on the pre-migration source, separately from the passing migration checks.
+
 ## Server module locations
 
 Tests import HTTP composition from `server/runtime`, chat orchestration from
@@ -870,3 +872,40 @@ Origin, public projection, durable-log failure/cancellation and default-app 404s
 private-logger boundaries. `treg-branddev.test.mjs` independently exercises the
 selected company request variants and native field projection. These suites make
 no live or paid calls and do not activate the dormant routes.
+
+`operation-api.test.mjs` and `fixtures/operation-api.mjs` exercise all54 private
+Hono routes, request authority, lossless arguments, bounds, original exceptions,
+private map capabilities, worker preparation and cleanup races. They verify
+unknown-write outcomes without replay and hidden-operation denials; domain
+services are simulated and the independent verification blocks external network.
+Actual-model gates and separate live reads are documented in the October27
+operation API verification milestone, not claimed by these offline tests.
+
+`chat-read-after-write.test.mjs` checks actual Contacts/Calendar request-state
+recovery, adapter-local read caching, write replay protection, uncertain outcomes
+and the existing conflict-refresh bound. The eight tests independently reproduce
+both successful-write stale reads and rejected-write recovery failures. Optional
+`operation-api-all-model.mjs` and its fixtures keep actual model choices separate
+from simulated business boundaries and live provider verification; bad fixture
+setup is explicitly disqualified. Real-service workflow outcomes are catalogued
+in `docs/agent-tasks.md` and the October27 all-operation milestone.
+
+calendar-sync-locations.test.mjs and its fixture independently cover forgiving
+catalogue matching, normalized collisions, short/substr/generic-name safety,
+unmapped-location ready outcomes, actual map-service writes with no guessed
+building, stale-link clearing, manual/private attendance preservation and CAS/
+provider/permission/time-window failures. They use simulated providers and a
+versioned in-memory store, with no live model/business request or worker cycle.
+
+Full-tree release verification updates three older API fixtures: Discord source
+scope uses the registered list_discord_channels route and rejects forged body
+controls; pre-aborted summary requests assert zero domain dispatch; map isolation
+observes private receipts beneath the JSON boundary while proving no capability
+is serialized to the client. Executed-read coverage and exact-version/source
+isolation assertions remain in place. These are test-only corrections.
+
+The runtime-deploy suite also projects Docker COPY inputs into an image-shaped
+filesystem and imports the real web app and worker adapters/handler with empty
+environments and networking denied. It catches both omitted src/api routes and
+stale COPY sources absent from a sanitized package. This is an import/filesystem
+check; actual Docker build/hosted readiness is separately verified during release.

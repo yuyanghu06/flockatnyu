@@ -1,0 +1,10 @@
+# Full-tree source and dependency preflight reviewed
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:21:46.521647-04:00 / evaluator / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree to all five Railway services, without a new production cycle.
+- Starting repository state: fixed snapshot of dev/tool-api-services working tree, 4,239 initial source files; update agent stopped and disabled with unchanged lastStarted/no lease.
+- Work performed / changed files: Read-only evaluator verified exact snapshot/source manifest, fixed prompt assets and Docker copies, browser pure-contract imports, existing API/cache changes and the three fixture repairs. No high-confidence secrets, private/generated source paths beyond legitimate .env.example, schema/environment/manifest source changes or obvious release blocker was found. Existing lock audit advisories were classified separately; no dependency upgrade was made.
+- Decisions: Adapt tests to real registered API operations rather than weaken transport validation or expose private capabilities. Keep source/package/secret boundaries and ordinary permissions unchanged. No schema or dependency change is needed for the release.
+- Checks and evidence: ignored evidence/full-tree-release-2026-10-27 contains initial/final CI logs, browser artifacts, fixture update hashes, focused reproduction and audit classification; current snapshot/source pins reviewed.
+- Resulting state / acceptance: Preflight supports the source boundary but final release acceptance waits for successful full CI and exact-commit packages. Existing SDK body-parser Express-server path is not mounted by the Hono app; fast-uri remains reachable through upstream tool-schema validation and is recorded as an existing bounded dependency risk. No exploit/external request was made.
+- Remaining work and handoff: Successful final full CI, independent exact-package review, logical commits and push, five hosted deployments/verification and final Git parity. Worker remains paused; no forced/manual/ordinary cycle test.

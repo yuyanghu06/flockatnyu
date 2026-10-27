@@ -1,5 +1,7 @@
 # Attio operations behind the private API
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 `contracts.js` declares record search/read/create/update and attribute discovery.
 `projection.js` bounds returned records and builds safe source links and failure
 diagnostics. `index.js` performs source/object/write validation, calls the

@@ -66,6 +66,12 @@ lookup routes remain unregistered and have no new tools. The older browser Treg
 importer still has its documented search-and-save behavior; model search,
 enrichment and Contacts import remain separate operations.
 
-This migration is implemented locally. Static checks and independent static
-review are recorded in [the milestone](../milestones/milestone.md). The user has
-stopped tests, so runtime equivalence and deployment are not established.
+The user resumed runtime/live testing on October 27. All 54 routes have offline
+transport checks; 45 operation names additionally have successful actual-model
+calls against real providers/stores. Scoped API and chat-cache corrections passed
+independent regressions and live workflow recovery. Exactly one approved normal
+production cycle ran; sync was partial and follow-up reached its limit. The user
+held additional worker cycles, so complete 54-operation live acceptance remains
+unverified. The concurrent prompt refactor was outside the fixed-source tests.
+See the [coverage/report](../milestones/tool-operation-api-all-live-2026-10-27/verification.md)
+and editable [common task log](agent-tasks.md) for actual variants and limits.

@@ -1,3 +1,208 @@
+## Markdown prompt release — branch pushed; main checks in progress
+
+The isolated release is ebe0194 on codex/markdown-prompts-release; [PR1](https://github.com/yuyanghu06/flockatnyu/pull/1) isopen. Full local pre-push CI passes3040/0failed/2optional skips; all5browserflows pass. Independent scope review ACCEPTS and matches testedruntime/promptpayloads. SeparateCalendarlocationchanges areexcluded. Remote browser check passes; quality remainsrunning. Productionuploadhasnotbegun. Workeriscurrentlydisabled andwillremainso; no furtherforcedtestcycle or privateconfigurationchange.
+
+[Release scope](prompt-release-2026-10-27/info.md) · [tester pass](history/2026-10-27_19-31-42-250791-tester-release-full-checks-pass.md) · [evaluator pass](history/2026-10-27_19-31-42-250792-evaluator-release-scope-accepted.md) · [orchestrator pass](history/2026-10-27_19-31-42-250793-orchestrator-release-branch-pushed-pr-opened.md)
+
+## Full-tree Railway release — checks accepted; publication/packages next
+
+The user authorized all five services from the entire dev/tool-api-services
+working tree. Exact final full CI passes all gates and 3,050 tests, with zero
+failures/two optional skips. All five browser flows pass. Three old API test
+fixtures were corrected without weakening grants/privacy; independent container
+review also found and fixed missing/stale worker Docker COPY roots. The new
+image-projection/import regression passes with networking blocked. Source and
+container review ACCEPT.
+
+Four logical source commits are local: c7bf07d prompt assets/corrections, a5e4b58
+API/cache recovery, 0574771 Calendar placement and 6b1502e worker image roots.
+Shared records are being committed before exact clean packages and push. No new
+application package has been uploaded yet.
+
+Worker activation remains false and the old process is stopped. A CLI zero-scale
+attempt unexpectedly rebuilt the old artifact in a default region; the original
+European region was restored and the disabled build stopped. Readback shows no
+lease and an unchanged last-start across the entire pause. No new production
+cycle or business-write test ran. Keep the worker paused after rollout.
+
+[Scope](full-tree-release-2026-10-27/info.md) ·
+[Verification](full-tree-release-2026-10-27/verification.md).
+
+[Release review finds worker image dependency omissions](history/2026-10-27_19-35-44-314791-evaluator-worker-container-omission-found.md) ·
+[Worker image includes its real reachable runtime roots](history/2026-10-27_19-35-44-314792-coder-worker-container-roots-corrected.md) ·
+[Full CI passes after worker container regression fix](history/2026-10-27_19-35-44-314793-tester-full-tree-container-gates-pass.md) ·
+[Unexpected scale-triggered rebuild stopped and region restored](history/2026-10-27_19-35-44-314794-orchestrator-worker-region-incident-corrected.md)
+
+## Contact clarification and Calendar completion — verified and accepted
+
+Both selected prompt corrections pass their original configured-model failure reproductions. Ambiguous Contact update/delete now stop after search with no candidate-specific reads or mutations, and an actual user clarification resumes only the selected record's pending edit. The original empty DST Calendar question ends after one correct25-hour read; complete-empty reuse no longer loops. Clear-field preservation, unavailable-data honesty, complete narrowed AM/PM coverage and actual mocked native Miro content fallback are supported. Live verification used40new gpt-6-luna HTTP requests within64, all successful; source/all87assets remained pinned with no workspace drift. Six raw case-groups pass strictly; two further outcomes are independently accepted through semantic review with a broader empty-window lookup and one unnecessary partial-window probe recorded.106 focused offline checks, format/lint/file limits/API build pass. Independent evaluator ACCEPT. No backend/runtime logic, execution limits, live business data or deployment changed.
+
+[Scope](prompt-clarification-completion-2026-10-27/info.md) · [tester pass](history/2026-10-27_19-04-41-667181-tester-contact-calendar-live-retest.md) · [evaluator pass](history/2026-10-27_19-04-41-667182-evaluator-contact-calendar-fix-accepted.md) · [orchestrator pass](history/2026-10-27_19-04-41-667183-orchestrator-contact-calendar-tightening-complete.md)
+
+## Calendar-to-map location correction — complete locally and independently accepted
+
+The partial result is reproducible as location matching: E-Lab punctuation did
+not match eLab, and unmatched places marked the whole sync partial. The saved
+original diagnostic is generic; the current read-only reproduction is not
+presented as the exact historical unresolved set.
+
+Building matching now accepts clear case, accent, punctuation, spacing and bounded
+spelling variants from the fixed catalogue. Multiple qualifying buildings and
+uncertainty stay ambiguous. Per the user's latest choice, unknown locations
+leave building links empty without making sync partial. Event identity, times,
+attendance, private participation and unchanged manual placement are preserved.
+Known-to-unknown moves still clear stale links through the normal versioned write.
+No Calendar event or building catalogue is deleted or changed.
+
+Independent simulated-provider/in-memory-map checks pass 203/203, including ten
+new cases and the actual map service's preservation/version checks. The read-only
+current-provider diagnostic now calculates ready with no unresolved locations and
+one intended E-Lab placement correction. That write was suppressed: there was no
+live map change. All 57 allowed read requests succeeded. No additional production
+cycle or model call ran. Root scoped formatting/lint, file limits and API build
+pass; no deployment/full-CI/browser result is claimed.
+
+[Scope](calendar-sync-location-fix-2026-10-27/info.md) ·
+[Evidence and limits](calendar-sync-location-fix-2026-10-27/verification.md) ·
+[Editable task log](../docs/agent-tasks.md).
+
+[Location matching and nonblocking unmapped projection implemented](history/2026-10-27_19-08-43-404578-coder-sync-location-correction-implemented.md) ·
+[Independent location and projection regression checks pass](history/2026-10-27_19-08-43-404579-tester-sync-location-correction-independently-verified.md) ·
+[Read-only provider check and current-config quality gates pass](history/2026-10-27_19-08-43-404580-orchestrator-sync-location-read-only-verification.md)
+
+Independent evaluator **ACCEPTS** the scoped correction and evidence. All tested
+source hashes remain unchanged. This milestone is complete locally; the intended
+live placement correction was not applied or deployed, and the broader live
+operation milestone remains partial/held. No additional production cycle ran.
+
+[Independent evaluation accepts location correction](history/2026-10-27_19-09-25-646510-evaluator-sync-location-fix-accepted.md) ·
+[Location repair integrated locally without production cycle](history/2026-10-27_19-09-25-646511-orchestrator-sync-location-fix-integrated.md)
+
+## Contact clarification and Calendar completion — prompts tightened; live retest pending
+
+The user selected prompt corrections for both observed failures. Nine Markdown assets now require resolving the actual Contact target before any candidate-specific read/write, preserving pending intent through clarification, and stopping Calendar listings once complete empty evidence answers the request. Both routing passages distinguish explicit Calendar requests from automatic separate Miro content checks for unnamed-source schedule questions when Miro tools exist. Filtered/partial/unavailable results, pending writes and legitimate fresh reads remain qualified. All87assets validate and six chat prompt variants assemble. Independent static review finds no runtime/schema/limit changes: only nine Markdown assets and three assembly comments changed. Source is final for a bounded actual-model retest; no new inference result is claimed yet.
+
+[Scope](prompt-clarification-completion-2026-10-27/info.md) · [planner pass](history/2026-10-27_18-55-37-632942-planner-contact-calendar-prompt-plan.md) · [coder pass](history/2026-10-27_18-55-37-632943-coder-contact-calendar-prompts-tightened.md) · [coder pass](history/2026-10-27_18-55-37-632944-coder-calendar-fallback-condition-precise.md) · [orchestrator pass](history/2026-10-27_18-55-37-632945-orchestrator-prompt-tightening-integrated-for-retest.md)
+
+## Markdown prompts checked with live LLM — verification complete; two behavior failures remain
+
+Configured gpt-6-luna completed 50 actual inference HTTP requests across the original 40-request batch and a separately announced 10-request followup, within the combined maximum of 52. All HTTP responses succeeded, sources/all 87 Markdown assets stayed pinned and no relevant workspace drift occurred. Independent semantic review confirms six of eight scenarios worked as intended, including exact Contact updates, unavailable-data honesty, worker intent retention, quoted no-write, attendance preservation and conflict recovery. Two real failures remain: mutating an ambiguous same-name Contact before clarification, and repeating complete-empty Calendar reads until the evaluation cap without answering. Original narrow assertion failures and cap-limited attempts remain preserved. Verification itself is ACCEPTED; full behavioral acceptance is REQUEST CHANGES. No prompt/runtime changes, live business data operations or deployment occurred.
+
+[Scope](prompt-markdown-live-2026-10-27/info.md) · [tester pass](history/2026-10-27_18-40-14-997563-tester-markdown-live-focused-complete.md) · [evaluator pass](history/2026-10-27_18-40-14-997564-evaluator-markdown-live-final-reviewed.md) · [orchestrator pass](history/2026-10-27_18-40-14-997565-orchestrator-markdown-live-verification-complete.md)
+
+## Live Markdown prompt checks — real behavior failures found; focused followup underway
+
+The first frozen-source run stopped at its 40-request cap: all HTTP responses were successful gpt-6-luna inference, with no business network and no source drift. Independent semantic review supports four passes (exact Contacts update, worker outage intent preservation, quoted no-write and positive attendance). It found a real ambiguous-name mutation before clarification and repeated complete-empty Calendar reads that prevented an answer. Contacts unavailability and map conflict remained budget-limited. Original assertion failures are retained: the attendance success-phrase regex was too narrow, and the worker assertion incorrectly required a redundant defer call. A separate followup for only the two unfinished cases is capped at 12 additional HTTP requests, maximum 52 overall. No prompts/runtime behavior have been changed.
+
+[Scope](prompt-markdown-live-2026-10-27/info.md) · [tester pass](history/2026-10-27_18-36-41-517886-tester-markdown-live-first-batch.md) · [evaluator pass](history/2026-10-27_18-36-41-517887-evaluator-markdown-live-first-reviewed.md) · [orchestrator pass](history/2026-10-27_18-36-41-517888-orchestrator-markdown-live-focused-followup-authorized.md)
+
+## All-operation live verification and editable task log — partial/held acceptance
+
+Created [docs/agent-tasks.md](../docs/agent-tasks.md) as the manually editable
+common-task catalogue, with stable IDs, expected outcomes and dated live results.
+**45 of 54 operation names** have successful actual-model calls to real services;
+all 54 have separate offline transport coverage. Complete Calendar and Contacts
+lifecycles, Contacts ambiguity, Treg default-save/no-save and enrichment no-match,
+Attio lifecycle and bounded Discord/Miro/map workflows have passing variants.
+Fixed fresh reads after writes and retry after a missing prerequisite read while
+preserving confirmed/uncertain write replay protection and conflict bounds.
+
+Exactly one approved normal production cycle handled 3 claimed originals with
+22 calls and 12 model requests, then released its lease. Saved-task reads,
+fragment continuation, exact resolution and initial finish succeeded.
+**Automatic sync returned partial; follow-up reached its round limit.** The user
+declined additional worker cycles. Worker Calendar/Member Plans create/cancel,
+participation and new task-deferral workflows remain unverified. Prior
+unmatched-attendee behavior and the invalid worker fixture sample stay qualified.
+
+All 7 Calendar fixtures were cancelled, 8 new Contacts and 2 Attio records were
+deleted and checked absent, and 2 map plans were cancelled and freshly read back.
+One requested email was accepted and found in Sent; delivery is not established.
+One labeled Discord marker and bug report remain. Tests used fixed 02427ba plus
+5 owned runtime files while another chat refactored prompts. That separate work
+is not covered. Final 44 focused checks, scoped formatting/lint, file limits and
+API/frontend builds pass; the existing chunk warning remains.
+
+[Report](tool-operation-api-all-live-2026-10-27/verification.md) ·
+[54-operation matrix](tool-operation-api-all-live-2026-10-27/coverage.md).
+
+[Cache regression review](history/2026-10-27_18-36-26-271781-tester-chat-cache-recovery-independently-verified.md) ·
+[Source isolation](history/2026-10-27_18-36-26-271782-orchestrator-fixed-source-live-test-isolation.md) ·
+[Production cycle](history/2026-10-27_18-36-26-271783-orchestrator-normal-production-cycle-completed-partial.md) ·
+[Task log](history/2026-10-27_18-36-26-271784-orchestrator-common-task-log-created.md) ·
+[Calendar workflow](history/2026-10-27_18-36-26-271785-tester-complete-live-calendar-workflow-accepted.md) ·
+[CRM workflows](history/2026-10-27_18-36-26-271786-tester-complete-live-crm-workflows-accepted.md) ·
+[Coverage handoff](history/2026-10-27_18-36-26-271787-orchestrator-all-live-coverage-and-workflow-log-recorded.md)
+
+Independent evaluator **ACCEPTS the scoped API/cache fixes and recorded evidence**.
+The full live milestone remains partial/held. CAL-02 verifies renaming while
+preserving timing; the separate time-shift task CAL-05 remains untested.
+
+[Independent review accepts scoped fixes and qualified live evidence](history/2026-10-27_18-42-17-920369-evaluator-all-live-scoped-acceptance.md) ·
+[Live test pass closed with editable task log and explicit held coverage](history/2026-10-27_18-42-17-920370-orchestrator-all-live-final-handoff.md)
+
+## Markdown prompts with live LLM — bounded verification underway
+
+The user requested actual LLM verification. Existing configured inference is available as gpt-6-luna. Root accepted a small production-runner simulation plan and assigned one tester as the sole inference caller. Eight selected conversations cover chat writes/preservation, ambiguity, unavailable data, quoted no-write, attendance, DST, conflict recovery and initial/follow-up worker task preservation. The combined hard cap is 40 HTTP inference requests including retries; all business services remain simulated and prompt/runtime wording stays unchanged. Sources and all 87 prompt assets are frozen/pinned, with only the exact configured inference endpoint permitted. No inference outcome is claimed yet.
+
+[Scope](prompt-markdown-live-2026-10-27/info.md) · [planner pass](history/2026-10-27_18-28-10-544259-planner-markdown-live-model-plan.md) · [orchestrator pass](history/2026-10-27_18-28-10-544260-orchestrator-markdown-live-model-preflight.md)
+
+## Structured Markdown prompts — complete and independently accepted
+
+Agent and tool instructions now load from one root prompts/ tree: 87 registered Markdown assets grouped by chat/update agent, shared purpose, named tool/service and retained legacy helper. JavaScript keeps dynamic values, structural schemas, source/identity checks, leases, versions, limits and execution. Exact extraction/AST checks, 28 complete chat outputs, 18 worker variants and 33 serialized exports/catalogues preserve the original wording and behavior. Independent loader, copied-source, packaged-import and actual offline runner checks pass. Formatting, repository lint, physical limits, API and frontend builds pass; evaluator ACCEPT. The full offline suite reports 3,033 passed, five failed and two skipped. Independent baseline reruns reproduce those same five existing operation-API fixture failures. Known planner and Drive/Calendar wording findings remain unchanged. No model/provider calls, live writes, deployment, commit or push occurred.
+
+[Scope](prompt-markdown-2026-10-27/info.md) · [tester pass](history/2026-10-27_18-14-25-155361-tester-markdown-independent-verified.md) · [tester pass](history/2026-10-27_18-14-25-155362-tester-markdown-baseline-failures-classified.md) · [evaluator pass](history/2026-10-27_18-14-25-155363-evaluator-markdown-final-accepted.md) · [orchestrator pass](history/2026-10-27_18-14-25-155364-orchestrator-markdown-integration-complete.md)
+
+## Structured Markdown prompts — extraction integrated, independent verification underway
+
+All three writers completed the text move:355source occurrences now use353named Markdown blocks across87assets grouped by agent/shared/tool/legacy. Chat and automation retain JavaScript assembly, dynamic values and enforcement; tool schemas retain structure and bounds. Exact AST reversal,28chat outputs,18worker variants and33serialized exports/catalogues match fresh per-file originals. The old Drive asset is relocated, browser attachment validation is split from server-only message formatting, and fixed asset packaging/source-copy inventories are integrated. Independent loader/runner/package verification is underway; the full offline suite and repository lint are running. No model/provider calls, deployment or business writes.
+
+[Scope](prompt-markdown-2026-10-27/info.md) · [coder pass](history/2026-10-27_18-10-28-383932-coder-markdown-chat-extracted.md) · [coder pass](history/2026-10-27_18-10-28-383933-coder-markdown-worker-extracted.md) · [coder pass](history/2026-10-27_18-10-28-383934-coder-markdown-tools-extracted.md)
+
+## Structured Markdown prompts — plan accepted, implementation underway
+
+The user authorized a complete prompt-source restructuring. Three read-only plans are accepted: move agent instructions, tool/field descriptions and model-visible context/recovery wording into root prompts/{agents,shared,tools,legacy}; keep JavaScript logic/data unchanged. Three exclusive coders own chat/shared, automation and service tools. Root owns the fixed loader/asset registry, source-only packaging, browser contract wiring, copied-source inventories and journals. A source-only baseline was captured before edits, with fresh per-file captures preserving later concurrent changes. No prompt wording correction, model calls, deployment or business writes are part of this migration.
+
+[Scope](prompt-markdown-2026-10-27/info.md) · [planner pass](history/2026-10-27_18-05-20-797155-planner-markdown-chat-plan.md) · [planner pass](history/2026-10-27_18-05-20-797156-planner-markdown-worker-plan.md) · [evaluator pass](history/2026-10-27_18-05-20-797157-evaluator-markdown-packaging-plan.md) · [orchestrator pass](history/2026-10-27_18-05-20-797158-orchestrator-markdown-loader-foundation.md)
+
+## All54 live operation and agent-call tests — in progress
+
+The user expanded scope to every operation and actual agent calls. Existing production grants now provide Calendar, Member Plans, Attio and Miro configuration without new permissions. Live Google/CRM tests have real successes and caught a shared chat bug: repeated reads after successful writes were skipped, preventing exact-version delete/cancel. Root corrected per-adapter read invalidation; independent regression/retest is underway. Google used24modelcalls and CRM20; all3Calendarfixtures and2newContactsfixtures cleaned, no existing data changed. Actual Treg header charges$0.007, enrichmentnomatch. Shared remaining inference ledger is capped96. Root domain tests and worker-model tests remain underway; normal production worker lease/full-window sync are separate live-effect boundaries. [Scope](tool-operation-api-all-live-2026-10-27/info.md).
+
+[planner pass](history/2026-10-27_17-57-44-143238-planner-all-operation-live-plan.md) · [tester pass](history/2026-10-27_17-57-44-143239-tester-google-worker-live-plan.md) · [orchestrator pass](history/2026-10-27_17-57-44-143240-orchestrator-all-live-private-preflight.md) · [tester pass](history/2026-10-27_17-57-44-143241-tester-google-live-cached-read-failure.md) · [tester pass](history/2026-10-27_17-57-44-143242-tester-crm-live-results.md) · [orchestrator pass](history/2026-10-27_17-57-44-143243-orchestrator-chat-post-write-cache-correction.md)
+
+## Current prompt source inventory — complete
+
+Read-only inventory of the current dev/tool-api-services checkout traces chat tool
+selection/final reply, update-agent legacy/initial/follow-up instructions, imported
+policies, dynamic context, tool/schema descriptions, recovery feedback and the
+separate Discord summary model. Independent review ACCEPT.
+
+One active contradiction remains unchanged: the Drive skill says Calendar batch
+creation checks duplicates itself, while the Calendar prompt requires a separate
+listing and says no hidden search occurs. Reference docs are not runtime-loaded;
+the old buildMapRecordPrompt helper has no runtime call site.
+
+No tests, inference, provider reads, application/prompt changes or deployment.
+This inventory does not establish current production parity or resolve prior
+planner preservation and Calendar/Member Plans findings.
+
+[Source map and scope](prompt-inventory-2026-10-27/info.md) · [planner pass](history/2026-10-27_17-54-20-159349-planner-chat-prompt-inventory.md) · [planner pass](history/2026-10-27_17-54-20-159350-planner-worker-prompt-inventory.md) · [evaluator pass](history/2026-10-27_17-54-20-159351-evaluator-prompt-inventory-reviewed.md) · [orchestrator pass](history/2026-10-27_17-54-20-159352-orchestrator-prompt-inventory-complete.md)
+
+## Operation API runtime/live checks — API corrections accepted, limitations retained
+
+Testing resumed at the user's request. Fixed unknown-versus-hidden operation rejection and unreadable completed-write outcomes while preserving permissions and original stopping exceptions. Independent checks cover all54routes/17transportscenarios and379representativepasses/1existingoptionalskip; final focused83passes and formatting/lint/filelimits/API+frontendbuilds pass. Live Gmail, Drive, Contacts, map and Discord reads succeed. Actual gpt-6-luna Contacts update/ambiguity/unavailable scenarios pass;26inferencecalls overall, including the failed original cap and successful targeted retest.
+
+**Complete planner acceptance remains incomplete:** in the mixed five-input simulation, the worker cleared unmatched-attendee intent as no-change without saving a follow-up task. API dispatch/stages completed, but preservation correctly failed; migration causation is unproven and no broad planner fix was made. Local Calendar token lacks both required scopes; Member Plans is unconfigured. No live business writes, deployment, commit or push. [Report](tool-operation-api-live-2026-10-27/verification.md) · [Scope](tool-operation-api-live-2026-10-27/info.md).
+
+[evaluator record](history/2026-10-27_16-59-18-231490-evaluator-operation-api-runtime-accepted.md) · [orchestrator record](history/2026-10-27_16-59-18-231491-orchestrator-operation-api-live-verification-complete.md)
+
+[planner pass](history/2026-10-27_16-56-39-781638-planner-operation-api-runtime-plan.md) · [tester pass](history/2026-10-27_16-56-39-781639-tester-operation-api-initial-defects.md) · [orchestrator pass](history/2026-10-27_16-56-39-781640-orchestrator-operation-api-runtime-fixes.md) · [tester pass](history/2026-10-27_16-56-39-781641-tester-operation-api-offline-verified.md)
+
+## Requested development branch switch — complete
+
+Fetched and switched to `dev/tool-api-services` at `02427ba`, tracking its matching origin branch. Existing uncommitted notes/journal changes and six untracked files are preserved; three documentation conflicts were combined and cleared. Git preservation checks and whitespace checks passed. Backup stash retained; no application tests, runtime edits or release action. Existing acceptance limitations below still apply. [Pass record](history/2026-10-27_16-47-24-394810-orchestrator-tool-api-services-branch-switched.md).
+
 ## Operation API development branch publication
 
 - User explicitly authorized pushing the implemented migration to a dev branch without running CI/CD. Publication branch: dev/tool-api-services; main remains at its existing commit.
@@ -5457,10 +5662,27 @@ AGENTS.md now prioritizes real tasks, meaningful edge cases, correct responses a
 [Van-capacity discussion reviewed](history/2026-10-26_22-27-30-000001-orchestrator-bulk048-capacity-discussion-reviewed.md)
 
 
+## Global milestone documentation — plan accepted
+
+The user requested the existing milestone documentation rules as a global default. Independent planning accepted an unchanged section copy plus project-relative framing and the existing history template. Implementation and independent checks are pending. Other active work remains unchanged. [Plan](history/2026-10-26_22-33-06-493793-planner-global-milestone-rules-plan.md) · [Scope](global-milestone-documentation-2026-10-26/info.md).
+
+
+## Global milestone documentation — copied, verification pending
+
+Personal global AGENTS.md now includes the unchanged milestone section, project-relative structure and unchanged history template. Existing global defaults remain intact. Independent checks and review are next; no application changes. [Implementation](history/2026-10-26_22-33-36-818642-orchestrator-global-milestone-rules-copied.md).
+
+
+## Global milestone documentation — independently verified
+
+Independent document checks PASS: exact section/template copies, unchanged global defaults and original project records, valid new links and clean whitespace. Fresh-project structure is explicit; final evaluation remains pending. [Verification](history/2026-10-26_22-34-54-936470-tester-global-milestone-rules-verified.md).
+
 [Reply parent and images reviewed](history/2026-10-26_22-36-00-000001-orchestrator-bulk049-through050-images-reviewed.md)
 
 
-[Final pending inventory](history/2026-10-26_22-42-00-000001-tester-final-pending-inventory.md) · [Final accounting accepted](history/2026-10-26_22-42-00-000002-evaluator-final-manual-accounting-accepted.md) · [Final manual batch ended](history/2026-10-26_22-42-00-000003-orchestrator-final-manual-cycle-ended.md)
+## Global milestone documentation — complete
 
+Copied the project milestone rules and history template verbatim into `/Users/yuyang/.codex/AGENTS.md`, with the folder structure and per-project paths explicit. Existing global defaults and project work are preserved. Independent testing PASS and evaluation ACCEPT; no runtime or service changes. Future-session adherence remains untested. This documentation task has no remaining work; the separate manual-planner work above keeps its existing status. [Acceptance](history/2026-10-26_22-36-28-869311-evaluator-global-milestone-rules-accepted.md) · [Completion](history/2026-10-26_22-36-28-870142-orchestrator-global-milestone-documentation-complete.md).
+
+[Final pending inventory](history/2026-10-26_22-42-00-000001-tester-final-pending-inventory.md) · [Final accounting accepted](history/2026-10-26_22-42-00-000002-evaluator-final-manual-accounting-accepted.md) · [Final manual batch ended](history/2026-10-26_22-42-00-000003-orchestrator-final-manual-cycle-ended.md)
 
 [Private cleanup verified](history/2026-10-26_22-43-00-000001-orchestrator-private-cleanup-verified.md)

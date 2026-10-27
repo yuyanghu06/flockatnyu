@@ -248,6 +248,10 @@ User wants company-people discovery through search_treg_people and richer profil
 The user approved trimming unused active-conversation logs, an accepted separate no-change result for saved tasks, improved source/ID/Calendar-target prompting and formatting, and successful terminal handling of confirmed missing originals with exact queue/task cleanup. Keep source permissions, exact versions and unfinished unrelated work. Reproduce and explain invented page IDs without fixing that behavior. Explain the old-log cleanup correction but hold its implementation. Other unselected fixes and limit/deployment changes remain out of this pass; actual status is in the milestone.
 
 
+## 2026-10-26 — Milestone documentation across projects
+
+The user requested copying this project's milestone documentation rules exactly into personal global `~/.codex/AGENTS.md` so all projects follow the same structure. The global file stores the rules; actual milestone logs remain in each project. Implementation and verification are tracked in the milestone journal.
+
 ## 2026-10-27 — Side conversation: tools, services and API handoff
 
 The user asked how tools relate to services and API routes, and whether it would
@@ -288,3 +292,51 @@ no-implementation status for this migration. The chosen API runs privately insid
 each process; it is not a new public service. Tests remain stopped by the user's
 earlier instruction. Current implementation, review and release status belongs in
 `milestones/milestone.md`.
+
+
+## 2026-10-27 — Editable common agent task log
+
+The user requested a persistent list of common tasks Flock should handle, with live workflow results, and plans to add tasks manually. The canonical editable checklist is [docs/agent-tasks.md](docs/agent-tasks.md). Keep stable task IDs, preserve manual additions and append dated outcomes with actual evidence. A checklist row describes expected behavior; it does not grant new live-write permissions. Current implementation/release truth remains in the milestone journal.
+
+The user approved one normal production cycle and then explicitly declined
+additional worker test cycles. That cycle has run; do not start another as part
+of this test pass. The log records partial sync, the follow-up round limit and
+remaining untested worker workflows.
+
+## 2026-10-27 — One Markdown folder for runtime prompts
+
+The user requested moving chat/update-agent prompts out of scattered JavaScript
+strings into a single structured Markdown folder, preferably organized by the
+calling tool. The implementation uses root `prompts/` with agent, tool/service,
+shared and legacy sections. JavaScript supplies dynamic data and enforcement.
+See [prompt guide](prompts/info.md) and the current milestone for verification
+and unresolved findings; this structure change does not request new wording or
+a deployment.
+
+## 2026-10-27 — Calendar sync location handling
+
+The user requested diagnosis and repair of partial Calendar-to-map sync without
+another production cycle. They requested less strict building-name matching and
+then said to drop unmapped locations, superseding an earlier warning choice.
+Keep Calendar/event/attendance data intact; unmatched building links stay empty.
+Preserve ambiguous matches and real errors as partial. Implementation and test
+truth lives in the [location-fix milestone](milestones/calendar-sync-location-fix-2026-10-27/info.md).
+
+## 2026-10-27 — Selected clarification and Calendar prompt corrections
+
+After the actual-model check, the user requested tightening the two failed
+behaviors. Prompts now resolve an ambiguous single Contact before choosing an
+exact read/write, retain the pending edit through clarification, and stop
+Calendar scans after complete empty coverage. Explicit Calendar questions remain
+scoped; general schedule questions use actual Miro content when its tools exist.
+Current verification, qualifications and release state are in
+[milestones/prompt-clarification-completion-2026-10-27](milestones/prompt-clarification-completion-2026-10-27/verification.md).
+
+## 2026-10-27 — Full-tree Railway rollout with worker paused
+
+The user requested commit/push and deployment of the entire tree onto Railway,
+while repeating that no additional production cycle should run. Keep the update
+agent disabled/paused throughout and after this rollout; deployment is not
+permission to start a test cycle. All five sanitized service packages come from
+the exact checked commit. Current release truth belongs in the full-tree release
+milestone; private variables, grants, queues, tasks and volumes are preserved.

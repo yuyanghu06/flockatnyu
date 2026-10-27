@@ -1,5 +1,7 @@
 # Server code
 
+All model-facing wording is loaded from the root `prompts/` folder through `prompt-loader/`. Browser-safe attachment validation lives in `chat/attachment-contract.js`; provider-message construction stays server-only.
+
 Two executable files stay at this level:
 
 - `index.js` starts the standalone Hono API used during local development.

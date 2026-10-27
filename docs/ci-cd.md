@@ -1,5 +1,7 @@
 # Checks, commits, pushes and releases
 
+Prompt assets are explicit dependencies. Runtime/collector packagers copy only fixed `promptText` references from reachable JavaScript modules and their allowlisted Markdown files. Model-source copies include the full asset registry. `build:api` validates registered assets, and prompt payload whitespace is preserved rather than Markdown-formatted.
+
 Run `npm ci` with Node 22.22 or later, then `npm run hooks:install` once in each
 checkout. The pre-push hook runs `npm run ci`. Hooks are local and bypassable;
 GitHub required checks provide enforcement for pull requests.

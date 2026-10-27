@@ -1,3 +1,154 @@
+## Markdown prompt release — branch published
+
+- [x] Isolate selected source, repair meaningful stalefixtures, passlocalCI/browser andindependentreview.
+- [x] Pushwithoutbypass and openattachedPR1.
+- [ ] Waitforremotechecks, mergemain and obtainexactsuccessfulreleaseartifact.
+- [ ] Deployweb/update/Discordwhilepreservingdisabledworker andunchangedGmail/config.
+- [ ] Verifyhostedreadiness/auth/assets and recordactualdeploymentIDs; no livebusinesswrites.
+
+## Full-tree Railway release — update agent stays paused
+
+- [x] Accept full-tree/five-service scope and isolated source snapshot; inspect prior deployments and secrets/config boundaries.
+- [x] Stop the old update agent, set activation false and verify unchanged last-start/no lease.
+- [x] Pass browser checks with simulated services; preserve full initial CI evidence.
+- [x] Repair and independently check five old API fixture assumptions without weakening permissions/privacy tests; focused 23 cases pass.
+- [x] Pass final exact full CI after fixture and worker-image corrections: 3,050 pass/zero fail/two optional skips; five browser flows pass.
+- [x] Obtain source/corrected-container ACCEPT and create four logical implementation commits.
+- [ ] Commit shared records, push dev/tool-api-services and verify remote parity.
+- [ ] Prepare and inspect all five packages from the exact clean checked commit; exclude private/generated data.
+- [ ] Deploy and verify web, Discord/Gmail collectors, disabled update-agent and off-hour scheduled enrichment.
+- [ ] Record hosted receipts and Git/remote parity; retain worker pause and all unrelated documented limitations.
+
+## Contact clarification and Calendar completion — verified and accepted
+
+- [x] Tighten Contact target selection before candidate reads/writes and preserve pending intent through clarification.
+- [x] Stop Calendar scans after complete empty coverage while preserving explicit-source scope and registered Miro fallback.
+- [x] Pass both original actual-model reproductions and extended preservation/clarification/source cases.
+- [x] Retain six strict passes plus two independently accepted semantic outcomes with original raw assertions intact.
+- [x] Complete focused offline checks and standard gates; obtain independent ACCEPT.
+- [ ] Optional follow-up: avoid the one unnecessary filtered probe before valid partial-window subdivision; no further complete-empty loop was observed.
+- [ ] Existing unrelated Drive duplicate-check wording, old harness assertions, worker findings and real-service/deployment checks remain separate.
+
+## Calendar-to-map location fix — no additional production cycle
+
+- [x] Inspect saved cycle evidence and reproduce location-related partial results through read-only provider/map checks.
+- [x] Record latest user choice: less strict name matching; drop unmatched building links while preserving Calendar/event/attendance data.
+- [x] Accept bounded specialist plan, preserving event/attendance data and stale-link cleanup.
+- [x] Implement unique forgiving alias matching plus nonblocking unmapped locations.
+- [x] Independently reproduce pre-fix location/projection failures with simulated providers and a real map service over in-memory versioned storage.
+- [x] Independently verify corrected projection, ambiguity, preservation, conflicts and provider failures: 203/203, no skips.
+- [x] Check scoped formatting/current-config lint, file limits and API syntax/runtime-dependency build; read-only provider calculation ready with the intended E-Lab write suppressed.
+- [x] Obtain independent evaluator ACCEPT, confirm unchanged source pins and record final local integration.
+- Held: actual application and remaining worker coverage stay unverified. Do not run another production cycle as part of this pass.
+
+## Contact clarification and Calendar completion — prompts tightened; live retest pending
+
+- [x] Plan the selected prompt-only corrections and exclusive file ownership.
+- [x] Update nine Markdown assets/eleven existing blocks and preserve identifiers/placeholders.
+- [x] Validate all87assets and representative chat prompt assembly; independently review scope and fallback consistency.
+- [ ] Retest the exact failures, clarification continuation and clear-write preservation with actual configured model.
+- [ ] Verify partial/unavailable Calendar handling and actual registered Miro content fallback.
+- [ ] Finish focused standard checks and independent semantic evaluation; preserve prior failure evidence.
+
+## Markdown prompts checked with live LLM — verification complete; two behavior failures remain
+
+- [x] Complete guarded real-model tests through production chat/update runners and simulated services.
+- [x] Independently review exact proposals, writes, saved fields, final replies and worker task identity/intent.
+- [x] Finish the two cap-limited paths in a separate bounded followup while retaining initial records.
+- [x] Record 50 actual requests, six semantic passes, two valid failures and independent acceptance of verification.
+- [x] Selected Contact clarification prompt correction implemented and tested; see prompt-clarification-completion-2026-10-27/verification.md. Original failed evidence is retained.
+- [x] Selected complete-empty Calendar prompt correction implemented and tested; see prompt-clarification-completion-2026-10-27/verification.md. Original failed evidence is retained.
+- [ ] Separate harness improvement: replace overly narrow success wording and redundant-defer assertions with meaningful outcome checks; retain original evidence.
+- [ ] Real-service workflows/deployment remain separate and were not established by these simulations.
+
+## Live Markdown prompt checks — real behavior failures found; focused followup underway
+
+- [x] Stop the original batch at exactly 40 actual inference HTTP requests and preserve its evidence.
+- [x] Independently inspect actual proposals, saved fields, final answers and worker task identity/intent.
+- [x] Record ambiguity mutation and Calendar repetition failures without changing prompts.
+- [ ] Complete the separately capped unavailable/conflict followup (12 additional requests maximum; 52 total).
+- [ ] Publish final semantic results, raw assertion distinctions and independent review; keep live-service task rows unchanged.
+
+## Common task catalogue and live workflows — current handoff
+
+- [x] Create editable docs/agent-tasks.md with stable IDs, a manual-entry template and dated evidence; link it from notes and documentation guides.
+- [x] Verify 45 of 54 operation names with actual-model live calls; retain separate offline transport coverage for all 54 and exact per-operation status.
+- [x] Fix/retest stale reads after successful writes and retries after read_required; 8 independent regressions and complete live Calendar/Contacts recovery pass. Preserve write replay protection and conflict bounds.
+- [x] Complete recorded CRM, bounded source/map and Calendar lifecycle variants; verify fixture cleanup and honest no-match/accepted-versus-delivered reporting.
+- [x] Run exactly one approved normal production cycle; record 3 handled, 22 calls, 12 model requests and released lease.
+- [ ] Production cycle limitations: separate sync returned partial and follow-up reached its round limit. Do not claim full sync, completed saved backlog or an empty global queue.
+- [ ] Held by explicit user choice: additional worker create/cancel cycles. Nine operation names remain unverified/partial; see coverage.md. Do not run more cycles without authorization.
+- [ ] Task-log gaps: complete batch final answer, combined Calendar-to-Miro fallback, positive enrichment match, content-changing shared-memory merge and broader presence/attendance/replacement cases.
+- [ ] Existing unmatched-attendee no-change failure and general Calendar replacement bug remain open. The invalid worker fixture sample was corrected offline without a claimed live-model rerun.
+- [x] Obtain independent ACCEPT for scoped fixes and qualified evidence; align CAL-02 with the tested rename and retain untested time shift as CAL-05. Preserve concurrent prompt-refactor edits and manual task additions.
+
+## Markdown prompts with live LLM — bounded verification underway
+
+- [x] Confirm current source/instructions and configured model without exposing credentials.
+- [x] Accept bounded cases and assign a sole inference executor with a 40-request maximum.
+- [ ] Complete source-frozen actual-model conversations and inspect fields, writes, replies and task preservation.
+- [ ] Review failures/cap stops independently and record actual model, request count and limitations.
+
+## Structured Markdown prompts — complete and independently accepted
+
+- [x] Complete the single-folder Markdown instruction migration and fixed server loader.
+- [x] Preserve exact text, dynamic expressions, schemas and generated model requests.
+- [x] Verify browser separation, fixed deployment assets and independent source copies.
+- [x] Pass focused offline runner/package checks, formatting/lint/file limits and both builds.
+- [x] Obtain independent evaluator ACCEPT and document the complete-suite limitation.
+- [ ] Separate existing follow-up: resolve five operation-API fixture expectations reproduced before this migration.
+- [ ] Separate existing follow-up: reconcile Drive/Calendar duplicate-check wording and unresolved planner behavior; not changed in this structural pass.
+
+## Structured Markdown prompts — extraction integrated, independent verification underway
+
+- [x] Move chat/shared, worker, and named tool/field/result wording into87registered Markdown assets.
+- [x] Prove extracted text/AST and representative generated prompts/catalogues match exactly.
+- [x] Integrate fixed loader, browser contract, deployment and frozen-source asset handling.
+- [ ] Finish independent loader/package/runner checks and broad offline regression results.
+- [ ] Complete final formatting/build/file-limit checks and evaluator acceptance.
+
+## Structured Markdown prompts — plan accepted, implementation underway
+
+- [x] Accept scoped extraction, packaging and verification plans.
+- [x] Capture source-only baseline and assign three exclusive writers.
+- [ ] Finish extraction and exact generated-output comparisons.
+- [ ] Verify loader, offline runners, browser contract, deployment and frozen-source assets.
+- [ ] Complete standard checks and independent evaluation; preserve known prior failures.
+
+## All54 live API/agent calls — active
+
+- [x] Accept expanded live plan, privately verify existing production grants and obtain exact Gmail test destination.
+- [x] Execute bounded live Google/CRM tests; preserve actual failures and clean all created Calendar/Contacts fixtures.
+- [x] Implement cache correction for fresh model-selected reads after writes, retaining write replay protection and existing conflict bounds.
+- [ ] Independently test/retest same-run Calendar/Contacts workflows and remaining live Attio model operations.
+- [ ] Complete root live Gmail/Discord/Miro/map/memory/bug-report tests and cleanup/readback.
+- [ ] Complete exact worker actual-model operation coverage with production runners and clearly simulated domain data; select safe live worker backend/scope before queue/full-sync effects.
+- [ ] Publish per-operation success/blocked/model-origin matrix and independent review; preserve unmatched-attendee finding.
+
+## Current prompt source inventory — complete
+
+- [x] Trace chat tool-selection/final-answer assembly and imported/injected guidance.
+- [x] Trace update-agent legacy/initial/follow-up prompts, tools, task/context and recovery feedback.
+- [x] Identify the separate Discord summary prompt, unused helpers and reference-only docs.
+- [x] Obtain independent read-only acceptance and record current-checkout limitations.
+- [ ] Separate future scope, not implemented by this inventory: reconcile Calendar duplicate-check wording in the Drive skill and Calendar prompt; refresh obsolete chat-guide source pointer.
+
+Existing unresolved planner preservation and Calendar/Member Plans verification
+work below remains unchanged. [Inventory](prompt-inventory-2026-10-27/info.md).
+
+## Operation API runtime/live verification — scoped API accepted
+
+- [x] Resume tests, accept independent plan, reproduce/fix API defects and preserve hidden-operation permissions.
+- [x] Independently pass all54routes/17transportscenarios and379representativechecks with1existing optional skip; final focused83checks plus standard formatting/lint/filelimits/builds pass.
+- [x] Complete bounded actual-model Contacts checks, read-only live Gmail/Drive/Contacts/map/Discord checks and independent evaluator acceptance of the API corrections.
+- [x] Preserve original failures and report actual limits; no deployment or live business writes.
+- [ ] Unresolved planner behavior: unmatched attendee was classified no-change and cleared without saving follow-up intent in the five-input configured-model simulation. Investigate separately; do not claim the migration caused it or that complete planner behavior passed.
+- [x] Superseded for expanded live tests: reused existing production grants/configuration privately in memory. Original local .env was not changed; ordinary local startup still needs its own correct settings.
+
+## Requested branch switch — complete
+
+- [x] Fetch and select `dev/tool-api-services`, preserve all local documentation and confirm matching upstream/no unresolved conflicts. [Receipt](history/2026-10-27_16-47-24-394810-orchestrator-tool-api-services-branch-switched.md).
+
 ## Operation API development branch publication
 
 - User explicitly authorized pushing the implemented migration to a dev branch without running CI/CD. Publication branch: dev/tool-api-services; main remains at its existing commit.
@@ -3296,3 +3447,15 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 - [x] Record meaningful behavior testing and evaluator API-call permission in AGENTS.md and notes.md. No test-suite cleanup or API run requested by this documentation pass.
 
 [Refreshed database authorization handoff](history/2026-10-25_14-01-37-271205-orchestrator-database-auth-handoff-refreshed.md): no database deletion yet.
+
+
+## Global milestone documentation
+
+- [x] Plan the exact rule/template copy and preservation checks.
+- [x] Add the rules to personal global AGENTS.md, verify independently and obtain ACCEPT.
+
+- [x] Append the exact milestone rules and history template to global instructions with per-project paths.
+- [x] Independently verify preservation and obtain final review.
+
+- [x] Independently verify exact copies, original global defaults, project-record preservation and new links.
+- [x] Obtain final independent evaluation and integrate documentation.

@@ -1,5 +1,7 @@
 Current prompt workflow: initial `savedTaskCoverage.inputs` gives only matching queue refs and saved-task counts, without task IDs/content or new live evidence. After a source outage, explicitly finish the covered queue ref with `noChangeInputIds:[]`, retain its task, and finish follow-up normally once other ready work is done. The separately named post-finish sync result stays visible after transcript reset.
 
+Current wording is maintained in [prompts/agents/update](../prompts/agents/update/info.md) and [tool folders](../prompts/tools/info.md). The JavaScript builder selects exact Markdown blocks and fills current values; handler/adapters/task modules load their tool descriptions and recovery notices from the same tree.
+
 # Update-agent prompt
 
 The runtime source is [server/automation/prompt.js](../server/automation/prompt.js).

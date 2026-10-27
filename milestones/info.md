@@ -1,4 +1,16 @@
+`full-tree-release-2026-10-27/` records the explicit whole-tree/five-service release, checked commit/packages and paused update-agent boundary.
+
+`calendar-sync-location-fix-2026-10-27/` tracks the partial-sync location diagnosis and fix without another production cycle.
+
 # Milestone journal
+
+`prompt-clarification-completion-2026-10-27/` tracks the selected Contact-ambiguity and Calendar-completion wording corrections and bounded actual-model retests.
+
+`prompt-markdown-live-2026-10-27/` tracks bounded real-model checks of the migrated Markdown prompts with simulated business services.
+
+`prompt-markdown-2026-10-27/` tracks the structured Markdown prompt migration, preservation checks and packaging boundaries.
+
+`prompt-inventory-2026-10-27/` records the current chat/update prompt source map, independent static review, active Calendar/Drive wording conflict and deployment/behavior limits.
 
 `treg-branddev-default/` tracks the selected company provider and native adapter, with dormant routes kept inactive.
 
@@ -334,6 +346,9 @@ October25 4:32PM recheck records41new pendingDiscord inputs and continuing worke
 
 main-publication-2026-10-26/ records the requested local diff, independent checks/review and normal publication to main, preserving unapplied cleanup046 and open issues.
 
+
+`global-milestone-documentation-2026-10-26/` tracks copying the milestone rules into personal global instructions; each project keeps its own records.
+
 The October23 Railway inspection records current production log findings only; stopped product work remains stopped.
 
 October 26 folder-rename verification records portable application paths, independent local builds/serving checks, an unrelated stale collector test expectation, and the repaired local Railway folder association. Production services were not changed.
@@ -376,3 +391,17 @@ The planner-presence-diagnosis folder records diagnosis, actual-model correction
 
 `server-cleanup/` records grouping the backend, porting the remaining provider
 changes, the tools/API audit and the user-requested stop to final testing.
+
+The requested `dev/tool-api-services` branch switch preserves prior local documentation and upstream records; see the current snapshot and switch receipt.
+
+`tool-operation-api-live-2026-10-27/` records the explicitly resumed transport, model and separate live-read checks with remaining limitations.
+
+The operation API runtime milestone now records accepted scoped corrections and live reads, with unmatched planner intent, Calendar grants and Member Plans configuration still unresolved.
+
+`tool-operation-api-all-live-2026-10-27/` tracks the expanded all-operation real-provider and actual-model coverage, exact fixture cleanup and caller cache failure/fix.
+
+`tool-operation-api-all-live-2026-10-27/` now links the 54-operation matrix and user-editable common task log, with 45 live names verified and one partial production cycle; further cycles are held by user choice.
+
+Final independent review accepts the expanded live-test evidence and scoped
+API/cache fixes. Additional worker cycles remain held by explicit user choice;
+[docs/agent-tasks.md](../docs/agent-tasks.md) preserves the untested variants.

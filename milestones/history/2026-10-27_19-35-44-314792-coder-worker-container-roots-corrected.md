@@ -1,0 +1,10 @@
+# Worker image includes its real reachable runtime roots
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:35:44.314792-04:00 / coder / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree onto Railway, leaving the update agent paused and not running another production cycle.
+- Starting repository state: dev/tool-api-services with accepted prompt/API/cache/location code; isolated snapshot and explicit private-variable/queue boundaries.
+- Work performed / changed files: Removed stale worker COPY tools and tools syntax root, added COPY src/api and checked server plus src/api. Extended tests/runtime-deploy.test.mjs to project actual Docker COPY files, require all reachable files, verify dependency pins and import real web app/default worker adapters/handler with empty environments and networking denied. Original missing tools input and intermediate missing API register failures were both reproduced.
+- Decisions: Test actual image contents/imports, not package membership or syntax alone. Keep fixed graph/source/secret boundaries. Preserve original region, private variables except the deliberate activation=false, volumes, source grants and all queue/task data. No SQL or dependency upgrade.
+- Checks and evidence: ignored evidence/full-tree-release-2026-10-27 contains final container CI, image projection/negative controls, source pins, worker pause/region readbacks and previous deployment metadata. [Release scope](../full-tree-release-2026-10-27/info.md).
+- Resulting state / acceptance: Focused package/image cases pass 3/3; current-config formatting/lint, whitespace and file limits pass. Only Dockerfile and its meaningful regression changed. Committed locally as 6b1502e after independent source review; no runtime behavior change or deployment by coder.
+- Remaining work and handoff: Record exact clean commit and five reviewed package hashes, push current development branch, upload/verify all services, then journal hosted and Git parity. No planner start or business-write smoke test.

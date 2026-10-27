@@ -265,3 +265,12 @@ Saved source-review task completion also recognizes actual club/Member Plans can
 ## Inbox sender Contacts cache
 
 The Gmail collector now has a separate cacheInboxSender write between its authorized message fetch and existing event enqueue. It filters only this cache operation to explicit INBOX messages, excluding SENT/DRAFT/SPAM/TRASH, the configured mailbox itself and ambiguous/missing From addresses. Normal ingestion/watch/history scope remains unchanged. The private contacts_cache table has only id, created_at (date/time) and raw_input containing normalized email plus optional plain display name. It stores no mail body/header/source IDs in this table. Deterministic sender IDs and insert-ignore preserve the first row on retries. Cache failure keeps the current cursor/offset; fresh ownership checks bracket cache work. This flow does not promote records into Contacts or import old mailbox history. Hosted schema/runtime receipts and limits live in the milestone.
+
+Calendar projection uses forgiving fixed-catalogue name matching for clear case,
+punctuation, spacing and bounded spelling variants. Per the selected behavior,
+unmatched locations have no building links and do not fail the whole sync.
+Event/attendance data and unchanged manual placement remain preserved; known-to-
+unknown moves clear stale building links through the ordinary versioned write.
+Ambiguity and genuine provider/permission/conflict failures remain partial. See
+[location repair evidence](../milestones/calendar-sync-location-fix-2026-10-27/verification.md)
+for offline and read-only checks; no new production cycle is implied.

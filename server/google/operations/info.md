@@ -1,5 +1,7 @@
 # Google operation services
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 These server-only modules execute Google tools after their fixed private API
 endpoints authenticate an in-process request. They call Google provider clients;
 they do not import model tool clients or fetch another service implicitly.

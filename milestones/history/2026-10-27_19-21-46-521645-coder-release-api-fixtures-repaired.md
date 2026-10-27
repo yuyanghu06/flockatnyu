@@ -1,0 +1,10 @@
+# API-boundary test fixtures migrated without runtime changes
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:21:46.521645-04:00 / coder / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree to all five Railway services, without a new production cycle.
+- Starting repository state: fixed snapshot of dev/tool-api-services working tree, 4,239 initial source files; update agent stopped and disabled with unchanged lastStarted/no lease.
+- Work performed / changed files: Changed only tests/discord-source-scope-app.test.mjs, tests/feedback-discord.test.mjs and tests/map-tool-isolation.test.mjs. The Discord scope fixture now uses registered list_discord_channels and keeps current-source/server-principal assertions. Forged body controls require 400 and no dispatch. Pre-aborted summary tests require zero catalogue/window/reservation/model calls; actual during-read cancellation keeps incomplete coverage assertions. Private map receipts are observed only beneath the JSON boundary and explicitly absent from serialized client results.
+- Decisions: Adapt tests to real registered API operations rather than weaken transport validation or expose private capabilities. Keep source/package/secret boundaries and ordinary permissions unchanged. No schema or dependency change is needed for the release.
+- Checks and evidence: ignored evidence/full-tree-release-2026-10-27 contains initial/final CI logs, browser artifacts, fixture update hashes, focused reproduction and audit classification; current snapshot/source pins reviewed.
+- Resulting state / acceptance: All 23 affected cases pass; scoped formatter/current-config lint/file limits and whitespace pass. File lengths 123/465/395. No runtime/source-service, model, production or Git mutation by coder.
+- Remaining work and handoff: Successful final full CI, independent exact-package review, logical commits and push, five hosted deployments/verification and final Git parity. Worker remains paused; no forced/manual/ordinary cycle test.

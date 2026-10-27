@@ -1,5 +1,7 @@
 October 26 selected local changes: `conversation-context.js` retires unnecessary model-visible results while preserving tool-call/result identities, already disclosed compact intent, current facts and issued cursors. Full private execution evidence and hard limits remain unchanged. `resolve_pending_task` now separates confirmed actions, reviewed no-change decisions and exact missing originals; source and target hints are derived from already available data. An already-correct decision needs the latest matching target read; an unrelated success cannot revive older failed evidence. Missing originals clear only their own explicitly handled input/task versions. The fragment-ID reader and old-log cleanup are held unchanged. Actual tests and release state live in the rolling milestone.
 
+All worker instructions, tool descriptions and model-visible recovery notices now come from root `prompts/agents/update` and `prompts/tools`. JavaScript preserves stage selection, values, schema/lease checks, tool execution and the separately named post-finish sync.
+
 The narrow closed-task cleanup also retires successful follow-up source/Calendar/map
 read bodies whose exact task bindings all resolved later and no longer occur in
 the current task snapshot/catalogue. It compares returned source URLs, native
@@ -361,3 +363,12 @@ ancestor rows only to verify the selected channel's ancestry. It grants no sibli
 or ancestor sources and performs no provider calls. `map-facts.js` compares event
 fields and the selected event's building relations, so participant-only updates
 cannot silently move an independently sourced event.
+
+Calendar map placement now uses calendar-location.js for fixed-catalogue alias
+matching with case/accent/punctuation/spacing normalization and bounded unique
+spelling matches. Short/numeric/generic-only aliases remain exact-only;
+uncertain or multiple matches remain ambiguous. Unmatched building links stay
+empty without making sync partial. calendar-projection.js holds the unchanged
+pure event/name/time/identity projection. Version, attendance and actual failure
+checks remain in calendar-sync.js. Verification is recorded in the location-fix
+milestone; no additional production cycle or deployment was performed.

@@ -1,0 +1,10 @@
+# Unexpected scale-triggered rebuild stopped and region restored
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:35:44.314794-04:00 / orchestrator / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree onto Railway, leaving the update agent paused and not running another production cycle.
+- Starting repository state: dev/tool-api-services with accepted prompt/API/cache/location code; isolated snapshot and explicit private-variable/queue boundaries.
+- Work performed / changed files: After the worker was already paused, CLI zero-replica scaling unexpectedly removed the last region and triggered an old-artifact rebuild in the default US region. Processing was already false. Restored the original europe-west4-drams3a one-replica configuration through the connector. The rebuild reached success disabled and was explicitly stopped with railway down. No attempted zero-replica command is used again in this rollout.
+- Decisions: Test actual image contents/imports, not package membership or syntax alone. Keep fixed graph/source/secret boundaries. Preserve original region, private variables except the deliberate activation=false, volumes, source grants and all queue/task data. No SQL or dependency upgrade.
+- Checks and evidence: ignored evidence/full-tree-release-2026-10-27 contains final container CI, image projection/negative controls, source pins, worker pause/region readbacks and previous deployment metadata. [Release scope](../full-tree-release-2026-10-27/info.md).
+- Resulting state / acceptance: Environment readback confirms the worker offline/no active deployment; enabled=false, no lease and lastStarted unchanged from before the pause. The control-plane incident was acknowledged to the user and recorded. It did not start a production cycle. Four application source commits exist locally; final package/source publication remains pending.
+- Remaining work and handoff: Record exact clean commit and five reviewed package hashes, push current development branch, upload/verify all services, then journal hosted and Git parity. No planner start or business-write smoke test.

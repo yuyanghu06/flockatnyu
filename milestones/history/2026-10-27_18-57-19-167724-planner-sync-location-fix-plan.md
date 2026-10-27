@@ -1,0 +1,10 @@
+# Bounded location matching and unmapped projection plan accepted
+
+- Local timestamp / acting role / milestone: 2026-10-27T18:57:19.167724-04:00 / planner / calendar-sync-location-fix-2026-10-27.
+- Requested scope: diagnose/fix partial Calendar-to-map sync without a production cycle; latest user instructions request forgiving names and dropping unmapped locations.
+- Starting repository state: existing uncommitted work preserved; relevant sync/client/service/transport modules match the earlier tested snapshot.
+- Work performed / changed files: Read-only planner traced sync, generic diagnostic codes, map placement contracts and tests. It reviewed root's guarded current-state read-only reproduction. No planner files or external state changed.
+- Decisions: Keep event and attendance projection with empty unmatched building relations. Do not skip whole events, which would retain stale old building links after a move. Preserve unchanged manual placement. Normalize E-Lab/E Lab/eLab; bounded spelling comparisons use existing aliases only, short names require exact normalized matching and multiple candidates/uncertain descriptions remain ambiguous. No catalogue changes or nearest-building guess.
+- Checks and evidence: docs/events.md permits events without mapped buildings. No existing test requires unknown_location to force partial. Probe reproduces three location misses with no intended writes. Both saved diagnostic codes only identify generic partial, so the exact historical unresolved set remains unproven.
+- Resulting state / acceptance: Plan accepted. Coder owns sync/location helper modules; independent tester owns a new behavior suite. Root owns documentation and journals.
+- Remaining work and handoff: Test spelling limits, substring/short-name/uncertainty safety, new unmapped records, known-to-unmapped moves, manual placement/attendance preservation and real failure statuses. Run a read-only post-fix probe plus offline persistence checks; no production cycle, model call or business write.
