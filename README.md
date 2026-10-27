@@ -67,14 +67,15 @@ The planner and source tools are live, but upstream quotas, partial reads and to
 Core local checks:
 
 ```sh
-npm run test:assistant
-npm run build:api
-npm run build
+npm ci
+npm run hooks:install
+npm run ci
+npm run test:browser
 ```
 
-The test guide lists focused connector, database and browser checks. Local passing checks do not establish live provider access or successful deployment.
+The [CI/CD guide](docs/ci-cd.md) defines commit/push checks, 500-line JavaScript and 400-line CSS limits, GitHub checks and release packages. The test guide lists focused connector, database and browser checks. Local passing checks do not establish live provider access or successful deployment.
 
-Map/UI code lives in `src/`; backend and collectors in `server/`; callable agent tools in `tools/`; isolated deployment packages in `deployment/`; utilities in `scripts/`. Coordinate shared configuration and milestone journals through one integrator. `evidence/` is local-only and ignored by Git; historical journal links and map comparison/profile scripts may require baselines from the original local workspace. Required automated-test fixtures live under `tests/fixtures/`.
+Browser composition lives in `src/app/`, interfaces in `src/features/`, and campus rendering in `src/map/`. Server-only HTTP handlers are grouped by provider in `src/api/`; backend services and collectors remain in `server/`; callable agent tools in `tools/`; isolated deployment packages in `deployment/`; utilities in `scripts/`. Coordinate shared configuration and milestone journals through one integrator. `evidence/` is local-only and ignored by Git; historical journal links and map comparison/profile scripts may require baselines from the original local workspace. Required automated-test fixtures live under `tests/fixtures/`.
 
 ## Map assets and attribution
 

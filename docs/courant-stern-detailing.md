@@ -37,7 +37,7 @@ add a small amount of the existing trim color around the unchanged panes.
 
 ## Algorithm and API
 
-`src/courant-stern.js` exports `enhanceCourant(model)` and `enhanceStern(model)`.
+`src/map/landmarks/courant-stern.js` exports `enhanceCourant(model)` and `enhanceStern(model)`.
 Each augments the loaded GLB root in place and returns that same root. Call before
 `registerLandmark`, so existing whole-building highlight and raycasting include
 the additions. No asset replacement or tile removal is needed.
@@ -59,7 +59,7 @@ than silently applying these signatures to unrelated geometry.
 
 ## Actual checks
 
-`node --check src/courant-stern.js` passed. Independent local Node execution with
+`node --check src/map/landmarks/courant-stern.js` passed. Independent local Node execution with
 Three.js GLTFLoader instantiated the actual source files. SHA256 comparisons of
 all original attribute/index arrays and serialized original materials matched
 before and after enhancement. A second call added nothing. Git showed no changes

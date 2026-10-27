@@ -1,7 +1,7 @@
 # Park and garden rendering
 
 The offline OSM snapshot supplies actual polygon rings, holes and mapped land
-cover. `src/parks.js` clips them to the loaded extent, unions matching surfaces,
+cover. `src/map/environment/parks.js` clips them to the loaded extent, unions matching surfaces,
 subtracts building and pedestrian footprints, and layers lawn, garden, hardscape,
 play areas and water at distinct heights. Narrow boundary edging gives readable
 close-up outlines. Existing trees, Gould Plaza, Courant garden and fountain remain.

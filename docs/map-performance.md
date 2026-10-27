@@ -1,6 +1,6 @@
 # Map resource and frame performance
 
-`src/map-resources.js` contains narrowly scoped load-time resource helpers. They
+`src/map/landmarks/map-resources.js` contains narrowly scoped load-time resource helpers. They
 preserve every rendered position, normal, index, transform, draw range and group;
 there is no geometry simplification, new quantization or pixel-ratio change.
 

@@ -6,7 +6,7 @@ The October25 planner48-hour operational review is documented in [its milestone 
 
 This Git checkout is the application root. `src/` and `index.html` supply the Vite/Three.js campus interface; `server/` contains the Hono assistant API and independent source workers. `package.json` provides local paired web/API startup, separate sessions, builds and focused checks. Runtime keys belong in ignored settings or service secrets.
 
-`contacts-mock.html` is an isolated local Contacts design draft served by Vite. Its copied UI, synthetic in-memory data and styles live in `src/contacts-mock.js` and `src/contacts-mock.css`. It replaces the cancelled calendar draft, makes no real API calls and is deliberately absent from production build inputs.
+`contacts-mock.html` is an isolated local Contacts design draft served by Vite. Its copied UI, synthetic in-memory data and styles live in `src/features/contacts/contacts-mock.js` and `src/features/contacts/contacts-mock.css`. It replaces the cancelled calendar draft, makes no real API calls and is deliberately absent from production build inputs.
 
 `README.md` is the entry point. `AGENTS.md` defines scope and development rules; `.codex/` holds tracked agent configuration. `docs/` describes current contracts and source references. `milestones/` owns the rolling state, to-do list and immutable pass history. The orchestrator serializes shared journal updates and assigns exclusive writer ownership.
 
@@ -18,11 +18,11 @@ This Git checkout is the application root. `src/` and `index.html` supply the Vi
 
 `notes.md` stores user-requested persistent ideas/preferences; AGENTS.md requires reading it at startup and updating it when the user asks to save a note. It does not replace architecture or implementation records.
 
-The startup overlay uses static SVG contour masks over two composited rotating color surfaces, with the approved static SVG for reduced motion/fallback. Critical loading styles/error fallback live in index.html; src/startup-visual.js owns the1100ms logo exit and1000ms white dissolve while src/map-startup.js retains actual readiness/retry. Courant/Stern work yields cooperatively before registration. SVG/GIF/MP4 exports are previews; rounded-square static SVG/ICO favicons are independent. See docs/loading-screen.md.
+The startup overlay uses static SVG contour masks over two composited rotating color surfaces, with the approved static SVG for reduced motion/fallback. Critical loading styles/error fallback live in index.html; src/app/startup-visual.js owns the1100ms logo exit and1000ms white dissolve while src/app/map-startup.js retains actual readiness/retry. Courant/Stern work yields cooperatively before registration. SVG/GIF/MP4 exports are previews; rounded-square static SVG/ICO favicons are independent. See docs/loading-screen.md.
 
 The approved raised pastel finish is a static transparent SVG shadow/bevel/sheen image above those moving colors. The matching static favicon embeds that relief at 80% of the original mark size inside its rounded white badge. See scripts/build-brand-relief.mjs and scripts/build-brand-favicon.mjs.
 
-Building interaction uses a steady white surface highlight with smooth fades. Selection preserves the same overlay through camera/pointer changes; pulsing color, hover lift and the cancelled outline experiment are inactive. See docs/hover-reference.md and src/landmark-effects.js.
+Building interaction uses a steady white surface highlight with smooth fades. Selection preserves the same overlay through camera/pointer changes; pulsing color, hover lift and the cancelled outline experiment are inactive. See docs/hover-reference.md and src/map/landmarks/landmark-effects.js.
 
 Vite emits stable root favicon.svg/favicon.ico from the approved assets/branding
 sources for the public login page. These two read-only branding files are the
@@ -39,3 +39,5 @@ October25 Go Greek retirement: live website removal is verified on web408f84bb; 
 The approved Contacts prototype has been promoted to the real API-backed website UI and deployed on web release `a3bc66fa-2911-449b-ba38-3cb6fb71db98`. The mock remains a local design reference; synthetic data is not shipped. See milestones/contacts-site-release/info.md and the rolling snapshot for actual verification and mutation limits.
 
 The separate opt-in Gmail sender-cache enrichment worker is documented in docs/gmail-enrichment.md. Its own runtime/package reads contacts_cache unchanged and inserts native raw Contacts with separate metadata-only completion, lease/version and budget checks. Implementation, migration and activation status are in the rolling milestone.
+
+Current source layout: `src/app` composes the browser, `src/features` holds assistant/Contacts/admin interfaces, `src/map` holds scene responsibilities, and `src/api` holds server-only provider-grouped HTTP handlers. `config/file-limits.json`, `.github` and `.githooks` implement the quality/release policy in `docs/ci-cd.md`.

@@ -43,7 +43,7 @@ roughly half a meter; the connected Brown and Waverly outlines are distinct.
 
 Source tile: `assets/yuyang-site-3d-assets/models/buildings/city-tiles/tile-0_0.glb`.
 The exact authoritative plan polygon is exported as `silverCenterReplacement`
-from `src/silver-center.js`. NodeIO/Meshopt decoding extracted **380 triangles**
+from `src/map/landmarks/silver-center.js`. NodeIO/Meshopt decoding extracted **380 triangles**
 within that footprint. Original ground and highest roof elevations are
 **1.304127** and **58.228254 meters**. Multiple roof levels around44.2–55.7meters,
 including curved rooftop source geometry, are retained without reshaping.

@@ -167,7 +167,6 @@ The trusted Discord bridge separately injects `discordDraftTools` into its share
 
 Calendar writes now share a bounded saved-event receipt projector under google/calendar-receipt.js. Planning/native/duplicate/final contexts preserve actual saved details and explicit omission metadata; large batches compact deterministically. No new Calendar mutation authority, map behavior, operational-body logging or schema is introduced.
 
-
 The update worker now supports an explicitly enabled initial-agent/API/follow-up lifecycle and temporary source-scoped pending tasks. The web map authorizer recognizes the separately pinned Member Plans target; this changes data source authorization, not geometry or renderer.
 
 Authenticated chat uses the existing map read/person-lookup/upsert tools. `tools/map/chat.js` removes original-message, linked-author and lexical report checks, supports verified Discord actor or named roster lookup, and fills omitted provenance. The normal conversation carries clarification; no extra tools, report parser, session identifier or pending cache exists. `assistant-context.js` retains Discord-to-person context in system prompts and projects it into map-tool results. Worker authorization stays independent.

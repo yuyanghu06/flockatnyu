@@ -1,6 +1,6 @@
 # Supplemental park vegetation
 
-`src/park-vegetation.js` adds restrained illustrative trees and low planting to
+`src/map/environment/park-vegetation.js` adds restrained illustrative trees and low planting to
 explicit OpenStreetMap vegetation cover inside actual park boundaries. It never
 interprets every land-cover record or a whole park boundary as plantable lawn.
 No tree locations or species are presented as a surveyed inventory.

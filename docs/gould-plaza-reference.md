@@ -90,7 +90,7 @@ part of this module.
 
 ## Integration contract and checks
 
-Import `createGouldPlaza` from `src/gould-plaza.js` and replace the entire original
+Import `createGouldPlaza` from `src/map/landmarks/gould-plaza.js` and replace the entire original
 Gould model with its returned Group. Its root transform is identity; coordinates
 are already Washington Square meters, Y up. Do not apply another placement or
 retain the old plaza model. The integrator supplies stable selection identifier

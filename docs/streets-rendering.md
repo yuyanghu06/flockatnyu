@@ -1,6 +1,6 @@
 # Streets and pedestrian surfaces
 
-`src/streets.js` turns the locally captured OpenStreetMap network in
+`src/map/environment/streets.js` turns the locally captured OpenStreetMap network in
 `assets/campus-assets/data/streets-parks.json` into identity-transform map geometry.
 Coordinates are Washington Square X/Z meters, matching the existing buildings.
 The snapshot owns source attribution and provenance; this renderer does not fetch

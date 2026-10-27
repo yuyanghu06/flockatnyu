@@ -113,7 +113,7 @@ source-triangle, window, crown-panel and display-bay counts plus this document p
 
 ## Actual checks
 
-`node --check src/kimmel.js` passed. A NodeIO/Three.js check decoded the source tile,
+`node --check src/map/landmarks/kimmel.js` passed. A NodeIO/Three.js check decoded the source tile,
 built the model, and removed exactly 200 matching triangles: the tile changed from
 2,598 to 2,398 triangles. Model creation took approximately 31 ms in this Windows
 session and produced seven meshes and 19,316 triangles: 229 paired window units,

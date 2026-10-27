@@ -50,7 +50,7 @@ inventing windows or claiming that its particular CityGML shape is photo-verifie
 Ground Y=-0.09082m remains just above the map plane at-0.12m.
 
 The exact polygon and replacement height range `[-0.091,59.421]` are exported from
-`src/leslie-elab.js` as `leslieElabReplacement`. The independent NodeIO source
+`src/map/landmarks/leslie-elab.js` as `leslieElabReplacement`. The independent NodeIO source
 extraction is saved as `reference-leslie-source-triangles.json`.
 
 ## Integration contract
@@ -72,7 +72,7 @@ Actual Node instantiation yielded seven material meshes,31,772 triangles,
 498 modeled window modules and16 storefront modules. Bounds were approximately
 `[157.2737,-0.09082,129.4880]` to `[200.8498,59.4203,166.8062]`; facade relief
 extends a few tenths of a meter beyond the unchanged source walls. Source arrays
-were checked unchanged after building. `node --check src/leslie-elab.js` passed.
+were checked unchanged after building. `node --check src/map/landmarks/leslie-elab.js` passed.
 
 Wall planes and roofs come directly from the source mesh. Window spacing,
 individual pane count, air-conditioner placement and storefront module sizes

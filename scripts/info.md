@@ -15,7 +15,7 @@ M10: build-park-vegetation.mjs bakes deterministic trees/shrubs inside mapped pa
 
 M12: profile-map-memory.mjs assembles the complete scene offline for retained resource comparison.
 
-- check-api.mjs validates backend syntax/imports using the installed API dependencies.
+- check-api.mjs validates server, tools and server-only src/api syntax/imports using the installed API dependencies.
 
 `prepare-discord-deploy.mjs` and `prepare-gmail-deploy.mjs` create fresh temporary Docker contexts from each collector entrypoint’s transitive static ES module imports. The shared helper in the Discord preparer uses Node’s parser without executing source, rejects reachable symlinks/dynamic loaders/path escapes/unreviewed packages, and copies only service modules plus independent pinned manifests/locks and root Docker/Railway config. Exact-file Docker ignore rules protect the context. Deploy the printed directory, never the checkout. Discord uses only its transport SDK; Gmail uses only Hono and Google auth. Neither packages agent/model/map/other-connector code. Local preparation requires Node 22.12 or later.
 
@@ -71,3 +71,7 @@ Collector packaging admits only four reviewed root-level shared modules (source 
 `prepare-gmail-enrichment-deploy.mjs` builds a separate, static-import-only worker upload context with its own private-log volume entrypoint. It excludes frontend/source collectors/planner, data/logs/env and tests; preparation does not deploy or activate the service.
 
 `google-connect.mjs --gmail-send` adds explicitly approved Gmail send permission with incremental consent, preserves the normal read flow and saves credentials only to ignored mode-0600 .env.google.
+
+The runtime deployment preparer follows only reachable server, tools and server-only `src/api` JavaScript. Browser source is denied even when a server file tries to import it. The web Docker image copies and syntax-checks `src/api`; the worker does not package these website-only handlers.
+
+Quality commands use `check-file-limits.mjs`, `run-tests.mjs` and `browser-smoke.mjs`. `release-packages.mjs` prepares five source-only commit-labelled archives after checks. See `docs/ci-cd.md`; these scripts do not deploy or call business providers.

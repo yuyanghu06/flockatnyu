@@ -1,3 +1,76 @@
+## Cleanup independently accepted before publication
+
+- Independent read-only evaluator accepts frontend state/lifecycles/CSS ordering/assets, URL-shaped endpoint files and accurate technical/plain-English comments, preserved route auth/receipts/source/CAS behavior, quality gates and meaningful test repairs. All scoped findings resolved.
+- Independent verification includes68frontend,54source/map/Discord/park and21endpoint/package checks; current-tree fullCI3010pass/0fail/2skip and five browser workflows pass. No actual Docker build or deployment claimed.
+- Root must separate concurrent Brand.dev implementation/test hunks, verify the clean committed cleanup snapshot, then push main. Source-only package construction and dormant exclusions are verified; production service changes are outside this cleanup.
+
+## Deterministic regression repairs accepted
+
+- Independent baseline tester final focused run: 282checks across22repaired suites, zero failures/skips. Real runner/adapters and isolated SQL now exercise separate saved-task catalogue/exact reads, explicit full fragments, named service-only reads/writes, source scopes, identities, CAS, human edits, no-change versus actual write receipts, audits/errors/cancellation.
+- Added meaningful root-fix regressions for saved ancestor disable/withdrawal and no sibling grants, broad map snapshots/reordered default room notes and forbidden true moves, and truncated follow-up evidence. Missing SQL test extensions/collector metadata closure repaired.
+- Separate coder final four suites:28pass, including actual private-row preservation capabilities, explicit windows, finish recovery and native evidence fallback. Root local-clock seven and durable private-free fixture nineteen pass. Scripted model decisions/synthetic services only, no new inference or live writes.
+- Full frozen Node22 current-tree CI now3010pass/0fail/2existing skips; browser five workflows pass. This includes concurrent unrelated provider work, so publication acceptance still requires isolated cleanup verification.
+
+## Individual URL-shaped endpoint files completed
+
+- Implemented twenty-five method files: twenty-one active and four dormant. src/api folders mirror URL segments with named [parameter] folders; each method file registers exactly one path. Shared request/auth/response helpers and composition stay separate.
+- Every endpoint documents its method/path, plain-English purpose, inputs/limits, auth/origin rules, touched services/writes, output/failure/uncertainty behavior. Complete inventory documents service-root /healthz exception. Dormant handlers remain unregistered and unpackaged.
+- Coder checks: API build/lint/format/line limits/whitespace pass; affectedHTTP121, refinement19 and package3checks pass. Independent review confirms handler callbacks and preservation/CAS semantics match existing behavior.
+- Unrelated company-provider work remains separate; route comments use provider-neutral contract wording. Final isolated cleanup checkout verification and publication are next.
+
+## Local-clock runner fixtures repaired and verified
+
+- Root owned agent-local-clock-boundaries.test.mjs. Preserved summer/winter/fractional/non-hour-zone conversion, DST gaps/folds, exact raw endpoint copies, canonical action hashing and opaque preparation scope/replay checks.
+- Updated fixture current source revocation to a named exact-URL source read; invalid action stays unhandled/round-limited rather than falsely completed. Reservation accounting distinguishes the proposal round from separately named later Calendar sync. Successful own writes explicitly finish their original.
+- Evidence: all seven actual production-handler/adapter tests pass; no app behavior change or live services in this test repair pass.
+
+## Private test harness dependencies removed
+
+- Implemented durable synthetic production-runner/adapters fixture for three prior ignored-evidence-dependent regression cases. Real map snapshot/service checks preserve private relationships, grouped attendance, five complete task chains, malformed UUID feedback and exact Member Plan original coverage. No claim of exact private replay.
+- Coder checks: assigned three suites19/19 pass; with presence regressions22/22 pass. Isolated temporary checkout with empty evidence and PATH-only environment independently within coder pass19/19. New helper454formatted lines, no src or file limit exception.
+- Next: repair additional current-contract fixtures surfaced by standardized full suite, then independent final test/review. No application changes, live calls or deployment in this pass.
+
+## URL-shaped individual API files requested
+
+- User refinement: every route gets its own JavaScript file, folders mirror URL definitions, and each endpoint documents both technical specifications and a plain-English reason for existing.
+- Implementing src/api as /api base with [parameter] folders and method files, e.g. contacts/[id]/patch.js; service /healthz exception documented separately. Shared helper modules and one registration composer remain separate. Dormant lookup handlers remain unmounted.
+- Preserve URLs, methods, auth/origin/source/version/receipt checks, bounded inputs and existing responses. Update package allowlist to admit parameter folder names only within server-only src/api.
+- Existing frontend/CI review accepted; final endpoint restructuring and all integrated checks remain pending.
+
+## Independent test fixture repair progressing
+
+- Independent tester traced initial failures to outdated saved-task API seams, missing explicit full-page and source/map reads, retired implicit authorization workflows, obsolete source hashes and missing SQL test extensions.
+- Bounded corrected groups pass: worker isolation20, fragment/task9, Gmail current-contract32 and source-scope/authorization focused groups. Assertions retain preservation, versions, scopes, errors and actual receipts. Private-evidence-dependent cases are being replaced with durable synthetic production-runner/adapters fixtures.
+- Two genuine app failures retained for root repair: manual whitelist discarded ancestor metadata, and relation-only building moves bypassed event-fact source checks. Root added focused helpers; both original suites now pass30checks. Additional independent regression/review and full suite remain pending. No live operations.
+
+## Concrete quality and release protocols implemented
+
+- Implemented: exact-pinned Prettier/ESLint dependencies; standard format, lint, physical line limit, deterministic test and CI commands; installed local pre-push hook. GitHub pull-request/main quality and isolated Chromium jobs plus manual checked-main release-package workflow and PR template.
+- Policy: every src module <=500 JavaScript/400 CSS physical lines. Five existing oversized backend/test files have explicit frozen caps; no src exceptions. Standard runner discovers all .test.mjs plus ten explicitly reviewed offline frontend scripts; no paid model/live-service scripts.
+- Evidence: Node22.22 formatting/lint/limits/API/frontend builds pass; rejection probes reject501lines, unformatted source and browser-only forbidden imports. Five source-only service archives prepared. Browser smoke passes map startup/selection, actual local Contacts update/native preservation, simulated chat stream and mobile viewport.
+- Limitations: production remains manual; no branch-protection setting or live deployment changed. Full offline suite repairs and independent final review ongoing.
+
+## Frontend source grouped and formatted
+
+- Implemented: fifty original browser modules moved under src/app, src/features and src/map. Main scene setup/render/diagnostics, assistant UI, Contacts UI, presence rendering, asset lists and CSS split by responsibility using per-instance view state. HTML/test/script/asset references and folder guides updated.
+- Coder evidence: 96 browser code files below 500 JS/400 CSS; Prettier, ESLint, frontend build and whitespace pass. Targeted frontend/asset/avatar verification: 81 passed, zero failures.
+- Root evidence: format:check, repository lint and file limits currently pass. Local hooks installed. Gate probes rejected oversized/unformatted source and browser Node imports. Five release packages prepared.
+- Limitations: final independent structural review, browser flows and complete offline suite still in progress. No live service/data writes or deployment.
+
+## API extraction independently accepted
+
+- Read-only evaluator compared parsed code to fb2cd5b: all twelve former inline route calls and four moved route modules match apart from imports. Authentication, HTTP behavior and cancellation preserved.
+- Independent runtime-package/Contacts/Gmail/dormant-route checks: 22 passed, zero failures. Browser-source package rejection and dormant lookup exclusion pass.
+- CI review: no material finding; explicit limits, standard offline test discovery, isolated browser fixture and checked main-only release packages.
+- Acceptance: API extraction accepted. Final frontend and integrated CI acceptance remains pending; no live release.
+
+## Provider-grouped API handlers implemented
+
+- Implemented: existing handlers now live under src/api/{flock,discord,google,treg,shared}; server/app.js composes authentication/services and registers routes. Routes, validation, source/version/receipt checks and abort behavior preserved. Dormant Treg lookup handlers stay unmounted.
+- Packaging/build: only reachable src/api server modules may enter web runtime; browser source is denied. Website Docker includes and syntax-checks src/api.
+- Coder checks: API build and ESLint pass; 121 affected HTTP/chat/map/Gmail/Contacts checks pass; nine planner/package checks pass including negative browser import rejection. Root separately prepared five source-only release archives successfully.
+- Root retained the two existing test files original formatting plus updated imports to avoid an unnecessary oversized test rewrite. New source modules stay below 500 lines. Independent review underway; no deployment or live calls.
+
 ## Feature commits and main integration verified
 
 - Work: created eight logical checkpoint commits for storage, Treg, Gmail enrichment, Gmail sending, Contacts UI, presence, runtime wiring and records. Merged cfa12a7 without rewriting history; preserved both sides of documentation and prompt conflicts.

@@ -9,10 +9,10 @@ select, focus, restoreCamera and reset. These are debugging APIs, not visible UI
 
 ## Adjustable appearance
 
-src/config.js owns palette.context, skyTop, skyHorizon and ground colors. The steady white hover/selection highlight and smooth fade are configured in
+src/map/data/config.js owns palette.context, skyTop, skyHorizon and ground colors. The steady white hover/selection highlight and smooth fade are configured in
 landmark-effects.js; selected buildings retain it through camera movement.
 Generic city tiles use a uniform gray material with vertexColors disabled; source
-vertex data and detailed landmark materials are retained. src/atmosphere.js adds
+vertex data and detailed landmark materials are retained. src/map/environment/atmosphere.js adds
 an analytic sky, distance fog and world-space boundary fade. Fog starts at 430m
 and ends at 1050m; the last 220m inside mapExtent blend into haze. Both sky and fog
 evaluate the same world-direction gradient, including instanced/batched geometry.
@@ -62,7 +62,7 @@ and verify shared code/uniforms, hook chaining, idempotence, camera uniforms,
 output-conversion ordering and background state. They do not compile a GPU shader
 or establish visual acceptance.
 
-src/landmark-effects.js owns nonpickable shared-geometry surface highlights.
+src/map/landmarks/landmark-effects.js owns nonpickable shared-geometry surface highlights.
 The current white highlight uses smooth fades and keeps architecture stationary. See hover-reference.md for retrieved source behavior, adaptation
 limits and reduced-motion behavior. Existing lighting was not retuned in this pass.
 

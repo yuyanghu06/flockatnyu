@@ -431,3 +431,25 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Source organization and CI plan accepted](2026-10-27_13-57-42-709936-planner-source-cleanup-plan.md).
 
 - [Feature commits and main integration verified](2026-10-27_13-58-41-050098-orchestrator-checkpoint-main-integration.md).
+
+- [Provider-grouped API handlers implemented](2026-10-27_14-03-26-070010-coder-api-route-organization.md).
+
+- [API extraction independently accepted](2026-10-27_14-04-23-433690-evaluator-api-independent-review.md).
+
+- [Frontend source grouped and formatted](2026-10-27_14-06-18-501356-coder-frontend-organization.md).
+
+- [Concrete quality and release protocols implemented](2026-10-27_14-09-43-928532-orchestrator-quality-protocols-implemented.md).
+
+- [Independent test fixture repair progressing](2026-10-27_14-09-43-958954-tester-baseline-fixture-repair.md).
+
+- [URL-shaped individual API files requested](2026-10-27_14-13-50-055920-orchestrator-endpoint-layout-revision.md).
+
+- [Private test harness dependencies removed](2026-10-27_14-13-50-083736-coder-synthetic-regressions.md).
+
+- [Local-clock runner fixtures repaired and verified](2026-10-27_14-18-37-349013-orchestrator-local-clock-fixtures.md).
+
+- [Individual URL-shaped endpoint files completed](2026-10-27_14-23-24-113962-coder-final-endpoint-files.md).
+
+- [Deterministic regression repairs accepted](2026-10-27_14-23-24-145611-tester-regression-fixtures-final.md).
+
+- [Cleanup independently accepted before publication](2026-10-27_14-23-24-174783-evaluator-cleanup-final-review.md).

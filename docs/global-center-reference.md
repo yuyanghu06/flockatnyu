@@ -1,6 +1,6 @@
 # Global Center for Academic and Spiritual Life
 
-`src/global-center.js` models the separate NYU Global Center beside Kimmel.
+`src/map/landmarks/global-center.js` models the separate NYU Global Center beside Kimmel.
 It makes the existing coarse city mass into a complete selectable landmark;
 the diagnostic pass did not find that Kimmel had deleted its source geometry.
 All 88 Global Center triangles were present before and after Kimmel removal.
@@ -77,7 +77,7 @@ the generic building-removal helper.
 
 ## Checks actually run
 
-`node --check src/global-center.js` passed. An inline NodeIO/Meshopt/Three.js
+`node --check src/map/landmarks/global-center.js` passed. An inline NodeIO/Meshopt/Three.js
 assertion script decoded the original tile and verified:
 
 - Model creation leaves source triangle signatures unchanged.

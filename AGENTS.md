@@ -1,3 +1,29 @@
+# Source layout, route documentation and quality gates (2026-10-27)
+
+Browser code belongs in `src/app`, `src/features` and `src/map`. HTTP API route
+files under `src/api` mirror their URL segments, using `[parameter]` folders and
+one JavaScript file per method and path (for example
+`src/api/contacts/[id]/patch.js` handles `PATCH /api/contacts/:id`). Keep shared
+request helpers separate and keep dormant routes unregistered.
+
+Each route file must explain its method/path, inputs, authentication and origin
+checks, touched services, response/status behavior, bounds and write side effects.
+It must also explain in plain English why the route exists and when the app uses
+it. Keep comments accurate as implementations change; never put credentials or
+private source examples in comments. Browser code must not import API handlers.
+
+Format all `src` code with Prettier. Count every physical line, including blank
+lines and comments: JavaScript/MJS files are limited to 500 lines and CSS to 400.
+Split coherent responsibilities instead of compressing code. Only the explicit
+pre-existing backend/test exceptions in `config/file-limits.json` may exceed the
+normal limits; their frozen maxima cannot grow and `src` has no exceptions.
+
+Run `npm run ci` before pushing and the relevant behavior checks while editing.
+UI work also requires `npm run test:browser` or equivalent documented browser
+evidence. Standard checks use simulated business services and no paid/live model
+calls. Keep individual feature commits reviewable, preserve other authors' work,
+and follow `docs/ci-cd.md` for review, release-package and deployment protocols.
+
 # Treg discovery default-save override (2026-10-27)
 
 For chat, use search_treg_people to find people at companies and enrich_treg_people for richer people profiles using actual supplied or returned email addresses. The user clarified that this does not mean company enrichment. Successful returned people should be saved to Contacts by default through a separate named Contacts import tool, unless the current user explicitly says not to save. Lookup and save remain separate model-selected operations. Preserve complete native raw results server-side and existing contacts/human edits; never fabricate raw data from the six displayed fields. Ordinary Contacts create/read/update/delete remain separate tools with exact-read/version checks. Actual implementation, verification and release truth lives in milestones/milestone.md.

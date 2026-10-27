@@ -368,3 +368,5 @@ Folder rename/main integration is complete: local Railway link repaired, main 4e
 `contacts-flock-context/` tracks replacing the sticky Notes overlap with separate layout areas, the Flock it! saved-contact chip and directory refresh. It distinguishes synthetic UI/transport tests, actual configured-model evaluation and hosted release checks.
 
 The planner-presence-diagnosis folder records diagnosis, actual-model corrections and the accepted worker-only standalone-presence release; it distinguishes simulations/startup verification from an unverified actual report replay.
+
+`source-cleanup-ci/` tracks source grouping, server-only HTTP routes and enforceable local/GitHub checks.

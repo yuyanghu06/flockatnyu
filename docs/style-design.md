@@ -8,13 +8,13 @@ The current interface is a warm, quiet layer over the campus map: ivory surfaces
 
 | Source | What it controls |
 | --- | --- |
-| [assistant.css](../src/assistant.css) | Bottom-right launcher, assistant dialog, buttons, messages, queues and responsive behavior. This is the closest reference for Contacts. |
-| [assistant.js](../src/assistant.js) | Native dialog, focus, keyboard shortcuts, lifecycle and the raised pastel @ mark. |
-| [map-presence.css](../src/map-presence.css) | Portraits, person notes, schedule and building cards. Useful references for cards and quiet information hierarchy. |
-| [style.css](../src/style.css) | Base font, black text, paper colors, generic controls and older map controls. |
-| [config.js](../src/config.js) | Colors used by the 3D scene. Lighting changes their final appearance. |
+| [assistant.css](../src/features/assistant/assistant.css) | Bottom-right launcher, assistant dialog, buttons, messages, queues and responsive behavior. This is the closest reference for Contacts. |
+| [assistant.js](../src/features/assistant/assistant.js) | Native dialog, focus, keyboard shortcuts, lifecycle and the raised pastel @ mark. |
+| [map-presence.css](../src/map/presence/map-presence.css) | Portraits, person notes, schedule and building cards. Useful references for cards and quiet information hierarchy. |
+| [style.css](../src/app/style.css) | Base font, black text, paper colors, generic controls and older map controls. |
+| [config.js](../src/map/data/config.js) | Colors used by the 3D scene. Lighting changes their final appearance. |
 | [index.html](../index.html) | Initial loading surface, pastel motion and startup layering. |
-| [discord-admin.css](../src/discord-admin.css) | Separate administration page; related typography and neutral surfaces, with more conventional borders. |
+| [discord-admin.css](../src/features/discord-admin/discord-admin.css) | Separate administration page; related typography and neutral surfaces, with more conventional borders. |
 
 The page uses `body.map-only`. It hides the older masthead, explorer and toolbar inside `#app`; those selectors remain in the stylesheet for compatibility. Their Georgia headings and older dark-purple buttons are not the main reference for new map overlays. The older [color studies](color-schemes.md) are proposals, not the current visual specification.
 
@@ -139,7 +139,7 @@ The Contacts implementation uses the shared surface recipes above with these con
 
 ## Contacts screen direction
 
-The Contacts implementation extends the palette and surface rules above; its final selectors and dimensions live in [contacts.css](../src/contacts.css).
+The Contacts implementation extends the palette and surface rules above; its final selectors and dimensions live in [contacts.css](../src/features/contacts/contacts.css).
 
 - Use an icon-only person profile avatar beside the existing launcher, with no visible Contacts text or address-book symbol. Keep the accessible name **Open contacts**. Its pastel highlights follow the original @ palette and hover/focus animation; reduced motion keeps it static. Retain the original @, Ask label and shortcut behavior.
 - Keep the Contacts header to its title and actions; do not add a subtitle or tagline.

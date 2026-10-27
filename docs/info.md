@@ -156,3 +156,5 @@ update-agent-prompt.md describes independent presence routing, supported nearby 
 [Gmail sending](gmail-send.md) describes the separate website send API/tool, fixed account/OAuth opt-in, durable content-free receipts, conservative retry behavior and verification boundaries.
 
 `treg-contacts.md` describes fixed Exa people search and native read projection. Existing dormant lookup routes remain separate; current release/test truth is in the milestone.
+
+`ci-cd.md` defines enforced local/CI quality commands, file limits, review/push expectations and checked release packages with a separate production deployment step.

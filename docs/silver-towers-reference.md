@@ -43,7 +43,7 @@ Authoritative plan polygons come from the correspondingly indexed footprints in
 
 Extraction retains triangles whose three world-space vertices lie within the
 recorded polygon, with the existing 0.08-meter boundary tolerance. The 228
-triangles, rounded to five decimal meters, are embedded in `src/silver-towers.js`.
+triangles, rounded to five decimal meters, are embedded in `src/map/landmarks/silver-towers.js`.
 This preserves the stepped footprints and actual source roof/penthouse geometry,
 including the source dataset's slightly different tower heights. The originals
 are unchanged. The broader roof datum near Y85 meters anchors the facade's top;

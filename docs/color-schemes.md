@@ -68,8 +68,8 @@ and pressed state; sample action cards are deliberately non-interactive.
 
 ## Applying a chosen direction later
 
-Map interface tokens to CSS variables in `src/style.css`; assign selection/hover
-colors centrally in `src/config.js`. Keep current photographic material treatment
+Map interface tokens to CSS variables in `src/app/style.css`; assign selection/hover
+colors centrally in `src/map/data/config.js`. Keep current photographic material treatment
 for Paulson, Silver, Leslie and Stern/Courant. Ground, grass and atmospheric tones
 can be adjusted separately after checking facade recognition and model contrast.
 

@@ -36,7 +36,7 @@ the approximate surrounding geometry.
 
 ## Implemented geometry and coordinate contract
 
-`createPaulsonModel(metadata)` in `src/paulson.js` accepts the existing Paulson
+`createPaulsonModel(metadata)` in `src/map/landmarks/paulson.js` accepts the existing Paulson
 entry from `assets/campus-assets/data/extracted-buildings.json` and returns one `Group`.
 All vertex positions are baked into Washington Square map meters with Y up.
 Keep its root at identity; do not apply the original GLB's scale, rotation or

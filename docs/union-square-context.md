@@ -15,7 +15,7 @@ not independently survey or rename every adjacent building wing.
 
 ## Exact integration contract
 
-Both existing assets are registered in `src/assets.js` and loaded as context:
+Both existing assets are registered in `src/map/data/assets.js` and loaded as context:
 
 | File under `assets/yuyang-site-3d-assets/models/buildings/` | Source footprint | Triangles | Minimum X/Y/Z | Maximum X/Y/Z |
 | --- | --- | --- | --- | --- |
