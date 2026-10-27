@@ -1,3 +1,4 @@
+import {createFinishBatchOperation,finishTool,localContextTools} from './operations/finish-batch.js';
 import {toolDiagnostics,argumentDiagnostic,safeDiagnosticTool} from "../audit/diagnostics.js";
 import {createHash,randomUUID} from 'node:crypto';
 import {buildAutomationPrompt} from './prompt.js';
@@ -6,12 +7,10 @@ import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {buildObservationHandoff} from './observation-handoff.js';
 import {compactConversation} from './conversation-context.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
-const finishTool = {name:'finish_batch',description:'Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.',parameters:{type:'object',properties:{handledInputIds:{type:'array',items:{type:'string'},minItems:0,maxItems:20}},required:['handledInputIds'],additionalProperties:false}};
 const failure = (code,result) => { const error=new Error(code);if(plainObject(result?.diagnostics))error.diagnostics=result.diagnostics;throw error; };
-// These tools use only leased task/batch data or already-fetched RAM fragments.
-// Their adapters still check principal, source scope and exact task versions.
-const localContextTools=new Set(['read_pending_task','defer_task','read_context_fragment']);
+
 export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline,principal,config,now=()=>new Date(),onProgress=()=>{},audit} = {}) {
+  const finishOperation=createFinishBatchOperation({definition:finishTool,store,pipeline,validateCompletion});
   let running = false;
   let definitions;
   try {
@@ -209,11 +208,11 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         if(!handledInputIds.length)return outcome({status:'round_limit',followupStatus,calls});
         await renew();await authorize();
         if(pipeline.finishCycle) {
-          const checkpoint=await guarded(()=>pipeline.finishCycle({handledInputIds:[...handledInputIds],inputs:structuredClone(inputs),principal,signal:combined,leaseToken,executionLog:getExecutionLog(),followupStatus}));
+          const checkpoint=await guarded(()=>finishOperation.execute({handledInputIds},{step:'checkpoint',inputs,principal,signal:combined,leaseToken,executionLog:getExecutionLog(),followupStatus}));
           if(checkpoint?.status!=='ready')failure('preflight_failed',checkpoint);
         }
         await renew();await authorize();
-        const result=await guarded(()=>store.finish({leaseToken,handledInputIds,signal:combined}));
+        const result=await guarded(()=>finishOperation.execute({handledInputIds},{step:'finish',leaseToken,principal,signal:combined}));
         if(result.status!=='ready')failure('stale');
         leaseToken=null;
         return outcome({status:'completed',handled:handledInputIds.length,remaining:inputs.length-handledInputIds.length,calls,followupStatus});
@@ -570,7 +569,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
             if(stage==='initial'&&typeof pipeline.validateInitialFinish==='function') {
               const finishArguments=executionCalls.find(call=>call.name==='finish_batch').arguments;
               const noChangeInputIds=finishArguments.noChangeInputIds||[],missingInputIds=finishArguments.missingInputIds||[];
-              const completion=await guarded(()=>pipeline.validateInitialFinish({principal,signal:combined,handledInputIds,noChangeInputIds,missingInputIds}));
+              const completion=await guarded(()=>finishOperation.execute({handledInputIds,noChangeInputIds,missingInputIds},{step:'validate_initial',principal,signal:combined}));
               if(completion?.status==='pending') {
                 const uncoveredInputRefs=(completion.uncoveredInputIds||[]).map(id=>queueReferences.bindings.find(binding=>binding.uuid===id)).filter(Boolean);
                 if(!uncoveredInputRefs.length||uncoveredInputRefs.length>20)failure('preflight_failed');
@@ -587,7 +586,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               initialFinishVerdict=Object.freeze({status:completion.status,handledInputIds:Object.freeze([...handledInputIds])});
             }
             if(stage==='followup'&&typeof pipeline.validateFinish==='function') {
-              const completion=await guarded(()=>pipeline.validateFinish({principal,signal:combined}));
+              const completion=await guarded(()=>finishOperation.execute({handledInputIds},{step:'validate_followup',principal,signal:combined}));
               if(completion?.status==='pending') {
                 const response={...completion,taskRefs:(completion.taskIds||[]).map(id=>phaseReferences.bindings.find(binding=>binding.uuid===id)).filter(Boolean)};
                 if(Buffer.byteLength(canonicalJson(response))>16384)failure('context_limit');
@@ -611,7 +610,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           if(validateCompletion!==undefined) {
             if(typeof validateCompletion!=='function')failure('not_configured');
             await markDispatched();
-            completion=await guarded(()=>validateCompletion({handledInputIds,principal,signal:combined}));
+            completion=await guarded(()=>finishOperation.execute({handledInputIds},{step:'validate_legacy',principal,signal:combined}));
             if(!plainObject(completion)||!['ready','pending'].includes(completion.status)||Buffer.byteLength(canonicalJson(completion))>16384)failure('invalid_completion');
           }
           if(handledInputIds.length===0||completion?.status==='pending') {
@@ -628,7 +627,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               continue;
           }
           await markDispatched();
-          const result=await guarded(()=>store.finish({leaseToken,handledInputIds,signal:combined}));
+          const result=await guarded(()=>finishOperation.execute({handledInputIds},{step:'finish',leaseToken,principal,signal:combined}));
           if(result.status!=='ready') failure('stale');
           leaseToken=null;
           activeProgress.result={status:'completed'};

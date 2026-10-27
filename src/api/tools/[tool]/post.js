@@ -16,6 +16,7 @@
  * unavailable/uncertain states stay with the named adapter; this route never asserts
  * write success itself. no-store.
  */
+import { executeAdapterOperation } from '../../../../server/operation-api/adapter.js';
 import { createTimeContext } from '../../../../server/shared/time-zone.js';
 import { apiError, resultStatus, readJSON } from '../../_shared/http.js';
 
@@ -57,7 +58,7 @@ export function registerApiToolsToolPost({
                 : null;
     if (!adapter) return apiError(c, 'not_configured', 503);
     const timeContext = createTimeContext({ now: now() });
-    const result = await adapter.execute({
+    const result = await executeAdapterOperation(adapter, {
       name,
       arguments: value,
       principal,

@@ -1,4 +1,4 @@
-import {chatSourceFiles} from './fixtures/chat-source-files.mjs';
+import {chatSourceFiles,operationSourceFiles} from './fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile,mkdir,writeFile,chmod} from 'node:fs/promises';
@@ -25,7 +25,7 @@ const config=readConfig();assert(config.configured,'Configured inference unavail
 const maxRequests=Number(process.argv.find(value=>value.startsWith('--max-requests='))?.slice(15)??48);
 assert(Number.isInteger(maxRequests)&&maxRequests>0&&maxRequests<=48);
 const perCase=Number(process.argv.find(value=>value.startsWith('--max-per-case='))?.slice(15)??8);assert(Number.isInteger(perCase)&&perCase>0&&perCase<=8);
-const files=[...new Set([...(await chatSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/runner.js','server/chat/context.js','server/chat/behavior.js','server/contacts/store.js','server/contacts/search.js','server/shared/config.js','server/providers/index.js','server/providers/retry.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/automation/validation.js','tools/contacts/index.js','tools/attio/index.js','server/attio/client.js','server/attio/config.js','supabase/migrations/202610260048_contacts_search.sql','tests/contacts-model.mjs','tests/fixtures/contacts-model.mjs','tests/fixtures/contacts-store.mjs']])].sort();
+const files=[...new Set([...(await chatSourceFiles()),...(await operationSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/runner.js','server/chat/context.js','server/chat/behavior.js','server/contacts/store.js','server/contacts/search.js','server/shared/config.js','server/providers/index.js','server/providers/retry.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/automation/validation.js','tools/contacts/index.js','tools/attio/index.js','server/attio/client.js','server/attio/config.js','supabase/migrations/202610260048_contacts_search.sql','tests/contacts-model.mjs','tests/fixtures/contacts-model.mjs','tests/fixtures/contacts-store.mjs']])].sort();
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,createHash('sha256').update(await readFile(new URL(`../${file}`,import.meta.url))).digest('hex')])));
 const pins=await hashes(),folder=new URL(`../${process.env.CONTACTS_MODEL_EVIDENCE||'evidence/contacts-tools'}/model-${new Date().toISOString().replace(/[:.]/g,'-')}/`,import.meta.url);
 await mkdir(folder,{recursive:true,mode:0o700});await chmod(folder,0o700);

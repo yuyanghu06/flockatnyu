@@ -9,6 +9,11 @@ from their named folders. Keep test imports and generated constructor-module URL
 aligned with these real files. Model-evaluation source pins must include extracted
 helper modules as well as their public entry files; these scripts remain opt-in
 and are not executed by the deterministic suite.
+The operation endpoint clients also require `server/operation-api`, the fixed
+`src/api/operations` routes and the server-owned domain operations. Optional model
+harnesses copy/hash these dependencies through the filename-only
+`operationSourceFiles` inventory or their existing complete server/tool walk plus
+the operation route directory. No module or business call runs while listing files.
 
 Run `npm test` for the deterministic Node/isolated SQL suites and the ten offline
 map checks selected by `scripts/run-tests.mjs`. The runner uses four test files at

@@ -5,7 +5,7 @@ import {createCalendarClient} from '../server/google/calendar-client.js';
 import {CALENDAR_REQUIRED_SCOPES} from '../server/google/calendar-config.js';
 import {calendarEventReceipt,projectCalendarReceipt,compactCalendarReceipt} from '../server/google/calendar-receipt.js';
 import {createChatCalendarTools} from '../tools/calendar/chat.js';
-import {projectCalendarBatchWrite,compactCalendarBatchWrite} from '../tools/calendar/chat-batch.js';
+import {projectCalendarBatchWrite,compactCalendarBatchWrite} from '../server/google/operations/calendar-batch.js';
 import {createChatRunner} from '../server/chat/runner.js';
 
 const calendarId='complete-receipts@example.test',sourceId='00000000-0000-4000-8000-000000000001';

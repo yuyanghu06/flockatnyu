@@ -6,7 +6,7 @@ import {
 } from '../../audit/diagnostics.js';
 
 import { canonicalJson, validateArguments } from '../../automation/validation.js';
-import { normalizeChatMapPersonName } from '../../../tools/map/chat.js';
+import { normalizeChatMapPersonName } from '../../map/operations/chat-helpers.js';
 
 import { denied, maxToolCalls } from '../constants.js';
 

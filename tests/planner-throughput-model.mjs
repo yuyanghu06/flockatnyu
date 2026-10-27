@@ -62,7 +62,7 @@ const config=replayMode?{configured:true,model:replayEvidence.model,provider:rep
 const endpoint=replayMode?null:config.baseUrl.replace(/\/$/,'')+'/'+(config.provider==='anthropic'?'messages':'chat/completions');
 const evidenceDir=resolve(arg('evidence-dir')??`evidence/planner-throughput-fix-2026-10-25/tester-model-${Date.now()}`);await mkdir(evidenceDir,{recursive:true,mode:0o700});
 async function walk(path){const files=[];for(const entry of await readdir(new URL('../'+path+'/',import.meta.url),{withFileTypes:true})){const name=path+'/'+entry.name;if(entry.isDirectory())files.push(...await walk(name));else if(entry.isFile())files.push(name);}return files;}
-const files=[...await walk('server'),...await walk('tools'),'tests/fixtures/planner-followup.mjs','tests/planner-throughput-model.mjs','package.json','package-lock.json'].sort();
+const files=[...await walk('server'),...await walk('tools'),...await walk('src/api/operations'),'tests/fixtures/planner-followup.mjs','tests/planner-throughput-model.mjs','package.json','package-lock.json'].sort();
 const sourceHashes=async()=>Object.fromEntries(await Promise.all(files.map(async name=>[name,hash(await readFile(new URL('../'+name,import.meta.url)))]))),pins=await sourceHashes();
 const report={model:config.model,provider:config.provider,mode:replayMode?'offline-recorded-model-replay':'configured-model-api',
  ...(replayMode?{recordedEvidence:resolve(replayFile),recordedEvidenceSha256:hash(await readFile(resolve(replayFile))),recordedRequests:replayEvidence.networkRequests}:{}),

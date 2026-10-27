@@ -1,10 +1,9 @@
 # Model-callable tools
 
-Each folder defines the names, JSON arguments and execution functions that the
-assistant model can select. Tools call server clients, services or saved-data
-stores directly. They do not call this application's HTTP routes. HTTP routes
-and tools often share the same service; `POST /api/tools/:tool` calls selected
-tools, rather than tools calling that route.
+Each folder exposes tool names, JSON argument schemas and small clients for the
+private operation API. A call crosses its dedicated Hono handler before backend
+operation services validate access and use the provider client or saved-data store.
+Private request state and execution logic belong below the API, not in these files.
 
 | Folder         | Responsibility                                                                                                         |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -23,10 +22,11 @@ tools, rather than tools calling that route.
 `server/runtime/services.js` assembles the configured chat services. The chat
 runner executes tools with request-specific context; the autonomous worker builds
 its own adapters under `server/automation`. Those adapters also expose queue/task
-controls, which are in-process operations rather than separate HTTP endpoints.
+controls through their own private operation endpoints. No new public endpoints
+or network ports are opened.
 
-Some tools mostly translate and validate arguments. Others retain exact-read
-receipts, deduplicate requests, preserve native data, or protect uncertain writes.
+The backend operation services retain exact-read receipts, deduplicate requests,
+preserve native data and protect uncertain writes.
 A tool description or registration never grants broader source permissions.
 
 Ordinary tools touch only their named service or saved data. Multi-service

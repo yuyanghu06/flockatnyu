@@ -19,11 +19,13 @@ import {createLiveDiscordRetrieval} from '../discord/live-retrieval.js';
 import {isDiscordChannelExcluded} from '../discord/discovery.js';
 import {resolveDiscordSourceIds} from '../discord/source-scope.js';
 import {createManualDiscordStore} from '../discord/manual-scope.js';
-import {GOOGLE_TOOLS,executeGoogleTool} from '../../tools/google/index.js';
-import {createLiveRetrievalTools} from '../../tools/discord/index.js';
-import {createCalendarTools} from '../../tools/calendar/index.js';
+import {GOOGLE_TOOLS} from '../google/operations/google-definitions.js';
+import {executeGoogleOperation as executeGoogleTool} from '../google/operations/google.js';
+import {bindWorkerOperations,resetWorkerOperations} from '../operation-api/adapter.js';
+import {createDiscordReadOperations as createLiveRetrievalTools} from '../discord/operations/reads.js';
+import {createCalendarOperations as createCalendarTools} from '../google/operations/calendar.js';
 import {createBoundedResults} from './bounded-result.js';
-import {createMapTools} from '../../tools/map/index.js';
+import {createMapOperationService as createMapTools} from '../map/operations/service.js';
 import {createMapEventStore,createMapEventService,mapReadContext,timestamp} from '../map/events.js';
 import {PARTICIPATION_PARAMETERS,completeParticipationSnapshot,mergeParticipationChanges,sameSavedParticipation,sameSavedParticipationSnapshot} from './participation.js';
 import {withLocalTimeDisplay} from './local-time-display.js';
@@ -37,23 +39,8 @@ const personUuid=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a
 const fail=code=>{throw new Error(code);};
 const success=new Set(['ready','empty','partial','unsupported_content']);
 const evidenceKey=(sourceId,sourceUrl)=>canonicalJson([sourceId,sourceUrl]);
-export function discordCalendarIntent(content,{cancel=false}={}) {
-  if(typeof content!=='string'||!content.trim())return false;
-  const text=content.toLowerCase();
-  if(/\brsvp\s*[:=-]?\s*(?:yes|no|maybe|accepted|declined|going|not going)\b/.test(text))return false;
-  if(/\b(?:i|we)(?:'m|'re| am| are)?\s+(?:plan(?:ning)?|intend(?:ing)?|want(?:ing)?|hope|hoping)\s+to\s+(?:attend|join|go)\b/.test(text))return false;
-  if(/\b(?:not|never|no longer)\s+(?:cancelled|canceled|called off)\b/.test(text))return false;
-  if(/\b(?:i(?:'m|'ll| am| will|’m)?|we(?:'re| are| will)?|[a-z]+ (?:is|are|will))\s+(?:not\s+)?(?:attend(?:ing)?|join(?:ing)?|go(?:ing)?|be there|can help)\b/.test(text))return false;
-  if(/^\s*(?:i(?:'ll| will| am|'m|’m)?\s+(?:attend|join|go(?:ing)?|be there|study|studying)|count me in|rsvp\b|i can help)/i.test(text))return false;
-  if(/^\s*(?:co[- ]?working\b|studying\b|i(?:'m|’m| am|m)?\s+(?:at|here|heading|working)\b)/i.test(text))return false;
-  if(/\b(?:maybe|might|proposed|proposal)\b/.test(text)||/\b(?:cancelled|canceled|rescheduled)\s*\?/.test(text))return false;
-  const cancelled=/\b(?:cancel(?:led|ed)?|called off)\b/.test(text);
-  if(cancel)return cancelled&&!/\b(?:not|never|no longer|isn't|wasn't|hasn't|don't)\b|["“”?]/.test(text);
-  // Semantic event interpretation belongs to the planner. Backend checks retain
-  // exact originals, ownership, duplicate coverage and narrow unsafe negatives.
-  return !cancelled;
-}
-
+export {discordCalendarIntent} from './operations/intent.js';
+import {discordCalendarIntent} from './operations/intent.js';
 /** Bundled server-owned adapter. Construction does no network I/O. Dependencies
  * are an explicit fixture seam; event/model data never selects implementations. */
 export function createAutomationAdapters({env=process.env,config,fetchImpl=globalThis.fetch,now=()=>new Date(),dependencies={},manual}={}) {
@@ -63,7 +50,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     ||new Set(manual.channelIds).size!==manual.channelIds.length))fail('invalid_request');
   const manualWhitelist=Boolean(manual?.channelIds.length);
   const stagedEnabled=env.AGENT_AUTOMATION_STAGED_ENABLED==='true';
-  let activeLeaseToken,staged,preparedContext,synchronizer,calendarMutationVersion=0,syncCycleId;
+  let workerOperations,activeLeaseToken,staged,preparedContext,synchronizer,calendarMutationVersion=0,syncCycleId;
   const pendingTaskStore=stagedEnabled?(d.taskStore||createPendingTaskStore({env,fetchImpl})):null;
   const staticSourceIds=Object.freeze([...new Set(readConfig(env).allowedSourceIds)]);
   let allowedSourceIds=manualWhitelist?Object.freeze([]):staticSourceIds;
@@ -141,7 +128,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     currentDiscordSourceIds=[...discordIds];
     return [...new Set([...discordIds,...(googleAccess?[gmailSourceId]:[])])];
   }
-  const cleanupBatch=()=>{staged?.cleanup();activeLeaseToken=undefined;preparedContext=undefined;prepared=false;calendarMutationVersion=0;syncCycleId=undefined;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();participationProofs.clear();fragments.clear();
+  const cleanupBatch=()=>{if(workerOperations)resetWorkerOperations(workerOperations);staged?.cleanup();activeLeaseToken=undefined;preparedContext=undefined;prepared=false;calendarMutationVersion=0;syncCycleId=undefined;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();participationProofs.clear();fragments.clear();
     memberPreparationRun={};memberPreparations=new WeakMap();memberBoundaryCopies.clear();participationMapReads.clear();initialWriteCoverage.clear();missingOriginals.clear();personChoiceReceipts.clear();personChoiceRun={};mapSnapshots.clear();mapContexts.clear();latestMapContext=undefined;
     calendarOccurrences.clear();pendingCalendarReads.clear();fixedBuildings.clear();calendarWindows.clear();knownCalendarEvents.clear();taskEvidence.clear();for(const ids of mutatedCalendarIds.values())ids.clear();catalogueRead=false;};
   function rememberDiscord(source) {
@@ -1037,7 +1024,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     const begin=staged.pipeline.beginCycle;
     staged.pipeline.beginCycle=async args=>{participationProofs.clear();personChoiceReceipts.clear();personChoiceRun={};activeLeaseToken=args.leaseToken;await begin(args);staged.pipeline.setBatchContext(preparedContext);};
     tools.push(...staged.tools);
-    return {principal,tools,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline:staged.pipeline};
+    workerOperations=bindWorkerOperations(tools);
+    return {principal,tools:workerOperations,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline:staged.pipeline};
   }
-  return {principal,tools,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion};
+  workerOperations=bindWorkerOperations(tools);
+  return {principal,tools:workerOperations,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion};
 }

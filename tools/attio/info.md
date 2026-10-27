@@ -1,13 +1,13 @@
-# Attio assistant adapter
+# Attio tool clients
 
-`index.js` defines five tools: search/read records, discover attributes, create records and update records. Each call requires an authenticated principal, the configured source UUID in `allowedSourceIds` and an explicitly allowed object before provider I/O. Mutation tools additionally require the server write gate. Content and original links remain request-local, with bounded `attioContext`, source excerpts and truthful incomplete fuzzy-search/truncation coverage.
+`index.js` exports the existing five tool definitions and constructor. Constructed
+tools call the private operation API, which dispatches to
+`server/attio/operations` before the existing Attio provider client.
 
-`createAttioTools({client,config})` exposes stateless `execute` for a protected direct API and `createRequest({principal,userMessage})` for chat. The request closure captures the actor and original user text. Chat writes require nonempty original user text; tool descriptions require explicit current-user intent and forbid instructions from retrieved records. Updates require a successful exact record read in that same request. A read does not resolve ambiguous user intent or provide optimistic concurrency guarantees.
-
-Identical request-local writes share an in-flight and settled receipt, including uncertain failures, to prevent replay. Any unknown write outcome blocks further distinct mutations for the remainder of that request, requiring later reconciliation. Updating consumes the read observation; another distinct update requires a new exact read. This deduplication is request-local and is not a durable provider idempotency guarantee. There are no delete tools, arbitrary URLs/paths, worker registration or cross-request CRM archives.
-
-Website steering advances a private input counter through an internal method,
-separate from all callable tools. Update receipts include that counter so a new
-human correction can restore an earlier value after another exact read. Prior
-receipts, actor/source grants, read permits and the run-wide uncertain-write stop
-are retained; create receipts keep their original duplicate protection.
+The backend operations own source/object/write checks, bounded record projection
+and request-local exact-read permits. Updates consume their exact-read permit;
+identical writes share their in-flight or settled receipt. An uncertain write
+blocks further different writes for that request. Later human input advances a
+private input counter while retaining prior receipts, read permits and uncertainty
+protection. These protections must remain in backend request state, rather than
+being reconstructed from API JSON. There are no delete tools or schema writes.

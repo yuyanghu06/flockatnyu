@@ -279,3 +279,12 @@ authorized an architecture migration in this side conversation.
 This entry records discussion only. It does not establish a new implementation,
 verification, deployment or release result. Continue from the current repository
 state and preserve work happening in the main conversation.
+
+## 2026-10-27 — Tools through APIs implementation authorized
+
+The user resumed the earlier tools/services/API discussion and explicitly asked to
+implement tools → APIs → service → provider. This supersedes the earlier note's
+no-implementation status for this migration. The chosen API runs privately inside
+each process; it is not a new public service. Tests remain stopped by the user's
+earlier instruction. Current implementation, review and release status belongs in
+`milestones/milestone.md`.

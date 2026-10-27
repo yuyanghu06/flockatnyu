@@ -1,3 +1,74 @@
+## Operation API development branch publication
+
+- User explicitly authorized pushing the implemented migration to a dev branch without running CI/CD. Publication branch: dev/tool-api-services; main remains at its existing commit.
+- This commit includes the 54-operation API migration, backend services, thin clients, source inventories, configuration, guides and prior static-review records. Runtime acceptance remains pending under the stop-testing instruction.
+- Publication uses a one-command hooks bypass and a skip-CI commit marker. Existing workflows run on main or pull requests; no pull request, workflow dispatch, release package, deployment or test command is requested or executed. Permanent hooks/workflows remain configured.
+- Read-only Git state and whitespace checks completed. Remote branch commit and clean working tree will be checked after push; the final user response records the actual result.
+
+[Pass record](history/2026-10-27_16-44-17-884943-orchestrator-operation-api-dev-publication.md).
+
+## Private operation API passes independent static review
+
+- Independent read-only evaluator found 54 matching named endpoints and no unresolved blocking static finding. Inspected Hono Request identity, private bindings, service composition, public registration, worker preparation and finish/sync separation.
+- Both findings were fixed and reread: reject JSON-lossy inputs before serialization, and recheck session epoch/closed state after asynchronous parsing/preparation. Parent also moved three chat pure-helper imports directly to backend helper modules.
+- Repository lint, formatting, file limits, API syntax/dependency build and frontend build passed. No behavior tests, browser checks, inference or provider calls ran; runtime acceptance remains pending because the user explicitly stopped tests.
+- Implemented locally and left uncommitted. No push, CI execution, deployment, schema changes or business-data writes. Next verification, when testing is resumed, is focused API capability/serialization/preparation cases plus representative chat and worker operations, followed by normal release checks. Preserve prior unfinished tasks below.
+
+[Pass record](history/2026-10-27_16-39-42-665897-evaluator-operation-api-static-review.md).
+
+## Private operation API integrated locally
+
+- Implemented 54 explicit private POST routes grouped by URL/provider, each with technical access/service/limit comments and a plain-English purpose. Tools are clients; domain execution now lives below the API. Public generic tools dispatch registered API sessions without recursion; runtime Google composition binds once.
+- Private WeakMap Request bindings retain caller/source/lease/read capabilities; JSON cannot grant them. Original map read results and prepared worker objects remain private. Existing synchronous lifecycle controls and original exception stopping behavior are retained. No public router mount, network hop or new credentials.
+- Independent static review found lossy JSON inputs and a cleanup race. Added lossless JSON argument checks and session epoch/abort rechecks before dispatch and after asynchronous preparation. Unknown write results remain uncertain.
+- Completed static checks: repository lint, format check, physical limits (759 modules; four unchanged legacy exceptions), API syntax/dependency build and frontend build. Frontend retains its existing large-chunk warning. Optional harness source inventories migrated without running them.
+- Tests remain stopped. No test/browser/model/provider calls, package upload, deployment, business-data writes, commit or push. Local uncommitted implementation awaits evaluator signoff; runtime acceptance remains pending.
+
+[Pass record](history/2026-10-27_16-38-30-141045-orchestrator-operation-api-integration.md).
+
+## Model harness source inventories migrated without running tests
+
+- Updated ten optional model harness source inventories and shared filename-only helper to include the operation API, routes and backend implementation. Migrated two direct Calendar batch helper imports, preserving all scenarios/assertions and parent Google diagnostics edit.
+- Tester static import audit parsed 338 reachable modules, found zero missing imports and evaluated zero modules. Syntax checks on 13 owned files, ESLint, helper formatting and whitespace passed. Parent inspected inventory construction and helper imports.
+- No tests, browser work, model/provider calls or runtime operation execution occurred. Behavior remains unverified under the explicit stop-testing instruction.
+
+[Pass record](history/2026-10-27_16-36-48-755292-tester-operation-harness-inventories.md).
+
+## Discord Miro Attio and knowledge services moved below APIs
+
+- Seven thin tool entry files now construct private API clients. Backend operation modules own Discord reads/summaries/drafts, Miro parsing/fragments, Attio request receipts, memory versions and trusted bug-report context.
+- Compatibility Miro transport/prepareBoard and memory initial read use trusted API aliases; Discord summary uses backend reads rather than a thin tool. Parent inspected constructors and API aliases.
+- Coder reported 60 original declarations AST-equivalent, 25 modules parsed with valid imports and maximum 327 lines. Scoped lint/format checks passed; parent strict lint resolved unused bindings. No tests or external calls.
+- Remaining work is transport integration, static evaluator review and current documentation.
+
+[Pass record](history/2026-10-27_16-36-48-728560-coder-remaining-operation-services.md).
+
+## Map Contacts and Treg services moved below private APIs
+
+- Moved execution and schemas into server/{map,contacts,treg}/operations. Thin tools retain compatibility exports; factories unwrap the base map service before binding chat operations. Native caches, receipts, symbols and request state stay server-side.
+- Coder reported three constructor bodies identical and all 362 semantic strings unchanged. Parent inspected factories and added synchronous updateUserContext forwarding; corrected inherited entry execution to use the chat service validation. Removed one unused initializer for strict lint.
+- Scoped syntax, imports, lint, formatting and file limits passed; largest owned module 449 lines. No tests, inference or live writes; integration review remains pending.
+
+[Pass record](history/2026-10-27_16-36-48-700419-coder-map-contacts-treg-api.md).
+
+## Google and worker services moved below private APIs
+
+- Extracted Google, Calendar, batch and Gmail-send operations into server/google/operations; thin tool constructors use API factories. Combined Google composition binds raw services once. Worker tools cross the API and reset private preparation state at cleanup.
+- finish_batch delegates existing trusted bookkeeping phases without moving renew/authorize/audit ordering or automatic separate sync into the handler. Frozen worker file limits remain unchanged.
+- Coder reported AST equivalence for all 70 original provider declarations and worker logic after explicit bridge/reset transformations. Parent inspected service composition, cleanup and finish call sites. Scoped syntax, imports, lint/format and whitespace checks passed; new files at most 388 lines.
+- No tests, model/provider calls, deployment or Git mutations. Parent integration and independent static review remain required.
+
+[Pass record](history/2026-10-27_16-36-48-672099-coder-google-worker-api.md).
+
+## Private operation API migration planned
+
+- Latest user request authorizes implementing tools → APIs → service → provider, superseding the earlier saved discussion-only status. Testing remains stopped.
+- Plan covers 54 fixed named operations, one private Hono endpoint file per operation, bounded JSON transport and server-retained principal/source/lease/read/preparation state. No public mount, network hop or new credentials.
+- Root owns API foundation/routes, integration/config and journal. Three coders exclusively own Google/worker, Map/Contacts/Treg, and Discord/Miro/Attio/knowledge operations. Specialists cannot spawn children.
+- Acceptance preserves current schemas, receipts, native raw data, cancellation/audit stopping conditions and separately dispatched sync. Runtime acceptance remains deferred; static checks and review only.
+
+[Pass record](history/2026-10-27_16-36-48-641127-planner-operation-api-plan.md).
+
 ## Server cleanup and remaining provider work published
 
 - Published three logical commits through 950c4fe112955a6d459a22a69df96468e89f0d1e: grouped server/services and integrated pending provider code, explained tools/API responsibilities, and committed all prior provider histories plus current review/verification limits. Main was verified against GitHub after the push.

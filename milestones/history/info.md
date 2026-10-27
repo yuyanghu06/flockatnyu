@@ -476,3 +476,19 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Server cleanup reviewed with final-test limitation](2026-10-27_15-25-08-002167-evaluator-server-cleanup-review.md).
 
 - [Server cleanup and remaining provider work published](2026-10-27_15-26-50-084001-orchestrator-server-cleanup-published.md).
+
+- [Private operation API migration planned](2026-10-27_16-36-48-641127-planner-operation-api-plan.md).
+
+- [Google and worker services moved below private APIs](2026-10-27_16-36-48-672099-coder-google-worker-api.md).
+
+- [Map Contacts and Treg services moved below private APIs](2026-10-27_16-36-48-700419-coder-map-contacts-treg-api.md).
+
+- [Discord Miro Attio and knowledge services moved below APIs](2026-10-27_16-36-48-728560-coder-remaining-operation-services.md).
+
+- [Model harness source inventories migrated without running tests](2026-10-27_16-36-48-755292-tester-operation-harness-inventories.md).
+
+- [Private operation API integrated locally](2026-10-27_16-38-30-141045-orchestrator-operation-api-integration.md).
+
+- [Private operation API passes independent static review](2026-10-27_16-39-42-665897-evaluator-operation-api-static-review.md).
+
+- [Operation API development branch publication](2026-10-27_16-44-17-884943-orchestrator-operation-api-dev-publication.md).

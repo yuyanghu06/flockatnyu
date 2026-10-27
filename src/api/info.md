@@ -7,6 +7,9 @@ registers exactly one existing method/path and begins with its actual inputs,
 access rules, service effects, output/failure behavior and a plain-English reason
 for keeping the endpoint.
 
+`operations/` additionally contains 54 private, server-only operation endpoints,
+registered by its own router and absent from the public app. See its folder guide.
+
 `register.js` composes the 21 active endpoints in their existing order. It is
 called by `server/runtime/app.js`, which supplies configured services, authentication and
 the chat runner. `_shared/` holds existing parsing, authentication and response

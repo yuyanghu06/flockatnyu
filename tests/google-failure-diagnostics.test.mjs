@@ -4,7 +4,7 @@ import { createGoogleClient } from '../server/google/client.js';
 import { createCalendarClient } from '../server/google/calendar-client.js';
 import { GoogleError, googleDiagnostics, googleError, waitForGoogleAuth } from '../server/google/oauth.js';
 import { CALENDAR_REQUIRED_SCOPES } from '../server/google/calendar-config.js';
-import {createCalendarBatch,updateCalendarBatch,projectCalendarBatchWrite} from '../tools/calendar/chat-batch.js';
+import {createCalendarBatch,updateCalendarBatch,projectCalendarBatchWrite} from '../server/google/operations/calendar-batch.js';
 
 const secret = 'PRIVATE_SOURCE_BODY_OR_CREDENTIAL';
 const config = { configured:true, clientId:'fixture', clientSecret:secret, refreshToken:secret,

@@ -76,12 +76,31 @@ export default [
     files: [
       'server/{runtime,chat,contacts,treg,audit,auth,shared,knowledge}/**/*.js',
       'server/google/gmail-send-{service,store}.js',
+      'server/operation-api/**/*.js',
+      'server/{google,map,discord,miro,attio,automation}/operations/**/*.js',
+      'tools/**/*.js',
       'server/{index,web}.js',
     ],
     rules: {
       ...js.configs.recommended.rules,
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-empty': ['error', { allowEmptyCatch: true }],
+    },
+  },
+  {
+    files: ['server/**/operations/**/*.js'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '(^|/)tools/',
+              message: 'Operation services must not import model tool clients.',
+            },
+          ],
+        },
+      ],
     },
   },
   {
