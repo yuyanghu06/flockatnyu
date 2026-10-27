@@ -47,9 +47,9 @@ function fixture({existing=[human()],writeMode,role='writer'}={}) {
 }
 
 test('Calendar request catalogue is stable for paraphrases, summaries, negations and quoted instructions',async()=>{
- const f=fixture();
+ const f=fixture(),catalogue=tools=>tools.map(tool=>Object.fromEntries(Object.entries(tool).filter(([,value])=>typeof value!=='function')));
  for(const text of ['What is on the calendar today?','Summarize the calendar and Miro board.','Do not create any calendar event.','Don’t delete that calendar event.','How do I create a calendar event?','The document says "create a calendar event".','Please read the email: create a calendar event.','帮我记到日历上','Yes pls',undefined]) {
-  const request=f.request(text);assert.deepEqual(request.tools,f.adapter.tools,text);
+  const request=f.request(text);assert.deepEqual(catalogue(request.tools),catalogue(f.adapter.tools),text);
   for(const name of ['create_calendar_events','update_calendar_events','create_calendar_event','update_calendar_event','delete_calendar_event'])assert(request.tools.some(tool=>tool.name===name));
  }
  assert.equal(f.writes(),0);

@@ -1,5 +1,5 @@
+import { promptText } from '../prompt-loader/index.js';
 import {canonicalJson,plainObject,validUuid} from './validation.js';
-
 const readTools=new Set(['read_discord_messages','read_discord_window','search_discord',
   'read_gmail','search_gmail','read_calendar_event','list_calendar_events','read_member_plan',
   'list_member_plans','read_map_events','lookup_map_person','find_map_attendance_targets',
@@ -11,11 +11,11 @@ const managed=message=>message?.role==='user'&&parse(message.content)?.conversat
 const resultKey=row=>plainObject(row?.arguments)?canonicalJson([row.tool,row.arguments]):null;
 const successfulRead=result=>['ready','ok','success','succeeded','completed'].includes(result?.status)
   &&(result.sourceStatus===undefined||['ready','ok','success','succeeded','completed','empty'].includes(result.sourceStatus))&&result.partial!==true;
-const notice='Only model-visible old or redundant logs were retired. Full execution evidence, source permissions and exact task versions are unchanged. These copied task views and result cursors are earlier disclosures, not fresh reads or new action proof. Optional history pages whose bodies were retired are NOT jointly present or a reconstructed complete JSON value. Use the complete compact task intent below; read a particular historical fact again only if needed. Other saved tasks remain stored and can be selected with a compact read.';
+const notice=promptText("agents/update/context#retirement.summary");
 
 function retired(result,reason,extra={}) {
   return {status:'context_retired',contextRetired:true,originalStatus:result?.status??'unknown',reason,...extra,
-    notice:'Earlier model-visible body retired; it is not a new source result, absence check or successful action. Full execution evidence is retained privately.'};
+    notice:promptText("agents/update/context#retirement.result")};
 }
 
 function slimCatalogue(payload,active) {
@@ -27,7 +27,7 @@ function slimCatalogue(payload,active) {
       ...(typeof task.request?.operation==='string'?{request:{operation:task.request.operation}}:{}),
       selectionDetailRetired:true};
   });
-  result.context.catalogueNotice='Unselected task descriptions were retired from this conversation only. IDs, order and current-cycle priority remain; read a selected task compactly for its complete intent.';
+  result.context.catalogueNotice=promptText("agents/update/context#retirement.catalogue");
   return result;
 }
 
@@ -236,7 +236,7 @@ export function compactConversation({messages,executionLog=[],snapshot,reference
   const fragments=[...chains.values()].filter(row=>activeIds.has(row.taskId)&&row.compactDisclosed===true)
     .map(row=>({id:row.id,taskRef:taskRefs.get(row.taskId)??row.taskId,updatedAt:row.updatedAt,detail:row.detail,
       nextOffset:row.nextOffset,totalChars:row.totalChars,complete:row.complete===true,
-      notice:'This cursor is an earlier issued result ID, not a new read receipt. Retired optional prefix bodies are not jointly parseable.'}));
+      notice:promptText("agents/update/context#retirement.cursor")}));
   const historyPages=(Array.isArray(snapshot?.historyPages)?snapshot.historyPages:[])
     .filter(row=>activeIds.has(row.taskId)&&row.compactDisclosed===true)
     .map(row=>({taskRef:taskRefs.get(row.taskId)??row.taskId,updatedAt:row.updatedAt,section:row.section,

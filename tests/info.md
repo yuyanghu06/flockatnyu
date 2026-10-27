@@ -1,5 +1,7 @@
 # Standard verification and current fixture contracts
 
+Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
+
 ## Server module locations
 
 Tests import HTTP composition from `server/runtime`, chat orchestration from
@@ -9,6 +11,11 @@ from their named folders. Keep test imports and generated constructor-module URL
 aligned with these real files. Model-evaluation source pins must include extracted
 helper modules as well as their public entry files; these scripts remain opt-in
 and are not executed by the deterministic suite.
+The operation endpoint clients also require `server/operation-api`, the fixed
+`src/api/operations` routes and the server-owned domain operations. Optional model
+harnesses copy/hash these dependencies through the filename-only
+`operationSourceFiles` inventory or their existing complete server/tool walk plus
+the operation route directory. No module or business call runs while listing files.
 
 Run `npm test` for the deterministic Node/isolated SQL suites and the ten offline
 map checks selected by `scripts/run-tests.mjs`. The runner uses four test files at

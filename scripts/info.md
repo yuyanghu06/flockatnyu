@@ -1,5 +1,7 @@
 # Development scripts
 
+`prompt-assets.mjs` resolves fixed prompt references for source-only service packages. It rejects dynamic/unregistered references and never scans arbitrary repository Markdown. Asset paths also enter frozen model-evaluation source inventories.
+
 `extract-paulson-center.mjs` reproduces the previously extracted building from the
 original source scene (not included in this checkout). It preserves the source.
 `journal-pass.ps1` appends timestamped development records on Windows; shared

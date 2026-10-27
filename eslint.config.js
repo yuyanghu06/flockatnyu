@@ -56,7 +56,7 @@ export default [
         {
           patterns: [
             {
-              regex: '(^node:|/(tools|api)/|/server/(?!chat/attachments[.]js$))',
+              regex: '(^node:|/(tools|api)/|/server/(?!chat/attachment-contract[.]js$))',
               message:
                 'Browser code may import only browser modules and the pure attachment contract.',
             },
@@ -66,7 +66,7 @@ export default [
     },
   },
   {
-    files: ['server/chat/attachments.js'],
+    files: ['server/chat/attachment-contract.js'],
     rules: {
       'no-restricted-imports': ['error', { patterns: ['*'] }],
       'no-restricted-globals': ['error', 'process', 'require', 'fetch', 'global'],
@@ -74,14 +74,33 @@ export default [
   },
   {
     files: [
-      'server/{runtime,chat,contacts,treg,audit,auth,shared,knowledge}/**/*.js',
+      'server/{runtime,chat,contacts,treg,audit,auth,shared,knowledge,prompt-loader}/**/*.js',
       'server/google/gmail-send-{service,store}.js',
+      'server/operation-api/**/*.js',
+      'server/{google,map,discord,miro,attio,automation}/operations/**/*.js',
+      'tools/**/*.js',
       'server/{index,web}.js',
     ],
     rules: {
       ...js.configs.recommended.rules,
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-empty': ['error', { allowEmptyCatch: true }],
+    },
+  },
+  {
+    files: ['server/**/operations/**/*.js'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '(^|/)tools/',
+              message: 'Operation services must not import model tool clients.',
+            },
+          ],
+        },
+      ],
     },
   },
   {

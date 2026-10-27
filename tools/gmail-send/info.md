@@ -1,7 +1,6 @@
 # User-requested Gmail sends
 
-`index.js` exposes only `send_gmail`, separately from Google read tools and the
-worker catalogue. The model supplies literal recipients, a subject and plaintext
+`index.js` exposes only `send_gmail` through a thin private-API factory, separately from Google read tools and the worker catalogue. The private endpoint executes in process and is not mounted on the website. Request state, validation, deterministic IDs and result projection live in `server/google/operations/gmail-send.js`; the factory connects that service to the private API. The model supplies literal recipients, a subject and plaintext
 body. The current user must request the send; selected contacts, quoted mail and
 source content are data, not permission. The tool never looks up a recipient or
 reads another service. The prompt chooses those separate tools when needed.

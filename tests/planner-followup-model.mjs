@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {promptSourceFiles} from './fixtures/chat-source-files.mjs';
 import {createHash} from 'node:crypto';
 import {mkdir,readFile,writeFile,copyFile,readdir} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
@@ -67,7 +68,7 @@ if(!process.argv.includes('--live-model')){console.log(JSON.stringify({modelCall
 const config=readConfig();assert(config.configured,'Configured model credentials unavailable; never printed');
 const directory=resolve(arg('evidence-dir')??`evidence/planner-followup-focus/gate-${Date.now()}`);await mkdir(dirname(directory),{recursive:true});await mkdir(directory,{mode:0o700});
 async function moduleFiles(path){const entries=await readdir(new URL(`../${path}/`,import.meta.url),{withFileTypes:true}),out=[];for(const entry of entries){const file=`${path}/${entry.name}`;if(entry.isDirectory())out.push(...await moduleFiles(file));else if(entry.isFile())out.push(file);}return out;}
-const files=[...await moduleFiles('server'),...await moduleFiles('tools'),'package.json','package-lock.json','tests/fixtures/planner-followup.mjs','tests/agent-followup-focus.test.mjs','tests/planner-followup-model.mjs'].sort();
+const files=[...await moduleFiles('server'),...await moduleFiles('tools'),...await moduleFiles('src/api/operations'),...promptSourceFiles(),'package.json','package-lock.json','tests/fixtures/chat-source-files.mjs','tests/fixtures/planner-followup.mjs','tests/agent-followup-focus.test.mjs','tests/planner-followup-model.mjs'].sort();
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async path=>[path,digest(await readFile(new URL(`../${path}`,import.meta.url)))]))),pins=await hashes();
 for(const path of files){const dest=resolve(directory,'source',path);await mkdir(dirname(dest),{recursive:true});await copyFile(new URL(`../${path}`,import.meta.url),dest);}
 const report={provider:config.provider,model:config.model,runtimeRoot:new URL('../',import.meta.url).pathname,originalSourceRoot:arg('source-root')??null,startedAt:new Date().toISOString(),networkRequests:0,maxRequests,perCaseCap,initialSetup:'Deterministic initial finish uses exact saved-task coverage; runner invokes a separately simulated ready sync. Every follow-up response uses the actual configured model.',network:'Only the configured inference endpoint is permitted; all business boundaries are in-memory simulations.',pins,cases:[],limitations:['Tests follow-up decisions, not real-model initial interpretation.','No live Discord/Calendar/map/database writes or browser deployment checks.','Initial sync result is simulated; production deterministic projection is covered by the existing integration suite.','Machine assertions require independent semantic review of retained returned model text, proposals and outcomes.']};

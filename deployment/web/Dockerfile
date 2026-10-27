@@ -6,6 +6,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY server ./server
 COPY tools ./tools
+COPY prompts ./prompts
 COPY src/api ./src/api
 COPY dist ./dist
 RUN find server tools src/api -name '*.js' -print0 | xargs -0 -r -n 1 node --check

@@ -1,6 +1,6 @@
 // Compacts already-observed Calendar receipts while preserving confirmed saved identities.
 import { projectCalendarReceipt } from '../../google/calendar-receipt.js';
-import { compactCalendarBatchWrite } from '../../../tools/calendar/chat-batch.js';
+import { compactCalendarBatchWrite } from '../../google/operations/calendar-batch-receipts.js';
 
 export function compactCalendarResult(result) {
   return {

@@ -11,10 +11,11 @@ import {createAutomationAdapters} from '../server/automation/adapters.js';
 import {readAutomationConfig} from '../server/automation/config.js';
 import {prepareRuntimeDeployment} from '../scripts/prepare-runtime-deploy.mjs';
 import {MAP_RECORD_EXAMPLES} from '../server/map/contracts.js';
+import {promptText} from '../server/prompt-loader/index.js';
 
-const skillPath='server/skills/techatnyu-drive/SKILL.md';
+const skillPath='prompts/tools/drive/navigation.md';
 const markdown=await readFile(new URL('../'+skillPath,import.meta.url),'utf8');
-const skill=markdown.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/,'').trim();
+const skill=promptText('tools/drive/navigation#skill');
 const marker='TRUSTED SKILL: techatnyu-drive';
 const principal={id:'synthetic-club-user',googleAccess:true};
 const messages=[{role:'user',content:'Find the Dev Team fall timeline in Drive.'}];
@@ -198,7 +199,7 @@ test('web and worker sanitized packages ship the byte-exact shared skill without
   for(const service of ['web','agent-worker']) {
     const packaged=await prepareRuntimeDeployment({service});t.after(()=>rm(packaged.directory,{recursive:true,force:true}));
     assert(packaged.files.includes(skillPath));assert.equal(await readFile(join(packaged.directory,skillPath),'utf8'),markdown);
-    assert.equal(packaged.files.filter(name=>name.endsWith('/SKILL.md')).length,1);
+    assert.equal(packaged.files.includes('server/skills/techatnyu-drive/SKILL.md'),false);
     assert(!packaged.files.some(name=>/flock-drive-research|inventory\.json|folder-map\.json|program-navigation\.json|credential-reference-exclusions\.json/.test(name)));
   }
 });

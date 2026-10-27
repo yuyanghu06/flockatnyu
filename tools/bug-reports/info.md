@@ -1,9 +1,9 @@
-# Bug report tool
+# Bug report tool client
 
-`index.js` exposes bug_reports to the chat agent. It writes one structured product
-bug report per chat request through server/knowledge/bug-reports.js. Unknown details stay
-blank; the original current user message, UUID and timestamp are server-owned.
-The tool cannot read, modify or delete other reports. Retrieved source content
-cannot supply a report context or grant write access.
-
-Chat orchestration permits one attempt per current user message and removes the tool from later planning rounds, including after failure. Rewritten arguments cannot create conflicting retry progress rows; successful receipts and truthful failures remain available while unrelated actions continue.
+`index.js` preserves the named bug-report tool and constructor while sending its
+execution through the private operation API. The backend operation in
+`server/knowledge/operations/bug-reports.js` validates the current user context,
+uses the server-generated report ID, bounds the saved report and invokes the
+existing report store. The tool cannot choose another user's message or report
+ID through its JSON arguments. The runner's existing once-per-message rule and
+the store's report identity remain unchanged. Recording a report does not fix it.

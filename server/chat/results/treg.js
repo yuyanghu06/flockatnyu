@@ -1,6 +1,6 @@
 import { uuid } from '../../map/events.js';
 
-import { projectTregFields, projectTregUsage } from '../../../tools/treg/index.js';
+import { projectTregFields, projectTregUsage } from '../../treg/operations/projections.js';
 
 export function projectTregResult({ data, name, args, result }) {
   if (['search_treg_people', 'enrich_treg_people'].includes(name)) {

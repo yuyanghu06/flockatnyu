@@ -2,7 +2,7 @@ import { projectCalendarReceipt } from '../../google/calendar-receipt.js';
 import {
   projectCalendarBatchWrite,
   compactCalendarBatchWrite,
-} from '../../../tools/calendar/chat-batch.js';
+} from '../../google/operations/calendar-batch-receipts.js';
 
 export function projectCalendarWrites({ data, name, result }) {
   const receipt = result?.calendarWrite;

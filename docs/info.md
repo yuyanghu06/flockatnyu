@@ -1,5 +1,7 @@
 The [essential-test review](test-priority.md) classifies every case in the accepted 2,353-case phase-out snapshot; [the complete CSV](test-priority.csv) records reasons. Priority judgments are separate from safe-deletion proof and from later concurrent suite changes.
 
+Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
+
 The [application prompt audit](prompt-audit.md) inventories active chat, worker, helper, skill and tool instructions, records corrected mismatches, real-model behavior checks and separate backend follow-up.
 
 The [further phase-out](test-phaseout.md) records the next32case removals and retained behavior. Its [current CSV](test-suite-inventory-after-phaseout.csv) supersedes prior inventories for current counts.

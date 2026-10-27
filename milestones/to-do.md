@@ -1,3 +1,149 @@
+## Markdown prompt release — in progress
+
+- [x] Isolate the tested source and preserve unrelated Calendar location changes.
+- [x] Repair baseline API fixtures without weakening runtime checks;67focusedpasses.
+- [x] Create reviewable prerequisite, Markdown migration and prompt-fix commits.
+- [ ] Complete full CI/browser and independent scope review; push PR and merge main.
+- [ ] Build/download exact main release artifact; deploy web/update/Discord only.
+- [ ] Verify hosted readiness, auth/assets/prompt hashes and unchanged Gmail deployments; publish receipts.
+
+## Contact clarification and Calendar completion — verified and accepted
+
+- [x] Tighten Contact target selection before candidate reads/writes and preserve pending intent through clarification.
+- [x] Stop Calendar scans after complete empty coverage while preserving explicit-source scope and registered Miro fallback.
+- [x] Pass both original actual-model reproductions and extended preservation/clarification/source cases.
+- [x] Retain six strict passes plus two independently accepted semantic outcomes with original raw assertions intact.
+- [x] Complete focused offline checks and standard gates; obtain independent ACCEPT.
+- [ ] Optional follow-up: avoid the one unnecessary filtered probe before valid partial-window subdivision; no further complete-empty loop was observed.
+- [ ] Existing unrelated Drive duplicate-check wording, old harness assertions, worker findings and real-service/deployment checks remain separate.
+
+## Contact clarification and Calendar completion — prompts tightened; live retest pending
+
+- [x] Plan the selected prompt-only corrections and exclusive file ownership.
+- [x] Update nine Markdown assets/eleven existing blocks and preserve identifiers/placeholders.
+- [x] Validate all87assets and representative chat prompt assembly; independently review scope and fallback consistency.
+- [ ] Retest the exact failures, clarification continuation and clear-write preservation with actual configured model.
+- [ ] Verify partial/unavailable Calendar handling and actual registered Miro content fallback.
+- [ ] Finish focused standard checks and independent semantic evaluation; preserve prior failure evidence.
+
+## Markdown prompts checked with live LLM — verification complete; two behavior failures remain
+
+- [x] Complete guarded real-model tests through production chat/update runners and simulated services.
+- [x] Independently review exact proposals, writes, saved fields, final replies and worker task identity/intent.
+- [x] Finish the two cap-limited paths in a separate bounded followup while retaining initial records.
+- [x] Record 50 actual requests, six semantic passes, two valid failures and independent acceptance of verification.
+- [x] Selected Contact clarification prompt correction implemented and tested; see prompt-clarification-completion-2026-10-27/verification.md. Original failed evidence is retained.
+- [x] Selected complete-empty Calendar prompt correction implemented and tested; see prompt-clarification-completion-2026-10-27/verification.md. Original failed evidence is retained.
+- [ ] Separate harness improvement: replace overly narrow success wording and redundant-defer assertions with meaningful outcome checks; retain original evidence.
+- [ ] Real-service workflows/deployment remain separate and were not established by these simulations.
+
+## Live Markdown prompt checks — real behavior failures found; focused followup underway
+
+- [x] Stop the original batch at exactly 40 actual inference HTTP requests and preserve its evidence.
+- [x] Independently inspect actual proposals, saved fields, final answers and worker task identity/intent.
+- [x] Record ambiguity mutation and Calendar repetition failures without changing prompts.
+- [ ] Complete the separately capped unavailable/conflict followup (12 additional requests maximum; 52 total).
+- [ ] Publish final semantic results, raw assertion distinctions and independent review; keep live-service task rows unchanged.
+
+## Markdown prompts with live LLM — bounded verification underway
+
+- [x] Confirm current source/instructions and configured model without exposing credentials.
+- [x] Accept bounded cases and assign a sole inference executor with a 40-request maximum.
+- [ ] Complete source-frozen actual-model conversations and inspect fields, writes, replies and task preservation.
+- [ ] Review failures/cap stops independently and record actual model, request count and limitations.
+
+## Structured Markdown prompts — complete and independently accepted
+
+- [x] Complete the single-folder Markdown instruction migration and fixed server loader.
+- [x] Preserve exact text, dynamic expressions, schemas and generated model requests.
+- [x] Verify browser separation, fixed deployment assets and independent source copies.
+- [x] Pass focused offline runner/package checks, formatting/lint/file limits and both builds.
+- [x] Obtain independent evaluator ACCEPT and document the complete-suite limitation.
+- [ ] Separate existing follow-up: resolve five operation-API fixture expectations reproduced before this migration.
+- [ ] Separate existing follow-up: reconcile Drive/Calendar duplicate-check wording and unresolved planner behavior; not changed in this structural pass.
+
+## Structured Markdown prompts — extraction integrated, independent verification underway
+
+- [x] Move chat/shared, worker, and named tool/field/result wording into87registered Markdown assets.
+- [x] Prove extracted text/AST and representative generated prompts/catalogues match exactly.
+- [x] Integrate fixed loader, browser contract, deployment and frozen-source asset handling.
+- [ ] Finish independent loader/package/runner checks and broad offline regression results.
+- [ ] Complete final formatting/build/file-limit checks and evaluator acceptance.
+
+## Structured Markdown prompts — plan accepted, implementation underway
+
+- [x] Accept scoped extraction, packaging and verification plans.
+- [x] Capture source-only baseline and assign three exclusive writers.
+- [ ] Finish extraction and exact generated-output comparisons.
+- [ ] Verify loader, offline runners, browser contract, deployment and frozen-source assets.
+- [ ] Complete standard checks and independent evaluation; preserve known prior failures.
+
+## Current prompt source inventory — complete
+
+- [x] Trace chat tool-selection/final-answer assembly and imported/injected guidance.
+- [x] Trace update-agent legacy/initial/follow-up prompts, tools, task/context and recovery feedback.
+- [x] Identify the separate Discord summary prompt, unused helpers and reference-only docs.
+- [x] Obtain independent read-only acceptance and record current-checkout limitations.
+- [ ] Separate future scope, not implemented by this inventory: reconcile Calendar duplicate-check wording in the Drive skill and Calendar prompt; refresh obsolete chat-guide source pointer.
+
+Existing unresolved planner preservation and Calendar/Member Plans verification
+work below remains unchanged. [Inventory](prompt-inventory-2026-10-27/info.md).
+
+## Operation API development branch publication
+
+- User explicitly authorized pushing the implemented migration to a dev branch without running CI/CD. Publication branch: dev/tool-api-services; main remains at its existing commit.
+- This commit includes the 54-operation API migration, backend services, thin clients, source inventories, configuration, guides and prior static-review records. Runtime acceptance remains pending under the stop-testing instruction.
+- Publication uses a one-command hooks bypass and a skip-CI commit marker. Existing workflows run on main or pull requests; no pull request, workflow dispatch, release package, deployment or test command is requested or executed. Permanent hooks/workflows remain configured.
+- Read-only Git state and whitespace checks completed. Remote branch commit and clean working tree will be checked after push; the final user response records the actual result.
+
+## Private operation API passes independent static review
+
+- Independent read-only evaluator found 54 matching named endpoints and no unresolved blocking static finding. Inspected Hono Request identity, private bindings, service composition, public registration, worker preparation and finish/sync separation.
+- Both findings were fixed and reread: reject JSON-lossy inputs before serialization, and recheck session epoch/closed state after asynchronous parsing/preparation. Parent also moved three chat pure-helper imports directly to backend helper modules.
+- Repository lint, formatting, file limits, API syntax/dependency build and frontend build passed. No behavior tests, browser checks, inference or provider calls ran; runtime acceptance remains pending because the user explicitly stopped tests.
+- Implemented locally and left uncommitted. No push, CI execution, deployment, schema changes or business-data writes. Next verification, when testing is resumed, is focused API capability/serialization/preparation cases plus representative chat and worker operations, followed by normal release checks. Preserve prior unfinished tasks below.
+
+## Private operation API integrated locally
+
+- Implemented 54 explicit private POST routes grouped by URL/provider, each with technical access/service/limit comments and a plain-English purpose. Tools are clients; domain execution now lives below the API. Public generic tools dispatch registered API sessions without recursion; runtime Google composition binds once.
+- Private WeakMap Request bindings retain caller/source/lease/read capabilities; JSON cannot grant them. Original map read results and prepared worker objects remain private. Existing synchronous lifecycle controls and original exception stopping behavior are retained. No public router mount, network hop or new credentials.
+- Independent static review found lossy JSON inputs and a cleanup race. Added lossless JSON argument checks and session epoch/abort rechecks before dispatch and after asynchronous preparation. Unknown write results remain uncertain.
+- Completed static checks: repository lint, format check, physical limits (759 modules; four unchanged legacy exceptions), API syntax/dependency build and frontend build. Frontend retains its existing large-chunk warning. Optional harness source inventories migrated without running them.
+- Tests remain stopped. No test/browser/model/provider calls, package upload, deployment, business-data writes, commit or push. Local uncommitted implementation awaits evaluator signoff; runtime acceptance remains pending.
+
+## Model harness source inventories migrated without running tests
+
+- Updated ten optional model harness source inventories and shared filename-only helper to include the operation API, routes and backend implementation. Migrated two direct Calendar batch helper imports, preserving all scenarios/assertions and parent Google diagnostics edit.
+- Tester static import audit parsed 338 reachable modules, found zero missing imports and evaluated zero modules. Syntax checks on 13 owned files, ESLint, helper formatting and whitespace passed. Parent inspected inventory construction and helper imports.
+- No tests, browser work, model/provider calls or runtime operation execution occurred. Behavior remains unverified under the explicit stop-testing instruction.
+
+## Discord Miro Attio and knowledge services moved below APIs
+
+- Seven thin tool entry files now construct private API clients. Backend operation modules own Discord reads/summaries/drafts, Miro parsing/fragments, Attio request receipts, memory versions and trusted bug-report context.
+- Compatibility Miro transport/prepareBoard and memory initial read use trusted API aliases; Discord summary uses backend reads rather than a thin tool. Parent inspected constructors and API aliases.
+- Coder reported 60 original declarations AST-equivalent, 25 modules parsed with valid imports and maximum 327 lines. Scoped lint/format checks passed; parent strict lint resolved unused bindings. No tests or external calls.
+- Remaining work is transport integration, static evaluator review and current documentation.
+
+## Map Contacts and Treg services moved below private APIs
+
+- Moved execution and schemas into server/{map,contacts,treg}/operations. Thin tools retain compatibility exports; factories unwrap the base map service before binding chat operations. Native caches, receipts, symbols and request state stay server-side.
+- Coder reported three constructor bodies identical and all 362 semantic strings unchanged. Parent inspected factories and added synchronous updateUserContext forwarding; corrected inherited entry execution to use the chat service validation. Removed one unused initializer for strict lint.
+- Scoped syntax, imports, lint, formatting and file limits passed; largest owned module 449 lines. No tests, inference or live writes; integration review remains pending.
+
+## Google and worker services moved below private APIs
+
+- Extracted Google, Calendar, batch and Gmail-send operations into server/google/operations; thin tool constructors use API factories. Combined Google composition binds raw services once. Worker tools cross the API and reset private preparation state at cleanup.
+- finish_batch delegates existing trusted bookkeeping phases without moving renew/authorize/audit ordering or automatic separate sync into the handler. Frozen worker file limits remain unchanged.
+- Coder reported AST equivalence for all 70 original provider declarations and worker logic after explicit bridge/reset transformations. Parent inspected service composition, cleanup and finish call sites. Scoped syntax, imports, lint/format and whitespace checks passed; new files at most 388 lines.
+- No tests, model/provider calls, deployment or Git mutations. Parent integration and independent static review remain required.
+
+## Private operation API migration planned
+
+- Latest user request authorizes implementing tools → APIs → service → provider, superseding the earlier saved discussion-only status. Testing remains stopped.
+- Plan covers 54 fixed named operations, one private Hono endpoint file per operation, bounded JSON transport and server-retained principal/source/lease/read/preparation state. No public mount, network hop or new credentials.
+- Root owns API foundation/routes, integration/config and journal. Three coders exclusively own Google/worker, Map/Contacts/Treg, and Discord/Miro/Attio/knowledge operations. Specialists cannot spawn children.
+- Acceptance preserves current schemas, receipts, native raw data, cancellation/audit stopping conditions and separately dispatched sync. Runtime acceptance remains deferred; static checks and review only.
+
 ## Server cleanup and remaining provider work published
 
 - Published three logical commits through 950c4fe112955a6d459a22a69df96468e89f0d1e: grouped server/services and integrated pending provider code, explained tools/API responsibilities, and committed all prior provider histories plus current review/verification limits. Main was verified against GitHub after the push.

@@ -1,4 +1,4 @@
-import {chatSourceFiles} from './fixtures/chat-source-files.mjs';
+import {chatSourceFiles,operationSourceFiles} from './fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile,mkdtemp,mkdir,writeFile,chmod} from 'node:fs/promises';
@@ -72,7 +72,7 @@ const config=readConfig();assert(config.configured,'Configured model unavailable
 const maxRequests=Number(process.argv.find(value=>value.startsWith('--max-requests='))?.slice(15)??24);
 assert(Number.isInteger(maxRequests)&&maxRequests>=1&&maxRequests<=24,'Hard total inference cap must be 1 through 24');
 const chosen=cases.filter(row=>!selected.length||selected.includes(row.name));assert(chosen.length,'No matching scenario');
-const files=[...new Set([...(await chatSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/runner.js','server/chat/context.js','server/chat/behavior.js','server/chat/request-context.js','server/chat/discord-context.js','server/providers/index.js','server/providers/retry.js','server/shared/config.js','server/shared/time-zone.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/map/chat-time.js','server/map/events.js','server/map/contracts.js','server/map/source-access.js','server/map/read-comparison.js','server/automation/local-clock-boundary.js','server/automation/validation.js','tools/map/chat.js','tools/map/index.js','tests/fixtures/chat-map-time.mjs','tests/chat-map-time-model.mjs']])].sort();
+const files=[...new Set([...(await chatSourceFiles()),...(await operationSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/runner.js','server/chat/context.js','server/chat/behavior.js','server/chat/request-context.js','server/chat/discord-context.js','server/providers/index.js','server/providers/retry.js','server/shared/config.js','server/shared/time-zone.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/map/chat-time.js','server/map/events.js','server/map/contracts.js','server/map/source-access.js','server/map/read-comparison.js','server/automation/local-clock-boundary.js','server/automation/validation.js','tools/map/chat.js','tools/map/index.js','tests/fixtures/chat-map-time.mjs','tests/chat-map-time-model.mjs']])].sort();
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async path=>[path,createHash('sha256').update(await readFile(new URL(`../${path}`,import.meta.url))).digest('hex')])));
 const pins=await hashes(),directory=await mkdtemp(join(tmpdir(),'flock-chat-map-time-')),evidence=join(directory,'evidence.json');
 await chmod(directory,0o700);

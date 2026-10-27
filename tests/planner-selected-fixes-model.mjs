@@ -1,3 +1,4 @@
+import {operationSourceFiles} from './fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -11,7 +12,7 @@ const selected=process.argv.filter(value=>value.startsWith('--case=')).map(value
 const cap=Number(flag('max-requests')??48);assert(Number.isInteger(cap)&&cap>0&&cap<=48);
 const evidenceDir=resolve(flag('evidence-dir')??'evidence/planner-selected-fixes-2026-10-26/model');
 const hash=value=>createHash('sha256').update(value).digest('hex');
-const files=['server/automation/handler.js','server/automation/conversation-context.js','server/automation/observation-handoff.js','server/automation/staged-pipeline.js','server/automation/adapters.js','server/automation/prompt.js','server/discord/live-retrieval.js','tools/discord/index.js','tests/fixtures/planner-selected-fixes.mjs','tests/planner-selected-fixes-model.mjs'];
+const files=[...new Set([...(await operationSourceFiles()),'tests/fixtures/chat-source-files.mjs','server/automation/handler.js','server/automation/conversation-context.js','server/automation/observation-handoff.js','server/automation/staged-pipeline.js','server/automation/adapters.js','server/automation/prompt.js','server/discord/live-retrieval.js','tools/discord/index.js','tests/fixtures/planner-selected-fixes.mjs','tests/planner-selected-fixes-model.mjs'])].sort();
 const pins=async()=>Object.fromEntries(await Promise.all(files.map(async path=>[path,hash(await readFile(new URL('../'+path,import.meta.url)))])));
 const fresh=(content='I will attend the Friday workshop at Bobst tonight for the entire event.')=>input(1,{content});
 const setup=(options={})=>{const original=fresh(options.content),saved=task(1,{current:true,original,large:options.large??false,operation:options.operation??'participation',summary:options.summary});return {saved,original,f:selectedFixture({...options,pending:[saved]})};};

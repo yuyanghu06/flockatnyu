@@ -1,17 +1,14 @@
-# Discord tools
+# Discord tool clients
 
-Exact-original reads document the full server/channel/message URL and a maximum
-of eight results. A confirmed exact-message absence returns `source_missing`
-with its identity; denied/unavailable reads stay distinct. Tools do not clear
-tasks or acknowledge queue inputs themselves. The planner uses separate explicit
-bookkeeping calls after matching that absence to its own trusted original.
+The three JavaScript files preserve the tool names used by chat and workers.
+`index.js` exposes live reads and argument-helper compatibility exports,
+`live-summary.js` adds the explicitly named summary operation, and `draft.js`
+exposes message drafting. Their constructors now build clients for the private
+operation API; they do not read Discord or prepare drafts themselves.
 
-Live read schemas/validation/dispatch in index.js and the explicitly named request-memory summary tool in live-summary.js. read_discord_window always uses the ordinary original-message reader; it never invokes the summary model, regardless of message count or text length. Bot API, source policy, time context and summarization helpers remain under ../../server/. No archive or ingestion code belongs here.
-
-`read_discord_summary` scans authorized eboard channels first in one bounded live request; general fallback excludes teams and team scope requires explicit current-user intent. The default window spans seven local calendar dates through now. At most30channels run sequentially under one shared300second aggregate deadline, including catalogue discovery, channel reads and summarization. Parent cancellation can stop the scan earlier; the deadline is not300seconds per channel. Summaries share the existing12dispatch/0.10USDrequest budget. Per-channel/aggregate coverage, bounded excerpts and missing content remain explicit. An empty authorized catalogue is unavailable, not proof of no messages. No content archive or periodic summary job is introduced.
-
-Shared request-pacing.js serializes bot metadata/content per process and bot/fetch transport, with default750ms spacing,429Retry-After/JSON/headercooldowns and proactive exhausted-bucket waits. Channel summary workers remain sequential; the pacing request budget stays90seconds and individual live windows default to120seconds (maximum120seconds). Summary model calls retain their separate30second deadline. The broad scan's shared300second deadline does not increase these inner limits or the existing access/content/cost caps. Independent service processes remain separately paced.
-
-An optional `channelId` on `read_discord_summary` is accepted only with `scope=team` and a bounded snowflake ID resolved from the live catalogue. It delegates exactly one private summary-window read with the original principal, current user message, time context, cancellation signal and summary budget. That path is reachable only by the named summary tool, not an ordinary window read. Unknown or unauthorized IDs are rejected by the same current-source authorization before message reads; no team-wide catalogue scan is added. Direct meeting questions beginning with when/where count as affirmative team requests. Multiword team names must match the full distinctive phrase; generic meeting/chat/update words cannot select a team; existing negation, eboard-only, leadership and exclusion checks remain.
-
-`draft.js` provides the Discord-bridge-only `draft_discord_message` adapter: exact bounded destination resolution, current actor/bot authorization, safe ambiguity and request-local draft text with sent=false. It receives metadata/authorization capabilities only, never a sender or target message reader. Target grants are discarded; no native draft or post is created. Shared runner projection carries the draft to the current reply.
+`server/discord/operations` holds schemas, checks and execution. Those services
+use the existing Discord reader, metadata and authorization clients. Drafts remain
+read-only: returning draft text never sends a message or saves a Discord draft.
+Summary inference is available only through the named summary operation and keeps
+its existing bounded request budget. Do not import these thin clients from backend
+operation services; use the backend operations or pure helpers directly.

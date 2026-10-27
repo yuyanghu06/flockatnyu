@@ -1,5 +1,7 @@
 # Server code
 
+All model-facing wording is loaded from the root `prompts/` folder through `prompt-loader/`. Browser-safe attachment validation lives in `chat/attachment-contract.js`; provider-message construction stays server-only.
+
 Two executable files stay at this level:
 
 - `index.js` starts the standalone Hono API used during local development.
@@ -11,6 +13,7 @@ when tracing a feature; the table below explains where each responsibility lives
 
 | Folder              | Responsibility                                                                                                                                                                                                 |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `operation-api/`    | Hosts private operation API sessions, fixed operation names and trusted caller bindings; factories connect thin tools to domain services.                                                                      |
 | `runtime/`          | Builds configured services, creates the API application and registers the HTTP handlers from `src/api`.                                                                                                        |
 | `chat/`             | Runs a chat request: prompt construction, tool selection, safe result projection, streamed answers, attachments and steering.                                                                                  |
 | `contacts/`         | Reads and changes saved Contacts, validates supported fields and performs database search. Native saved JSON stays intact.                                                                                     |
@@ -31,8 +34,8 @@ when tracing a feature; the table below explains where each responsibility lives
 
 HTTP route files live in [src/api](../src/api/info.md), where folders mirror URL
 segments and each method has its own file. Model-callable adapters live in
-[tools](../tools/info.md). Both call server services directly; tools do not call
-our HTTP URLs. See [tools and APIs](../docs/tools-and-api.md) for concrete examples.
+[tools](../tools/info.md). Tools call private operation APIs, which dispatch to domain operation services.
+Browser HTTP routes retain their existing server entry points. See [tools and APIs](../docs/tools-and-api.md) for concrete examples.
 
 Provider clients handle their own service. Map, saved-task and Contacts operations
 must not hide reads of unrelated source services. Preserve independent access,

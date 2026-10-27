@@ -1,3 +1,4 @@
+import { promptText } from '../prompt-loader/index.js';
 import {manualAuthorizationSnapshot} from './manual-authorization.js';
 import {mapFactsChanged} from './map-facts.js';
 import {randomUUID} from 'node:crypto';
@@ -19,11 +20,13 @@ import {createLiveDiscordRetrieval} from '../discord/live-retrieval.js';
 import {isDiscordChannelExcluded} from '../discord/discovery.js';
 import {resolveDiscordSourceIds} from '../discord/source-scope.js';
 import {createManualDiscordStore} from '../discord/manual-scope.js';
-import {GOOGLE_TOOLS,executeGoogleTool} from '../../tools/google/index.js';
-import {createLiveRetrievalTools} from '../../tools/discord/index.js';
-import {createCalendarTools} from '../../tools/calendar/index.js';
+import {GOOGLE_TOOLS} from '../google/operations/google-definitions.js';
+import {executeGoogleOperation as executeGoogleTool} from '../google/operations/google.js';
+import {bindWorkerOperations,resetWorkerOperations} from '../operation-api/adapter.js';
+import {createDiscordReadOperations as createLiveRetrievalTools} from '../discord/operations/reads.js';
+import {createCalendarOperations as createCalendarTools} from '../google/operations/calendar.js';
 import {createBoundedResults} from './bounded-result.js';
-import {createMapTools} from '../../tools/map/index.js';
+import {createMapOperationService as createMapTools} from '../map/operations/service.js';
 import {createMapEventStore,createMapEventService,mapReadContext,timestamp} from '../map/events.js';
 import {PARTICIPATION_PARAMETERS,completeParticipationSnapshot,mergeParticipationChanges,sameSavedParticipation,sameSavedParticipationSnapshot} from './participation.js';
 import {withLocalTimeDisplay} from './local-time-display.js';
@@ -31,29 +34,13 @@ import {normalizeMemberPlanBoundary} from './local-clock-boundary.js';
 import {createMapSourceAuthorizer} from '../map/source-access.js';
 import {canonicalJson,plainObject,validUuid,validateArguments} from './validation.js';
 import {resolveDateBoundary} from "../shared/time-zone.js";
-
 const snowflake=value=>typeof value==='string'&&/^[0-9]{1,20}$/.test(value);
 const personUuid=value=>typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 const fail=code=>{throw new Error(code);};
 const success=new Set(['ready','empty','partial','unsupported_content']);
 const evidenceKey=(sourceId,sourceUrl)=>canonicalJson([sourceId,sourceUrl]);
-export function discordCalendarIntent(content,{cancel=false}={}) {
-  if(typeof content!=='string'||!content.trim())return false;
-  const text=content.toLowerCase();
-  if(/\brsvp\s*[:=-]?\s*(?:yes|no|maybe|accepted|declined|going|not going)\b/.test(text))return false;
-  if(/\b(?:i|we)(?:'m|'re| am| are)?\s+(?:plan(?:ning)?|intend(?:ing)?|want(?:ing)?|hope|hoping)\s+to\s+(?:attend|join|go)\b/.test(text))return false;
-  if(/\b(?:not|never|no longer)\s+(?:cancelled|canceled|called off)\b/.test(text))return false;
-  if(/\b(?:i(?:'m|'ll| am| will|’m)?|we(?:'re| are| will)?|[a-z]+ (?:is|are|will))\s+(?:not\s+)?(?:attend(?:ing)?|join(?:ing)?|go(?:ing)?|be there|can help)\b/.test(text))return false;
-  if(/^\s*(?:i(?:'ll| will| am|'m|’m)?\s+(?:attend|join|go(?:ing)?|be there|study|studying)|count me in|rsvp\b|i can help)/i.test(text))return false;
-  if(/^\s*(?:co[- ]?working\b|studying\b|i(?:'m|’m| am|m)?\s+(?:at|here|heading|working)\b)/i.test(text))return false;
-  if(/\b(?:maybe|might|proposed|proposal)\b/.test(text)||/\b(?:cancelled|canceled|rescheduled)\s*\?/.test(text))return false;
-  const cancelled=/\b(?:cancel(?:led|ed)?|called off)\b/.test(text);
-  if(cancel)return cancelled&&!/\b(?:not|never|no longer|isn't|wasn't|hasn't|don't)\b|["“”?]/.test(text);
-  // Semantic event interpretation belongs to the planner. Backend checks retain
-  // exact originals, ownership, duplicate coverage and narrow unsafe negatives.
-  return !cancelled;
-}
-
+export {discordCalendarIntent} from './operations/intent.js';
+import {discordCalendarIntent} from './operations/intent.js';
 /** Bundled server-owned adapter. Construction does no network I/O. Dependencies
  * are an explicit fixture seam; event/model data never selects implementations. */
 export function createAutomationAdapters({env=process.env,config,fetchImpl=globalThis.fetch,now=()=>new Date(),dependencies={},manual}={}) {
@@ -63,7 +50,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     ||new Set(manual.channelIds).size!==manual.channelIds.length))fail('invalid_request');
   const manualWhitelist=Boolean(manual?.channelIds.length);
   const stagedEnabled=env.AGENT_AUTOMATION_STAGED_ENABLED==='true';
-  let activeLeaseToken,staged,preparedContext,synchronizer,calendarMutationVersion=0,syncCycleId;
+  let workerOperations,activeLeaseToken,staged,preparedContext,synchronizer,calendarMutationVersion=0,syncCycleId;
   const pendingTaskStore=stagedEnabled?(d.taskStore||createPendingTaskStore({env,fetchImpl})):null;
   const staticSourceIds=Object.freeze([...new Set(readConfig(env).allowedSourceIds)]);
   let allowedSourceIds=manualWhitelist?Object.freeze([]):staticSourceIds;
@@ -141,7 +128,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     currentDiscordSourceIds=[...discordIds];
     return [...new Set([...discordIds,...(googleAccess?[gmailSourceId]:[])])];
   }
-  const cleanupBatch=()=>{staged?.cleanup();activeLeaseToken=undefined;preparedContext=undefined;prepared=false;calendarMutationVersion=0;syncCycleId=undefined;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();participationProofs.clear();fragments.clear();
+  const cleanupBatch=()=>{if(workerOperations)resetWorkerOperations(workerOperations);staged?.cleanup();activeLeaseToken=undefined;preparedContext=undefined;prepared=false;calendarMutationVersion=0;syncCycleId=undefined;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();participationProofs.clear();fragments.clear();
     memberPreparationRun={};memberPreparations=new WeakMap();memberBoundaryCopies.clear();participationMapReads.clear();initialWriteCoverage.clear();missingOriginals.clear();personChoiceReceipts.clear();personChoiceRun={};mapSnapshots.clear();mapContexts.clear();latestMapContext=undefined;
     calendarOccurrences.clear();pendingCalendarReads.clear();fixedBuildings.clear();calendarWindows.clear();knownCalendarEvents.clear();taskEvidence.clear();for(const ids of mutatedCalendarIds.values())ids.clear();catalogueRead=false;};
   function rememberDiscord(source) {
@@ -192,9 +179,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     const clock=new Date(now()).getTime();
     const context={status:'ready',calendarId:principal.calendarId,
       calendarMap:{configured:calendarMapConfigured,...(calendarMapConfigured?{sourceId:calendarSourceId}:{}),
-        notice:'Calendar map provenance requires its configured source UUID. Do not borrow an input source UUID.'},
+        notice:promptText("agents/update/context#calendar-map-provenance")},
       ...(stagedEnabled?{reconciliationWindow:{timeMin:new Date(clock-86400000).toISOString(),timeMax:new Date(clock+8*86400000).toISOString(),
-        notice:'Window used only by the separately named sync_calendars_to_map tool; ordinary writes do not synchronize.'}}:{})};
+        notice:promptText("agents/update/context#calendar-map-window")}}:{})};
     if(signal?.aborted)fail('aborted');
     if(!Array.isArray(inputs)||inputs.length>20)fail('invalid_batch');
     if(inputs.some(row=>!validUuid(row?.uuid)||!plainObject(row.raw_response))
@@ -214,7 +201,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
         read:{tool:binding.identity.provider==='discord'?'read_discord_messages':'read_gmail',arguments:binding.identity.provider==='discord'
           ?{url:binding.sourceUrl,context:false}:{messageId:input.raw_response.payload.id}},
         lookup:{tool:'lookup_map_person',arguments:{sourceId:binding.sourceId,sourceUrl:binding.sourceUrl,...binding.identity}},
-        notice:'Copy these exact original identifiers; bind the corresponding current queue ref. A hint does not perform a source read or grant permission.'}];
+        notice:promptText("agents/update/context#input-source-hints")}];
     });
     if(stagedEnabled)context.memberPlans={configured:memberConfig.configured===true&&memberClient.configured===true&&validUuid(memberSourceId)&&staticSourceIds.includes(memberSourceId),calendarId:memberClient.calendarId,sourceId:memberSourceId};
     return context;
@@ -565,7 +552,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
           }
           return {status:'ready',outcome:'no_change_needed',reason:'already_correct',changed:false,eventId:args.eventId,
             taskIds:bindings.map(binding=>binding.taskId),resolutionOptions:bindings.map(binding=>({taskId:binding.taskId,outcome:'no_change_needed',reason:'already_correct'})),
-            message:'The requested attendance is already correct. No map change was made and no applied receipt exists. Explicitly resolve these tasks with no_change_needed/already_correct; this is not a successful mutation.'};
+            message:promptText("tools/map/participation#already-correct")};
         }
         return merged;
       }
@@ -588,8 +575,8 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   }
   function buildMemberTools(memberTools) {
     const str=maxLength=>({type:'string',minLength:1,maxLength});
-    const boundary={type:'object',additionalProperties:false,description:'Exactly {date} for all-day; new/changed timed endpoint uses {localDateTime,timeZone}, local clock WITHOUT Z/offset. {dateTime,timeZone} is allowed only as the exact corresponding endpoint copied from a current read of the same source-owned Member Plan.',properties:{date:str(10),localDateTime:{...str(30),description:'Local YYYY-MM-DDTHH:mm:ss with optional .sss; NO Z or offset.'},dateTime:{...str(40),description:'Exact unchanged corresponding raw endpoint from read_member_plan only.'},timeZone:str(100)},required:[]};
-    const source={sourceKey:{...str(615),description:'Server derives the exact original source key from sourceUrl; omit when uncertain.'},sourceUrl:{...str(1200),description:'Exact original Discord/Gmail URL already read in this cycle.'},sourceId:{...str(36),description:'Original message source UUID, never Member Plans calendar UUID. Server derives it from the exact URL and successful identity receipt; omit.'},personId:{...str(36),description:'Exact person UUID returned by lookup_map_person for this original speaker/source.'}};
+    const boundary={type:'object',additionalProperties:false,description:promptText("tools/member-plans/descriptions#endpoint"),properties:{date:str(10),localDateTime:{...str(30),description:promptText("tools/member-plans/descriptions#endpoint.local-date-time")},dateTime:{...str(40),description:promptText("tools/member-plans/descriptions#endpoint.unchanged")},timeZone:str(100)},required:[]};
+    const source={sourceKey:{...str(615),description:promptText("tools/member-plans/descriptions#source-key")},sourceUrl:{...str(1200),description:promptText("tools/member-plans/descriptions#source-url")},sourceId:{...str(36),description:promptText("tools/member-plans/descriptions#source-id")},personId:{...str(36),description:promptText("tools/member-plans/descriptions#person-id")}};
     async function prepareMemberArguments(args,context) {
       if(!requirePrepared(context))return args;
       const matches=[];
@@ -645,10 +632,10 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       return args;
     }
     const definitions=[
-      {name:'list_member_plans',readOnly:true,phases:['initial','followup'],description:'Read the separately pinned Member Plans calendar. Use actual returned event IDs; no arbitrary calendar target.',parameters:{type:'object',additionalProperties:false,properties:{timeMin:str(40),timeMax:str(40)},required:['timeMin','timeMax']}},
-      {name:'read_member_plan',readOnly:true,phases:['initial','followup'],description:'Read one exact Member Plans event by returned ID.',parameters:{type:'object',additionalProperties:false,properties:{eventId:str(1024)},required:['eventId']}},
-      {name:'upsert_member_plan',idempotent:true,phases:['initial','followup'],description:'Create/update an explicit personal plan or current presence on Member Plans. This operation writes only the pinned Member Plans Calendar; any needed original/identity reads are separate prompt-selected calls. personId must match that receipt. Server binds source UUID/key from exact original URL and lookup; omit sourceId/sourceKey. Presence defaults original report time through two hours later; personal plans need supported start/end. New/changed timed endpoints MUST use localDateTime (local clock without offset) plus IANA timeZone; raw dateTime is only an exact unchanged corresponding endpoint from read_member_plan for this same source-owned plan. No map-only events, invitations or attendees.',parameters:{type:'object',additionalProperties:false,properties:{...source,title:str(200),description:{type:'string',maxLength:3000},location:{type:'string',maxLength:500},activityKind:{type:'string',enum:['presence','personal_plan']},typeId:{type:'string',enum:['study','meeting','event','social','other']},label:{type:'string',maxLength:200},start:boundary,end:boundary},required:['sourceUrl','personId','title','activityKind']}},
-      {name:'cancel_member_plan',idempotent:true,phases:['initial','followup'],description:'Cancel only the same source-owned Member Plans activity with explicit current original cancellation evidence; never cancel from absence or an RSVP decline. Server binds sourceId/sourceKey from original URL and successful identity receipt.',parameters:{type:'object',additionalProperties:false,properties:source,required:['sourceUrl','personId']}},
+      {name:'list_member_plans',readOnly:true,phases:['initial','followup'],description:promptText("tools/member-plans/descriptions#list"),parameters:{type:'object',additionalProperties:false,properties:{timeMin:str(40),timeMax:str(40)},required:['timeMin','timeMax']}},
+      {name:'read_member_plan',readOnly:true,phases:['initial','followup'],description:promptText("tools/member-plans/descriptions#read"),parameters:{type:'object',additionalProperties:false,properties:{eventId:str(1024)},required:['eventId']}},
+      {name:'upsert_member_plan',idempotent:true,phases:['initial','followup'],description:promptText("tools/member-plans/descriptions#upsert"),parameters:{type:'object',additionalProperties:false,properties:{...source,title:str(200),description:{type:'string',maxLength:3000},location:{type:'string',maxLength:500},activityKind:{type:'string',enum:['presence','personal_plan']},typeId:{type:'string',enum:['study','meeting','event','social','other']},label:{type:'string',maxLength:200},start:boundary,end:boundary},required:['sourceUrl','personId','title','activityKind']}},
+      {name:'cancel_member_plan',idempotent:true,phases:['initial','followup'],description:promptText("tools/member-plans/descriptions#cancel"),parameters:{type:'object',additionalProperties:false,properties:source,required:['sourceUrl','personId']}},
     ];
     return definitions.map(tool=>({...tool,...(!tool.readOnly?{prepareArguments:tool.name==='upsert_member_plan'?(args,context)=>prepareTimedMemberArguments(args,context,tool.parameters):prepareMemberArguments}:{}),execute:async(args,context)=>{
       if(!requirePrepared(context))return {status:'forbidden'};
@@ -960,7 +947,7 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       if(tool.name==='read_map_events'&&result?.status==='ready')return fragments.bound({...result,
         participationTargets:(result.events||[]).map(event=>{const target=targets.find(row=>row.sourceId===event.source_id);return {mapEventId:event.id,
           sourceId:event.source_id,eligible:Boolean(target),...(target?{calendarKind:target.kind,calendarEventId:event.source_record_id}:{reason:'not_a_pinned_calendar_event'})};}),
-        participationTargetNotice:'For worker attendance changes choose eligible=true. mapEventId is the map UUID; calendarEventId is the separate provider ID. Do not send these hints inside event facts.'});
+        participationTargetNotice:promptText("tools/map/participation#target-hints")});
       return fragments.bound(result);
     }})),
     {...fragments.tool,execute:(args,context)=>requirePrepared(context)
@@ -972,14 +959,14 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     }
     const memberTools=createMemberPlansTools({client:memberClient,sourceId:memberSourceId,authorizeParticipation:validateMemberParticipation});
     tools.push(...buildMemberTools(memberTools),{name:'patch_map_participation',phases:['followup'],idempotent:true,
-      description:'Patch only verified people on ONE existing Calendar-projected map event. Bind exactly one fully read current participation task per changed person in inputIds; saved operation/calendarKind/provider calendarEventId/personId must match. eventId is the map UUID and expectedUpdatedAt is its exact parent revision. changes contains exact linked personId, their own current original sourceUrl, attendanceStatus and label/start/end only. EVERY NEW participant requires BOTH start and end, using explicit {inherit:true} for each inherited boundary; omitted endpoints reject the entire patch with new_participation_window_required. Existing participant omissions preserve saved endpoints; omitted labels preserve existing values. Approximate late arrivals need both the nominal start endpoint and qualifying label. {anchor,offsetMinutes} performs elapsed arithmetic on timed event instants. The server preserves all event/building/unrelated-person facts using the map snapshot already returned by read_map_events, and uses already observed original/identity data. This tool never reads sources, Calendar, roster identities or task storage. No event creation or Calendar writes. No-ops, incomplete state and failures provide no completion proof. If participation_task_not_ready includes requiredTaskReads, complete those exact taskRef/fragment nextOffset chains before resubmitting, or root-read tasks without a listed fragment. Otherwise check selected task IDs/current read/saved targets; do not rewrite correct unchanged tasks. Resolve only after a matching applied receipt already returned in this run.',
+      description:promptText("tools/map/participation#description"),
       parameters:PARTICIPATION_PARAMETERS,execute:patchParticipation});
     const taskStore=pendingTaskStore;
     const synchronize=synchronizer=d.synchronize||createCalendarMapSync({targets,mapService:mapEventService,loadBuildings:d.loadBuildings||loadBuildingAliases,authorizeParticipation:validateStoredMemberParticipation,now});
     // Explicit user-selected exception: synchronization has its own registered
     // operation, arguments, result and audit entry. Calendar writes never call it.
     tools.push({name:'sync_calendars_to_map',idempotent:true,phases:['initial','followup'],getActionVersion:()=>`${syncCycleId}:${calendarMutationVersion}`,
-      description:'Synchronize both pinned Calendars to the map as ONE explicitly named operation. The runner invokes this as a separate recorded call after successful initial finish_batch; ordinary Calendar/Member Plan writes do not invoke it. You may call it explicitly after a later Calendar change when map projection is needed.',
+      description:promptText("tools/worker/sync#description"),
       parameters:{type:'object',additionalProperties:false,properties:{},required:[]},execute:async(_args,context)=>{
         if(!requirePrepared(context))return {status:'forbidden'};
         const result=await synchronize.sync({principal,window:preparedContext.reconciliationWindow,signal:context.signal,
@@ -1037,7 +1024,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     const begin=staged.pipeline.beginCycle;
     staged.pipeline.beginCycle=async args=>{participationProofs.clear();personChoiceReceipts.clear();personChoiceRun={};activeLeaseToken=args.leaseToken;await begin(args);staged.pipeline.setBatchContext(preparedContext);};
     tools.push(...staged.tools);
-    return {principal,tools,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline:staged.pipeline};
+    workerOperations=bindWorkerOperations(tools);
+    return {principal,tools:workerOperations,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline:staged.pipeline};
   }
-  return {principal,tools,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion};
+  workerOperations=bindWorkerOperations(tools);
+  return {principal,tools:workerOperations,authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion};
 }

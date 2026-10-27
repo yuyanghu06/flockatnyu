@@ -151,7 +151,9 @@ test('empty successful exact window remains distinct from failed or cancelled re
   assert.deepEqual(result.sources,[]);assert(!JSON.stringify(result).includes('private failure'));
   const signal=new AbortController();signal.abort();const cancelled=realFixture();
   const aborted=await cancelled.execute({}, {signal:signal.signal});assert.equal(aborted.status,'aborted');
-  assert.equal(aborted.coverage.complete,false);assert.equal(cancelled.reads.length,0);
+  // The API rejects an already-cancelled request before domain coverage exists.
+  assert.notEqual(aborted.coverage?.complete,true);assert.deepEqual(aborted.sources,[]);
+  assert.equal(cancelled.reads.length,0);assert.equal(cancelled.catalogueCalls(),0);assert.equal(cancelled.dispatches.length,0);
 });
 
 test('exact summary preserves shared request budget across different signals and keeps every original',async()=>{

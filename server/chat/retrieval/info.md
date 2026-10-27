@@ -15,3 +15,10 @@ Install helpers before initializing request state, and invoke planning only afte
 initialization. Keep cancellation and post-audit steering checks in place. No
 helper may fabricate a receipt, retry an uncertain write, fetch a second service
 implicitly or broaden source permissions.
+
+Read deduplication is local to each adapter. A successful/partial or uncertain
+write allows a later model-selected fresh read. Only definitely rejected
+read_required/conflict action signatures may be retired after an actual successful
+read; successful and uncertain write signatures remain protected. This is cache
+bookkeeping, not an automatic read/write workflow, and does not weaken backend
+version/permission checks or the existing conflict-refresh bound.

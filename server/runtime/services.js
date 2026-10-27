@@ -27,9 +27,8 @@ import { createLiveDiscordRetrieval } from '../discord/live-retrieval.js';
 import { createLiveChatTools } from '../../tools/discord/live-summary.js';
 import { readGoogleConfig } from '../google/config.js';
 import { createGoogleClient } from '../google/client.js';
-import { GOOGLE_TOOLS, executeGoogleTool } from '../../tools/google/index.js';
+import { createCombinedGoogleOperationApi } from '../operation-api/factories/google.js';
 import { createCalendarClient } from '../google/calendar-client.js';
-import { createChatCalendarTools } from '../../tools/calendar/chat.js';
 import { readCalendarConfig, readMemberPlansConfig } from '../google/calendar-config.js';
 import { readDiscordLiveSummaryConfig } from '../discord/live-summary-config.js';
 import { readMiroMcpConfig } from '../miro/mcp-config.js';
@@ -78,27 +77,11 @@ export function createRuntimeServices({ config = readConfig() } = {}) {
   const calendarClient = createCalendarClient({ config: calendarConfig });
   const memberPlansConfig = readMemberPlansConfig();
   const memberPlansClient = createCalendarClient({ config: memberPlansConfig });
-  const chatCalendarTools = createChatCalendarTools({
-    client: calendarClient,
+  const googleTools = createCombinedGoogleOperationApi({
+    client: googleClient,
+    calendarClient,
     sourceId: calendarConfig.sourceId,
   });
-  const googleTools = {
-    tools: [...GOOGLE_TOOLS, ...chatCalendarTools.tools],
-    execute: (options) =>
-      chatCalendarTools.tools.some((tool) => tool.name === options.name)
-        ? chatCalendarTools.execute(options)
-        : executeGoogleTool({ ...options, client: googleClient }),
-    createRequest: (context) => {
-      const calendar = chatCalendarTools.createRequest(context);
-      return {
-        tools: [...GOOGLE_TOOLS, ...calendar.tools],
-        execute: (options) =>
-          calendar.tools.some((tool) => tool.name === options.name)
-            ? calendar.execute(options)
-            : executeGoogleTool({ ...options, client: googleClient }),
-      };
-    },
-  };
   const miroStore = createMiroStore();
   const miroConfig = readMiroMcpConfig();
   const miroTools = createMiroMcpTools({

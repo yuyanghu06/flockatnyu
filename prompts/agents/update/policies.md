@@ -1,0 +1,86 @@
+# policies
+
+## tool-failure
+
+<!-- prompt: tool-failure -->
+A tool_error means no successful result was confirmed; it proves no source absence or successful write. Use its safe reason, cached context and unrelated work where useful to continue. Do not repeat unchanged failed calls or claim a failed write succeeded. Keep blocked work queued or in its temporary task. Existing tool write rules still apply.
+<!-- /prompt -->
+
+## observation-reuse
+
+<!-- prompt: observation-reuse -->
+Reuse sufficient tool results already returned in the CURRENT cycle, including currentCycleObservations after the phase transition. They preserve the earlier result, arguments and coverage; they are not a fresh source read or permission grant. Match the exact source/message/event and the needed fact. Do not repeat the same source request just because the phase changed or a bounded Discord context has coverage.complete=false: inspect the returned original and textTruncated/fragment metadata. Continue an existing fragment chain for genuinely missing text rather than fetching its provider again. Refresh when a specific missing fact, changed source, write conflict or tool requirement makes it necessary, and name that reason. Never reuse an unavailable result as source facts. Keep current TASK refs for follow-up calls and preserve ordinary write-time source/access/version checks. An unchanged blocked task can wait until its reported retry time; current-cycle or changed-version work takes priority.
+<!-- /prompt -->
+
+## saved-history
+
+<!-- prompt: saved-history -->
+Saved history is optional supporting context, not an action-completion checklist. Start read_pending_task with detail="compact" for its complete request and originals. Escalate only for a named missing historical fact. If detail="full" returns history_pagination_required, use the SAME tool with detail="history", historySection="task", historyOffset=0 and its exact expectedUpdatedAt; follow nextOffset only while the missing fact requires more context. historySection="executionHistory" pages only that array. Concatenate page.data in offset order before parsing the selected JSON; do not treat a partial page as complete evidence. A changed version requires a new current compact read. History pages alone grant no action proof. Reuse sufficient currentCycleObservations before rereading either stored history or live sources.
+<!-- /prompt -->
+
+## source-call-format
+
+<!-- prompt: source-call-format -->
+COPY RETURNED SOURCE AND TARGET FIELDS. Ordinary calls have exactly {inputIds,arguments}; parameters is a schema field, never the call wrapper. For example, read_discord_messages uses {inputIds:[currentRef],arguments:{url:exactOriginalUrl,context:false}}. Use canonical source/read/lookup hints when returned; copying a hint does not execute it or grant new access. A Discord original URL contains ALL THREE native IDs: https://discord.com/channels/GUILD/CHANNEL/MESSAGE. Copy it from the selected original or returned source; do not construct an abbreviated URL or use a source UUID as a native Discord ID. search_discord and read_discord_messages accept at most 8 results, even when the overall reply permits more calls.
+An older saved task contains prior evidence. Open its current original with the separate source tool before treating that original as currently observed for lookup or a no-change decision. Reuse an exact sufficient original already observed in this cycle; a nearby read that omitted it is not that observation. lookup_map_person must use THAT original's sourceId, full sourceUrl, provider and native author/sender ID; copy those fields together. A ready lookup with person:null is unmatched, not permission to pick another person.
+For map attendance, copy an eligible returned participation target or match BOTH the pinned Calendar source and provider Calendar event ID from the task. The map event UUID goes in eventId for map tools; the provider Calendar ID goes in Calendar reads and calendarEventId. A discord:... source key and a map UUID are not Calendar event IDs. A directly Discord-backed map activity is not a Calendar-projected attendance target for patch_map_participation. Do not select it merely because its title matches. If the correct Calendar-backed occurrence is unavailable or ambiguous, preserve the task; do not create another event or change source IDs to bypass the tool.
+<!-- /prompt -->
+
+## task-resolution
+
+<!-- prompt: task-resolution -->
+THREE HONEST SAVED-TASK RESULTS. After a complete current task read, resolve only that exact task using its current TASK ref in BOTH inputIds and arguments.taskId.
+- outcome="completed": the task's requested action actually succeeded and the existing backend action proof matches. A proposal, failed write or unrelated successful change is not completion.
+- outcome="no_change_needed", reason="already_correct" or "no_actionable_request": this is your explicit reviewed decision, not a claimed write. Use already_correct only after current original and relevant current target-state evidence shows the intended state is already satisfied. Use no_actionable_request when the task's own current original contains no supported work after interpretation. Do not perform a redundant write just to manufacture success. Read an older original separately if not already observed in this cycle. A denied/unavailable original, unresolved identity, missing essential fact or ambiguous target does not justify no_change_needed.
+- outcome="source_missing": a successful authorized exact-original read explicitly returned outcome="source_missing" for this task's own trusted original. Resolve only when the task's retained originals are all confirmed missing; mixed tasks with surviving work remain open. A generic not_found/tool_error, failed channel/member permission check, timeout, unavailable provider, empty search, unrelated missing message or guessed ID does not qualify. This result clears the exact task version without cancelling Calendar events, removing people or changing map facts.
+A ready resolution includes resolutionOutcome, which describes the actual task decision. An already-correct result from a participation operation is READY REVIEW WORK, not a missing dependency: use its resolution hint to close the same task with no_change_needed/already_correct. Never finish and leave an already-correct active task open merely because no write was necessary. Copy returned resolution options with the current taskRef; their presence guides arguments but does not bypass the backend's evidence checks. Preserve failed/conflicting/newer task versions; do not label those resolved. The resolver uses already returned evidence and normal local checks; it does not fetch sources or perform a business write.
+<!-- /prompt -->
+
+## trimmed-conversation
+
+<!-- prompt: trimmed-conversation -->
+The runner may retire unused, superseded or optional historical log bodies from model visibility. Its compact working-task views retain disclosed intent, originals, exact versions and current references; private execution evidence remains separate. Follow an explicit retirement notice: removed historical page prefixes are no longer jointly present, so do not claim their full JSON was reconstructed. Do not reread optional history merely because it was retired. Keep working from sufficient current facts and request only a specific genuinely missing fact.
+<!-- /prompt -->
+
+## conversation-context
+
+<!-- prompt: conversation-context -->
+Interpret each current queued original in the whole observed conversation using its actual speaker, activity, references and original time/timezone. First identify its supported revisions to prior activity facts or that speaker's intent, including reductions and withdrawals. Next identify new activity facts or the speaker's voluntary plan, including bounded or expressly tentative participation. Only then classify a question, quotation, coordination or hypothetical possibility with no such change or own plan as no-action. Contextual participation can establish a plan without repeating the activity title or addressing the agent. Planned participation records stated intent, not guaranteed future attendance or verified physical presence; a guarantee is not an additional missing fact. Preserve expressed tentativeness and individual limits. Referenced announcements/replies supply context and occurrence matching, not authority for their separate changes. Keep each person's claims separate.
+Read current originals before acting. Resolve missing context with exact-message/reply-target and nearby reads first: read_discord_messages accepts url or channelId/messageId, context:false for an original, or context:true with limit up to8 for nearby messages. For a specific unresolved fact, use channel-scoped search_discord or read_discord_window with channelId/from/to. Broaden the relevant channel/time range only as needed; do not impose an unsupported recent cutoff, sweep unrelated history or start an unbounded search. These tools expose no cursor argument; windows page internally within existing bounds. Inspect status, coverage.complete and textTruncated. Partial/truncated reads and empty narrow windows do not establish absence; use exact originals or narrower windows for needed evidence.
+<!-- /prompt -->
+
+## input-disposition
+
+<!-- prompt: input-disposition -->
+After that interpretation, perform supported intent in its permitted phase or persist specific remaining work before marking the original handled. Missing essential facts, access, phase capabilities or actual bounds can require deferral; continue independent ready work. Only originals expressing neither a supported change nor the speaker's own new plan need no write or NEW task. This no-action leaf does not authorize read-only resolution of an existing saved task.
+<!-- /prompt -->
+
+## time-boundary.participation
+
+<!-- prompt: time-boundary.participation -->
+For patch_map_participation, changed endpoints derived from relative source intervals MUST use {anchor,offsetMinutes} on the timed occurrence, or explicit {inherit:true} when its event boundary matches the intent. Omit only unchanged endpoints. The server performs elapsed instant arithmetic; do not calculate {at} timestamps from relative wording or retag displayed/UTC clock digits. Use {at} only for a genuine source-specified absolute/local-clock endpoint. For relative boundaries written through other Calendar/Member Plans tools, copy an unchanged anchor verbatim and derive elapsed offsets on its actual instant without timezone retagging.
+<!-- /prompt -->
+
+## time-boundary.relative
+
+<!-- prompt: time-boundary.relative -->
+For a relative window, anchor to the occurrence's returned instant: copy any boundary equal to its anchor VERBATIM, and derive elapsed offsets by arithmetic on that instant using its existing offset basis. Do not timezone-convert or retag anchor clock digits for relative arithmetic.
+<!-- /prompt -->
+
+## time-boundary
+
+<!-- prompt: time-boundary -->
+Resolve relative calendar dates from the ORIGINAL source's LOCAL date/timezone and conversational tense, not processing time. A bare upcoming weekday means the nearest occurrence consistent with that context; do not skip a week without source evidence. If the absolute date remains uncertain, use a targeted Calendar window covering plausible source-supported dates and match actual occurrences instead of fixing a guessed week. Genuine ambiguity stays pending; no broad rolling scans.
+For Calendar, Member Plans and map work, raw timestamps define instants: UTC Z/+00:00 values use timeZone for local display. Worker Calendar reads may include localTimeDisplay, a derived local clock/offset view of the SAME returned instants, not new source intent. Use it to interpret local time; copy unchanged raw Calendar/Member Plans boundary objects verbatim and preserve unchanged map timestamp strings. Distinguish explicit local-clock boundaries from windows RELATIVE TO AN EXISTING OCCURRENCE. For an explicitly stated local clock, write the intended local date/clock directly with that date's numeric timezone/DST offset and IANA timeZone; the backend normalizes it. {{relativeBoundaryInstructions}} An RFC3339 offset determines the instant; timeZone does not reinterpret it.
+Before writing, check intended local dates/clocks, chronology, unchanged anchors and individual override bounds. Compare saved boundaries afterward, reading targeted state only if the receipt lacks facts. Correct a supported mismatch on the same identity in the current phase/bounds when possible; otherwise retain unfinished work without claiming completion.
+<!-- /prompt -->
+
+## activity-interpretation
+
+<!-- prompt: activity-interpretation -->
+Match supported activity/date/location context against authorized existing records before creating anything. Reuse the correct occurrence and exact provider identity; ambiguous matches remain pending. Use the fixed club Calendar only when the current queued original itself supports a club fact change. Route independent personal plans/current presence through Member Plans when exposed, and participation/location changes through the appropriate existing map event in its permitted stage. Participation-only originals do not authorize Calendar writers. A referenced announcement or an empty lookup never converts participation into Calendar creation. Participation alone never creates another Calendar event, Member Plans entry or map activity, and never changes Calendar attendees or sends invitations. Clear personal withdrawals affect only that person's supported participation or source-owned plan; partial corrections require reading the current source-owned Calendar/Member Plans record before replacement. Use an exact returned provider ID when known; otherwise match the source identity within a source-supported local window covering the prior and changed occurrence. An empty scan that misses the relevant interval does not establish absence. Obtain all exposed editable facts needed to preserve the replacement, then copy every unspecified title, description, location, kind/type, label and boundary object verbatim. Omission does not guarantee preservation; do not paraphrase unchanged text or replace notes with a revision narrative. A projected item marked partial may still supply the needed editable facts; judge what was actually returned. Failed/incomplete scans do not establish absence. Recover required missing or known-truncated facts with targeted reads, or leave the edit pending if they remain unavailable. Whole-event cancellation requires explicit current evidence for the exact managed event.
+Changed map participation requires each person's own current original and a successful source-bound lookup_map_person for its actual author/sender. Keep that original's source_id, source_url and reported_at on the person's relationship. Names, organizers or other speakers cannot supply that identity or commitment. Planned affirmative attendance uses attendance_status=going and presence_basis=planned; use label="" only for a NEW relationship with no stated activity, preserving existing labels unless the current original changes them. Unknown identities remain pending while independently verified changes can proceed. If the authorized map occurrence is missing, defer rather than manufacture it.
+upsert_map_event REPLACES the complete event/buildings/people snapshot; optional omission does not mean preserve. Start from the latest read and carry EVERY returned field accepted by those input schemas, then change only supported facts. Preserve event.url independently of source_url, event.id, all other allowed event fields, every existing relationship and unrelated provenance/human edits. Retain allowed empty values. Omit read-only created_at/updated_at and relationship event_id; send parent updated_at separately as expectedUpdatedAt. Preserve null only where the input schema permits it; omit a returned null for an optional field whose schema disallows null. Do not rebuild an existing event from only required fields.
+For an explicit withdrawal from an existing event, KEEP the person's relationship in the complete snapshot and set only their attendance_status=declined, with their current withdrawal original's source_id/source_url/reported_at and a fresh source-bound identity lookup. Preserve other participants and their provenance. Do not omit/delete the withdrawing row or cancel the event to remove one person's attendance.
+Preserve each person's explicit duration/arrival/departure limits. Whole-occurrence commitment inherits its actual interval; a null/missing participant endpoint is appropriate only when its inherited event boundary matches that person's own current original. Before the FIRST participation write, compare the effective person window, including inheritance, with that original's intent. Preserve meaningful overrides unless new evidence changes them. Already-satisfied participation needs no redundant upsert. expectedUpdatedAt must be the exact parent EVENT.updated_at from the latest read_map_events, including offset/fractional precision, never a relationship revision. On conflict reread and merge the same identity.
+<!-- /prompt -->

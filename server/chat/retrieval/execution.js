@@ -6,12 +6,15 @@ import {
 } from '../../audit/diagnostics.js';
 
 import { canonicalJson, validateArguments } from '../../automation/validation.js';
-import { normalizeChatMapPersonName } from '../../../tools/map/chat.js';
+import { normalizeChatMapPersonName } from '../../map/operations/chat-helpers.js';
 
 import { denied, maxToolCalls } from '../constants.js';
 
 import { publicResult } from '../public-result.js';
+import { OPERATIONS } from '../../operation-api/catalogue.js';
 export function installRetrievalExecution(run) {
+  const readRevisions = new WeakMap();
+  const retryAfterRead = new WeakMap();
   run.mayRefreshConflict = (call, previous) => {
     if (run.conflictReadUsed || !run.conflictTarget || !previous) return false;
     const ids = run.conflictTarget.ids;
@@ -111,6 +114,9 @@ export function installRetrievalExecution(run) {
       signature = canonicalJson({
         name: call.name,
         arguments: args,
+        ...(OPERATIONS[call.name]?.readOnly && readRevisions.has(adapter)
+          ? { readRevision: readRevisions.get(adapter) }
+          : {}),
         ...(run.inputRevision &&
         [
           'read_map_events',
@@ -208,6 +214,35 @@ export function installRetrievalExecution(run) {
       });
       return { tool: call.name, status: 'superseded', reason: 'new_user_input', sources: [] };
     }
+    // Writes can consume exact-read permissions and change saved versions. Let
+    // a later model-selected read of this adapter run again; keep write replay
+    // protection and the existing targeted conflict-refresh limit unchanged.
+    if (
+      OPERATIONS[call.name]?.readOnly === false &&
+      (toolError ||
+        [
+          'ready',
+          'ok',
+          'applied',
+          'partial',
+          'unavailable',
+          'tool_error',
+          'read_required',
+        ].includes(result?.status) ||
+        result?.reason === 'write_outcome_unknown' ||
+        result?.sent === 'unknown')
+    )
+      readRevisions.set(adapter, (readRevisions.get(adapter) || 0) + 1);
+    if (
+      OPERATIONS[call.name]?.readOnly &&
+      ['ready', 'ok', 'empty', 'partial'].includes(result?.status)
+    ) {
+      // A completed explicit read may supply a rejected action's missing
+      // prerequisite. Confirmed or uncertain writes never enter this set.
+      for (const rejectedSignature of retryAfterRead.get(adapter) || [])
+        run.signatures.delete(rejectedSignature);
+      retryAfterRead.delete(adapter);
+    }
     if (run.signal?.aborted) {
       await run.auditEvent({
         kind: 'tool_finished',
@@ -284,6 +319,13 @@ export function installRetrievalExecution(run) {
     if (run.liveList.some((tool) => tool.name === call.name) && denied.has(result?.status))
       run.accessDenied = true;
     run.signatures.set(signature, visible);
+    if (
+      OPERATIONS[call.name]?.readOnly === false &&
+      ['read_required', 'conflict'].includes(result?.status)
+    ) {
+      if (!retryAfterRead.has(adapter)) retryAfterRead.set(adapter, new Set());
+      retryAfterRead.get(adapter).add(signature);
+    }
     return visible;
   };
 }

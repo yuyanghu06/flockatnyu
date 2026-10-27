@@ -52,6 +52,9 @@ model harnesses complete when a facade's implementation moves into helper files.
 `chat-source-files.mjs` lists the current JavaScript files behind the grouped chat
 facade. Optional model harnesses include that inventory and the helper itself in
 their existing source hashes/copies, alongside explicit audit/Treg dependencies.
+Its `operationSourceFiles` export also lists all server/tool JavaScript, fixed
+`src/api/operations` route files and the trusted Drive skill Markdown asset so
+endpoint foundation and backend dependencies stay in the optional evidence copy.
 It reads filenames only and does not load clients or run model/business calls.
 
 `treg-dormant.mjs` supplies shared synthetic client/logger/auth fixtures for the

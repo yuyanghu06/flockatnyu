@@ -1,4 +1,4 @@
-import {chatSourceFiles} from './fixtures/chat-source-files.mjs';
+import {chatSourceFiles,operationSourceFiles} from './fixtures/chat-source-files.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
@@ -43,7 +43,7 @@ const config=readConfig();assert(config.configured,'Configured model unavailable
 const maxRequests=Number(process.argv.find(arg=>arg.startsWith('--max-requests='))?.slice(15)??32);
 const perCase=Number(process.argv.find(arg=>arg.startsWith('--max-per-case='))?.slice(15)??6);
 assert(Number.isInteger(maxRequests)&&maxRequests>=1&&maxRequests<=32);assert(Number.isInteger(perCase)&&perCase>=1&&perCase<=6);
-const files=[...new Set([...(await chatSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/context.js','server/treg/result-cache.js','tools/treg/index.js','tools/contacts/index.js','server/contacts/store.js','server/contacts/fields.js','server/contacts/search.js','server/treg/people.js','server/treg/validation.js','server/treg/contact-identity.js','server/treg/contacts-importer.js','server/treg/enrich.js','server/treg/call-log.js','server/chat/runner.js','server/chat/behavior.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/shared/config.js','server/providers/index.js','server/providers/retry.js','server/automation/validation.js','tests/treg-save-model.mjs','tests/fixtures/treg-save.mjs']])].sort();
+const files=[...new Set([...(await chatSourceFiles()),...(await operationSourceFiles()),'tests/fixtures/chat-source-files.mjs',...['server/chat/context.js','server/treg/result-cache.js','tools/treg/index.js','tools/contacts/index.js','server/contacts/store.js','server/contacts/fields.js','server/contacts/search.js','server/treg/people.js','server/treg/validation.js','server/treg/contact-identity.js','server/treg/contacts-importer.js','server/treg/enrich.js','server/treg/call-log.js','server/chat/runner.js','server/chat/behavior.js','server/audit/diagnostics.js','server/audit/diagnostic-codes.js','server/audit/argument-diagnostics.js','server/shared/config.js','server/providers/index.js','server/providers/retry.js','server/automation/validation.js','tests/treg-save-model.mjs','tests/fixtures/treg-save.mjs']])].sort();
 const pins=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,createHash('sha256').update(await readFile(new URL('../'+file,import.meta.url))).digest('hex')])));
 const frozen=await pins();
 const base=new URL('../evidence/treg-save/',import.meta.url),directory=new URL('model-'+new Date().toISOString().replace(/[:.]/g,'-')+'/',base);await mkdir(directory,{recursive:true,mode:0o700});
