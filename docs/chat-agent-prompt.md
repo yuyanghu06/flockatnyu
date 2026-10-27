@@ -1,6 +1,6 @@
 # Chat agent behavior
 
-Current wording lives in root [prompts/](../prompts/info.md). The chat planning/answer builders select fixed Markdown blocks and runtime values through `server/prompt-loader/index.js`; `context.js` re-exports them.
+Current wording is maintained in root [prompts/](../prompts/info.md). `server/chat/prompts/planning.js` and `answer.js` select Markdown blocks; `server/chat/context.js` re-exports them. Shared policies, per-tool workflows/descriptions and context wrappers are loaded through `server/prompt-loader/index.js`.
 
 The chat agent is Flock, Tech@NYU's shared conversational assistant. Its runtime
 planning and answer instructions live in `server/chat/context.js`. It speaks
@@ -17,13 +17,27 @@ Leadership and excluded descendants remain inaccessible under backend policy.
 Specific channel questions retain exact original-message/window reads.
 
 For “what is happening this week?” without a named source, read the configured
-Google Calendar first, including relevant pages. If it is empty or unavailable,
-automatically cross-check Miro's actual calendar content for the same dates. An
-unavailable calendar is not an empty calendar. State which source failed and
-whether coverage is partial. Miro search matches and month headings are
-navigation; actual canvas cells or native table rows establish event facts.
-Explicit requests for Discord, Miro, email or Drive use those sources. Gmail and
-Drive search/read tools remain available.
+Google Calendar first, including relevant pages. A ready, complete, empty result
+finishes that Calendar read; changing keywords, result mode or page size cannot
+discover events inside an already covered unfiltered empty window. A filtered
+empty result answers only that query. Partial coverage or an unavailable service
+does not establish absence; refine genuinely unread scope or report the limit.
+For an unnamed-source schedule question, separately cross-check actual Miro
+content for the same dates after an empty or unavailable Calendar when Miro read
+tools are registered. When those tools are absent, report that limitation and
+finish without repeating Calendar or claiming Miro was checked. Miro search
+matches and month headings are navigation; actual canvas cells or native table
+rows establish event facts. Explicit Calendar, Discord, Miro, email or Drive
+requests use the selected source without requiring another-source fallback.
+
+For a change to one saved Contact, identify the user's intended person before
+choosing an exact read or write. Multiple plausible same-name records require a
+focused clarification before any candidate-specific action. Ranking, a
+model-selected UUID or a successful read does not choose a person for the user;
+a desired new workplace is not a fact about the current target. Preserve the
+requested edit through the user's reply, then use its distinguishing email,
+UUID, selected Contact or existing workplace for a normal exact read/versioned
+write. Read-only comparisons and unrelated clear actions remain supported.
 
 A request to plot someone or a direct current-location statement such as
 “im at bobst” requests a map update. Interpret the user's natural language and use

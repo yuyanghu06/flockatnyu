@@ -1,5 +1,5 @@
 import { promptText } from '../../prompt-loader/index.js';
-// Existing policy text, retained byte-for-byte; these strings do not execute service operations.
+// Selects trusted Markdown policy blocks; loading them executes no service operations.
 export const chatRoutingPrompt = promptText(
   'agents/chat/policies#schedule-completion-for-a-schedule-question-without',
 );

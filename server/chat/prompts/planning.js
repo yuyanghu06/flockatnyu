@@ -1,5 +1,5 @@
 import { promptText } from '../../prompt-loader/index.js';
-// Builds the existing tool-selection instructions without changing any prompt string.
+// Assembles Markdown tool-selection instructions and current request state.
 import { contactSelectionPrompt } from '../contact-context.js';
 
 import { chatRequestContextPrompt } from '../request-context.js';

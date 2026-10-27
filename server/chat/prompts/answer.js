@@ -1,5 +1,5 @@
 import { promptText } from '../../prompt-loader/index.js';
-// Builds the existing final-answer instructions and bounded references without changing prompt strings.
+// Assembles Markdown final-answer instructions and bounded references.
 import { contactSelectionPrompt } from '../contact-context.js';
 
 import { chatRequestContextPrompt } from '../request-context.js';
