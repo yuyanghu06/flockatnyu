@@ -34,7 +34,7 @@ dispatcher does not grant memory writes. Browser roles have no table/RPC access.
 The service role reads through a bounded RPC and updates only through the
 service-only optimistic RPC; direct DML is denied.
 
-Implementation: server/memory.js, tools/memory/index.js, server/assistant-context.js,
+Implementation: server/knowledge/memory.js, tools/memory/index.js, server/chat/context.js,
 and the chat API entrypoint. The update agent is not changed or activated by this
 chat feature; its memory exposure remains a separate scope decision.
 

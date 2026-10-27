@@ -13,11 +13,12 @@ fields, permissions and user-visible behavior.
 
 `npm run ci` runs these gates in order:
 
-1. Prettier checks all of `src`, the new CI scripts and configuration.
+1. Prettier checks all of `src`, the organized server folders, the two server
+   entry points, Gmail send service/store, the new CI scripts and configuration.
 2. ESLint checks JavaScript in `src`, `server`, `tools`, `scripts` and `tests`.
    Frontend code also has stricter recommended rules and cannot import server
    handlers, provider tools or Node built-ins. The existing I/O-free
-   `server/chat-attachments.js` contract is the sole allowed shared server path;
+   `server/chat/attachments.js` contract is the sole allowed shared server path;
    lint prevents it from importing modules or using process, require or fetch.
 3. File-size checks count every physical line, including blanks and comments.
    JavaScript/MJS files have a 500-line limit; CSS has a 400-line limit.
@@ -35,8 +36,9 @@ Install the locked browser using `npx playwright-core install chromium`, or set
 
 This is a JavaScript project. No TypeScript/type-check gate is claimed. Existing
 unformatted backend files are checked by ESLint; the initial mandatory formatter
-scope is `src` and the new CI files. Broader backend formatting can be separate
-reviewable work.
+scope includes `src`, the organized server folders and the CI files. Existing
+provider/worker folder internals retain their prior formatting unless edited as
+part of a separate reviewable change.
 
 ## File limits and existing large files
 

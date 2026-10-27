@@ -5,7 +5,7 @@ M36 collector/archive retirement and M37 tool organization are the cleanup bound
 | Workstream | Primary files | Shared boundary |
 | --- | --- | --- |
 | Map and UI | src/ and focused map/browser tests | Coordinate assistant.js, chat-client.js, shared CSS and API shapes with agent work. |
-| Chat agent, update agent and prompting | server/automation/, server/providers/, tools/ and focused backend tests | server/app.js, server/index.js and assistant transport contracts need one owner per change. |
+| Chat agent, update agent and prompting | server/automation/, server/providers/, tools/ and focused backend tests | server/runtime/app.js, server/index.js and assistant transport contracts need one owner per change. |
 | Source ingestion | server/discord/, server/google/, server/miro/ and deployment/ | Keep collectors independent of callable tools/model runners. |
 | Build and deployment | scripts/, package.json and locks | One integrator owns dependency/script changes. |
 | Tracking | milestones/, current shared guides | Serialize updates through the integrator; history/evidence are append-only. |

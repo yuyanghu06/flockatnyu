@@ -4,7 +4,7 @@ Flockbot responds automatically to explicit bot mentions and replies to its own 
 
 ## Shared assistant and caller identity
 
-`server/chat-runner.js` executes the same retrieval/answer/provider/audit lifecycle for website and Discord. The website retains its existing body validation, password authentication and NDJSON protocol. `chat-request-context.js` validates server-only Discord context containing the original request ID, guild/channel/thread, stable Discord user ID, username and server display name. Both planning and answer prompts receive it as data. Names do not grant source access, establish a linked roster identity or authorize actions. Browser-supplied identity context is ignored.
+`server/chat/runner.js` executes the same retrieval/answer/provider/audit lifecycle for website and Discord. The website retains its existing body validation, password authentication and NDJSON protocol. `chat-request-context.js` validates server-only Discord context containing the original request ID, guild/channel/thread, stable Discord user ID, username and server display name. Both planning and answer prompts receive it as data. Names do not grant source access, establish a linked roster identity or authorize actions. Browser-supplied identity context is ignored.
 
 The web service resolves current member details independently before inference. It computes current member View Channel, Read Message History and send permissions with guild roles/overwrites, pending/timeout checks and private-thread membership. Owner/admin and manage-thread permissions follow Discord semantics. Current eligibility is checked again before a generated response leaves the service.
 

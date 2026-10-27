@@ -158,3 +158,6 @@ update-agent-prompt.md describes independent presence routing, supported nearby 
 `treg-contacts.md` describes fixed Exa people search and native read projection. Existing dormant lookup routes remain separate; current release/test truth is in the milestone.
 
 `ci-cd.md` defines enforced local/CI quality commands, file limits, review/push expectations and checked release packages with a separate production deployment step.
+
+`tools-and-api.md` explains which services model tools and HTTP routes actually
+call, where they share implementations and which operations have no counterpart.

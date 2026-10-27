@@ -1,6 +1,10 @@
 # Source layout, route documentation and quality gates (2026-10-27)
 
-Browser code belongs in `src/app`, `src/features` and `src/map`. HTTP API route
+Browser code belongs in `src/app`, `src/features` and `src/map`. Server code is
+grouped by responsibility; only the executable `index.js` and `web.js` stay at
+the server root. Keep prompt values and service behavior unchanged during moves,
+and update consumer imports, source-only deployment graphs and fixture paths.
+ HTTP API route
 files under `src/api` mirror their URL segments, using `[parameter]` folders and
 one JavaScript file per method and path (for example
 `src/api/contacts/[id]/patch.js` handles `PATCH /api/contacts/:id`). Keep shared

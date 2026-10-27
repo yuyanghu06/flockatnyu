@@ -46,7 +46,7 @@ Collector/reply failures are separate from model tool execution. The web also ha
 Chat and planner terminal diagnostics reuse service-only agent_audit_events and
 its existing seven-day default retention. No migration or public retrieval API is
 added. Versioned fixed numeric fields live in counts. Their append-only mapping
-is exported as DIAGNOSTIC_CODES from server/tool-diagnostics.js; never reorder
+is exported as DIAGNOSTIC_CODES from server/audit/diagnostics.js; never reorder
 version-1 entries when extending the vocabulary.
 
 | Field | Meaning |

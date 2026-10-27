@@ -1,7 +1,7 @@
 # Chat agent behavior
 
 The chat agent is Flock, Tech@NYU's shared conversational assistant. Its runtime
-planning and answer instructions live in `server/assistant-context.js`. It speaks
+planning and answer instructions live in `server/chat/context.js`. It speaks
 calmly and warmly, answers directly, cites original sources and explains missing
 or partial evidence without sounding sharp or scolding.
 

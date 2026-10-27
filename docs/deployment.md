@@ -114,7 +114,7 @@ The existing discord-events collector can forward eboard mention/reply requests 
 ## Source tool deadlines
 
 Shared source requests and tool source-validation work default to60seconds through
-`server/source-timeout.js`. This includes map storage/service/attendance/presence,
+`server/shared/source-timeout.js`. This includes map storage/service/attendance/presence,
 Google API and OAuth transport, Discord policy/request/context reads, Miro request
 and quota preflight, shared memory and bug-report tools. Web and planner use the
 same default; map's internal ceiling also permits the full60seconds. Explicit

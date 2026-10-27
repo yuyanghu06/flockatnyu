@@ -6,7 +6,7 @@ agent. This narrowly adds retained model outputs to the earlier content-free
 diagnostics boundary. It does not restore Discord summaries or source archives as
 assistant knowledge, authorize new source access, or expose logs to members.
 
-`server/model-audit.js` writes service-only `agent_model_calls` and
+`server/audit/model-audit.js` writes service-only `agent_model_calls` and
 `agent_audit_events` through migration 033 RPCs. Every production provider dispatch
 must first persist a unique call record. If that write fails, the model request is
 blocked. A terminal write records success, failure, cancellation or abort,

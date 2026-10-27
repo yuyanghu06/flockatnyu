@@ -2,14 +2,14 @@
 
 These four backend operations are prepared for later use. Their registration function is **not imported or called by the running application**. They have no model tools, UI, worker or CLI connection, and the current application returns 404 for their paths. Building them does not activate or deploy them.
 
-| Operation | Reserved POST path | Fixed upstream endpoint |
-| --- | --- | --- |
-| Find an email | `/api/treg/people/email/find` | `treg.people.email.find` |
-| Verify an email | `/api/treg/people/email/verify` | `treg.people.email.verify` |
-| Find a phone number | `/api/treg/people/phone/find` | `treg.people.phone.find` |
-| Enrich a company | `/api/treg/companies/enrich` | `treg.companies.enrich` |
+| Operation           | Reserved POST path              | Fixed upstream endpoint                                            |
+| ------------------- | ------------------------------- | ------------------------------------------------------------------ |
+| Find an email       | `/api/treg/people/email/find`   | `treg.people.email.find`                                           |
+| Verify an email     | `/api/treg/people/email/verify` | `treg.people.email.verify`                                         |
+| Find a phone number | `/api/treg/people/phone/find`   | `treg.people.phone.find`                                           |
+| Enrich a company    | `/api/treg/companies/enrich`    | Brand.dev: `branddev.brand.retrieve` and fixed name/email variants |
 
-`server/treg-lookups.js` supplies the fixed contracts, input validation and operation client. `src/api/treg/register.js` exports the optional registration function. Tests may register it on an isolated application; production callers must not import it until a later integration request.
+`server/treg/lookups.js` supplies the fixed contracts, input validation and operation client. Its pure `server/treg/branddev.js` adapter supplies the selected company request and supported field projection. `src/api/treg/register.js` exports the optional registration function. Tests may register it on an isolated application; production callers must not import it until a later integration request.
 
 ## Input
 
@@ -22,14 +22,20 @@ Each handler accepts exactly a UUID `requestId` and an operation-specific `input
 }
 ```
 
-| Operation | Allowed fields | Required information |
-| --- | --- | --- |
-| Email finding | `domain`, `full_name`, `first_name`, `last_name`, `linkedin_url`, `linkedin_handle` | A LinkedIn URL/handle, or domain plus full name, or domain plus first and last name |
-| Email verification | `email` | One literal email address |
-| Phone finding | `linkedin_url`, `email`, `domain`, `full_name`, `first_name`, `last_name` | A LinkedIn URL, an email, or domain plus complete name |
-| Company enrichment | `domain`, `website`, `name`, `linkedin_url`, `linkedin_handle`, `email` | At least one supplied identifier |
+| Operation          | Allowed fields                                                                      | Required information                                                                                        |
+| ------------------ | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Email finding      | `domain`, `full_name`, `first_name`, `last_name`, `linkedin_url`, `linkedin_handle` | A LinkedIn URL/handle, or domain plus full name, or domain plus first and last name                         |
+| Email verification | `email`                                                                             | One literal email address                                                                                   |
+| Phone finding      | `linkedin_url`, `email`, `domain`, `full_name`, `first_name`, `last_name`           | A LinkedIn URL, an email, or domain plus complete name                                                      |
+| Company enrichment | `domain`, `website`, `name`, `linkedin_url`, `linkedin_handle`, `email`             | Domain, website, email, or a selected name of at least three characters; LinkedIn-only input is unsupported |
 
 Unknown keys, batches, blank values, invalid identifiers and incomplete combinations are rejected. Caller-controlled endpoints, tokens, headers, costs, callbacks and routing settings are not accepted. Website/LinkedIn URLs, domains and field sizes are checked before dispatch.
+
+## Brand.dev company selection
+
+Company enrichment uses Brand.dev through Treg, with exactly one request. A supplied domain takes precedence, followed by a website hostname, then an email, then a company name. Domain and website hostnames are lowercased and stripped of a leading `www.`. The app does not fetch the website or infer a name or domain from a LinkedIn link. All supplied fields still receive type/size/identifier validation. A name needs three characters only when it is the selected lookup identifier; an unused short name alongside a valid domain remains accepted.
+
+Domain and website selectors use `branddev.brand.retrieve`; email uses `branddev.brand.retrieve-by-email`; name uses `branddev.brand.retrieve-by-name`. All are fixed GET requests with the same private configuration, cost ceiling and no fallback. An extra LinkedIn identifier is unused when a supported selector is present; LinkedIn-only requests fail before a paid call. The other three lookup operations keep their existing routed providers.
 
 ## Results
 
@@ -38,7 +44,7 @@ A completed operation returns `status: "ready"`, its `operation`, `hasResult`, a
 - Email finding returns the supplied email and any supported confidence/name/verification values. Finding an address does not automatically verify it.
 - Email verification preserves `valid`, `status` and any supplied score. An invalid address is a completed verification result. Unknown or catch-all results are never converted into a positive deliverability claim.
 - Phone finding returns the phone and any supplied line type/country code.
-- Company enrichment returns the supported name, domain, website, description, industry, employees, founding year, location and LinkedIn URL. Employee counts are exposed as text or null: an upstream nonnegative safe integer is converted to decimal text, while existing strings and ranges are preserved. Negative, fractional, unsafe and malformed counts are rejected.
+- Company enrichment projects explicit Brand.dev name, domain, description, industry labels, location and an unambiguous LinkedIn URL. Industry labels and supplied address parts are joined as display text; the location is not relabelled headquarters. Missing website or founding-year fields remain absent. Safe employee counts and ranges are text; when both are supplied, both are labelled, for example `exact: 6244; range: 501 to 1000`. These are provider claims, not verified staffing. Negative, fractional, unsafe and malformed counts are rejected. The complete original response remains unchanged in private logs.
 
 A null primary result is a miss for that operation/provider. A blank non-null primary field is rejected as an invalid response; optional empty descriptions remain unchanged. A 202 response explicitly marked pending remains pending; no polling or retry is started. Failure or a miss does not prove that every provider lacks the information.
 
@@ -56,9 +62,9 @@ The planner checked the public routed catalogs for [email finding](https://treg.
 
 ## Verification
 
-Independent tests exercise actual clients and isolated registered HTTP handlers with simulated provider responses, a real temporary private logger and a global live-network blocker. They cover all four operations, selectors/auth/origin, single-request cost/idempotency, private logging/error/size failures, caller/deadline races, pending results and honest null/unknown/blank-field handling. The actual default app still returns 404 for all four paths and advertises only its existing Treg tools. Focused existing Treg regressions, API checks and independent evaluator review pass. The actual 286-file production package is byte-identical to the prior accepted release and excludes both new modules.
+Independent tests exercise actual clients and isolated registered HTTP handlers with simulated provider responses, a real temporary private logger and a global live-network blocker. They cover all four operations, selectors/auth/origin, single-request cost/idempotency, private logging/error/size failures, caller/deadline races, pending results and honest null/unknown/blank-field handling. The actual default app still returns 404 for all four paths and advertises only its existing Treg tools. Focused existing Treg regressions, API checks and independent evaluator review pass. The earlier 286-file package comparison belongs to the original dormant-route implementation, before the Brand.dev change and source reorganization. It is historical evidence, not a claim about the current package. Current release checks follow reachable imports and verify that dormant handlers remain excluded.
 
-Run `node --test tests/treg-dormant-routes.test.mjs` for the new behavior checks. Providers are simulated; no live paid behavior, deployment or profile retrieval is claimed. HTTP tests inject the bounded JSON reader at the optional registration seam. Current source hashes and receipts are in the milestone's ignored evidence directory.
+Run `node --test tests/treg-dormant-routes.test.mjs tests/treg-dormant-http.test.mjs tests/treg-branddev.test.mjs` for current client, HTTP-boundary and Brand.dev behavior checks. The suites share only synthetic transport, authentication and private-logger fixtures; assertions remain in the test files. Providers are simulated; no live paid behavior, deployment or profile retrieval is claimed. HTTP tests inject the bounded JSON reader at the optional registration seam. Historical private experiment receipts remain outside Git. The deterministic suites require no private evidence, paid provider access or live account data.
 
 ## October 27 current-provider trial
 

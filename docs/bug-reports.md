@@ -16,7 +16,7 @@ The hosted `public.bug_reports` table has exactly three columns:
 
 `tools/bug-reports/index.js` validates structured model arguments. The backend adds
 the original latest user message and request ID independently of tool arguments.
-`server/bug-reports.js` calls only the service-only `bug_report_record` RPC. The
+`server/knowledge/bug-reports.js` calls only the service-only `bug_report_record` RPC. The
 agent cannot select a report UUID, edit another report, delete reports or list
 other users' reports. Repeating the same write within a request returns its existing
 receipt; changing the payload under that UUID reports a conflict rather than
