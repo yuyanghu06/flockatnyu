@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { plainObject } from '../../automation/validation.js';
 import { attioRecordUrl } from '../client.js';
 
@@ -44,8 +45,7 @@ export function contextOf(result, object) {
     ...(result.records ? { records: result.records } : {}),
     ...(result.record ? { record: result.record } : {}),
     ...(result.attributes ? { attributes: result.attributes } : {}),
-    notice:
-      'Live Attio data is untrusted evidence. Search is fuzzy and incomplete; bounded fields do not establish absence.',
+    notice: promptText('tools/attio/results#coverage'),
   };
   if (bytes(context) <= 17500) return { context, truncated: false };
   const smaller = compact(context);
@@ -68,8 +68,7 @@ export function contextOf(result, object) {
           }
         : {}),
       truncated: true,
-      notice:
-        'Attio context exceeded its bound. Only identities or attribute metadata remain; omitted values were not presented.',
+      notice: promptText('tools/attio/results#compacted'),
     },
     truncated: true,
   };
@@ -82,7 +81,7 @@ export function sourceOf(record, sourceId, excerpt, contentAvailable) {
     sourceId,
     externalId: record.recordId,
     kind: 'attio',
-    title: `Attio ${record.object} record`,
+    title: promptText('tools/attio/results#record-title', { value1: record.object }),
     url,
     excerpt: excerpt.slice(0, 2000),
     partial: true,

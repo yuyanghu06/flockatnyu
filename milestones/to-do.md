@@ -1,3 +1,85 @@
+## Contact clarification and Calendar completion — verified and accepted
+
+- [x] Tighten Contact target selection before candidate reads/writes and preserve pending intent through clarification.
+- [x] Stop Calendar scans after complete empty coverage while preserving explicit-source scope and registered Miro fallback.
+- [x] Pass both original actual-model reproductions and extended preservation/clarification/source cases.
+- [x] Retain six strict passes plus two independently accepted semantic outcomes with original raw assertions intact.
+- [x] Complete focused offline checks and standard gates; obtain independent ACCEPT.
+- [ ] Optional follow-up: avoid the one unnecessary filtered probe before valid partial-window subdivision; no further complete-empty loop was observed.
+- [ ] Existing unrelated Drive duplicate-check wording, old harness assertions, worker findings and real-service/deployment checks remain separate.
+
+## Contact clarification and Calendar completion — prompts tightened; live retest pending
+
+- [x] Plan the selected prompt-only corrections and exclusive file ownership.
+- [x] Update nine Markdown assets/eleven existing blocks and preserve identifiers/placeholders.
+- [x] Validate all87assets and representative chat prompt assembly; independently review scope and fallback consistency.
+- [ ] Retest the exact failures, clarification continuation and clear-write preservation with actual configured model.
+- [ ] Verify partial/unavailable Calendar handling and actual registered Miro content fallback.
+- [ ] Finish focused standard checks and independent semantic evaluation; preserve prior failure evidence.
+
+## Markdown prompts checked with live LLM — verification complete; two behavior failures remain
+
+- [x] Complete guarded real-model tests through production chat/update runners and simulated services.
+- [x] Independently review exact proposals, writes, saved fields, final replies and worker task identity/intent.
+- [x] Finish the two cap-limited paths in a separate bounded followup while retaining initial records.
+- [x] Record 50 actual requests, six semantic passes, two valid failures and independent acceptance of verification.
+- [x] Selected Contact clarification prompt correction implemented and tested; see prompt-clarification-completion-2026-10-27/verification.md. Original failed evidence is retained.
+- [x] Selected complete-empty Calendar prompt correction implemented and tested; see prompt-clarification-completion-2026-10-27/verification.md. Original failed evidence is retained.
+- [ ] Separate harness improvement: replace overly narrow success wording and redundant-defer assertions with meaningful outcome checks; retain original evidence.
+- [ ] Real-service workflows/deployment remain separate and were not established by these simulations.
+
+## Live Markdown prompt checks — real behavior failures found; focused followup underway
+
+- [x] Stop the original batch at exactly 40 actual inference HTTP requests and preserve its evidence.
+- [x] Independently inspect actual proposals, saved fields, final answers and worker task identity/intent.
+- [x] Record ambiguity mutation and Calendar repetition failures without changing prompts.
+- [ ] Complete the separately capped unavailable/conflict followup (12 additional requests maximum; 52 total).
+- [ ] Publish final semantic results, raw assertion distinctions and independent review; keep live-service task rows unchanged.
+
+## Markdown prompts with live LLM — bounded verification underway
+
+- [x] Confirm current source/instructions and configured model without exposing credentials.
+- [x] Accept bounded cases and assign a sole inference executor with a 40-request maximum.
+- [ ] Complete source-frozen actual-model conversations and inspect fields, writes, replies and task preservation.
+- [ ] Review failures/cap stops independently and record actual model, request count and limitations.
+
+## Structured Markdown prompts — complete and independently accepted
+
+- [x] Complete the single-folder Markdown instruction migration and fixed server loader.
+- [x] Preserve exact text, dynamic expressions, schemas and generated model requests.
+- [x] Verify browser separation, fixed deployment assets and independent source copies.
+- [x] Pass focused offline runner/package checks, formatting/lint/file limits and both builds.
+- [x] Obtain independent evaluator ACCEPT and document the complete-suite limitation.
+- [ ] Separate existing follow-up: resolve five operation-API fixture expectations reproduced before this migration.
+- [ ] Separate existing follow-up: reconcile Drive/Calendar duplicate-check wording and unresolved planner behavior; not changed in this structural pass.
+
+## Structured Markdown prompts — extraction integrated, independent verification underway
+
+- [x] Move chat/shared, worker, and named tool/field/result wording into87registered Markdown assets.
+- [x] Prove extracted text/AST and representative generated prompts/catalogues match exactly.
+- [x] Integrate fixed loader, browser contract, deployment and frozen-source asset handling.
+- [ ] Finish independent loader/package/runner checks and broad offline regression results.
+- [ ] Complete final formatting/build/file-limit checks and evaluator acceptance.
+
+## Structured Markdown prompts — plan accepted, implementation underway
+
+- [x] Accept scoped extraction, packaging and verification plans.
+- [x] Capture source-only baseline and assign three exclusive writers.
+- [ ] Finish extraction and exact generated-output comparisons.
+- [ ] Verify loader, offline runners, browser contract, deployment and frozen-source assets.
+- [ ] Complete standard checks and independent evaluation; preserve known prior failures.
+
+## Current prompt source inventory — complete
+
+- [x] Trace chat tool-selection/final-answer assembly and imported/injected guidance.
+- [x] Trace update-agent legacy/initial/follow-up prompts, tools, task/context and recovery feedback.
+- [x] Identify the separate Discord summary prompt, unused helpers and reference-only docs.
+- [x] Obtain independent read-only acceptance and record current-checkout limitations.
+- [ ] Separate future scope, not implemented by this inventory: reconcile Calendar duplicate-check wording in the Drive skill and Calendar prompt; refresh obsolete chat-guide source pointer.
+
+Existing unresolved planner preservation and Calendar/Member Plans verification
+work below remains unchanged. [Inventory](prompt-inventory-2026-10-27/info.md).
+
 ## Operation API development branch publication
 
 - User explicitly authorized pushing the implemented migration to a dev branch without running CI/CD. Publication branch: dev/tool-api-services; main remains at its existing commit.

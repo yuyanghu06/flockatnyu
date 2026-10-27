@@ -1,5 +1,7 @@
 # Saved Contacts operation service
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 `schema.js` contains unchanged operation names, descriptions and input schemas.
 `service.js` owns validation, exact private read snapshots, receipt replay,
 sequential imports, admitted-input revisions and uncertain-write/logging fences.

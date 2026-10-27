@@ -1,5 +1,7 @@
 # Map operation services
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 These backend modules own all map operation execution and private request state.
 `schema.js` contains the unchanged shared operation definitions; `service.js`
 validates and dispatches reads, identity lookups and writes to the existing map

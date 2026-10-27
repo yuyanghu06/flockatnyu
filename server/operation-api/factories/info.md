@@ -10,3 +10,7 @@ Memory and Miro use trusted aliases for compatibility lifecycle helpers while
 sharing the original session. No factory opens a port or contacts a provider at
 construction time. Preserve existing constructor interfaces and independent
 service access checks when adding an operation.
+
+The Attio factory supplies its complete trusted catalogue separately from its
+currently exposed tools, preserving forbidden results for disabled write
+operations through request-specific sessions. This never grants a hidden tool.

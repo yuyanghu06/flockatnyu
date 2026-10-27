@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { normalizeCalendarBoundary, validCalendarInstant } from '../calendar-client.js';
 
 const text = (maxLength) => ({ type: 'string', maxLength });
@@ -11,15 +12,14 @@ export const batchTimingProperties = {
   date: {
     ...text(10),
     minLength: 10,
-    description:
-      'All-day date if alone; local timed date with startTime/endTime/timeZone. Never omit supplied clock times.',
+    description: promptText('tools/calendar/fields#batchtimingproperties.date.description'),
   },
   start: batchBoundarySchema,
   end: batchBoundarySchema,
   startTime: {
     ...text(5),
     minLength: 5,
-    description: 'Local HH:MM; requires date, endTime and timeZone.',
+    description: promptText('tools/calendar/fields#batchtimingproperties.starttime.description'),
   },
   endTime: { ...text(5), minLength: 5 },
   timeZone: { ...text(100), minLength: 1 },

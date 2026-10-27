@@ -288,3 +288,23 @@ no-implementation status for this migration. The chosen API runs privately insid
 each process; it is not a new public service. Tests remain stopped by the user's
 earlier instruction. Current implementation, review and release status belongs in
 `milestones/milestone.md`.
+
+## 2026-10-27 — One Markdown folder for runtime prompts
+
+The user requested moving chat/update-agent prompts out of scattered JavaScript
+strings into a single structured Markdown folder, preferably organized by the
+calling tool. The implementation uses root `prompts/` with agent, tool/service,
+shared and legacy sections. JavaScript supplies dynamic data and enforcement.
+See [prompt guide](prompts/info.md) and the current milestone for verification
+and unresolved findings; this structure change does not request new wording or
+a deployment.
+
+## 2026-10-27 — Selected clarification and Calendar prompt corrections
+
+After the actual-model check, the user requested tightening the two failed
+behaviors. Prompts now resolve an ambiguous single Contact before choosing an
+exact read/write, retain the pending edit through clarification, and stop
+Calendar scans after complete empty coverage. Explicit Calendar questions remain
+scoped; general schedule questions use actual Miro content when its tools exist.
+Current verification, qualifications and release state are in
+[milestones/prompt-clarification-completion-2026-10-27](milestones/prompt-clarification-completion-2026-10-27/verification.md).

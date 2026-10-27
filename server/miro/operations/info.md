@@ -1,5 +1,7 @@
 # Miro operations behind the private API
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 `contracts.js` declares the three operations. `index.js` checks current board,
 team and source access, selects fixed official MCP reads and rechecks access
 before returning content. Existing `mcp-client.js` performs provider calls.

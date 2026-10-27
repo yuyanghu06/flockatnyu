@@ -1,5 +1,7 @@
 # Saved knowledge operations behind the private API
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 `memory.js` validates reads and exact-version replacement of the shared memory
 note before calling the existing memory store. Its initial read entry supports
 loading conversation context; model execution additionally checks the trusted

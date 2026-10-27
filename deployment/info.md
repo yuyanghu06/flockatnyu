@@ -1,5 +1,7 @@
 # Deployment assets
 
+Web and update-worker Docker recipes copy the root prompt assets. Collector preparation adds the same copy only when reachable modules reference prompts, preserving slim contexts without an empty required directory.
+
 This folder contains reviewed deployment inputs for independent services sharing
 one Supabase project. Discord and Gmail each have a service-only pinned manifest
 and reproducible runtime lockfile, Dockerfile and Railway config. Their preparers

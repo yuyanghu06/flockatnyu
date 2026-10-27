@@ -1,3 +1,69 @@
+## Contact clarification and Calendar completion — verified and accepted
+
+Both selected prompt corrections pass their original configured-model failure reproductions. Ambiguous Contact update/delete now stop after search with no candidate-specific reads or mutations, and an actual user clarification resumes only the selected record's pending edit. The original empty DST Calendar question ends after one correct25-hour read; complete-empty reuse no longer loops. Clear-field preservation, unavailable-data honesty, complete narrowed AM/PM coverage and actual mocked native Miro content fallback are supported. Live verification used40new gpt-6-luna HTTP requests within64, all successful; source/all87assets remained pinned with no workspace drift. Six raw case-groups pass strictly; two further outcomes are independently accepted through semantic review with a broader empty-window lookup and one unnecessary partial-window probe recorded.106 focused offline checks, format/lint/file limits/API build pass. Independent evaluator ACCEPT. No backend/runtime logic, execution limits, live business data or deployment changed.
+
+[Scope](prompt-clarification-completion-2026-10-27/info.md) · [tester pass](history/2026-10-27_19-04-41-667181-tester-contact-calendar-live-retest.md) · [evaluator pass](history/2026-10-27_19-04-41-667182-evaluator-contact-calendar-fix-accepted.md) · [orchestrator pass](history/2026-10-27_19-04-41-667183-orchestrator-contact-calendar-tightening-complete.md)
+
+## Contact clarification and Calendar completion — prompts tightened; live retest pending
+
+The user selected prompt corrections for both observed failures. Nine Markdown assets now require resolving the actual Contact target before any candidate-specific read/write, preserving pending intent through clarification, and stopping Calendar listings once complete empty evidence answers the request. Both routing passages distinguish explicit Calendar requests from automatic separate Miro content checks for unnamed-source schedule questions when Miro tools exist. Filtered/partial/unavailable results, pending writes and legitimate fresh reads remain qualified. All87assets validate and six chat prompt variants assemble. Independent static review finds no runtime/schema/limit changes: only nine Markdown assets and three assembly comments changed. Source is final for a bounded actual-model retest; no new inference result is claimed yet.
+
+[Scope](prompt-clarification-completion-2026-10-27/info.md) · [planner pass](history/2026-10-27_18-55-37-632942-planner-contact-calendar-prompt-plan.md) · [coder pass](history/2026-10-27_18-55-37-632943-coder-contact-calendar-prompts-tightened.md) · [coder pass](history/2026-10-27_18-55-37-632944-coder-calendar-fallback-condition-precise.md) · [orchestrator pass](history/2026-10-27_18-55-37-632945-orchestrator-prompt-tightening-integrated-for-retest.md)
+
+## Markdown prompts checked with live LLM — verification complete; two behavior failures remain
+
+Configured gpt-6-luna completed 50 actual inference HTTP requests across the original 40-request batch and a separately announced 10-request followup, within the combined maximum of 52. All HTTP responses succeeded, sources/all 87 Markdown assets stayed pinned and no relevant workspace drift occurred. Independent semantic review confirms six of eight scenarios worked as intended, including exact Contact updates, unavailable-data honesty, worker intent retention, quoted no-write, attendance preservation and conflict recovery. Two real failures remain: mutating an ambiguous same-name Contact before clarification, and repeating complete-empty Calendar reads until the evaluation cap without answering. Original narrow assertion failures and cap-limited attempts remain preserved. Verification itself is ACCEPTED; full behavioral acceptance is REQUEST CHANGES. No prompt/runtime changes, live business data operations or deployment occurred.
+
+[Scope](prompt-markdown-live-2026-10-27/info.md) · [tester pass](history/2026-10-27_18-40-14-997563-tester-markdown-live-focused-complete.md) · [evaluator pass](history/2026-10-27_18-40-14-997564-evaluator-markdown-live-final-reviewed.md) · [orchestrator pass](history/2026-10-27_18-40-14-997565-orchestrator-markdown-live-verification-complete.md)
+
+## Live Markdown prompt checks — real behavior failures found; focused followup underway
+
+The first frozen-source run stopped at its 40-request cap: all HTTP responses were successful gpt-6-luna inference, with no business network and no source drift. Independent semantic review supports four passes (exact Contacts update, worker outage intent preservation, quoted no-write and positive attendance). It found a real ambiguous-name mutation before clarification and repeated complete-empty Calendar reads that prevented an answer. Contacts unavailability and map conflict remained budget-limited. Original assertion failures are retained: the attendance success-phrase regex was too narrow, and the worker assertion incorrectly required a redundant defer call. A separate followup for only the two unfinished cases is capped at 12 additional HTTP requests, maximum 52 overall. No prompts/runtime behavior have been changed.
+
+[Scope](prompt-markdown-live-2026-10-27/info.md) · [tester pass](history/2026-10-27_18-36-41-517886-tester-markdown-live-first-batch.md) · [evaluator pass](history/2026-10-27_18-36-41-517887-evaluator-markdown-live-first-reviewed.md) · [orchestrator pass](history/2026-10-27_18-36-41-517888-orchestrator-markdown-live-focused-followup-authorized.md)
+
+## Markdown prompts with live LLM — bounded verification underway
+
+The user requested actual LLM verification. Existing configured inference is available as gpt-6-luna. Root accepted a small production-runner simulation plan and assigned one tester as the sole inference caller. Eight selected conversations cover chat writes/preservation, ambiguity, unavailable data, quoted no-write, attendance, DST, conflict recovery and initial/follow-up worker task preservation. The combined hard cap is 40 HTTP inference requests including retries; all business services remain simulated and prompt/runtime wording stays unchanged. Sources and all 87 prompt assets are frozen/pinned, with only the exact configured inference endpoint permitted. No inference outcome is claimed yet.
+
+[Scope](prompt-markdown-live-2026-10-27/info.md) · [planner pass](history/2026-10-27_18-28-10-544259-planner-markdown-live-model-plan.md) · [orchestrator pass](history/2026-10-27_18-28-10-544260-orchestrator-markdown-live-model-preflight.md)
+
+## Structured Markdown prompts — complete and independently accepted
+
+Agent and tool instructions now load from one root prompts/ tree: 87 registered Markdown assets grouped by chat/update agent, shared purpose, named tool/service and retained legacy helper. JavaScript keeps dynamic values, structural schemas, source/identity checks, leases, versions, limits and execution. Exact extraction/AST checks, 28 complete chat outputs, 18 worker variants and 33 serialized exports/catalogues preserve the original wording and behavior. Independent loader, copied-source, packaged-import and actual offline runner checks pass. Formatting, repository lint, physical limits, API and frontend builds pass; evaluator ACCEPT. The full offline suite reports 3,033 passed, five failed and two skipped. Independent baseline reruns reproduce those same five existing operation-API fixture failures. Known planner and Drive/Calendar wording findings remain unchanged. No model/provider calls, live writes, deployment, commit or push occurred.
+
+[Scope](prompt-markdown-2026-10-27/info.md) · [tester pass](history/2026-10-27_18-14-25-155361-tester-markdown-independent-verified.md) · [tester pass](history/2026-10-27_18-14-25-155362-tester-markdown-baseline-failures-classified.md) · [evaluator pass](history/2026-10-27_18-14-25-155363-evaluator-markdown-final-accepted.md) · [orchestrator pass](history/2026-10-27_18-14-25-155364-orchestrator-markdown-integration-complete.md)
+
+## Structured Markdown prompts — extraction integrated, independent verification underway
+
+All three writers completed the text move:355source occurrences now use353named Markdown blocks across87assets grouped by agent/shared/tool/legacy. Chat and automation retain JavaScript assembly, dynamic values and enforcement; tool schemas retain structure and bounds. Exact AST reversal,28chat outputs,18worker variants and33serialized exports/catalogues match fresh per-file originals. The old Drive asset is relocated, browser attachment validation is split from server-only message formatting, and fixed asset packaging/source-copy inventories are integrated. Independent loader/runner/package verification is underway; the full offline suite and repository lint are running. No model/provider calls, deployment or business writes.
+
+[Scope](prompt-markdown-2026-10-27/info.md) · [coder pass](history/2026-10-27_18-10-28-383932-coder-markdown-chat-extracted.md) · [coder pass](history/2026-10-27_18-10-28-383933-coder-markdown-worker-extracted.md) · [coder pass](history/2026-10-27_18-10-28-383934-coder-markdown-tools-extracted.md)
+
+## Structured Markdown prompts — plan accepted, implementation underway
+
+The user authorized a complete prompt-source restructuring. Three read-only plans are accepted: move agent instructions, tool/field descriptions and model-visible context/recovery wording into root prompts/{agents,shared,tools,legacy}; keep JavaScript logic/data unchanged. Three exclusive coders own chat/shared, automation and service tools. Root owns the fixed loader/asset registry, source-only packaging, browser contract wiring, copied-source inventories and journals. A source-only baseline was captured before edits, with fresh per-file captures preserving later concurrent changes. No prompt wording correction, model calls, deployment or business writes are part of this migration.
+
+[Scope](prompt-markdown-2026-10-27/info.md) · [planner pass](history/2026-10-27_18-05-20-797155-planner-markdown-chat-plan.md) · [planner pass](history/2026-10-27_18-05-20-797156-planner-markdown-worker-plan.md) · [evaluator pass](history/2026-10-27_18-05-20-797157-evaluator-markdown-packaging-plan.md) · [orchestrator pass](history/2026-10-27_18-05-20-797158-orchestrator-markdown-loader-foundation.md)
+
+## Current prompt source inventory — complete
+
+Read-only inventory of the current dev/tool-api-services checkout traces chat tool
+selection/final reply, update-agent legacy/initial/follow-up instructions, imported
+policies, dynamic context, tool/schema descriptions, recovery feedback and the
+separate Discord summary model. Independent review ACCEPT.
+
+One active contradiction remains unchanged: the Drive skill says Calendar batch
+creation checks duplicates itself, while the Calendar prompt requires a separate
+listing and says no hidden search occurs. Reference docs are not runtime-loaded;
+the old buildMapRecordPrompt helper has no runtime call site.
+
+No tests, inference, provider reads, application/prompt changes or deployment.
+This inventory does not establish current production parity or resolve prior
+planner preservation and Calendar/Member Plans findings.
+
+[Source map and scope](prompt-inventory-2026-10-27/info.md) · [planner pass](history/2026-10-27_17-54-20-159349-planner-chat-prompt-inventory.md) · [planner pass](history/2026-10-27_17-54-20-159350-planner-worker-prompt-inventory.md) · [evaluator pass](history/2026-10-27_17-54-20-159351-evaluator-prompt-inventory-reviewed.md) · [orchestrator pass](history/2026-10-27_17-54-20-159352-orchestrator-prompt-inventory-complete.md)
+
 ## Operation API development branch publication
 
 - User explicitly authorized pushing the implemented migration to a dev branch without running CI/CD. Publication branch: dev/tool-api-services; main remains at its existing commit.

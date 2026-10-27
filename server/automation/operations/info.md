@@ -1,5 +1,7 @@
 # Worker operation helpers
 
+Model-facing finish guidance is maintained in root `prompts/tools/worker/control.md`; this folder retains operation behavior and validation.
+
 `intent.js` contains the existing pure check for unsafe Calendar interpretations
 of Discord text. Moving it does not change its accepted or rejected inputs.
 

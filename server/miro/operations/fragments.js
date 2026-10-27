@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { blocked, digest } from './responses.js';
 
 export function bounded(result, args) {
@@ -37,8 +38,7 @@ export function bounded(result, args) {
       offset,
       nextOffset,
       data,
-      notice:
-        'Reassemble JSON fragments in order, reusing identical arguments and expectedHash=hash. Content changes require restarting at offset0. Narrow to the actual event item or fewer table rows before writing.',
+      notice: promptText('tools/miro/results#boardcontext.notice'),
     },
     coverage: {
       ...result.coverage,

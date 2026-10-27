@@ -1,3 +1,4 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { createTimeContext } from '../../shared/time-zone.js';
 import { createDiscordReadOperations, validateLiveDiscordArguments } from './reads.js';
 import { summarizeLiveDiscordEvidence } from '../../discord/live-summary-runner.js';
@@ -11,8 +12,7 @@ export function createDiscordChatOperations({ service, guildId, config, provider
   const requestBudgets = new WeakMap();
   const summaryTool = Object.freeze({
     name: 'read_discord_summary',
-    description:
-      'Summarize all authorized eboard channels over a requested window in one bounded live scan. FIRST choice for broad Discord updates. Default scope=eboard; general is secondary fallback and excludes teams; team requires an explicit user request. For one requested team channel, supply scope=team and the exact channelId resolved from list_discord_channels; only that channel is read. Defaults to last seven local calendar dates when from/to omitted. Inspect per-channel coverage; no claim of complete server or thread coverage.',
+    description: promptText('tools/discord/read_discord_summary#description'),
     parameters: {
       type: 'object',
       additionalProperties: false,
@@ -21,8 +21,9 @@ export function createDiscordChatOperations({ service, guildId, config, provider
         channelId: {
           type: 'string',
           pattern: '^[0-9]{1,20}$',
-          description:
-            'Optional exact channel ID from the live catalogue; allowed only with scope=team. Never guess IDs.',
+          description: promptText(
+            'tools/discord/read_discord_summary#parameters.channelid.description',
+          ),
         },
         from: { type: 'string' },
         to: { type: 'string' },
@@ -178,8 +179,7 @@ export function createDiscordChatOperations({ service, guildId, config, provider
         ),
         reason: complete ? 'authorized_scope_window_only' : 'bounded_scope_read',
       },
-      notice:
-        'Coverage applies only to the listed authorized channels and window. Thread contents are included only when independently registered, selected and read; no full-server claim.',
+      notice: promptText('tools/discord/results#notice'),
     };
   }
   // This separate path is reachable only through the explicitly named summary
@@ -249,7 +249,9 @@ export function createDiscordChatOperations({ service, guildId, config, provider
         authorName: message.author.name,
         content: message.content,
         replyToMessageId: message.replyToMessageId,
-        nonTextNotice: message.hasNonTextContent ? 'Non-text contents were not fetched.' : null,
+        nonTextNotice: message.hasNonTextContent
+          ? promptText('tools/discord/results#evidence.nontextnotice')
+          : null,
         url: `https://discord.com/channels/${guildId}/${args.channelId}/${message.id}`,
       }));
       const summary = await summarizeLiveDiscordEvidence({

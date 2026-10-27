@@ -1,5 +1,7 @@
 # Chat execution and context
 
+Prompt wording now lives in root `prompts/agents/chat`, shared and tool folders. This folder keeps request assembly and execution. The pure `attachment-contract.js` is safe for browser imports; `attachments.js` additionally formats provider messages using server-only prompt assets.
+
 `runner.js` coordinates one reply, streamed records, cancellation, steering and
 required audits. `steering.js` keeps queued corrections bound to their active
 request. `context.js` is the existing public interface: it exports only

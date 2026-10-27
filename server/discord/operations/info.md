@@ -1,5 +1,7 @@
 # Discord operations behind the private API
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 `reads.js` contains the four live-read declarations, argument validation and
 routing to the existing authorized Discord service. It exports
 `validateLiveDiscordArguments` for backend callers that need the same pure checks.

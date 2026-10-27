@@ -1,5 +1,7 @@
 # Assistant interface
 
+Attachment selection imports the pure server/chat/attachment-contract.js module. Provider-message formatting and the server-only Markdown loader remain outside the browser import graph.
+
 `assistant.js` creates one assistant and binds its page and keyboard lifecycle.
 The running instance is held in a private `view` object shared by its modules:
 `assistant-elements.js` builds DOM/state, `assistant-layout.js` controls the modal

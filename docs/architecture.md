@@ -1,5 +1,7 @@
 # Initial MVP architecture
 
+Agent/tool instruction wording is maintained centrally in root [prompts/](../prompts/info.md), grouped by agent and tool/service. Server modules load fixed named Markdown blocks and supply current data; structural schemas, authorization and execution remain in JavaScript. The browser imports only the pure attachment contract.
+
 Status: user-confirmed initial MVP direction (2026-10-17), with current implementation distinguished from planned work. The user plans substantial frontend changes; keep backend contracts explicit and allow independent UI work. No new migrations or infrastructure changes follow from this documentation pass.
 
 ## Current implementation

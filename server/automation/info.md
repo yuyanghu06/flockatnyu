@@ -1,5 +1,7 @@
 October 26 selected local changes: `conversation-context.js` retires unnecessary model-visible results while preserving tool-call/result identities, already disclosed compact intent, current facts and issued cursors. Full private execution evidence and hard limits remain unchanged. `resolve_pending_task` now separates confirmed actions, reviewed no-change decisions and exact missing originals; source and target hints are derived from already available data. An already-correct decision needs the latest matching target read; an unrelated success cannot revive older failed evidence. Missing originals clear only their own explicitly handled input/task versions. The fragment-ID reader and old-log cleanup are held unchanged. Actual tests and release state live in the rolling milestone.
 
+All worker instructions, tool descriptions and model-visible recovery notices now come from root `prompts/agents/update` and `prompts/tools`. JavaScript retains stage selection, values, schema/lease checks, execution and the separately named post-finish sync.
+
 The narrow closed-task cleanup also retires successful follow-up source/Calendar/map
 read bodies whose exact task bindings all resolved later and no longer occur in
 the current task snapshot/catalogue. It compares returned source URLs, native

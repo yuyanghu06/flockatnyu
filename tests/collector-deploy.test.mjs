@@ -93,7 +93,7 @@ test('path escapes, other connectors, missing modules and unreviewed dependencie
     ["import '../unreviewed-shared.js';", /deployment_module_denied/u],
     ["import './missing.js';", /ENOENT/u],
     ["import 'three';", /deployment_dependency_denied/u],
-    ["import 'node:fs';", /deployment_dependency_denied/u],
+    ["import 'node:child_process';", /deployment_dependency_denied/u],
     ["import './gateway.js?query';", /deployment_module_denied/u],
     ["import './gateway%2ejs';", /deployment_module_denied/u],
     ["const x = import('./gateway.js');", /deployment_dynamic_import_denied/u],
@@ -149,12 +149,12 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
   assert.deepEqual(result.dependencies, discordDependencies);
   assert.deepEqual(result.modules, [
     'server/automation/events.js', 'server/automation/store.js', 'server/automation/validation.js',
-    'server/chat/attachments.js', 'server/chat/discord-context.js', 'server/chat/request-context.js',
+    'server/chat/attachment-contract.js', 'server/chat/attachments.js', 'server/chat/discord-context.js', 'server/chat/request-context.js',
     'server/discord/chat-adapter.js', 'server/discord/chat-bridge.js', 'server/discord/chat-client.js',
     'server/discord/chat-config.js', 'server/discord/chat-delivery.js', 'server/discord/chat-runtime.js',
     'server/discord/client.js', 'server/discord/collector-diagnostics.js', 'server/discord/config.js', 'server/discord/discovery.js',
     'server/discord/event-cli.js', 'server/discord/event-config.js', 'server/discord/event-listener.js',
-    'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/metadata-reconcile.js', 'server/discord/metadata-refresh.js', 'server/discord/request-pacing.js', 'server/discord/store.js', 'server/shared/source-timeout.js',
+    'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/metadata-reconcile.js', 'server/discord/metadata-refresh.js', 'server/discord/request-pacing.js', 'server/discord/store.js', 'server/prompt-loader/assets.js', 'server/prompt-loader/index.js', 'server/shared/source-timeout.js',
   ]);
   assert.deepEqual(await filesIn(result.directory), result.files);
   for (const name of result.modules) assert.deepEqual(await readFile(join(result.directory, name)), await readFile(join(repository, name)));
@@ -192,10 +192,13 @@ test('both sanitized collector Docker COPY layouts retain every reachable relati
     const image = await mkdtemp(join(tmpdir(), 'collector-image-layout-'));
     t.after(() => rm(image, {recursive: true, force: true}));
     const docker = await readFile(join(result.directory, 'Dockerfile'), 'utf8');
-    // Materialize only the Dockerfile's actual server COPY instructions, rather
+    // Materialize only the Dockerfile's actual source COPY instructions, rather
     // than assuming the complete context is copied into the image.
-    for (const [, source, destination] of docker.matchAll(/^COPY (server(?:\/[^\s]+)?) (\.\/server(?:\/[^\s]+)?)$/gmu)) {
+    for (const [, source, destination] of docker.matchAll(/^COPY ((?:server|prompts)(?:\/[^\s]+)?) (\.\/(?:server|prompts)(?:\/[^\s]+)?)$/gmu)) {
       await cp(join(result.directory, source), join(image, destination), {recursive: true});
+    }
+    for (const name of result.files.filter(name=>name.startsWith('prompts/'))) {
+      assert.deepEqual(await readFile(join(image,name)),await readFile(join(result.directory,name)),`${service}: prompt missing from Docker COPY`);
     }
     for (const name of result.modules) {
       assert.equal((await lstat(join(image, name))).isFile(), true, `${service}: missing ${name} in image`);

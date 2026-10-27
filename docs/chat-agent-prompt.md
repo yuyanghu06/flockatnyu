@@ -1,5 +1,7 @@
 # Chat agent behavior
 
+Current wording lives in root [prompts/](../prompts/info.md). The chat planning/answer builders select fixed Markdown blocks and runtime values through `server/prompt-loader/index.js`; `context.js` re-exports them.
+
 The chat agent is Flock, Tech@NYU's shared conversational assistant. Its runtime
 planning and answer instructions live in `server/chat/context.js`. It speaks
 calmly and warmly, answers directly, cites original sources and explains missing

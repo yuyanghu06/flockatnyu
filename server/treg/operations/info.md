@@ -1,5 +1,7 @@
 # Treg people operation service
 
+Model-facing descriptions, parameter guidance and returned instruction notices are maintained under root `prompts/tools/`; these modules keep fixed references, structural schemas and service behavior.
+
 `schema.js` contains unchanged lookup metadata and input schemas. `service.js`
 owns the actor-bound request scope, whole-batch validation, paid-call promise
 reuse, sequential enrichment, native-result registration and required private

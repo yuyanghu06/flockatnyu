@@ -15,3 +15,11 @@ silently chains operations, changes leases/budgets or exposes raw credentials.
 
 This is a local API boundary. Remote HTTP transport and its session credentials
 are deliberately not implemented. Existing service permissions remain mandatory.
+
+The trusted full operation catalogue is retained across request sessions. Known
+operations withheld by request/configuration permissions remain forbidden;
+unknown operation names are invalid requests. Completed operation results that
+cannot be encoded return a read error or an unknown write outcome; actual
+service exceptions retain their private stopping behavior. Runtime verification
+and its remaining model/provider limits are recorded in
+`milestones/tool-operation-api-live-2026-10-27/verification.md`.

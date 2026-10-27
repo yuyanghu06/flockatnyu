@@ -1,5 +1,7 @@
 # Project root guide
 
+Model instruction wording is maintained in [prompts/](prompts/info.md); server modules assemble named Markdown blocks and runtime values through one loader.
+
 The user-authorized October25 planner queue clear removed the old inputs and saved follow-up work, restarted the existing worker and verified empty work queues. New ingestion remains enabled; see [the operation guide](milestones/planner-48h-review-2026-10-25/info.md#authorized-queue-clear-follow-up).
 
 The October25 planner48-hour operational review is documented in [its milestone guide](milestones/planner-48h-review-2026-10-25/info.md); current service availability, task-save failures, queue caveats and independent verification belong to the rolling snapshot. This review changed documentation only.

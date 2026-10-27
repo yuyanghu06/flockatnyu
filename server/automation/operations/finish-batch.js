@@ -1,5 +1,5 @@
+import { promptText } from '../../prompt-loader/index.js';
 import { bindWorkerOperations } from '../../operation-api/adapter.js';
-
 // The handler chooses each bookkeeping step through trusted context. Neither
 // model arguments nor the endpoint choose a phase, lease or completion proof.
 // Synchronization stays a distinct named tool dispatched by the runner.
@@ -55,8 +55,7 @@ export function createFinishBatchOperation({ definition, store, pipeline, valida
 
 export const finishTool = {
   name: 'finish_batch',
-  description:
-    'Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.',
+  description: promptText('tools/worker/control#finish.base'),
   parameters: {
     type: 'object',
     properties: {

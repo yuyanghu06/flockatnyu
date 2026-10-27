@@ -1,15 +1,15 @@
+import { promptText } from '../prompt-loader/index.js';
 import {MAP_EVENT_SCHEMA,EVENT_BUILDINGS_SCHEMA,EVENT_PEOPLE_SCHEMA} from '../map/contracts.js';
 import {uuid,timestamp,eventWindow,validEvent,validParticipation,validateSnapshot,buildingId,text} from '../map/events.js';
 import {canonicalJson,plainObject} from './validation.js';
-
 const object=(properties,required=[])=>({type:'object',additionalProperties:false,properties,required});
 const id={type:'string',minLength:36,maxLength:36};
 const endpoint=object({at:{type:'string',minLength:20,maxLength:40},anchor:{type:'string',enum:['event_start','event_end']},
   offsetMinutes:{type:'number',minimum:-525600,maximum:525600},inherit:{type:'boolean'} });
-endpoint.description='Exactly one representation: {at: RFC3339 timestamp}, {anchor: event_start or event_end, offsetMinutes: elapsed minutes}, or {inherit:true}. EVERY NEW participant requires BOTH start and end, including explicit {inherit:true} for an inherited boundary. Omission preserves an existing participant override. Explicit inherit stores null. Approximate late arrival needs a supported start endpoint AND qualifying label; a label alone does not set time. Relative anchors require a timed event.';
+endpoint.description=promptText("tools/map/participation#endpoint");
 export const PARTICIPATION_PARAMETERS=object({eventId:id,expectedUpdatedAt:{type:'string',minLength:20,maxLength:40},
   changes:{type:'array',minItems:1,maxItems:20,items:object({personId:id,sourceUrl:{type:'string',minLength:9,maxLength:2048},
-    attendanceStatus:{type:'string',enum:['going','tentative','declined']},label:{type:'string',maxLength:400,description:'Preserve meaningful activity and approximate timing wording. A timing label does not set start/end; supply the supported changed endpoint too.'},start:endpoint,end:endpoint},['personId','sourceUrl','attendanceStatus'])}},['eventId','expectedUpdatedAt','changes']);
+    attendanceStatus:{type:'string',enum:['going','tentative','declined']},label:{type:'string',maxLength:400,description:promptText("tools/map/participation#label")},start:endpoint,end:endpoint},['personId','sourceUrl','attendanceStatus'])}},['eventId','expectedUpdatedAt','changes']);
 
 const keys=schema=>Object.keys(schema.properties);
 const eventKeys=[...keys(MAP_EVENT_SCHEMA),'created_at','updated_at'];
