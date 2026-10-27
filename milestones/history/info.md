@@ -28,6 +28,16 @@ October26 CSV email entries distinguish the hosted five-email pilot from user-au
 
 October26 Treg Contacts entries distinguish official API planning, actual implementation, simulated integration evidence and unverified paid live calls.
 
+The manual-processing publication review records the user clarification, accepted source hashes and private-evidence exclusion before live pending-work operations.
+
+Final October 26 selected-fix entries record the actual-model findings, targeted corrections, independently reproduced target-freshness bug and accepted local integration. Forty-eight model requests were used; final backend replay is separate from fresh model evaluation.
+
+October 26 selected-fix entries record design research, accepted contracts, exclusive ownership and the pre-change staged baseline. Actual implementation and model verification remain separate.
+
+October 26 failure-debugging entries strengthen the earlier aggregate review using private model proposals, independent offline reproduction and current permission-scoped reads. They distinguish confirmed model-request mistakes and conversation growth from unrecorded cleanup/source-denial details.
+
+October26 planner logging entries cover source semantics, the initial one-hour check and the user-requested twelve-hour problem review. The final accepted counts distinguish attempts, acknowledgements, unfinished follow-up and misleading diagnostic severity; no runtime fix or business write was performed.
+
 October25 queue-clear entries record the user's explicit data-loss authorization, independent scope review, actual production deletion, worker restart and zero-count verification. Historical operational audits and completion deduplication records were preserved.
 
 October25 planner review entries record independent local log interpretation, complete metadata recount and operational findings for the previous48hours. They separate model recovery, partial follow-up completion and current global queue state without changing live services.

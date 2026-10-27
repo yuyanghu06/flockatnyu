@@ -242,3 +242,7 @@ User requested a hardmaximum50cacheemailsperbatch to avoidoverwhelming enrichmen
 ## 2026-10-27 — Treg discovery saves people by default
 
 User wants company-people discovery through search_treg_people and richer profiles through enrich_treg_people, then successful results saved in Contacts by default using separate database tools. Clarified people at companies, not company enrichment. Explicit no-save requests still take precedence; preserve complete native raw objects and existing human edits. CRUD tools already exist. Implementation and release truth belongs in the milestone.
+
+## 2026-10-26 — Selected planner remedies
+
+The user approved trimming unused active-conversation logs, an accepted separate no-change result for saved tasks, improved source/ID/Calendar-target prompting and formatting, and successful terminal handling of confirmed missing originals with exact queue/task cleanup. Keep source permissions, exact versions and unfinished unrelated work. Reproduce and explain invented page IDs without fixing that behavior. Explain the old-log cleanup correction but hold its implementation. Other unselected fixes and limit/deployment changes remain out of this pass; actual status is in the milestone.

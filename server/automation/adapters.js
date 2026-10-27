@@ -118,6 +118,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
   let prepared=false,catalogueRead=false,memberPreparationRun={},memberPreparations=new WeakMap();
   const memberBoundaryCopies=new Map(),issuedMemberPreparations=new WeakSet(),participationMapReads=new Map();
   const initialWriteCoverage=new Map();
+  // Exact-original absence belongs only to this prepared cycle. It is never a
+  // general source grant, provider failure or model-supplied completion claim.
+  const missingOriginals=new Map();
   const personChoiceReceipts=new Map();let personChoiceRun={};
   const mapSnapshots=new Map(),mapContexts=new Map();let latestMapContext;
   async function resolveClaimSourceIds({principal:actor,signal}={}) {
@@ -137,12 +140,13 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     return [...new Set([...discordIds,...(googleAccess?[gmailSourceId]:[])])];
   }
   const cleanupBatch=()=>{staged?.cleanup();activeLeaseToken=undefined;preparedContext=undefined;prepared=false;calendarMutationVersion=0;syncCycleId=undefined;calendarSources.length=0;observed.clear();batchInputs.clear();linkedIdentities.clear();participationProofs.clear();fragments.clear();
-    memberPreparationRun={};memberPreparations=new WeakMap();memberBoundaryCopies.clear();participationMapReads.clear();initialWriteCoverage.clear();personChoiceReceipts.clear();personChoiceRun={};mapSnapshots.clear();mapContexts.clear();latestMapContext=undefined;
+    memberPreparationRun={};memberPreparations=new WeakMap();memberBoundaryCopies.clear();participationMapReads.clear();initialWriteCoverage.clear();missingOriginals.clear();personChoiceReceipts.clear();personChoiceRun={};mapSnapshots.clear();mapContexts.clear();latestMapContext=undefined;
     calendarOccurrences.clear();pendingCalendarReads.clear();fixedBuildings.clear();calendarWindows.clear();knownCalendarEvents.clear();taskEvidence.clear();for(const ids of mutatedCalendarIds.values())ids.clear();catalogueRead=false;};
   function rememberDiscord(source) {
     if(source.guildId!==discordConfig.guildId||!snowflake(source.channelId)||!snowflake(source.messageId)
       ||!validUuid(source.sourceId)||!allowedSourceIds.includes(source.sourceId)
       ||source.url!==`https://discord.com/channels/${source.guildId}/${source.channelId}/${source.messageId}`)return;
+    for(const [id,witness]of missingOriginals)if(witness.sourceId===source.sourceId&&witness.sourceUrl===source.url)missingOriginals.delete(id);
     const sourceKey=`discord:${source.guildId}:${source.channelId}:${source.messageId}`;
     observed.set(sourceKey,{provider:'discord',sourceKey,sourceId:source.sourceId,sourceUrl:source.url,authorId:source.authorId,
       guildId:source.guildId,channelId:source.channelId,messageId:source.messageId,content:source.content??source.excerpt??'',reportedAt:source.sourceUpdatedAt||source.createdAt||null});
@@ -202,6 +206,14 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     }
     prepared=true;
     preparedContext=context;
+    context.sourceHints=inputs.flatMap(input=>{
+      const binding=nativePersonBinding(input);if(!binding)return [];
+      return [{originalInputId:input.uuid,sourceId:binding.sourceId,sourceUrl:binding.sourceUrl,...binding.identity,
+        read:{tool:binding.identity.provider==='discord'?'read_discord_messages':'read_gmail',arguments:binding.identity.provider==='discord'
+          ?{url:binding.sourceUrl,context:false}:{messageId:input.raw_response.payload.id}},
+        lookup:{tool:'lookup_map_person',arguments:{sourceId:binding.sourceId,sourceUrl:binding.sourceUrl,...binding.identity}},
+        notice:'Copy these exact original identifiers; bind the corresponding current queue ref. A hint does not perform a source read or grant permission.'}];
+    });
     if(stagedEnabled)context.memberPlans={configured:memberConfig.configured===true&&memberClient.configured===true&&validUuid(memberSourceId)&&staticSourceIds.includes(memberSourceId),calendarId:memberClient.calendarId,sourceId:memberSourceId};
     return context;
   }
@@ -551,9 +563,14 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       }
       const merged=mergeParticipationChanges(snapshot,args.changes,provenance);
       if(merged.status!=='ready') {
-        if(merged.reason==='unchanged_participation'&&await staged.verifyParticipationTasks(selection,bindings))for(const binding of bindings) {
-          const single=mergeParticipationChanges(snapshot,args.changes.filter(change=>change.personId===binding.personId),provenance);
-          if(single.reason==='unchanged_participation')await staged.recordParticipationOutcome({context,binding,dependency:dependencyKey(binding,'map'),reason:'unchanged_participation'});
+        if(merged.reason==='unchanged_participation'&&await staged.verifyParticipationTasks(selection,bindings)) {
+          for(const binding of bindings) {
+            const single=mergeParticipationChanges(snapshot,args.changes.filter(change=>change.personId===binding.personId),provenance);
+            if(single.reason==='unchanged_participation')await staged.recordParticipationOutcome({context,binding,dependency:dependencyKey(binding,'map'),reason:'unchanged_participation'});
+          }
+          return {status:'ready',outcome:'no_change_needed',reason:'already_correct',changed:false,eventId:args.eventId,
+            taskIds:bindings.map(binding=>binding.taskId),resolutionOptions:bindings.map(binding=>({taskId:binding.taskId,outcome:'no_change_needed',reason:'already_correct'})),
+            message:'The requested attendance is already correct. No map change was made and no applied receipt exists. Explicitly resolve these tasks with no_change_needed/already_correct; this is not a successful mutation.'};
         }
         return merged;
       }
@@ -685,6 +702,85 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
     for(const binding of staged?.participationDependencies(context)||[])if(select(binding))
       await staged.recordParticipationOutcome({context,binding,dependency:dependencyKey(binding,kind),reason:typeof reason==='function'?reason(binding):reason});
   }
+  function exactDiscordRead(args) {
+    if(args?.context!==false)return null;
+    if(snowflake(args.channelId)&&snowflake(args.messageId))return {guildId:discordConfig.guildId,channelId:args.channelId,messageId:args.messageId};
+    if(typeof args.url!=='string')return null;
+    try {
+      const url=new URL(args.url),match=/^\/channels\/([0-9]{1,20})\/([0-9]{1,20})\/([0-9]{1,20})$/.exec(url.pathname);
+      if(url.origin==='https://discord.com'&&!url.search&&!url.hash&&!url.username&&!url.password&&match&&match[1]===discordConfig.guildId)
+        return {guildId:match[1],channelId:match[2],messageId:match[3]};
+    } catch { /* Invalid requests never become absence evidence. */ }
+    return null;
+  }
+  function observeMissingOriginal(context,args,result) {
+    if(!requirePrepared(context)||!staged)return;
+    const requested=exactDiscordRead(args);if(!requested)return;
+    const originals=staged.getBoundOriginals(context)||[];
+    for(const input of originals) {
+      const event=input.raw_response,p=event?.payload;
+      if(event?.source!=='discord'||!allowedSourceIds.includes(event.source_id)||p?.guild_id!==requested.guildId
+        ||p.channel_id!==requested.channelId||p.id!==requested.messageId)continue;
+      missingOriginals.delete(input.uuid);
+      const absent=result?.missingOriginal;
+      if(result?.status==='ready'&&result.outcome==='source_missing'&&result.coverage?.complete===true
+        &&result.coverage.reason==='exact_original_missing'&&absent?.provider==='discord'
+        &&absent.guildId===p.guild_id&&absent.channelId===p.channel_id&&absent.messageId===p.id
+        &&absent.sourceUrl===`https://discord.com/channels/${p.guild_id}/${p.channel_id}/${p.id}`)
+        missingOriginals.set(input.uuid,{snapshot:canonicalJson(input),sourceId:event.source_id,sourceUrl:absent.sourceUrl});
+    }
+  }
+  const confirmedMissingInput=input=>Boolean(input&&allowedSourceIds.includes(input.raw_response?.source_id)
+    &&missingOriginals.get(input.uuid)?.sourceId===input.raw_response.source_id&&missingOriginals.get(input.uuid)?.snapshot===canonicalJson(input));
+  function currentOriginalObserved(input) {
+    const binding=nativePersonBinding(input);if(!binding||!allowedSourceIds.includes(binding.sourceId))return false;
+    return [...observed.values()].some(row=>row.sourceId===binding.sourceId&&row.sourceUrl===binding.sourceUrl
+      &&(binding.identity.provider==='discord'?row.provider==='discord'&&row.authorId===binding.identity.providerUserId
+        :row.provider==='gmail'&&row.sender===binding.identity.providerUserId));
+  }
+  function noChangeEvidence({task,reason,history}) {
+    if(!['already_correct','no_actionable_request'].includes(reason)||!task.info.inputs.length||!task.info.inputs.every(currentOriginalObserved))return false;
+    const actionTools=new Set(['upsert_map_event','patch_map_participation','upsert_calendar_event','cancel_calendar_event','upsert_member_plan','cancel_member_plan']);
+    const related=history.filter(row=>row.kind==='tool_result'&&row.inputIds?.includes(task.uuid));
+    // A failed/pending action is not silently renamed to a successful review.
+    // The verified unchanged-participation result is an intentional no-op.
+    if(related.some(row=>actionTools.has(row.tool)&&row.result?.reason!=='unchanged_participation'
+      &&(!['ready','already_succeeded'].includes(row.result?.status)||row.result?.sourceStatus==='partial')))return false;
+    if(reason==='no_actionable_request')return true;
+    const request=task.info.request,target=targets.find(row=>row.kind===request.calendarKind);
+    // Keep the map UUID/provider identity association after an unavailable
+    // reread removes its writable snapshot. It is only used to match reads,
+    // never as evidence that the old event facts are still current.
+    const mapEventIds=new Set();
+    if(target&&request.calendarEventId) {
+      const remember=result=>{for(const event of result?.events||[])if(event.source_id===target.sourceId&&event.source_record_id===request.calendarEventId)mapEventIds.add(event.id);};
+      for(const row of history)if(row.kind==='tool_result'&&row.tool==='read_map_events'&&['ready','partial'].includes(row.result?.status))remember(row.result);
+      for(const snapshot of mapSnapshots.values())remember(snapshot);
+      const previous=participationMapReads.get(canonicalJson([request.calendarKind,request.calendarEventId]));
+      if(previous)mapEventIds.add(previous.eventId);
+    }
+    const calendarKind=row=>['read_member_plan','list_member_plans'].includes(row.tool)?'member':['read_calendar_event','list_calendar_events'].includes(row.tool)?'club':null;
+    const latestState=related.findLast(row=>{
+      const args=row.arguments||{};
+      if(row.tool==='read_map_events')return (!target||!args.sourceId||args.sourceId===target.sourceId)
+        &&(!request.calendarEventId||!args.sourceRecordId||args.sourceRecordId===request.calendarEventId)
+        &&(!target||!request.calendarEventId||!args.eventId||mapEventIds.has(args.eventId));
+      const kind=calendarKind(row);
+      return kind&&(!request.calendarKind||kind===request.calendarKind)
+        &&(!request.calendarEventId||!args.eventId||args.eventId===request.calendarEventId);
+    });
+    if(!latestState||latestState.result?.status!=='ready'||latestState.result.partial===true||latestState.result.possiblyTruncated===true
+      ||latestState.result.coverage?.complete===false)return false;
+    // The latest matching read must itself support the decision. An unrelated
+    // successful exact read cannot revive older facts after this target failed.
+    if(!Array.isArray(latestState.result.events))return false;
+    if(latestState.tool==='read_map_events')return !request.calendarEventId||Boolean(target&&(
+      latestState.result.events.some(event=>event.source_id===target.sourceId&&event.source_record_id===request.calendarEventId)
+      ||latestState.arguments?.sourceId===target.sourceId&&latestState.arguments?.sourceRecordId===request.calendarEventId));
+    if(latestState.arguments?.resultMode==='identities')return false;
+    return !request.calendarEventId||latestState.result.events.some(event=>event.eventId===request.calendarEventId)
+      ||latestState.arguments?.eventId===request.calendarEventId&&latestState.result.events.length===0;
+  }
   async function observeOriginal(context,args,result,provider) {
     if(result?.status==='ready'&&result.coverage?.textTruncated!==true)for(const source of result.sources||[]) {
       const sourceId=provider==='gmail'?gmailSourceId:source.sourceId,sourceUrl=source.url||source.sourceUrl;
@@ -765,9 +861,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       if(!requirePrepared(context))return {status:'forbidden'};
       let result;
       try {result=normalize(await discordTools.execute({name:tool.name,arguments:args,principal,signal:context.signal,timeContext:{now:now().toISOString(),timeZone:config.timezone}}));}
-      catch(error) {if(tool.name==='read_discord_messages')await observeOriginal(context,args,null,'discord');throw error;}
-      if(tool.name==='read_discord_messages')await observeOriginal(context,args,result,'discord');
-      if(tool.name==='read_discord_messages'&&result.status!=='ready')for(const [key,row] of observed)if(row.provider==='discord'&&(args.url===row.sourceUrl||args.channelId===row.channelId&&args.messageId===row.messageId))observed.delete(key);
+      catch(error) {if(tool.name==='read_discord_messages'){observeMissingOriginal(context,args,null);await observeOriginal(context,args,null,'discord');}throw error;}
+      if(tool.name==='read_discord_messages'){observeMissingOriginal(context,args,result);await observeOriginal(context,args,result,'discord');}
+      if(tool.name==='read_discord_messages'&&(result.status!=='ready'||result.outcome==='source_missing'))for(const [key,row] of observed)if(row.provider==='discord'&&(args.url===row.sourceUrl||args.channelId===row.channelId&&args.messageId===row.messageId))observed.delete(key);
       // Only returned originals can support follow-up facts, not catalogue
       // metadata or model-supplied URLs. Recheck current live access on use.
       if(result.status==='ready'&&tool.name!=='list_discord_channels')for(const source of result.sources||[])
@@ -818,7 +914,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
       }
       return fragments.bound(tool.readOnly===true?withLocalTimeDisplay(result):result);
     }})),
-    ...mapTools.tools.map(tool=>({...tool,...(tool.name==='upsert_map_event'?{prepareArguments:prepareMapArguments}:{}),execute:async(args,context)=>{
+    ...mapTools.tools.map(tool=>({...tool,...(tool.name==='upsert_map_event'?{prepareArguments:prepareMapArguments,
+      ...(stagedEnabled?{parameters:(()=>{const schema=structuredClone(tool.parameters),ids=targets.map(target=>target.sourceId).filter(id=>validUuid(id)&&staticSourceIds.includes(id));
+        if(ids.length)schema.properties.event.properties.source_id.enum=[...new Set(ids)];return schema;})()}:{} )}:{}),execute:async(args,context)=>{
       if(!requirePrepared(context))return {status:'forbidden'};
       let identity;
       const choiceRun=personChoiceRun,choicePhase=staged?.phase;
@@ -864,6 +962,10 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
         if(Array.isArray(result.buildings))catalogueRead=true;
         for(const building of result.buildings||[])if(typeof building.id==='string'&&typeof building.name==='string')fixedBuildings.set(building.id,building.name);
       }
+      if(tool.name==='read_map_events'&&result?.status==='ready')return fragments.bound({...result,
+        participationTargets:(result.events||[]).map(event=>{const target=targets.find(row=>row.sourceId===event.source_id);return {mapEventId:event.id,
+          sourceId:event.source_id,eligible:Boolean(target),...(target?{calendarKind:target.kind,calendarEventId:event.source_record_id}:{reason:'not_a_pinned_calendar_event'})};}),
+        participationTargetNotice:'For worker attendance changes choose eligible=true. mapEventId is the map UUID; calendarEventId is the separate provider ID. Do not send these hints inside event facts.'});
       return fragments.bound(result);
     }})),
     {...fragments.tool,execute:(args,context)=>requirePrepared(context)
@@ -892,7 +994,9 @@ export function createAutomationAdapters({env=process.env,config,fetchImpl=globa
         return {...fragments.bound({...result,status,sourceStatus:status}),status};
       }});
     staged=createStagedPipeline({taskStore,principal,getAllowedSourceIds:()=>[...new Set([...currentDiscordSourceIds,
-      ...[calendarSourceId,memberSourceId,...(googleAccess?[gmailSourceId]:[])].filter(id=>validUuid(id)&&staticSourceIds.includes(id))])],verifyResolution:({task,outcome,history})=>{
+      ...[calendarSourceId,memberSourceId,...(googleAccess?[gmailSourceId]:[])].filter(id=>validUuid(id)&&staticSourceIds.includes(id))])],verifyMissingInput:({input})=>confirmedMissingInput(input),verifyResolution:({task,outcome,reason,history})=>{
+      if(outcome==='source_missing')return task.info.inputs.length>0&&task.info.inputs.every(confirmedMissingInput);
+      if(outcome==='no_change_needed')return noChangeEvidence({task,reason,history});
       if(outcome!=='completed')return false;
       const request=task.info.request;
       const originalUrls=task.info.inputs.map(({raw_response:e})=>e.source==='discord'?`https://discord.com/channels/${e.payload.guild_id}/${e.payload.channel_id}/${e.payload.id}`:`https://mail.google.com/mail/u/0/#all/${e.payload.id}`);

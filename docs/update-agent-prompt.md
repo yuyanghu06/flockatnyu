@@ -6,6 +6,49 @@ The runtime source is [server/automation/prompt.js](../server/automation/prompt.
 The autonomous planner/update agent handles cached authorized Discord/Gmail
 messages. Chat has separate prompts and keeps its own read-only Miro capability.
 
+## October 26 selected fixes
+
+Current local implementation separates task decisions from business writes.
+`resolve_pending_task` accepts `completed`, `no_change_needed` and `source_missing`.
+No-change uses reason `already_correct` or `no_actionable_request`, a complete
+current task read and current observations of its originals; already-correct work
+also needs relevant current target-state evidence. It does not manufacture a
+write receipt. Successful task deletion reports its actual `resolutionOutcome`.
+Unknown or failed work and newer task versions stay saved.
+The latest read of that matching target must itself support the decision; a
+successful read of another event cannot hide the target's later failure.
+
+A verified unchanged participation operation returns a successful no-change
+review result with `changed: false`, not a claimed applied write. It offers
+copyable resolution choices; the runner formats those choices with current task
+refs. Known already-correct active tasks still need their explicit resolution
+before ordinary follow-up completion. Initial saved-task coverage also includes
+copyable queue-finish arguments, and its no-change choices exclude originals
+already covered by saved work.
+
+An exact Discord message GET returning 404 after normal source/bot authorization
+can return `ready` with `outcome: source_missing`. The worker accepts this only for
+the exact trusted original it was asked to read. Initial `missingInputIds` must be
+a subset of `handledInputIds`; saved tasks are separately read and resolved at
+their exact versions, and mixed tasks survive unless all originals are missing.
+Permission failures, timeouts, empty searches and incidental missing messages do
+not authorize task deletion or Calendar/map changes.
+
+Prepared inputs and compact task views include copyable `sourceHints`. Worker map
+results include `participationTargets` outside the normalized event rows. The
+prompt distinguishes canonical original URLs, native authors, source UUIDs, map
+UUIDs and provider Calendar IDs. These hints perform no calls and add no grants.
+
+The active model conversation may retire unused result bodies and optional
+historical page prefixes while keeping complete compact task intent, current
+facts, exact references and issued continuation state. Retired historical bytes
+are not a reconstructed full JSON value. Private execution/audit evidence and
+the existing hard limit remain separate and unchanged.
+
+Invented page IDs still fail through the unchanged reader. Old-log cleanup and
+other unselected corrections remain held. Verification and release status live
+in [the selected-fix milestone](../milestones/planner-selected-fixes-2026-10-26/info.md).
+
 ## Responsibilities
 
 1. Interpret incoming originals and make their supported Calendar changes.
@@ -181,6 +224,6 @@ Drive content does not grant worker write authority.
 
 ## Isolated completion tools
 
-`resolve_pending_task` uses the exact loaded task version and already returned matching applied-operation evidence. It performs only the task-store compare-and-delete; no Calendar, map or source read happens inside resolution. If additional state is needed, the model chooses a separate read first. Failed, unrelated or stale evidence cannot clear work.
+`resolve_pending_task` uses the exact loaded task version and already returned evidence for its chosen result. `completed` retains matching applied-operation proof; `no_change_needed` is a separate explicit review decision with current source/target evidence; `source_missing` uses the exact authorized missing-original witness. It performs only the task-store compare-and-delete; no Calendar, map or source read happens inside resolution. If additional state is needed, the model chooses a separate read first. Failed, unrelated or stale evidence cannot clear work.
 
 `finish_batch` validates declarations and records queue/lease bookkeeping. The explicit user-authorized exception is a **separate registered and recorded** `sync_calendars_to_map` call after a successful initial finish. It has its own arguments, result, audit/action receipt and tool budget charge and is identified as runner-originated rather than a fabricated model proposal. The subsequent phase transition loads saved tasks only. No automatic synchronization is attached to an ordinary Calendar/Member Plans write or a model-round cap.

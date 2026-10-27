@@ -1,5 +1,13 @@
 # Discord live reads and metadata discovery
 
+An authorized exact-message 404 now returns an honest `ready` result with
+`outcome: source_missing`, the exact original identity and complete coverage for
+that absence check only. Channel/role/membership failures and final policy
+revocation remain failures. Nearby/context reads cannot establish that an exact
+message is missing. This result performs no queue/task deletion; the planner
+separately chooses its normal bookkeeping operation for a matching trusted
+original. No Calendar/map cancellation follows from a missing message.
+
 This folder supports read-only bot retrieval and channel/thread metadata discovery. Message content is fetched live; larger on-demand summaries run only in request memory with bounded evidence and original citations. No historical Discord message archive, durable summaries, vectors or accounting are stored. New native events may remain in the shared temporary pending queue until explicitly processed. Tools do not post messages or join private threads. Credentials remain private server settings.
 
 `live-config.js`, `live-client.js` and `live-retrieval.js` enforce trusted source scope, content capability, enabled catalogue entries, current policy and fresh bot/parent metadata. Unknown or excluded channels and ambiguous ancestry fail closed. Results disclose coverage. Accepted descendant-thread search hits need their own allowed source UUID and ancestry beneath an originally selected channel; final policy/catalogue checks cover every accepted source. A failed/partial read has no stored-summary fallback.

@@ -1,3 +1,19 @@
+October 26 selected local changes: `conversation-context.js` retires unnecessary model-visible results while preserving tool-call/result identities, already disclosed compact intent, current facts and issued cursors. Full private execution evidence and hard limits remain unchanged. `resolve_pending_task` now separates confirmed actions, reviewed no-change decisions and exact missing originals; source and target hints are derived from already available data. An already-correct decision needs the latest matching target read; an unrelated success cannot revive older failed evidence. Missing originals clear only their own explicitly handled input/task versions. The fragment-ID reader and old-log cleanup are held unchanged. Actual tests and release state live in the rolling milestone.
+
+The narrow closed-task cleanup also retires successful follow-up source/Calendar/map
+read bodies whose exact task bindings all resolved later and no longer occur in
+the current task snapshot/catalogue. It compares returned source URLs, native
+message/person IDs and Calendar provider identities against every disclosed
+unfinished task. Shared facts, broad or uncertain Calendar/map targets, mixed or
+unknown scopes, queue-bound history, post-resolution readbacks, normalized partial
+or failed results and write/resolution receipts stay visible. Earlier coverage and
+source-status warnings stay on each retirement notice. Copied handoff results need
+an exact execution call/tool/arguments/result match; displayed original-input IDs
+are not task bindings. No new fragment/history retirement rule is added. Only
+model-visible copies change; private evidence and its separate1MiB cap remain.
+This reduces one accumulation path; it does not establish the cause of every
+context_limit or guarantee every run fits the existing256KiB conversation cap.
+
 Current isolated-tool follow-up corrections: initial context exposes only queue-reference/count coverage for exact current saved originals. Checkpoint bookkeeping reuses an existing exact task without completing omitted queue inputs. Named runner sync results retain name/call ID/origin/arguments/result through follow-up transcript reset; fragmented partial results remain partial and cannot complete action receipts. These are local bookkeeping/result changes, with no added source fetch or workflow dispatch.
 
 Follow-up task selection keeps one or two tasks active and completes their ready

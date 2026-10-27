@@ -1,0 +1,6 @@
+# Source-review completion and building-name contracts
+
+- Local timestamp / role / milestone: 2026-10-26T17:13:02.186949-04:00; Planner; manual pending work.
+- Read-only findings: completed source-review closure requires the successful write source URL to match a retained task original. A Calendar create sourced from a separately read answer can succeed without meeting that completion rule. Already-correct review is separately accepted after full current task read, all own originals, relevant ready task-bound target read and no related failed/pending mutation; no provider ID is required when absent, though genuine request correction remains supported.
+- Location check: the fixed Leslie eLab building name and existing aliases do not match bare eLab. A local existing-matcher call matched Leslie eLab building with the Launchpad room suffix. Root separately read the live fixed building catalogue; the planner did not read live aliases.
+- Boundaries / result: no production edits, business calls, inference, database or configuration changes. Root can use normal reviewed no-change closure and ordinary factual Calendar location normalization; do not bypass source/version/lease checks or claim the unaccepted completed closure succeeded.
