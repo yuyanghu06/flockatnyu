@@ -429,3 +429,5 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Publication checkpoint review accepted](2026-10-27_13-57-42-671385-evaluator-publication-review.md).
 
 - [Source organization and CI plan accepted](2026-10-27_13-57-42-709936-planner-source-cleanup-plan.md).
+
+- [Feature commits and main integration verified](2026-10-27_13-58-41-050098-orchestrator-checkpoint-main-integration.md).
