@@ -345,3 +345,9 @@ Full-tree rollout completed: all five packages for source 8718a1c reached Railwa
 SUCCESS. The update agent remains disabled/paused and must not be resumed merely
 to verify deployment. The final release milestone records actual IDs, hosted
 checks, preserved configuration and unresolved workflow limits.
+
+## 2026-10-28 — Planner cost-reduction trial and follow-up
+
+The user authorized implementing the proposed retry, reusable-prompt and context improvements, then requested a spending review after a few days of use. The recorded baseline is $24.36 over the preceding seven days. Keep implementation, migration/deployment, actual trial start and measured savings separate in milestones/planner-cost-reduction-2026-10-28/info.md. The requested one-time follow-up heartbeat is review-flock-planner-spending-after-three-days; it uses metadata only and pauses after delivering its comparison.
+
+The user then explicitly requested deployment. This authorizes migration055 and the planner-cost release through the normal protocol. Record the actual normal trial start; do not force a manual cycle. Fresh production configuration onOctober28 shows the worker already enabled, superseding the older paused-state snapshot as an observation; preserve settings.

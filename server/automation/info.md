@@ -372,3 +372,5 @@ empty without making sync partial. calendar-projection.js holds the unchanged
 pure event/name/time/identity projection. Version, attendance and actual failure
 checks remain in calendar-sync.js. Verification is recorded in the location-fix
 milestone; no additional production cycle or deployment was performed.
+
+October28 cost reduction: `task-retry-schedule.js` records private exact-version attempt/retry metadata through separate RPCs, before model delivery and before lease-releasing settlement. The existing five-minute spacing survives restarts and failed checkpoints. Read/catalogue RPCs remain pure reads; task JSON/version/expiry and source originals are unchanged. Confirmed history-only checkpoint forwarding preserves edits/version safety; a crash between the save and forwarding can make that new version eligible again. Migration055 must precede the new worker. `model-context.js` holds presentation helpers and finalization checks. Early closed-task cleanup now considers undisclosed catalogue/fragment/history tasks conservatively; uncertain sharing preserves read bodies.

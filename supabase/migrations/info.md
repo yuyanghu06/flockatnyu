@@ -266,3 +266,5 @@ The final revised050 source SHA256 f5712c164b7333a2dc8ae76056788abe24a0318f4550b
 053 adds only service-only Gmail send operation metadata and fixed claim/finish/read/probe RPCs. It stores no message addresses/content or OAuth secrets. Pending dispatch/unknown markers never expire into permission to resend.
 
 `202610270054_contacts_exa_fields.sql` replaces only the read-only saved-contact field function to recognize explicit Exa names and an unambiguous current company. It preserves service-only access and all saved rows/timestamps; there is no backfill.
+
+055 adds private metadata-only saved-task retry scheduling with live runner lease/source/exact-version checks, cycle idempotency and task-linked expiry/cascade. Separate retry_catalogue/retry RPCs leave existing task read/catalogue wire formats unchanged. It does not modify task content/timestamps or source inputs. Apply055 before releasing the new worker; local migration/tests do not establish hosted application.

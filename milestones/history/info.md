@@ -1,5 +1,11 @@
 # Pass history
 
+October 28 planner-cost-reduction entries record independent research/plan, scoped implementation, retained model failures and corrections, exact final CI/browser evidence and local ACCEPT. Hosted migration/deployment/activation remain unperformed; the requestedOctober31follow-up must use actual trial boundaries.
+
+October 28 planner-spend entries also distinguish proposed retry/cache/context remedies from existing protections and held work. No optimization was implemented.
+
+October 28 planner-spend entries record read-only seven-day accounting, complete metadata counts, independent token-price reconciliation and limits on per-service/account-wide attribution.
+
 Calendar sync location-repair entries separate original cycle evidence, current read-only diagnostics, local fixes and offline acceptance. No further production cycle is implied.
 
 
@@ -546,3 +552,8 @@ Full-tree hosted completion entries record all five successful deployment IDs,
 web/collector readiness and independent ACCEPT while retaining the disabled
 worker, unchanged last-start and unforced scheduled enrichment. The documentation
 receipt is separate from source 8718a1c application packages.
+
+[OpenCode environment guidance](2026-10-27_21-09-02-669914-orchestrator-opencode-environment-guidance.md) records the exact setting names,
+provider-list override behavior and official free-model client restriction.
+The local parsing check used placeholder keys; no live configuration or service
+change was requested or performed.

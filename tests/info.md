@@ -909,3 +909,5 @@ filesystem and imports the real web app and worker adapters/handler with empty
 environments and networking denied. It catches both omitted src/api routes and
 stale COPY sources absent from a sanitized package. This is an import/filesystem
 check; actual Docker build/hosted readiness is separately verified during release.
+
+Planner cost reduction adds realPGlite/private-store retry coverage, direct-provider wire/lifecycle and conservative retirement checks, and independent spending-report/runner acceptance. `planner-cost-model.mjs` is an explicit opt-in inference-only harness with simulated business sources, source pins and hard dispatch caps; it is excluded from offlineCI. Retain failed/capped cases and distinguish exact preservation from mere runner completion. Current evidence is in the cost-reduction milestone.

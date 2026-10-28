@@ -1,3 +1,28 @@
+## Planner cost reduction
+
+- [x] Complete dependency research and create the requested three-day follow-up heartbeat.
+- [x] Accept bounded plan and exclusive ownership; archive initial source and baseline totals.
+- [x] Implement crash-safe retry scheduling, reusable prompt/schema layout and conservative selective context cleanup.
+- [x] Add private-metadata spending comparison support; independently verify it and preserve the original baseline.
+- [x] Independently test failure/restart/preservation paths and bounded actual-model scenarios; retain original failures and final exact-copy pass.
+- [x] Obtain independent evaluator ACCEPT and pass exact final standard CI plus all5browserflows; no push performed.
+- [x] Record local release readiness and migration-before-worker requirement; verify requestedOctober31follow-up ACTIVE.
+- [ ] Deployment now authorized: verify055, integrate freshmain, pass PR/release gates, deployweb+worker and record normaltrialstart. Keep other services/settings unchanged.
+
+## Planner seven-day spending review
+
+- [x] Review current safeguards and recommend a prioritized cost-reduction approach; no implementation selected.
+
+- [x] Collect the last 168 hours of planner request/lifecycle metadata with complete pagination and exact count checks.
+- [x] Reconcile stored cost with independent token pricing, identify the main input/output and run-outcome categories, and preserve missing-usage limits.
+- [x] Record independent evaluator ACCEPT and complete the scoped estimate for delivery.
+- No optimization, provider/billing change, deployment or worker activation selected. Existing unfinished work remains below.
+
+## OpenCode API configuration guidance
+
+- [x] Verify environment names, provider-list precedence and official GLM free-tier restrictions; explain the separately paid API configuration.
+- No switch applied or requested. Keep actual private variables and the paused update agent unchanged; live provider compatibility remains unverified.
+
 ## Markdown prompt release — branch published
 
 - [x] Isolate selected source, repair meaningful stalefixtures, passlocalCI/browser andindependentreview.

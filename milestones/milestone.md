@@ -1,3 +1,32 @@
+## Planner cost reduction — deployment authorized and in progress
+
+The user authorized the proposed retry/context improvements and a spending review after a few days. Research is complete: use separate exact-version retry metadata, stable model-visible schemas with unchanged backend enforcement, and selective context retirement. Two exclusive coders and an independent tester are implementing the accepted plan on codex/planner-cost-reduction; root owns reporting. Baseline source298b7d0 is preserved privately. Preserve existing model/budgets, source/identity/version checks, unfinished tasks and held work. The metadata-only report reproduces baseline spending exactly. Retry/cache/context implementation and independent offline acceptance are complete; a preservation finding was fixed. The final configured-model case completes6requests with exact field preservation; original failures/cap limits are retained and no general savings claim is made. Final frozen CI passes3075/0fail/2optional skips, all5browserflows pass, and independent evaluator ACCEPTS local implementation. No hosted migration, production deployment or activation has occurred. The requestedOctober31follow-up is scheduled; its comparison must use actual later trial start.
+
+[Accepted plan](history/2026-10-28_12-05-16-311024-planner-planner-cost-reduction-contract-accepted.md) · [Reporting pass](history/2026-10-28_12-09-01-329847-orchestrator-planner-spend-report-implemented.md) · [Local acceptance](history/2026-10-28_12-32-55-248615-evaluator-planner-cost-reduction-local-accepted.md) · [Local completion](history/2026-10-28_12-32-55-248616-orchestrator-planner-cost-reduction-local-completed.md) · [Implementation milestone](planner-cost-reduction-2026-10-28/info.md) · [Research](history/2026-10-28_12-00-03-978544-researcher-planner-cost-reduction-dependencies-reviewed.md).
+
+## Planner seven-day OpenAI spending — review complete and independently accepted
+
+Follow-up advice is complete without implementation: confirm remaining current-release failures, persist retry eligibility across failed saves/restarts, improve reuse of stable instructions and benchmark selective earlier context retirement. Existing protections and held changes are preserved; no savings percentage or current hosted incident reproduction claimed. [Recommendations](planner-spend-2026-10-28/info.md#october-28-follow-up-recommendations--no-implementation).
+
+The October 21–28 11:40 AM New York window contains **$24.36** in recorded planner OpenAI cost. Context processing accounts for **95.12%**, primarily new cache writes ($16.91) and cached reads ($6.26); model output accounts for $1.19. The normal planner subtotal excludes chat/local tests and one diagnostic quota probe. There are 1,621 unpriced regular attempts, mostly HTTP 429 rejections; unknown usage is not treated as zero.
+
+Runs ending in preparation/check errors or model/context limits account for $10.52 (43.18%), but may have completed useful work first. Exact per-service dollar allocation is unavailable. Complete metadata counts and independent token-price recomputation agree; independent evaluator ACCEPT. No runtime, private settings, worker activation, billing or business data changed.
+
+[Spending review](planner-spend-2026-10-28/info.md) · [Research pass](history/2026-10-28_11-44-50-865306-researcher-planner-seven-day-spend-reviewed.md). · [Independent evaluation](history/2026-10-28_11-45-24-949660-evaluator-planner-seven-day-spend-accepted.md) · [Final review](history/2026-10-28_11-45-24-949661-orchestrator-planner-seven-day-spend-completed.md).
+
+## OpenCode API configuration guidance — explanation complete
+
+Flock accepts OpenCode through its existing openai-compatible adapter. Official
+OpenCode documentation restricts glm-5.3-flash-free to OpenCode itself; other
+clients receive HTTP 403. The separately paid glm-5.3-flash uses
+https://opencode.ai/inference/openai/v1 as the API base URL and an OpenCode key.
+LLM_PROVIDERS_JSON overrides individual LLM settings when nonblank. A local
+placeholder-key check confirmed parsing and precedence; no live model request,
+configuration change, deployment or worker activation occurred.
+
+[Configuration guidance evidence](history/2026-10-27_21-09-02-669914-orchestrator-opencode-environment-guidance.md) ·
+[Provider configuration guide](provider-fallback/info.md).
+
 ## Markdown prompt release — branch pushed; main checks in progress
 
 The isolated release is ebe0194 on codex/markdown-prompts-release; [PR1](https://github.com/yuyanghu06/flockatnyu/pull/1) isopen. Full local pre-push CI passes3040/0failed/2optional skips; all5browserflows pass. Independent scope review ACCEPTS and matches testedruntime/promptpayloads. SeparateCalendarlocationchanges areexcluded. Remote browser check passes; quality remainsrunning. Productionuploadhasnotbegun. Workeriscurrentlydisabled andwillremainso; no furtherforcedtestcycle or privateconfigurationchange.

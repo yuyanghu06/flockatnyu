@@ -60,3 +60,5 @@ It reads filenames only and does not load clients or run model/business calls.
 `treg-dormant.mjs` supplies shared synthetic client/logger/auth fixtures for the
 split dormant Treg suites. `chat-source-files.mjs` inventories extracted chat
 implementations for opt-in model source hashes/copies and prompt verification.
+
+`planner-cost-cases.mjs` supplies synthetic attendance/no-change/missing-time/unavailable-source cases to the opt-in production-runner comparison. Preserve existing synthetic event URLs, fields, participants/buildings and unfinished originals as explicit expected outcomes. It provides no live access or credentials.

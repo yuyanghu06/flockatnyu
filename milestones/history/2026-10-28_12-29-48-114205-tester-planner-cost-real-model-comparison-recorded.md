@@ -1,0 +1,10 @@
+# Planner cost real model comparison recorded
+
+- Local timestamp / acting role / milestone: 2026-10-28T12:29:48.114205-04:00 / tester / planner-cost-reduction-2026-10-28.
+- Requested scope: implement planner cost remedies, preserve correct outcomes and prepare a three-day follow-up.
+- Starting repository state: codex/planner-cost-reduction; original source298b7d0 and pre-existing documentation edits preserved.
+- Work performed / changed files: Independent in-memory/actualSQL acceptance checks plus configured gpt-6-luna requests through production runners/adapters with simulated business services. All network restricted to configured inference endpoint. Original baseline source298b7d0 and all failed comparisons retained privately.
+- Decisions: keep retry bookkeeping separate from saved reads, exact authorization/version checks intact, prompt workflows separate from service operations and model/settings unchanged.
+- Checks and evidence: Original comparison61/64HTTP, pinsstable: baselinepartial invented1minute boundaries; blocked/candidateclear/partial completion capped at artificial10HTTPpercase. Updated ack and blockedpeer complete. First finalgate7/20HTTP: wrappererrors fixed but source eventURL wrongly regenerated; retained as material failure. Final corrected source gate6/13HTTP PASS: exact attendance/person/time, ALL unrelated eventfields/URLs/manualnotes/priorpeople/buildings preserved, completed/handled1,0tasks,0Calendarwrites. Finalcase$0.003286565 versus correct baseline8requests/$0.007600115. Allgates74actualHTTP, known estimatedcost$0.045485045.
+- Resulting state / acceptance: Bounded final exact-copy case passes; do not generalize savings from this small/non-equivalent group. Current source pins match. Original failures and artificial-cap limits remain explicit.
+- Remaining work and handoff: finish final CI, record final evaluator decision and concrete release readiness. No live migration, deployment, worker activation, forced cycle or business write occurred.

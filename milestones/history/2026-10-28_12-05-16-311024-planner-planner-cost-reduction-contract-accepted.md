@@ -1,0 +1,10 @@
+# Planner cost-reduction implementation contract accepted
+
+- Local timestamp / acting role / milestone: 2026-10-28T12:05:16.311024-04:00 / planner / planner-cost-reduction-2026-10-28.
+- Requested scope: implement approved cost remedies, verify correct outcomes and prepare a later spending comparison.
+- Starting repository state: codex/planner-cost-reduction at initial source298b7d0; pre-existing documentation changes preserved.
+- Work performed / changed files: independent read-only planner inspected real SQL/store/runner/provider/fixture contracts and returned exclusive writer assignments. Root serializes this report.
+- Decisions: Writer A owns retry SQL/store/pipeline/helpers/tests; Writer B owns handler hooks, prompt/provider layout and safe context retirement/tests; root owns metadata reporting and shared docs. Separate recordTaskAttempt/finishAttempt hooks run after exact-read validation/before model delivery and before lease-releasing finish, with failure finalization before release. Marker failures are runner storage failures. Compatible/Anthropic/chat wire formats stay supported. Existing schema/reference authorization remains exact internally. Frozen large-file maxima cannot grow; extract helpers.
+- Checks and evidence: research complete before planning. Baseline source archived at evidence/planner-cost-reduction-2026-10-28/before-source with initial commit pinned. Independent tester assigned deterministic failure/preservation/report checks and a hard64-request actual-model before/after comparison; inference waits for source freeze. Three-day heartbeat verified ACTIVE with FREQ=HOURLY;INTERVAL=72, created October28 11:59:39 NewYork, for October31 follow-up; prompt pauses it after review.
+- Resulting state / acceptance: plan accepted and exclusive writers dispatched. Root reporting implementation began; no migration, deployment or activation.
+- Remaining work and handoff: implement, independently test/evaluate and run standard CI; document exact source/release/trial boundaries.

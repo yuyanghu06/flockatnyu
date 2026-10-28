@@ -75,3 +75,5 @@ The option is never sent in the HTTP request body. The update worker selects16;
 ordinary chat remains at8. planTools retains its independent8-call parser limit.
 Malformed arguments, duplicate/reused IDs, response bounds, audits and retries
 retain their existing behavior.
+
+`planner-cache.js` applies only to planner tool turns on reviewed direct OpenAI GPT-6 Luna/Sol configurations. It removes per-run reference enums from provider-visible schemas, retains exact handler validation, marks the fixed instruction boundary and keeps fresh clock information in a separate trusted system message. Normal implicit caching remains enabled; chat, Anthropic and other compatible hosts keep their existing wire format. Cache-reuse savings require measured usage; changing prefixes can increase writes.
