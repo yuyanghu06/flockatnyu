@@ -6,6 +6,8 @@ Live-model checks of the Markdown migration are recorded in `milestones/prompt-m
 
 Runtime prompt wording lives in the root [prompts/](../prompts/info.md) tree. Chat/update guides explain behavior and assembly; Markdown assets are the editable runtime instructions. Migration evidence and existing limits are in the prompt-markdown milestone.
 
+Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
+
 The [application prompt audit](prompt-audit.md) inventories active chat, worker, helper, skill and tool instructions, records corrected mismatches, real-model behavior checks and separate backend follow-up.
 
 The [further phase-out](test-phaseout.md) records the next32case removals and retained behavior. Its [current CSV](test-suite-inventory-after-phaseout.csv) supersedes prior inventories for current counts.

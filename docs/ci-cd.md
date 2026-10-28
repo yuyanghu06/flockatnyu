@@ -20,7 +20,7 @@ fields, permissions and user-visible behavior.
 2. ESLint checks JavaScript in `src`, `server`, `tools`, `scripts` and `tests`.
    Frontend code also has stricter recommended rules and cannot import server
    handlers, provider tools or Node built-ins. The existing I/O-free
-   `server/chat/attachments.js` contract is the sole allowed shared server path;
+   `server/chat/attachment-contract.js` contract is the sole allowed shared server path;
    lint prevents it from importing modules or using process, require or fetch.
 3. File-size checks count every physical line, including blanks and comments.
    JavaScript/MJS files have a 500-line limit; CSS has a 400-line limit.

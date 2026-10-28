@@ -62,6 +62,17 @@ partial as previously recorded; readiness does not establish those outcomes.
 [Independent evaluation accepts recorded five-service rollout](history/2026-10-27_19-56-58-012708-evaluator-five-service-hosted-rollout-accepted.md) ·
 [Full-tree source publication and five-service release completed](history/2026-10-27_19-56-58-012709-orchestrator-full-tree-release-completed.md)
 
+## Markdown prompt migration and both fixes — pushed and deployed
+
+PR #1 merged the structured Markdown prompt migration and Contacts/Calendar fixes. PR #2 merged the required worker image correction after quality/browser checks. Production source8718a1c contains the exact same 87 assets/353 payloads; the other chat's separately authorized full-tree rollout installed it, so no overlapping upload was made here. Web/Discord/worker deployments succeed. Independent normal HTTPS health/login/auth/index/all 8 JS/CSS hash checks pass; prompt Markdown returns 404. Discord is listening. Worker code is installed but disabled; no active cycle is claimed. Configured-model acceptance of both fixes remains unchanged; no new model/business call or manual cycle ran here.
+
+[Verification and actual deployment IDs](prompt-release-2026-10-27/verification.md) · [safe receipts](prompt-release-2026-10-27/receipts.json)
+
+[Independent review accepts the worker image correction](history/2026-10-27_19-55-49-880396-evaluator-worker-image-correction-accepted.md) ·
+[Independent hosted verification passes](history/2026-10-27_19-55-49-880397-tester-hosted-prompt-release-verified.md) ·
+[Independent review accepts deployed prompts and inactive-worker readiness](history/2026-10-27_19-55-49-880398-evaluator-prompt-deployment-accepted.md) ·
+[Prompt migration and fixes published and deployed](history/2026-10-27_19-55-49-880399-orchestrator-prompt-release-integrated.md)
+
 ## Contact clarification and Calendar completion — verified and accepted
 
 Both selected prompt corrections pass their original configured-model failure reproductions. Ambiguous Contact update/delete now stop after search with no candidate-specific reads or mutations, and an actual user clarification resumes only the selected record's pending edit. The original empty DST Calendar question ends after one correct25-hour read; complete-empty reuse no longer loops. Clear-field preservation, unavailable-data honesty, complete narrowed AM/PM coverage and actual mocked native Miro content fallback are supported. Live verification used40new gpt-6-luna HTTP requests within64, all successful; source/all87assets remained pinned with no workspace drift. Six raw case-groups pass strictly; two further outcomes are independently accepted through semantic review with a broader empty-window lookup and one unnecessary partial-window probe recorded.106 focused offline checks, format/lint/file limits/API build pass. Independent evaluator ACCEPT. No backend/runtime logic, execution limits, live business data or deployment changed.

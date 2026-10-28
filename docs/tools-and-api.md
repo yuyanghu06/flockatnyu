@@ -75,3 +75,7 @@ held additional worker cycles, so complete 54-operation live acceptance remains
 unverified. The concurrent prompt refactor was outside the fixed-source tests.
 See the [coverage/report](../milestones/tool-operation-api-all-live-2026-10-27/verification.md)
 and editable [common task log](agent-tasks.md) for actual variants and limits.
+
+This migration is implemented locally. Static checks and independent static
+review are recorded in [the milestone](../milestones/milestone.md). The user has
+stopped tests, so runtime equivalence and deployment are not established.

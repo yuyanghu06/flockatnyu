@@ -15,3 +15,8 @@ October27 user request resumed the previously held runtime tests. Scoped API
 corrections are independently accepted; actual-model/live integration limitations
 remain explicit in the [runtime verification](../tool-operation-api-live-2026-10-27/verification.md).
 Complete planner behavior and deployment are not established by that acceptance.
+
+Completion requires integrated modules, accurate folder guides, static checks and
+independent review. Runtime acceptance remains pending because the user stopped
+tests; do not restart them implicitly. Actual status/evidence lives in the rolling
+milestone and its immutable linked pass entries.

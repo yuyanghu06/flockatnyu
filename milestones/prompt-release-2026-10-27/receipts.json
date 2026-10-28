@@ -1,0 +1,152 @@
+{
+  "promptMainCommit": "e6c62403fa0bc6addb8af31449f73d52bf0e5e97",
+  "productionSourceCommit": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+  "promptParity": {
+    "left": "e6c62403fa0bc6addb8af31449f73d52bf0e5e97",
+    "right": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+    "assets": 87,
+    "blocks": 353,
+    "differences": []
+  },
+  "exactUploadedSources": {
+    "commit": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+    "packages": [
+      {
+        "service": "web",
+        "files": 524,
+        "exactSourceFiles": 336,
+        "archiveSha256": "b3a81a9f3fd3d577b89e699ebe4de8f4c33aa8db3dea0fec66dee65d05dd445b"
+      },
+      {
+        "service": "agent-worker",
+        "files": 174,
+        "exactSourceFiles": 169,
+        "archiveSha256": "364a83b3623434979040907c90a9041a5a44d67657423d8e4d2e4c7809a8099d"
+      },
+      {
+        "service": "discord-events",
+        "files": 37,
+        "exactSourceFiles": 32,
+        "archiveSha256": "aa161b3555ad891b75328dc310c66c5439c50ceaa6ee0b4f39d6f488dfb0b474"
+      }
+    ]
+  },
+  "uploads": [
+    {
+      "service": "web",
+      "commit": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+      "archiveSha256": "b3a81a9f3fd3d577b89e699ebe4de8f4c33aa8db3dea0fec66dee65d05dd445b",
+      "deploymentId": "f6958635-8858-49d6-ad7d-c324feb27dbb",
+      "exitCode": 0
+    },
+    {
+      "service": "update-agent",
+      "commit": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+      "archiveSha256": "364a83b3623434979040907c90a9041a5a44d67657423d8e4d2e4c7809a8099d",
+      "deploymentId": "7e493f9d-52f4-4990-bd35-ec9a4452a2e2",
+      "exitCode": 0
+    },
+    {
+      "service": "discord-events",
+      "commit": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+      "archiveSha256": "aa161b3555ad891b75328dc310c66c5439c50ceaa6ee0b4f39d6f488dfb0b474",
+      "deploymentId": "b7a20484-b720-4c23-b9d3-64459ed41532",
+      "exitCode": 0
+    }
+  ],
+  "hostedSmoke": {
+    "commit": "8718a1c909fc0122cda69b4f4391f2cca169a819",
+    "checks": {
+      "artifactCommitExact": true,
+      "artifactExtractionExact": true,
+      "artifactArchiveSha256": "b3a81a9f3fd3d577b89e699ebe4de8f4c33aa8db3dea0fec66dee65d05dd445b",
+      "healthStatus": 200,
+      "healthBodySha256": "4062edaf750fb8074e7e83e0c9028c94e32468a8b6f1614774328ef045150f93",
+      "anonymousApiStatus": 403,
+      "loginStatus": 200,
+      "indexExpectedSha256": "99cdeb5fc271019b4a895cc9c747470e2b4d64485eeb2eb8f4ca030aa75064d9",
+      "indexObservedSha256": "99cdeb5fc271019b4a895cc9c747470e2b4d64485eeb2eb8f4ca030aa75064d9",
+      "assetCount": 8,
+      "authenticatedApiStatus": 200,
+      "authenticatedAccessAllowed": true,
+      "authenticatedStatusBodySha256": "7af041411e424b09017e8be3f3a82e739e4bd380b08e6623dafba69cafdcf0fd",
+      "promptSourceStatus": 404,
+      "promptSourceNotPublic": true,
+      "promptResponseSha256": "e3ebaa16dd9d9b9fc107c42183fb6cf9d22927e1af03dbbdfa0ccc38e4e4ac31"
+    },
+    "assets": [
+      {
+        "path": "/assets/admin-BFxXB4_m.js",
+        "status": 200,
+        "expectedSha256": "45a73267b98cf3e3cdb074d1b935836a714f43df859cf8e60c7c69aa1e7bf843",
+        "observedSha256": "45a73267b98cf3e3cdb074d1b935836a714f43df859cf8e60c7c69aa1e7bf843"
+      },
+      {
+        "path": "/assets/admin-zhyKAnXd.css",
+        "status": 200,
+        "expectedSha256": "3f4580b194645a533506febc17f9bf1aac5ba7573c51b0e1cfafca2b5dbda576",
+        "observedSha256": "3f4580b194645a533506febc17f9bf1aac5ba7573c51b0e1cfafca2b5dbda576"
+      },
+      {
+        "path": "/assets/colors-B7A8ao4H.js",
+        "status": 200,
+        "expectedSha256": "51e9f28b0b19c888bbab809101e309a883ab62e743d937dc096159e15409ef57",
+        "observedSha256": "51e9f28b0b19c888bbab809101e309a883ab62e743d937dc096159e15409ef57"
+      },
+      {
+        "path": "/assets/main-BBK9k6oA.js",
+        "status": 200,
+        "expectedSha256": "9af1495115c36c09f0f6fc903e8bd30de62e03edb984250c060c9fcd561a4864",
+        "observedSha256": "9af1495115c36c09f0f6fc903e8bd30de62e03edb984250c060c9fcd561a4864"
+      },
+      {
+        "path": "/assets/main-DjgdsXKI.css",
+        "status": 200,
+        "expectedSha256": "6465bf040f3ec50e0514e130f3a1613cebf5a664ba444cbd630f416678465f4b",
+        "observedSha256": "6465bf040f3ec50e0514e130f3a1613cebf5a664ba444cbd630f416678465f4b"
+      },
+      {
+        "path": "/assets/map-DtPupbVz.js",
+        "status": 200,
+        "expectedSha256": "77bad9b3246e4d2164b8991e0f280f0bd4538b2b87e203500c5d49c6bbeea25f",
+        "observedSha256": "77bad9b3246e4d2164b8991e0f280f0bd4538b2b87e203500c5d49c6bbeea25f"
+      },
+      {
+        "path": "/assets/map-startup-DgCv-jKI.js",
+        "status": 200,
+        "expectedSha256": "0031fe1981da4c0a92172c10c74ae6573f08742369cd7955af454f0b483500f2",
+        "observedSha256": "0031fe1981da4c0a92172c10c74ae6573f08742369cd7955af454f0b483500f2"
+      },
+      {
+        "path": "/assets/modulepreload-polyfill-P2Xu9kJm.js",
+        "status": 200,
+        "expectedSha256": "418c206484b89b68ef5f067277831e583fc9193a62aadf4de269acaaeb12a85f",
+        "observedSha256": "418c206484b89b68ef5f067277831e583fc9193a62aadf4de269acaaeb12a85f"
+      }
+    ],
+    "explicitRequests": 13,
+    "redirects": 1,
+    "passed": true
+  },
+  "readiness": {
+    "worker": "disabled",
+    "discord": [
+      "collector_starting",
+      "discord_chat_ready",
+      "gateway_resumed",
+      "listening"
+    ]
+  },
+  "workerEnabled": false,
+  "workerStagedEnabled": true,
+  "newModelRequests": 0,
+  "manualProductionCycles": 0,
+  "packagingMainCommit": "bb02eb826aed39ef17838a90ab7bd6f22f6223d6",
+  "packagingPr": 2,
+  "packagingPrCi": "https://github.com/yuyanghu06/flockatnyu/actions/runs/40604671626",
+  "customDomainHealth": {
+    "origin": "https://flock.techatnyu.org",
+    "status": 200,
+    "ok": true
+  }
+}

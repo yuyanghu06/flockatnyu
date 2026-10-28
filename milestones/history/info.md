@@ -17,6 +17,10 @@ October27 prompt-markdown entries record the plan, exclusive writers, exact-text
 
 October27 prompt-inventory entries record read-only chat and worker tracing, independent evaluation and the source summary; prompt text and runtime behavior are unchanged.
 
+October27 prompt-release entries record test-fixture repair, isolated exact-source packaging, checks, publication and production receipts.
+
+Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
+
 October 27 Brand.dev default entries record request/projection compatibility, saved-response verification and unchanged route exposure.
 
 
@@ -557,3 +561,16 @@ receipt is separate from source 8718a1c application packages.
 provider-list override behavior and official free-model client restriction.
 The local parsing check used placeholder keys; no live configuration or service
 change was requested or performed.
+
+- [Exact release artifact verification and deployment coordination](2026-10-27_19-41-28-857228-orchestrator-release-artifact-verified-deploy-coordination.md).
+
+- [Worker artifact rejected before upload](2026-10-27_19-44-50-012259-evaluator-worker-artifact-rejected.md).
+
+- [Worker image copies its actual reachable roots](2026-10-27_19-44-50-012260-coder-worker-image-copy-corrected.md).
+
+- [Corrected worker image verification](2026-10-27_19-46-19-703038-tester-worker-image-imports-verified.md).
+
+- [Independent review accepts the worker image correction](2026-10-27_19-55-49-880396-evaluator-worker-image-correction-accepted.md).
+- [Independent hosted verification passes](2026-10-27_19-55-49-880397-tester-hosted-prompt-release-verified.md).
+- [Independent review accepts deployed prompts and inactive-worker readiness](2026-10-27_19-55-49-880398-evaluator-prompt-deployment-accepted.md).
+- [Prompt migration and fixes published and deployed](2026-10-27_19-55-49-880399-orchestrator-prompt-release-integrated.md).
