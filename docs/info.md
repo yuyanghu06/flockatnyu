@@ -1,5 +1,11 @@
 The [essential-test review](test-priority.md) classifies every case in the accepted 2,353-case phase-out snapshot; [the complete CSV](test-priority.csv) records reasons. Priority judgments are separate from safe-deletion proof and from later concurrent suite changes.
 
+The selected Contact clarification and Calendar completion prompt corrections are verified in `milestones/prompt-clarification-completion-2026-10-27/verification.md`. Both original actual-model reproductions pass; private raw results retain two nonblocking oracle/efficiency qualifications.
+
+Live-model checks of the Markdown migration are recorded in `milestones/prompt-markdown-live-2026-10-27/verification.md`: actual inference, simulated services, six semantic passes and two unresolved behavior failures. This is separate from production deployment or live-service workflow acceptance.
+
+Runtime prompt wording lives in the root [prompts/](../prompts/info.md) tree. Chat/update guides explain behavior and assembly; Markdown assets are the editable runtime instructions. Migration evidence and existing limits are in the prompt-markdown milestone.
+
 Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
 
 The [application prompt audit](prompt-audit.md) inventories active chat, worker, helper, skill and tool instructions, records corrected mismatches, real-model behavior checks and separate backend follow-up.
@@ -163,3 +169,10 @@ update-agent-prompt.md describes independent presence routing, supported nearby 
 
 `tools-and-api.md` explains which services model tools and HTTP routes actually
 call, where they share implementations and which operations have no counterpart.
+
+`tools-and-api.md` explains the private operation boundary and links its runtime
+verification, including independently accepted corrections and remaining
+Calendar/Member Plans/planner behavior limitations.
+
+
+`agent-tasks.md` is the user-editable catalogue of common Flock tasks and dated live workflow outcomes. Preserve manually added tasks and stable IDs; the milestone remains authoritative for implementation and release status.

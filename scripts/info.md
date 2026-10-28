@@ -81,3 +81,5 @@ Quality commands use `check-file-limits.mjs`, `run-tests.mjs` and `browser-smoke
 The opt-in prompt verification script tracks every extracted chat implementation
 file, not just its facade. It still requires explicit live-model opt-in; this
 cleanup did not make inference or business-service calls.
+
+`planner-spend-report.mjs` is a private read-only operator report. Run `node --env-file=.env scripts/planner-spend-report.mjs --days=3`, or pass fixed `--start=ISO --end=ISO` bounds. It selects no prompts/model outputs/source bodies, checks complete pagination against exact counts and prints aggregate JSON only. Credentials stay in private environment variables. Unknown usage and traffic/version differences must remain explicit in comparisons.

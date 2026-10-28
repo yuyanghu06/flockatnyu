@@ -89,3 +89,4 @@ Bind this taskRef in inputIds when reading this task or continuing its fragments
 <!-- prompt: participation-endpoints -->
 No participation changes were applied. For every new person, explicitly provide both start and end using supported endpoints, including {inherit:true} when inheriting the event boundary. Resubmit the complete corrected patch.
 <!-- /prompt -->
+

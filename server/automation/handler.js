@@ -7,6 +7,7 @@ import {AUTOMATION_MAX_TOOL_CALLS,AUTOMATION_MAX_STAGE_CALLS} from './config.js'
 import {driveSkillPrompt,isDriveTool} from '../skills/drive.js';
 import {buildObservationHandoff} from './observation-handoff.js';
 import {compactConversation} from './conversation-context.js';
+import {formatResolutionHints,initialTaskCoverage as readInitialTaskCoverage,finishTaskAttempts} from './model-context.js';
 import {canonicalJson,checkSchema,plainObject,validateArguments,validLabel,validSourceId,validUuid} from './validation.js';
 const failure = (code,result) => { const error=new Error(code);if(plainObject(result?.diagnostics))error.diagnostics=result.diagnostics;throw error; };
 export function createAutomationHandler({store,provider,tools=[],authorizeEvent,authorizeEvents,resolveClaimSourceIds,prepareBatch,cleanupBatch,validateCompletion,getPersonIdChoices,pipeline,principal,config,now=()=>new Date(),onProgress=()=>{},audit} = {}) {
@@ -165,29 +166,8 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
         }
         return args;
       };
-      const formatModelResult=(result,toolName)=>{
-        if(!pipeline||stage!=='followup'||!['read_pending_task','patch_map_participation','finish_batch'].includes(toolName)
-          ||!plainObject(result)||!Array.isArray(result.resolutionOptions))return result;
-        const resolutionHints=result.resolutionOptions.flatMap(option=>{
-          const ref=phaseReferences.toRef.get(option?.taskId);
-          if(!ref||!['completed','no_change_needed','source_missing'].includes(option.outcome)
-            ||option.outcome==='no_change_needed'&&!['already_correct','no_actionable_request'].includes(option.reason))return [];
-          return [{tool:'resolve_pending_task',arguments:{inputIds:[ref],arguments:{taskId:ref,outcome:option.outcome,
-            ...(option.outcome==='no_change_needed'?{reason:option.reason}:{})}}}];
-        });
-        if(!resolutionHints.length)return result;
-        const visible={...result,resolutionHints,
-          resolutionHintNotice:promptText("agents/update/context#resolution-options")};
-        return Buffer.byteLength(canonicalJson(visible))<=16384?visible:result;
-      };
-      const initialTaskCoverage=()=>{
-        if(!pipeline||typeof pipeline.getInitialTaskCoverage!=='function')return [];
-        const coverage=pipeline.getInitialTaskCoverage();
-        if(!Array.isArray(coverage)||coverage.length>claimedInputIds.length
-          ||new Set(coverage.map(row=>row?.inputId)).size!==coverage.length
-          ||coverage.some(row=>!plainObject(row)||!claimedInputIds.includes(row.inputId)||!Number.isSafeInteger(row.taskCount)||row.taskCount<1||row.taskCount>500))failure('preflight_failed');
-        return coverage;
-      };
+      const formatModelResult=(result,toolName)=>formatResolutionHints(result,toolName,{pipeline,stage,references:phaseReferences});
+      const initialTaskCoverage=()=>readInitialTaskCoverage(pipeline,claimedInputIds);
       const messages=[{role:'user',content:JSON.stringify({inputs,...(batchContext?{batchContext}:{}),...(pipeline?{referenceBindings:referenceBindings()}:{} )})}];
       const enforceMessageBudget=()=>{
         if(pipeline) {
@@ -211,6 +191,7 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
           const checkpoint=await guarded(()=>finishOperation.execute({handledInputIds},{step:'checkpoint',inputs,principal,signal:combined,leaseToken,executionLog:getExecutionLog(),followupStatus}));
           if(checkpoint?.status!=='ready')failure('preflight_failed',checkpoint);
         }
+        await guarded(()=>finishTaskAttempts(pipeline,followupStatus,combined));
         await renew();await authorize();
         const result=await guarded(()=>finishOperation.execute({handledInputIds},{step:'finish',leaseToken,principal,signal:combined}));
         if(result.status!=='ready')failure('stale');
@@ -730,6 +711,10 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
               if(saved.status!=='completed') failure('stale');
             }
           }
+          if(call.name==='read_pending_task'&&result?.status==='ready'&&typeof pipeline?.recordTaskAttempt==='function') {
+            const marker=await guarded(()=>pipeline.recordTaskAttempt({taskId:executionArguments.taskId,signal:combined}));
+            if(marker?.status!=='ready')failure(marker?.status==='stale'?'stale':'preflight_failed',marker);
+          }
           activeProgress.result=result;
           await recordExecution({kind:'tool_result',tool:call.name,callId:call.id,inputIds:scopedIds,arguments:structuredClone(executionArguments),result});
           messages.push({role:'tool',toolCallId:call.id,content:JSON.stringify(formatModelResult(result,call.name))});
@@ -752,6 +737,8 @@ export function createAutomationHandler({store,provider,tools=[],authorizeEvent,
       if(leaseToken) {
         try {
           const settlement={leaseToken,signal:AbortSignal.timeout(15000)};
+          try {await finishTaskAttempts(pipeline,timedOut?'timeout':leaseLost?'stale':runResult.status,settlement.signal);}
+          catch { /* Keep the original outcome; lease recovery still runs below. */ }
           // Only explicit caller shutdown is free of failure accounting. Internal
           // run deadlines and lease heartbeat failures are bounded failed runs.
           if(runResult.status==='aborted'&&signal?.aborted) await store.release(settlement);

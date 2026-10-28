@@ -1,0 +1,10 @@
+# Full-tree source publication and five-service release completed
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:56:58.012709-04:00 / orchestrator / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree to all five Railway services without another production cycle.
+- Starting repository state: source8718a1c committed/pushed, exact package review ACCEPT, worker deliberately disabled after the documented corrected region incident.
+- Work performed / changed files: Integrated final hosted ACCEPT and refreshed milestone, to-do, deployment guide and common task log. Application packages remain pinned to pushed source8718a1c. This documentation-only receipt records actual source/deployment IDs and limits; its later publication requires no new application deployment. Final Git/remote parity and worker pause metadata are retained in ignored release evidence.
+- Decisions: Preserve source/package/service identity and private variables/volumes/grants. Leave processing false. Do not equate readiness with untested agent workflows or trigger paid/model/business-write checks to improve the report.
+- Checks and evidence: [release verification](../full-tree-release-2026-10-27/verification.md), ignored upload receipts/package index, hosted-web-report.json, hosted-services.json, hosted-configuration.json, gmail-health.json and worker-final-before-receipt.json. Root/evaluator inspected actual outcomes.
+- Resulting state / acceptance: Requested rollout is achieved: all five reviewed source packages reached SUCCESS, web/collectors are ready, enrichment awaits its normal schedule and update-agent remains paused. No new production cycle was triggered by this rollout. No required business-write test remains; the next worker activation requires a separate user instruction.
+- Remaining work and handoff: Preserve paused worker and existing limitations. Final documentation publication/remote parity and last worker guard are operator closeout evidence, not another cycle. No further application deployment, schema or configuration change is required.

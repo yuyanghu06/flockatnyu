@@ -28,3 +28,9 @@ Miro retirement: miro-worker deployment files/preparer and Railway miro-sync ser
 Web and update-agent use `scripts/prepare-runtime-deploy.mjs` sanitized reachable-module contexts. Web serves built frontend and API behind the environment-password gate; its persistent /data owns Miro OAuth. Worker uses the private access-token broker and reads official MCP directly. See docs/deployment.md.
 
 `gmail-enrichment/` packages the independent opt-in contacts_cache/Treg/Contacts service. It uses a separate private /data volume for call logs and contains no Google OAuth/collector runtime. Schema and activation status are in the rolling milestone.
+
+The worker image copies the actual reachable roots server/, prompts/ and src/api/.
+Its direct backend imports need no tools/ directory. Runtime package tests now
+project actual Docker COPY contents and import the real web/worker modules with
+networking blocked; package membership and node --check alone do not establish
+that an image contains its dependencies. Cloud rollout receipts stay separate.

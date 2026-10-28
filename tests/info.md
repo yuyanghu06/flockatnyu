@@ -1,6 +1,6 @@
 # Standard verification and current fixture contracts
 
-Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
+`prompt-assets.test.mjs` checks exact Markdown loading, placeholder/path failures, copied-source independence and fixed asset packaging. Drive/collector/runtime package tests use relocated assets. The prompt-markdown milestone records five full-suite API fixture failures reproduced on the pre-migration source, separately from the passing migration checks.
 
 ## Server module locations
 
@@ -873,4 +873,41 @@ private-logger boundaries. `treg-branddev.test.mjs` independently exercises the
 selected company request variants and native field projection. These suites make
 no live or paid calls and do not activate the dormant routes.
 
-`runtime-deploy.test.mjs` projects the actual Docker COPY filesystem and imports the real web app/worker adapters and handler with networking/listening denied. It checks every reachable package file reaches the image and rejects absent COPY roots. The prompt release journal separates this local check from the actual Railway build/startup and normal authenticated hosted checks.
+`operation-api.test.mjs` and `fixtures/operation-api.mjs` exercise all54 private
+Hono routes, request authority, lossless arguments, bounds, original exceptions,
+private map capabilities, worker preparation and cleanup races. They verify
+unknown-write outcomes without replay and hidden-operation denials; domain
+services are simulated and the independent verification blocks external network.
+Actual-model gates and separate live reads are documented in the October27
+operation API verification milestone, not claimed by these offline tests.
+
+`chat-read-after-write.test.mjs` checks actual Contacts/Calendar request-state
+recovery, adapter-local read caching, write replay protection, uncertain outcomes
+and the existing conflict-refresh bound. The eight tests independently reproduce
+both successful-write stale reads and rejected-write recovery failures. Optional
+`operation-api-all-model.mjs` and its fixtures keep actual model choices separate
+from simulated business boundaries and live provider verification; bad fixture
+setup is explicitly disqualified. Real-service workflow outcomes are catalogued
+in `docs/agent-tasks.md` and the October27 all-operation milestone.
+
+calendar-sync-locations.test.mjs and its fixture independently cover forgiving
+catalogue matching, normalized collisions, short/substr/generic-name safety,
+unmapped-location ready outcomes, actual map-service writes with no guessed
+building, stale-link clearing, manual/private attendance preservation and CAS/
+provider/permission/time-window failures. They use simulated providers and a
+versioned in-memory store, with no live model/business request or worker cycle.
+
+Full-tree release verification updates three older API fixtures: Discord source
+scope uses the registered list_discord_channels route and rejects forged body
+controls; pre-aborted summary requests assert zero domain dispatch; map isolation
+observes private receipts beneath the JSON boundary while proving no capability
+is serialized to the client. Executed-read coverage and exact-version/source
+isolation assertions remain in place. These are test-only corrections.
+
+The runtime-deploy suite also projects Docker COPY inputs into an image-shaped
+filesystem and imports the real web app and worker adapters/handler with empty
+environments and networking denied. It catches both omitted src/api routes and
+stale COPY sources absent from a sanitized package. This is an import/filesystem
+check; actual Docker build/hosted readiness is separately verified during release.
+
+Planner cost reduction adds realPGlite/private-store retry coverage, direct-provider wire/lifecycle and conservative retirement checks, and independent spending-report/runner acceptance. `planner-cost-model.mjs` is an explicit opt-in inference-only harness with simulated business sources, source pins and hard dispatch caps; it is excluded from offlineCI. Retain failed/capped cases and distinguish exact preservation from mere runner completion. Current evidence is in the cost-reduction milestone.

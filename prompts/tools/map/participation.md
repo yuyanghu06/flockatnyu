@@ -35,3 +35,4 @@ Exactly one representation: {at: RFC3339 timestamp}, {anchor: event_start or eve
 <!-- prompt: label -->
 Preserve meaningful activity and approximate timing wording. A timing label does not set start/end; supply the supported changed endpoint too.
 <!-- /prompt -->
+

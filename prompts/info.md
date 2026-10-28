@@ -44,3 +44,5 @@ Application AGENTS.md and behavior documentation are development references, not
 runtime prompt assets. Future wording edits use the project's normal prompt
 behavior verification; this migration uses exact output comparisons and offline
 runner/package checks without paid model or provider calls.
+
+The October28 planner optimization keeps reusable staged instructions first and appends the `agents/update/core#staged.clock` block as fresh trusted context. Supported direct OpenAI requests split that clock into a separate system message; other adapters retain complete prompt text. WRAPPED ARGUMENTS clarifies that service fields belong inside a wrapper's `arguments`, while finish_batch retains its own schema. Verification lives in the cost-reduction milestone; no provider/model/runtime cap changes follow.

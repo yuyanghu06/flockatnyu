@@ -67,7 +67,7 @@ function sharedIdentities(left,right) {
   }
   return false;
 }
-function resolvedReadRetirement({entries,snapshot,referenceBindings,phase,tasks}) {
+function resolvedReadRetirement({entries,snapshot,referenceBindings,phase,tasks,includeTaskViews=false}) {
   if(phase!=='followup'||snapshot?.status!=='ready'||snapshot.phase!=='followup'||!Array.isArray(snapshot.catalogue)||!Array.isArray(snapshot.tasks)
     ||referenceBindings?.phase!=='followup'||!Array.isArray(referenceBindings.inputIds))return ()=>false;
   const queueIds=new Set((referenceBindings.handledInputIds||[]).map(row=>row.uuid));
@@ -86,20 +86,55 @@ function resolvedReadRetirement({entries,snapshot,referenceBindings,phase,tasks}
     const source=row.compact?.task?.info?.batchContext?.[field]?.sourceId;
     if(typeof source==='string')calendarSources.set(source,calendarSources.has(source)&&calendarSources.get(source)!==kind?'*':kind);
   }
-  const unfinished=[...tasks.values()].map(row=>({compact:row.compact,identities:readIdentities(row.compact,{calendarKind:row.compact?.task?.info?.request?.calendarKind,calendarSources})}));
+  const undisclosed=new Map();
+  for(const row of currentRows)if(!tasks.has(row.taskId)) {
+    if(!undisclosed.has(row.taskId)||plainObject(row.request))undisclosed.set(row.taskId,row);
+  }
+  const unfinished=[...tasks.values()].map(row=>({request:row.compact?.task?.info?.request,
+    identities:readIdentities(row.compact,{calendarKind:row.compact?.task?.info?.request?.calendarKind,calendarSources})}));
+  for(const row of undisclosed.values())unfinished.push({request:row.request,
+    identities:readIdentities(row.request,{calendarKind:row.request?.calendarKind,calendarSources})});
   return row=>{
-    if(row?.kind!=='tool_result'||row.stage!=='followup'||!readTools.has(row.tool)||['read_pending_task','read_context_fragment'].includes(row.tool)
+    if(row?.kind!=='tool_result'||row.stage!=='followup'||!readTools.has(row.tool)||row.tool==='read_context_fragment'||!includeTaskViews&&row.tool==='read_pending_task'
       ||!successfulRead(row.result)||row.result.fragment||row.result.historyPage||!plainObject(row.arguments)||!Array.isArray(row.inputIds)||!row.inputIds.length
       ||!row.inputIds.every(id=>phaseIds.has(id)&&closedAt.has(id)&&positions.get(row)<closedAt.get(id)))return false;
     const calendarKind=['read_calendar_event','list_calendar_events'].includes(row.tool)?'club':['read_member_plan','list_member_plans'].includes(row.tool)?'member':undefined;
     const identities=readIdentities({arguments:row.arguments,result:row.result},{tool:row.tool,calendarKind,calendarSources});
     if(unfinished.some(task=>sharedIdentities(identities,task.identities)))return false;
+    // Catalogue entries are pending work even before their originals have been
+    // disclosed. Their target hints can prove narrow Calendar independence, but
+    // cannot establish that source bodies, broad reads or unknown targets are
+    // irrelevant. Preserve those facts until the pending task is actually read.
+    if(undisclosed.size) {
+      const exactCalendar=['read_calendar_event','read_member_plan'].includes(row.tool)
+        &&typeof row.arguments.eventId==='string'&&row.arguments.eventId.length>0;
+      if(!exactCalendar||[...undisclosed.values()].some(task=>!['club','member'].includes(task.request?.calendarKind)
+        ||typeof task.request.calendarEventId!=='string'||!task.request.calendarEventId.length))return false;
+    }
     if(unfinished.length&&(['read_calendar_event','list_calendar_events','read_member_plan','list_member_plans','read_map_events','find_map_attendance_targets'].includes(row.tool))) {
       const broad=row.tool.startsWith('list_')||row.tool==='find_map_attendance_targets'||row.tool==='read_map_events'&&!(row.arguments.sourceId&&row.arguments.sourceRecordId||row.result.events?.some(event=>event.source_id&&event.source_record_id));
-      if(broad||unfinished.some(task=>!task.compact?.task?.info?.request?.calendarEventId))return false;
+      if(broad||unfinished.some(task=>!task.request?.calendarEventId))return false;
     }
     return true;
   };
+}
+
+function retireClosedTaskCopies(messages,entries,canRetire,taskRefs,beforeBytes) {
+  const byCall=new Map(entries.filter(row=>typeof row?.callId==='string').map(row=>[row.callId,row]));
+  let retiredResults=0;
+  const copied=messages.map(message=>{
+    if(message?.role!=='tool')return message;
+    const row=byCall.get(message.toolCallId),result=parse(message.content);
+    if(!plainObject(result)||result.contextRetired===true||!canRetire(row)
+      ||canonicalJson(result)!==canonicalJson(row.result))return message;
+    const replacement=retired(result,'resolved_task_read',{taskRefs:row.inputIds.map(id=>taskRefs.get(id)??id),
+      ...Object.fromEntries(['sourceStatus','outcome','coverage','partial','warnings'].filter(key=>Object.hasOwn(result,key)).map(key=>[key,structuredClone(result[key])]))});
+    if(size(replacement)>=size(result))return message;
+    retiredResults++;
+    return {...message,content:JSON.stringify(replacement)};
+  });
+  const afterBytes=size(copied);
+  return {messages:retiredResults?copied:messages,compacted:retiredResults>0,beforeBytes,afterBytes,retiredResults};
 }
 
 /** Retire copied model-visible logs only. Never mutate private execution history,
@@ -108,15 +143,18 @@ export function compactConversation({messages,executionLog=[],snapshot,reference
   maxBytes=262144,triggerBytes=196608}={}) {
   if(!Array.isArray(messages))throw new TypeError('messages must be an array');
   const beforeBytes=size(messages),hasManaged=messages.some(managed);
-  if(beforeBytes<=Math.min(triggerBytes,maxBytes)&&!hasManaged)
-    return {messages,compacted:false,beforeBytes,afterBytes:beforeBytes,retiredResults:0};
-  const copied=structuredClone(messages).filter(message=>!managed(message));
   const entries=Array.isArray(executionLog)?executionLog:[];
   const taskRows=snapshot?.status==='ready'&&Array.isArray(snapshot.tasks)?snapshot.tasks:[];
   const tasks=new Map(taskRows.filter(row=>row?.compactDisclosed===true&&typeof row.taskId==='string'
     &&plainObject(row.compact)).map(row=>[row.taskId,row]));
   const taskRefs=new Map((referenceBindings?.inputIds||[]).filter(row=>typeof row?.uuid==='string'
     &&typeof row.ref==='string').map(row=>[row.uuid,row.ref]));
+  // A confirmed closed task no longer needs unique read-body copies. Retire
+  // only those copies immediately; keep the rest of a small conversation
+  // byte-for-byte stable so useful cached prefixes and unfinished facts survive.
+  if(beforeBytes<=Math.min(triggerBytes,maxBytes)&&!hasManaged)return retireClosedTaskCopies(messages,entries,
+    resolvedReadRetirement({entries,snapshot,referenceBindings,phase,tasks,includeTaskViews:true}),taskRefs,beforeBytes);
+  const copied=structuredClone(messages).filter(message=>!managed(message));
   const resolved=new Set();
   for(const row of entries)if(row?.kind==='tool_result'&&row.tool==='resolve_pending_task'
     &&row.result?.status==='ready'&&typeof row.arguments?.taskId==='string')resolved.add(row.arguments.taskId);

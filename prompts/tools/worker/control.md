@@ -29,3 +29,4 @@ Call alone with bare {handledInputIds}, never the ordinary wrapper. A queue inpu
 <!-- prompt: finish.base -->
 Call alone with {handledInputIds}, not the ordinary {inputIds,arguments} wrapper. Include only handled queue UUIDs whose required actions succeeded or were durably deferred. In a staged cycle, [] ends the current phase without claiming additional inputs; unfinished work survives. In legacy mode, [] returns pending and cannot complete the batch. Backend completion checks still apply.
 <!-- /prompt -->
+

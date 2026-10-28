@@ -217,3 +217,15 @@ result, audit/history and ordinary budgets/lease handling. That named operation
 reads the two configured Calendars and updates map storage. finish_batch itself
 performs bookkeeping; caps and Calendar/Member writes never hide another sync.
 Subsequent needed synchronization can be a separate explicit model-selected call.
+
+## Calendar locations outside the fixed catalogue
+
+Calendar-to-map sync accepts clear spelling, punctuation and spacing variants
+of existing building aliases. It does not guess between possible buildings.
+When a location has no match, the event and attendance stay saved with no
+building relationship; this alone does not make sync partial. If a Calendar
+location changes from a known building to an unmatched place, the normal
+versioned update clears the stale old building link. An unchanged raw location
+preserves a manually resolved building. Calendar originals and the fixed building
+catalogue remain unchanged. Real read/write/permission failures, conflicts and
+ambiguous matches still report partial.

@@ -1,0 +1,10 @@
+# Metadata-only planner spend report implemented
+
+- Local timestamp / acting role / milestone: 2026-10-28T12:09:01.329847-04:00 / orchestrator / planner-cost-reduction-2026-10-28.
+- Requested scope: implement cost remedies and support a useful follow-up comparison after several days.
+- Starting repository state: two implementation specialists editing exclusively owned runtime files; initial source298b7d0 and seven-day evidence preserved privately.
+- Work performed / changed files: added server/audit/planner-spend-report.js and scripts/planner-spend-report.mjs. They read fixed-window planner metadata only, enforce complete ordered pagination/exact counts and reject duplicates/missing pages; report stored estimates, exclusive token components, unknown usage, daily/model/run outcomes and operation counts without private outputs/source bodies. Added audit/scripts folder guidance.
+- Decisions: normal directOpenAI toolTurn only; diagnostic probes/chat/local evaluations excluded. Reasoning is already output. Handled-input counts are limited to matching directOpenAI model runs and not called unique/correct tasks. Missing usage is unknown, not zero. Private variables remain in memory; CLI failures do not echo bodies or credentials.
+- Checks and evidence: locked npm ci completes. Scoped Prettier/ESLint pass. New report exactly reproduces prior baseline22127requests,1621unknown,$24.36014988 and zero component discrepancies. Independent tester reports four meaningful offline report cases pass (privacy/pagination, unknown-vs-zero, filtering, reasoning/components/outcomes); full feature acceptance remains in progress. No new inference or production mutation.
+- Resulting state / acceptance: reporting implementation verified against preserved real metadata and independent simulated transport cases. Other runtime changes remain under implementation.
+- Remaining work and handoff: finish retry/context writers, run independent SQL/runtime and frozen actual-model before/after checks, evaluate and complete standard CI. Migration/deployment/trial boundaries remain separate.

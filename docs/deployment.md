@@ -150,10 +150,27 @@ Contacts search/filter/motion release: web `cbfbf5ca-ffa1-4b88-b212-f51c67c785f5
 
 ## Separate sender enrichment — daily 9 AM Eastern
 
-The independent gmail-enrichment service35efa7d3-34d2-443b-8671-82bb8bac3dca uses reviewed raw-only050 and a dedicated500MB/data volume e3418ec6-724d-4d45-b446-66569441134c. Final deployment11646098-3e75-4fc8-bd4b-ada477ef23de is SUCCESS. UTCcron0 13,14 * * * plus America/New_York09 guard selects the correct9AM slot across DST; restart NEVER and finite backlog drain close resources between runs. Other candidate exits before business access.
+The independent gmail-enrichment service35efa7d3-34d2-443b-8671-82bb8bac3dca uses reviewed raw-only050 and a dedicated500MB/data volume e3418ec6-724d-4d45-b446-66569441134c. Final deployment11646098-3e75-4fc8-bd4b-ada477ef23de is SUCCESS. UTCcron 0 13,14 * * * plus America/New_York09 guard selects the correct9AM slot across DST; restart NEVER and finite backlog drain close resources between runs. Other candidate exits before business access.
 
 All18 upload files come from the accepted static source-only context, with no runtime external dependencies or collector/planner/model/frontend/env/data/log/test/migration files. The app connector configured service/volume/variables; its expired local MCP CLI login was bypassed using the already-authenticated local Railway CLI for upload, without changing account/MCP settings. The user supplied TREG_TOKEN privately to this service, triggering final environment redeploy. Only metadata readiness was checked; no immediate or paid lookup occurred. Next run candidate2026-10-27T13:00Z is9AMNewYork. Actual first scheduled provider behavior remains unverified. See docs/gmail-enrichment.md and rolling milestone.
 
 ## Treg website lookup tools — October 26 live trial
 
 Web deployment 301ed08a-daf8-4159-8bd5-ac88c1d49200 SUCCESS publishes the reviewed 286-file package with separate search/enrichment tools and retains the Contacts frontend. Private TREG_TOKEN is configured on web and the separate gmail-enrichment service. Auth 303, catalogue 200 and health 200 pass. After the initial zero-balance refusal and user funding, one fresh hosted lookup completed with a selected BlitzAPI provider miss. Read-only billing records confirm both charges were $0 and team balance remained $10. No Contacts/cache write, worker trigger, migration or other service release occurred in this trial. A profile-bearing result and actual Discord/scheduled-worker behavior are not established by this website trial; the separate scheduled service is documented above.
+
+For the explicitly authorized October 27 full-tree development-branch rollout,
+all five packages are generated locally from the clean checked commit after the
+same full CI/browser gates, without silently merging main. On macOS set
+COPYFILE_DISABLE=1 for release packaging so BSD tar does not add resource-fork
+metadata. Verify actual archive membership/hashes before upload. The update agent
+is deliberately stopped and AGENT_AUTOMATION_ENABLED=false throughout this rollout;
+source publication/deployment does not authorize another production cycle. Actual
+service receipts live in the full-tree release milestone.
+
+October27 full-tree release: source 8718a1c on dev/tool-api-services is deployed
+to all five services. Web f6958635, Discord b7a20484, Gmail a52989c1, update-agent
+7e493f9d and enrichment 5af35f23 all reached SUCCESS. Web health/auth/exact assets/
+read-only API and collector readiness pass. Update-agent is intentionally disabled
+and enrichment is cronReady; no cycle/job was forced. Existing volume IDs/mounts,
+source grants and schedule are preserved. Full IDs and corrected rollout
+incident are recorded in the full-tree release milestone.

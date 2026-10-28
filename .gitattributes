@@ -1,2 +1,2 @@
 # Prompt block whitespace is part of the assembled model request.
-prompts/**/*.md text eol=lf whitespace=-blank-at-eol
+prompts/**/*.md text eol=lf whitespace=-blank-at-eol,-blank-at-eof

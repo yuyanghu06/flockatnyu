@@ -1,3 +1,50 @@
+## Planner cost reduction
+
+- [x] Complete dependency research and create the requested three-day follow-up heartbeat.
+- [x] Accept bounded plan and exclusive ownership; archive initial source and baseline totals.
+- [x] Implement crash-safe retry scheduling, reusable prompt/schema layout and conservative selective context cleanup.
+- [x] Add private-metadata spending comparison support; independently verify it and preserve the original baseline.
+- [x] Independently test failure/restart/preservation paths and bounded actual-model scenarios; retain original failures and final exact-copy pass.
+- [x] Obtain independent evaluator ACCEPT and pass exact final standard CI plus all5browserflows; no push performed.
+- [x] Record local release readiness and migration-before-worker requirement; verify requestedOctober31follow-up ACTIVE.
+- [ ] Deployment now authorized: verify055, integrate freshmain, pass PR/release gates, deployweb+worker and record normaltrialstart. Keep other services/settings unchanged.
+
+## Planner seven-day spending review
+
+- [x] Review current safeguards and recommend a prioritized cost-reduction approach; no implementation selected.
+
+- [x] Collect the last 168 hours of planner request/lifecycle metadata with complete pagination and exact count checks.
+- [x] Reconcile stored cost with independent token pricing, identify the main input/output and run-outcome categories, and preserve missing-usage limits.
+- [x] Record independent evaluator ACCEPT and complete the scoped estimate for delivery.
+- No optimization, provider/billing change, deployment or worker activation selected. Existing unfinished work remains below.
+
+## OpenCode API configuration guidance
+
+- [x] Verify environment names, provider-list precedence and official GLM free-tier restrictions; explain the separately paid API configuration.
+- No switch applied or requested. Keep actual private variables and the paused update agent unchanged; live provider compatibility remains unverified.
+
+## Markdown prompt release — branch published
+
+- [x] Isolate selected source, repair meaningful stalefixtures, passlocalCI/browser andindependentreview.
+- [x] Pushwithoutbypass and openattachedPR1.
+- [ ] Waitforremotechecks, mergemain and obtainexactsuccessfulreleaseartifact.
+- [ ] Deployweb/update/Discordwhilepreservingdisabledworker andunchangedGmail/config.
+- [ ] Verifyhostedreadiness/auth/assets and recordactualdeploymentIDs; no livebusinesswrites.
+
+## Full-tree Railway release — update agent stays paused
+
+- [x] Accept full-tree/five-service scope and isolated source snapshot; inspect prior deployments and secrets/config boundaries.
+- [x] Stop the old update agent, set activation false and verify unchanged last-start/no lease.
+- [x] Pass browser checks with simulated services; preserve full initial CI evidence.
+- [x] Repair and independently check five old API fixture assumptions without weakening permissions/privacy tests; focused 23 cases pass.
+- [x] Pass final exact full CI after fixture and worker-image corrections: 3,050 pass/zero fail/two optional skips; five browser flows pass.
+- [x] Obtain source/corrected-container ACCEPT and create four logical implementation commits.
+- [x] Commit shared records and push dev/tool-api-services at 8718a1c with the standard pre-push gate; original/remote parity confirmed.
+- [x] Prepare and independently ACCEPT all five exact-commit packages; source, locks, Docker COPY, 182 assets and privacy parity verified.
+- [x] Deploy all five exact packages; verify web/collector readiness, disabled worker and cron-ready enrichment without forcing a job.
+- [x] Record hosted receipts, source/remote parity and independent ACCEPT; publish this documentation-only receipt and retain final guard evidence.
+- Held: update-agent stays disabled until a new user instruction. Complete worker workflows and existing planner/dependency limitations remain separate.
+
 ## Markdown prompt release — complete
 
 - [x] Isolate requested source, retain tested prompt/runtime behavior and pass normal CI/browser/source review.
@@ -17,6 +64,18 @@
 - [x] Complete focused offline checks and standard gates; obtain independent ACCEPT.
 - [ ] Optional follow-up: avoid the one unnecessary filtered probe before valid partial-window subdivision; no further complete-empty loop was observed.
 - [ ] Existing unrelated Drive duplicate-check wording, old harness assertions, worker findings and real-service/deployment checks remain separate.
+
+## Calendar-to-map location fix — no additional production cycle
+
+- [x] Inspect saved cycle evidence and reproduce location-related partial results through read-only provider/map checks.
+- [x] Record latest user choice: less strict name matching; drop unmatched building links while preserving Calendar/event/attendance data.
+- [x] Accept bounded specialist plan, preserving event/attendance data and stale-link cleanup.
+- [x] Implement unique forgiving alias matching plus nonblocking unmapped locations.
+- [x] Independently reproduce pre-fix location/projection failures with simulated providers and a real map service over in-memory versioned storage.
+- [x] Independently verify corrected projection, ambiguity, preservation, conflicts and provider failures: 203/203, no skips.
+- [x] Check scoped formatting/current-config lint, file limits and API syntax/runtime-dependency build; read-only provider calculation ready with the intended E-Lab write suppressed.
+- [x] Obtain independent evaluator ACCEPT, confirm unchanged source pins and record final local integration.
+- Held: actual application and remaining worker coverage stay unverified. Do not run another production cycle as part of this pass.
 
 ## Contact clarification and Calendar completion — prompts tightened; live retest pending
 
@@ -45,6 +104,19 @@
 - [x] Record ambiguity mutation and Calendar repetition failures without changing prompts.
 - [ ] Complete the separately capped unavailable/conflict followup (12 additional requests maximum; 52 total).
 - [ ] Publish final semantic results, raw assertion distinctions and independent review; keep live-service task rows unchanged.
+
+## Common task catalogue and live workflows — current handoff
+
+- [x] Create editable docs/agent-tasks.md with stable IDs, a manual-entry template and dated evidence; link it from notes and documentation guides.
+- [x] Verify 45 of 54 operation names with actual-model live calls; retain separate offline transport coverage for all 54 and exact per-operation status.
+- [x] Fix/retest stale reads after successful writes and retries after read_required; 8 independent regressions and complete live Calendar/Contacts recovery pass. Preserve write replay protection and conflict bounds.
+- [x] Complete recorded CRM, bounded source/map and Calendar lifecycle variants; verify fixture cleanup and honest no-match/accepted-versus-delivered reporting.
+- [x] Run exactly one approved normal production cycle; record 3 handled, 22 calls, 12 model requests and released lease.
+- [ ] Production cycle limitations: separate sync returned partial and follow-up reached its round limit. Do not claim full sync, completed saved backlog or an empty global queue.
+- [ ] Held by explicit user choice: additional worker create/cancel cycles. Nine operation names remain unverified/partial; see coverage.md. Do not run more cycles without authorization.
+- [ ] Task-log gaps: complete batch final answer, combined Calendar-to-Miro fallback, positive enrichment match, content-changing shared-memory merge and broader presence/attendance/replacement cases.
+- [ ] Existing unmatched-attendee no-change failure and general Calendar replacement bug remain open. The invalid worker fixture sample was corrected offline without a claimed live-model rerun.
+- [x] Obtain independent ACCEPT for scoped fixes and qualified evidence; align CAL-02 with the tested rename and retain untested time shift as CAL-05. Preserve concurrent prompt-refactor edits and manual task additions.
 
 ## Markdown prompts with live LLM — bounded verification underway
 
@@ -79,6 +151,16 @@
 - [ ] Verify loader, offline runners, browser contract, deployment and frozen-source assets.
 - [ ] Complete standard checks and independent evaluation; preserve known prior failures.
 
+## All54 live API/agent calls — active
+
+- [x] Accept expanded live plan, privately verify existing production grants and obtain exact Gmail test destination.
+- [x] Execute bounded live Google/CRM tests; preserve actual failures and clean all created Calendar/Contacts fixtures.
+- [x] Implement cache correction for fresh model-selected reads after writes, retaining write replay protection and existing conflict bounds.
+- [ ] Independently test/retest same-run Calendar/Contacts workflows and remaining live Attio model operations.
+- [ ] Complete root live Gmail/Discord/Miro/map/memory/bug-report tests and cleanup/readback.
+- [ ] Complete exact worker actual-model operation coverage with production runners and clearly simulated domain data; select safe live worker backend/scope before queue/full-sync effects.
+- [ ] Publish per-operation success/blocked/model-origin matrix and independent review; preserve unmatched-attendee finding.
+
 ## Current prompt source inventory — complete
 
 - [x] Trace chat tool-selection/final-answer assembly and imported/injected guidance.
@@ -89,6 +171,19 @@
 
 Existing unresolved planner preservation and Calendar/Member Plans verification
 work below remains unchanged. [Inventory](prompt-inventory-2026-10-27/info.md).
+
+## Operation API runtime/live verification — scoped API accepted
+
+- [x] Resume tests, accept independent plan, reproduce/fix API defects and preserve hidden-operation permissions.
+- [x] Independently pass all54routes/17transportscenarios and379representativechecks with1existing optional skip; final focused83checks plus standard formatting/lint/filelimits/builds pass.
+- [x] Complete bounded actual-model Contacts checks, read-only live Gmail/Drive/Contacts/map/Discord checks and independent evaluator acceptance of the API corrections.
+- [x] Preserve original failures and report actual limits; no deployment or live business writes.
+- [ ] Unresolved planner behavior: unmatched attendee was classified no-change and cleared without saving follow-up intent in the five-input configured-model simulation. Investigate separately; do not claim the migration caused it or that complete planner behavior passed.
+- [x] Superseded for expanded live tests: reused existing production grants/configuration privately in memory. Original local .env was not changed; ordinary local startup still needs its own correct settings.
+
+## Requested branch switch — complete
+
+- [x] Fetch and select `dev/tool-api-services`, preserve all local documentation and confirm matching upstream/no unresolved conflicts. [Receipt](history/2026-10-27_16-47-24-394810-orchestrator-tool-api-services-branch-switched.md).
 
 ## Operation API development branch publication
 
@@ -2547,11 +2642,11 @@ Historical and concurrent unfinished work below is retained. Archive-related his
 - [x] User enabled correct Tech@NYU Chrome profile; verify completed Cloud Shell resources.
 - [x] Verify techflock resources; apply018/019 and independently verify exact schema, preserved data and migration receipts.
 - [x] Securely provision only new Gmail service and submit reviewed deployment.
-- [x] Verify deploymentSUCCESS, health200, unsigned/forged401 and active Gmail watch checkpoint.
+- [x] Verify deploymentSUCCESS, health 200, unsigned/forged401 and active Gmail watch checkpoint.
 - [x] Implement/review bounded diagnostic reasons and canonical base64url compatibility; diagnostic deployment submitted.
 - [x] Isolate signed push rejection to non-string notification historyId.
 - [x] Independently test/review safe numeric compatibility41/41; submit final revision79247d6f-c10f-4642-9371-540a3cee14d9.
-- [x] Verify final revisionSUCCESS, signed push200, health200, unsigned/forged401 and durable ready checkpoint.
+- [x] Verify final revisionSUCCESS, signed push200, health 200, unsigned/forged401 and durable ready checkpoint.
 - [x] Verify actual full correct-source email cache entry from the user’s test and advanced ready checkpoint.
 - [x] Notify user that signed notifications/watch work and113/113 pass; distinguish pending real-email test and inactive LLM/tools.
 - [x] Receive test subject and verify real-email cache ingestion.
@@ -3388,3 +3483,15 @@ The original GLB is preserved; runtime geometry now provides detailed approximat
 - [x] Record meaningful behavior testing and evaluator API-call permission in AGENTS.md and notes.md. No test-suite cleanup or API run requested by this documentation pass.
 
 [Refreshed database authorization handoff](history/2026-10-25_14-01-37-271205-orchestrator-database-auth-handoff-refreshed.md): no database deletion yet.
+
+
+## Global milestone documentation
+
+- [x] Plan the exact rule/template copy and preservation checks.
+- [x] Add the rules to personal global AGENTS.md, verify independently and obtain ACCEPT.
+
+- [x] Append the exact milestone rules and history template to global instructions with per-project paths.
+- [x] Independently verify preservation and obtain final review.
+
+- [x] Independently verify exact copies, original global defaults, project-record preservation and new links.
+- [x] Obtain final independent evaluation and integrate documentation.

@@ -1,5 +1,22 @@
 # Pass history
 
+October 28 planner-cost-reduction entries record independent research/plan, scoped implementation, retained model failures and corrections, exact final CI/browser evidence and local ACCEPT. Hosted migration/deployment/activation remain unperformed; the requestedOctober31follow-up must use actual trial boundaries.
+
+October 28 planner-spend entries also distinguish proposed retry/cache/context remedies from existing protections and held work. No optimization was implemented.
+
+October 28 planner-spend entries record read-only seven-day accounting, complete metadata counts, independent token-price reconciliation and limits on per-service/account-wide attribution.
+
+Calendar sync location-repair entries separate original cycle evidence, current read-only diagnostics, local fixes and offline acceptance. No further production cycle is implied.
+
+
+October27 prompt-clarification-completion entries record the two selected wording fixes, actual-model validation and preserved original failed evidence.
+
+October27 prompt-markdown-live entries distinguish actual configured inference, simulated service outcomes, bounded request counts and remaining live-service limitations.
+
+October27 prompt-markdown entries record the plan, exclusive writers, exact-text extraction and independent verification; prior concurrent work remains preserved.
+
+October27 prompt-inventory entries record read-only chat and worker tracing, independent evaluation and the source summary; prompt text and runtime behavior are unchanged.
+
 October27 prompt-release entries record test-fixture repair, isolated exact-source packaging, checks, publication and production receipts.
 
 Markdown prompt migration, actual-model checks and Contact/Calendar wording corrections are recorded in `milestones/prompt-markdown-2026-10-27/`, `milestones/prompt-markdown-live-2026-10-27/` and `milestones/prompt-clarification-completion-2026-10-27/`. Runtime instructions live in root `prompts/`; deployment status is recorded in the current release milestone.
@@ -359,6 +376,8 @@ October26 main-publication entries distinguish existing dev commits from dirty G
 Final October26 publication receipt: [2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md](2026-10-26_12-10-23-151680-orchestrator-local-work-published-to-main.md) verifies source/records on main and retains the unapplied database cleanup boundary.
 
 
+Global milestone documentation entries record the exact section/template copy, preservation checks and independent review, separately from ongoing product work.
+
 Current production log inspection: [2026-10-23_12-27-22-149231-orchestrator-railway-current-log-check.md](2026-10-23_12-27-22-149231-orchestrator-railway-current-log-check.md) distinguishes successful deployments from observed application failures without changing live services.
 
 October 26 folder-rename verification records portable application paths, independent local builds/serving checks, an unrelated stale collector test expectation, and the repaired local Railway folder association. Production services were not changed.
@@ -496,6 +515,52 @@ Final Gmail activation entries record user-approved Google send consent, preserv
 - [Private operation API passes independent static review](2026-10-27_16-39-42-665897-evaluator-operation-api-static-review.md).
 
 - [Operation API development branch publication](2026-10-27_16-44-17-884943-orchestrator-operation-api-dev-publication.md).
+
+[Branch switch and preservation receipt](2026-10-27_16-47-24-394810-orchestrator-tool-api-services-branch-switched.md) records Git state and documentation conflict resolution; it establishes no runtime test or release result.
+
+October27 operation API runtime entries record independent planning, reproduced failures, scoped transport corrections and independent offline acceptance; live/model results remain separately qualified.
+
+Final October27 operation API entries retain independent ACCEPT for the transport corrections while explicitly recording the failed worker preservation case and unavailable live Calendar/Member Plans verification.
+
+Expanded October27 all-operation entries preserve read-only planning, private production-grant verification, live Google/CRM failures and cleanup, and the scoped chat post-write read-cache correction.
+
+Final all-operation workflow entries preserve both cachefailure reproductions/fixes, complete realCalendar/CRM outcomes and cleanup, fixed-source isolation, the one partial productioncycle and the user-held worker coverage. No all54live or currentprompt-refactor acceptance is implied.
+
+Final expanded live-test review accepts the scoped API/cache fixes and evidence,
+with the user's stop after one production cycle preserved. Calendar rename and
+untested time shift are separate task rows; full live acceptance remains held.
+
+Calendar location-fix coding/testing entries preserve the original false-partial
+reproduction, the selected forgiving matching/drop policy, actual map-service
+in-memory acceptance and guarded read-only checks. Suppressed intended writes
+are not live application evidence.
+
+Final calendar location-fix entries record independent ACCEPT and local
+integration, with no additional production cycle, live application or deployment.
+Broader live operation and planner findings remain separate.
+
+Full-tree release entries record explicit commit/push/five-service authorization,
+source-free startup and pause receipts, full CI/browser results, exact-commit
+packages and hosted verification. No forced production cycle is authorized.
+
+Final full-tree pre-upload entries preserve the real worker image omission and
+its corrected COPY/import regression, final passing CI, source review and the
+acknowledged/corrected zero-replica control-plane incident. The worker remained
+disabled; upload and hosted receipts are not inferred from those local checks.
+
+Full-tree publication and package-review entries tie source commit 8718a1c to
+five accepted archives, normal pre-push checks, macOS metadata exclusion and all
+182 frontend artifacts. Hosted rollout success is recorded separately.
+
+Full-tree hosted completion entries record all five successful deployment IDs,
+web/collector readiness and independent ACCEPT while retaining the disabled
+worker, unchanged last-start and unforced scheduled enrichment. The documentation
+receipt is separate from source 8718a1c application packages.
+
+[OpenCode environment guidance](2026-10-27_21-09-02-669914-orchestrator-opencode-environment-guidance.md) records the exact setting names,
+provider-list override behavior and official free-model client restriction.
+The local parsing check used placeholder keys; no live configuration or service
+change was requested or performed.
 
 - [Exact release artifact verification and deployment coordination](2026-10-27_19-41-28-857228-orchestrator-release-artifact-verified-deploy-coordination.md).
 

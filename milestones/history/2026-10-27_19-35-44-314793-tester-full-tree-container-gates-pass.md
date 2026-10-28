@@ -1,0 +1,10 @@
+# Full CI passes after worker container regression fix
+
+- Local timestamp / acting role / milestone: 2026-10-27T19:35:44.314793-04:00 / tester / full-tree-release-2026-10-27.
+- Requested scope: commit/push/deploy the entire tree onto Railway, leaving the update agent paused and not running another production cycle.
+- Starting repository state: dev/tool-api-services with accepted prompt/API/cache/location code; isolated snapshot and explicit private-variable/queue boundaries.
+- Work performed / changed files: Independently verified image projection and negative controls, then reran exact npm run ci on the fixed snapshot. All 4,239 original source pins are accounted for with six reviewed overrides: three older API fixtures, worker Dockerfile, runtime package test and literal-prompt whitespace attributes. Browser five-flow evidence remains valid because frontend/runtime code is unchanged since that check.
+- Decisions: Test actual image contents/imports, not package membership or syntax alone. Keep fixed graph/source/secret boundaries. Preserve original region, private variables except the deliberate activation=false, volumes, source grants and all queue/task data. No SQL or dependency upgrade.
+- Checks and evidence: ignored evidence/full-tree-release-2026-10-27 contains final container CI, image projection/negative controls, source pins, worker pause/region readbacks and previous deployment metadata. [Release scope](../full-tree-release-2026-10-27/info.md).
+- Resulting state / acceptance: All CI gates pass: 3,050 passed, zero failed, two optional skips, 3,052 total. Standard browser five flows pass. No model, production or business-write tests ran. Initial five-failure and intermediate successful logs remain preserved; this is the final container-source CI acceptance.
+- Remaining work and handoff: Record exact clean commit and five reviewed package hashes, push current development branch, upload/verify all services, then journal hosted and Git parity. No planner start or business-write smoke test.

@@ -19,3 +19,15 @@ Status: implemented, independently accepted, published and deployed to web/chat 
 Implementation accepted: coder185-checkgate, independenttester109 and evaluator126 overlap; all pass withAPIcompiler and whitespace. Both isolatedrelease roots pass109checks andAPIbuild. Webbaseline273pins and workerbaselinea34 retained, overlayonly4reviewedruntimefiles;279web/60worker packagehashes/credentialscanpass. Existingprimary is inignored.env list, reloadverified. Livebackupcredentials are absent. Sourcepublication/release follow, with final receipts in the snapshot.
 
 Finalrelease: web4f166ae7 SUCCESSat8:21:09AMNY andworkere8f401b7 SUCCESSat8:19:26AMNYOctober24. Bothprivateenvironmentlistsverifiedwithoneexistingprimary; source3accbda pushed. Hostedhealth/auth/config/unchangedHTMLand10JS/CSSassets pass withzeroverificationmodel/businesswrites. Anordinaryworkerbatch recordsone credit_balance_exhausted429attempt, showingrecognizedquota skipsredundantsame-providerretries. Livebackupaccounts notconfigured/tested. Startupprunemaintenancefailureisrecordedseparately;requiredmodelauditsucceed. See finalhistoryreceipt for exactIDs/evidencelimits.
+
+## 2026-10-27 — OpenCode configuration inquiry
+
+The existing adapter appends /chat/completions to LLM_BASE_URL. Current official
+OpenCode API configuration uses https://opencode.ai/inference/openai/v1 with
+provider openai-compatible, model glm-5.3-flash and a private OpenCode key.
+The similarly named glm-5.3-flash-free is restricted to the OpenCode app; official
+documentation states other clients receive HTTP 403 even with a key. Blank
+LLM_PROVIDERS_JSON uses individual settings; a nonblank list overrides them.
+Local placeholder-key parsing/precedence checks passed. Guidance only: no actual
+configuration, code, deployment or activation change; no live API compatibility
+claim. [Evidence](../history/2026-10-27_21-09-02-669914-orchestrator-opencode-environment-guidance.md).

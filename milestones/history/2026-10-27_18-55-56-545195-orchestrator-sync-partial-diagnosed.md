@@ -1,0 +1,10 @@
+# Calendar sync partial narrowed to location matching
+
+- Local timestamp / acting role / milestone: 2026-10-27T18:55:56.545195-04:00 / orchestrator / calendar-sync-location-fix-2026-10-27.
+- Requested scope: diagnose and fix partial Calendar-to-map sync without another production cycle; use less strict name matching and drop unmapped locations.
+- Starting repository state: dev/tool-api-services at 02427ba with prior uncommitted API/cache corrections and another chat's prompt migration preserved.
+- Work performed / changed files: Inspected saved cycle transport/diagnostics, current synchronizer/client/store and location contracts. Created a guarded read-only diagnostic harness and source-free report under ignored evidence/calendar-sync-partial-2026-10-27. Saved pre-edit sync/test copies there. Initialized this milestone folder.
+- Decisions: Source reason code 34 means only generic partial. No recorded HTTP failures or map-upsert RPC occurred in the original cycle. Current read-only reproduction identifies three unknown locations; one supported campus name differs in punctuation/spacing. The user first selected explicit warnings, then superseded that with less strict matching and dropping unmapped locations. Preserve event/attendance facts with empty unmatched building links; do not guess or expand the catalogue.
+- Checks and evidence: Read-only current-state probe returns partial with three unknown_location outcomes, all other results unchanged, no potential writes, zero business writes/model calls/production cycles. It uses a diagnostic snapshot view and simplified member proof; it does not prove the exact original unresolved set or successful production authorization/writes.
+- Resulting state / acceptance: Cause reproduced and bounded implementation scope established. No runtime fix or new live-write success claimed yet.
+- Remaining work and handoff: Accept read-only specialist plan, implement alias/placement correction, independently test storage preservation and retained failures, evaluate and integrate. Do not run a production cycle.

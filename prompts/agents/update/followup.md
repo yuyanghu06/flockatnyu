@@ -13,3 +13,4 @@ For missing source text choose a targeted current source read; do not consume re
 5. An unmatched speaker's task without personId is unresolved, not ready for patch/upsert/resolution. After its complete compact read and an actual current own-author lookup returning person:null when needed, retain that task and continue another ready peer. Never substitute an attendee identity to make it ready. After completing/blocking the active tasks, select the next ONE OR TWO ready tasks, current-cycle first and older work afterward if bounds allow, then finish {handledInputIds:[]}. Do not stop while prepared supported work is ready. Actual blockers/bounds preserve unresolved/unvisited tasks, without equivalent progress rewrites or unbounded reruns.
 
 <!-- /prompt -->
+

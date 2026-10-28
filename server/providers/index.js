@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { AttachmentError, providerChatMessages } from "../chat/attachments.js";
 import { createAuditLogger } from "../audit/model-audit.js";
 import { abortableDelay, fallbackStatus, hardQuotaCode, retryDelay, transientStatus, transientTransport, untilAborted } from './retry.js';
+import { plannerCacheRequest } from './planner-cache.js';
 // Private routing state cannot be authored by model output or an upstream body.
 const operationBudget=Symbol('operationBudget'),fallbackFailures=new WeakSet();
 const sharedBudget=(config,signal)=>{
@@ -269,6 +270,8 @@ function createSingleProvider(config, { fetchImpl = fetch, audit = createAuditLo
       const body=anthropic?{model:config.model,system,messages:native,tools:definitions,max_tokens:2048,stream:false}
         :{model:config.model,messages:[{role:'system',content:system},...native],tools:definitions,tool_choice:'auto',max_completion_tokens:2048,stream:false,store:false,
           ...(['gpt-6-luna','gpt-6-sol'].includes(config.model)&&config.baseUrl.replace(/\/$/,'')==='https://api.openai.com/v1'?{reasoning_effort:'none'}:{})};
+      const cache = plannerCacheRequest({config,auditContext,system,messages:native,tools:definitions});
+      if(cache)Object.assign(body,cache);
       if(Buffer.byteLength(JSON.stringify(body))>350000) throw new ProviderError('invalid_provider_request');
       const { combined, deadline } = suppliedBudget??budget(signal);
       const { response, auditState } = await dispatch({ operation: 'toolTurn', context: auditContext, body, signal, combined, deadline });
