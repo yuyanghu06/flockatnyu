@@ -9,6 +9,10 @@ const statuses=new Set(['ready','pending','conflict','capacity','expired','stale
 const validScope=ids=>Array.isArray(ids)&&ids.length<=500&&ids.every(validUuid)
   &&new Set(ids.map(id=>id.toLowerCase())).size===ids.length;
 const timestamp=value=>typeof value==='string'&&value.length<=64&&Number.isFinite(Date.parse(value));
+const retryKeys=new Set(['taskId','updatedAt','cycleId','retryAt','finalizedAt','outcome']);
+const validRetry=row=>plainObject(row)&&Object.keys(row).length===retryKeys.size&&Object.keys(row).every(key=>retryKeys.has(key))
+  &&validUuid(row.taskId)&&validUuid(row.cycleId)&&timestamp(row.updatedAt)&&timestamp(row.retryAt)
+  &&(row.finalizedAt===null||timestamp(row.finalizedAt))&&typeof row.outcome==='string'&&/^[a-z_]{1,64}$/.test(row.outcome);
 function validInfo(info) {
   return plainObject(info)&&validScope(info.sourceIds)&&info.sourceIds.length>0;
 }
@@ -91,7 +95,7 @@ export function createPendingTaskStore({env=process.env,fetchImpl=globalThis.fet
         reason:[401,403].includes(httpStatus)?'forbidden':'invalid_response',
         category:[401,403].includes(httpStatus)?'permission_denied':'invalid_response',stage:'response_parse'});
       reader=response.body.getReader();const chunks=[];
-      const maxBytes=!response.ok?32768:['read','save'].includes(name)?MAX_SINGLE_RESPONSE_BYTES:MAX_RESPONSE_BYTES;
+      const maxBytes=!response.ok?32768:name.startsWith('retry')?262144:['read','save'].includes(name)?MAX_SINGLE_RESPONSE_BYTES:MAX_RESPONSE_BYTES;
       while(true){
         if(combined.aborted)throw Error('aborted');
         const {value,done:complete}=await reader.read();if(combined.aborted)throw Error('aborted');if(complete)break;
@@ -116,6 +120,29 @@ export function createPendingTaskStore({env=process.env,fetchImpl=globalThis.fet
     finally{combined.removeEventListener('abort',cancel);if(reader){await reader.cancel().catch(()=>{});reader.releaseLock();}}
   }
   return Object.freeze({configured,
+    // Separate runner bookkeeping. Ordinary saved-data reads never write these
+    // markers or implicitly retrieve provider/source content.
+    async listRetries({leaseToken,allowedSourceIds,signal}={}) {
+      if(!validScope(allowedSourceIds)||allowedSourceIds.length>0&&!validUuid(leaseToken))return {status:'invalid_request'};
+      const result=await rpc('retry_catalogue',{p_token:validUuid(leaseToken)?leaseToken:null,p_allowed_source_ids:[...allowedSourceIds]},signal,
+        data=>Array.isArray(data.retries)&&data.retries.length<=200&&data.retries.every(validRetry)
+          &&new Set(data.retries.map(row=>row.taskId.toLowerCase())).size===data.retries.length);
+      return result.status==='ready'?{status:'ready',retries:result.retries}:result;
+    },
+    async beginRetry({leaseToken,allowedSourceIds,taskId,expectedUpdatedAt,cycleId,signal}={}) {
+      if(!validUuid(leaseToken)||!validScope(allowedSourceIds)||!allowedSourceIds.length||!validUuid(taskId)
+        ||!validUuid(cycleId)||!timestamp(expectedUpdatedAt))return {status:'invalid_request'};
+      return rpc('retry',{p_token:leaseToken,p_allowed_source_ids:[...allowedSourceIds],p_task_id:taskId,
+        p_expected_updated_at:expectedUpdatedAt,p_cycle_id:cycleId,p_action:'attempt'},signal);
+    },
+    async finishRetry({leaseToken,allowedSourceIds,taskId,expectedUpdatedAt,cycleId,outcome,checkpointUpdatedAt,signal}={}) {
+      if(!validUuid(leaseToken)||!validScope(allowedSourceIds)||!allowedSourceIds.length||!validUuid(taskId)
+        ||!validUuid(cycleId)||!timestamp(expectedUpdatedAt)||checkpointUpdatedAt!==undefined&&!timestamp(checkpointUpdatedAt)
+        ||typeof outcome!=='string'||!/^[a-z_]{1,64}$/.test(outcome))return {status:'invalid_request'};
+      return rpc('retry',{p_token:leaseToken,p_allowed_source_ids:[...allowedSourceIds],p_task_id:taskId,
+        p_expected_updated_at:expectedUpdatedAt,p_cycle_id:cycleId,p_action:'finish',p_outcome:outcome,
+        p_checkpoint_updated_at:checkpointUpdatedAt??null},signal);
+    },
     async catalogue({leaseToken,allowedSourceIds,signal}={}) {
       if(!validScope(allowedSourceIds)||allowedSourceIds.length>0&&!validUuid(leaseToken))return {status:'invalid_request'};
       const result=await rpc('catalogue',{p_token:validUuid(leaseToken)?leaseToken:null,p_allowed_source_ids:[...allowedSourceIds]},signal,

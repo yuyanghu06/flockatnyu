@@ -13,7 +13,7 @@ import {encodeTaskInfo,MAX_HISTORY_BYTES,MAX_TASK_WIRE_BYTES,postgresJsonBytes} 
 
 const env={SUPABASE_URL:'https://local-task-storage.invalid',SUPABASE_SERVICE_ROLE_KEY:'synthetic-only'};
 const copy=value=>structuredClone(value),bytes=value=>Buffer.byteLength(JSON.stringify(value));
-const migrations=['202610170018_agent_input_cache.sql','202610170019_agent_automation_state.sql','202610180032_scoped_agent_claim.sql','202610210036_agent_retry_quarantine.sql','202610220038_agent_empty_scope_maintenance.sql','202610220039_agent_pending_tasks.sql','202610230045_agent_task_catalogue.sql'];
+const migrations=['202610170018_agent_input_cache.sql','202610170019_agent_automation_state.sql','202610180032_scoped_agent_claim.sql','202610210036_agent_retry_quarantine.sql','202610220038_agent_empty_scope_maintenance.sql','202610220039_agent_pending_tasks.sql','202610230045_agent_task_catalogue.sql','202610280055_agent_task_retry_schedule.sql'];
 async function setup(){
  const db=new PGlite(),source=randomUUID(),token=randomUUID(),calls=[],diagnostics=[];
  await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');

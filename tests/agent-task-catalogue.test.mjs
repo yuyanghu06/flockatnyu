@@ -26,7 +26,7 @@ test('045 actual SQL and Node transport:131large tasks stay private, small scope
  const db=new PGlite();
  try {
   await db.exec('create role anon;create role authenticated;create role service_role bypassrls;create role public_probe;');
-  for(const name of ['202610170018_agent_input_cache.sql','202610170019_agent_automation_state.sql','202610180032_scoped_agent_claim.sql','202610210036_agent_retry_quarantine.sql','202610220038_agent_empty_scope_maintenance.sql','202610220039_agent_pending_tasks.sql','202610230045_agent_task_catalogue.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
+  for(const name of ['202610170018_agent_input_cache.sql','202610170019_agent_automation_state.sql','202610180032_scoped_agent_claim.sql','202610210036_agent_retry_quarantine.sql','202610220038_agent_empty_scope_maintenance.sql','202610220039_agent_pending_tasks.sql','202610230045_agent_task_catalogue.sql','202610280055_agent_task_retry_schedule.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+name,import.meta.url),'utf8'));
   await seedLease(db);
   const clock=(await db.query('select clock_timestamp() now')).rows[0].now;
   const created=new Date(clock).toISOString(),expires=new Date(Date.parse(created)+86400000).toISOString();

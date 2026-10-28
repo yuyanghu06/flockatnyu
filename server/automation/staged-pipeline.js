@@ -2,11 +2,12 @@ import { promptText } from '../prompt-loader/index.js';
 import {createHash,randomUUID} from 'node:crypto';
 import {canonicalJson,plainObject,validUuid} from './validation.js';
 import {sourceMailbox} from '../google/mailbox.js';
+import {createTaskRetrySchedule,TASK_RETRY_MS as OLD_TASK_RETRY_MS} from './task-retry-schedule.js';
 const taskId=value=>{const hash=createHash('sha256').update(value).digest('hex');return `${hash.slice(0,8)}-${hash.slice(8,12)}-5${hash.slice(13,16)}-a${hash.slice(17,20)}-${hash.slice(20,32)}`;};
 const definition=(name,description,properties,required,readOnly=false)=>({name,description,phases:name==='defer_task'?['initial','followup']:['followup'],
   ...(readOnly?{readOnly:true}:{idempotent:true}),parameters:{type:'object',additionalProperties:false,properties,required}});
 const modelTask=task=>['participation','location','source_review'].includes(task?.info?.request?.operation);
-const HISTORY_PAGE_CHARS=12000,HISTORY_PAGE_BYTES=16384,OLD_TASK_RETRY_MS=300000;
+const HISTORY_PAGE_CHARS=12000,HISTORY_PAGE_BYTES=16384;
 const taskProperties={taskId:{type:'string',minLength:36,maxLength:36},summary:{type:'string',minLength:1,maxLength:2000},operation:{type:'string',enum:['participation','location','source_review']},
   calendarEventId:{type:'string',minLength:5,maxLength:1024,description:promptText("tools/worker/tasks#field.calendar-event-id")},calendarKind:{type:'string',enum:['club','member']},personId:{type:'string',minLength:36,maxLength:36,description:promptText("tools/worker/tasks#field.person-id")},buildingId:{type:'string',maxLength:120}};
 // This is a temporary work buffer, separate from operational audits. Source
@@ -204,14 +205,9 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
   };
   const eligibleCatalogue=task=>task?.modelEligible===true&&Date.parse(task.expires_at)>new Date(now()).getTime()
     &&task.sourceIds?.length>0&&task.sourceIds.every(id=>scope().includes(id));
-  function availableForFollowup(task) {
-    const retry=oldTaskRetries.get(task.uuid),time=new Date(now()).getTime();
-    if(!retry)return true;
-    if(retry.updatedAt!==task.updated_at||retry.until<=time||Date.parse(task.expires_at)<=time||currentCycleTask(task)) {
-      oldTaskRetries.delete(task.uuid);return true;
-    }
-    return false;
-  }
+  const retrySchedule=createTaskRetrySchedule({taskStore,getCycle:()=>cycle,getTask:id=>tasks.get(id),getScope:scope,
+    current,currentCycleTask,attemptedTasks,oldTaskRetries,now});
+  const availableForFollowup=task=>retrySchedule.available(task);
   const catalogueEntry=task=>{
     const request=task.info.request,summary=typeof request.summary==='string'?request.summary:promptText("tools/worker/tasks#default-summary");
     return {uuid:task.uuid,created_at:task.created_at,updated_at:task.updated_at,expires_at:task.expires_at,
@@ -617,6 +613,8 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       return remaining.length?{status:'pending',reason:'unfinished_participation',taskIds:remaining.slice(0,20),remainingCount:remaining.length,
         message:promptText("tools/worker/tasks#finish.current-cycle-incomplete")}:{status:'ready'};
     },
+    recordTaskAttempt:args=>retrySchedule.recordTaskAttempt(args),
+    finishAttempt:args=>retrySchedule.finishAttempt(args),
     recordApiResult:entry=>cycle.recordExecution({kind:'api_response',stage:'followup',...entry}),
     async beginCycle({leaseToken,inputs,recordExecution,getExecutionLog,signal}) {
       catalogue.clear();tasks.clear();touched.clear();receipts.clear();taskFragmentOrigins.clear();disclosures.clear();obligations.clear();stopWitnesses.clear();createdTaskIds.clear();initialTaskIds.clear();historyPageOrigins.clear();attemptedTasks.clear();followupScope.clear();phase='initial';
@@ -624,10 +622,8 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       if(taskStore.configured===false||typeof taskStore.catalogue!=='function'||typeof taskStore.read!=='function')throw Error('not_configured');
       const result=await refreshCatalogue(signal);
       if(result?.status!=='ready')storageFailure(result);
-      for(const [id,retry]of oldTaskRetries) {
-        const entry=catalogue.get(id);
-        if(!eligibleCatalogue(entry)||retry.updatedAt!==entry.updated_at||retry.until<=new Date(now()).getTime())oldTaskRetries.delete(id);
-      }
+      const retryResult=await retrySchedule.begin(signal);
+      if(retryResult.status!=='ready')storageFailure(retryResult);
       for(const id of catalogue.keys())initialTaskIds.add(id);
       const candidates=await loadCoverageCandidates(cycle.inputs,signal);
       if(candidates.status!=='ready')storageFailure(candidates);
@@ -674,7 +670,7 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
       phase='followup';disclosures.clear();
       const orderedTasks=manifest();
       return {status:'ready',inputIds:orderedTasks.map(task=>task.uuid),followupRequired:orderedTasks.length>0,context:{tasks:orderedTasks,taskCount:orderedTasks.length,
-        deferredTaskCount:deferred.length,nextTaskRetryAt:deferred.length?new Date(Math.min(...deferred.map(task=>oldTaskRetries.get(task.uuid).until))).toISOString():null,
+        deferredTaskCount:deferred.length,nextTaskRetryAt:deferred.length?new Date(Math.min(...deferred.map(task=>retrySchedule.retryAt(task)))).toISOString():null,
         executionHistory:fragments.bound({status:'ready',history:cycle.getExecutionLog().filter(row=>['api_response','api_result'].includes(row.kind)),
           notice:promptText("agents/update/context#followup.execution-history")}),
         apiResults:{status:'ready',notice:promptText("agents/update/context#followup.sync-result")},
@@ -694,7 +690,7 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
             sourceIds:[...new Set([...task.info.sourceIds,...sourceIds({executionLog,observedReferences})])]};
           const result=await taskStore.save({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),task:{uuid:task.uuid,info},expectedUpdatedAt:task.updated_at,signal});
           if(result.status!=='ready')return result;
-          tasks.set(task.uuid,result.task);continue;
+          retrySchedule.checkpoint(task,result.task);tasks.set(task.uuid,result.task);continue;
         }
         if(!hasRead(task))continue;
         const newHistory=executionLog.slice(receipts.get(task.uuid).readAt).filter(row=>row.kind==='tool_result'&&row.inputIds?.includes(task.uuid)&&row.tool!=='read_pending_task');
@@ -707,10 +703,10 @@ export function createStagedPipeline({taskStore,principal,getAllowedSourceIds=()
           references:references({info:task.info,mergedHistory,observedReferences})};
         const result=await taskStore.save({leaseToken:cycle.leaseToken,allowedSourceIds:scope(),task:{uuid:task.uuid,info},expectedUpdatedAt:task.updated_at,signal});
         if(result.status!=='ready')return result;
-        tasks.set(task.uuid,result.task);
+        retrySchedule.checkpoint(task,result.task);tasks.set(task.uuid,result.task);
       }
-      // Do not delay anything after a partial/failed checkpoint. Only a fully
-      // saved cycle may defer an actually inspected, still-unresolved old row.
+      // Legacy injected stores retain their in-memory spacing after successful
+      // checkpoints. Production crash/failure timing uses separate durable hooks.
       const time=new Date(now()).getTime();
       for(const id of attemptedTasks) {
         const task=tasks.get(id);
