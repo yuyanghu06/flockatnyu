@@ -184,16 +184,16 @@ test('closed-read cleanup preserves current dependencies, failures, uncertain sc
   add('read_context_fragment','fragment',[closed],{id:'70000000-0000-4000-8000-000000000001',offset:0},{status:'ready',fragment:{id:'70000000-0000-4000-8000-000000000001',offset:0,nextOffset:body.length,totalChars:body.length*2,data:body}});
   add('read_pending_task','history-page',[closed],{taskId:closed,detail:'history'},{status:'ready',historyPage:{taskId:closed,updatedAt:now,section:'executionHistory',offset:0,nextOffset:body.length,totalChars:body.length*2,data:body}});
   add('upsert_map_event','write-receipt',[closed],{},{status:'ready',body});
-  add('read_discord_messages','eligible-control',[closed],{messageId:'610',channelId:'200'},{status:'ready',outcome:'source_missing',coverage:{complete:true,reason:'exact_original_missing'},body:'Closed original result. '.repeat(500)},{protect:false});
+  add('read_discord_messages','eligible-control',[closed],{messageId:'610',channelId:'200'},{status:'ready',outcome:'source_missing',coverage:{complete:true,reason:'exact_original_missing'},body:'Closed original result. '.repeat(500)},{protect:true});
   for(const id of [closed,reopened])add('resolve_pending_task','resolution-'+id,[id],{taskId:id,outcome:'no_change_needed'},{status:'ready'});
   add('read_map_events','post-resolution',[closed],{sourceId:ids.club,sourceRecordId:'closed-readback'},ready);
   const before=copy({messages,execution,snapshot}),result=compactConversation({messages,executionLog:execution,snapshot,referenceBindings:bindings,phase:'followup',triggerBytes:1});
   for(const id of protectedIds)assert.equal(result.messages.find(row=>row.toolCallId===id).content,messages.find(row=>row.toolCallId===id).content,id+' must remain unchanged');
-  const marker=JSON.parse(result.messages.find(row=>row.toolCallId==='eligible-control').content);assert.equal(marker.reason,'resolved_task_read');assert.equal(marker.outcome,'source_missing');assert.deepEqual(marker.coverage,{complete:true,reason:'exact_original_missing'});
+  const retained=JSON.parse(result.messages.find(row=>row.toolCallId==='eligible-control').content);assert.equal(retained.contextRetired,undefined,'Opaque unfinished task facts may share this source');assert.equal(retained.outcome,'source_missing');assert.deepEqual(retained.coverage,{complete:true,reason:'exact_original_missing'});
   assert.deepEqual({messages,execution,snapshot},before);
 });
 
-test('production follow-up retires a closed source read while preserving its queue-bound initial handoff',async()=>{
+test('production follow-up preserves source evidence for unread backlog and its queue-bound initial handoff',async()=>{
   const first=task(1,{current:true,operation:'source_review',original:input(1,{content:'Thanks for sharing the slides.',author:'700'}),large:false}),second=task(2,{current:true}),f=selectedFixture({pending:[first,second],backlog:198});
   const saved=f.tasks.get(second.uuid);saved.info.executionHistory=[{kind:'tool_result',tool:'read_map_events',arguments:{},inputIds:[second.uuid],result:{status:'ready',historicalDetail:'Optional earlier context retained privately. '.repeat(8000)}}];
   const original=copy(saved.info.inputs),history=copy(saved.info.executionHistory);let initial=0,followup=0;
@@ -206,7 +206,7 @@ test('production follow-up retires a closed source read while preserving its que
     assert(chain?.nextOffset!==null);return turn(call('read_context_fragment','continue_open_history_'+followup,{id:chain.id,offset:chain.nextOffset},[second.uuid]));
   }});
   assert.notEqual(result.status,'context_limit');assert(!f.tasks.has(first.uuid));assert(f.tasks.has(second.uuid));
-  assert(f.requests.some(request=>request.messages.some(row=>row.role==='tool'&&row.toolCallId==='closed_source'&&JSON.parse(row.content).reason==='resolved_task_read')));
+  const sourceCopies=f.requests.flatMap(request=>request.messages.filter(row=>row.role==='tool'&&row.toolCallId==='closed_source'));assert(sourceCopies.length);assert(sourceCopies.every(row=>!JSON.parse(row.content).contextRetired),'Unread backlog cannot prove the closed source is irrelevant');
   const compactedRequests=f.requests.filter(request=>request.messages.some(row=>row.role==='user'&&row.content.includes('runner_context_compaction')));assert(compactedRequests.length);
   for(const request of compactedRequests){const handoff=request.messages.filter(row=>row.role==='user').map(row=>JSON.parse(row.content)).find(row=>row.currentCycleObservations)?.currentCycleObservations;assert(handoff?.observations.some(row=>row.callId==='initial_queue_source'&&row.result.status==='ready'),'Initial queue-bound source copy stays visible');}
   assert(f.execution.some(row=>row.callId==='closed_source'&&row.result.sources?.length&&!row.result.contextRetired));
