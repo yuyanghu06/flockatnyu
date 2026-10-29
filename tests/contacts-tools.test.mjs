@@ -66,7 +66,7 @@ test('contacts: SQL-backed fuzzy search and page coverage distinguish more resul
  const found=await call(tools,'search_contacts',{query:'Person 2',limit:2});assert.equal(found.contacts.length,1);assert.equal(found.contacts[0].raw_input.first_name,'Person 2');
  const injection='Rae),id.not.is.null,raw_input->>email.ilike.%*';
  const result=await call(tools,'search_contacts',{query:injection});assert.equal(result.status,'ready');assert.equal(result.contacts.length,0);
- const lastRequest=f.requests.at(-1),url=new URL(lastRequest.url);assert.equal(url.pathname,'/rest/v1/rpc/contacts_search');assert.equal(url.search,'');assert.equal(lastRequest.body.p_query,injection,'Untrusted punctuation is one bound RPC argument');
+ const lastRequest=f.requests.at(-1),url=new URL(lastRequest.url);assert.equal(url.pathname,'/rest/v1/rpc/contacts_search_fields');assert.equal(url.search,'');assert.equal(lastRequest.body.p_query,injection,'Untrusted punctuation is one bound RPC argument');
  const combined=contactStorage({rows:[contactRow(contactIds.rae,{first_name:'Avery',last_name:'Chen',workplace:'Northstar Labs'}),contactRow(contactIds.other,{first_name:'Avery',last_name:'Cheng',workplace:'Another Studio',phone_number:''})]});
  const filtered=await call(request(combined),'search_contacts',{query:'Avrey',name:'Chen',workplace:'Northstar',emailPresence:'yes',phonePresence:'yes',sort:'name_asc'});assert.equal(filtered.status,'ready');assert.deepEqual(filtered.contacts.map(row=>row.id),[contactIds.rae]);assert.equal(combined.attempts.length,0,'Search RPC is read-only despite using POST transport');
  for(const value of ['https://unrelated.invalid/path','https://example.com/?credential=x','https://user:password@example.com','http://example.com']){

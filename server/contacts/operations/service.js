@@ -1,6 +1,7 @@
 import { contactFields } from '../fields.js';
 import { canonicalJson, validateArguments, validUuid } from '../../automation/validation.js';
 import { validContact, validContactFields } from '../store.js';
+import { validContactSummary } from '../summary.js';
 
 import { CONTACT_TOOLS } from './schema.js';
 const methods = {
@@ -97,7 +98,7 @@ export function createContactsOperationService({ store } = {}) {
         if (
           !Array.isArray(result.contacts) ||
           result.contacts.length > (args.limit ?? 5) ||
-          result.contacts.some((contact) => !validContact(contact)) ||
+          result.contacts.some((contact) => !validContactSummary(contact)) ||
           typeof result.coverage?.complete !== 'boolean' ||
           !(
             result.coverage.nextOffset === null ||
@@ -109,7 +110,12 @@ export function createContactsOperationService({ store } = {}) {
           return failure('invalid_response');
         return {
           status: 'ready',
-          contacts: result.contacts.map(contactOf),
+          contacts: result.contacts.map((contact) => ({
+            id: contact.id,
+            created_at: contact.created_at,
+            updated_at: contact.updated_at,
+            raw_input: { ...contact.fields },
+          })),
           coverage: { complete: result.coverage.complete, nextOffset: result.coverage.nextOffset },
           sources: [],
         };

@@ -1,3 +1,23 @@
+## Contacts field-only list repair — locally accepted; release in progress
+
+The user authorized fixing and deploying the production read failure. Isolated
+branch codex/contacts-fields-read-fix starts from deployed main 5e62ffe. The
+accepted plan adds a private database search returning only six supported fields,
+IDs and timestamps. Full raw profiles and exact version-checked edits remain
+unchanged. Preserve existing search/filter/ranking and pagination behavior.
+
+Diagnosis is independently accepted: ten requested results plus one lookahead
+row returned291451bytes, exceeding the256000-byte cap. Five-result paging fails
+too; a one-result page and two sampled exact reads succeed. No repair is live yet.
+Implementation is independently ACCEPTED: full CI passes 3,082 tests with zero
+failures/two optional skips, and all five browser flows pass. Continue the normal
+main/release-package gates. Apply reviewed056 before deploying web only.
+Existing private settings, other services and the planner trial remain unchanged.
+
+[Implementation pass](history/2026-10-28_22-05-03-083074-coder-contacts-fields-only-reads-implemented.md) · [Scope and evidence](contacts-read-incident-2026-10-28/info.md) · [Accepted plan](history/2026-10-28_22-00-54-965248-planner-contacts-fields-repair-authorized.md)
+
+[Tester](history/2026-10-28_22-08-21-100579-tester-contacts-summary-independent-checks-pass.md) · [Evaluator](history/2026-10-28_22-08-21-100580-evaluator-contacts-field-only-repair-release-accepted.md) · [Orchestrator](history/2026-10-28_22-08-21-100581-orchestrator-contacts-repair-local-gates-complete.md) · [Verification](contacts-read-incident-2026-10-28/verification.md)
+
 ## Planner cost reduction — deployment authorized and in progress
 
 The user authorized the proposed retry/context improvements and a spending review after a few days. Research is complete: use separate exact-version retry metadata, stable model-visible schemas with unchanged backend enforcement, and selective context retirement. Two exclusive coders and an independent tester are implementing the accepted plan on codex/planner-cost-reduction; root owns reporting. Baseline source298b7d0 is preserved privately. Preserve existing model/budgets, source/identity/version checks, unfinished tasks and held work. The metadata-only report reproduces baseline spending exactly. Retry/cache/context implementation and independent offline acceptance are complete; a preservation finding was fixed. The final configured-model case completes6requests with exact field preservation; original failures/cap limits are retained and no general savings claim is made. Final frozen CI passes3075/0fail/2optional skips, all5browserflows pass, and independent evaluator ACCEPTS local implementation. No hosted migration, production deployment or activation has occurred. The requestedOctober31follow-up is scheduled; its comparison must use actual later trial start.

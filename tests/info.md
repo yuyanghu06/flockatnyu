@@ -1,3 +1,5 @@
+`contacts-summary.test.mjs` exercises the fields-only directory RPC with large native profiles through real local PostgreSQL, store, HTTP and tools. It verifies paging/filter/order parity, raw and timestamp preservation, service-only access, exact-read/version requirements and bounded failures. It uses synthetic data only.
+
 # Standard verification and current fixture contracts
 
 `prompt-assets.test.mjs` checks exact Markdown loading, placeholder/path failures, copied-source independence and fixed asset packaging. Drive/collector/runtime package tests use relocated assets. The prompt-markdown milestone records five full-suite API fixture failures reproduced on the pre-migration source, separately from the passing migration checks.

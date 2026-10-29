@@ -1,5 +1,7 @@
 # Pass history
 
+October 28 Contacts read entries preserve diagnosis evidence and the separately authorized field-only repair, verification and web release.
+
 October 28 planner-cost-reduction entries record independent research/plan, scoped implementation, retained model failures and corrections, exact final CI/browser evidence and local ACCEPT. Hosted migration/deployment/activation remain unperformed; the requestedOctober31follow-up must use actual trial boundaries.
 
 October 28 planner-spend entries also distinguish proposed retry/cache/context remedies from existing protections and held work. No optimization was implemented.

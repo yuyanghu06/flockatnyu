@@ -11,7 +11,7 @@ let searchDatabase,searchQueue=Promise.resolve();
 export async function createContactSearchDatabase(){
  const db=new PGlite({extensions:{pg_trgm,fuzzystrmatch}});
  await db.exec('create role anon;create role authenticated;create role service_role bypassrls;');
- for(const file of ['202610260047_contacts.sql','202610260048_contacts_search.sql','202610260049_contacts_cache.sql','202610260050_gmail_contact_enrichment.sql','202610270051_contacts_native_fields.sql'])await db.exec(await readFile(new URL('../../supabase/migrations/'+file,import.meta.url),'utf8'));
+ for(const file of ['202610260047_contacts.sql','202610260048_contacts_search.sql','202610260049_contacts_cache.sql','202610260050_gmail_contact_enrichment.sql','202610270051_contacts_native_fields.sql','202610270054_contacts_exa_fields.sql','202610280056_contacts_search_fields.sql'])await db.exec(await readFile(new URL('../../supabase/migrations/'+file,import.meta.url),'utf8'));
  return db;
 }
 async function sqlSearch(rows,body,{matchEmail=false}={}){
@@ -24,7 +24,7 @@ async function sqlSearch(rows,body,{matchEmail=false}={}){
    if(matchEmail)return (await db.query('select id,created_at::text,updated_at::text,raw_input,lookup_email from public.contacts_match_email($1)',[body.p_email])).rows;
    const args=['p_query','p_limit','p_offset','p_name','p_workplace','p_email_presence','p_phone_presence','p_sort'];
    const defaults=['',5,0,'','','any','any','auto'];
-   return (await db.query(`select id,created_at::text,updated_at::text,raw_input,lookup_email from public.contacts_search(${args.map((key,i)=>`${key}=>$${i+1}`).join(',')})`,args.map((key,i)=>body[key]??defaults[i]))).rows;
+   return (await db.query(`select id,created_at::text,updated_at::text,fields from public.contacts_search_fields(${args.map((key,i)=>`${key}=>$${i+1}`).join(',')})`,args.map((key,i)=>body[key]??defaults[i]))).rows;
   }finally{await db.exec('rollback');}
  });
  searchQueue=pending.catch(()=>{});return pending;
@@ -47,9 +47,9 @@ export function contactStorage({rows=[contactRow()],readUnavailable=false,writeF
  const fetchImpl=async(input,init={})=>{
   const url=new URL(input),method=init.method||'GET',body=init.body?JSON.parse(init.body):undefined;
   assert.equal(url.origin,'https://contacts-storage.example.test');
-  assert(['/rest/v1/contacts','/rest/v1/rpc/contacts_search','/rest/v1/rpc/contacts_match_email'].includes(url.pathname));
+  assert(['/rest/v1/contacts','/rest/v1/rpc/contacts_search_fields','/rest/v1/rpc/contacts_match_email'].includes(url.pathname));
   const request={method,url:url.toString(),body:structuredClone(body),headers:structuredClone(init.headers)};requests.push(request);
-  if(['/rest/v1/rpc/contacts_search','/rest/v1/rpc/contacts_match_email'].includes(url.pathname)){
+  if(['/rest/v1/rpc/contacts_search_fields','/rest/v1/rpc/contacts_match_email'].includes(url.pathname)){
    assert.equal(method,'POST');if(readUnavailable)throw Error('Synthetic private backend failure');
    return response(await sqlSearch(state,body,{matchEmail:url.pathname.endsWith('/contacts_match_email')}));
   }

@@ -1,3 +1,13 @@
+## Contacts field-only list repair and deployment
+
+- [x] Diagnose and independently verify the current production byte-cap failure.
+- [x] Accept isolated additive summary-read plan and exclusive implementation/test ownership.
+- [x] Implement summary database reads with raw storage and exact write snapshots preserved.
+- [x] Independently check large native profiles, fields, filters/paging, permissions and edits; complete standard CI/browser gates.
+- [ ] Obtain final independent acceptance, publish reviewed change and produce exact-main release packages.
+- [ ] Apply only reviewed056, deploy web, and verify production list/paging/payload reduction and unchanged raw data.
+- [ ] Record actual deployment IDs/limitations and completion; preserve unrelated services and work.
+
 ## Planner cost reduction
 
 - [x] Complete dependency research and create the requested three-day follow-up heartbeat.
