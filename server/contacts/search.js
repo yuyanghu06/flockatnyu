@@ -56,7 +56,8 @@ export function validContactsSearchOptions(value) {
 }
 
 // The POST invokes one read-only SQL function, never a contact write or a
-// provider lookup. The database ranks/filters the full saved table before paging.
+// provider lookup. The database ranks/filters the full saved table before paging
+// and returns only IDs, timestamps and the six bounded directory fields.
 export function createContactsSearch({ request } = {}) {
   return async function search(options = {}) {
     if (!validContactsSearchOptions(options)) return { status: 'invalid_request' };
@@ -73,7 +74,7 @@ export function createContactsSearch({ request } = {}) {
     } = options;
     const result = await request({
       method: 'POST',
-      resource: 'rpc/contacts_search',
+      resource: 'rpc/contacts_search_fields',
       readOnly: true,
       signal,
       body: {

@@ -16,7 +16,7 @@ actor, native-preservation and confirmed-receipt behavior is retained.
 
 ## Preserved operation behavior
 
-Saved-contact results contain only the six projected supported strings; request-local exact private snapshots preserve native JSON and lookup_email through authorized edits. Reading a contact triggers no source/provider fetch.
+Saved-contact search fetches only IDs, timestamps and six bounded strings through `contacts_search_fields`; it retains the existing model result format. Search summaries cannot become edit snapshots. Saved-contact results contain only the six projected supported strings; request-local exact private snapshots preserve native JSON and lookup_email through authorized edits. Reading a contact triggers no source/provider fetch.
 
 `schema.js` defines separate search, exact read, create, update and delete tools
 for the existing Supabase `contacts` table. `service.js` executes them using only the saved contacts

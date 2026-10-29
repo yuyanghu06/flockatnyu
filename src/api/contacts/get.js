@@ -9,19 +9,20 @@
  * Access: Requires authenticated nonblank actor ID and allowedSourceIds array through
  * auth; rejects Sec-Fetch-Site:cross-site. Session/origin policy remains with auth.
  * Service and effects: Reads only contactsStore.search; no paid lookup, source fetch or
- * write. Passes request cancellation.
+ * write. Search fetches only IDs, timestamps and six bounded display fields from
+ * storage; full raw profiles stay saved in the database. Passes request cancellation.
  * Response and failure: 200 {status:"ready", contacts:[six-field projections],
  * coverage:{complete, nextOffset}}. 400 invalid, 403 forbidden, 503
  * configuration/storage/invalid result; bounded coverage never proves absence. Private
  * no-store; raw records stay private.
  */
-import { validContact } from '../../../server/contacts/store.js';
+import { projectContactSummary, validContactSummary } from '../../../server/contacts/summary.js';
 
 import {
   CONTACT_SEARCH_PROPERTIES,
   validContactsSearchOptions,
 } from '../../../server/contacts/search.js';
-import { createContactsHttpContext, project } from '../_shared/contacts.js';
+import { createContactsHttpContext } from '../_shared/contacts.js';
 
 export function registerApiContactsGet({ app, contactsStore, auth, config, readJSON } = {}) {
   const { send, fail, failedResult, admitted } = createContactsHttpContext({
@@ -68,7 +69,7 @@ export function registerApiContactsGet({ app, contactsStore, auth, config, readJ
       if (
         !Array.isArray(result.contacts) ||
         result.contacts.length > limit ||
-        result.contacts.some((contact) => !validContact(contact)) ||
+        result.contacts.some((contact) => !validContactSummary(contact)) ||
         typeof result.coverage?.complete !== 'boolean' ||
         !(
           result.coverage.nextOffset === null ||
@@ -80,7 +81,7 @@ export function registerApiContactsGet({ app, contactsStore, auth, config, readJ
         return fail(c);
       return send(c, {
         status: 'ready',
-        contacts: result.contacts.map(project),
+        contacts: result.contacts.map(projectContactSummary),
         coverage: { complete: result.coverage.complete, nextOffset: result.coverage.nextOffset },
       });
     } catch {

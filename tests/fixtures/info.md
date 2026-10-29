@@ -1,3 +1,5 @@
+Contacts search fixtures now return the distinct fields-only summary shape. Exact reads and write fixtures retain complete native rows, so list results cannot accidentally become edit snapshots.
+
 # Test fixtures
 
 `discord-cli-signal-preload.mjs` replaces network fetches in the CLI signal test

@@ -37,6 +37,7 @@ async function fixture(t, { beforeUpgrade } = {}) {
   if (beforeUpgrade) await beforeUpgrade(db);
   await db.exec(await migration('202610270051_contacts_native_fields.sql'));
   await db.exec(await migration('202610270054_contacts_exa_fields.sql'));
+  await db.exec(await migration('202610280056_contacts_search_fields.sql'));
   await db.exec('set role service_role');
   const calls = [], dispatches = [], logs = [];
   const rpc = async (name, payload) => (await db.query(`select public.gmail_enrichment_${name}($1::jsonb) result`, [JSON.stringify(payload)])).rows[0].result;
@@ -47,9 +48,9 @@ async function fixture(t, { beforeUpgrade } = {}) {
     calls.push({ path: url.pathname, query: url.searchParams, method, body: structuredClone(body) });
     const operation = rpcNames.find(name => url.pathname === `/rest/v1/rpc/gmail_enrichment_${name}`);
     if (operation) return response(await rpc(operation, body.p_payload));
-    if (url.pathname === '/rest/v1/rpc/contacts_search') {
+    if (url.pathname === '/rest/v1/rpc/contacts_search_fields') {
       const keys = ['p_query', 'p_limit', 'p_offset', 'p_name', 'p_workplace', 'p_email_presence', 'p_phone_presence', 'p_sort'];
-      return response((await db.query(`select ${columns} from public.contacts_search(${keys.map((key, i) => `${key}=>$${i + 1}`).join(',')})`, keys.map(key => body[key]))).rows);
+      return response((await db.query(`select id,created_at::text,updated_at::text,fields from public.contacts_search_fields(${keys.map((key, i) => `${key}=>$${i + 1}`).join(',')})`, keys.map(key => body[key]))).rows);
     }
     if (url.pathname === '/rest/v1/rpc/contacts_match_email') return response((await db.query(`select ${columns} from public.contacts_match_email($1)`, [body.p_email])).rows);
     assert.equal(url.pathname, '/rest/v1/contacts');

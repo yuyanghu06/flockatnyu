@@ -38,17 +38,17 @@ export function savedStorage({rows=[],writeFailure,writeStatus,conflict=false}={
  const fetchImpl=async(input,init={})=>{
   const url=new URL(input),method=init.method??'GET',body=init.body?JSON.parse(init.body):undefined;
   assert.equal(url.origin,'https://treg-save-storage.example.test');
-  assert(['/rest/v1/contacts','/rest/v1/rpc/contacts_search','/rest/v1/rpc/contacts_match_email'].includes(url.pathname));
+  assert(['/rest/v1/contacts','/rest/v1/rpc/contacts_search_fields','/rest/v1/rpc/contacts_match_email'].includes(url.pathname));
   assert.equal(init.redirect,'error');if(init.signal?.aborted)throw new DOMException('Aborted','AbortError');
   const request={method,path:url.pathname,url:url.toString(),body:copy(body)};requests.push(request);
   if(url.pathname.endsWith('/contacts_match_email')){
    assert.equal(method,'POST');return json(state.filter(row=>contactFields(row).email.toLowerCase()===body.p_email.toLowerCase()).slice(0,2));
   }
-  if(url.pathname.endsWith('/contacts_search')){
+  if(url.pathname.endsWith('/contacts_search_fields')){
    assert.equal(method,'POST');
    const query=(body.p_query??'').toLowerCase(),name=(body.p_name??'').toLowerCase(),workplace=(body.p_workplace??'').toLowerCase();
    let found=state.filter(row=>{const f=contactFields(row);return (!query||Object.values(f).some(v=>v.toLowerCase().includes(query))||`${f.first_name} ${f.last_name}`.toLowerCase().includes(query))&&(!name||`${f.first_name} ${f.last_name}`.toLowerCase().includes(name))&&(!workplace||f.workplace.toLowerCase().includes(workplace));});
-   return json(found.slice(body.p_offset??0,(body.p_offset??0)+(body.p_limit??5)));
+   return json(found.slice(body.p_offset??0,(body.p_offset??0)+(body.p_limit??5)+1).map(row=>({id:row.id,created_at:row.created_at,updated_at:row.updated_at,fields:contactFields(row)})));
   }
   const eq=key=>url.searchParams.get(key)?.replace(/^eq\./,'');
   const matching=()=>state.filter(row=>(!eq('id')||row.id===eq('id'))&&(!eq('updated_at')||row.updated_at===eq('updated_at')));

@@ -12,3 +12,5 @@ Child URL folders: `[id]/`, `import/`.
 Services and authentication are injected by `server/runtime/app.js` through the root
 registration module. Shared helpers live in `_shared/`; browser code must not
 import these server-only handlers. Preserve exact public behavior when editing.
+
+Directory GET reads receive only IDs, timestamps and six supported fields from the private database search. The full raw profile stays in storage and is retrieved only by the existing exact-record paths; directory summaries grant no write authority.

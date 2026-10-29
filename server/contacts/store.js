@@ -1,6 +1,7 @@
 import { canonicalJson, plainObject, validUuid } from '../automation/validation.js';
 import { SOURCE_TOOL_TIMEOUT_MS } from '../shared/source-timeout.js';
 import { createContactsSearch } from './search.js';
+import { projectContactSummary, validContactSummary } from './summary.js';
 
 import { CONTACT_FIELDS, contactFields } from './fields.js';
 export { CONTACT_FIELDS } from './fields.js';
@@ -72,7 +73,7 @@ export function createContactsStore({ env = process.env, fetchImpl = globalThis.
     if (
       resource !== 'contacts' &&
       !(
-        ['rpc/contacts_search', 'rpc/contacts_match_email'].includes(resource) &&
+        ['rpc/contacts_search_fields', 'rpc/contacts_match_email'].includes(resource) &&
         method === 'POST' &&
         readOnly
       )
@@ -135,9 +136,11 @@ export function createContactsStore({ env = process.env, fetchImpl = globalThis.
         chunks.push(chunk);
       }
       const rows = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-      if (!Array.isArray(rows) || rows.some((row) => !validContact(row)))
+      const summary = resource === 'rpc/contacts_search_fields';
+      const validRow = summary ? validContactSummary : validContact;
+      if (!Array.isArray(rows) || rows.some((row) => !validRow(row)))
         return mutation ? unknown() : { status: 'invalid_response' };
-      return { status: 'ready', rows: rows.map(contactOf) };
+      return { status: 'ready', rows: rows.map(summary ? projectContactSummary : contactOf) };
     } catch {
       return mutation ? unknown() : { status: signal?.aborted ? 'aborted' : 'unavailable' };
     }
