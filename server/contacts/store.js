@@ -100,6 +100,7 @@ export function createContactsStore({ env = process.env, fetchImpl = globalThis.
           apikey: key,
           Authorization: `Bearer ${key}`,
           'Content-Type': 'application/json',
+          ...(method === 'HEAD' ? { Prefer: 'count=exact' } : {}),
           ...(mutation
             ? {
                 Prefer: ignoreDuplicates
@@ -127,6 +128,13 @@ export function createContactsStore({ env = process.env, fetchImpl = globalThis.
                       ? 'rate_limited'
                       : 'unavailable',
         };
+      }
+      if (method === 'HEAD') {
+        const match = /^(?:\d+-\d+|\*)\/(\d+)$/.exec(response.headers.get('content-range') ?? '');
+        const totalCount = match ? Number(match[1]) : NaN;
+        return Number.isSafeInteger(totalCount) && totalCount >= 0
+          ? { status: 'ready', totalCount }
+          : { status: 'invalid_response' };
       }
       const chunks = [];
       let bytes = 0;
@@ -171,6 +179,15 @@ export function createContactsStore({ env = process.env, fetchImpl = globalThis.
   return Object.freeze({
     configured,
     search: createContactsSearch({ request }),
+    // Count all saved contacts without downloading their records or profiles.
+    count({ signal } = {}) {
+      return request({
+        method: 'HEAD',
+        readOnly: true,
+        params: new URLSearchParams({ select: 'id', limit: '1' }),
+        signal,
+      });
+    },
     async read({ contactId, signal } = {}) {
       if (!validUuid(contactId)) return { status: 'invalid_request' };
       return one({ params: exact(contactId), signal }, { contactId });

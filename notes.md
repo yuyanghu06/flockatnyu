@@ -355,3 +355,8 @@ The user then explicitly requested deployment. This authorizes migration055 and 
 ## 2026-10-27 — prompt release
 
 The structured Markdown prompts and both Contacts/Calendar prompt fixes are pushed and deployed. PR #1 and PR #2 record source/image publication. The separately authorized full-tree rollout contains identical prompt payloads; no duplicate upload was made. Worker remains disabled. Exact commits, deployment IDs, tests and limits are in [release verification](milestones/prompt-release-2026-10-27/verification.md).
+
+
+## 2026-11-13 — Total Contacts count
+
+The user requested the total number of saved Contacts at the right of the existing loaded count on the same line, followed by deployment. The total refers to all saved contacts, including while searching or filtering. Use a private count-only read, without downloading full profiles. See [current milestone](milestones/contacts-total-count-2026-11-13/info.md).

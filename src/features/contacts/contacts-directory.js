@@ -82,7 +82,7 @@ export function installContactsDirectory(view) {
     view.sidebar.setAttribute('aria-busy', String(view.listLoading));
     view.list.replaceChildren();
     view.listState.replaceChildren();
-    view.listMeta.textContent = view.listLoading
+    view.listShown.textContent = view.listLoading
       ? view.contacts.length
         ? 'Loading more…'
         : view.query
@@ -91,6 +91,8 @@ export function installContactsDirectory(view) {
       : view.contacts.length
         ? `${view.contacts.length} ${view.contacts.length === 1 ? 'contact' : 'contacts'}${view.nextOffset !== null ? ' shown' : ''}`
         : '';
+    view.listTotal.textContent = view.totalCount === null ? '' : `${view.totalCount} total`;
+    view.listMeta.hidden = !view.listShown.textContent && !view.listTotal.textContent;
     for (const contact of view.contacts) {
       const item = el('li'),
         row = button('contacts-row', '', () =>
@@ -167,6 +169,7 @@ export function installContactsDirectory(view) {
         seen = new Set(previous.map((contact) => contact.id));
       view.contacts = [...previous, ...result.contacts.filter((contact) => !seen.has(contact.id))];
       view.nextOffset = result.coverage.nextOffset;
+      view.totalCount = result.totalCount ?? null;
     } else view.listError = result;
     view.renderList();
   };

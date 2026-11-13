@@ -1,3 +1,5 @@
+`contacts-total-count-2026-11-13/` tracks the inline overall contact total, private count read and web release.
+
 `contacts-read-incident-2026-10-28/` records the production size-cap diagnosis and authorized field-only list repair/deployment.
 
 `full-tree-release-2026-10-27/` records the explicit whole-tree/five-service release, checked commit/packages and paused update-agent boundary.

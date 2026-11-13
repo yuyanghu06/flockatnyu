@@ -167,6 +167,9 @@ export function createContactsClient({ fetchImpl = globalThis.fetch, timeoutMs =
           if (
             contacts.length > 10 ||
             !contacts.every(Boolean) ||
+            (result.totalCount !== undefined &&
+              result.totalCount !== null &&
+              (!Number.isSafeInteger(result.totalCount) || result.totalCount < 0)) ||
             typeof coverage?.complete !== 'boolean' ||
             !(
               coverage.nextOffset === null ||
@@ -179,6 +182,7 @@ export function createContactsClient({ fetchImpl = globalThis.fetch, timeoutMs =
           return {
             status: 'ready',
             contacts,
+            totalCount: result.totalCount ?? null,
             coverage: { complete: coverage.complete, nextOffset: coverage.nextOffset },
           };
         }

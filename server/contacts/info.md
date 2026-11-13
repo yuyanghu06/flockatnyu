@@ -5,3 +5,5 @@
 These modules never fetch a provider or source original. Treg clients and imports live in `server/treg`; their explicit importer passes native records here without rewriting them. Browser HTTP handlers live under `src/api/contacts`, and model tools live under `tools/contacts`. Preserve human edits, raw JSON, explicit clears, identity decisions and uncertain-write outcomes.
 
 Directory and chat search call the service-only `contacts_search_fields` SQL function. It preserves existing ranking, filters and extra-row paging inside the database while returning only directory fields across the network. Exact reads, imports and version-checked edits continue to use complete native records; a search summary never authorizes an edit.
+
+`count()` reads the exact number of all saved contacts using a private HEAD request. It receives only response headers, never full profiles. The browser directory uses this total independently of the current search or loaded page; model search tools retain their existing result contract.

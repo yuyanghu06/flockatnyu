@@ -1,3 +1,14 @@
+## Contacts total count — November 13
+
+Evaluator ACCEPT local release ready.
+
+Full CI3083pass/0fail/2optional skips;19focused and6browser flows pass. No material findings; no schema/model/source-permission changes.
+
+Next: Publish through PR and exact-main release workflow, deploy web only, verify hosted count/layout and unchanged configuration.
+
+[Scope](contacts-total-count-2026-11-13/info.md) · [Latest pass](history/2026-11-13_16-28-41-555213-evaluator-total-count-local-release-accepted.md)
+
+
 ## Contacts field-only list repair — locally accepted; release in progress
 
 The user authorized fixing and deploying the production read failure. Isolated

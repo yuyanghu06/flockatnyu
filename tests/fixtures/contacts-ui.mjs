@@ -7,7 +7,7 @@ export {contactRow,contactIds};
 export function contactsHttpFixture({rows,production=true,readUnavailable=false,writeFailure,conflict=false,auth,discordFailure=false}={}){
  const f=contactStorage({rows,readUnavailable,writeFailure,conflict}),mode={},audit=[];
  const store={...f.store};
- for(const name of ['search','read','create','update','delete'])store[name]=async args=>{
+ for(const name of ['search','count','read','create','update','delete'])store[name]=async args=>{
   if(mode[name]==='throw')throw Error('PRIVATE synthetic backend details must stay private');
   if(mode[name]==='unknown-after'){await f.store[name](args);return {status:'unavailable',reason:'write_outcome_unknown'};}
   if(mode[name])return {status:mode[name]};

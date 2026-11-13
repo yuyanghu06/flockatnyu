@@ -54,6 +54,12 @@ async function fixture(t, { beforeUpgrade } = {}) {
     }
     if (url.pathname === '/rest/v1/rpc/contacts_match_email') return response((await db.query(`select ${columns} from public.contacts_match_email($1)`, [body.p_email])).rows);
     assert.equal(url.pathname, '/rest/v1/contacts');
+    if (method === 'HEAD') {
+      assert.equal(url.searchParams.toString(), 'select=id&limit=1');
+      assert.equal(new Headers(init.headers).get('prefer'), 'count=exact');
+      const count = (await db.query('select count(*)::integer total from public.contacts')).rows[0].total;
+      return new Response(null, { headers: { 'content-range': count ? `0-0/${count}` : '*/0' } });
+    }
     const id = url.searchParams.get('id')?.replace(/^eq\./, ''), stamp = url.searchParams.get('updated_at')?.replace(/^eq\./, '');
     if (method === 'GET') {
       assert(id, 'All non-RPC reads in this fixture are exact contact reads');

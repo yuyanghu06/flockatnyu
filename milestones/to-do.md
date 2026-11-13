@@ -1,3 +1,11 @@
+## Contacts total count — November 13
+
+- [x] Plan overall saved-contact count and preserve current read/write boundaries.
+- [x] Implement total count and inline display.
+- [x] Verify19focused cases,6browser flows, desktop/mobile alignment and fullCI3083pass; independent code/UI review accepted.
+- [ ] Publish checked source and release package, deploy web only.
+- [ ] Verify hosted total/layout and unchanged settings; final ACCEPT.
+
 ## Contacts field-only list repair and deployment
 
 - [x] Diagnose and independently verify the current production byte-cap failure.

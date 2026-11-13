@@ -145,6 +145,13 @@ async function fixture(t) {
         '/rest/v1/contacts',
         'Search must not fall back to downloading full native rows',
       );
+      if (method === 'HEAD') {
+        assert.equal(url.searchParams.toString(), 'select=id&limit=1');
+        assert.equal(new Headers(init.headers).get('prefer'), 'count=exact');
+        const count = (await db.query('select count(*)::integer total from public.contacts'))
+          .rows[0].total;
+        return new Response(null, { headers: { 'content-range': count ? `0-0/${count}` : '*/0' } });
+      }
       assert.equal(
         url.searchParams.get('select'),
         'id,created_at,updated_at,raw_input,lookup_email',
@@ -317,6 +324,7 @@ test('Contacts summaries fix oversized native search pages without changing raw 
       const result = await h.request('/api/contacts?limit=10');
       assert.equal(result.http, 200);
       assert.equal(result.body.contacts.length, 10);
+      assert.equal(result.body.totalCount, h.before.length);
       assert.deepEqual(result.body.coverage, { complete: false, nextOffset: 10 });
       const tools = createContactsTools({ store: h.store }).createRequest({
         principal: contactPrincipal,

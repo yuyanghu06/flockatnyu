@@ -1,3 +1,5 @@
+November13 Contacts-count passes record implementation, independent UI/data tests and the exact web release; existing raw profiles and model settings are preserved.
+
 # Pass history
 
 October 28 Contacts read entries preserve diagnosis evidence and the separately authorized field-only repair, verification and web release.
