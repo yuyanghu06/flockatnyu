@@ -64,3 +64,5 @@ split dormant Treg suites. `chat-source-files.mjs` inventories extracted chat
 implementations for opt-in model source hashes/copies and prompt verification.
 
 `planner-cost-cases.mjs` supplies synthetic attendance/no-change/missing-time/unavailable-source cases to the opt-in production-runner comparison. Preserve existing synthetic event URLs, fields, participants/buildings and unfinished originals as explicit expected outcomes. It provides no live access or credentials.
+
+Contacts fixtures support private `HEAD` exact-count requests with no response body and record them as reads. The UI fixture can fail counting separately from directory search so list availability is verified independently.

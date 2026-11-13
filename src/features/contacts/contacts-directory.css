@@ -194,14 +194,21 @@
   font-size: 11px;
 }
 .contacts-list-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
   flex: 0 0 auto;
   min-height: 18px;
   margin: 14px 10px 8px;
   font-size: 10px;
   line-height: 1.6;
 }
-.contacts-list-meta:empty {
+.contacts-list-meta[hidden] {
   display: none;
+}
+.contacts-list-total {
+  margin-left: auto;
+  white-space: nowrap;
 }
 .contacts-list {
   display: grid;

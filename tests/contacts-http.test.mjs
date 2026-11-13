@@ -1,16 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {contactsHttpFixture,contactRow,contactIds} from './fixtures/contacts-ui.mjs';
+import {createContactsClient} from '../src/features/contacts/contacts-client.js';
+import {contactsBrowserRows,contactsHttpFixture,contactRow,contactIds} from './fixtures/contacts-ui.mjs';
 import {contactStamp,contactFields} from './fixtures/contacts-store.mjs';
 
 test('contacts HTTP: authenticated CRUD projects six fields and preserves complete saved data',async()=>{
  const legacy={legacy:{source:'Keep this exact object'},other_values:[3,null]},other=contactRow(contactIds.other,{email:'other@example.com'});
  const h=contactsHttpFixture({rows:[contactRow(contactIds.rae,legacy),other],discordFailure:true});
  const listResponse=await h.request();assert.equal(listResponse.status,200);assert.match(listResponse.headers.get('cache-control'),/private.*no-store/);
- const list=await listResponse.json();assert.equal(list.status,'ready');assert.equal(list.contacts.length,2);assert.deepEqual(list.coverage,{complete:true,nextOffset:null});
+ const list=await listResponse.json();assert.equal(list.status,'ready');assert.equal(list.contacts.length,2);assert.equal(list.totalCount,2);assert.deepEqual(list.coverage,{complete:true,nextOffset:null});
  assert.deepEqual(list.contacts[0].fields,contactFields);assert(!JSON.stringify(list).includes('raw_input'));assert(!JSON.stringify(list).includes('Keep this exact object'));
  const read=await(await h.request(`/api/contacts/${contactIds.rae}`)).json();assert.equal(read.contact.updated_at,contactStamp);assert.deepEqual(read.contact.fields,contactFields);
  const createdResponse=await h.request('/api/contacts',{method:'POST',body:{fields:{first_name:'New',email:'new@example.com'}}});assert([200,201].includes(createdResponse.status));
+ assert.equal((await(await h.request()).json()).totalCount,3);
  const created=await createdResponse.json();assert.equal(created.contactWrite.operation,'created');assert.deepEqual(created.contact.fields,{first_name:'New',last_name:'',email:'new@example.com',phone_number:'',workplace:'',notes:''});
  const patch=await h.request(`/api/contacts/${contactIds.rae}`,{method:'PATCH',body:{expectedUpdatedAt:contactStamp,fields:{workplace:'New workplace',notes:''}}});assert.equal(patch.status,200);
  const saved=await patch.json();assert.equal(saved.contactWrite.operation,'updated');assert.deepEqual(saved.contact.fields,{...contactFields,workplace:'New workplace',notes:''});
@@ -18,6 +20,7 @@ test('contacts HTTP: authenticated CRUD projects six fields and preserves comple
  const patchUrl=new URL(h.f.attempts.find(row=>row.method==='PATCH').url);assert.equal(patchUrl.searchParams.get('updated_at'),`eq.${contactStamp}`);
  const deletion=await h.request(`/api/contacts/${contactIds.rae}`,{method:'DELETE',body:{expectedUpdatedAt:saved.contact.updated_at}});assert.equal(deletion.status,200);
  const deleted=await deletion.json();assert.equal(deleted.contactWrite.operation,'deleted');assert(!deleted.contact);assert(!deleted.fields);assert(!deleted.raw_input);
+ assert.equal((await(await h.request()).json()).totalCount,2);
  assert.deepEqual(h.f.state.find(row=>row.id===contactIds.other),other);assert.equal(h.f.state.length,2);assert.equal(h.discordCalls,0,'Contacts operations must not query Discord permissions or metadata');
 });
 
@@ -68,7 +71,7 @@ test('contacts HTTP: session and origin boundaries are separate from Discord acc
 });
 
 test('contacts HTTP: empty, unavailable, conflicts and uncertain writes report only confirmed outcomes',async()=>{
- const empty=contactsHttpFixture({rows:[]});const result=await(await empty.request()).json();assert.deepEqual(result.contacts,[]);assert.deepEqual(result.coverage,{complete:true,nextOffset:null});
+ const empty=contactsHttpFixture({rows:[]});const result=await(await empty.request()).json();assert.deepEqual(result.contacts,[]);assert.equal(result.totalCount,0);assert.deepEqual(result.coverage,{complete:true,nextOffset:null});
  assert.equal((await empty.request(`/api/contacts/${contactIds.rae}`)).status,404);
  const unavailable=contactsHttpFixture({readUnavailable:true});const failed=await unavailable.request();assert.equal(failed.status,503);assert.deepEqual(await failed.json(),{status:'unavailable'});
  const conflict=contactsHttpFixture({conflict:true});const rejected=await conflict.request(`/api/contacts/${contactIds.rae}`,{method:'PATCH',body:{expectedUpdatedAt:contactStamp,fields:{notes:'Changed'}}});
@@ -76,4 +79,18 @@ test('contacts HTTP: empty, unavailable, conflicts and uncertain writes report o
  const unknown=contactsHttpFixture({writeFailure:'after'});const uncertain=await unknown.request('/api/contacts',{method:'POST',body:{fields:{first_name:'Uncertain'}}});
  assert.equal(uncertain.status,503);assert.deepEqual(await uncertain.json(),{status:'unavailable',reason:'write_outcome_unknown'});assert.equal(unknown.f.applied.length,1);
  const thrown=contactsHttpFixture();thrown.mode.create='throw';const raw=await(await thrown.request('/api/contacts',{method:'POST',body:{fields:{first_name:'Test'}}})).json();assert.deepEqual(raw,{status:'unavailable',reason:'write_outcome_unknown'});assert(!JSON.stringify(raw).includes('PRIVATE'));
+});
+
+
+test('contacts HTTP: page, filtered and empty results retain the whole-directory total through the browser client',async()=>{
+ const h=contactsHttpFixture({rows:contactsBrowserRows()}),before=h.f.state;
+ const client=createContactsClient({fetchImpl:path=>h.request(path)});
+ for(const [options,shown] of [[{},10],[{offset:10},4],[{query:'rae@example.com'},1],[{query:'No matching synthetic member'},0]]){
+  const result=await client.search(options);assert.equal(result.status,'ready');assert.equal(result.contacts.length,shown);assert.equal(result.totalCount,14);
+ }
+ assert.deepEqual(h.f.state,before);assert.equal(h.f.attempts.length,0,'HEAD count requests are reads');
+ assert.equal(h.f.requests.filter(request=>request.method==='HEAD').length,4);
+ for(const failure of ['unavailable','throw']){
+  h.mode.count=failure;const result=await client.search();assert.equal(result.status,'ready');assert.equal(result.contacts.length,10);assert.equal(result.totalCount,null,'A failed total must not hide successful rows');
+ }
 });

@@ -53,6 +53,14 @@ export function contactStorage({rows=[contactRow()],readUnavailable=false,writeF
    assert.equal(method,'POST');if(readUnavailable)throw Error('Synthetic private backend failure');
    return response(await sqlSearch(state,body,{matchEmail:url.pathname.endsWith('/contacts_match_email')}));
   }
+  if(method==='HEAD'){
+   assert.equal(url.searchParams.toString(),'select=id&limit=1');
+   assert.equal(new Headers(init.headers).get('prefer'),'count=exact');
+   assert.equal(new Headers(init.headers).get('authorization'),'Bearer synthetic-server-key');
+   assert.equal(body,undefined,'Counting must not send or download contact data');
+   if(readUnavailable)throw Error('Synthetic private backend failure');
+   return new Response(null,{status:200,headers:{'content-range':state.length?`0-0/${state.length}`:'*/0'}});
+  }
   if(method==='GET'&&readUnavailable)throw Error('Synthetic private backend failure');
   const eq=key=>url.searchParams.get(key)?.replace(/^eq\./,'');
   const matching=()=>state.filter(row=>(!eq('id')||row.id===eq('id'))&&(!eq('updated_at')||row.updated_at===eq('updated_at')));

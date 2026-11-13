@@ -10,3 +10,5 @@ rendering, mutations and modal lifecycle in their corresponding modules.
 mock used by `contacts-mock.html`; they do not call production storage. Preserve
 that boundary and native data/human edits in production client operations.
 CSS imports keep the original shell, directory, profile and form rule order.
+
+The directory metadata row keeps the loaded-contact count on the left and the total saved-contact count on the right. Search and filters change the loaded rows, not the total. An unavailable total is hidden; successful create/delete refreshes use the existing list reload.

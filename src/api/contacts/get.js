@@ -8,11 +8,13 @@
  * characters. Default limit 10/offset 0; shared search validator enforces limits.
  * Access: Requires authenticated nonblank actor ID and allowedSourceIds array through
  * auth; rejects Sec-Fetch-Site:cross-site. Session/origin policy remains with auth.
- * Service and effects: Reads only contactsStore.search; no paid lookup, source fetch or
- * write. Search fetches only IDs, timestamps and six bounded display fields from
- * storage; full raw profiles stay saved in the database. Passes request cancellation.
+ * Service and effects: Reads contactsStore.search and count concurrently; no paid
+ * lookup, source fetch or write. Search fetches only IDs, timestamps and six bounded
+ * display fields; count reads the total number of all saved contacts without profiles.
+ * Full raw profiles stay saved in the database. Passes request cancellation.
  * Response and failure: 200 {status:"ready", contacts:[six-field projections],
- * coverage:{complete, nextOffset}}. 400 invalid, 403 forbidden, 503
+ * totalCount:number|null, coverage:{complete, nextOffset}}. A failed count returns
+ * null without blocking a successful list. 400 invalid, 403 forbidden, 503
  * configuration/storage/invalid result; bounded coverage never proves absence. Private
  * no-store; raw records stay private.
  */
@@ -64,7 +66,13 @@ export function registerApiContactsGet({ app, contactsStore, auth, config, readJ
     if (!contactsStore?.configured || typeof contactsStore.search !== 'function')
       return fail(c, 'not_configured');
     try {
-      const result = await contactsStore.search({ ...options, signal: c.req.raw.signal });
+      const signal = c.req.raw.signal;
+      const [result, count] = await Promise.all([
+        contactsStore.search({ ...options, signal }),
+        Promise.resolve()
+          .then(() => contactsStore.count?.({ signal }))
+          .catch(() => null),
+      ]);
       if (result?.status !== 'ready') return failedResult(c, result);
       if (
         !Array.isArray(result.contacts) ||
@@ -82,6 +90,12 @@ export function registerApiContactsGet({ app, contactsStore, auth, config, readJ
       return send(c, {
         status: 'ready',
         contacts: result.contacts.map(projectContactSummary),
+        totalCount:
+          count?.status === 'ready' &&
+          Number.isSafeInteger(count.totalCount) &&
+          count.totalCount >= 0
+            ? count.totalCount
+            : null,
         coverage: { complete: result.coverage.complete, nextOffset: result.coverage.nextOffset },
       });
     } catch {

@@ -8,6 +8,7 @@ export function initializeContacts(view) {
   view.previousFocus = undefined;
   view.contacts = [];
   view.nextOffset = null;
+  view.totalCount = null;
   view.query = '';
   view.filters = defaultFilters();
   view.searchTimer = undefined;
@@ -208,6 +209,9 @@ export function initializeContacts(view) {
   view.searchToolbar.append(view.searchBox, view.filterToggle);
   view.listMeta = el('p', 'contacts-list-meta');
   view.listMeta.setAttribute('role', 'status');
+  view.listShown = el('span', 'contacts-list-shown');
+  view.listTotal = el('span', 'contacts-list-total');
+  view.listMeta.append(view.listShown, view.listTotal);
   view.list = el('ul', 'contacts-list');
   view.list.setAttribute('aria-label', 'Contacts');
   view.listState = el('div', 'contacts-list-state');
