@@ -1,3 +1,12 @@
+## Marketing event commands — November 19
+
+- [x] Stage 0: read-only confirmed upcoming Calendar reader and print script (committed 7e855bc).
+- [x] Stage 1: interaction dispatcher, `/event-info`, migration 057, role/channel gate, single-command registration (committed locally, not pushed).
+- [x] User review of Stage 1; threads inside allowed channels added, refusals name the channels.
+- [ ] Stage 2: `/event-details` core and extras modals, atomic merge, ephemeral confirmation.
+- [ ] User applies migration 057 and sets Google variables and MARKETING_INTERACTIONS_ENABLED on discord-events; register `/event-info`; verify live.
+- [ ] Later (not requested yet): summary card, reminders.
+
 ## Contacts total count — November 13
 
 - [x] Plan overall saved-contact count and preserve current read/write boundaries.

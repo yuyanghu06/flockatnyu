@@ -8,7 +8,7 @@ import {prepareDiscordDeployment} from '../scripts/prepare-discord-deploy.mjs';
 import {prepareGmailDeployment} from '../scripts/prepare-gmail-deploy.mjs';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const discordDependencies = {'@discordjs/rest': '2.6.3', '@discordjs/ws': '2.0.4'};
+const discordDependencies = {'@discordjs/rest': '2.6.3', '@discordjs/ws': '2.0.4', 'google-auth-library': '11.3.0'};
 const gmailDependencies = {'@hono/node-server': '2.1.4', 'google-auth-library': '11.3.0', hono: '4.13.13'};
 async function fixture(t) {
   const root = await mkdtemp(join(tmpdir(), 'collector-fixture-'));
@@ -24,6 +24,7 @@ async function fixture(t) {
   await writeFile(join(root, 'server/discord/event-cli.js'), `import 'node:http';
 import '@discordjs/rest';
 import '@discordjs/ws';
+import 'google-auth-library';
 import {value} from '../automation/events.js';
 export * from './gateway.js';
 throw new Error('source_must_never_execute_during_preparation');`);
@@ -89,7 +90,7 @@ test('path escapes, other connectors, missing modules and unreviewed dependencie
   const root = await fixture(t);
   for (const [source, error] of [
     ["import '../../.env';", /deployment_module_denied/u],
-    ["import '../google/config.js';", /deployment_module_denied/u],
+    ["import '../miro/config.js';", /deployment_module_denied/u],
     ["import '../unreviewed-shared.js';", /deployment_module_denied/u],
     ["import './missing.js';", /ENOENT/u],
     ["import 'three';", /deployment_dependency_denied/u],
@@ -148,13 +149,18 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
   const result = await prepare(t, prepareDiscordDeployment, {});
   assert.deepEqual(result.dependencies, discordDependencies);
   assert.deepEqual(result.modules, [
-    'server/automation/events.js', 'server/automation/store.js', 'server/automation/validation.js',
+    'server/automation/events.js', 'server/automation/member-plans.js', 'server/automation/store.js', 'server/automation/validation.js',
     'server/chat/attachment-contract.js', 'server/chat/attachments.js', 'server/chat/discord-context.js', 'server/chat/request-context.js',
     'server/discord/chat-adapter.js', 'server/discord/chat-bridge.js', 'server/discord/chat-client.js',
     'server/discord/chat-config.js', 'server/discord/chat-delivery.js', 'server/discord/chat-runtime.js',
     'server/discord/client.js', 'server/discord/collector-diagnostics.js', 'server/discord/config.js', 'server/discord/discovery.js',
     'server/discord/event-cli.js', 'server/discord/event-config.js', 'server/discord/event-listener.js',
-    'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/metadata-reconcile.js', 'server/discord/metadata-refresh.js', 'server/discord/request-pacing.js', 'server/discord/store.js', 'server/prompt-loader/assets.js', 'server/prompt-loader/index.js', 'server/shared/source-timeout.js',
+    'server/discord/event-state.js', 'server/discord/gateway.js', 'server/discord/interactions.js', 'server/discord/metadata-reconcile.js', 'server/discord/metadata-refresh.js', 'server/discord/request-pacing.js', 'server/discord/store.js',
+    // Marketing slash commands read the club Calendar through the shared Google client.
+    'server/google/calendar-client.js', 'server/google/calendar-config.js', 'server/google/calendar-receipt.js', 'server/google/client.js', 'server/google/config.js', 'server/google/oauth.js',
+    'server/map/avatars.js', 'server/map/contracts.js', 'server/map/events.js',
+    'server/marketing/calendar-events.js', 'server/marketing/config.js', 'server/marketing/event-info.js', 'server/marketing/interactions.js', 'server/marketing/store.js', 'server/marketing/views.js',
+    'server/prompt-loader/assets.js', 'server/prompt-loader/index.js', 'server/shared/source-timeout.js', 'server/shared/time-zone.js',
   ]);
   assert.deepEqual(await filesIn(result.directory), result.files);
   for (const name of result.modules) assert.deepEqual(await readFile(join(result.directory, name)), await readFile(join(repository, name)));
@@ -166,8 +172,9 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
       assert.match(metadata.resolved, /^https:\/\/registry.npmjs.org\//u);
       assert.match(metadata.integrity, /^sha512-/u);
     }
-    assert.equal(/google|hono|three|clipper|vite|playwright|gltf|pglite/u.test(name), false);
+    assert.equal(/hono|three|clipper|vite|playwright|gltf|pglite/u.test(name), false);
   }
+  assert.equal(lock.packages['node_modules/google-auth-library'].version, '11.3.0');
 });
 
 test('service deployment configs explicitly separate continuous collectors from retired daily discovery', async () => {

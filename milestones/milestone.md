@@ -1,3 +1,22 @@
+## Marketing event commands: Stage 1 (/event-info) implemented locally
+
+The user requested staged Discord commands for picking upcoming club Calendar
+events (Stage 0 reader committed as 7e855bc). Stage 1 adds a Gateway
+interaction dispatcher separate from chat and ingestion, `/event-info`, migration
+057 (service-only marketing tables) and single-command registration. Calendar is
+read inside discord-events, which now packages the Google Calendar client.
+Nothing is deployed, applied or registered. After review, threads directly
+inside the two allowed channels are also allowed, refusals name the channels,
+and Stage 1 is committed locally in four commits (not pushed).
+
+Focused checks pass (1,158 Discord, Calendar, marketing and deploy tests). The
+full suite still has pre-existing intermittent SQL stalls and a provider-fallback
+failure that also occur without this change. Next: Stage 2 (`/event-details` modals
+and atomic merge), approved by the user.
+
+[Scope](marketing-commands-2026-11-19/info.md) · [Stage 1](history/2026-11-19_16-11-27-306294-coder-marketing-event-info-stage1.md) · [Latest pass](history/2026-11-19_19-13-07-049834-coder-marketing-stage1-review-fixes.md)
+
+
 ## Contacts total count — November 13
 
 Evaluator ACCEPT local release ready.

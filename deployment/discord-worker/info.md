@@ -10,15 +10,19 @@ worker in this image.
 Run `node scripts/prepare-discord-deploy.mjs` from the checkout. Upload only the
 fresh temporary directory printed as `directory`. The preparer parses the
 entrypoint's transitive static ES module imports without executing them, copies
-only reachable modules under server/discord and server/automation, and rejects
+only reachable modules under server/discord, server/automation, server/marketing,
+server/google and server/map (plus reviewed shared modules), and rejects
 symbolic links, dynamic loading, cross-service imports and unreviewed packages.
 It copies this folder's independent manifest/lock, Dockerfile and railway.json to
 the context root. Its exact-file .dockerignore excludes later accidental files.
-No root dependency manifests, tests, archived workers, environment files, map,
-Google, Miro or model-provider modules belong in the context.
+No root dependency manifests, tests, archived workers, environment files, Miro
+or model-provider modules belong in the context. Since 2026-11-19 the marketing
+slash commands read the club Calendar here, so the Google Calendar client (and
+the three map validation modules it imports) are packaged deliberately.
 
-The only direct npm dependencies are pinned @discordjs/rest 2.6.3 and
-@discordjs/ws 2.0.4. The lockfile records their transitive runtime dependencies.
+The only direct npm dependencies are pinned @discordjs/rest 2.6.3,
+@discordjs/ws 2.0.4 and google-auth-library 11.3.0 (the same version and lock
+entries as the gmail-events worker). The lockfile records their transitive runtime dependencies.
 The Docker build uses npm ci with install scripts disabled, syntax checks the
 selected source and runs as the node user. No credentials or schema migration
 are part of build/startup. Static-import parsing uses a separate native Node VM
@@ -36,3 +40,14 @@ M36 hosted cutover is verified: the separate Discord/Gmail services are running 
 The reachable metadata-refresh.js helper resumes incomplete guarded discovery generations promptly; sanitized packaging includes it explicitly. Startup inspects the checkpoint to avoid unnecessary fresh scans when the catalogue is already complete. Existing complete-generation authorization and exclusions remain mandatory.
 
 Docker copies the whole sanitized server tree from the generated context, including reviewed shared root modules, rather than omitting modules outside the service subfolder. The static packager still controls exact inclusion.
+
+## Marketing slash commands (not yet enabled)
+
+`MARKETING_INTERACTIONS_ENABLED=true` turns on the marketing interaction
+dispatcher (see `server/marketing/info.md`). Without it the service behaves as
+before. Enabling it also requires these private variables on this service:
+`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`,
+`GOOGLE_EXPECTED_ACCOUNT_EMAIL` and `GOOGLE_CALENDAR_ID` (the same Tech@NYU
+values the web service uses), migration 057 applied, and the `/event-info`
+command registered with `npm run marketing:register -- event-info`. None of
+this has been deployed.

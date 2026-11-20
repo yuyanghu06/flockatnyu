@@ -8,6 +8,7 @@ import { promptAssetsForSources } from './prompt-assets.mjs';
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const sharedModules = new Set([
   'server/shared/source-timeout.js',
+  'server/shared/time-zone.js',
   'server/chat/attachments.js',
   'server/chat/attachment-contract.js',
   'server/chat/discord-context.js',
@@ -182,8 +183,20 @@ export function prepareDiscordDeployment(options = {}) {
     ...options,
     service: 'discord-worker',
     entrypoint: 'server/discord/event-cli.js',
-    moduleRoots: ['server/discord', 'server/automation'],
-    dependencies: { '@discordjs/rest': '2.6.3', '@discordjs/ws': '2.0.4' },
+    // Marketing slash commands read the club Calendar through the existing
+    // Google client, which reaches three map validation modules.
+    moduleRoots: [
+      'server/discord',
+      'server/automation',
+      'server/marketing',
+      'server/google',
+      'server/map',
+    ],
+    dependencies: {
+      '@discordjs/rest': '2.6.3',
+      '@discordjs/ws': '2.0.4',
+      'google-auth-library': '11.3.0',
+    },
   });
 }
 
