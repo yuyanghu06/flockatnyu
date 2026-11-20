@@ -1,21 +1,20 @@
-## Marketing event commands: Stage 1 (/event-info) implemented locally
+## Marketing event commands: Stage 2 (/event-details) implemented locally
 
 The user requested staged Discord commands for picking upcoming club Calendar
-events (Stage 0 reader committed as 7e855bc). Stage 1 adds a Gateway
-interaction dispatcher separate from chat and ingestion, `/event-info`, migration
-057 (service-only marketing tables) and single-command registration. Calendar is
-read inside discord-events, which now packages the Google Calendar client.
-Nothing is deployed, applied or registered. After review, threads directly
-inside the two allowed channels are also allowed, refusals name the channels,
-and Stage 1 is committed locally in four commits (not pushed).
+events. Stage 0 (7e855bc) and Stage 1 (3835182, 77563e9, dc86017, 947c72a;
+local, not pushed) are committed: the read-only reader, a Gateway interaction
+dispatcher separate from chat and ingestion, migration 057, and `/event-info`
+in #events-team, #marketing-and-content-team and threads directly inside them.
 
-Focused checks pass (1,158 Discord, Calendar, marketing and deploy tests). The
-full suite still has pre-existing intermittent SQL stalls and a provider-fallback
-failure that also occur without this change. Next: Stage 2 (`/event-details` modals
-and atomic merge), approved by the user.
+Stage 2 (uncommitted) adds `/event-details`: a picker, core and extras modals
+pre-filled from saved details, and migration 058's atomic, version-checked
+merge (blank optional answers clear saved values) with a private confirmation. No summary card or reminders. Nothing is deployed, applied,
+registered or pushed. Marketing tests 31/31, deploy 8/8 and static gates pass;
+the full suite still has pre-existing intermittent SQL stalls.
 
-[Scope](marketing-commands-2026-11-19/info.md) · [Stage 1](history/2026-11-19_16-11-27-306294-coder-marketing-event-info-stage1.md) · [Latest pass](history/2026-11-19_19-13-07-049834-coder-marketing-stage1-review-fixes.md)
+Next: user review of Stage 2.
 
+[Scope](marketing-commands-2026-11-19/info.md) · [Stage 1](history/2026-11-19_16-11-27-306294-coder-marketing-event-info-stage1.md) · [Review fixes](history/2026-11-19_19-13-07-049834-coder-marketing-stage1-review-fixes.md) · [Latest pass](history/2026-11-19_19-42-06-356892-coder-marketing-event-details-stage2.md)
 
 ## Contacts total count — November 13
 
