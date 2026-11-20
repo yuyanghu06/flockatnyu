@@ -11,7 +11,7 @@ function validSession(value) {
 
 /** Gateway SDK owns heartbeat/reconnect; we persist only the sequence whose
  * queued events have reached Supabase. Restart replay is deduplicated by UUID. */
-export async function createDiscordGateway({config,listener,state,refreshMetadata,reconcileMetadata,signal,onDispatch,
+export async function createDiscordGateway({config,listener,state,refreshMetadata,reconcileMetadata,signal,onDispatch,onInteraction,
   createManager=options=>new WebSocketManager(options),createRest=token=>new REST({version:'10',timeout:15000,retries:2}).setToken(token),
   log=()=>{},onFailure=()=>{}}={}) {
   const diagnostic=entry=>logCollectorDiagnostic(log,entry);
@@ -46,6 +46,11 @@ export async function createDiscordGateway({config,listener,state,refreshMetadat
     // durable ingestion frontier behind model or delivery latency.
     if(onDispatch && event.t==='MESSAGE_CREATE') {
       void Promise.resolve().then(()=>onDispatch(event)).catch(error=>diagnostic({status:'discord_chat_dispatch_failed',stage:'chat_dispatch',error}));
+    }
+    // Slash commands/components go to their own dispatcher, never chat or the
+    // ingestion queue; Discord's 3-second reply window cannot wait on either.
+    if(onInteraction && event.t==='INTERACTION_CREATE') {
+      void Promise.resolve().then(()=>onInteraction(event)).catch(error=>diagnostic({status:'interaction_dispatch_failed',stage:'interaction_dispatch',error}));
     }
     if(++pending>config.maxPending){fatal(new Error('queue_overflow'),'queue_overflow',{eventType:event.t});return;}
     const session=sessions.get(0), snapshot=session?{...session,sequence:event.s}:null;
