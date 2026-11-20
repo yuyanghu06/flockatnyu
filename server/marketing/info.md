@@ -27,3 +27,34 @@ saved data.
   `coverage.complete: false`; they are never presented as an empty calendar.
 
 Run `npm run marketing:events` to print the list (see `scripts/info.md`).
+
+## Discord slash commands (Stage 1: /event-info)
+
+These run inside the `discord-events` service, through the generic dispatcher
+in `server/discord/interactions.js`. That dispatcher receives `INTERACTION_CREATE`
+from the Gateway separately from chat (`MESSAGE_CREATE`) and from ingestion:
+interactions never enter `agent_input_cache`, and a slow handler cannot hold back
+the Gateway checkpoint. The feature is off unless `MARKETING_INTERACTIONS_ENABLED=true`.
+
+- `config.js`: who may use the commands. A user needs the events leads,
+  marketing or leadership role and must run the command in #events-team or
+  #marketing-and-content-team, or in a thread directly inside one of them
+  (Discord's channel object in the interaction must say it is a thread whose
+  parent is an allowed channel). Refusals name the allowed channels. It uses
+  only the roles and channel Discord includes in the interaction, with no extra
+  Discord reads. Optional comma-separated overrides
+  `MARKETING_ALLOWED_ROLE_IDS` and `MARKETING_ALLOWED_CHANNEL_IDS` exist for a
+  test server.
+- `event-info.js`: `/event-info`. Access is checked first; a refused user gets
+  an immediate private explanation and nothing else runs. Otherwise it defers
+  privately right away, reads Calendar, registers tokens for the first 25 events
+  and edits the reply into a dropdown. It says when more than 25 exist or the
+  Calendar read was partial. Picking an event re-checks access, updates the same
+  private message and shows the saved details, or "no details submitted yet".
+  Read-only apart from token registration.
+- `store.js`: fixed service-only RPCs from migration 057 over Supabase REST.
+- `views.js`: dropdown, details embed and messages. Mentions are always disabled.
+- `commands.js` and `scripts/register-marketing-commands.mjs`: registers named
+  commands one at a time with Discord's single-command endpoint, which creates
+  or updates only that command. The bulk-replace endpoint is never used.
+- `interactions.js`: wires the above together for `server/discord/event-cli.js`.
