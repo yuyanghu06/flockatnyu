@@ -1,14 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createMarketingInteractions } from '../server/marketing/interactions.js';
-import { MARKETING_CHANNEL_IDS, MARKETING_ROLE_IDS } from '../server/marketing/config.js';
 import { MARKETING_COMMANDS } from '../server/marketing/commands.js';
 
+// Test-only Discord IDs, supplied through env like production.
+const MARKETING_ROLE_IDS = {
+  eventsLeads: '9100000000000000001',
+  marketing: '9100000000000000002',
+  leadership: '9100000000000000003',
+};
+const MARKETING_CHANNEL_IDS = {
+  eventsTeam: '9200000000000000001',
+  marketingAndContentTeam: '9200000000000000002',
+};
 const guildId = '1203562091517321216';
 const env = {
   MARKETING_INTERACTIONS_ENABLED: 'true',
   DISCORD_BOT_TOKEN: 'synthetic-token',
   DISCORD_GUILD_ID: guildId,
+  MARKETING_ALLOWED_ROLE_IDS: Object.values(MARKETING_ROLE_IDS).join(','),
+  MARKETING_ALLOWED_CHANNEL_IDS: Object.values(MARKETING_CHANNEL_IDS).join(', '),
 };
 const now = () => new Date('2026-11-19T17:00:00Z');
 const TOKEN = 'abcdef0123456789';
@@ -458,7 +469,7 @@ test('access is checked on the command, the pick and the submission', async () =
     await f.dispatcher.handle(event);
     assert.equal(f.calls.length, 1);
     assert.equal(f.calls[0].body.type, 4);
-    assert.match(f.calls[0].body.data.content, /#events-team/);
+    assert.match(f.calls[0].body.data.content, /<#9200000000000000001>/);
     assert.equal(f.merges.length, 0);
   }
 });

@@ -36,15 +36,16 @@ from the Gateway separately from chat (`MESSAGE_CREATE`) and from ingestion:
 interactions never enter `agent_input_cache`, and a slow handler cannot hold back
 the Gateway checkpoint. The feature is off unless `MARKETING_INTERACTIONS_ENABLED=true`.
 
-- `config.js`: who may use the commands. A user needs the events leads,
-  marketing or leadership role and must run the command in #events-team or
-  #marketing-and-content-team, or in a thread directly inside one of them
-  (Discord's channel object in the interaction must say it is a thread whose
-  parent is an allowed channel). Refusals name the allowed channels. It uses
-  only the roles and channel Discord includes in the interaction, with no extra
-  Discord reads. Optional comma-separated overrides
-  `MARKETING_ALLOWED_ROLE_IDS` and `MARKETING_ALLOWED_CHANNEL_IDS` exist for a
-  test server.
+- `config.js`: who may use the commands, read only from comma-separated
+  environment variables. `MARKETING_ALLOWED_ROLE_IDS`: the member needs at
+  least one of these roles. `MARKETING_ALLOWED_CHANNEL_IDS`: the command must
+  run in one of these channels or in a thread directly inside one (Discord's
+  channel object in the interaction must say it is a thread whose parent is an
+  allowed channel). Unset or blank lists allow nobody; a malformed list stops
+  the commands from starting (`interactions_unavailable`). Refusals name the
+  allowed channels as Discord channel mentions. It uses only the roles and
+  channel Discord includes in the interaction, with no extra Discord reads. The
+  production values are in `deployment/discord-worker/info.md`.
 - `event-info.js`: `/event-info`. Access is checked first; a refused user gets
   an immediate private explanation and nothing else runs. Otherwise it defers
   privately right away, reads Calendar, registers tokens for the first 25 events

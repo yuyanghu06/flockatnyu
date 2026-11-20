@@ -1,6 +1,5 @@
 // Discord message payloads for the marketing commands. Pure functions.
 import { NO_MENTIONS } from '../discord/interactions.js';
-import { MARKETING_CHANNEL_NAMES } from './config.js';
 
 // Field order and labels follow the ported marketing bot. The /event-details
 // modals (details-form.js) write these keys; unknown saved keys are not shown.
@@ -90,17 +89,15 @@ export function infoMessage(event, details, components) {
   };
 }
 
+// Channel mentions render as the channel's name in Discord.
 export function channelList(channelIds) {
-  return channelIds
-    .map((id) =>
-      Object.hasOwn(MARKETING_CHANNEL_NAMES, id) ? `#${MARKETING_CHANNEL_NAMES[id]}` : `<#${id}>`,
-    )
-    .join(' or ');
+  return channelIds.map((id) => `<#${id}>`).join(' or ');
 }
 
 export function denialMessage(reason, channelIds) {
+  if (!channelIds.length) return "This command isn't enabled in any channel yet.";
   const where = channelList(channelIds);
   return reason === 'channel'
     ? `This command only works in ${where}, or in a thread inside one of them.`
-    : `This command is only for the events leads, marketing and leadership roles, in ${where}.`;
+    : `You don't have a role that can use this command. It works in ${where}.`;
 }

@@ -48,6 +48,19 @@ dispatcher (see `server/marketing/info.md`). Without it the service behaves as
 before. Enabling it also requires these private variables on this service:
 `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`,
 `GOOGLE_EXPECTED_ACCOUNT_EMAIL` and `GOOGLE_CALENDAR_ID` (the same Tech@NYU
-values the web service uses), migrations 057 and 058 applied, and the commands
+values the web service uses), the allowed roles and channels below,
+migrations 057 and 058 applied, and the commands
 registered with `npm run marketing:register -- event-info event-details`. None
 of this has been deployed.
+
+Who may use the commands is set only by these comma-separated variables; unset
+means nobody. Production values (non-secret Tech@NYU IDs supplied by the user on
+2026-11-19):
+
+- `MARKETING_ALLOWED_ROLE_IDS=1203562091517321226,1203562091517321229,1203562091517321230`
+  (events leads, marketing, leadership)
+- `MARKETING_ALLOWED_CHANNEL_IDS=1203562092213305370,1203562092213305366`
+  (#events-team, #marketing-and-content-team)
+
+For testing, set them to a test role and channel (for example the Eng Leads role
+and #flock-test) instead; no code change is needed.

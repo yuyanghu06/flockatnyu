@@ -3,14 +3,25 @@ import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
 import { WebSocketShardEvents as E } from '@discordjs/ws';
 import { createMarketingInteractions } from '../server/marketing/interactions.js';
-import { MARKETING_CHANNEL_IDS, MARKETING_ROLE_IDS } from '../server/marketing/config.js';
 import { createDiscordGateway } from '../server/discord/gateway.js';
 
+// Test-only Discord IDs, supplied through env like production.
+const MARKETING_ROLE_IDS = {
+  eventsLeads: '9100000000000000001',
+  marketing: '9100000000000000002',
+  leadership: '9100000000000000003',
+};
+const MARKETING_CHANNEL_IDS = {
+  eventsTeam: '9200000000000000001',
+  marketingAndContentTeam: '9200000000000000002',
+};
 const guildId = '1203562091517321216';
 const env = {
   MARKETING_INTERACTIONS_ENABLED: 'true',
   DISCORD_BOT_TOKEN: 'synthetic-token',
   DISCORD_GUILD_ID: guildId,
+  MARKETING_ALLOWED_ROLE_IDS: Object.values(MARKETING_ROLE_IDS).join(','),
+  MARKETING_ALLOWED_CHANNEL_IDS: Object.values(MARKETING_CHANNEL_IDS).join(', '),
 };
 const now = () => new Date('2026-11-19T17:00:00Z');
 const calendarEvent = (i, extra = {}) => ({
@@ -33,6 +44,7 @@ function fixture({
   calendarStatus = 'ready',
   details = {},
   lookupStatus,
+  env: fixtureEnv = env,
 } = {}) {
   const f = { calls: [], calendarReads: 0, registered: [] };
   const calendar = {
@@ -72,7 +84,7 @@ function fixture({
     patch: async (path, options) =>
       f.calls.push({ method: 'patch', path, body: options.body, auth: options.auth }),
   };
-  f.dispatcher = createMarketingInteractions({ env, calendar, store, rest, now });
+  f.dispatcher = createMarketingInteractions({ env: fixtureEnv, calendar, store, rest, now });
   return f;
 }
 
@@ -144,31 +156,31 @@ test('wrong role or wrong channel gets an immediate ephemeral refusal and no Cal
   for (const [options, pattern] of [
     [
       { roles: ['999'] },
-      /events leads, marketing and leadership roles, in #events-team or #marketing-and-content-team\./,
+      /^You don't have a role that can use this command\. It works in <#9200000000000000001> or <#9200000000000000002>\.$/,
     ],
-    [{ roles: [] }, /events leads, marketing and leadership/],
+    [{ roles: [] }, /You don't have a role/],
     [
       { channelId: '777' },
-      /^This command only works in #events-team or #marketing-and-content-team, or in a thread inside one of them\.$/,
+      /^This command only works in <#9200000000000000001> or <#9200000000000000002>, or in a thread inside one of them\.$/,
     ],
     // A thread under some other channel, and a non-thread claiming an allowed parent.
     [
       { channelId: '777', channel: { id: '777', type: 11, parent_id: '888' } },
-      /only works in #events-team/,
+      /only works in <#9200000000000000001>/,
     ],
     [
       {
         channelId: '777',
         channel: { id: '777', type: 0, parent_id: MARKETING_CHANNEL_IDS.eventsTeam },
       },
-      /only works in #events-team/,
+      /only works in <#9200000000000000001>/,
     ],
     [
       {
         channelId: '777',
         channel: { id: '778', type: 11, parent_id: MARKETING_CHANNEL_IDS.eventsTeam },
       },
-      /only works in #events-team/,
+      /only works in <#9200000000000000001>/,
     ],
   ]) {
     const f = fixture();
@@ -294,7 +306,55 @@ test('the dropdown re-checks access before showing details', async () => {
   assert.equal(f.calls[0].body.type, 4);
 });
 
-test('disabled or unconfigured interactions do not start', () => {
+test('roles and channels come only from env, and unset lists deny everyone', async () => {
+  for (const unset of [
+    { MARKETING_ALLOWED_ROLE_IDS: undefined },
+    { MARKETING_ALLOWED_CHANNEL_IDS: undefined },
+    { MARKETING_ALLOWED_ROLE_IDS: ' ', MARKETING_ALLOWED_CHANNEL_IDS: '' },
+  ]) {
+    const f = fixture({ env: { ...env, ...unset } });
+    await f.dispatcher.handle(interaction());
+    assert.equal(f.calls.length, 1);
+    assert.equal(f.calls[0].body.type, 4);
+    assert.equal(f.calendarReads, 0);
+  }
+  const none = fixture({ env: { ...env, MARKETING_ALLOWED_CHANNEL_IDS: undefined } });
+  await none.dispatcher.handle(interaction());
+  assert.equal(none.calls[0].body.data.content, "This command isn't enabled in any channel yet.");
+  // A test channel and role are just env values.
+  const test = fixture({
+    env: {
+      ...env,
+      MARKETING_ALLOWED_ROLE_IDS: '9300000000000000001',
+      MARKETING_ALLOWED_CHANNEL_IDS: '9400000000000000001',
+    },
+  });
+  await test.dispatcher.handle(interaction({ channelId: '9400000000000000001' }));
+  assert.match(test.calls[0].body.data.content, /You don't have a role/);
+  await test.dispatcher.handle(
+    interaction({ roles: ['9300000000000000001'], channelId: '9400000000000000001' }),
+  );
+  assert.equal(test.calls[1].body.type, 5);
+  assert.equal(test.calendarReads, 1);
+});
+
+test('disabled, unconfigured or malformed interactions do not start', () => {
+  for (const bad of [
+    { MARKETING_ALLOWED_ROLE_IDS: '123,abc' },
+    { MARKETING_ALLOWED_CHANNEL_IDS: '1,,2' },
+  ]) {
+    const logs = [];
+    assert.equal(
+      createMarketingInteractions({
+        env: { ...env, ...bad },
+        calendar: { configured: true },
+        store: { configured: true },
+        log: (entry) => logs.push(entry),
+      }),
+      null,
+    );
+    assert.equal(logs[0].status, 'interactions_unavailable');
+  }
   assert.equal(
     createMarketingInteractions({ env: { ...env, MARKETING_INTERACTIONS_ENABLED: 'false' } }),
     null,
