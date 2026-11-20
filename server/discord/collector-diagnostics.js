@@ -10,9 +10,9 @@ const sdkMessages=new Map([['Authentication failed','gateway_authentication_fail
   ['Sharding is required','gateway_sharding_required'],['Used an invalid API version','gateway_invalid_api_version'],
   ['Used invalid intents','gateway_invalid_intents'],['Used disallowed intents','gateway_disallowed_intents']]);
 const statuses=new Set(['collector_starting','collector_failed','collector_stopping','collector_unavailable','gateway_closed','gateway_ready','gateway_resumed',
-  'gateway_socket_error','session_reset','event_queued','discord_chat_dispatch_failed','discord_chat_unavailable','server_unavailable','metadata_refresh_failed']);
+  'gateway_socket_error','session_reset','event_queued','discord_chat_dispatch_failed','discord_chat_unavailable','interaction_dispatch_failed','interactions_ready','interactions_unavailable','server_unavailable','metadata_refresh_failed']);
 const stages=new Set(['checkpoint_load','checkpoint_validate','checkpoint_save','gateway_create','gateway_connect','gateway_sdk','gateway_socket',
-  'gateway_closed','gateway_session','event_ingestion','event_metadata_refresh','queue_overflow','chat_dispatch','chat_startup','server_startup',
+  'gateway_closed','gateway_session','event_ingestion','event_metadata_refresh','queue_overflow','chat_dispatch','chat_startup','interaction_dispatch','interaction_startup','server_startup',
   'periodic_metadata_refresh','startup','shutdown','chat_shutdown','gateway_shutdown','server_shutdown','top_level']);
 const eventTypes=new Set(['MESSAGE_CREATE','MESSAGE_UPDATE','MESSAGE_DELETE','MESSAGE_DELETE_BULK','CHANNEL_CREATE','CHANNEL_UPDATE','CHANNEL_DELETE',
   'THREAD_CREATE','THREAD_UPDATE','THREAD_DELETE','READY','RESUMED']);

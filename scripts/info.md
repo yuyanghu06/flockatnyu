@@ -83,3 +83,7 @@ file, not just its facade. It still requires explicit live-model opt-in; this
 cleanup did not make inference or business-service calls.
 
 `planner-spend-report.mjs` is a private read-only operator report. Run `node --env-file=.env scripts/planner-spend-report.mjs --days=3`, or pass fixed `--start=ISO --end=ISO` bounds. It selects no prompts/model outputs/source bodies, checks complete pagination against exact counts and prints aggregate JSON only. Credentials stay in private environment variables. Unknown usage and traffic/version differences must remain explicit in comparisons.
+
+`marketing-events.mjs` (`npm run marketing:events`, optional `--days N` and `--json`) prints the confirmed upcoming club Calendar events the marketing tools use. It is read-only: it lists events through the existing club Calendar OAuth client and writes nothing to Google or the database.
+
+`register-marketing-commands.mjs` (`npm run marketing:register -- event-info event-details`, add `--dry-run` to print without sending) registers the named marketing slash commands in the configured guild one at a time through Discord's single-command endpoint. It never uses the bulk-replace endpoint, so the application's other commands are left as they are.

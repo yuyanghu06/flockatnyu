@@ -12,6 +12,7 @@ import {createDiscordEventListener} from './event-listener.js';
 import {createDiscordGateway} from './gateway.js';
 import {createDiscordChatTransport} from './chat-runtime.js';
 import {logCollectorDiagnostic} from './collector-diagnostics.js';
+import {createMarketingInteractions} from '../marketing/interactions.js';
 
 export function collectorExitCode(status,currentExitCode) {
   return status==='stopped'?(currentExitCode??0):status==='disabled'?0:1;
@@ -19,7 +20,7 @@ export function collectorExitCode(status,currentExitCode) {
 
 export async function runDiscordEvents({args=process.argv.slice(2),env=process.env,
   write=value=>process.stdout.write(`${JSON.stringify(value)}\n`),createGateway=createDiscordGateway,
-  createMetadataRefresh=createDiscordMetadataRefresh,createMetadataReconcile=createDiscordMetadataReconcile,createChatTransport=createDiscordChatTransport,
+  createMetadataRefresh=createDiscordMetadataRefresh,createMetadataReconcile=createDiscordMetadataReconcile,createChatTransport=createDiscordChatTransport,createInteractions=createMarketingInteractions,
   createHttpServer=createServer,createState=createDiscordEventState,createListener=createDiscordEventListener}={}) {
   if(args.length!==1||args[0]!=='serve')return {status:'invalid_command'};
   const config=readDiscordEventConfig(env);
@@ -55,10 +56,14 @@ export async function runDiscordEvents({args=process.argv.slice(2),env=process.e
     const {reconcile:reconcileMetadata}=createMetadataReconcile({config,store,client});
     try {chat=await createChatTransport({env,log,signal:controller.signal});}
     catch(error){diagnostic({status:'discord_chat_unavailable',stage:'chat_startup',error});}
+    // Slash-command interactions are optional and independent of chat/ingestion.
+    let interactions=null;
+    try {interactions=createInteractions({env,log:entry=>diagnostic(entry)});}
+    catch(error){diagnostic({status:'interactions_unavailable',stage:'interaction_startup',error});}
     const listener=createListener({config:{...config,ignoredAuthorIds:chat?[chat.botUserId]:[]},store,inputStore,client,refreshMetadata,reconcileMetadata});
     startupStage='gateway_create';
     gateway=await createGateway({config,listener,state,refreshMetadata,reconcileMetadata,signal:controller.signal,log,
-      ...(chat?{onDispatch:event=>chat.handle(event)}:{}),onFailure:()=>{void stop(true,'collector_failure');}});
+      ...(chat?{onDispatch:event=>chat.handle(event)}:{}),...(interactions?{onInteraction:event=>interactions.handle(event)}:{}),onFailure:()=>{void stop(true,'collector_failure');}});
     startupStage='server_startup';
     server=createHttpServer((request,response)=>{
       if(request.method!=='GET'||request.url!=='/healthz'){response.writeHead(404);response.end();return;}

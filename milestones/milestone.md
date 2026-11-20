@@ -1,3 +1,21 @@
+## Marketing event commands: Stage 2 (/event-details) implemented locally
+
+The user requested staged Discord commands for picking upcoming club Calendar
+events. Stage 0 (7e855bc) and Stage 1 (3835182, 77563e9, dc86017, 947c72a;
+local, not pushed) are committed: the read-only reader, a Gateway interaction
+dispatcher separate from chat and ingestion, migration 057, and `/event-info`
+in #events-team, #marketing-and-content-team and threads directly inside them.
+
+Stage 2 (uncommitted) adds `/event-details`: a picker, core and extras modals
+pre-filled from saved details, and migration 058's atomic, version-checked
+merge (blank optional answers clear saved values) with a private confirmation. No summary card or reminders. Nothing is deployed, applied,
+registered or pushed. Marketing tests 31/31, deploy 8/8 and static gates pass;
+the full suite still has pre-existing intermittent SQL stalls.
+
+Next: user review of Stage 2.
+
+[Scope](marketing-commands-2026-11-19/info.md) · [Stage 1](history/2026-11-19_16-11-27-306294-coder-marketing-event-info-stage1.md) · [Review fixes](history/2026-11-19_19-13-07-049834-coder-marketing-stage1-review-fixes.md) · [Latest pass](history/2026-11-19_19-42-06-356892-coder-marketing-event-details-stage2.md)
+
 ## Contacts total count — November 13
 
 Evaluator ACCEPT local release ready.

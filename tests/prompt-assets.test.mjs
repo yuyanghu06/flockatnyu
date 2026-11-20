@@ -137,7 +137,7 @@ test('collector packages only literal referenced prompt assets and rejects dynam
   await writeFile(join(root, secretPath), 'PRIVATE_FIXTURE_MUST_NOT_SHIP');
   await mkdir(join(root, 'server/discord'), { recursive: true });
   const imports =
-    "import '@discordjs/rest';import '@discordjs/ws';import {promptText} from '../prompt-loader/index.js';\n";
+    "import '@discordjs/rest';import '@discordjs/ws';import 'google-auth-library';import {promptText} from '../prompt-loader/index.js';\n";
   const entry = join(root, 'server/discord/event-cli.js');
   await writeFile(
     entry,
