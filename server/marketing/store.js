@@ -1,12 +1,13 @@
 import { SOURCE_TOOL_TIMEOUT_MS } from '../shared/source-timeout.js';
 
-// Fixed service-only RPCs from migration 202611190057. Only Calendar event
+// Fixed service-only RPCs from migrations 202611190057 and 202611190058. Only Calendar event
 // IDs, titles, dates and submitted marketing details pass through here.
 const names = Object.freeze({
   register: 'marketing_event_register',
   lookup: 'marketing_event_lookup',
+  merge: 'marketing_event_merge',
 });
-const statuses = new Set(['ready', 'not_found', 'conflict', 'invalid_request']);
+const statuses = new Set(['ready', 'not_found', 'conflict', 'invalid_request', 'too_large']);
 const plainObject = (value) =>
   value !== null && typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype;
 
@@ -81,5 +82,7 @@ export function createMarketingStore({ env = process.env, fetchImpl = globalThis
     configured,
     register: ({ events, signal } = {}) => rpc('register', { events, signal }),
     lookup: ({ token, signal } = {}) => rpc('lookup', { token, signal }),
+    merge: ({ token, form, expectedVersion, fields, clear, updatedBy, signal } = {}) =>
+      rpc('merge', { token, form, expectedVersion, fields, clear, updatedBy, signal }),
   });
 }

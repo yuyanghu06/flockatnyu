@@ -2,8 +2,8 @@
 import { NO_MENTIONS } from '../discord/interactions.js';
 import { MARKETING_CHANNEL_NAMES } from './config.js';
 
-// Field order and labels follow the ported marketing bot. Stage 2's modals
-// write these keys; unknown keys in saved details are not displayed.
+// Field order and labels follow the ported marketing bot. The /event-details
+// modals (details-form.js) write these keys; unknown saved keys are not shown.
 export const DETAIL_FIELDS = Object.freeze([
   ['title', 'Event title'],
   ['when', 'Date & time'],
@@ -44,14 +44,14 @@ export function eventSelect(customId, choices, placeholder = 'Pick an event…')
   ];
 }
 
-export function pickerMessage({ choices, total, partial, prompt }) {
+export function pickerMessage({ choices, total, partial, prompt, customId = INFO_SELECT_ID }) {
   const notes = [];
   if (total > choices.length)
     notes.push(`Showing the first ${choices.length} of ${total} upcoming events.`);
   if (partial) notes.push('The calendar could only be read partly, so some events may be missing.');
   return {
     content: [prompt, ...notes].join('\n'),
-    components: eventSelect(INFO_SELECT_ID, choices),
+    components: eventSelect(customId, choices),
     allowed_mentions: NO_MENTIONS,
   };
 }

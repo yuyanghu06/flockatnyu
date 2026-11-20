@@ -48,6 +48,6 @@ dispatcher (see `server/marketing/info.md`). Without it the service behaves as
 before. Enabling it also requires these private variables on this service:
 `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`,
 `GOOGLE_EXPECTED_ACCOUNT_EMAIL` and `GOOGLE_CALENDAR_ID` (the same Tech@NYU
-values the web service uses), migration 057 applied, and the `/event-info`
-command registered with `npm run marketing:register -- event-info`. None of
-this has been deployed.
+values the web service uses), migrations 057 and 058 applied, and the commands
+registered with `npm run marketing:register -- event-info event-details`. None
+of this has been deployed.

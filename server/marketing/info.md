@@ -28,7 +28,7 @@ saved data.
 
 Run `npm run marketing:events` to print the list (see `scripts/info.md`).
 
-## Discord slash commands (Stage 1: /event-info)
+## Discord slash commands (/event-info and /event-details)
 
 These run inside the `discord-events` service, through the generic dispatcher
 in `server/discord/interactions.js`. That dispatcher receives `INTERACTION_CREATE`
@@ -52,7 +52,33 @@ the Gateway checkpoint. The feature is off unless `MARKETING_INTERACTIONS_ENABLE
   Calendar read was partial. Picking an event re-checks access, updates the same
   private message and shows the saved details, or "no details submitted yet".
   Read-only apart from token registration.
-- `store.js`: fixed service-only RPCs from migration 057 over Supabase REST.
+- `event-details.js` and `details-form.js` (Stage 2): `/event-details`, with an
+  optional `extras` switch. Access is checked on the command, the pick and the
+  submission. The command defers privately and shows the same dropdown. Picking
+  an event answers with the core form (title, date & time, location,
+  description, food) or the extras form (assets, collab, tagging, notes),
+  pre-filled with saved values (title falls back to the Calendar title). A
+  modal must be the direct answer to the pick, so that prefill read cannot be
+  deferred: it is limited to 2 seconds, and a slow or failed read gets a private
+  "pick it again" reply instead of an empty form. A submission is deferred
+  privately, then only that form's own fields are trimmed and checked against
+  their lengths. Because the form always opens pre-filled, a blank optional
+  answer (food or any extra) means the user deleted it and clears the saved
+  value; required core fields cannot be blanked. This is only safe because a
+  slow or failed prefill read never shows an empty form, so keep that rule.
+  Each form may only change its own fields and has its own saved version. The
+  form carries that version from when it was opened, and migration 058's
+  `marketing_event_merge` refuses the save if someone else saved the same form
+  since, so a stale form never overwrites or clears newer answers; a save of
+  the other form never makes it stale. A refused save replies with the
+  person's answers (each in a code block, so links copy exactly) to paste into
+  the reopened form. The merge is atomic;
+  the private confirmation shows the saved details, the fields actually
+  cleared and anything still missing. Failed saves say nothing was saved; a
+  timeout or lost response, where the write may have committed, says the save
+  could not be confirmed instead.
+  No channel summary card or reminders yet.
+- `store.js`: fixed service-only RPCs from migrations 057 and 058 over Supabase REST.
 - `views.js`: dropdown, details embed and messages. Mentions are always disabled.
 - `commands.js` and `scripts/register-marketing-commands.mjs`: registers named
   commands one at a time with Discord's single-command endpoint, which creates

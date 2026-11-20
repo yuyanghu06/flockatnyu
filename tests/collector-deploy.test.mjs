@@ -159,7 +159,7 @@ test('actual Discord Gateway closure contains event ingestion and excludes retir
     // Marketing slash commands read the club Calendar through the shared Google client.
     'server/google/calendar-client.js', 'server/google/calendar-config.js', 'server/google/calendar-receipt.js', 'server/google/client.js', 'server/google/config.js', 'server/google/oauth.js',
     'server/map/avatars.js', 'server/map/contracts.js', 'server/map/events.js',
-    'server/marketing/calendar-events.js', 'server/marketing/config.js', 'server/marketing/event-info.js', 'server/marketing/interactions.js', 'server/marketing/store.js', 'server/marketing/views.js',
+    'server/marketing/calendar-events.js', 'server/marketing/config.js', 'server/marketing/details-form.js', 'server/marketing/event-details.js', 'server/marketing/event-info.js', 'server/marketing/interactions.js', 'server/marketing/store.js', 'server/marketing/views.js',
     'server/prompt-loader/assets.js', 'server/prompt-loader/index.js', 'server/shared/source-timeout.js', 'server/shared/time-zone.js',
   ]);
   assert.deepEqual(await filesIn(result.directory), result.files);

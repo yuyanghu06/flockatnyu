@@ -11,6 +11,8 @@ import {
 import { readMarketingConfig } from './config.js';
 import { createMarketingStore } from './store.js';
 import { createEventInfoHandlers } from './event-info.js';
+import { createEventDetailsHandlers } from './event-details.js';
+import { CORE_MODAL_ID, DETAILS_PICK_ID, EXTRA_MODAL_ID } from './details-form.js';
 import { INFO_SELECT_ID } from './views.js';
 
 export function createMarketingInteractions({
@@ -30,11 +32,14 @@ export function createMarketingInteractions({
     return null;
   }
   rest ??= new REST({ version: '10', timeout: 15000, retries: 0 }).setToken(config.botToken);
-  const eventInfo = createEventInfoHandlers({ config, calendar, store, ...(now ? { now } : {}) });
+  const deps = { config, calendar, store, ...(now ? { now } : {}) };
+  const eventInfo = createEventInfoHandlers(deps);
+  const eventDetails = createEventDetailsHandlers(deps);
   const dispatcher = createInteractionDispatcher({
     guildId: config.guildId,
-    commands: { 'event-info': eventInfo.command },
-    components: { [INFO_SELECT_ID]: eventInfo.select },
+    commands: { 'event-info': eventInfo.command, 'event-details': eventDetails.command },
+    components: { [INFO_SELECT_ID]: eventInfo.select, [DETAILS_PICK_ID]: eventDetails.select },
+    modals: { [CORE_MODAL_ID]: eventDetails.core, [EXTRA_MODAL_ID]: eventDetails.extra },
     responder: createInteractionResponder({ rest }),
     log,
   });

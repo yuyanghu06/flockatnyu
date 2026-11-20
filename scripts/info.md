@@ -86,4 +86,4 @@ cleanup did not make inference or business-service calls.
 
 `marketing-events.mjs` (`npm run marketing:events`, optional `--days N` and `--json`) prints the confirmed upcoming club Calendar events the marketing tools use. It is read-only: it lists events through the existing club Calendar OAuth client and writes nothing to Google or the database.
 
-`register-marketing-commands.mjs` (`npm run marketing:register -- event-info`, add `--dry-run` to print without sending) registers the named marketing slash commands in the configured guild one at a time through Discord's single-command endpoint. It never uses the bulk-replace endpoint, so the application's other commands are left as they are.
+`register-marketing-commands.mjs` (`npm run marketing:register -- event-info event-details`, add `--dry-run` to print without sending) registers the named marketing slash commands in the configured guild one at a time through Discord's single-command endpoint. It never uses the bulk-replace endpoint, so the application's other commands are left as they are.
